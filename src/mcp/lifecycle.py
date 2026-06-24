@@ -291,7 +291,7 @@ class LifecycleManager:
             # Capture sig in lambda to avoid closure issue
             loop.add_signal_handler(
                 sig,
-                lambda s=sig: asyncio.create_task(self.shutdown(graceful=True)),  # type: ignore[misc]
+                lambda s=sig: asyncio.create_task(self.shutdown(graceful=True)),
             )
 
         self._logger.info("Signal handlers configured")

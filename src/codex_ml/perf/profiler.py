@@ -15,7 +15,7 @@ class PerformanceProfiler:
     def __init__(self) -> None:
         self.timings: dict[str, list[float]] = {}
 
-    @contextmanager  # type: ignore[arg-type]
+    @contextmanager
     def profile(self, name: str) -> Iterable[None]:
         start = time.perf_counter()
         try:

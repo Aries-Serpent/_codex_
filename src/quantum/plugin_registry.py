@@ -187,7 +187,7 @@ class QuantumPluginRegistry:
         """
         self.plugins[plugin.name] = plugin
         # add_node now creates edges: dependency → plugin (correct direction)
-        self.dependency_graph.add_node(  # type: ignore[union-attr]
+        self.dependency_graph.add_node(
             plugin.name, dependencies=plugin.dependencies, data={"plugin": plugin}
         )
 
@@ -246,7 +246,7 @@ class QuantumPluginRegistry:
 
         # Get load order using topological sort
         try:
-            load_order = self.dependency_graph.topological_sort()  # type: ignore[union-attr]
+            load_order = self.dependency_graph.topological_sort()
         except Exception:
             # Fallback: just load the plugin
             load_order = [plugin_name]

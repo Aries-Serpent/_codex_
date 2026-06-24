@@ -68,7 +68,7 @@ try:
     transformer_auto_wrap_policy = _fsdp_wrap.transformer_auto_wrap_policy
 
     # Verify torch is functional
-    _ = torch.Tensor
+    _ = torch.Tensor  # type: ignore
     TORCH_AVAILABLE = True
 except (ImportError, AttributeError) as e:
     logger.debug(f"ImportError: {e}")

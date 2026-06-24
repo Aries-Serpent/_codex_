@@ -221,8 +221,8 @@ def run_encode(tokenizer_path: str, text: str) -> list[int]:
     kind, tokenizer = _load_tokenizer(tokenizer_path)
     try:
         if kind == "hf":
-            return tokenizer.encode(text).ids  # type: ignore[attr-defined]
-        encoded = tokenizer.encode(text)  # type: ignore[attr-defined]
+            return tokenizer.encode(text).ids
+        encoded = tokenizer.encode(text)
         return list(encoded)
     except (IOError, OSError) as exc:  # pragma: no cover - delegated to caller
         raise TokenizerPipelineError(f"encoding failed: {exc}") from exc
@@ -234,8 +234,8 @@ def run_decode(tokenizer_path: str, token_ids: Sequence[int]) -> str:
     kind, tokenizer = _load_tokenizer(tokenizer_path)
     try:
         if kind == "hf":
-            return tokenizer.decode(list(token_ids), skip_special_tokens=False)  # type: ignore[attr-defined]
-        return tokenizer.decode(list(token_ids))  # type: ignore[attr-defined]
+            return tokenizer.decode(list(token_ids), skip_special_tokens=False)
+        return tokenizer.decode(list(token_ids))
     except (IOError, OSError) as exc:  # pragma: no cover - delegated to caller
         raise TokenizerPipelineError(f"decoding failed: {exc}") from exc
 

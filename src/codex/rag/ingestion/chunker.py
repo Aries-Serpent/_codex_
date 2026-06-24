@@ -421,7 +421,7 @@ class Chunker:
 
         # Get appropriate chunker class
         chunker_class = self.STRATEGY_MAP.get(self.config.strategy, FixedSizeChunker)
-        self._chunker = chunker_class(self.config)  # type: ignore[abstract]
+        self._chunker = chunker_class(self.config)
 
     def chunk(self, text: str) -> list[Chunk]:
         """

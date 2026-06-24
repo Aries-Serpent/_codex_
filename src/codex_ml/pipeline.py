@@ -242,7 +242,7 @@ def _run_rlhf_stage(
         actions.append(selected)
         rewards.append(reward_value)
         metrics = agent.update({"actions": [selected], "rewards": [reward_value]})
-        agent_updates += metrics.get("updates", 1)  # type: ignore[assignment]
+        agent_updates += metrics.get("updates", 1)
         agent_reward_total += metrics.get("mean_reward", reward_value)
 
     agent_metrics = {
@@ -708,7 +708,7 @@ def run_codex_pipeline_from_config(
     with _temporary_env(overrides):
         return run_codex_pipeline(
             corpus=corpus,
-            demos=demos,  # type: ignore[arg-type]
+            demos=demos,
             pairwise_prefs=pairwise,
             weights=weights,
             pre_cfg=pre_cfg,

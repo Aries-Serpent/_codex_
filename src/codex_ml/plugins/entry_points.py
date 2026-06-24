@@ -152,7 +152,7 @@ class EntryPointPluginRegistry:
                 if hasattr(entry_points, "select"):
                     eps = entry_points.select(group=group)
                 else:
-                    eps = entry_points.get(group, [])  # type: ignore[attr-defined]
+                    eps = entry_points.get(group, [])
 
                 for ep in eps:
                     plugin_info = self._create_plugin_info(ep, group)
@@ -207,7 +207,7 @@ class EntryPointPluginRegistry:
                 entry_point_name=entry_point.name,
                 module_name=entry_point.value,
                 plugin_class=plugin_class,
-                **metadata,  # type: ignore[arg-type]
+                **metadata,
             )
         except (ImportError, AttributeError) as e:
             logger.debug(f"Exception: {e}")

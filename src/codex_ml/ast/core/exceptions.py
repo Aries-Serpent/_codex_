@@ -9,7 +9,7 @@ across the AST analysis framework.
 class ASTError(Exception):
     """Base exception for all AST operations."""
 
-    def __init__(self, message: str, details: dict = None):  # type: ignore[assignment]
+    def __init__(self, message: str, details: dict = None):
         super().__init__(message)
         self.message = message
         self.details = details or {}
@@ -27,9 +27,9 @@ class ParseError(ASTError):
     def __init__(
         self,
         message: str,
-        file_path: str = None,  # type: ignore[assignment]
-        line: int = None,  # type: ignore[assignment]
-        column: int = None,  # type: ignore[assignment]
+        file_path: str = None,
+        line: int = None,
+        column: int = None,
     ):
         super().__init__(message)
         self.file_path = file_path
@@ -55,7 +55,7 @@ class AnalysisError(ASTError):
     or cannot complete its analysis.
     """
 
-    def __init__(self, message: str, analyzer_type: str = None):  # type: ignore[assignment]
+    def __init__(self, message: str, analyzer_type: str = None):
         super().__init__(message)
         self.analyzer_type = analyzer_type
 
@@ -66,7 +66,7 @@ class StorageError(ASTError):
     Raised when reading/writing analysis results to storage fails.
     """
 
-    def __init__(self, message: str, operation: str = None):  # type: ignore[assignment]
+    def __init__(self, message: str, operation: str = None):
         super().__init__(message)
         self.operation = operation
 
@@ -77,7 +77,7 @@ class ConfigurationError(ASTError):
     Raised when configuration values are invalid or missing.
     """
 
-    def __init__(self, message: str, key: str = None):  # type: ignore[assignment]
+    def __init__(self, message: str, key: str = None):
         super().__init__(message)
         self.key = key
 
@@ -88,6 +88,6 @@ class CycleDetectedError(ASTError):
     Raised when topological sort is attempted on a graph with cycles.
     """
 
-    def __init__(self, message: str = "Circular dependency detected", cycle: list = None):  # type: ignore[assignment]
+    def __init__(self, message: str = "Circular dependency detected", cycle: list = None):
         super().__init__(message)
         self.cycle = cycle or []

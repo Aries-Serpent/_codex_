@@ -40,7 +40,7 @@ except (ImportError, AttributeError):  # pragma: no cover - numpy optional
 try:  # pragma: no cover - optional torch
     import torch as _torch
 except (ImportError, AttributeError):  # pragma: no cover - torch optional
-    _torch = None  # type: ignore[assignment]
+    _torch = None
 
 
 # Optional helper aliases to ease migration of call-sites

@@ -105,7 +105,7 @@ def build_policy_mapping(
 
     track_policies: list[TrackPolicy] = []
     for track, focus in track_map.items():
-        ra_links: list[str] = ["RA-1", "RA-3"]  # type: ignore[no-redef]
+        ra_links: list[str] = ["RA-1", "RA-3"]
         if track in {"A", "B"}:
             ra_links.append("RA-2")
         if track in {"D", "E"}:
@@ -134,4 +134,4 @@ def write_policy_mapping(
     mapping_to_write = mapping or build_policy_mapping()
     with path.open("w", encoding="utf-8") as fp:
         json.dump(mapping_to_write, fp, indent=2, sort_keys=True)
-    return mapping_to_write  # type: ignore[return-value]
+    return mapping_to_write

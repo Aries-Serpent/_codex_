@@ -109,7 +109,7 @@ class ChatModel:
             "bias": "none",
         }
         if self.cfg.lora_target_modules is not None:
-            config_kwargs["target_modules"] = list(self.cfg.lora_target_modules)  # type: ignore[assignment]
+            config_kwargs["target_modules"] = list(self.cfg.lora_target_modules)
         if task_type is not None:
             config_kwargs["task_type"] = task_type
         else:

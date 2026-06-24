@@ -187,7 +187,7 @@ def _to_jsonable(obj: Any) -> Any:
     if isinstance(obj, (list, tuple, set)):
         return [_to_jsonable(v) for v in obj]
     if is_dataclass(obj):
-        return _to_jsonable(asdict(obj))  # type: ignore[arg-type]
+        return _to_jsonable(asdict(obj))
     if hasattr(obj, "__dict__"):
         return _to_jsonable({k: v for k, v in vars(obj).items() if not k.startswith("_")})
     try:
@@ -324,7 +324,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     summary_path = run_dir / "tracking_summary.ndjson"
 
     if getattr(tracking_cfg, "tensorboard", False):
-        writers.append(TensorBoardWriter(run_dir / "tb", summary_path=summary_path))
+        writers.append(TensorBoardWriter(run_dir / "tb", summary_path=summary_path))  # type: ignore
 
     mlflow_enabled = _bool_env("CODEX_MLFLOW_ENABLE", getattr(tracking_cfg, "mlflow", False))
     if mlflow_enabled:

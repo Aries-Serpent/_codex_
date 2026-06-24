@@ -28,7 +28,7 @@ except (ImportError, AttributeError):  # pragma: no cover - numpy may be absent
 try:  # pragma: no cover - optional dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - torch may be absent
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 __all__ = ["make_generator", "seed_worker"]
 

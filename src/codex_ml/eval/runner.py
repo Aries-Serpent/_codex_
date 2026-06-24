@@ -863,7 +863,7 @@ def run_evaluation(
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
-        "data_config": asdict(data_cfg) if data_cfg and is_dataclass(data_cfg) else None,  # type: ignore[arg-type]
+        "data_config": asdict(data_cfg) if data_cfg and is_dataclass(data_cfg) else None,
     }
 
     manifest = CacheManifest(

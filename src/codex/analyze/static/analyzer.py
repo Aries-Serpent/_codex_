@@ -214,7 +214,7 @@ def _extract_exports(tree: ast.AST) -> list[str]:
                             if isinstance(elt, ast.Constant):
                                 exports.append(str(elt.value))
                             elif isinstance(elt, ast.Str):  # Python < 3.8 compatibility
-                                exports.append(elt.s)  # type: ignore[arg-type]
+                                exports.append(elt.s)
 
     return sorted(set(exports))
 
@@ -483,10 +483,10 @@ def analyze(
         security_issues = _run_bandit(source_dir)
 
         # Associate issues with files
-        for issue in security_issues:  # type: ignore[assignment]
+        for issue in security_issues:
             for f in files:
                 if issue.file_path.endswith(f.path):
-                    f.security_issues.append(issue)  # type: ignore[arg-type]
+                    f.security_issues.append(issue)
 
     # Calculate summary
     total_loc = sum(f.loc for f in files)

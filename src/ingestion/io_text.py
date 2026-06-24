@@ -22,7 +22,7 @@ try:
     from .encoding_detect import detect_encoding
 except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    detect_encoding = None  # type: ignore[assignment]
+    detect_encoding = None
 
 
 def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:

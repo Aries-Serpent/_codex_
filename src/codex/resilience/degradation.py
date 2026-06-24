@@ -106,7 +106,7 @@ class GracefulDegradation:
             try:
                 return fn(*args, **kwargs)
             except self._exceptions as exc:
-                return self._handle_failure(exc, context=fn.__qualname__)  # type: ignore[arg-type]
+                return self._handle_failure(exc, context=fn.__qualname__)
 
         _wrapper.__name__ = getattr(fn, "__name__", "_wrapper")
         _wrapper.__qualname__ = getattr(fn, "__qualname__", "_wrapper")
@@ -128,7 +128,7 @@ class GracefulDegradation:
             return False  # no exception — nothing to do
         if not issubclass(exc_type, self._exceptions):
             return False  # not one we handle — propagate
-        self.result = self._handle_failure(exc_val, context="context_manager")  # type: ignore[arg-type]
+        self.result = self._handle_failure(exc_val, context="context_manager")
         return True  # suppress the exception
 
     # ------------------------------------------------------------------

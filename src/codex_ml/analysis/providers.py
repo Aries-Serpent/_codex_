@@ -33,7 +33,7 @@ from urllib.parse import urlparse  # noqa: E402
 try:  # pragma: no cover - optional dependency
     import requests
 except (ValueError, TypeError):  # pragma: no cover - requests missing or broken
-    requests = None  # type: ignore[assignment]
+    requests = None
 
 
 class SearchProvider(ABC):

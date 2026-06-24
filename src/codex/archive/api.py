@@ -102,8 +102,8 @@ def store(
     return {
         "tombstone": tomb,
         "sha256": sha,
-        "size": len(bytes_in),  # type: ignore[dict-item]
-        "compressed_size": len(blob),  # type: ignore[dict-item]
+        "size": len(bytes_in),
+        "compressed_size": len(blob),
         "repo": repo,
         "path": path,
     }

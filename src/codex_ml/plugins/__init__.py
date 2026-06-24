@@ -96,7 +96,7 @@ def load_entry_point_plugins(
     for name, (loader_fn, default_group) in _ENTRY_POINT_LOADERS.items():
         group_name = resolved.get(name, default_group)
         try:
-            loaded, errors = loader_fn(True, group=group_name)  # type: ignore[call-arg]
+            loaded, errors = loader_fn(True, group=group_name)
         except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
             if logger is not None:
                 logger.debug("Failed to load %s entry-point plugins: %s", name, exc)

@@ -592,6 +592,6 @@ def transform_records(
         for transformer in transformers:
             if result is None:
                 break
-            result = transformer(result)  # type: ignore[assignment]
+            result = transformer(result)
         if result is not None:
             yield result

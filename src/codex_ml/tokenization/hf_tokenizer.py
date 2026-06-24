@@ -26,7 +26,7 @@ if _HAS_TRANSFORMERS and transformers is not None and hasattr(transformers, "Aut
     AutoTokenizer = cast("type[Any]", transformers.AutoTokenizer)
     PreTrainedTokenizerBase = cast("type[Any]", transformers.PreTrainedTokenizerBase)
 else:  # pragma: no cover - optional dependency unavailable
-    AutoTokenizer = None  # type: ignore[assignment]
+    AutoTokenizer = None
     PreTrainedTokenizerBase = cast("type[Any]", object)
 
 TRANSFORMERS_AVAILABLE = _HAS_TRANSFORMERS
@@ -192,7 +192,7 @@ class _WhitespaceFallbackTokenizer:
 class HFTokenizerAdapter(TokenizerAdapter):
     """Adapter around a ``transformers`` tokenizer."""
 
-    tokenizer: PreTrainedTokenizerBase  # type: ignore[valid-type]
+    tokenizer: PreTrainedTokenizerBase
 
     @classmethod
     def load(
@@ -247,7 +247,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
             ``max_length`` tokens long.
         """
 
-        return self.tokenizer.encode(  # type: ignore[attr-defined]
+        return self.tokenizer.encode(
             text,
             add_special_tokens=False,
             padding="max_length" if pad_to_max else False,
@@ -256,36 +256,36 @@ class HFTokenizerAdapter(TokenizerAdapter):
         )
 
     def decode(self, ids: Sequence[int]) -> str:
-        return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)  # type: ignore[attr-defined]
+        return self.tokenizer.decode(ids, clean_up_tokenization_spaces=False)
 
     def add_special_tokens(self, tokens: Sequence[str]) -> dict[str, int]:
         """Register additional special tokens with the underlying tokenizer."""
-        self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})  # type: ignore[attr-defined]
-        return {t: int(self.tokenizer.convert_tokens_to_ids(t)) for t in tokens}  # type: ignore[attr-defined]
+        self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
+        return {t: int(self.tokenizer.convert_tokens_to_ids(t)) for t in tokens}
 
     def save(self, path: Path) -> None:
         path = Path(path)
         save_dir = path if path.suffix == "" else path.parent
         save_dir.mkdir(parents=True, exist_ok=True)
-        self.tokenizer.save_pretrained(save_dir)  # type: ignore[attr-defined]
+        self.tokenizer.save_pretrained(save_dir)
         if path.suffix != "":
             (save_dir / "tokenizer.json").replace(path)
 
     @property
     def vocab_size(self) -> int:
-        return int(self.tokenizer.vocab_size)  # type: ignore[attr-defined]
+        return int(self.tokenizer.vocab_size)
 
     @property
     def pad_id(self) -> int:
-        return int(self.tokenizer.pad_token_id or 0)  # type: ignore[attr-defined]
+        return int(self.tokenizer.pad_token_id or 0)
 
     @property
     def eos_id(self) -> int:
-        return int(self.tokenizer.eos_token_id or 0)  # type: ignore[attr-defined]
+        return int(self.tokenizer.eos_token_id or 0)
 
     @property
     def name_or_path(self) -> str:
-        return str(self.tokenizer.name_or_path)  # type: ignore[attr-defined]
+        return str(self.tokenizer.name_or_path)
 
     def batch_encode(
         self,
@@ -309,8 +309,8 @@ class HFTokenizerAdapter(TokenizerAdapter):
             pad_opt = "max_length"
         if pad_opt and getattr(self.tokenizer, "pad_token", None) is None:
             # GPT‑2 tokenizers lack pad token by default; reuse eos token
-            self.tokenizer.pad_token = self.tokenizer.eos_token  # type: ignore[attr-defined]
-        enc = self.tokenizer(  # type: ignore[misc]
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        enc = self.tokenizer(
             list(texts),
             padding=pad_opt,
             truncation=truncation,

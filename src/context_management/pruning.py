@@ -241,7 +241,7 @@ class PriorityPruner:
         scored.sort(key=lambda x: x[2])
 
         # Prune until under target
-        results = list(texts)  # type: ignore[arg-type]
+        results = list(texts)
         tokens_saved = 0
 
         for idx, text, _ in scored:
@@ -249,10 +249,10 @@ class PriorityPruner:
                 break
 
             result = self.prune(text)
-            results[idx] = result.pruned_text  # type: ignore[call-overload]
+            results[idx] = result.pruned_text
             tokens_saved += result.tokens_saved
 
-        return results, tokens_saved  # type: ignore[return-value]
+        return results, tokens_saved
 
     def get_metrics(self) -> dict:
         """Get pruning metrics."""

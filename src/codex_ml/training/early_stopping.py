@@ -356,7 +356,7 @@ class CodexEarlyStoppingCallback:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)
             logger.warning("transformers not available, using custom implementation")
-            self.callback = self  # type: ignore[assignment]
+            self.callback = self
             self.is_hf_callback = False
             self.best_metric = None
             self.patience_counter = 0

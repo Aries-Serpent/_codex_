@@ -272,7 +272,7 @@ class UniversalParser:
         return hints
 
 
-class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):  # type: ignore[misc]
+class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):
     """LibCST visitor to extract nodes."""
 
     def __init__(self, file_path: Path, id_generator):

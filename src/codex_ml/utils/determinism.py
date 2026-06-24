@@ -15,7 +15,7 @@ except (ImportError, AttributeError):  # pragma: no cover
 try:  # pragma: no cover - optional dependency guards
     import torch
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 __all__ = [
     "enable_determinism",

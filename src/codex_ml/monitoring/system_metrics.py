@@ -78,7 +78,7 @@ except (ImportError, AttributeError) as exc:  # pragma: no cover - pynvml missin
 try:  # pragma: no cover - optional dependency
     import resource
 except (ImportError, AttributeError):  # pragma: no cover - platform dependent
-    resource = None  # type: ignore[assignment]
+    resource = None
 
 
 HAS_PSUTIL = "psutil" in globals() and psutil is not None

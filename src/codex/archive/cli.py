@@ -194,7 +194,7 @@ def store(
         language=language,
         mime_type=mime,
         tags=list(tags),
-        extra_metadata=extra,  # type: ignore[arg-type]
+        extra_metadata=extra,
     )
     payload = {
         "tombstone": result.tombstone_id,

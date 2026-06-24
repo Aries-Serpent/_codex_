@@ -40,7 +40,7 @@ def mlflow_run(
 
     run_stack: Optional[ExitStack] = ExitStack()
     try:
-        run_stack.enter_context(run())  # type: ignore[union-attr]
+        run_stack.enter_context(run())
     except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime failures fall back to no-op
         LOGGER.warning("MLflow run initialization failed; continuing without tracking: %s", exc)
         if run_stack is not None:

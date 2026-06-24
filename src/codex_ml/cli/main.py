@@ -51,14 +51,14 @@ if typer is not None:
     _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
         try:  # pragma: no cover - optional import, guard mirrors Typer discovery
-            from codex_ml.cli import tokenizer as tokenizer_cli  # type: ignore[attr-defined]
+            from codex_ml.cli import tokenizer as tokenizer_cli
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except (ImportError, AttributeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
-    from codex_ml.cli import _load_training_config  # type: ignore[attr-defined]
+    from codex_ml.cli import _load_training_config
 
     def _value_from_config(
         cli_value: Any,
@@ -358,7 +358,7 @@ if typer is not None:
         ),
     ) -> None:
         """Run evaluation using available evaluation modules."""
-        from codex_ml.cli import entrypoints as entry  # type: ignore[attr-defined]
+        from codex_ml.cli import entrypoints as entry
 
         eval_args: list[str] = []
         if dry_run:
@@ -473,7 +473,7 @@ if typer is not None:
             app(args)
             return 0
         except SystemExit as e:
-            return e.code if e.code is not None else 0  # type: ignore[return-value]
+            return e.code if e.code is not None else 0
 
     cli = _typer_cli_wrapper
 
@@ -495,7 +495,7 @@ else:
         log_event,
         run_cmd,
     )
-    from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
+    from codex_ml.pipeline import run_codex_pipeline_from_config
     from codex_ml.utils.optional import optional_import
 
     _ = (ArgparseJSONParser, run_cmd)
@@ -510,8 +510,8 @@ else:
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
     except (ImportError, AttributeError):  # pragma: no cover - optional
-        DictConfig = Any  # type: ignore[assignment]
-        OmegaConf = None  # type: ignore[assignment]
+        DictConfig = Any
+        OmegaConf = None
 
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error

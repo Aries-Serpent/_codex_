@@ -38,26 +38,26 @@ except ModuleNotFoundError:  # pragma: no cover - lightweight environments
 try:
     import torch
 except ModuleNotFoundError:  # pragma: no cover - torch optional
-    torch = None  # type: ignore[assignment]
+    torch = None
 else:
     if not hasattr(torch, "Tensor"):
-        torch = None  # type: ignore[assignment]
+        torch = None
 
 try:  # pragma: no cover - fcntl unavailable on Windows
     import fcntl
 except ImportError:  # pragma: no cover - platform-specific fallback
-    fcntl = None  # type: ignore[assignment]
+    fcntl = None
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     if torch is not None:
-        Tensor = torch.Tensor
+        Tensor = torch.Tensor  # type: ignore
     else:
-        Tensor = Any  # type: ignore[misc]
+        Tensor = Any
 else:  # pragma: no cover - runtime alias
     if torch is not None:
-        Tensor = torch.Tensor
+        Tensor = torch.Tensor  # type: ignore
     else:
-        Tensor = Any  # type: ignore[assignment]
+        Tensor = Any
 
 T = TypeVar("T")
 

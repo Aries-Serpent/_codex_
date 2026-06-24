@@ -136,7 +136,7 @@ class ReasoningCorpus:
             else:
                 missing.append(path)
         manifest_rows = manifest_for_paths(path for path, _artifact in present) if present else []
-        manifest_index = {Path(row["path"]).resolve(): row for row in manifest_rows}  # type: ignore[arg-type]
+        manifest_index = {Path(row["path"]).resolve(): row for row in manifest_rows}
         mismatched: list[tuple[Path, str, str]] = []
         for path, artifact in present:
             row = manifest_index.get(path.resolve())
@@ -152,7 +152,7 @@ class ReasoningCorpus:
             present_paths=[path for path, _artifact in present],
             missing=missing,
             mismatched=mismatched,
-            manifest_rows=manifest_rows,  # type: ignore[arg-type]
+            manifest_rows=manifest_rows,
         )
 
     def selection_payload(self, root: str | Path | None = None) -> dict[str, object]:

@@ -118,7 +118,7 @@ class ArchiveDAL:
         statements = schema.statements_for(self.backend)
         with self._transaction() as execute:
             for statement in statements:
-                execute(statement)  # type: ignore[call-arg]
+                execute(statement)
 
     # ------------------------------------------------------------------
     # public API
@@ -159,7 +159,7 @@ class ArchiveDAL:
                     **artifact_payload,
                     "created_at": now,
                 }
-                execute(  # type: ignore[call-arg]
+                execute(
                     """
                     INSERT INTO artifact (
                         id, content_sha256, size_bytes, compression, mime_type,
@@ -182,7 +182,7 @@ class ArchiveDAL:
                     for field in ("size_bytes", "compression", "mime_type")
                 )
                 if needs_refresh or metadata_changed:
-                    execute(  # type: ignore[call-arg]
+                    execute(
                         """
                         UPDATE artifact
                         SET size_bytes = :size_bytes,
@@ -214,7 +214,7 @@ class ArchiveDAL:
                 "delete_after": delete_after_value,
                 "restored_at": None,
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO item (
                     id, repo, path, commit_sha, language, kind, reason, artifact_id,
@@ -237,7 +237,7 @@ class ArchiveDAL:
                 "context": json_dumps_sorted(context),
                 "created_at": now,
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO event (id, item_id, action, actor, context, created_at)
                 VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -247,13 +247,13 @@ class ArchiveDAL:
 
             for tag in tags or []:
                 params = {"item_id": item_id, "tag": tag}
-                existing = execute(  # type: ignore[call-arg]
+                existing = execute(
                     "SELECT 1 FROM tag WHERE item_id = :item_id AND tag = :tag",
                     params,
                     fetchone=True,
                 )
                 if existing is None:
-                    execute(  # type: ignore[call-arg]
+                    execute(
                         "INSERT INTO tag (item_id, tag) VALUES (:item_id, :tag)",
                         params,
                     )
@@ -285,7 +285,7 @@ class ArchiveDAL:
             if item is None:
                 raise LookupError(f"Unknown tombstone id: {tombstone_id}")
             now = utcnow()
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 UPDATE item SET restored_at = :restored_at WHERE id = :id
                 """,
@@ -299,7 +299,7 @@ class ArchiveDAL:
                 "context": json_dumps_sorted({}),
                 "created_at": now,
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO event (id, item_id, action, actor, context, created_at)
                 VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -322,7 +322,7 @@ class ArchiveDAL:
                 "context": json_dumps_sorted({"reason": reason}),
                 "created_at": utcnow(),
             }
-            execute(  # type: ignore[call-arg]
+            execute(
                 """
                 INSERT INTO event (id, item_id, action, actor, context, created_at)
                 VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -357,7 +357,7 @@ class ArchiveDAL:
             artifact_id = item["artifact_id"]
             blob_scrubbed = False
             if apply:
-                row = execute(  # type: ignore[call-arg]
+                row = execute(
                     """
                     SELECT COUNT(*) AS ref_count
                     FROM item
@@ -378,12 +378,12 @@ class ArchiveDAL:
                 if apply:
                     context_payload.update(
                         {
-                            "apply_requested": True,  # type: ignore[dict-item]
-                            "blob_scrubbed": blob_scrubbed,  # type: ignore[dict-item]
+                            "apply_requested": True,
+                            "blob_scrubbed": blob_scrubbed,
                         }
                     )
                     if reference_count > 1:
-                        context_payload["shared_references"] = max(reference_count - 1, 0)  # type: ignore[assignment]
+                        context_payload["shared_references"] = max(reference_count - 1, 0)
                 payload = {
                     "id": str(uuid.uuid4()),
                     "item_id": item["id"],
@@ -392,7 +392,7 @@ class ArchiveDAL:
                     "context": json_dumps_sorted(context_payload),
                     "created_at": now,
                 }
-                execute(  # type: ignore[call-arg]
+                execute(
                     """
                     INSERT INTO event (id, item_id, action, actor, context, created_at)
                     VALUES (:id, :item_id, :action, :actor, :context, :created_at)
@@ -400,7 +400,7 @@ class ArchiveDAL:
                     payload,
                 )
             if blob_scrubbed:
-                execute(  # type: ignore[call-arg]
+                execute(
                     """
                     UPDATE artifact
                     SET blob_bytes = NULL,
@@ -443,7 +443,7 @@ class ArchiveDAL:
         )
         sql = "\n".join(query_lines)
         with self._transaction() as execute:
-            rows = execute(sql, params, fetchall=True)  # type: ignore[call-arg]
+            rows = execute(sql, params, fetchall=True)
         result: list[dict[str, Any]] = []
         for row in rows or []:
             row_dict = dict(row)
@@ -457,7 +457,7 @@ class ArchiveDAL:
             item = self._get_item_by_tombstone(execute, tombstone_id)
             if item is None:
                 raise LookupError(f"Unknown tombstone id: {tombstone_id}")
-            events = execute(  # type: ignore[call-arg]
+            events = execute(
                 (
                     "SELECT action, actor, context, created_at "
                     "FROM event WHERE item_id = :item_id "

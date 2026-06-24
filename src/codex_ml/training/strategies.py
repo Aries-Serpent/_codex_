@@ -356,7 +356,7 @@ class ContinualReplayStrategy:
             if isinstance(phase, dict):
                 resolved.append(dict(phase))
             elif is_dataclass(phase):
-                resolved.append(asdict(phase))  # type: ignore[arg-type]
+                resolved.append(asdict(phase))
             else:
                 try:
                     resolved.append(dict(phase))
@@ -499,7 +499,7 @@ def resolve_strategy(name: str | None) -> BackendStrategy:
         name = "functional"
     normalised = str(name).lower().strip()
     try:
-        return STRATEGY_REGISTRY[normalised]  # type: ignore[return-value]
+        return STRATEGY_REGISTRY[normalised]
     except KeyError as err:
         raise ValueError(
             f"Unknown backend strategy: {name!r}. Choices={list(STRATEGY_REGISTRY)}"

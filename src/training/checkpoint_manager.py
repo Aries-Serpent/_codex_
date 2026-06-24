@@ -21,7 +21,7 @@ _warnings.warn(
     stacklevel=2,
 )
 try:
-    from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
+    from codex_ml.utils.checkpointing import (
         CheckpointManager,
         build_payload_bytes,
         dump_rng_state,
@@ -52,7 +52,7 @@ if "CheckpointManager" not in globals():
         try:  # torch may be absent in lightweight environments
             import torch as _torch
         except (ImportError, AttributeError):  # pragma: no cover - optional dependency
-            _torch = None  # type: ignore[assignment]
+            _torch = None
 
         def _python_state_payload(raw_state: Any) -> list[Any]:
             return [raw_state[0], list(raw_state[1]), raw_state[2]]
@@ -156,7 +156,7 @@ if "CheckpointManager" not in globals():
             return buffer.getvalue()
 
 
-class CheckpointManager:  # type: ignore[no-redef]
+class CheckpointManager:
     """Lightweight step-based checkpoint manager."""
 
     def __init__(

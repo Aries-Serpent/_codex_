@@ -30,7 +30,7 @@ from codex_ml.tracking.experiments import (
 from codex_ml.training import run_functional_training
 
 try:
-    from codex_ml import distributed as _distributed  # type: ignore[attr-defined]
+    from codex_ml import distributed as _distributed
 except (ImportError, AttributeError):  # pragma: no cover - safe fallback
 
     def init_distributed_if_needed(*_args, **_kwargs):
@@ -71,8 +71,8 @@ try:  # pragma: no cover - hydra optional at runtime
     from omegaconf import DictConfig, OmegaConf
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when hydra missing
     hydra = None
-    DictConfig = type("_DictConfig", (), {})  # type: ignore[misc, assignment]
-    OmegaConf = None  # type: ignore[assignment, misc]
+    DictConfig = type("_DictConfig", (), {})
+    OmegaConf = None
 
 
 register_configs()
@@ -103,7 +103,7 @@ def _to_mapping(cfg: Any) -> Mapping[str, Any]:
         return {"config": container}
 
     if is_dataclass(cfg):
-        return asdict(cfg)  # type: ignore[arg-type]
+        return asdict(cfg)
 
     if isinstance(cfg, Mapping):
         return dict(cfg)

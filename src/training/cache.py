@@ -43,7 +43,7 @@ class TokenCache:
         np.savez(shard_path, **data)
         rows = int(next(iter(data.values())).shape[0])
         shard_info = {"path": shard_path.name, "rows": rows}
-        self.manifest["shards"].append(shard_info)  # type: ignore[attr-defined]
+        self.manifest["shards"].append(shard_info)
         self._buffer.clear()
         self._buffer_rows = 0
         self._shard_idx += 1

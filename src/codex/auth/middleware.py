@@ -89,7 +89,7 @@ class APIKeyValidator:
         if secret_key:
             self._secret_key = secret_key
         else:
-            self._secret_key = os.environ.get("AUTH_SECRET_KEY")  # type: ignore[assignment]
+            self._secret_key = os.environ.get("AUTH_SECRET_KEY")
             if not self._secret_key:
                 # Allow development with warning
                 if os.environ.get("CODEX_ENV") != "production":

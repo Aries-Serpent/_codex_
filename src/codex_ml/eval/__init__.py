@@ -25,12 +25,12 @@ from .fallback import synthetic_alignment
 try:  # pragma: no cover - optional heavy dependencies
     from . import eval_runner
 except (ImportError, AttributeError):  # pragma: no cover - torch/datasets may be missing
-    eval_runner = None  # type: ignore[assignment]
+    eval_runner = None
 
 try:  # pragma: no cover - new structured runner
     from . import runner
 except (ImportError, AttributeError):  # pragma: no cover
-    runner = None  # type: ignore[assignment]
+    runner = None
 
 __all__ = ["metrics", "synthetic_alignment"]
 if eval_runner is not None:

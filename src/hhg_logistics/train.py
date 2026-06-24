@@ -85,7 +85,7 @@ try:  # pragma: no cover - optional dependency
     DataLoader = torch.utils.data.DataLoader
     Dataset = torch.utils.data.Dataset
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None
     AdamW = None
     DataLoader = None
     Dataset = object

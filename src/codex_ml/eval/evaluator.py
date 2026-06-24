@@ -78,7 +78,7 @@ def evaluate_model(model: Any, tokenizer: Any, texts: Iterable[str]) -> dict[str
     missing = _missing_dependencies(require_datasets=True)
     if missing:
         raise EvaluationDependencyError(missing)
-    ds = Dataset.from_dict({"text": list(texts)})  # type: ignore[union-attr]
+    ds = Dataset.from_dict({"text": list(texts)})
     column = list(ds["text"])
     toks = tokenizer(column, return_tensors="pt", padding=True)
     input_ids = toks["input_ids"]

@@ -25,7 +25,7 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 try:  # pragma: no cover - optional torch dependency in lightweight environments
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - allow checkpoint utilities without torch
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 
 def _torch_supports_weights_only() -> bool:
@@ -434,7 +434,7 @@ def save_checkpoint(
     if path is not None and out_dir is None:
         out_dir = path
 
-    out_dir = Path(out_dir)  # type: ignore[arg-type]
+    out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     state_dict = getattr(model, "state_dict", lambda: model)()
@@ -552,7 +552,7 @@ def load_checkpoint(
     if path_or_ckpt_dir is not None and ckpt_dir is None:
         ckpt_dir = path_or_ckpt_dir
 
-    ckpt_dir = Path(ckpt_dir)  # type: ignore[arg-type]
+    ckpt_dir = Path(ckpt_dir)
     try:
         _verify_checksums(ckpt_dir, strict=strict)
     except ValueError as e:

@@ -51,9 +51,9 @@ try:  # pragma: no cover - guard for environments without torch data utilities
     from torch.utils.data import TensorDataset as TorchTensorDataset
     from torch.utils.data import random_split as torch_random_split
 except (ImportError, AttributeError):  # pragma: no cover - provide graceful degradation
-    TorchDataLoader = cast(Any, None)  # type: ignore[misc]
-    TorchDataset = cast(Any, None)  # type: ignore[misc]
-    TorchTensorDataset = cast(Any, None)  # type: ignore[misc]
+    TorchDataLoader = cast(Any, None)
+    TorchDataset = cast(Any, None)
+    TorchTensorDataset = cast(Any, None)
     torch_random_split = cast(Any, None)
 
 BaseDataset: type[Any]
@@ -240,7 +240,7 @@ def _build_dataloaders_from_config(
             )
 
     def collate(batch: Iterable[tuple[str, int]]) -> tuple[Any, Any]:
-        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)  # type: ignore[return-value]
+        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)
 
     train_loader = TorchDataLoader(
         train_set,

@@ -32,8 +32,8 @@ if TYPE_CHECKING:  # pragma: no cover - import for typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel
     from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
 else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runtime
-    HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any  # type: ignore[assignment]
-    HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any  # type: ignore[assignment]
+    HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any
+    HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -60,9 +60,9 @@ if (
         transformers.PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - optional dependency missing
-    AutoModel = None  # type: ignore[assignment]
-    AutoModelForCausalLM = None  # type: ignore[assignment]
-    AutoTokenizer = None  # type: ignore[assignment]
+    AutoModel = None
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
     PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
     PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
 
@@ -76,7 +76,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - torch is optional at import time
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 
 _CAUSAL_LM_REGISTRY: dict[str, Callable[..., Any]] = {}
@@ -169,7 +169,7 @@ def load_tokenizer(
     *,
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
-) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
+) -> PreTrainedTokenizerBase:
     if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
         raise ImportError("transformers is required to load tokenizers")
     rev = _required_revision(repo_id, revision)
@@ -193,7 +193,7 @@ def load_model(
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
     peft_path: Optional[str | os.PathLike[str]] = None,
-) -> PreTrainedModel:  # type: ignore[valid-type]
+) -> PreTrainedModel:
     """Load a base transformer model and optionally attach a PEFT adapter."""
 
     if not TRANSFORMERS_AVAILABLE or AutoModel is None:
@@ -238,7 +238,7 @@ def load_causal_lm(
     dtype: Optional[str] = None,
     peft_cfg: Optional[dict[str, Any]] = None,
     peft_path: Optional[str | os.PathLike[str]] = None,
-) -> PreTrainedModel:  # type: ignore[valid-type]
+) -> PreTrainedModel:
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load causal language models")
     if isinstance(repo_id, str):

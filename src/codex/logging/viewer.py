@@ -225,7 +225,7 @@ def build_query(
     if not all([table, sid_col, ts_col, msg_col]):
         raise ValueError("Schema must define table, sid, ts, and msg columns")
     identifiers = [table, sid_col, ts_col, msg_col]
-    if not all(re.fullmatch(r"[A-Za-z0-9_]+", i) for i in identifiers):  # type: ignore[arg-type]
+    if not all(re.fullmatch(r"[A-Za-z0-9_]+", i) for i in identifiers):
         raise ValueError("Invalid characters in schema identifiers")
     where = [f"{sid_col} = ?"]
     args: list[Any] = []

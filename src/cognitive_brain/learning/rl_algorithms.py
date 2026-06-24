@@ -445,7 +445,7 @@ class DQN(RLAlgorithm):
             return np.random.choice(["action_0", "action_1", "action_2"])
         # Exploit
         q_values = self._get_q_values(state)
-        return max(q_values, key=q_values.get)  # type: ignore[arg-type]
+        return max(q_values, key=q_values.get)
 
     def update(self, state: Any, action: Any, reward: float, next_state: Any, done: bool):
         """

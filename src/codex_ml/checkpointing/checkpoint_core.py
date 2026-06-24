@@ -22,7 +22,7 @@ from typing import Any  # noqa: E402
 try:
     import torch
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 SCHEMA_VERSION = "2.0"  # Checkpoint schema version for compatibility tracking
 

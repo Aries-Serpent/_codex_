@@ -317,7 +317,7 @@ class DistributedCache:
         if self.config.backend in (CacheBackend.REDIS, CacheBackend.HYBRID):
             self._redis_backend = RedisCacheBackend(self.config)
         else:
-            self._redis_backend = None  # type: ignore[assignment]
+            self._redis_backend = None
 
         logger.info(f"DistributedCache initialized with backend: {self.config.backend.value}")
 
@@ -429,7 +429,7 @@ class DistributedCache:
             return self._redis_backend.contains(key)
 
         # Hybrid: check both
-        return self._memory_backend.contains(key) or (  # type: ignore[return-value]
+        return self._memory_backend.contains(key) or (
             self._redis_backend and self._redis_backend.contains(key)
         )
 

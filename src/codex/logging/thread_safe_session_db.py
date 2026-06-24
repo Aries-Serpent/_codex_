@@ -387,7 +387,7 @@ class ThreadSafeSessionDB:
             "connection_pool": self._connection_pool.metrics.to_dict(),
             "write_lock": self._metrics.to_dict(),
         }
-        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
+        save_metrics(metrics_dict, self.metrics_path)
 
     def cleanup(self) -> None:
         """Clean up connection pool."""

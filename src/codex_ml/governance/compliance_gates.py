@@ -103,7 +103,7 @@ class ComplianceGate:
             return self._validate_hipaa(model, data, deployment)
         if self.policy == "SOC2":
             return self._validate_soc2(model, data, deployment)
-        return ComplianceReport(policy=self.policy, violations=[], checks_passed=0, checks_total=0)  # type: ignore[call-arg]
+        return ComplianceReport(policy=self.policy, violations=[], checks_passed=0, checks_total=0)
 
     def _validate_gdpr(self, model, data, deployment) -> ComplianceReport:
         """Validate GDPR compliance."""

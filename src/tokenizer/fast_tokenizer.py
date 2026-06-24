@@ -31,7 +31,7 @@ except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
 try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer
 except (IOError, OSError):  # pragma: no cover - transformers missing is acceptable
-    AutoTokenizer = None  # type: ignore[assignment, misc]
+    AutoTokenizer = None
 
 
 class FastTokenizerWrapper:

@@ -177,7 +177,7 @@ def snapshot_config(config: Any, *, exclude_keys: Sequence[str] | None = None) -
                     raise
                 return omega_conf.to_container(value, resolve=False)
         if is_dataclass(value):
-            return asdict(value)  # type: ignore[arg-type]
+            return asdict(value)
         if isinstance(value, Mapping):
             return {k: _to_container(v) for k, v in value.items()}
         if isinstance(value, list | tuple | set):

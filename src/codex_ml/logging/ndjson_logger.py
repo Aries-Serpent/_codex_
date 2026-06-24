@@ -259,7 +259,7 @@ def timestamped_record(**data: Any) -> dict[str, Any]:
     ts = NDJSONLogger._now()
     payload.setdefault("timestamp", ts)
     payload.setdefault("ts", ts)
-    return payload  # type: ignore[return-value]
+    return payload
 
 
 __all__ = ["NDJSONLogger", "is_legacy_mode", "timestamped_record"]

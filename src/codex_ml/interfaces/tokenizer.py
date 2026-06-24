@@ -37,7 +37,7 @@ from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer as _AutoTokenizer
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
-    _AutoTokenizer = None  # type: ignore[assignment]
+    _AutoTokenizer = None
 
 
 def _resolve_auto_tokenizer():
@@ -419,7 +419,7 @@ class HFTokenizer(TokenizerAdapter):
                 if not tj.exists():
                     raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
                 self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))  # type: ignore
-                self._tk.add_special_tokens(  # type: ignore[attr-defined]
+                self._tk.add_special_tokens(
                     {
                         "pad_token": "[PAD]",  # nosec B105
                         "bos_token": "[BOS]",  # nosec B105
@@ -449,13 +449,13 @@ class HFTokenizer(TokenizerAdapter):
             self.padding = padding
             self.truncation = truncation
             self.max_length = max_length
-            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
             return
 
         self.padding = padding
         self.truncation = truncation
         self.max_length = max_length
-        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
+        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
 
     def _encode_call_kwargs(self, add_special_tokens: bool) -> dict[str, Any]:
         """Construct kwargs for tokenizer.encode / tokenizer.__call__."""
@@ -582,7 +582,7 @@ class HFTokenizer(TokenizerAdapter):
         """Return a Hugging Face-style encoding dict (compatibility alias)."""
         # Accept extra kwargs for compatibility; forward to batch_encode via return_dict
         _ = kwargs  # intentionally accepted but ignored
-        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)  # type: ignore[return-value]
+        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode a list of token ids back to a string."""

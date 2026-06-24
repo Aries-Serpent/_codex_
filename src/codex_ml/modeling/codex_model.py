@@ -189,14 +189,14 @@ class CodexModel:
         no_grad = getattr(_torch, "no_grad", None)
         if callable(no_grad):
             with no_grad():
-                outputs = self.model.generate(  # type: ignore[union-attr]
+                outputs = self.model.generate(
                     **inputs,
                     max_new_tokens=max_tokens,
                     temperature=temperature,
                     **kwargs,
                 )
         else:  # pragma: no cover - safety fallback for minimal torch builds
-            outputs = self.model.generate(  # type: ignore[union-attr]
+            outputs = self.model.generate(
                 **inputs,
                 max_new_tokens=max_tokens,
                 temperature=temperature,

@@ -269,8 +269,8 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
     missing_optional: list[str] = []
 
     if has_defaults:
-        has_self = "_self_" in defaults  # type: ignore[operator]
-        self_pos = _self_position(defaults)  # type: ignore[arg-type]
+        has_self = "_self_" in defaults
+        self_pos = _self_position(defaults)
         if not has_self:
             issues.append(
                 DefaultsIssue(
@@ -289,7 +289,7 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
                 )
             )
 
-        for entry in defaults:  # type: ignore[union-attr]
+        for entry in defaults:
             ref = _parse_default_entry(entry)
             if not ref:
                 continue

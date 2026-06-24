@@ -28,11 +28,11 @@ from typing import Any  # noqa: E402
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    from datasets import (  # type: ignore[attr-defined]  # type: ignore[attr-defined]
+    from datasets import (
         DatasetDict,
         load_from_disk,
     )
-    from datasets import load_dataset as _hf_load_dataset  # type: ignore[attr-defined]
+    from datasets import load_dataset as _hf_load_dataset
 
     def hf_load_dataset(*args: Any, **kwargs: Any):
         global _LAST_HF_REVISION
@@ -96,7 +96,7 @@ class DatasetBundle(Sequence[Example]):
     def __len__(self) -> int:  # pragma: no cover - trivially exercised elsewhere
         return len(self.examples)
 
-    def __getitem__(self, index: int) -> Example:  # type: ignore[override]
+    def __getitem__(self, index: int) -> Example:
         return self.examples[index]
 
 

@@ -110,7 +110,7 @@ def _random_seed_with_snapshot(a: Optional[Any] = None, version: int = 2) -> Non
 
 
 if getattr(random.seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
-    _random_seed_with_snapshot.__codex_wrapped__ = True  # type: ignore[attr-defined]
+    _random_seed_with_snapshot.__codex_wrapped__ = True
     random.seed = _random_seed_with_snapshot
 
 if TORCH_AVAILABLE:
@@ -139,8 +139,8 @@ if TORCH_AVAILABLE:
         return result
 
     if getattr(torch.manual_seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
-        _torch_manual_seed_with_snapshot.__codex_wrapped__ = True  # type: ignore[attr-defined]
-        torch.manual_seed = _torch_manual_seed_with_snapshot  # type: ignore[assignment]
+        _torch_manual_seed_with_snapshot.__codex_wrapped__ = True
+        torch.manual_seed = _torch_manual_seed_with_snapshot
 
 
 @runtime_checkable
@@ -275,7 +275,7 @@ def _resolve_format(value: Optional[str]) -> SaveFormat:
     fmt = (value or "auto").lower()
     if fmt not in {"auto", "torch", "pickle"}:
         raise ValueError(f"unsupported checkpoint format: {value}")
-    return fmt  # type: ignore[return-value]
+    return fmt
 
 
 def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:

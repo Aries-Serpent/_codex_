@@ -81,8 +81,8 @@ def health_log_path(component: str) -> Path:
             return destination
 
     if last_error:
-        base, exc = last_error  # type: ignore[misc]
-        logger.debug("Unable to prepare health log directory %s: %s", base, exc)  # type: ignore[misc]
+        base, exc = last_error
+        logger.debug("Unable to prepare health log directory %s: %s", base, exc)
     return destination if destination is not None else DEFAULT_HEALTH_DIR / f"{safe_name}.ndjson"
 
 

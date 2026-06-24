@@ -17,8 +17,8 @@ from .session_logger import SessionLogger
 try:
     from .run_logger import METRICS_SCHEMA_URI, PARAMS_SCHEMA_URI, RunLogger
 except (IOError, OSError):  # pragma: no cover - optional mlflow dependency
-    PARAMS_SCHEMA_URI: str = ""  # type: ignore[no-redef]
-    METRICS_SCHEMA_URI: str = ""  # type: ignore[no-redef]
+    PARAMS_SCHEMA_URI: str = ""
+    METRICS_SCHEMA_URI: str = ""
 
 __all__ = [
     "METRICS_SCHEMA_URI",

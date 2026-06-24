@@ -201,7 +201,7 @@ class DocumentPreprocessor:
 
     def _normalize_unicode(self, text: str, result: PreprocessingResult) -> str:
         """Normalize Unicode characters."""
-        normalized = unicodedata.normalize(self.config.unicode_form, text)  # type: ignore[arg-type]
+        normalized = unicodedata.normalize(self.config.unicode_form, text)
         if normalized != text:
             result.changes.append(f"unicode_normalized_{self.config.unicode_form}")
         return normalized

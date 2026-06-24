@@ -201,7 +201,7 @@ def _resolve_dataloaders(data_cfg: Mapping[str, Any]) -> tuple[Any, Optional[Any
             raise ValueError("data configuration must provide 'target' or 'name'")
         loaders = build_registered_dataset(str(name), **params)
     if isinstance(loaders, tuple) and len(loaders) == 2:
-        return loaders  # type: ignore[return-value]
+        return loaders
     return loaders, None
 
 

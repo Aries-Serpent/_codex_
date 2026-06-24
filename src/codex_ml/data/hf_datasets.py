@@ -29,7 +29,7 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs  # noqa: E402
 from .registry import register_dataset  # noqa: E402
 
 try:  # optional dependency
-    from datasets import load_dataset as _load_dataset  # type: ignore[attr-defined]
+    from datasets import load_dataset as _load_dataset
 
     _HAS_DATASETS = True
 except (IOError, OSError):  # pragma: no cover - optional

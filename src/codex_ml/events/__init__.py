@@ -41,14 +41,14 @@ try:
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    AzureEventPublisher = None  # type: ignore[assignment,misc]
+    AzureEventPublisher = None
 
 try:
     from .aws_events import AWSEventPublisher
 except ImportError as e:
     logger.debug(f"ImportError: {e}")
     logger.warning(f"ImportError: {e}", exc_info=True)
-    AWSEventPublisher = None  # type: ignore[assignment,misc]
+    AWSEventPublisher = None
 
 
 def get_optional_event_publishers() -> dict[str, type[EventPublisher] | None]:

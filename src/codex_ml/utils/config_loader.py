@@ -58,7 +58,7 @@ except (ImportError, AttributeError):  # pragma: no cover - import guard
         compose = None
         initialize_config_dir = None
 
-        class MissingConfigException(RuntimeError):  # type: ignore[no-redef]
+        class MissingConfigException(RuntimeError):
             """Fallback error used when Hydra is unavailable."""
 
             def __init__(self, *, missing_cfg_file: str, message: str) -> None:
@@ -347,6 +347,6 @@ def load_config(*, config_path: str) -> DictConfig:
     training_block = cfg.get("training")
     if isinstance(training_block, Mapping) and "lr" not in training_block:
         if "learning_rate" in training_block:
-            training_block["lr"] = training_block["learning_rate"]  # type: ignore[index]
+            training_block["lr"] = training_block["learning_rate"]
 
     return cfg

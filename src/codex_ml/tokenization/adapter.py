@@ -142,8 +142,8 @@ class HFTokenizerAdapter(TokenizerAdapter):
         )
         special = self.special_tokens or {}
         if special:
-            self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})  # type: ignore[arg-type]
-        if self.tokenizer.pad_token_id is None:  # type: ignore[attr-defined]
+            self.tokenizer.add_special_tokens({"additional_special_tokens": list(special.values())})
+        if self.tokenizer.pad_token_id is None:
             self.tokenizer.add_special_tokens({"pad_token": "<pad>"})  # type: ignore[arg-type]  # nosec B105
 
     def encode(self, text: str, **kwargs: Any) -> list[int]:
@@ -153,7 +153,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         return self.tokenizer.decode(tokens, **kwargs)
 
     def batch_encode(self, texts: Iterable[str], **kwargs: Any) -> list[list[int]]:
-        return self.tokenizer.batch_encode_plus(list(texts), **kwargs)["input_ids"]  # type: ignore[attr-defined]
+        return self.tokenizer.batch_encode_plus(list(texts), **kwargs)["input_ids"]
 
     def save_pretrained(self, output_dir: str) -> None:
         self.tokenizer.save_pretrained(output_dir)
@@ -161,7 +161,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def add_special_tokens(
         self, tokens: Sequence[str]
     ) -> dict[str, int]:  # pragma: no cover - thin wrapper
-        added = self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})  # type: ignore[arg-type]
+        added = self.tokenizer.add_special_tokens({"additional_special_tokens": list(tokens)})
         mapping: dict[str, int] = {}
         if hasattr(self.tokenizer, "get_vocab"):
             vocab = self.tokenizer.get_vocab()
@@ -169,7 +169,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
                 if tok in vocab:
                     mapping[str(tok)] = int(vocab[tok])
         if not mapping and added:
-            start = int(self.tokenizer.vocab_size) - added  # type: ignore[operator]
+            start = int(self.tokenizer.vocab_size) - added
             mapping = {str(tok): start + idx for idx, tok in enumerate(tokens)}
         return mapping
 
@@ -250,7 +250,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     def __init__(
         self,
-        model_or_processor: str | Path | spm.SentencePieceProcessor,  # type: ignore[name-defined]
+        model_or_processor: str | Path | spm.SentencePieceProcessor,
         *,
         special_tokens: Optional[Sequence[str] | Mapping[str, int]] = None,
     ) -> None:
@@ -266,7 +266,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         self.special_tokens: list[str] = []
         self.special_tokens_map: dict[str, int] = {}
         self._adapter: Optional[SentencePieceAdapter] = None
-        self._processor: spm.SentencePieceProcessor  # type: ignore[name-defined]
+        self._processor: spm.SentencePieceProcessor
         self.model_path: Optional[Path] = None
         self._special_tokens_path: Optional[Path] = None
 
@@ -296,7 +296,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
             self._special_tokens_path = getattr(
                 self._adapter, "special_tokens_path", special_tokens_path
             )
-        elif isinstance(model_or_processor, spm.SentencePieceProcessor):  # type: ignore[union-attr]
+        elif isinstance(model_or_processor, spm.SentencePieceProcessor):
             self._init_from_processor(model_or_processor, tokens_to_add, provided_map)
         else:  # pragma: no cover - defensive
             raise TypeError(
@@ -374,7 +374,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
                 if token not in existing_map and token not in legacy_tokens:
                     legacy_tokens.append(token)
 
-        adapter.special_tokens_path = chosen_path  # type: ignore[has-type]
+        adapter.special_tokens_path = chosen_path
         self._special_tokens_path = chosen_path
         return existing_map, legacy_tokens, chosen_path
 
@@ -413,7 +413,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
 
     def _init_from_processor(
         self,
-        processor: spm.SentencePieceProcessor,  # type: ignore[name-defined]
+        processor: spm.SentencePieceProcessor,
         tokens_to_add: Sequence[str],
         provided_map: Optional[dict[str, int]],
     ) -> None:
@@ -443,7 +443,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
         return [token for token, _ in sorted(mapping.items(), key=lambda item: item[1])]
 
     @staticmethod
-    def _processor_vocab_size(processor: spm.SentencePieceProcessor) -> int:  # type: ignore[name-defined]
+    def _processor_vocab_size(processor: spm.SentencePieceProcessor) -> int:
         for attr in ("get_piece_size", "piece_size", "vocab_size"):
             getter = getattr(processor, attr, None)
             if callable(getter):
@@ -473,7 +473,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
                 return legacy
         return None
 
-    def encode(  # type: ignore[override]
+    def encode(
         self,
         text: str,
         *,
@@ -516,7 +516,7 @@ class SentencePieceTokenizer(TokenizerAdapter):
             return decode_fn(list(tokens))
         return self._processor.DecodeIds(list(tokens))
 
-    def batch_encode(  # type: ignore[override]
+    def batch_encode(
         self,
         texts: Iterable[str],
         *,

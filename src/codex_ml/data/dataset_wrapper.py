@@ -21,7 +21,7 @@ import random  # noqa: E402
 from collections.abc import Iterable  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    from datasets import Dataset  # type: ignore[attr-defined]
+    from datasets import Dataset
 except (ImportError, AttributeError):  # pragma: no cover - datasets missing
     Dataset = None
 

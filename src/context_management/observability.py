@@ -288,7 +288,7 @@ class ContextObserver:
             Created Alert object
         """
         if not self.enable_alerts:
-            return None  # type: ignore[return-value]
+            return None
 
         alert = Alert(
             alert_id=str(uuid.uuid4())[:8],

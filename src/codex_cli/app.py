@@ -44,7 +44,7 @@ else:  # pragma: no cover - click fallback
 
     echo = _click.echo
 
-    class Exit(SystemExit):  # type: ignore[no-redef]
+    class Exit(SystemExit):
         def __init__(self, code: int = 0) -> None:
             super().__init__(code)
 
@@ -340,7 +340,7 @@ else:  # pragma: no cover - click fallback
         default=None,
         help="Local mlruns dir",
     )
-    def track_smoke(dir_: Optional[Path]) -> None:  # type: ignore[misc]
+    def track_smoke(dir_: Optional[Path]) -> None:
         _track_smoke_impl(dir_)
 
     @app.command("split-smoke")
@@ -351,7 +351,7 @@ else:  # pragma: no cover - click fallback
         show_default=True,
         help="Seed for deterministic split",
     )
-    def split_smoke(seed: int) -> None:  # type: ignore[misc]
+    def split_smoke(seed: int) -> None:
         _split_smoke_impl(seed)
 
     @app.command("checkpoint-smoke")
@@ -363,16 +363,16 @@ else:  # pragma: no cover - click fallback
         show_default=True,
         help="Checkpoint directory",
     )
-    def checkpoint_smoke(out_dir: Path) -> None:  # type: ignore[misc]
+    def checkpoint_smoke(out_dir: Path) -> None:
         _checkpoint_smoke_impl(out_dir)
 
     # Modern sub-apps pattern: define group separately, then register via add_command.
     # This mirrors the Typer branch's app.add_typer(reasoning_templates, ...) pattern.
-    reasoning_templates = _click.Group(  # type: ignore[assignment]
+    reasoning_templates = _click.Group(
         name="reasoning-templates",
         help="Surface reasoning training presets and curricula metadata.",
     )
-    app.add_command(reasoning_templates, name="reasoning-templates")  # type: ignore[attr-defined]
+    app.add_command(reasoning_templates, name="reasoning-templates")
 
     @reasoning_templates.command("list")
     def list_reasoning_templates() -> None:
@@ -447,7 +447,7 @@ else:  # pragma: no cover - click fallback
         multiple=True,
         help="Only include specified categories (can be repeated).",
     )
-    def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:  # type: ignore[misc]
+    def repo_map(reasoning: bool, includes: tuple[str, ...]) -> None:
         from codex_ml.cli.repo_map import render_repo_map
 
         echo(render_repo_map(reasoning=reasoning, include=includes))

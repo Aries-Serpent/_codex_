@@ -192,7 +192,7 @@ class BlueGreenDeployment:
         if not self.rollout_active:
             return {"status": "idle", "progress": 0}
 
-        elapsed = time.time() - self.rollout_start_time  # type: ignore[operator]
+        elapsed = time.time() - self.rollout_start_time
         progress = min(elapsed / self.config.rollout_duration_s, 1.0)
 
         # Update traffic weights

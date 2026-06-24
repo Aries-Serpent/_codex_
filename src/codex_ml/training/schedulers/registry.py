@@ -28,7 +28,7 @@ try:
     import torch
 
     # Verify torch is functional
-    _ = torch.Tensor
+    _ = torch.Tensor  # type: ignore
     TORCH_AVAILABLE = True
 except (ImportError, AttributeError) as e:
     logger.debug(f"Failed to import or verify torch: {e}")

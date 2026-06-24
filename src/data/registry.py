@@ -28,7 +28,7 @@ try:  # pragma: no cover - torch is optional
     TensorDataset = torch.utils.data.TensorDataset
     random_split = torch.utils.data.random_split
 except (ImportError, AttributeError):  # pragma: no cover - fallback stubs when torch is absent
-    torch = None  # type: ignore[assignment]
+    torch = None
     DataLoader = None
     TensorDataset = None
     random_split = None

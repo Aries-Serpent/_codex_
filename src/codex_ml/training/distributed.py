@@ -172,7 +172,7 @@ class DistributedManager:
             self._initialized = False
             logger.info("Distributed training cleaned up")
 
-    def wrap_model(self, model: torch.nn.Module) -> torch.nn.Module | DDP:  # type: ignore[valid-type]
+    def wrap_model(self, model: torch.nn.Module) -> torch.nn.Module | DDP:
         """Wrap model for distributed training.
 
         Args:
@@ -233,7 +233,7 @@ class DistributedManager:
     def all_reduce(
         self,
         tensor: torch.Tensor,
-        op: dist.ReduceOp = dist.ReduceOp.SUM,  # type: ignore[name-defined]
+        op: dist.ReduceOp = dist.ReduceOp.SUM,
     ) -> torch.Tensor:
         """All-reduce tensor across processes.
 

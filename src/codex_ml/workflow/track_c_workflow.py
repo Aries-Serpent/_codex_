@@ -213,7 +213,7 @@ def _error_capture_phase(ctx: WorkflowContext, plan: CapabilityPlan) -> None:
     ctx.notes.append("errors-reviewed")
     ctx.register_rollback(
         "error_capture",
-        lambda context: context.notes.pop() if context.notes else None,  # type: ignore[arg-type]
+        lambda context: context.notes.pop() if context.notes else None,
     )
 
 

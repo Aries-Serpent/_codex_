@@ -25,10 +25,10 @@ try:
     import torch
     import torch.nn.functional as F
 
-    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
+    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
 except (ImportError, AttributeError):  # keep imports resilient
-    torch = None  # type: ignore[assignment]
-    F = None  # type: ignore[assignment]
+    torch = None
+    F = None
     clip_grad_norm_ = None
 
 from codex_ml.models import MiniLM, MiniLMConfig  # noqa: E402
@@ -79,7 +79,7 @@ except ImportError as e:
     from typing import Any, Optional
 
     @dataclass
-    class TrainCfg:  # type: ignore[no-redef]
+    class TrainCfg:
         """Stub for TrainCfg when training module is not available."""
 
         epochs: int = 1
@@ -679,7 +679,7 @@ def _run_minilm_training(
         )
 
         # Compute accuracy and perplexity with robust fallbacks across metric APIs
-        preds = logits.argmax(dim=-1).reshape(-1).tolist()  # type: ignore[union-attr]
+        preds = logits.argmax(dim=-1).reshape(-1).tolist()
         tgt = targets.reshape(-1).tolist()
 
         # token_accuracy: prefer (preds, tgt), fall back to (logits, targets)
@@ -697,7 +697,7 @@ def _run_minilm_training(
         try:
             ppl = float(
                 perplexity(
-                    logits.reshape(-1, cfg.vocab_size).detach().cpu().tolist(),  # type: ignore[union-attr]
+                    logits.reshape(-1, cfg.vocab_size).detach().cpu().tolist(),
                     tgt,
                     from_logits=True,
                 )

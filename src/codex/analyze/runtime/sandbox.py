@@ -250,7 +250,7 @@ class SandboxManager:
 
             return ExecutionResult(
                 exit_code=-1,
-                stdout=self._truncate_output(e.stdout or "") if e.stdout else "",  # type: ignore[arg-type]
+                stdout=self._truncate_output(e.stdout or "") if e.stdout else "",
                 stderr=f"Execution timed out after {self.config.timeout_seconds}s",
                 duration_ms=duration_ms,
                 timed_out=True,

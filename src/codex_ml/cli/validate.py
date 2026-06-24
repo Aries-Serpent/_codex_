@@ -30,7 +30,7 @@ from typing import Optional
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
 except ModuleNotFoundError:  # pragma: no cover - pydantic missing
-    ValidationError = None  # type: ignore[assignment]
+    ValidationError = None
 
 try:
     from codex_ml.config_schema import TrainConfig, validate_config_file
@@ -52,10 +52,10 @@ _ = (ArgparseJSONParser, run_cmd)
 try:  # Optional dependency: prefer Typer when available
     import typer
 except ModuleNotFoundError:  # pragma: no cover - Typer not installed
-    typer = None  # type: ignore[assignment]
+    typer = None
 else:  # pragma: no cover - namespace stub without Typer attributes
     if not hasattr(typer, "Typer"):
-        typer = None  # type: ignore[assignment]
+        typer = None
 
 
 def _format_validation_error(exc: ValidationError | None) -> str:
@@ -106,17 +106,17 @@ def _fallback_validate_config(config_path: Path) -> tuple[str, int]:
     if not isinstance(data, dict):
         raise ValueError("Configuration must be a mapping of keys to values")
     training = data.get("training") if isinstance(data.get("training"), dict) else data
-    lr = training.get("learning_rate") or training.get("lr")  # type: ignore[union-attr]
+    lr = training.get("learning_rate") or training.get("lr")
     if lr is None:
         raise ValueError("learning_rate is required")
     if float(lr) <= 0:
         raise ValueError("learning_rate must be positive")
-    epochs = training.get("epochs")  # type: ignore[union-attr]
+    epochs = training.get("epochs")
     if epochs is None:
         raise ValueError("epochs is required")
     if int(epochs) <= 0:
         raise ValueError("epochs must be positive")
-    model_name = training.get("model") or training.get("model_name") or data.get("model_name")  # type: ignore[union-attr]
+    model_name = training.get("model") or training.get("model_name") or data.get("model_name")
     model_name = str(model_name or "unknown")
     return model_name, int(epochs)
 
@@ -192,7 +192,7 @@ def main(
         exit_code = 0
         if typer is not None:
             try:
-                app.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)  # type: ignore[attr-defined]
+                app.main(prog_name=sys.argv[0], args=arg_list, standalone_mode=False)
             except typer.Exit as exc:
                 exit_code = exc.exit_code
         else:

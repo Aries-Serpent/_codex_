@@ -224,7 +224,7 @@ class DuplicationDetector:
 
                         block = DuplicateBlock(
                             hash=block_hash,
-                            lines=(occurrences[0]["start"], occurrences[0]["end"]),  # type: ignore[arg-type]
+                            lines=(occurrences[0]["start"], occurrences[0]["end"]),
                             occurrences=occurrences,
                             severity=self._determine_severity(len(occurrences)),
                             clone_type="Type-1",  # pylint finds exact matches

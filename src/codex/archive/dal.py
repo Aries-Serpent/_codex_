@@ -932,7 +932,7 @@ class MariaDbDAL(BaseDAL):
         for key, value in parse_qsl(parsed.query, keep_blank_values=True):
             if key == "port":
                 with contextlib.suppress(ValueError):
-                    value = int(value)  # type: ignore[assignment]
+                    value = int(value)
             config[key] = value
 
         config.setdefault("host", "localhost")

@@ -139,10 +139,10 @@ def create_scheduler(
 
         # Add scheduler-specific arguments
         if scheduler_type == "cosine_with_restarts":
-            scheduler_kwargs["num_cycles"] = num_cycles  # type: ignore[assignment]
+            scheduler_kwargs["num_cycles"] = num_cycles
         elif scheduler_type == "polynomial":
-            scheduler_kwargs["lr_end"] = lr_end  # type: ignore[assignment]
-            scheduler_kwargs["power"] = power  # type: ignore[assignment]
+            scheduler_kwargs["lr_end"] = lr_end
+            scheduler_kwargs["power"] = power
 
         # Merge with any additional kwargs
         scheduler_kwargs.update(kwargs)

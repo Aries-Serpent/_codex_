@@ -155,7 +155,7 @@ def prune_checkpoints(
     pruned: list[int] = []
     kept: list[int] = []
     epoch_to_path = {
-        int(EPOCH_DIR_RE.match(p.name).group(1)): p  # type: ignore[union-attr]
+        int(EPOCH_DIR_RE.match(p.name).group(1)): p
         for p in epoch_dirs
         if EPOCH_DIR_RE.match(p.name)
     }

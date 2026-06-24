@@ -35,7 +35,7 @@ def html_to_markdown(s: str) -> str:
     for n in range(1, 7):
         t = re.sub(
             rf"<h{n}[^>]*>(.*?)</h{n}>",
-            lambda m, level=n: "\n" + "#" * level + " " + strip_tags(m.group(1)) + "\n",  # type: ignore[misc]
+            lambda m, level=n: "\n" + "#" * level + " " + strip_tags(m.group(1)) + "\n",
             t,
             flags=re.I | re.S,
         )

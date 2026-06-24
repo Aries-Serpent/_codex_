@@ -20,7 +20,7 @@ except (IOError, OSError):  # pragma: no cover
 try:  # pragma: no cover - optional dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 from codex_ml.utils.checkpoint_core import capture_rng_state as _capture_core
 from codex_ml.utils.checkpoint_core import restore_rng_state as _restore_core

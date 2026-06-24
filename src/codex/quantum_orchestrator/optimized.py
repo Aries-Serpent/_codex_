@@ -41,7 +41,7 @@ class VectorizedEvolution:
     def __init__(self, constants: PhysicsConstants):
         self.constants = constants
         self.hbar = constants.hbar
-        self.c = constants.c  # type: ignore[attr-defined]
+        self.c = constants.c
 
         # Pre-compute Dirac matrices
         self.dirac = DiracMatrices()

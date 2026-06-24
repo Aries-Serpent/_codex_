@@ -45,9 +45,9 @@ def benchmark_e2e_pipeline(
             )
 
             if result.success:
-                result.metadata["corpus_size"] = corpus_size  # type: ignore[index]
-                result.metadata["query_count"] = query_count  # type: ignore[index]
-                result.metadata["total_operations"] = corpus_size + query_count  # type: ignore[index]
+                result.metadata["corpus_size"] = corpus_size
+                result.metadata["query_count"] = query_count
+                result.metadata["total_operations"] = corpus_size + query_count
 
     return {
         "results": [r.to_dict() for r in runner.results],
@@ -162,8 +162,8 @@ def benchmark_multi_query_types(index_size: int = 1000, runs: int = 5) -> dict[s
             )
 
             if result.success:
-                result.metadata["query_type"] = query_type  # type: ignore[index]
-                result.metadata["query_length"] = len(query.split())  # type: ignore[index]
+                result.metadata["query_type"] = query_type
+                result.metadata["query_length"] = len(query.split())
 
     return {
         "results": [r.to_dict() for r in runner.results],

@@ -24,31 +24,31 @@ try:
         WhitespaceTokenizer,
     )
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
-    HFTokenizer = None  # type: ignore[assignment, misc]
+    HFTokenizer = None
     HFTokenizerAdapter = None
-    TokenizerAdapter = None  # type: ignore[assignment, misc]
-    WhitespaceTokenizer = None  # type: ignore[assignment, misc]
+    TokenizerAdapter = None
+    WhitespaceTokenizer = None
 
 try:
     from .reward_model import HeuristicRewardModel, RewardModel
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
-    RewardModel = None  # type: ignore[assignment, misc]
-    HeuristicRewardModel = None  # type: ignore[assignment, misc]
+    RewardModel = None
+    HeuristicRewardModel = None
 
 try:
     from .rl import BanditRLAgent, RLAgent
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
-    RLAgent = None  # type: ignore[assignment, misc]
-    BanditRLAgent = None  # type: ignore[assignment, misc]
+    RLAgent = None
+    BanditRLAgent = None
 
 from .registry import apply_config, get, get_component, load_component, register
 
 try:
     from .peft_hooks import build_peft_config, enable_peft, load_adapter_for_inference
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
-    build_peft_config = None  # type: ignore[assignment]
-    enable_peft = None  # type: ignore[assignment]
-    load_adapter_for_inference = None  # type: ignore[assignment]
+    build_peft_config = None
+    enable_peft = None
+    load_adapter_for_inference = None
 
 __all__ = [
     "BanditRLAgent",

@@ -91,7 +91,7 @@ def _bootstrap_examples() -> None:
         from examples.plugins.hello_plugin import HelloPlugin
     except (ImportError, AttributeError):  # pragma: no cover - optional example absent
 
-        class HelloPlugin(BasePlugin):  # type: ignore[no-redef]
+        class HelloPlugin(BasePlugin):
             def version(self) -> str:
                 return "0.0.0"
 
@@ -105,7 +105,7 @@ def _bootstrap_examples() -> None:
         )
     except (ImportError, AttributeError):  # pragma: no cover - optional example absent
 
-        class TokenAccuracyPlugin(BasePlugin):  # type: ignore[no-redef]
+        class TokenAccuracyPlugin(BasePlugin):
             def version(self) -> str:
                 return "0.0.0"
 

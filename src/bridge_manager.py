@@ -195,9 +195,9 @@ class BridgeLock:
         while time.monotonic() < deadline:
             try:
                 self.lock_fd = os.open(str(self.lock_path), os.O_RDWR | os.O_CREAT, 0o600)
-                _msvcrt.locking(  # type: ignore[attr-defined]
+                _msvcrt.locking(
                     self.lock_fd,
-                    _msvcrt.LK_NBLCK,  # type: ignore[attr-defined]
+                    _msvcrt.LK_NBLCK,
                     1,
                 )  # lock 1 byte at offset 0 — sufficient for a mutex/sentinel lock file
                 logger.debug(f"Lock acquired (msvcrt): {self.lock_path}")
@@ -217,7 +217,7 @@ class BridgeLock:
         if self.lock_fd is not None:
             try:
                 if _HAS_MSVCRT and not _HAS_FCNTL:
-                    _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
+                    _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)
                     os.close(self.lock_fd)
                     logger.debug(f"Lock released (msvcrt): {self.lock_path}")
                 else:
@@ -448,7 +448,7 @@ class BridgeManager:
             ("server_key", self.tls_server_key),
             ("ca_cert", self.tls_ca_cert),
         ]:
-            if not Path(path_value).exists():  # type: ignore[arg-type]
+            if not Path(path_value).exists():
                 raise FileNotFoundError(f"TLS {path_name} not found: {path_value}")
 
         logger.info("TLS configuration validated")
@@ -528,7 +528,7 @@ class BridgeManager:
 
         # Compare tokens directly using constant-time comparison to prevent timing attacks
         # Note: secrets.compare_digest requires same-length inputs for security
-        if not secrets.compare_digest(self.auth_token, message.auth_token):  # type: ignore[type-var]
+        if not secrets.compare_digest(self.auth_token, message.auth_token):
             self._audit_log(
                 "AUTH_FAILURE",
                 {
@@ -677,7 +677,7 @@ class BridgeManager:
             logger.warning("Multi-client not available (Protocol v2 not enabled)")
             return False
 
-        result = self._multi_client_bridge.register_client(client_id, socket_path, priority)  # type: ignore[union-attr]
+        result = self._multi_client_bridge.register_client(client_id, socket_path, priority)
         if result:
             self._audit_log(
                 "CLIENT_REGISTERED",

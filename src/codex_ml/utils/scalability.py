@@ -147,7 +147,7 @@ class RateLimiter:
         with self._lock:
             now = time.time()
             elapsed = now - self._last_update
-            self._tokens = min(self.burst, self._tokens + elapsed * self.rate)  # type: ignore[assignment]
+            self._tokens = min(self.burst, self._tokens + elapsed * self.rate)
             self._last_update = now
 
             if self._tokens >= tokens:
@@ -205,7 +205,7 @@ class CircuitBreaker:
         """Get current circuit state."""
         with self._lock:
             if self._state == "open":
-                if time.time() - self._last_failure_time > self.recovery_timeout:  # type: ignore[operator]
+                if time.time() - self._last_failure_time > self.recovery_timeout:
                     self._state = "half-open"
                     self._successes = 0
             return self._state
@@ -312,7 +312,7 @@ class LoadBalancer:
 
         cumulative = 0
         for endpoint in endpoints:
-            cumulative += endpoint.weight  # type: ignore[assignment]
+            cumulative += endpoint.weight
             if r <= cumulative:
                 return endpoint
         return endpoints[-1]
@@ -357,12 +357,12 @@ class ResourcePool:
                 if self._pool:
                     resource = self._pool.pop()
                     self._in_use += 1
-                    return resource  # type: ignore[return-value]
+                    return resource
 
                 if self._in_use < self.max_size:
                     resource = self.factory()
                     self._in_use += 1
-                    return resource  # type: ignore[return-value]
+                    return resource
 
                 if timeout:
                     remaining = timeout - (time.time() - start)
@@ -375,7 +375,7 @@ class ResourcePool:
     def release(self, resource: T) -> None:
         """Return a resource to the pool."""
         with self._condition:
-            self._pool.append(resource)  # type: ignore[arg-type]
+            self._pool.append(resource)
             self._in_use -= 1
             self._condition.notify()
 

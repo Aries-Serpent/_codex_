@@ -46,7 +46,7 @@ from codex_ml.training.engine import TrainingEngine  # noqa: E402
 try:
     import torch
 except ImportError:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 
 @runtime_checkable
@@ -258,7 +258,7 @@ def evaluate_epoch(
                         lg.log(record)
                     except (ValueError, TypeError, RuntimeError):  # pragma: no cover (rare)
                         # Gracefully continue; avoid breaking evaluation on logger failure
-                        logger.debug("Suppressed exception in handler", exc_info=True)  # type: ignore[attr-defined]
+                        logger.debug("Suppressed exception in handler", exc_info=True)
     avg_loss = running_loss / max(total, 1)
 
     metric_results: dict[str, float] = {}
@@ -304,7 +304,7 @@ def evaluate_epoch(
                 lg.log(epoch_record)
                 lg.close()
             except (ValueError, TypeError, RuntimeError):  # pragma: no cover
-                logger.debug("Suppressed exception in handler", exc_info=True)  # type: ignore[attr-defined]
+                logger.debug("Suppressed exception in handler", exc_info=True)
     return result
 
 
@@ -317,7 +317,7 @@ def _resolve_metric_functions(
     if isinstance(metric_specs, dict):
         items = metric_specs.items()
     else:
-        items = ((getattr(fn, "__name__", str(fn)), fn) for fn in metric_specs)  # type: ignore[assignment]
+        items = ((getattr(fn, "__name__", str(fn)), fn) for fn in metric_specs)
     for name, fn in items:
         if isinstance(fn, str):
             resolved[name] = get_metric(fn)
@@ -455,8 +455,8 @@ def run_metrics_evaluation(
         mlflow_info["mlflow_tracking_uri"] = decision.mlflow_tracking_uri
 
     return {
-        "run_id": run_identifier,  # type: ignore[dict-item]
-        "metrics": final_metrics,  # type: ignore[dict-item]
-        "system": system_metrics,  # type: ignore[dict-item]
-        **({"mlflow": mlflow_info} if mlflow_info else {}),  # type: ignore[dict-item]
+        "run_id": run_identifier,
+        "metrics": final_metrics,
+        "system": system_metrics,
+        **({"mlflow": mlflow_info} if mlflow_info else {}),
     }

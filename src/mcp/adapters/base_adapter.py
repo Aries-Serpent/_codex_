@@ -35,7 +35,7 @@ class QueryResult:
     success: bool
     data: Any = None
     error: str | None = None
-    metadata: dict = None  # type: ignore[assignment]
+    metadata: dict = None
 
     def __post_init__(self):
         if self.metadata is None:

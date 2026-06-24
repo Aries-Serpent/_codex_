@@ -63,8 +63,8 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
         def no_grad() -> _NoOpNoGrad:
             return _NoOpNoGrad()
 
-    torch = _TorchStub()  # type: ignore[assignment]
-    nn = Any  # type: ignore[assignment]
+    torch = _TorchStub()
+    nn = Any
     GradScaler = _NoOpScaler
 
     def autocast(*, enabled: bool = False):
@@ -74,13 +74,13 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
 
 # Define type aliases
 if TYPE_CHECKING:  # pragma: no cover - typing bridge
-    TensorType: TypeAlias = Any
+    TensorType: TypeAlias = Any  # type: ignore
     OptimizerType: TypeAlias = Any
     DataLoaderType: TypeAlias = Any
 else:  # pragma: no cover - runtime fallback
-    TensorType: TypeAlias = Any  # type: ignore[misc]
-    OptimizerType: TypeAlias = Any  # type: ignore[misc]
-    DataLoaderType: TypeAlias = Any  # type: ignore[misc]
+    TensorType: TypeAlias = Any
+    OptimizerType: TypeAlias = Any
+    DataLoaderType: TypeAlias = Any
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
 from logging_utils import (  # noqa: E402
@@ -667,7 +667,7 @@ class Trainer:
                 start_epoch,
                 cfg.epochs,
             )
-            return self.history[-1] if self.history else {}  # type: ignore[return-value]
+            return self.history[-1] if self.history else {}
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
@@ -690,7 +690,7 @@ class Trainer:
                 if should_step:
                     if cfg.max_grad_norm is not None:
                         self.scaler.unscale_(self.simple.optimizer)
-                        torch.nn.utils.clip_grad_norm_(  # type: ignore[attr-defined]
+                        torch.nn.utils.clip_grad_norm_(
                             self.simple.model.parameters(), cfg.max_grad_norm
                         )
                     self.scaler.step(self.simple.optimizer)
@@ -724,13 +724,13 @@ class Trainer:
             if self._metrics_path is not None:
                 try:
                     record = {"epoch": epoch, "global_step": self.state.global_step}
-                    record.update({k: float(v) for k, v in epoch_metrics.items()})  # type: ignore[misc]
+                    record.update({k: float(v) for k, v in epoch_metrics.items()})
                     append_ndjson(record, self._metrics_path)
                 except (IOError, OSError) as exc:  # pragma: no cover - diagnostics only
                     LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
             self._save_checkpoint(epoch, epoch_metrics)
 
-        return self.history[-1] if self.history else {}  # type: ignore[return-value]
+        return self.history[-1] if self.history else {}
 
     def close(self) -> None:
         shutdown_logging(self._logging_session)

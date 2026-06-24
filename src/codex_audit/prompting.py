@@ -73,7 +73,7 @@ def prepare_repo_status_prompt(
         output_path=scorecard_target,
     )
 
-    ra_rules: dict[str, Any] = policy_map.get("ra_rules", {})  # type: ignore[assignment]
+    ra_rules: dict[str, Any] = policy_map.get("ra_rules", {})
     ra_lines = [f"- {k}: {v}" for k, v in sorted(ra_rules.items())]
     gate_bullets = _render_gate_bullets(gates)
 

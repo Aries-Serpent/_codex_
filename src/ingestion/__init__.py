@@ -30,7 +30,7 @@ try:
     from .encoding_detect import detect_encoding as _repo_detect_encoding
 except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _repo_detect_encoding = None  # type: ignore[assignment]
+    _repo_detect_encoding = None
 
 try:
     # io_text.read_text historically provided a number of signatures:
@@ -40,21 +40,21 @@ try:
     from .io_text import read_text as _io_text_read_text
 except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _io_text_read_text = None  # type: ignore[assignment]
+    _io_text_read_text = None
 
 try:
     # Some callers expect _detect_encoding from io_text
     from .io_text import _fallback_detect_encoding as _io_text__detect_encoding
 except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _io_text__detect_encoding = None  # type: ignore[assignment]
+    _io_text__detect_encoding = None
 
 # Deterministic shuffle and legacy read_text_file may live in utils
 try:
     from .utils import deterministic_shuffle as _deterministic_shuffle
 except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _deterministic_shuffle = None  # type: ignore[assignment]
+    _deterministic_shuffle = None
 
 __all__ = [
     "Ingestor",

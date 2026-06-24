@@ -93,7 +93,7 @@ def measure_multi_agent_correlation(agent_counts: list[int], trials: int = 50) -
             f"N={num_agents}: ρ_multi = {avg_corr:.4f} ± {std_corr:.4f} (min: {min_corr:.4f})"
         )
 
-    return results  # type: ignore[return-value]
+    return results
 
 
 def measure_decision_quality_improvement(
@@ -265,7 +265,7 @@ def measure_consensus_latency(agent_counts: list[int], trials: int = 100) -> dic
             f"N={num_agents}: latency = {avg_latency:.2f}ms (max: {max_latency:.2f}ms, p95: {p95_latency:.2f}ms)"  # noqa: E501
         )
 
-    return results  # type: ignore[return-value]
+    return results
 
 
 def calculate_k1_impact(
@@ -387,8 +387,8 @@ def run_validation(
 
     logger.info("\n1. Multi-Agent Correlation:")
     for key, val in correlation_results.items():
-        status = "✅" if val["target_met"] else "❌"  # type: ignore[index]
-        logger.info(f"   {key}: {val['mean']:.4f} {status}")  # type: ignore[index]
+        status = "✅" if val["target_met"] else "❌"
+        logger.info(f"   {key}: {val['mean']:.4f} {status}")
 
     logger.info("\n2. Decision Quality:")
     status = "✅" if quality_results["target_met"] else "❌"
@@ -400,8 +400,8 @@ def run_validation(
 
     logger.info("\n4. Consensus Latency:")
     for key, val in latency_results.items():
-        status = "✅" if val["target_met"] else "❌"  # type: ignore[index]
-        logger.info(f"   {key}: {val['mean_ms']:.2f}ms {status}")  # type: ignore[index]
+        status = "✅" if val["target_met"] else "❌"
+        logger.info(f"   {key}: {val['mean_ms']:.2f}ms {status}")
 
     logger.info("\n5. k₁ Impact:")
     status = "✅" if k1_results["target_met"] else "❌"
@@ -412,10 +412,10 @@ def run_validation(
 
     # Overall validation status
     all_met = (
-        all(v["target_met"] for v in correlation_results.values())  # type: ignore[index]
+        all(v["target_met"] for v in correlation_results.values())
         and quality_results["target_met"]
         and redundancy_results["target_met"]
-        and all(v["target_met"] for v in latency_results.values())  # type: ignore[index]
+        and all(v["target_met"] for v in latency_results.values())
         and k1_results["target_met"]
     )
 

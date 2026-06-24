@@ -451,7 +451,7 @@ def token_accuracy(
 
 
 # Provide a shorter alias for minimal metric registries/tests.
-register_metric("token_accuracy")(token_accuracy)  # type: ignore[arg-type]
+register_metric("token_accuracy")(token_accuracy)
 
 
 @register_metric("ppl")

@@ -30,7 +30,7 @@ LOGGER = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 try:  # pragma: no cover - optional psutil dependency
     import psutil as _psutil

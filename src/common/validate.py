@@ -35,7 +35,7 @@ for _site_path in site.getsitepackages():
 try:
     gx = import_module("great_expectations")
 except ImportError:
-    gx = None  # type: ignore[assignment]
+    gx = None
 
 logger = logging.getLogger(__name__)
 

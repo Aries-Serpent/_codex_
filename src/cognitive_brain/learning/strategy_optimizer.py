@@ -209,7 +209,7 @@ class StrategyOptimizer:
             self.episode_count += 1
 
             # Track episode in algorithm
-            self.algorithm.track_episode(episode_reward)  # type: ignore[union-attr]
+            self.algorithm.track_episode(episode_reward)
 
             # Check convergence
             if episode >= self.convergence_window and self._check_convergence():
@@ -309,7 +309,7 @@ class StrategyOptimizer:
             done = i == len(states) - 1
 
             # Update algorithm
-            self.algorithm.update(state, action, reward, next_state, done)  # type: ignore[union-attr]
+            self.algorithm.update(state, action, reward, next_state, done)
             episode_reward += reward
 
         return episode_reward / len(states)

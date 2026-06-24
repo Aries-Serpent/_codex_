@@ -58,14 +58,14 @@ try:
     from .db import log_event as _shared_log_event
 except (ImportError, AttributeError):
     logger.debug("codex.logging.db not available; using built-in fallbacks", exc_info=True)
-    _shared_DB_LOCK = None  # type: ignore[assignment]
-    _shared_init_db = None  # type: ignore[assignment]
+    _shared_DB_LOCK = None
+    _shared_init_db = None
     try:  # Fallback: rely on monkeypatch adapters
         from codex.monkeypatch.log_adapters import (  # type: ignore[no-redef]  # noqa: I001
             log_event as _shared_log_event,
         )
     except (IOError, OSError):  # pragma: no cover - nothing available
-        _shared_log_event = None  # type: ignore[assignment]
+        _shared_log_event = None
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
 _DB_LOCK = _shared_DB_LOCK or threading.RLock()
@@ -249,10 +249,10 @@ def log_event(
             adapter_meta_json = json.dumps(adapter_meta, ensure_ascii=False, default=str)
             try:
                 # log_adapters.log_event signature: (level, message, meta=None, db_path=None)
-                _shared_log_event(  # type: ignore[call-arg]
+                _shared_log_event(
                     role,
                     message,
-                    meta=adapter_meta_json,  # type: ignore[arg-type]
+                    meta=adapter_meta_json,
                     db_path=db_path,
                 )
                 return

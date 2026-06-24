@@ -341,7 +341,7 @@ def apply(
         raise typer.BadParameter(message)
 
     try:
-        handlers[resource](plan_payload, env, dry_run=dry_run)  # type: ignore[call-arg]
+        handlers[resource](plan_payload, env, dry_run=dry_run)
         if not dry_run:
             update_artifact_version(f"zendesk/{resource}", operations_list)
     except ValueError as exc:

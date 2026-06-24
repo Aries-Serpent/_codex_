@@ -58,9 +58,9 @@ def benchmark_indexing(
                     avg_doc_size = 500  # Average document size in chars
                     estimated_chunks = (corpus_size * avg_doc_size) / chunk_size
                     throughput = estimated_chunks / (result.duration_ms / 1000)
-                    result.metadata["chunks_per_sec"] = throughput  # type: ignore[index]
-                    result.metadata["corpus_size"] = corpus_size  # type: ignore[index]
-                    result.metadata["chunk_size"] = chunk_size  # type: ignore[index]
+                    result.metadata["chunks_per_sec"] = throughput
+                    result.metadata["corpus_size"] = corpus_size
+                    result.metadata["chunk_size"] = chunk_size
 
     return {
         "results": [r.to_dict() for r in runner.results],

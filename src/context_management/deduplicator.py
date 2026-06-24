@@ -106,7 +106,7 @@ class SemanticDeduplicator:
             if is_dup:
                 duplicates.append((stmt, original))
                 if preserve_signals:
-                    self._merge_signals(stmt, original)  # type: ignore[arg-type]
+                    self._merge_signals(stmt, original)
             else:
                 unique.append(stmt)
                 self._add_to_index(stmt, fp)
@@ -119,7 +119,7 @@ class SemanticDeduplicator:
             deduplicated_count=dedup_count,
             removed_count=original_count - dedup_count,
             unique_statements=unique,
-            duplicates_found=duplicates,  # type: ignore[arg-type]
+            duplicates_found=duplicates,
             compression_ratio=dedup_count / original_count if original_count > 0 else 1.0,
         )
 

@@ -94,11 +94,11 @@ def build_model(
         loader_kwargs.update(
             {
                 "lora_enabled": True,
-                "lora_path": peft_cfg.path,  # type: ignore[union-attr]
-                "lora_r": peft_cfg.r,  # type: ignore[union-attr]
-                "lora_alpha": peft_cfg.alpha,  # type: ignore[union-attr]
-                "lora_dropout": peft_cfg.dropout,  # type: ignore[union-attr]
-                "lora_target_modules": peft_cfg.target_modules,  # type: ignore[union-attr]
+                "lora_path": peft_cfg.path,
+                "lora_r": peft_cfg.r,
+                "lora_alpha": peft_cfg.alpha,
+                "lora_dropout": peft_cfg.dropout,
+                "lora_target_modules": peft_cfg.target_modules,
             }
         )
 

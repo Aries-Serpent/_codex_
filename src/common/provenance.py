@@ -37,7 +37,7 @@ try:
         return OmegaConf.to_container(cfg, resolve=True)
 
 except ImportError:  # pragma: no cover - fallback for optional dependency
-    DictConfig = dict  # type: ignore[misc, assignment]
+    DictConfig = dict
 
     def _to_container(cfg: DictConfig) -> dict[str, Any]:
         return cfg

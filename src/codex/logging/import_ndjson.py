@@ -46,7 +46,7 @@ from typing import Any, Optional  # noqa: E402
 try:  # pragma: no cover - platform dependent
     import fcntl
 except (IOError, OSError):  # pragma: no cover - windows fallback
-    fcntl = None  # type: ignore[assignment]
+    fcntl = None
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
 

@@ -457,7 +457,7 @@ class ObjectiveAdjuster:
         if adjustment.type == AdjustmentType.PRIORITY_INCREASE:
             objective_id = adjustment.parameters.get("objective_id")
             if objective_id:
-                objective = self.store.get_objective(objective_id)  # type: ignore[assignment]
+                objective = self.store.get_objective(objective_id)
                 if objective and objective.priority.value > 0:
                     objective.priority = ObjectivePriority(objective.priority.value - 1)
                     objective.updated_at = now
@@ -472,7 +472,7 @@ class ObjectiveAdjuster:
         elif adjustment.type == AdjustmentType.PAUSE_OBJECTIVE:
             objective_id = adjustment.parameters.get("objective_id")
             if objective_id:
-                objective = self.store.get_objective(objective_id)  # type: ignore[assignment]
+                objective = self.store.get_objective(objective_id)
                 if objective:
                     objective.status = "paused"
                     objective.updated_at = now

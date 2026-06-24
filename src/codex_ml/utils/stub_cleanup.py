@@ -136,7 +136,7 @@ class StubAnalyzer:
                                     return True
 
             # Also check for top-level functions (not in classes)
-            for node in ast.walk(tree):  # type: ignore[assignment]
+            for node in ast.walk(tree):
                 if isinstance(node, ast.FunctionDef) and node not in func_to_class:
                     if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
                         if node.lineno <= line_number <= (node.end_lineno or node.lineno):

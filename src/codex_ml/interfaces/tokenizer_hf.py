@@ -25,7 +25,7 @@ from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter as _HFTokenizerA
 try:  # pragma: no cover - optional torch dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - defensive
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 try:  # pragma: no cover - optional import cycle guard
     from codex_ml.training.device_strategy import DeviceConfig

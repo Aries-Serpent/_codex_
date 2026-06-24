@@ -35,7 +35,7 @@ from codex_ml.metrics.metric_implementations import DEFAULT_METRICS
 from codex_ml.models.utils.peft import apply_lora_if_available
 from codex_ml.monitoring.system_metrics import start_metrics_logger
 from codex_ml.monitoring.tb_writer import TBWriter
-from codex_ml.utils.checkpointing import save_checkpoint  # type: ignore[attr-defined]
+from codex_ml.utils.checkpointing import save_checkpoint
 from codex_ml.utils.experiment_tracking_mlflow import _as_flat_params, maybe_mlflow
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from codex_ml.utils.hf_revision import get_hf_revision
@@ -92,7 +92,7 @@ def train(
     *,
     config: TrainConfig,
     val_texts: Iterable[str] | None = None,
-    model: torch.nn.Module | None = None,  # type: ignore[name-defined]
+    model: torch.nn.Module | None = None,
 ) -> dict[str, float]:
     """Train a causal language model on raw ``texts``.
 
@@ -270,7 +270,7 @@ def train(
         else:
             fingerprint = None
         if fingerprint:
-            extras["hardware_fingerprint"] = str(fingerprint)  # type: ignore[assignment]
+            extras["hardware_fingerprint"] = str(fingerprint)
 
         metadata_record = build_run_metadata(
             seed=config.seed,

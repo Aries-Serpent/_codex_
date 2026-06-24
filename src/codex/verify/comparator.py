@@ -285,7 +285,7 @@ def compare(
         )
 
     # Run without inputs first
-    inputs_to_test = sample_inputs or [None]  # type: ignore[list-item]
+    inputs_to_test = sample_inputs or [None]
 
     for input_file in inputs_to_test:
         input_ref = str(input_file) if input_file else "(no input)"
@@ -361,7 +361,7 @@ def compare(
         overall_result = "pass"
 
     return ComparisonResult(
-        result=overall_result,  # type: ignore[arg-type]
+        result=overall_result,
         baseline_hash=_hash_output(all_baseline_output),
         patched_hash=_hash_output(all_patched_output),
         comparisons=comparisons,

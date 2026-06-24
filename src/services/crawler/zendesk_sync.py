@@ -124,7 +124,7 @@ class ZendeskKnowledgeSyncService:
             self.base_url = f"https://{subdomain}.zendesk.com/api/v2"
             logger.info(f"Initialized ZendeskKnowledgeSyncService for {subdomain}")
         else:
-            self.base_url = None  # type: ignore[assignment]
+            self.base_url = None
 
         # Original parameters
         self.manifest_path = manifest_path or MANIFEST_PATH

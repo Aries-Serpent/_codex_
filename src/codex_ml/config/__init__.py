@@ -14,8 +14,8 @@ from typing import Any
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
 except (IOError, OSError):  # pragma: no cover - optional dependency
-    DictConfig = Any  # type: ignore[assignment]
-    OmegaConf = None  # type: ignore[assignment]
+    DictConfig = Any
+    OmegaConf = None
 
 __all__ = [
     "ConfigError",
@@ -810,8 +810,8 @@ try:  # pragma: no cover - optional dependency
         get_settings,
     )
 except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when pydantic missing
-    AppSettings = None  # type: ignore[assignment, misc]
-    EvalRow = None  # type: ignore[assignment, misc]
+    AppSettings = None
+    EvalRow = None
 
     def eval_row_schema() -> dict:
         raise ModuleNotFoundError(

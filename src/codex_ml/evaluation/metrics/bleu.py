@@ -94,7 +94,7 @@ class BleuMetric(MetricAdapter):
         except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
-            return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
+            return {f"{self.name}_error": str(e)}
 
     def _compute_basic(self) -> dict[str, float]:
         """Basic BLEU approximation without sacrebleu."""
@@ -118,5 +118,5 @@ class BleuMetric(MetricAdapter):
 
         return {
             self.name: avg_score,
-            f"{self.name}_warning": "sacrebleu not installed, using basic approximation",  # type: ignore[dict-item]
+            f"{self.name}_warning": "sacrebleu not installed, using basic approximation",
         }

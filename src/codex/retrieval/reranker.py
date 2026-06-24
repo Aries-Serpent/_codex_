@@ -154,8 +154,8 @@ class ScoreFusionReranker(BaseReranker):
         ][: self.config.top_k]
 
         # Set final ranks
-        for i, result in enumerate(ranked_results):  # type: ignore[assignment]
-            result.rank = i + 1  # type: ignore[attr-defined]
+        for i, result in enumerate(ranked_results):
+            result.rank = i + 1
 
         logger.debug(f"Score fusion re-ranked {len(ranked_results)} results")
         return ranked_results
@@ -328,8 +328,8 @@ class CrossEncoderReranker(BaseReranker):
         ][: self.config.top_k]
 
         # Set final ranks
-        for i, result in enumerate(ranked_results):  # type: ignore[assignment]
-            result.rank = i + 1  # type: ignore[attr-defined]
+        for i, result in enumerate(ranked_results):
+            result.rank = i + 1
 
         logger.debug(f"Cross-encoder re-ranked {len(ranked_results)} results")
         return ranked_results
@@ -372,7 +372,7 @@ class Reranker:
             self._reranker = None
         else:
             reranker_class = self.STRATEGY_MAP.get(self.config.strategy, ScoreFusionReranker)
-            self._reranker = reranker_class(self.config)  # type: ignore[abstract]
+            self._reranker = reranker_class(self.config)
 
     def rerank(
         self,
@@ -402,9 +402,9 @@ class Reranker:
             return self._hybrid_rerank(query, results, embeddings)
 
         if self.config.strategy == RerankingStrategy.MMR:
-            return self._reranker.rerank(query, results, embeddings)  # type: ignore[union-attr,call-arg]
+            return self._reranker.rerank(query, results, embeddings)
 
-        return self._reranker.rerank(query, results)  # type: ignore[union-attr]
+        return self._reranker.rerank(query, results)
 
     def _wrap_results(self, results: Sequence[dict[str, Any]]) -> list[RankedResult]:
         """Wrap raw results as RankedResult without re-ranking."""
@@ -444,7 +444,7 @@ class Reranker:
         ]
 
         # Then apply MMR for diversity
-        final_results = self._rerankers["mmr"].rerank(query, intermediate_results, embeddings)  # type: ignore[call-arg]
+        final_results = self._rerankers["mmr"].rerank(query, intermediate_results, embeddings)
 
         logger.debug(f"Hybrid re-ranked {len(final_results)} results")
         return final_results

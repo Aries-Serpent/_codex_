@@ -21,17 +21,17 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
-    FastAPI = None  # type: ignore[misc,assignment]
-    HTTPException = Exception  # type: ignore[misc,assignment]
-    BaseModel = object  # type: ignore[misc,assignment]
-    APIKeyHeader = None  # type: ignore[misc,assignment]
-    Security = None  # type: ignore[assignment]
-    TrustedHostMiddleware = None  # type: ignore[misc,assignment]
+    FastAPI = None
+    HTTPException = Exception
+    BaseModel = object
+    APIKeyHeader = None
+    Security = None
+    TrustedHostMiddleware = None
 
-    def Field(*a: Any, **k: Any) -> None:  # type: ignore[no-redef]
+    def Field(*a: Any, **k: Any) -> None:
         return None
 
-    Request = object  # type: ignore[misc,assignment]
+    Request = object
 
 logger = logging.getLogger(__name__)
 
@@ -326,7 +326,7 @@ class ModelServer:
             import math
             import random
 
-            embeddings: list[list[float]] = []  # type: ignore[no-redef]
+            embeddings: list[list[float]] = []
             for text in texts:
                 seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
                 rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
@@ -517,7 +517,7 @@ if FASTAPI_AVAILABLE:
         )
         def predict(request: PredictionRequest, http_request: Request):
             client_key = (
-                http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
+                http_request.client.host if getattr(http_request, "client", None) else "global"
             )
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")

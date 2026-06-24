@@ -259,7 +259,7 @@ class ModerationAdapter:
         )
 
     def _call_provider(self, text: str, stage: str) -> ModerationDecision | None:
-        payload = self._provider(text=text, stage=stage)  # type: ignore[misc]
+        payload = self._provider(text=text, stage=stage)
         return self._normalize_payload(payload, stage)
 
     def _normalize_payload(self, payload: Any, stage: str) -> ModerationDecision | None:

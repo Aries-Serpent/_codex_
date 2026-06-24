@@ -15,14 +15,14 @@ from codex_utils.ndjson import NDJSONLogger
 try:  # pragma: no cover - torch optional in tests
     import torch
 except (ValueError, TypeError):  # pragma: no cover - torch optional in tests
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 
 def _safe_float(value: object) -> float:
     try:
         if hasattr(value, "item"):
             return float(value.item())
-        return float(value)  # type: ignore[arg-type]
+        return float(value)
     except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return 0.0

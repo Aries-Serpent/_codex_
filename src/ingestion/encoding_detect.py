@@ -27,18 +27,18 @@ logger = logging.getLogger(__name__)
 try:
     import chardet as _chardet  # preferred if available
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
-    _chardet = None  # type: ignore[assignment]
+    _chardet = None
 
 # charset-normalizer provides multiple helpers depending on installed version
 try:
     from charset_normalizer import from_bytes as _cn_from_bytes
 except (IOError, OSError):  # pragma: no cover - optional dependency
-    _cn_from_bytes = None  # type: ignore[assignment]
+    _cn_from_bytes = None
 
 try:
     from charset_normalizer import from_path as _cn_from_path
 except (IOError, OSError):  # pragma: no cover - optional dependency
-    _cn_from_path = None  # type: ignore[assignment]
+    _cn_from_path = None
 
 __all__ = ["autodetect_encoding", "detect_encoding"]
 

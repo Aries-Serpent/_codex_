@@ -462,7 +462,7 @@ def record_scoring_pattern(
         entropy = sum(r.metadata.get("entropy_contribution", 0.0) for r in results)
 
         # Store pattern
-        memory.store_pattern(  # type: ignore[attr-defined]
+        memory.store_pattern(
             pattern_type="quantum_retrieval",
             context={
                 "query": query,

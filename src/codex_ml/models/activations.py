@@ -28,7 +28,7 @@ try:
     import torch.nn as nn
 except (ImportError, AttributeError):
     logger.warning("Exception occurred", exc_info=True)
-    nn = None  # type: ignore[assignment]
+    nn = None
 _REGISTRY: dict[str, Callable] = {}
 
 

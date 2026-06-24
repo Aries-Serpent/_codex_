@@ -434,7 +434,7 @@ def _start_serve(cfg: DictConfig) -> None:
     ray.init(ignore_reinit_error=True, include_dashboard=False)
     serve.start(http_options={"host": host, "port": port, "location": "HeadOnly"})
 
-    deployment = LLMService.options(num_replicas=num_replicas, route_prefix=route_prefix)  # type: ignore[attr-defined]
+    deployment = LLMService.options(num_replicas=num_replicas, route_prefix=route_prefix)
     deployment.deploy(cfg)
     logger.info("Serve deployment active at http://%s:%s%s", host, port, route_prefix)
 

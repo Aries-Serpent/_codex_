@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency guard
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - propagate a friendly error later
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 try:  # pragma: no cover - optional dependency guard
     from transformers import (
@@ -24,10 +24,10 @@ try:  # pragma: no cover - optional dependency guard
         PreTrainedTokenizerBase,
     )
 except (ImportError, AttributeError):  # pragma: no cover - transformers unavailable; defer failure until use
-    AutoModelForCausalLM = None  # type: ignore[assignment, misc]
-    AutoTokenizer = None  # type: ignore[assignment, misc]
-    PreTrainedModel = Any  # type: ignore[assignment, misc]
-    PreTrainedTokenizerBase = Any  # type: ignore[assignment, misc]
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
+    PreTrainedModel = Any
+    PreTrainedTokenizerBase = Any
 
 try:  # pragma: no cover - PEFT is optional for non-LoRA runs
     from peft import LoraConfig, get_peft_model

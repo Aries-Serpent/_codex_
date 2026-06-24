@@ -32,8 +32,8 @@ def _build_stub_module() -> types.ModuleType:
         "Codex stub for the hydra.extra plugin. The full plugin is unavailable, "
         "so the shim exports minimal markers only."
     )
-    module.AVAILABLE = False  # type: ignore[attr-defined]
-    module.STUB = True  # type: ignore[attr-defined]
+    module.AVAILABLE = False
+    module.STUB = True
     return module
 
 

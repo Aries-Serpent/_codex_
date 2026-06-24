@@ -50,7 +50,7 @@ try:  # pragma: no cover - optional dependency
     from codex_digest.error_capture import log_error as _log_error
 except (IOError, OSError):  # pragma: no cover
 
-    def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
+    def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:
         """Fallback error logger when codex_digest is unavailable."""
         return
 
@@ -2064,7 +2064,7 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
         }
     )
     try:
-        import keyring  # type: ignore[import-untyped]
+        import keyring
 
         keyring.set_password(_KEYRING_SERVICE, "credentials", data)
         click.echo("   Credentials cached (keyring)")
@@ -2090,7 +2090,7 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
 def _load_cached_credentials() -> dict | None:
     """Load previously cached credentials."""
     try:
-        import keyring  # type: ignore[import-untyped]
+        import keyring
 
         raw = keyring.get_password(_KEYRING_SERVICE, "credentials")
         if raw:
@@ -2112,7 +2112,7 @@ def _load_cached_credentials() -> dict | None:
 def _clear_cached_credentials() -> None:
     """Remove cached credentials from keyring and local file."""
     try:
-        import keyring  # type: ignore[import-untyped]
+        import keyring
 
         keyring.delete_password(_KEYRING_SERVICE, "credentials")
     except ImportError:

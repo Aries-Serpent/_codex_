@@ -166,7 +166,7 @@ class Registry:
         try:
             eps = metadata.entry_points(group=self._entry_point_group)
         except Exception:  # pragma: no cover - metadata backend failure
-            eps = ()  # type: ignore[assignment]
+            eps = ()
 
         for ep in eps:
             key = self._normalise(ep.name)
@@ -213,9 +213,9 @@ class Registry:
                     if original[norm] is None:
                         self._items.pop(norm, None)
                     else:
-                        self._items[norm] = original[norm]  # type: ignore[assignment]
+                        self._items[norm] = original[norm]
 
-        return manager()  # type: ignore[return-value]
+        return manager()
 
     def _normalise(self, name: str) -> str:
         return name.lower()

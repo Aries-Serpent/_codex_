@@ -283,7 +283,7 @@ def _coerce_config(config: Mapping[str, Any]) -> ModelInitConfig:
 
 def load_tokenizer(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
+) -> PreTrainedTokenizerBase:
     """Load a HuggingFace tokenizer described by *config*.
 
     Args:
@@ -320,7 +320,7 @@ def load_tokenizer(
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
 
-def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:  # type: ignore[valid-type]
+def _apply_lora(model: PreTrainedModel, cfg: LoraSettings) -> PreTrainedModel:
     if not cfg.enabled:
         return model
     if LoraConfig is None or get_peft_model is None:  # pragma: no cover - optional dep guard
@@ -362,7 +362,7 @@ def _coerce_torch_dtype(dtype: Any) -> Any:
 
 def load_model(
     config: Mapping[str, Any] | ModelInitConfig,
-) -> PreTrainedModel:  # type: ignore[valid-type]
+) -> PreTrainedModel:
     """Load and return a causal-LM model described by *config*.
 
     The model is moved to the configured device after loading.  When

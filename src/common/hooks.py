@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+    torch = None
 
 
 class BaseHook:
@@ -142,7 +142,7 @@ class NDJSONLogHook(BaseHook):
             "ts": int(time.time()),
             "step": int(state.get("global_step", 0)),
             "epoch": int(state.get("epoch", 0)),
-            "loss": float(state.get("last_loss")) if state.get("last_loss") is not None else None,  # type: ignore[arg-type]
+            "loss": float(state.get("last_loss")) if state.get("last_loss") is not None else None,
         }
         try:
             with self.file.open("a", encoding="utf-8") as handle:

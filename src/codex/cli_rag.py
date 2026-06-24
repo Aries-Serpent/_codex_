@@ -27,7 +27,7 @@ try:
     from codex.rag.indexer import RAGIndexer
 except ImportError:  # pragma: no cover - optional dependency
 
-    class RAGIndexer:  # type: ignore[no-redef]
+    class RAGIndexer:
         """Stub when codex.rag is not installed."""
 
         def __init__(self, *args, **kwargs):
@@ -42,7 +42,7 @@ try:
     from codex.rag.retriever import Retriever as RAGRetriever
 except ImportError:  # pragma: no cover - optional dependency
 
-    class RAGRetriever:  # type: ignore[no-redef]
+    class RAGRetriever:
         """Stub when codex.rag is not installed."""
 
         def __init__(self, *args, **kwargs):
@@ -97,7 +97,7 @@ def _format_bytes(size_bytes: int) -> str:
     for unit in ["B", "KB", "MB", "GB"]:
         if size_bytes < 1024.0:
             return f"{size_bytes:.2f} {unit}"
-        size_bytes /= 1024.0  # type: ignore[assignment]
+        size_bytes /= 1024.0
     return f"{size_bytes:.2f} TB"
 
 

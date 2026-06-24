@@ -107,7 +107,7 @@ class PineconeAdapter(BaseAdapter):
             self._client = Pinecone(api_key=self._api_key)
 
             # Get index
-            self._index = self._client.Index(self._index_name)  # type: ignore[attr-defined]
+            self._index = self._client.Index(self._index_name)
 
             self._connected = True
             logger.info("Connected to Pinecone index: %s", self._index_name)
@@ -133,7 +133,7 @@ class PineconeAdapter(BaseAdapter):
             # Describe index to verify connectivity
             stats = await asyncio.get_event_loop().run_in_executor(
                 None,
-                self._index.describe_index_stats,  # type: ignore[attr-defined]
+                self._index.describe_index_stats,
             )
             return stats is not None
         except (ValueError, TypeError, RuntimeError) as e:
@@ -175,7 +175,7 @@ class PineconeAdapter(BaseAdapter):
             # Run query in thread pool
             result = await asyncio.get_event_loop().run_in_executor(
                 None,
-                lambda: self._index.query(  # type: ignore[attr-defined]
+                lambda: self._index.query(
                     vector=vector,
                     top_k=top_k,
                     filter=filters,
@@ -261,7 +261,7 @@ class PineconeAdapter(BaseAdapter):
 
                 await asyncio.get_event_loop().run_in_executor(
                     None,
-                    lambda b=batch: self._index.upsert(vectors=b),  # type: ignore[misc, attr-defined]
+                    lambda b=batch: self._index.upsert(vectors=b),
                 )
 
                 total_upserted += len(batch)
@@ -298,7 +298,7 @@ class PineconeAdapter(BaseAdapter):
         try:
             await asyncio.get_event_loop().run_in_executor(
                 None,
-                lambda: self._index.delete(ids=ids),  # type: ignore[attr-defined]
+                lambda: self._index.delete(ids=ids),
             )
 
             return QueryResult(

@@ -149,6 +149,6 @@ def retry_with_backoff(
                 attempts=total_attempts,
             ) from last_exc
 
-        return wrapper  # type: ignore[return-value]
+        return wrapper
 
     return decorator

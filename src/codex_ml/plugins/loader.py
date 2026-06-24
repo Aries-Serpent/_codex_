@@ -12,7 +12,7 @@ from typing import Any, Optional  # noqa: E402
 try:
     from importlib import metadata
 except (ImportError, AttributeError):  # pragma: no cover - importlib metadata not available
-    metadata = None  # type: ignore[assignment]
+    metadata = None
 
 RegisterFn = Callable[..., Any]
 

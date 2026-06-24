@@ -2041,7 +2041,7 @@ class GitHubMCPPoster:
                     )
                     raise
         # Should be unreachable, but satisfy type checker
-        raise last_exc  # type: ignore[misc]
+        raise last_exc
 
     def _graphql(self, query: str, variables: dict[str, Any]) -> dict[str, Any]:
         url = f"{_GITHUB_API}/graphql"

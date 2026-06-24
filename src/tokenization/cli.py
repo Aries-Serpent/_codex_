@@ -18,11 +18,11 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import typer as _typer
 except (ImportError, AttributeError):  # pragma: no cover - fallback when typer missing
-    _typer = None  # type: ignore[assignment]
+    _typer = None
 else:
     required_attrs = {"Typer", "echo", "Option", "Exit"}
     if not required_attrs.issubset(set(dir(_typer))):
-        _typer = None  # type: ignore[assignment]
+        _typer = None
 
 
 # Fallback implementations are always defined unconditionally at module level so
@@ -334,7 +334,7 @@ def inspect(tokenizer_path: Path) -> None:
                 added = tokenizer_cfg.get("added_tokens", [])
                 if isinstance(added, list):
                     special_tokens = [
-                        item.get("content")  # type: ignore[misc]
+                        item.get("content")
                         for item in added
                         if isinstance(item, dict) and item.get("special")
                     ]
@@ -384,7 +384,7 @@ def encode(
             )
 
     try:
-        encoded = tokenizer(  # type: ignore[operator]
+        encoded = tokenizer(
             payload,
             padding="max_length" if pad_to else False,
             max_length=pad_to or None,

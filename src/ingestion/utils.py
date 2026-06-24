@@ -41,7 +41,7 @@ try:
     from .encoding_detect import detect_encoding as _repo_detect_encoding
 except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _repo_detect_encoding = None  # type: ignore[assignment]
+    _repo_detect_encoding = None
 
 # Try to import the io_text.read_text helper if available. Some historical
 # variants return (text, encoding) while others return just text; the wrapper
@@ -50,7 +50,7 @@ try:
     from .io_text import read_text as _io_read_text
 except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _io_read_text = None  # type: ignore[assignment]
+    _io_read_text = None
 
 
 __all__ = [

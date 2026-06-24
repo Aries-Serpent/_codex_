@@ -134,10 +134,10 @@ except (IOError, OSError):  # pragma: no cover - numpy missing
     np = None
 
 try:  # pragma: no cover - optional datasets dependency
-    from datasets import Dataset  # type: ignore[attr-defined]
+    from datasets import Dataset
 except (ImportError, AttributeError):  # pragma: no cover - datasets missing
 
-    class Dataset:  # type: ignore[no-redef]
+    class Dataset:
         """Minimal stand-in for datasets.Dataset used in tests/offline.
 
         Provides enough surface to not explode during unit tests that don't
@@ -192,23 +192,23 @@ except (ImportError, AttributeError):  # pragma: no cover - transformers missing
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers dependency not available in offline mode")
 
-    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment, misc]
-    AutoTokenizer = _MissingTransformersObject  # type: ignore[assignment, misc]
-    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[assignment, misc]
+    AutoModelForCausalLM = _MissingTransformersObject
+    AutoTokenizer = _MissingTransformersObject
+    DataCollatorForLanguageModeling = _MissingTransformersObject
 
-    class EarlyStoppingCallback:  # type: ignore[no-redef]
+    class EarlyStoppingCallback:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers EarlyStoppingCallback unavailable in offline mode")
 
-    class TrainerCallback:  # type: ignore[no-redef]
+    class TrainerCallback:
         pass
 
-    class TrainingArguments:  # type: ignore[no-redef]
+    class TrainingArguments:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             self.args = args
             self.kwargs = kwargs
 
-    class Trainer:  # type: ignore[no-redef]
+    class Trainer:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers.Trainer unavailable in offline mode")
 
@@ -266,7 +266,7 @@ from codex_ml.monitoring.codex_logging import (
 )
 from codex_ml.monitoring.schema import LogRecord
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
+from codex_ml.utils.checkpointing import (
     build_payload_bytes,
     load_payload,
     set_seed,
@@ -283,7 +283,7 @@ from omegaconf import OmegaConf
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
 except (IOError, OSError) as exc:  # pragma: no cover - missing in some envs
-    CheckpointManager = None  # type: ignore[assignment]
+    CheckpointManager = None
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration

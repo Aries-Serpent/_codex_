@@ -122,7 +122,7 @@ class ThreadSafeSessionEmbeddings:
             if self._model is None:
                 self._model = SentenceTransformer(self.MODEL_NAME)
 
-            embedding = self._model.encode(text, convert_to_numpy=True)  # type: ignore[attr-defined]
+            embedding = self._model.encode(text, convert_to_numpy=True)
             return embedding.astype(np.float32)
 
         except (ValueError, TypeError) as e:
@@ -315,7 +315,7 @@ class ThreadSafeSessionEmbeddings:
             "index_size": self._index.ntotal if self._index else 0,
             "metadata_entries": len(self._metadata),
         }
-        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
+        save_metrics(metrics_dict, self.metrics_path)
 
     def __enter__(self):
         """Context manager entry."""

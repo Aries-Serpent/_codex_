@@ -37,7 +37,7 @@ def _load_texts(path: str) -> list[str]:
     if p.suffix == ".csv":
         with p.open(newline="", encoding="utf-8") as fh:
             reader = csv.DictReader(fh)
-            column = "text" if "text" in reader.fieldnames else reader.fieldnames[0]  # type: ignore[operator, index]
+            column = "text" if "text" in reader.fieldnames else reader.fieldnames[0]
             return [row[column] for row in reader]
     raise ValueError(f"Unsupported data format: {p.suffix}")
 

@@ -258,8 +258,8 @@ class FeastCompatibleStore:
 
             # Stub materialization — writes placeholder data
             stub_data = {f: None for f in view.features}
-            stub_data["__materialized_at"] = end_date.isoformat()  # type: ignore[assignment]
-            stub_data["__source"] = view.source or "stub"  # type: ignore[assignment]
+            stub_data["__materialized_at"] = end_date.isoformat()
+            stub_data["__source"] = view.source or "stub"
 
             try:
                 path = self._native.materialize_feature_group(

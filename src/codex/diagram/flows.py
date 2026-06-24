@@ -19,7 +19,7 @@ def flow_to_mermaid(name: str, edges: Iterable[Edge]) -> str:
     elif all(isinstance(e, str) for e in materialized):
         rows = _flow_from_steps(name, [str(e) for e in materialized])
     else:
-        rows: list[tuple[str, str, str]] = []  # type: ignore[no-redef]
+        rows: list[tuple[str, str, str]] = []
         for e in materialized:
             if isinstance(e, dict):
                 rows.append((e["src"], e.get("label", ""), e["dst"]))

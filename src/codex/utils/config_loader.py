@@ -37,8 +37,8 @@ try:
     _OMEGACONF_AVAILABLE = True
 except ImportError:
     logger.warning("OmegaConf not available, using dict fallback")
-    DictConfig = dict  # type: ignore[assignment, misc]
-    OmegaConf = None  # type: ignore[assignment, misc]
+    DictConfig = dict
+    OmegaConf = None
     _OMEGACONF_AVAILABLE = False
 
 # Hydra imports with robust fallbacks
@@ -60,7 +60,7 @@ if not _HYDRA_AVAILABLE:
         from config_legacy.errors import MissingConfigException
     except ImportError:
         # Define our own if neither is available
-        class MissingConfigException(FileNotFoundError):  # type: ignore[no-redef]
+        class MissingConfigException(FileNotFoundError):
             """Exception raised when a configuration file cannot be located."""
 
             def __init__(
