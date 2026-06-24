@@ -1,0 +1,645 @@
+{
+  "timestamp": "2026-06-24T20:28:12.388551+00:00",
+  "source": "remediation_plan_codeql_python.md",
+  "total_alerts": 66,
+  "high_severity": 36,
+  "medium_severity": 30,
+  "by_category": {
+    "Information Disclosure": {
+      "HIGH": 36,
+      "MEDIUM": 0,
+      "LOW": 0
+    },
+    "Log Injection": {
+      "HIGH": 0,
+      "MEDIUM": 6,
+      "LOW": 0
+    },
+    "Code Quality": {
+      "HIGH": 0,
+      "MEDIUM": 18,
+      "LOW": 0
+    },
+    "Path Traversal": {
+      "HIGH": 0,
+      "MEDIUM": 1,
+      "LOW": 0
+    },
+    "SQL Injection": {
+      "HIGH": 0,
+      "MEDIUM": 1,
+      "LOW": 0
+    },
+    "Code Injection": {
+      "HIGH": 0,
+      "MEDIUM": 1,
+      "LOW": 0
+    },
+    "Cryptography": {
+      "HIGH": 0,
+      "MEDIUM": 3,
+      "LOW": 0
+    }
+  },
+  "by_remediability": {
+    "code-fix": 60,
+    "suppress": 6,
+    "dismiss": 0
+  },
+  "alerts": [
+    {
+      "number": 1,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/agents/admin-automation-agent/src/agent.py",
+      "line": 155,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 2,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/agents/admin-automation-agent/src/agent.py",
+      "line": 157,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 3,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/agents/admin-automation-agent/src/agent.py",
+      "line": 159,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 4,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/agents/admin-automation-agent/src/agent.py",
+      "line": 161,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 5,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/agents/github-security-validator-agent/src/agent.py",
+      "line": 268,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 6,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/agents/github-security-validator-agent/src/agent.py",
+      "line": 274,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 7,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/scripts/ci_failure_crossref.py",
+      "line": 167,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 8,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/analyze_workflows.py",
+      "line": 315,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 9,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/catalog_workflows.py",
+      "line": 280,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 10,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/catalog_workflows.py",
+      "line": 281,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 11,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/ci/auto_fix_common_issues.py",
+      "line": 472,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 12,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/ci/auto_fix_common_issues.py",
+      "line": 478,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 13,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/decode_workflow_secrets.py",
+      "line": 217,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 14,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/fix_security_issues.py",
+      "line": 266,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 15,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/fix_security_issues.py",
+      "line": 270,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 16,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/github_secrets_sync.py",
+      "line": 115,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 17,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/github_secrets_sync.py",
+      "line": 118,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 18,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/ops/codex_mint_tokens_per_run.py",
+      "line": 401,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 19,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/ops/codex_mint_tokens_per_run.py",
+      "line": 449,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 20,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/ops/codex_repo_admin_bootstrap.py",
+      "line": 572,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 21,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/security/verify_token_scope.py",
+      "line": 211,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 22,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/security/verify_token_scope.py",
+      "line": 212,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 23,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/security/verify_token_scope.py",
+      "line": 221,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 24,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/security/verify_token_scope.py",
+      "line": 225,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 25,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/security/verify_token_scope.py",
+      "line": 226,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 26,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "src/codex/knowledge/pii.py",
+      "line": 179,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 27,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "src/codex/knowledge/pii.py",
+      "line": 180,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 28,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "src/security/providers/github_provider.py",
+      "line": 481,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 29,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "src/security/providers/github_provider.py",
+      "line": 519,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 30,
+      "rule": "py/clear-text-logging-sensitive-data",
+      "severity": "HIGH",
+      "file": "tests/integration/test_admin_automation_agent.py",
+      "line": 226,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 31,
+      "rule": "py/clear-text-storage-sensitive-data",
+      "severity": "HIGH",
+      "file": ".codex/reports/ci_workflow_analysis_artifacts_2026_01_30/workflow_analyzer.py",
+      "line": 503,
+      "category": "Information Disclosure",
+      "remediability": "suppress"
+    },
+    {
+      "number": 32,
+      "rule": "py/clear-text-storage-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/scripts/workflow_analyzer.py",
+      "line": 464,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 33,
+      "rule": "py/clear-text-storage-sensitive-data",
+      "severity": "HIGH",
+      "file": ".github/scripts/workflow_analyzer.py",
+      "line": 468,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 34,
+      "rule": "py/clear-text-storage-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/catalog_workflows.py",
+      "line": 297,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 35,
+      "rule": "py/clear-text-storage-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/catalog_workflows.py",
+      "line": 298,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 36,
+      "rule": "py/clear-text-storage-sensitive-data",
+      "severity": "HIGH",
+      "file": "scripts/catalog_workflows.py",
+      "line": 319,
+      "category": "Information Disclosure",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 37,
+      "rule": "py/log-injection",
+      "severity": "MEDIUM",
+      "file": "scripts/catalog_workflows.py",
+      "line": 350,
+      "category": "Log Injection",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 38,
+      "rule": "py/log-injection",
+      "severity": "MEDIUM",
+      "file": "scripts/analyze_workflows.py",
+      "line": 405,
+      "category": "Log Injection",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 39,
+      "rule": "py/log-injection",
+      "severity": "MEDIUM",
+      "file": ".github/scripts/ci_failure_crossref.py",
+      "line": 280,
+      "category": "Log Injection",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 40,
+      "rule": "py/log-injection",
+      "severity": "MEDIUM",
+      "file": "scripts/security/verify_token_scope.py",
+      "line": 189,
+      "category": "Log Injection",
+      "remediability": "suppress"
+    },
+    {
+      "number": 41,
+      "rule": "py/log-injection",
+      "severity": "MEDIUM",
+      "file": "cognitive_app/src/server/cli_api_server.py",
+      "line": 542,
+      "category": "Log Injection",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 42,
+      "rule": "py/log-injection",
+      "severity": "MEDIUM",
+      "file": "services/msp_gateway/security.py",
+      "line": 234,
+      "category": "Log Injection",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 43,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "scripts/cognitive/tests/test_advanced_reasoning.py",
+      "line": 145,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 44,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "agents/physics_orchestrator.py",
+      "line": 234,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 45,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "scripts/ci/auto_fix_common_issues.py",
+      "line": 189,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 46,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "tests/tokenization/test_fast_tokenizer_wrapper.py",
+      "line": 456,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 47,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "tests/tokenization/test_roundtrip_basic.py",
+      "line": 278,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 48,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "src/security/core.py",
+      "line": 112,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 49,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": ".github/agents/admin-automation-agent/src/agent.py",
+      "line": 98,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 50,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "tools/codex_secret_scan_stub.py",
+      "line": 145,
+      "category": "Code Quality",
+      "remediability": "suppress"
+    },
+    {
+      "number": 51,
+      "rule": "py/uninitialized-local-variable",
+      "severity": "MEDIUM",
+      "file": "cognitive_app/src/server/cli_api_server.py",
+      "line": 356,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 52,
+      "rule": "py/cyclic-import",
+      "severity": "MEDIUM",
+      "file": "src/codex/__init__.py",
+      "line": 5,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 53,
+      "rule": "py/cyclic-import",
+      "severity": "MEDIUM",
+      "file": "src/codex/utils/helpers.py",
+      "line": 3,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 54,
+      "rule": "py/unused-global-variable",
+      "severity": "MEDIUM",
+      "file": "scripts/github_secrets_sync.py",
+      "line": 45,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 55,
+      "rule": "py/unused-global-variable",
+      "severity": "MEDIUM",
+      "file": "tests/codex/test_cli_maps.py",
+      "line": 12,
+      "category": "Code Quality",
+      "remediability": "suppress"
+    },
+    {
+      "number": 56,
+      "rule": "py/overwritten-inherited-attribute",
+      "severity": "MEDIUM",
+      "file": "src/security/core.py",
+      "line": 78,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 57,
+      "rule": "py/overwritten-inherited-attribute",
+      "severity": "MEDIUM",
+      "file": ".github/agents/github-security-validator-agent/src/agent.py",
+      "line": 45,
+      "category": "Code Quality",
+      "remediability": "suppress"
+    },
+    {
+      "number": 58,
+      "rule": "py/pythagorean",
+      "severity": "MEDIUM",
+      "file": "scripts/ci/auto_fix_common_issues.py",
+      "line": 567,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 59,
+      "rule": "py/pythagorean",
+      "severity": "MEDIUM",
+      "file": "src/codex/utils/math_helpers.py",
+      "line": 234,
+      "category": "Code Quality",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 60,
+      "rule": "py/pythagorean",
+      "severity": "MEDIUM",
+      "file": "tests/codex/test_math.py",
+      "line": 89,
+      "category": "Code Quality",
+      "remediability": "suppress"
+    },
+    {
+      "number": 61,
+      "rule": "py/path-injection",
+      "severity": "MEDIUM",
+      "file": "scripts/fix_security_issues.py",
+      "line": 123,
+      "category": "Path Traversal",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 62,
+      "rule": "py/sql-injection",
+      "severity": "MEDIUM",
+      "file": "src/db/query.py",
+      "line": 456,
+      "category": "SQL Injection",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 63,
+      "rule": "py/code-injection",
+      "severity": "MEDIUM",
+      "file": "scripts/ci/auto_fix_common_issues.py",
+      "line": 678,
+      "category": "Code Injection",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 64,
+      "rule": "py/weak-crypto",
+      "severity": "MEDIUM",
+      "file": "src/security/crypto.py",
+      "line": 145,
+      "category": "Cryptography",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 65,
+      "rule": "py/weak-crypto",
+      "severity": "MEDIUM",
+      "file": "scripts/ops/codex_mint_tokens_per_run.py",
+      "line": 234,
+      "category": "Cryptography",
+      "remediability": "code-fix"
+    },
+    {
+      "number": 66,
+      "rule": "py/insecure-randomness",
+      "severity": "MEDIUM",
+      "file": "src/security/token_generator.py",
+      "line": 67,
+      "category": "Cryptography",
+      "remediability": "code-fix"
+    }
+  ]
+}
