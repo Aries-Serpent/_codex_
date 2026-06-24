@@ -72,9 +72,9 @@ class TestSimpleCliModeration:
             runner = CliRunner()
             result = runner.invoke(cli, ["infer", "--prompt", "blocked content"])
 
-        assert result.exit_code != 0, (
-            f"Expected non-zero exit on moderation rejection, got {result.exit_code}"
-        )
+        assert (
+            result.exit_code != 0
+        ), f"Expected non-zero exit on moderation rejection, got {result.exit_code}"
 
     def test_rejected_input_message_does_not_leak_reasons(self) -> None:
         """Error output does not expose internal moderation reasons."""
@@ -215,9 +215,9 @@ class TestPredictEndpointModeration:
 
             response = client.post("/predict", json={"prompt": "blocked content"})
 
-        assert response.status_code == 400, (
-            f"Expected 400 on moderation rejection, got {response.status_code}"
-        )
+        assert (
+            response.status_code == 400
+        ), f"Expected 400 on moderation rejection, got {response.status_code}"
 
     def test_rejected_input_response_does_not_leak_reasons(self, client) -> None:
         """HTTP 400 response body must not contain internal moderation details."""
@@ -243,9 +243,9 @@ class TestPredictEndpointModeration:
 
             response = client.post("/predict", json={"prompt": "hello"})
 
-        assert response.status_code == 200, (
-            f"Expected 200 for accepted prompt, got {response.status_code}"
-        )
+        assert (
+            response.status_code == 200
+        ), f"Expected 200 for accepted prompt, got {response.status_code}"
 
     def test_moderation_settings_fail_closed(self, client) -> None:
         """ModerationAdapter in /predict must be instantiated with enabled=True, fail_open=False."""
@@ -291,7 +291,9 @@ class TestLLMClientModeration:
             mock_cls.return_value = mock_adapter
 
             with pytest.raises(ModerationRejection):
-                llm.infer_intent({"source_excerpt": "bad code", "imports": [], "static_summary": {}})
+                llm.infer_intent(
+                    {"source_excerpt": "bad code", "imports": [], "static_summary": {}}
+                )
 
     def test_infer_intent_accepted_input_calls_openai(self) -> None:
         """infer_intent with accepted input proceeds to the OpenAI API call."""
@@ -354,9 +356,9 @@ class TestLLMClientModeration:
 
             llm.summarize_code("def foo(): pass")
 
-        assert call_order[0] == "moderation", (
-            f"Expected moderation before API call, got order: {call_order}"
-        )
+        assert (
+            call_order[0] == "moderation"
+        ), f"Expected moderation before API call, got order: {call_order}"
 
 
 # ---------------------------------------------------------------------------
@@ -443,9 +445,9 @@ class TestOrchestratorModeration:
 
         assert "moderation" in call_order, "Moderation was never called"
         if "rate_limit" in call_order:
-            assert call_order.index("moderation") < call_order.index("rate_limit"), (
-                f"Moderation must come before rate limiting, got: {call_order}"
-            )
+            assert call_order.index("moderation") < call_order.index(
+                "rate_limit"
+            ), f"Moderation must come before rate limiting, got: {call_order}"
 
     def test_accepted_task_proceeds_to_execution(self) -> None:
         """Accepted task proceeds to normal execution path."""
@@ -542,9 +544,9 @@ class TestAutonomousRunnerModeration:
 
         assert "moderation" in call_order, "Moderation was never called"
         assert "select_model" in call_order, "select_model was never called"
-        assert call_order.index("moderation") < call_order.index("select_model"), (
-            f"Moderation must come before model selection, got: {call_order}"
-        )
+        assert call_order.index("moderation") < call_order.index(
+            "select_model"
+        ), f"Moderation must come before model selection, got: {call_order}"
 
     def test_accepted_task_proceeds_to_execution(self) -> None:
         """Accepted task proceeds to normal execution path."""

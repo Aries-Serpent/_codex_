@@ -12,6 +12,7 @@ def test_agent_manager_creation():
     """Test creating an AgentManager instance."""
     try:
         from codex_engine import AgentManager
+
         manager = AgentManager(max_agents=10)
         assert manager.get_max_agents() == 10
         assert manager.get_active_count() == 0
@@ -23,6 +24,7 @@ def test_agent_manager_properties():
     """Test AgentManager properties."""
     try:
         from codex_engine import AgentManager
+
         manager = AgentManager(max_agents=25)
         assert manager.get_max_agents() == 25
         assert manager.get_active_count() == 0
@@ -35,6 +37,7 @@ def test_agent_spawning_capacity():
     """Test that manager respects max_agents limit."""
     try:
         from codex_engine import AgentManager
+
         manager = AgentManager(max_agents=5)
 
         # Try to spawn more than max
@@ -55,6 +58,7 @@ def test_agent_termination():
     """Test terminating agents."""
     try:
         from codex_engine import AgentManager
+
         manager = AgentManager(max_agents=10)
 
         manager.spawn_agent("agent_1", "{}")
@@ -70,6 +74,7 @@ def test_list_active_agents():
     """Test listing active agents."""
     try:
         from codex_engine import AgentManager
+
         manager = AgentManager(max_agents=10)
 
         manager.spawn_agent("agent_1", "{}")
@@ -87,6 +92,7 @@ def test_agent_manager_concurrent_access():
     """Test concurrent agent manager access from multiple threads."""
     try:
         from codex_engine import AgentManager
+
         manager = AgentManager(max_agents=50)
 
         def spawn_agents(start, count):
@@ -101,10 +107,7 @@ def test_agent_manager_concurrent_access():
                     _ = None  # suppressed: no action needed
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(spawn_agents, i * 5, 5)
-                for i in range(10)
-            ]
+            futures = [executor.submit(spawn_agents, i * 5, 5) for i in range(10)]
             concurrent.futures.wait(futures)
 
         time.sleep(0.2)

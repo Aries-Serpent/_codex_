@@ -254,9 +254,7 @@ class TestGenerateHtmlDashboard:
         output_path = tmp_path / "index.html"
         malicious_manifest = {
             "version": "<script>alert('version')</script>",
-            "weights": {
-                "<script>alert('key')</script>": "<script>alert('value')</script>"
-            },
+            "weights": {"<script>alert('key')</script>": "<script>alert('value')</script>"},
             "artifacts": [
                 {
                     "name": "<img src=x onerror=alert(2)>",

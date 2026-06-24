@@ -32,6 +32,7 @@ def test_hydra_compose_smoke():
         from hydra import compose, initialize_config_dir
 
         from omegaconf import OmegaConf
+
         hydra_module = _sys_hydra.modules["hydra"]
     except ModuleNotFoundError as exc:  # pragma: no cover - optional dependency guard
         pytest.skip(str(exc))

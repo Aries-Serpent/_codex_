@@ -25,6 +25,7 @@ from codex.logging.session_logger import SessionLogger
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def temp_db_file():
     """Create a temporary database file."""
@@ -48,6 +49,7 @@ def db_manager(temp_db_file):
 # ============================================================================
 # Event Tests
 # ============================================================================
+
 
 class TestEventClass:
     """Test Event class."""
@@ -128,6 +130,7 @@ class TestEventClass:
 # ============================================================================
 # Causal Link Tests
 # ============================================================================
+
 
 class TestCausalLinkClass:
     """Test CausalLink class."""
@@ -268,6 +271,7 @@ class TestCausalLinkClass:
 # Session Logger Tests
 # ============================================================================
 
+
 class TestSessionLogger:
     """Test SessionLogger functionality."""
 
@@ -298,6 +302,7 @@ class TestSessionLogger:
 # ============================================================================
 # Database Manager Tests
 # ============================================================================
+
 
 class TestDatabaseManager:
     """Test DatabaseManager functionality."""
@@ -330,6 +335,7 @@ class TestDatabaseManager:
 # ============================================================================
 # Causal Event Logger Tests
 # ============================================================================
+
 
 class TestCausalEventLogging:
     """Test causal event logging functionality."""
@@ -411,6 +417,7 @@ class TestCausalEventLogging:
 # Event Serialization Tests
 # ============================================================================
 
+
 class TestEventSerialization:
     """Test event serialization."""
 
@@ -468,6 +475,7 @@ class TestEventSerialization:
 # ============================================================================
 # Edge Cases Tests
 # ============================================================================
+
 
 class TestLoggingEdgeCases:
     """Test edge cases in logging."""
@@ -535,6 +543,7 @@ class TestLoggingEdgeCases:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestLoggingIntegration:
     """Integration tests for logging modules."""

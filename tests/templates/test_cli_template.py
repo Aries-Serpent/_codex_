@@ -140,7 +140,12 @@ class TestCLICommands:
             cwd=REPO_ROOT,
         )
         output = result.stdout + result.stderr
-        assert result.returncode != 0 or "required" in output.lower() or "missing" in output.lower() or "error" in output.lower()
+        assert (
+            result.returncode != 0
+            or "required" in output.lower()
+            or "missing" in output.lower()
+            or "error" in output.lower()
+        )
 
 
 # =============================================================================
@@ -162,6 +167,7 @@ class TestCLIOutput:
         )
         if result.returncode == 0 and result.stdout.strip():
             import json
+
             try:
                 json.loads(result.stdout)
             except json.JSONDecodeError:
@@ -205,11 +211,7 @@ class TestCLIErrorHandling:
         )
         output = result.stdout + result.stderr
         # Should indicate command not found or show help
-        assert (
-            result.returncode != 0
-            or "error" in output.lower()
-            or "unknown" in output.lower()
-        )
+        assert result.returncode != 0 or "error" in output.lower() or "unknown" in output.lower()
 
 
 # =============================================================================
@@ -261,6 +263,7 @@ class TestCLIIntegration:
         """Test CLI integration with config module."""
         assert temp_config_file.exists()
         import yaml
+
         content = yaml.safe_load(temp_config_file.read_text())
         assert content is not None
 

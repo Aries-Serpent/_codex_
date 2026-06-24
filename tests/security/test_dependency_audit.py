@@ -113,6 +113,7 @@ class TestDependabot:
 
         try:
             import yaml
+
             content = yaml.safe_load(dependabot_path.read_text(encoding="utf-8"))
             assert "updates" in content, "Dependabot should have updates"
         except ImportError:
@@ -154,10 +155,6 @@ class TestSecurityAdvisories:
         for sec_path in security_paths:
             if sec_path.exists():
                 content = sec_path.read_text(encoding="utf-8").lower()
-                has_contact = (
-                    "email" in content or
-                    "report" in content or
-                    "contact" in content
-                )
+                has_contact = "email" in content or "report" in content or "contact" in content
                 assert has_contact, "SECURITY.md should have contact info"
                 return

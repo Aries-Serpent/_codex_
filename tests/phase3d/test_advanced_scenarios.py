@@ -28,14 +28,14 @@ class TestFileIOEdgeCases:
 
     def test_temp_file_creation(self):
         """Test temporary file creation and cleanup."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             f.write("test content")
             f.flush()
             filename = f.name
 
         try:
             assert os.path.exists(filename)
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 content = f.read()
             assert content == "test content"
         finally:
@@ -43,11 +43,11 @@ class TestFileIOEdgeCases:
 
     def test_file_empty_operations(self):
         """Test operations on empty file."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             filename = f.name
 
         try:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 content = f.read()
             assert content == ""
         finally:
@@ -56,13 +56,13 @@ class TestFileIOEdgeCases:
     def test_file_large_content(self):
         """Test file operations with large content."""
         large_content = "x" * 100000
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write(large_content)
             f.flush()
             filename = f.name
 
         try:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 content = f.read()
             assert len(content) == 100000
         finally:
@@ -70,14 +70,14 @@ class TestFileIOEdgeCases:
 
     def test_file_binary_operations(self):
         """Test binary file operations."""
-        binary_data = b'\x00\x01\x02\x03\x04\xff'
+        binary_data = b"\x00\x01\x02\x03\x04\xff"
         with tempfile.NamedTemporaryFile(delete=False) as f:
             f.write(binary_data)
             f.flush()
             filename = f.name
 
         try:
-            with open(filename, 'rb') as f:
+            with open(filename, "rb") as f:
                 data = f.read()
             assert data == binary_data
         finally:
@@ -89,11 +89,11 @@ class TestFileIOEdgeCases:
         content_windows = "line1\r\nline2\r\nline3"
 
         # Test unix
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, newline='') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, newline="") as f:
             f.write(content_unix)
             filename = f.name
         try:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 lines = f.readlines()
             assert len(lines) == 3
         finally:
@@ -101,15 +101,15 @@ class TestFileIOEdgeCases:
 
     def test_file_append_mode(self):
         """Test file append mode."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write("line1\n")
             filename = f.name
 
         try:
-            with open(filename, 'a') as f:
+            with open(filename, "a") as f:
                 f.write("line2\n")
 
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 content = f.read()
             assert "line1" in content
             assert "line2" in content
@@ -130,7 +130,7 @@ class TestFileIOEdgeCases:
     def test_nonexistent_file_handling(self):
         """Test handling of nonexistent file."""
         with pytest.raises(FileNotFoundError):
-            with open("/nonexistent/path/file.txt", 'r') as f:
+            with open("/nonexistent/path/file.txt", "r") as f:
                 f.read()
 
 
@@ -505,6 +505,7 @@ class TestConcurrencyEdgeCases:
 
     def test_thread_daemon(self):
         """Test daemon thread."""
+
         def worker():
             time.sleep(0.1)
 
@@ -564,34 +565,43 @@ class TestMockingEdgeCases:
 
 
 # Parametrized tests
-@pytest.mark.parametrize("value,expected_type", [
-    (None, type(None)),
-    (0, int),
-    ("", str),
-    ([], list),
-    ({}, dict),
-    (set(), set),
-])
+@pytest.mark.parametrize(
+    "value,expected_type",
+    [
+        (None, type(None)),
+        (0, int),
+        ("", str),
+        ([], list),
+        ({}, dict),
+        (set(), set),
+    ],
+)
 def test_type_checking(value, expected_type):
     """Parametrized test for type checking."""
     assert isinstance(value, expected_type)
 
 
-@pytest.mark.parametrize("text,expected", [
-    ("", 0),
-    ("a", 1),
-    ("hello world", 11),
-])
+@pytest.mark.parametrize(
+    "text,expected",
+    [
+        ("", 0),
+        ("a", 1),
+        ("hello world", 11),
+    ],
+)
 def test_string_length(text, expected):
     """Parametrized test for string length."""
     assert len(text) == expected
 
 
-@pytest.mark.parametrize("numbers,expected", [
-    ([1], 1),
-    ([1, 2, 3], 3),
-    ([5, 2, 8, 1], 8),
-])
+@pytest.mark.parametrize(
+    "numbers,expected",
+    [
+        ([1], 1),
+        ([1, 2, 3], 3),
+        ([5, 2, 8, 1], 8),
+    ],
+)
 def test_max_operations(numbers, expected):
     """Parametrized test for max operations."""
     assert max(numbers) == expected

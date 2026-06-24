@@ -51,9 +51,7 @@ class TestDecisionLogging:
         cursor = conn.cursor()
 
         # Check tables exist
-        cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='decision_log'"
-        )
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='decision_log'")
         assert cursor.fetchone() is not None
 
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='audit_log'")
@@ -281,11 +279,11 @@ class TestConfidenceScoring:
         # Test all complexity levels
         complexity_scores = [
             (0, 100.0),  # Simple
-            (1, 80.0),   # Low
-            (2, 60.0),   # Medium
-            (3, 40.0),   # High
-            (4, 20.0),   # Critical
-            (5, 0.0),    # Unknown
+            (1, 80.0),  # Low
+            (2, 60.0),  # Medium
+            (3, 40.0),  # High
+            (4, 20.0),  # Critical
+            (5, 0.0),  # Unknown
         ]
 
         for level, expected in complexity_scores:
@@ -295,25 +293,31 @@ class TestConfidenceScoring:
     def test_context_complexity_analysis(self, scorer):
         """Test context complexity analysis."""
         # Simple context
-        level, detail = scorer._analyze_context_complexity({
-            "files_affected": ["test.py"],
-            "dependencies": [],
-        })
+        level, detail = scorer._analyze_context_complexity(
+            {
+                "files_affected": ["test.py"],
+                "dependencies": [],
+            }
+        )
         assert level == 0
 
         # Complex context
-        level, detail = scorer._analyze_context_complexity({
-            "files_affected": list(range(20)),
-            "dependencies": list(range(5)),
-            "cross_system_impact": True,
-        })
+        level, detail = scorer._analyze_context_complexity(
+            {
+                "files_affected": list(range(20)),
+                "dependencies": list(range(5)),
+                "cross_system_impact": True,
+            }
+        )
         assert level == 3
 
         # Novel scenario
-        level, detail = scorer._analyze_context_complexity({
-            "novel_scenario": True,
-            "files_affected": [],
-        })
+        level, detail = scorer._analyze_context_complexity(
+            {
+                "novel_scenario": True,
+                "files_affected": [],
+            }
+        )
         assert level == 5
 
     def test_manual_signals_evaluation(self, scorer):
@@ -331,10 +335,12 @@ class TestConfidenceScoring:
         assert score == -100.0
 
         # Multiple signals
-        score = scorer._evaluate_manual_signals({
-            "high_confidence": True,
-            "caution": True,
-        })
+        score = scorer._evaluate_manual_signals(
+            {
+                "high_confidence": True,
+                "caution": True,
+            }
+        )
         assert score == -5.0  # 15 - 20 = -5
 
     def test_score_with_context(self, scorer):
@@ -429,17 +435,20 @@ class TestAgentDecisionPaths:
         DecisionLogger(db_path)
         return ConfidenceScorer(db_path)
 
-    @pytest.mark.parametrize("agent_id", [
-        "ci-health-alert-agent",
-        "ci-testing-agent",
-        "copilot-session-chain",
-        "energy-conversion-agent",
-        "packaging-validation-agent",
-        "rust-error-validator",
-        "test-assertion-updater",
-        "test-pattern-guardian",
-        "workflow-ci-fixer",
-    ])
+    @pytest.mark.parametrize(
+        "agent_id",
+        [
+            "ci-health-alert-agent",
+            "ci-testing-agent",
+            "copilot-session-chain",
+            "energy-conversion-agent",
+            "packaging-validation-agent",
+            "rust-error-validator",
+            "test-assertion-updater",
+            "test-pattern-guardian",
+            "workflow-ci-fixer",
+        ],
+    )
     def test_agent_low_risk_path(self, scorer, agent_id):
         """Test low-risk decision path for agent."""
         result = scorer.score_with_context(
@@ -458,11 +467,14 @@ class TestAgentDecisionPaths:
         assert result["confidence_score"] >= 75
         assert result["decision_action"] == "EXECUTE"
 
-    @pytest.mark.parametrize("agent_id", [
-        "ci-testing-agent",
-        "copilot-session-chain",
-        "test-assertion-updater",
-    ])
+    @pytest.mark.parametrize(
+        "agent_id",
+        [
+            "ci-testing-agent",
+            "copilot-session-chain",
+            "test-assertion-updater",
+        ],
+    )
     def test_agent_high_risk_path(self, scorer, agent_id):
         """Test high-risk decision path for agent."""
         result = scorer.score_with_context(
@@ -506,8 +518,10 @@ class TestAgentDecisionPaths:
                 )
 
                 # Assume any execution with confidence 50-70 might be false positive
-                if (50 <= result["confidence_score"] <= 70 and
-                    result["decision_action"] == "EXECUTE"):
+                if (
+                    50 <= result["confidence_score"] <= 70
+                    and result["decision_action"] == "EXECUTE"
+                ):
                     false_positives += 1
 
                 total += 1
@@ -635,7 +649,7 @@ class TestPhase91Integration:
             logger.log_decision(record)
             successes += 1
 
-        accuracy = (successes / total * 100)
+        accuracy = successes / total * 100
         assert accuracy >= 90.0, f"Accuracy: {accuracy}%, expected >=90%"
 
 

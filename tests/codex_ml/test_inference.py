@@ -1,7 +1,6 @@
 """Tests for inference functionality in codex_ml."""
 
 
-
 class TestInference:
     """Tests for inference operations."""
 

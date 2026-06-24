@@ -35,7 +35,7 @@ class TestArticleMetadata:
             url="https://example.zendesk.com/hc/article-1",
             section="getting-started",
             bucket="tutorials",
-            last_fetched="2026-01-09T12:00:00+00:00"
+            last_fetched="2026-01-09T12:00:00+00:00",
         )
 
         assert meta.url == "https://example.zendesk.com/hc/article-1"
@@ -55,7 +55,7 @@ class TestArticleMetadata:
             last_fetched="2026-01-09T12:00:00+00:00",
             last_modified="Wed, 08 Jan 2026 10:00:00 GMT",
             etag='"abc123"',
-            content_hash="sha256:deadbeef"
+            content_hash="sha256:deadbeef",
         )
 
         assert meta.last_modified == "Wed, 08 Jan 2026 10:00:00 GMT"
@@ -74,7 +74,7 @@ class TestSyncResult:
             updated=10,
             failed=5,
             skipped=85,
-            timestamp="2026-01-09T12:00:00+00:00"
+            timestamp="2026-01-09T12:00:00+00:00",
         )
 
         assert result.total_articles == 100
@@ -94,7 +94,7 @@ class TestSyncResult:
             failed=0,
             skipped=25,
             timestamp="2026-01-09T12:00:00+00:00",
-            dataset_path="/tmp/dataset.json"
+            dataset_path="/tmp/dataset.json",
         )
 
         assert result.dataset_path == "/tmp/dataset.json"
@@ -117,14 +117,10 @@ class TestZendeskKnowledgeSyncService:
             "getting-started": {
                 "tutorials": [
                     "https://example.zendesk.com/hc/tutorial-1",
-                    "https://example.zendesk.com/hc/tutorial-2"
+                    "https://example.zendesk.com/hc/tutorial-2",
                 ]
             },
-            "api": {
-                "reference": [
-                    "https://example.zendesk.com/hc/api-ref-1"
-                ]
-            }
+            "api": {"reference": ["https://example.zendesk.com/hc/api-ref-1"]},
         }
         manifest_path.write_text(json.dumps(manifest_data))
         return manifest_path
@@ -137,7 +133,7 @@ class TestZendeskKnowledgeSyncService:
             api_index_path=temp_dir / "api_index.json",
             output_root=temp_dir / "output",
             retries=2,
-            backoff=0.1
+            backoff=0.1,
         )
 
     def test_service_initialization(self, service, temp_dir, mock_manifest):
@@ -168,15 +164,14 @@ class TestZendeskKnowledgeSyncService:
                     "last_fetched": "2026-01-08T10:00:00+00:00",
                     "last_modified": "Wed, 07 Jan 2026 10:00:00 GMT",
                     "etag": '"abc123"',
-                    "content_hash": None
+                    "content_hash": None,
                 }
-            }
+            },
         }
         cache_path.write_text(json.dumps(cache_data))
 
         service = ZendeskKnowledgeSyncService(
-            api_index_path=cache_path,
-            output_root=temp_dir / "output"
+            api_index_path=cache_path, output_root=temp_dir / "output"
         )
 
         assert len(service._cache) == 1
@@ -191,8 +186,7 @@ class TestZendeskKnowledgeSyncService:
         cache_path.write_text("{ invalid json")
 
         service = ZendeskKnowledgeSyncService(
-            api_index_path=cache_path,
-            output_root=temp_dir / "output"
+            api_index_path=cache_path, output_root=temp_dir / "output"
         )
 
         # Should fall back to empty cache
@@ -205,7 +199,7 @@ class TestZendeskKnowledgeSyncService:
             section="api",
             bucket="reference",
             last_fetched="2026-01-09T12:00:00+00:00",
-            etag='"xyz789"'
+            etag='"xyz789"',
         )
 
         service._save_cache()
@@ -225,12 +219,15 @@ class TestZendeskKnowledgeSyncService:
         assert service._slug("  spaces  ") == "spaces"
         assert service._slug("UPPERCASE") == "uppercase"
 
-    @patch('urllib.request.urlopen')
+    @patch("urllib.request.urlopen")
     def test_fetch_success(self, mock_urlopen, service):
         """Test successful URL fetching."""
         mock_response = MagicMock()
         mock_response.read.return_value = b"<html>content</html>"
-        mock_response.headers = {"ETag": '"abc123"', "Last-Modified": "Wed, 08 Jan 2026 10:00:00 GMT"}
+        mock_response.headers = {
+            "ETag": '"abc123"',
+            "Last-Modified": "Wed, 08 Jan 2026 10:00:00 GMT",
+        }
         mock_urlopen.return_value.__enter__.return_value = mock_response
 
         content, headers = service._fetch("https://example.zendesk.com/hc/article-1")
@@ -239,7 +236,7 @@ class TestZendeskKnowledgeSyncService:
         assert headers["ETag"] == '"abc123"'
         assert headers["Last-Modified"] == "Wed, 08 Jan 2026 10:00:00 GMT"
 
-    @patch('urllib.request.urlopen')
+    @patch("urllib.request.urlopen")
     def test_fetch_with_retry(self, mock_urlopen, service):
         """Test URL fetching with retry on failure."""
         # First attempt fails, second succeeds
@@ -252,17 +249,14 @@ class TestZendeskKnowledgeSyncService:
         mock_context.__enter__.return_value = mock_response
         mock_context.__exit__.return_value = None
 
-        mock_urlopen.side_effect = [
-            URLError("Network error"),
-            mock_context
-        ]
+        mock_urlopen.side_effect = [URLError("Network error"), mock_context]
 
         content, _headers = service._fetch("https://example.zendesk.com/hc/article-1")
 
         assert content == b"<html>content</html>"
         assert mock_urlopen.call_count == 2
 
-    @patch('urllib.request.urlopen')
+    @patch("urllib.request.urlopen")
     def test_fetch_failure_after_retries(self, mock_urlopen, service):
         """Test URL fetching fails after all retries."""
         mock_urlopen.side_effect = URLError("Persistent network error")
@@ -301,7 +295,7 @@ class TestZendeskKnowledgeSyncService:
             section="api",
             bucket="reference",
             last_fetched="2026-01-08T10:00:00+00:00",
-            etag='"abc123"'
+            etag='"abc123"',
         )
 
         headers = {"ETag": '"abc123"'}
@@ -315,7 +309,7 @@ class TestZendeskKnowledgeSyncService:
             section="api",
             bucket="reference",
             last_fetched="2026-01-08T10:00:00+00:00",
-            etag='"abc123"'
+            etag='"abc123"',
         )
 
         headers = {"ETag": '"xyz789"'}
@@ -329,14 +323,14 @@ class TestZendeskKnowledgeSyncService:
             section="api",
             bucket="reference",
             last_fetched="2026-01-08T10:00:00+00:00",
-            last_modified="Wed, 07 Jan 2026 10:00:00 GMT"
+            last_modified="Wed, 07 Jan 2026 10:00:00 GMT",
         )
 
         headers = {"Last-Modified": "Wed, 07 Jan 2026 10:00:00 GMT"}
         assert service._should_update(url, headers) is False
 
-    @patch('src.services.crawler.zendesk_sync.scrub_pii')
-    @patch.object(ZendeskKnowledgeSyncService, '_fetch')
+    @patch("src.services.crawler.zendesk_sync.scrub_pii")
+    @patch.object(ZendeskKnowledgeSyncService, "_fetch")
     def test_check_and_pull_dry_run(self, mock_fetch, mock_scrub, service, mock_manifest):
         """Test check_and_pull in dry-run mode."""
         result = service.check_and_pull(dry_run=True)
@@ -347,8 +341,8 @@ class TestZendeskKnowledgeSyncService:
         assert result.failed == 0
         assert mock_fetch.call_count == 0  # No fetching in dry-run
 
-    @patch('src.services.crawler.zendesk_sync.scrub_pii')
-    @patch.object(ZendeskKnowledgeSyncService, '_fetch')
+    @patch("src.services.crawler.zendesk_sync.scrub_pii")
+    @patch.object(ZendeskKnowledgeSyncService, "_fetch")
     def test_check_and_pull_full_sync(self, mock_fetch, mock_scrub, service, mock_manifest):
         """Test full check_and_pull sync."""
         mock_fetch.return_value = (b"<html>content</html>", {"ETag": '"abc123"'})
@@ -362,9 +356,11 @@ class TestZendeskKnowledgeSyncService:
         assert result.failed == 0
         assert len(service._cache) == 3
 
-    @patch('src.services.crawler.zendesk_sync.scrub_pii')
-    @patch.object(ZendeskKnowledgeSyncService, '_fetch')
-    def test_check_and_pull_with_pii_detection(self, mock_fetch, mock_scrub, service, mock_manifest):
+    @patch("src.services.crawler.zendesk_sync.scrub_pii")
+    @patch.object(ZendeskKnowledgeSyncService, "_fetch")
+    def test_check_and_pull_with_pii_detection(
+        self, mock_fetch, mock_scrub, service, mock_manifest
+    ):
         """Test check_and_pull detects and logs PII."""
         mock_fetch.return_value = (b"<html>email@example.com</html>", {})
         mock_scrub.return_value = ("<html>[REDACTED]</html>", {"email": True})
@@ -375,14 +371,14 @@ class TestZendeskKnowledgeSyncService:
         # Verify scrubbing was called
         assert mock_scrub.call_count == 3
 
-    @patch('src.services.crawler.zendesk_sync.scrub_pii')
-    @patch.object(ZendeskKnowledgeSyncService, '_fetch')
+    @patch("src.services.crawler.zendesk_sync.scrub_pii")
+    @patch.object(ZendeskKnowledgeSyncService, "_fetch")
     def test_check_and_pull_with_failures(self, mock_fetch, mock_scrub, service, mock_manifest):
         """Test check_and_pull handles failures gracefully."""
         mock_fetch.side_effect = [
             (b"<html>content1</html>", {}),
             RuntimeError("Network error"),
-            (b"<html>content3</html>", {})
+            (b"<html>content3</html>", {}),
         ]
         mock_scrub.return_value = ("<html>scrubbed</html>", {})
 
@@ -395,16 +391,17 @@ class TestZendeskKnowledgeSyncService:
     def test_check_and_pull_missing_manifest(self, temp_dir):
         """Test check_and_pull raises error when manifest missing."""
         service = ZendeskKnowledgeSyncService(
-            manifest_path=temp_dir / "nonexistent.json",
-            output_root=temp_dir / "output"
+            manifest_path=temp_dir / "nonexistent.json", output_root=temp_dir / "output"
         )
 
         with pytest.raises(FileNotFoundError, match="Manifest not found"):
             service.check_and_pull()
 
-    @patch('src.services.crawler.zendesk_sync.scrub_pii')
-    @patch.object(ZendeskKnowledgeSyncService, '_fetch')
-    def test_incremental_sync_no_previous_sync(self, mock_fetch, mock_scrub, service, mock_manifest):
+    @patch("src.services.crawler.zendesk_sync.scrub_pii")
+    @patch.object(ZendeskKnowledgeSyncService, "_fetch")
+    def test_incremental_sync_no_previous_sync(
+        self, mock_fetch, mock_scrub, service, mock_manifest
+    ):
         """Test incremental sync falls back to full sync when no cache exists."""
         mock_fetch.return_value = (b"<html>content</html>", {})
         mock_scrub.return_value = ("<html>scrubbed</html>", {})
@@ -465,23 +462,17 @@ class TestServiceIntegration:
     def integration_service(self, tmp_path):
         """Create service with temporary paths for integration testing."""
         manifest_path = tmp_path / "manifest.json"
-        manifest_data = {
-            "tutorials": {
-                "basics": [
-                    "https://example.zendesk.com/hc/tutorial-1"
-                ]
-            }
-        }
+        manifest_data = {"tutorials": {"basics": ["https://example.zendesk.com/hc/tutorial-1"]}}
         manifest_path.write_text(json.dumps(manifest_data))
 
         return ZendeskKnowledgeSyncService(
             manifest_path=manifest_path,
             api_index_path=tmp_path / "cache.json",
-            output_root=tmp_path / "output"
+            output_root=tmp_path / "output",
         )
 
-    @patch('src.services.crawler.zendesk_sync.scrub_pii')
-    @patch('urllib.request.urlopen')
+    @patch("src.services.crawler.zendesk_sync.scrub_pii")
+    @patch("urllib.request.urlopen")
     def test_full_workflow_integration(self, mock_urlopen, mock_scrub, integration_service):
         """Test complete workflow from fetch to cache update."""
         # Mock HTTP response
@@ -489,7 +480,7 @@ class TestServiceIntegration:
         mock_response.read.return_value = b"<html>Tutorial content</html>"
         mock_response.headers = {
             "ETag": '"integration-test"',
-            "Last-Modified": "Wed, 08 Jan 2026 10:00:00 GMT"
+            "Last-Modified": "Wed, 08 Jan 2026 10:00:00 GMT",
         }
         mock_urlopen.return_value.__enter__.return_value = mock_response
 

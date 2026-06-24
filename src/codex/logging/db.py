@@ -51,16 +51,14 @@ def init_db(db_path: Optional[Path] = None) -> Path:
     conn = sqlite3.connect(str(p))
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-        conn.execute(
-            """CREATE TABLE IF NOT EXISTS session_events(
+        conn.execute("""CREATE TABLE IF NOT EXISTS session_events(
                 ts         REAL    NOT NULL,
                 session_id TEXT    NOT NULL,
                 role       TEXT    NOT NULL,
                 message    TEXT    NOT NULL,
                 seq        INTEGER,
                 meta       TEXT
-            )"""
-        )
+            )""")
         cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
         if "seq" not in cols:
             conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")

@@ -237,7 +237,7 @@ class TestUnicodeEncodingBranches:
         """Test ASCII text encoding."""
         text = "Hello World"
         try:
-            text.encode('ascii')
+            text.encode("ascii")
             result = "ascii"
         except UnicodeEncodeError:
             result = "non_ascii"
@@ -247,7 +247,7 @@ class TestUnicodeEncodingBranches:
         """Test Unicode text encoding."""
         text = "Hello 世界 🌍"
         try:
-            text.encode('ascii')
+            text.encode("ascii")
             result = "ascii"
         except UnicodeEncodeError:
             result = "non_ascii"
@@ -270,7 +270,7 @@ class TestUnicodeEncodingBranches:
     def test_multibyte_unicode_branch(self) -> None:
         """Test multibyte Unicode characters."""
         text = "日本語"
-        byte_count = len(text.encode('utf-8'))
+        byte_count = len(text.encode("utf-8"))
         char_count = len(text)
         result = "multibyte" if byte_count > char_count else "single_byte"
         assert result == "multibyte"
@@ -278,7 +278,7 @@ class TestUnicodeEncodingBranches:
     def test_single_byte_unicode_branch(self) -> None:
         """Test single-byte characters."""
         text = "abc"
-        byte_count = len(text.encode('utf-8'))
+        byte_count = len(text.encode("utf-8"))
         char_count = len(text)
         result = "multibyte" if byte_count > char_count else "single_byte"
         assert result == "single_byte"
@@ -287,7 +287,7 @@ class TestUnicodeEncodingBranches:
         """Test UTF-8 decode success."""
         data = b"Hello World"
         try:
-            data.decode('utf-8')
+            data.decode("utf-8")
             result = "success"
         except UnicodeDecodeError:
             result = "error"
@@ -297,7 +297,7 @@ class TestUnicodeEncodingBranches:
         """Test UTF-8 decode error handling."""
         data = b"\xff\xfe"
         try:
-            data.decode('utf-8')
+            data.decode("utf-8")
             result = "success"
         except UnicodeDecodeError:
             result = "error"
@@ -425,7 +425,8 @@ class TestFloatingPointEdgeCases:
     def test_float_nan_detection_branch(self) -> None:
         """Test NaN detection."""
         import math
-        value = float('nan')
+
+        value = float("nan")
         if math.isnan(value):
             result = "nan"
         elif math.isinf(value):
@@ -437,7 +438,8 @@ class TestFloatingPointEdgeCases:
     def test_float_inf_detection_branch(self) -> None:
         """Test infinity detection."""
         import math
-        value = float('inf')
+
+        value = float("inf")
         if math.isnan(value):
             result = "nan"
         elif math.isinf(value):
@@ -449,6 +451,7 @@ class TestFloatingPointEdgeCases:
     def test_float_normal_value_branch(self) -> None:
         """Test normal float value."""
         import math
+
         value = branch_input(3.14)
         if math.isnan(value):
             result = "nan"
@@ -461,7 +464,8 @@ class TestFloatingPointEdgeCases:
     def test_float_positive_infinity_branch(self) -> None:
         """Test positive infinity."""
         import math
-        value = float('inf')
+
+        value = float("inf")
         if math.isinf(value) and value > 0:
             result = "positive_inf"
         elif math.isinf(value) and value < 0:
@@ -473,7 +477,8 @@ class TestFloatingPointEdgeCases:
     def test_float_negative_infinity_branch(self) -> None:
         """Test negative infinity."""
         import math
-        value = float('-inf')
+
+        value = float("-inf")
         if math.isinf(value) and value > 0:
             result = "positive_inf"
         elif math.isinf(value) and value < 0:

@@ -40,7 +40,10 @@ def test_exchange_and_revoke_offline(monkeypatch):
 
     class MockSession:
         """Mock requests.Session to handle GitHubSession calls."""
-        def request(self, method, url, params=None, json=None, data=None, headers=None, timeout=None):
+
+        def request(
+            self, method, url, params=None, json=None, data=None, headers=None, timeout=None
+        ):
             if method == "POST" and "/access_tokens" in url:
                 assert json == {"repositories": ["o/r1"], "permissions": {"contents": "read"}}
                 return DummyResp(201, {"token": "inst.token", "expires_at": "2099-01-01T00:00:00Z"})

@@ -9,9 +9,8 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 import torch
-from torch import nn
-
 from codex_ml.config import ReasoningConfig, ReasoningHeadConfig, ToolAdapterConfig
+from torch import nn
 
 logger = logging.getLogger(__name__)
 

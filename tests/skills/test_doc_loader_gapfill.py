@@ -107,11 +107,7 @@ class TestFrontmatterToManifest:
             "capabilities": ["test.skill"],
         }
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/test.md",
-            text="# Test"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/test.md", text="# Test")
 
         assert manifest is not None
         assert manifest.name == "Test Skill"
@@ -123,9 +119,7 @@ class TestFrontmatterToManifest:
         fm = {"description": "A skill"}
 
         manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/my-skill.md",
-            text="# Skill"
+            fm, doc_path=".github/agents/my-skill.md", text="# Skill"
         )
 
         assert manifest is not None
@@ -135,29 +129,17 @@ class TestFrontmatterToManifest:
         """Should support multiple capability tag keys."""
         # Test with capability_tags
         fm1 = {"capability_tags": ["tag1", "tag2"]}
-        m1 = _frontmatter_to_manifest(
-            fm1,
-            doc_path=".github/agents/s1.md",
-            text="# S1"
-        )
+        m1 = _frontmatter_to_manifest(fm1, doc_path=".github/agents/s1.md", text="# S1")
         assert "tag1" in m1.capability_tags
 
         # Test with capabilities
         fm2 = {"capabilities": ["tag3"]}
-        m2 = _frontmatter_to_manifest(
-            fm2,
-            doc_path=".github/agents/s2.md",
-            text="# S2"
-        )
+        m2 = _frontmatter_to_manifest(fm2, doc_path=".github/agents/s2.md", text="# S2")
         assert "tag3" in m2.capability_tags
 
         # Test with capability (singular)
         fm3 = {"capability": "tag4,tag5"}
-        m3 = _frontmatter_to_manifest(
-            fm3,
-            doc_path=".github/agents/s3.md",
-            text="# S3"
-        )
+        m3 = _frontmatter_to_manifest(fm3, doc_path=".github/agents/s3.md", text="# S3")
         assert "tag4" in m3.capability_tags
         assert "tag5" in m3.capability_tags
 
@@ -166,9 +148,7 @@ class TestFrontmatterToManifest:
         fm = {}
 
         manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/my-test-skill.md",
-            text="# Skill"
+            fm, doc_path=".github/agents/my-test-skill.md", text="# Skill"
         )
 
         assert manifest is not None
@@ -178,11 +158,7 @@ class TestFrontmatterToManifest:
         """Should use provided skill_id."""
         fm = {"id": "custom.id"}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text="# Skill"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text="# Skill")
 
         assert manifest is not None
         assert manifest.id == "custom.id"
@@ -191,11 +167,7 @@ class TestFrontmatterToManifest:
         """Should default to version 1.0.0."""
         fm = {}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text="# Skill"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text="# Skill")
 
         assert manifest is not None
         assert manifest.version == "1.0.0"
@@ -204,11 +176,7 @@ class TestFrontmatterToManifest:
         """Should use provided version."""
         fm = {"version": "2.5.0"}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text="# Skill"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text="# Skill")
 
         assert manifest is not None
         assert manifest.version == "2.5.0"
@@ -217,11 +185,7 @@ class TestFrontmatterToManifest:
         """Should infer high risk for D_CAPABLE autonomy model."""
         fm = {"autonomy_model": "D_CAPABLE"}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text="# Skill"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text="# Skill")
 
         assert manifest is not None
         assert manifest.policy.risk_tier == "high"
@@ -230,11 +194,7 @@ class TestFrontmatterToManifest:
         """Should infer high risk for GROUNDED enforcement."""
         fm = {"enforcement_tier": "GROUNDED"}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text="# Skill"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text="# Skill")
 
         assert manifest is not None
         assert manifest.policy.risk_tier == "high"
@@ -243,26 +203,16 @@ class TestFrontmatterToManifest:
         """Should infer medium risk for PARTIAL enforcement."""
         fm = {"enforcement_tier": "PARTIAL"}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text="# Skill"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text="# Skill")
 
         assert manifest is not None
         assert manifest.policy.risk_tier == "medium"
 
     def test_entrypoint_from_integration_points(self):
         """Should derive entrypoint from integration_points."""
-        fm = {
-            "integration_points": ["scripts/my_skill.py"]
-        }
+        fm = {"integration_points": ["scripts/my_skill.py"]}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text="# Skill"
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text="# Skill")
 
         assert manifest is not None
         assert "scripts.my_skill:run" in manifest.entrypoint
@@ -272,11 +222,7 @@ class TestFrontmatterToManifest:
         text = "# Test Skill\n\nThis is test content."
         fm = {}
 
-        manifest = _frontmatter_to_manifest(
-            fm,
-            doc_path=".github/agents/skill.md",
-            text=text
-        )
+        manifest = _frontmatter_to_manifest(fm, doc_path=".github/agents/skill.md", text=text)
 
         assert manifest is not None
         assert manifest.doc.hash is not None

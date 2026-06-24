@@ -90,7 +90,7 @@ class TestStateTransitions:
         next_state = valid_sequence[current_index + 1]
 
         # Act
-        can_transition = next_state in valid_sequence[current_index + 1:]
+        can_transition = next_state in valid_sequence[current_index + 1 :]
 
         # Assert
         assert can_transition, "Should allow valid ordered transition"
@@ -159,7 +159,9 @@ class TestWorkflowEdgeCases:
 
         # Act
         first_failure = next((s for s in steps if s["status"] == "failed"), None)
-        cascaded = any(s["status"] == "not_started" for s in steps[steps.index(first_failure) + 1:])
+        cascaded = any(
+            s["status"] == "not_started" for s in steps[steps.index(first_failure) + 1 :]
+        )
 
         # Assert
         assert cascaded, "Failure should cascade to dependent steps"

@@ -83,8 +83,6 @@ async def test_json_rpc_timeout_handling():
     }
 
     try:
-        await asyncio.wait_for(
-            server.handle_request(request), timeout=5.0
-        )
+        await asyncio.wait_for(server.handle_request(request), timeout=5.0)
     except asyncio.TimeoutError:
         pytest.fail("Request timed out")

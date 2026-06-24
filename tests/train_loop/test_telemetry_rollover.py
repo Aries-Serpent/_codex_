@@ -15,6 +15,7 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
         from src.codex_ml.train_loop import run_training
     except ImportError as e:
         import pytest
+
         pytest.skip(f"run_training not available: {e}")
     else:
         outdir = tmp_path / "artifacts"
@@ -40,6 +41,7 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
             )
         except Exception as e:
             import pytest
+
             # If training fails due to missing dependencies, skip
             pytest.skip(f"Training execution failed: {e}")
 
@@ -47,6 +49,7 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
         telem = outdir / "telemetry.json"
         if not telem.exists():
             import pytest
+
             pytest.skip("telemetry.json not created - telemetry may be disabled")
 
         rolled = list(outdir.glob("telemetry-*.json"))

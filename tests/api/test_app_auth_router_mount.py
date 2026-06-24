@@ -48,20 +48,20 @@ class TestAuthRouterMount:
         client = _make_client()
         resp = client.post("/api/auth/register", json={})
         # A 422 (validation error) proves the route exists; 404 would mean unmounted.
-        assert resp.status_code != 404, (
-            "POST /api/auth/register returned 404 — auth router may not be mounted."
-        )
-        assert resp.status_code != 405, (
-            "POST /api/auth/register returned 405 — unexpected method restriction."
-        )
+        assert (
+            resp.status_code != 404
+        ), "POST /api/auth/register returned 404 — auth router may not be mounted."
+        assert (
+            resp.status_code != 405
+        ), "POST /api/auth/register returned 405 — unexpected method restriction."
 
     def test_login_endpoint_reachable(self):
         """POST /api/auth/login is reachable (returns 4xx, not 404/405)."""
         client = _make_client()
         resp = client.post("/api/auth/login", json={})
-        assert resp.status_code != 404, (
-            "POST /api/auth/login returned 404 — auth router may not be mounted."
-        )
+        assert (
+            resp.status_code != 404
+        ), "POST /api/auth/login returned 404 — auth router may not be mounted."
         assert resp.status_code != 405
 
     def test_health_endpoint_unaffected(self):
@@ -69,9 +69,9 @@ class TestAuthRouterMount:
         client = _make_client()
         resp = client.get("/health")
         # Accept 200 or 404 (endpoint may not be defined); reject 500.
-        assert resp.status_code < 500, (
-            f"Health endpoint returned unexpected server error: {resp.status_code}"
-        )
+        assert (
+            resp.status_code < 500
+        ), f"Health endpoint returned unexpected server error: {resp.status_code}"
 
     def test_auth_router_tag_present_in_openapi(self):
         """The auth router is tagged 'auth' in the OpenAPI spec."""
@@ -87,6 +87,4 @@ class TestAuthRouterMount:
                 if isinstance(method_data, dict):
                     path_tags.update(method_data.get("tags", []))
         all_tags = tags | path_tags
-        assert "auth" in all_tags, (
-            f"Expected 'auth' tag in OpenAPI spec, found tags: {all_tags}"
-        )
+        assert "auth" in all_tags, f"Expected 'auth' tag in OpenAPI spec, found tags: {all_tags}"

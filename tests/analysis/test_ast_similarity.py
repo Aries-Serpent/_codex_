@@ -32,9 +32,7 @@ def setup():
     (ART / "capabilities_raw.json").write_text(json.dumps(raw), encoding="utf-8")
 
     # Create test Python files with different structures
-    Path("test_a.py").write_text(
-        "def foo():\n    pass\nclass Bar:\n    x = 1", encoding="utf-8"
-    )
+    Path("test_a.py").write_text("def foo():\n    pass\nclass Bar:\n    x = 1", encoding="utf-8")
     Path("test_b.py").write_text("def baz():\n    return 42", encoding="utf-8")
     Path("test_c.md").write_text("# Docs", encoding="utf-8")
 

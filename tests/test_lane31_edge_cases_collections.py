@@ -2,6 +2,7 @@
 Lane 3.1 Edge Case Tests - Collections & Type-Specific Operations
 Tests for weak modules with focus on collection mutations
 """
+
 from typing import Any, Dict, Optional
 
 import pytest
@@ -109,40 +110,40 @@ class TestDictMutations:
     def test_dict_set_item_mutation(self):
         """Test dict set item operations"""
         d = {}
-        d['key'] = 'value'
+        d["key"] = "value"
 
-        assert d == {'key': 'value'}
-        assert d['key'] == 'value'
+        assert d == {"key": "value"}
+        assert d["key"] == "value"
         assert len(d) == 1
 
     def test_dict_get_mutation(self):
         """Test dict get operations"""
-        d = {'a': 1, 'b': 2}
+        d = {"a": 1, "b": 2}
 
-        assert d.get('a') == 1
-        assert d.get('c') is None
-        assert d.get('c', 'default') == 'default'
+        assert d.get("a") == 1
+        assert d.get("c") is None
+        assert d.get("c", "default") == "default"
 
     def test_dict_pop_mutation(self):
         """Test dict pop operations"""
-        d = {'a': 1, 'b': 2}
-        value = d.pop('a')
+        d = {"a": 1, "b": 2}
+        value = d.pop("a")
 
         assert value == 1
-        assert d == {'b': 2}
+        assert d == {"b": 2}
         assert len(d) == 1
 
     def test_dict_update_mutation(self):
         """Test dict update operations"""
-        d = {'a': 1}
-        d.update({'b': 2, 'c': 3})
+        d = {"a": 1}
+        d.update({"b": 2, "c": 3})
 
-        assert d == {'a': 1, 'b': 2, 'c': 3}
+        assert d == {"a": 1, "b": 2, "c": 3}
         assert len(d) == 3
 
     def test_dict_clear_mutation(self):
         """Test dict clear operations"""
-        d = {'a': 1, 'b': 2}
+        d = {"a": 1, "b": 2}
         d.clear()
 
         assert d == {}
@@ -150,22 +151,22 @@ class TestDictMutations:
 
     def test_dict_keys_values_items(self):
         """Test dict keys, values, items operations"""
-        d = {'a': 1, 'b': 2}
+        d = {"a": 1, "b": 2}
 
-        assert 'a' in d.keys()
-        assert 'c' not in d.keys()
+        assert "a" in d.keys()
+        assert "c" not in d.keys()
         assert 1 in d.values()
-        assert ('a', 1) in d.items()
+        assert ("a", 1) in d.items()
 
     def test_dict_copy_mutation(self):
         """Test dict copy operations"""
-        original = {'a': 1, 'b': 2}
+        original = {"a": 1, "b": 2}
         copy = original.copy()
 
-        copy['c'] = 3
+        copy["c"] = 3
 
-        assert original == {'a': 1, 'b': 2}
-        assert copy == {'a': 1, 'b': 2, 'c': 3}
+        assert original == {"a": 1, "b": 2}
+        assert copy == {"a": 1, "b": 2, "c": 3}
         assert original is not copy
 
 
@@ -295,20 +296,20 @@ class TestIterationMutations:
 
     def test_enumerate_mutation(self):
         """Test enumerate function"""
-        items = ['a', 'b', 'c']
+        items = ["a", "b", "c"]
         result = []
         for idx, item in enumerate(items):
             result.append((idx, item))
 
-        assert result == [(0, 'a'), (1, 'b'), (2, 'c')]
+        assert result == [(0, "a"), (1, "b"), (2, "c")]
 
     def test_zip_mutation(self):
         """Test zip function"""
         list1 = [1, 2, 3]
-        list2 = ['a', 'b', 'c']
+        list2 = ["a", "b", "c"]
         result = list(zip(list1, list2))
 
-        assert result == [(1, 'a'), (2, 'b'), (3, 'c')]
+        assert result == [(1, "a"), (2, "b"), (3, "c")]
 
 
 class TestTupleMutations:
@@ -435,7 +436,7 @@ class TestTypeConversions:
         """Test float conversion"""
         assert float("5.5") == 5.5
         assert float(5) == 5.0
-        assert float("inf") == float('inf')
+        assert float("inf") == float("inf")
 
     def test_str_conversion(self):
         """Test string conversion"""
@@ -501,6 +502,7 @@ class TestNullableHandling:
 
     def test_optional_unwrapping(self):
         """Test optional value unwrapping"""
+
         def process_optional(value: Optional[int]) -> int:
             if value is None:
                 return 0
@@ -512,14 +514,15 @@ class TestNullableHandling:
 
     def test_optional_chaining(self):
         """Test optional chaining pattern"""
+
         def get_nested(data: Optional[Dict[str, Any]], key: str) -> Optional[Any]:
             if data is None:
                 return None
             return data.get(key)
 
-        assert get_nested({'a': 1}, 'a') == 1
-        assert get_nested({'a': 1}, 'b') is None
-        assert get_nested(None, 'a') is None
+        assert get_nested({"a": 1}, "a") == 1
+        assert get_nested({"a": 1}, "b") is None
+        assert get_nested(None, "a") is None
 
 
 if __name__ == "__main__":

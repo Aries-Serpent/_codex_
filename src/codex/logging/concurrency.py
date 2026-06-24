@@ -16,7 +16,6 @@ import logging
 import sqlite3
 import threading
 import time
-from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -204,9 +203,7 @@ class SQLiteConnectionPool:
         with self._lock:
             if thread_id not in self._connections:
                 if len(self._connections) >= self.max_connections:
-                    raise RuntimeError(
-                        f"Connection pool exhausted ({self.max_connections} max)"
-                    )
+                    raise RuntimeError(f"Connection pool exhausted ({self.max_connections} max)")
                 conn = sqlite3.connect(self.db_path, timeout=self.timeout)
                 conn.row_factory = sqlite3.Row
                 conn.execute("PRAGMA foreign_keys = ON")
@@ -299,7 +296,7 @@ class ArchiveOperationLock:
                             f"Archive lock timeout after {self.max_retries} retries "
                             f"({self.timeout}s each)"
                         )
-                    time.sleep(min(2 ** retries, 10))  # Exponential backoff
+                    time.sleep(min(2**retries, 10))  # Exponential backoff
                     continue
 
                 self.metrics.lock_held_count += 1
@@ -335,7 +332,7 @@ class DeadlockRecovery:
                 if "database is locked" in str(e) or "locked" in str(e).lower():
                     last_error = e
                     if attempt < max_retries - 1:
-                        wait_time = base_delay * (2 ** attempt)
+                        wait_time = base_delay * (2**attempt)
                         logger.warning(
                             f"Database locked, retry {attempt + 1}/{max_retries} "
                             f"after {wait_time}s"

@@ -80,7 +80,7 @@ class TestBridgeAuthentication:
                     source="test_client",
                     message_type="test_message",
                     context={"data": "test"},
-                    auth_token="secure_token_xyz"
+                    auth_token="secure_token_xyz",
                 )
 
                 # Should pass authentication
@@ -107,7 +107,7 @@ class TestBridgeAuthentication:
                     source="malicious_client",
                     message_type="test_message",
                     context={"data": "test"},
-                    auth_token="wrong_token"  # Wrong token
+                    auth_token="wrong_token",  # Wrong token
                 )
 
                 # Should fail authentication
@@ -134,7 +134,7 @@ class TestBridgeAuthentication:
                     source="unauthorized_client",
                     message_type="test_message",
                     context={"data": "test"},
-                    auth_token=None  # No token
+                    auth_token=None,  # No token
                 )
 
                 # Should fail authentication
@@ -158,7 +158,7 @@ class TestBridgeAuthentication:
                 source="any_client",
                 message_type="test_message",
                 context={"data": "test"},
-                auth_token=None  # No token needed
+                auth_token=None,  # No token needed
             )
 
             # Should pass even without token
@@ -198,7 +198,7 @@ class TestBridgeAuditTrail:
             )
 
             # Read audit log
-            with open(bridge.audit_file, 'r') as f:
+            with open(bridge.audit_file, "r") as f:
                 lines = f.readlines()
 
             # Should have at least one entry (BRIDGE_INIT)
@@ -229,14 +229,14 @@ class TestBridgeAuditTrail:
                     source="test_client",
                     message_type="test_message",
                     context={"data": "test"},
-                    auth_token="audit_test_token"
+                    auth_token="audit_test_token",
                 )
 
                 # Verify token (triggers audit log)
                 bridge._verify_auth_token(message)
 
                 # Read audit log
-                with open(bridge.audit_file, 'r') as f:
+                with open(bridge.audit_file, "r") as f:
                     lines = f.readlines()
 
                 # Find AUTH_SUCCESS entry
@@ -270,14 +270,14 @@ class TestBridgeAuditTrail:
                     source="malicious_client",
                     message_type="test_message",
                     context={"data": "test"},
-                    auth_token="wrong_token"
+                    auth_token="wrong_token",
                 )
 
                 # Verify token (should fail and log)
                 bridge._verify_auth_token(message)
 
                 # Read audit log
-                with open(bridge.audit_file, 'r') as f:
+                with open(bridge.audit_file, "r") as f:
                     lines = f.readlines()
 
                 # Find AUTH_FAILURE entry
@@ -309,7 +309,7 @@ class TestBridgeAuditTrail:
             bridge.cleanup()
 
             # Read audit log
-            with open(audit_file_path, 'r') as f:
+            with open(audit_file_path, "r") as f:
                 lines = f.readlines()
 
             # Find BRIDGE_CLEANUP entry
@@ -330,7 +330,7 @@ class TestBridgeAuditTrail:
             )
 
             # Read audit log
-            with open(bridge.audit_file, 'r') as f:
+            with open(bridge.audit_file, "r") as f:
                 lines = f.readlines()
 
             # Parse first entry
@@ -364,7 +364,7 @@ class TestTimingAttackPrevention:
                     source="test",
                     message_type="test",
                     context={},
-                    auth_token="secret_token_12345"  # Correct
+                    auth_token="secret_token_12345",  # Correct
                 )
 
                 invalid_message = ContextMessage(
@@ -372,7 +372,7 @@ class TestTimingAttackPrevention:
                     source="test",
                     message_type="test",
                     context={},
-                    auth_token="aaaaaaaaaaaaaaaaa"  # Wrong
+                    auth_token="aaaaaaaaaaaaaaaaa",  # Wrong
                 )
 
                 # Both should execute without revealing timing information

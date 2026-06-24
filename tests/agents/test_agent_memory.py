@@ -307,9 +307,7 @@ class TestAgentMemory:
         memory.store_memory(
             MemoryEntry(memory_id="s1", category="decision", content="a", context={})
         )
-        memory.store_memory(
-            MemoryEntry(memory_id="s2", category="fact", content="b", context={})
-        )
+        memory.store_memory(MemoryEntry(memory_id="s2", category="fact", content="b", context={}))
         memory.store_memory(
             MemoryEntry(memory_id="s3", category="decision", content="c", context={})
         )
@@ -345,9 +343,7 @@ class TestAgentMemory:
         assert high_conf[0].content == "high"
 
     def test_clear(self, memory: AgentMemory) -> None:
-        memory.store_memory(
-            MemoryEntry(memory_id="x", category="test", content="test", context={})
-        )
+        memory.store_memory(MemoryEntry(memory_id="x", category="test", content="test", context={}))
         memory.clear()
 
         result = memory.retrieve_memory("x")
@@ -355,14 +351,10 @@ class TestAgentMemory:
 
     def test_get_memory_stats(self, memory: AgentMemory) -> None:
         memory.store_memory(
-            MemoryEntry(
-                memory_id="1", category="a", content="1", context={}, confidence=0.8
-            )
+            MemoryEntry(memory_id="1", category="a", content="1", context={}, confidence=0.8)
         )
         memory.store_memory(
-            MemoryEntry(
-                memory_id="2", category="b", content="2", context={}, confidence=0.6
-            )
+            MemoryEntry(memory_id="2", category="b", content="2", context={}, confidence=0.6)
         )
 
         stats = memory.get_memory_stats()
@@ -371,9 +363,7 @@ class TestAgentMemory:
         assert stats["average_confidence"] == 0.7
 
     def test_update(self, memory: AgentMemory) -> None:
-        memory.store_memory(
-            MemoryEntry(memory_id="u1", category="test", content="old", context={})
-        )
+        memory.store_memory(MemoryEntry(memory_id="u1", category="test", content="old", context={}))
 
         success = memory.update("u1", "new content")
 

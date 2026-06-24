@@ -3,10 +3,10 @@ Basic unit tests for codex.rag.embeddings module.
 
 Tests provider protocol and TF-IDF fallback (no model downloads required).
 """
+
 import pytest
 
 pytest.importorskip("numpy")
-
 
 
 import numpy as np
@@ -22,11 +22,11 @@ class TestEmbeddingProviderProtocol:
         provider = TfidfEmbeddingProvider()
 
         # Should have encode method
-        assert hasattr(provider, 'encode')
+        assert hasattr(provider, "encode")
         assert callable(provider.encode)
 
         # Should have get_dimension method
-        assert hasattr(provider, 'get_dimension')
+        assert hasattr(provider, "get_dimension")
         assert callable(provider.get_dimension)
 
     def test_tfidf_encode_returns_ndarray(self):
@@ -84,7 +84,7 @@ class TestCreateEmbeddingProvider:
         provider = create_embedding_provider(provider_type="tfidf")
 
         assert provider is not None
-        assert hasattr(provider, 'encode')
+        assert hasattr(provider, "encode")
 
     def test_provider_basic_encode(self):
         """Test basic encoding workflow."""

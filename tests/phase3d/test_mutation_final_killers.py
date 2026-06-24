@@ -72,15 +72,15 @@ class TestMutationKillerBoundaries:
         value = 5
         assert value < 10  # Should fail if mutated to <=
         assert value <= 5  # Should fail if mutated to <
-        assert value > 0   # Should fail if mutated to >=
+        assert value > 0  # Should fail if mutated to >=
         assert value >= 5  # Should fail if mutated to >
 
     def test_range_boundary_enforcement(self):
         """Test boundaries in range validation."""
         for value in range(0, 10):
             assert 0 <= value < 10  # Exact range
-            assert value >= 0       # Lower bound
-            assert value < 10       # Upper bound
+            assert value >= 0  # Lower bound
+            assert value < 10  # Upper bound
 
 
 class TestMutationKillerLogic:
@@ -88,30 +88,30 @@ class TestMutationKillerLogic:
 
     def test_and_operator_mutation(self):
         """Test mutation: 'and' to 'or'"""
-        result_and = (True and True)
+        result_and = True and True
         assert result_and is True
 
-        result_and = (True and False)
+        result_and = True and False
         assert result_and is False
 
-        result_and = (False and True)
+        result_and = False and True
         assert result_and is False
 
-        result_and = (False and False)
+        result_and = False and False
         assert result_and is False
 
     def test_or_operator_mutation(self):
         """Test mutation: 'or' to 'and'"""
-        result_or = (True or False)
+        result_or = True or False
         assert result_or is True
 
-        result_or = (False or True)
+        result_or = False or True
         assert result_or is True
 
-        result_or = (False or False)
+        result_or = False or False
         assert result_or is False
 
-        result_or = (True or True)
+        result_or = True or True
         assert result_or is True
 
     def test_not_operator_mutation(self):
@@ -139,6 +139,7 @@ class TestMutationKillerReturnValues:
 
     def test_return_true_vs_false(self):
         """Test mutation: return True to return False"""
+
         def returns_true():
             return True
 
@@ -151,6 +152,7 @@ class TestMutationKillerReturnValues:
 
     def test_return_specific_values(self):
         """Test mutation: return value swaps"""
+
         def return_one():
             return 1
 
@@ -170,6 +172,7 @@ class TestMutationKillerReturnValues:
 
     def test_return_none_vs_value(self):
         """Test mutation: return None to return value"""
+
         def returns_none():
             return None
 
@@ -182,6 +185,7 @@ class TestMutationKillerReturnValues:
 
     def test_return_list_vs_empty(self):
         """Test mutation: return [] to return None"""
+
         def returns_list():
             return [1, 2, 3]
 
@@ -194,6 +198,7 @@ class TestMutationKillerReturnValues:
 
     def test_return_dict_vs_empty(self):
         """Test mutation: return {} to return None"""
+
         def returns_dict():
             return {"key": "value"}
 
@@ -302,12 +307,12 @@ class TestMutationKillerArithmetic:
         """Test mutation: % to other operators"""
         result = 10 % 3
         assert result == 1
-        assert result != 3   # Would pass if % mutated to /
+        assert result != 3  # Would pass if % mutated to /
         assert result != 30  # Would pass if % mutated to *
 
     def test_power_operator_mutation(self):
         """Test mutation: ** to *"""
-        result = 2 ** 3
+        result = 2**3
         assert result == 8
         assert result != 6  # Would pass if ** mutated to *
 
@@ -456,11 +461,11 @@ class TestMutationKillerListOperations:
 
     def test_list_index_verification(self):
         """Test mutation: indexing off-by-one"""
-        lst = ['a', 'b', 'c', 'd']
-        assert lst[0] == 'a'
-        assert lst[1] == 'b'
-        assert lst[-1] == 'd'
-        assert lst[-2] == 'c'
+        lst = ["a", "b", "c", "d"]
+        assert lst[0] == "a"
+        assert lst[1] == "b"
+        assert lst[-1] == "d"
+        assert lst[-2] == "c"
 
 
 class TestMutationKillerDictOperations:

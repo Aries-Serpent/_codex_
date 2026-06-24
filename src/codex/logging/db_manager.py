@@ -125,16 +125,14 @@ class DBManager:
                 conn.execute("PRAGMA journal_mode=WAL;")
 
                 # Create session_events table
-                conn.execute(
-                    """CREATE TABLE IF NOT EXISTS session_events(
+                conn.execute("""CREATE TABLE IF NOT EXISTS session_events(
                         ts REAL NOT NULL,
                         session_id TEXT NOT NULL,
                         role TEXT NOT NULL,
                         message TEXT NOT NULL,
                         seq INTEGER,
                         meta TEXT
-                    )"""
-                )
+                    )""")
 
                 # Check and add columns if missing (for schema migrations)
                 cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]

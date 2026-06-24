@@ -418,14 +418,12 @@ class TestFileAnalysis:
     def test_analyze_simple_file(self, tmp_path: Path) -> None:
         """Test analyzing a simple Python file."""
         test_file = tmp_path / "test.py"
-        test_file.write_text(
-            """
+        test_file.write_text("""
 import os
 
 def hello():
     return "world"
-"""
-        )
+""")
 
         analysis = analyze_file(test_file, tmp_path)
 
@@ -484,14 +482,12 @@ class TestStaticAnalysis:
 
     def test_analyze_with_summary(self, tmp_path: Path) -> None:
         """Test analysis generates correct summary."""
-        (tmp_path / "test.py").write_text(
-            """
+        (tmp_path / "test.py").write_text("""
 def func():
     if True:
         return 1
     return 0
-"""
-        )
+""")
 
         report = analyze(tmp_path, "test", run_lint=False, run_security=False)
 

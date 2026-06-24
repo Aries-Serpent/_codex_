@@ -10,8 +10,8 @@ import sys
 import pytest
 
 # Add project paths
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
+sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
+sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
 
 # Import target modules
 try:
@@ -26,48 +26,70 @@ except ImportError as e:
 # AGENT_MEMORY.PY TEST SUITE (120 tests - 40% allocation)
 # ============================================================================
 
+
 class TestMemoryEntryBoundaryConditions:
     """Edge cases for MemoryEntry dataclass - confidence, access_count, timestamps"""
 
     def test_confidence_lower_bound_zero(self):
         """MemoryEntry with confidence=0.0 (lower bound)"""
-        entry = MemoryEntry(memory_id="test_zero", category="test", content="test_value", context={}, confidence=0.0)
+        entry = MemoryEntry(
+            memory_id="test_zero", category="test", content="test_value", context={}, confidence=0.0
+        )
         assert entry.confidence == 0.0
         assert entry.access_count == 0
 
     def test_confidence_upper_bound_one(self):
         """MemoryEntry with confidence=1.0 (upper bound)"""
-        entry = MemoryEntry(memory_id="test_max", category="test", content="test_value", context={}, confidence=1.0)
+        entry = MemoryEntry(
+            memory_id="test_max", category="test", content="test_value", context={}, confidence=1.0
+        )
         assert entry.confidence == 1.0
 
     def test_confidence_midpoint(self):
         """MemoryEntry with confidence at 0.5"""
-        entry = MemoryEntry(memory_id="test_mid", category="test", content="v", context={}, confidence=0.5)
+        entry = MemoryEntry(
+            memory_id="test_mid", category="test", content="v", context={}, confidence=0.5
+        )
         assert entry.confidence == 0.5
 
     def test_confidence_overflow_stored(self):
         """MemoryEntry stores confidence > 1.0 without validation (by design)."""
-        entry = MemoryEntry(memory_id="test_over", category="test", content="v", context={}, confidence=1.1)
+        entry = MemoryEntry(
+            memory_id="test_over", category="test", content="v", context={}, confidence=1.1
+        )
         assert entry.confidence == 1.1
 
     def test_confidence_underflow_stored(self):
         """MemoryEntry stores negative confidence without validation (by design)."""
-        entry = MemoryEntry(memory_id="test_under", category="test", content="v", context={}, confidence=-0.1)
+        entry = MemoryEntry(
+            memory_id="test_under", category="test", content="v", context={}, confidence=-0.1
+        )
         assert entry.confidence == -0.1
 
     def test_access_count_zero(self):
         """MemoryEntry with access_count=0 (never accessed)"""
-        entry = MemoryEntry(memory_id="test_ac", category="test", content="v", context={}, confidence=0.5)
+        entry = MemoryEntry(
+            memory_id="test_ac", category="test", content="v", context={}, confidence=0.5
+        )
         assert entry.access_count == 0
 
     def test_access_count_large_value(self):
         """MemoryEntry with very large access_count"""
-        entry = MemoryEntry(memory_id="test_large", category="test", content="v", context={}, confidence=0.5, access_count=999999)
+        entry = MemoryEntry(
+            memory_id="test_large",
+            category="test",
+            content="v",
+            context={},
+            confidence=0.5,
+            access_count=999999,
+        )
         assert entry.access_count == 999999
 
     def test_access_count_negative_stored(self):
         """MemoryEntry stores negative access_count without validation (by design)."""
-        entry = MemoryEntry(memory_id="test_neg_ac", category="test", content="v", context={}, access_count=-1)
+        entry = MemoryEntry(
+            memory_id="test_neg_ac", category="test", content="v", context={}, access_count=-1
+        )
         assert entry.access_count == -1
 
     def test_memory_id_empty_string(self):
@@ -77,39 +99,57 @@ class TestMemoryEntryBoundaryConditions:
 
     def test_memory_id_none_stored(self):
         """MemoryEntry with None memory_id (no runtime type enforcement)."""
-        entry = MemoryEntry(memory_id=None, category="test", content="v", context={}, confidence=0.5)
+        entry = MemoryEntry(
+            memory_id=None, category="test", content="v", context={}, confidence=0.5
+        )
         assert entry.memory_id is None
 
     def test_content_empty_string(self):
         """MemoryEntry with empty string content"""
-        entry = MemoryEntry(memory_id="test_empty", category="test", content="", context={}, confidence=0.5)
+        entry = MemoryEntry(
+            memory_id="test_empty", category="test", content="", context={}, confidence=0.5
+        )
         assert entry.content == ""
 
     def test_content_none_stored(self):
         """MemoryEntry may store None content (no runtime type enforcement)."""
-        entry = MemoryEntry(memory_id="test_none", category="test", content=None, context={}, confidence=0.5)
+        entry = MemoryEntry(
+            memory_id="test_none", category="test", content=None, context={}, confidence=0.5
+        )
         assert entry.content is None
 
     def test_content_complex_type(self):
         """MemoryEntry content as stringified complex value"""
         complex_value = str({"nested": {"data": [1, 2, 3]}, "other": "info"})
-        entry = MemoryEntry(memory_id="test_complex", category="test", content=complex_value, context={}, confidence=0.5)
+        entry = MemoryEntry(
+            memory_id="test_complex",
+            category="test",
+            content=complex_value,
+            context={},
+            confidence=0.5,
+        )
         assert entry.content == complex_value
 
     def test_tags_empty_list(self):
         """MemoryEntry with empty tags list (default)"""
-        entry = MemoryEntry(memory_id="test_tags", category="test", content="v", context={}, confidence=0.5)
+        entry = MemoryEntry(
+            memory_id="test_tags", category="test", content="v", context={}, confidence=0.5
+        )
         assert entry.tags == []
 
     def test_tags_single_tag(self):
         """MemoryEntry with single tag"""
-        entry = MemoryEntry(memory_id="test_one_tag", category="test", content="v", context={}, tags=["important"])
+        entry = MemoryEntry(
+            memory_id="test_one_tag", category="test", content="v", context={}, tags=["important"]
+        )
         assert "important" in entry.tags
 
     def test_tags_multiple_tags(self):
         """MemoryEntry with many tags"""
         tag_list = ["tag1", "tag2", "tag3", "tag4", "tag5"]
-        entry = MemoryEntry(memory_id="test_multi_tag", category="test", content="v", context={}, tags=tag_list)
+        entry = MemoryEntry(
+            memory_id="test_multi_tag", category="test", content="v", context={}, tags=tag_list
+        )
         assert set(entry.tags) == set(tag_list)
 
     def test_created_at_timestamp(self):
@@ -349,6 +389,7 @@ class TestPatternLibraryEdgeCases:
 # PHYSICS_ORCHESTRATOR.PY TEST SUITE (80 tests - 20% allocation)
 # ============================================================================
 
+
 class TestForceVectorBoundaryConditions:
     """Edge cases for ForceVector 3D components"""
 
@@ -510,6 +551,7 @@ class TestActionTypeEnumCompleteness:
 # MENTAL_MAPPING.PY TEST SUITE (60 tests - 15% allocation)
 # ============================================================================
 
+
 class TestClockAbstraction:
     """Edge cases for clock abstraction and test injection"""
 
@@ -517,6 +559,7 @@ class TestClockAbstraction:
         """Clock returns current time by default"""
         reset_clock()
         import time
+
         current = time.time()
         # Clock should return something close to current time
 
@@ -585,6 +628,7 @@ class TestMentalMapStructure:
 # COGNITIVE_ADAPTER.PY TEST SUITE (40 tests - 10% allocation)
 # ============================================================================
 
+
 class TestCognitiveAdapterIntegration:
     """Edge cases for cognitive adapter integration"""
 
@@ -612,6 +656,7 @@ class TestCognitiveAdapterIntegration:
 # ============================================================================
 # INTEGRATION TEST SUITE (Scenarios combining multiple modules)
 # ============================================================================
+
 
 class TestMemoryAndPhysicsIntegration:
     """Integration: agent_memory + physics_orchestrator"""
@@ -653,13 +698,16 @@ class TestMemoryAndPhysicsIntegration:
 # REGRESSION PREVENTION TESTS
 # ============================================================================
 
+
 class TestRegressionPrevention:
     """Ensure existing functionality remains intact"""
 
     def test_memory_entry_creation_still_works(self):
         """MemoryEntry creation regression test"""
         try:
-            entry = MemoryEntry(memory_id="test", category="test", content="test", context={}, confidence=0.5)
+            entry = MemoryEntry(
+                memory_id="test", category="test", content="test", context={}, confidence=0.5
+            )
             assert entry.memory_id == "test"
             assert entry.content == "test"
         except Exception as e:

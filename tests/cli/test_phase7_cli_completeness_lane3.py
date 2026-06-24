@@ -62,24 +62,18 @@ class TestCLICompleteness:
 
     def test_tokenizer_encode_with_model_option(self, cli_runner):
         """Tokenizer encode should support --model option for variant selection."""
-        result = cli_runner.invoke(
-            tokenizer_group, ["encode", "hello world", "--help"]
-        )
+        result = cli_runner.invoke(tokenizer_group, ["encode", "hello world", "--help"])
         assert result.exit_code == 0
         assert "--tokenizer" in result.output
 
     def test_tokenizer_decode_with_verify_option(self, cli_runner):
         """Tokenizer decode should support --verify for roundtrip validation."""
-        result = cli_runner.invoke(
-            tokenizer_group, ["decode", "1", "2", "3", "--help"]
-        )
+        result = cli_runner.invoke(tokenizer_group, ["decode", "1", "2", "3", "--help"])
         assert result.exit_code == 0
 
     def test_tokenizer_stats_with_format_option(self, cli_runner):
         """Tokenizer stats should support --format option."""
-        result = cli_runner.invoke(
-            tokenizer_group, ["stats", "--help"]
-        )
+        result = cli_runner.invoke(tokenizer_group, ["stats", "--help"])
         assert result.exit_code == 0
 
     # ==========================================================================
@@ -94,24 +88,18 @@ class TestCLICompleteness:
 
     def test_repro_seed_with_persist_option(self, cli_runner):
         """Repro seed should support --persist option."""
-        result = cli_runner.invoke(
-            repro_group, ["seed", "--help"]
-        )
+        result = cli_runner.invoke(repro_group, ["seed", "--help"])
         assert result.exit_code == 0
         assert "seed" in result.output.lower()
 
     def test_repro_env_with_include_option(self, cli_runner):
         """Repro env should support --include option for selective capture."""
-        result = cli_runner.invoke(
-            repro_group, ["env", "--help"]
-        )
+        result = cli_runner.invoke(repro_group, ["env", "--help"])
         assert result.exit_code == 0
 
     def test_repro_system_with_interval_option(self, cli_runner):
         """Repro system should support --interval for sampling frequency."""
-        result = cli_runner.invoke(
-            repro_group, ["system", "--help"]
-        )
+        result = cli_runner.invoke(repro_group, ["system", "--help"])
         assert result.exit_code == 0
 
     # ==========================================================================
@@ -207,14 +195,16 @@ class TestCLICompleteness:
 
     def test_error_message_standardization_duplication_invalid_path(self, cli_runner):
         """Duplication commands should use standardized error messages."""
-        result = cli_runner.invoke(
-            duplication_group, ["check"]
-        )
+        result = cli_runner.invoke(duplication_group, ["check"])
         # Should have standardized error format or work with default
         # The 'check' command may not require --path if PATH is positional
         if result.exit_code != 0:
             # Has error - should be formatted well
-            assert "Error" in result.output or "error" in result.output.lower() or result.exit_code == 2
+            assert (
+                "Error" in result.output
+                or "error" in result.output.lower()
+                or result.exit_code == 2
+            )
 
     def test_error_message_consistency_across_commands(self, cli_runner, temp_dir):
         """CLI error messages should follow consistent format."""
@@ -233,7 +223,11 @@ class TestCLICompleteness:
         result = cli_runner.invoke(cli, ["--help"])
         assert result.exit_code == 0
         # Should show available commands (look for Commands section in Click output)
-        assert "Commands:" in result.output or "commands:" in result.output.lower() or len(result.output) > 100
+        assert (
+            "Commands:" in result.output
+            or "commands:" in result.output.lower()
+            or len(result.output) > 100
+        )
 
     def test_tokenizer_group_help(self, cli_runner):
         """Tokenizer group help should list all subcommands."""

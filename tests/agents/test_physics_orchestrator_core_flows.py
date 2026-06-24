@@ -135,9 +135,7 @@ class TestPhysicsOrchestratorCoreFlows:
 
     # ========== ASSESS STAGE TESTS ==========
 
-    def test_assess_situation_standard_state(
-        self, orchestrator, decision_state_standard
-    ):
+    def test_assess_situation_standard_state(self, orchestrator, decision_state_standard):
         """Test assessment with standard resource allocation."""
         assessment = orchestrator.assess_situation(decision_state_standard)
 
@@ -177,9 +175,7 @@ class TestPhysicsOrchestratorCoreFlows:
         assert assessment["system_entropy"] < 0.3
         assert assessment["attractive_potential"] > 5.0
 
-    def test_assess_situation_low_resources(
-        self, orchestrator, decision_state_constrained
-    ):
+    def test_assess_situation_low_resources(self, orchestrator, decision_state_constrained):
         """Test assessment with limited resources."""
         assessment = orchestrator.assess_situation(decision_state_constrained)
 
@@ -212,9 +208,7 @@ class TestPhysicsOrchestratorCoreFlows:
         self, orchestrator, decision_state_standard, action_paths_standard
     ):
         """Test deliberation with multiple action options."""
-        ranked = orchestrator.deliberate_paths(
-            decision_state_standard, action_paths_standard
-        )
+        ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
 
         # Verify all paths processed
         assert len(ranked) == len(action_paths_standard)
@@ -228,13 +222,11 @@ class TestPhysicsOrchestratorCoreFlows:
 
         # Verify ranking (highest score first)
         scores = [p.optimization_score for p in ranked]
-        assert scores == sorted(scores, reverse=True), (
-            "Paths should be ranked by optimization score"
-        )
+        assert scores == sorted(
+            scores, reverse=True
+        ), "Paths should be ranked by optimization score"
 
-    def test_deliberate_paths_single_action(
-        self, orchestrator, decision_state_standard
-    ):
+    def test_deliberate_paths_single_action(self, orchestrator, decision_state_standard):
         """Test deliberation with only one option."""
         single_path = [
             ActionPath(
@@ -279,9 +271,9 @@ class TestPhysicsOrchestratorCoreFlows:
 
         # All should have identical scores (within floating point precision)
         scores = [p.optimization_score for p in ranked]
-        assert len(set(round(s, 6) for s in scores)) == 1, (
-            "Identical paths should have identical scores"
-        )
+        assert (
+            len(set(round(s, 6) for s in scores)) == 1
+        ), "Identical paths should have identical scores"
 
     # ========== OPTIMIZE STAGE TESTS ==========
 
@@ -289,9 +281,7 @@ class TestPhysicsOrchestratorCoreFlows:
         self, orchestrator, decision_state_standard, action_paths_standard
     ):
         """Test optimization finds best path within constraints."""
-        ranked = orchestrator.deliberate_paths(
-            decision_state_standard, action_paths_standard
-        )
+        ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
         assert optimal is not None
@@ -303,9 +293,7 @@ class TestPhysicsOrchestratorCoreFlows:
         self, orchestrator, decision_state_standard, action_paths_low_confidence
     ):
         """Test optimization when no path satisfies all constraints."""
-        ranked = orchestrator.deliberate_paths(
-            decision_state_standard, action_paths_low_confidence
-        )
+        ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_low_confidence)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
         assert optimal is None
@@ -314,9 +302,7 @@ class TestPhysicsOrchestratorCoreFlows:
         self, orchestrator, decision_state_standard, action_paths_high_energy
     ):
         """Test optimization with paths exceeding energy budget."""
-        ranked = orchestrator.deliberate_paths(
-            decision_state_standard, action_paths_high_energy
-        )
+        ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_high_energy)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
         assert optimal is None
@@ -329,9 +315,7 @@ class TestPhysicsOrchestratorCoreFlows:
         orchestrator.config["energy_budget"] = 300.0  # Increased from 250 to 300
         orchestrator.config["risk_tolerance"] = 0.9
 
-        ranked = orchestrator.deliberate_paths(
-            decision_state_standard, action_paths_high_energy
-        )
+        ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_high_energy)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
         assert optimal is not None
@@ -343,9 +327,7 @@ class TestPhysicsOrchestratorCoreFlows:
         self, orchestrator, decision_state_standard, action_paths_standard
     ):
         """Test action execution with valid optimal path."""
-        ranked = orchestrator.deliberate_paths(
-            decision_state_standard, action_paths_standard
-        )
+        ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
         result = orchestrator.act(optimal, decision_state_standard)
@@ -377,9 +359,7 @@ class TestPhysicsOrchestratorCoreFlows:
         """Test that all actions are recorded in decision history."""
         # Execute multiple actions
         for _ in range(3):
-            ranked = orchestrator.deliberate_paths(
-                decision_state_standard, action_paths_standard
-            )
+            ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
             optimal = orchestrator.optimize_path(ranked, decision_state_standard)
             orchestrator.act(optimal, decision_state_standard)
 
@@ -391,9 +371,7 @@ class TestPhysicsOrchestratorCoreFlows:
         self, orchestrator, decision_state_standard, action_paths_standard
     ):
         """Test complete ASSESS → DELIBERATE → OPTIMIZE → ACT cycle."""
-        result = orchestrator.orchestrate(
-            decision_state_standard, action_paths_standard
-        )
+        result = orchestrator.orchestrate(decision_state_standard, action_paths_standard)
 
         # Verify all stages executed
         assert "action_taken" in result
@@ -409,9 +387,7 @@ class TestPhysicsOrchestratorCoreFlows:
         """Test multiple orchestration cycles maintain complete history."""
         results = []
         for _ in range(5):
-            result = orchestrator.orchestrate(
-                decision_state_standard, action_paths_standard
-            )
+            result = orchestrator.orchestrate(decision_state_standard, action_paths_standard)
             results.append(result)
 
         # Verify history
@@ -423,9 +399,7 @@ class TestPhysicsOrchestratorCoreFlows:
         self, orchestrator, decision_state_standard, action_paths_high_energy
     ):
         """Test orchestration with no viable paths returns wait recommendation."""
-        result = orchestrator.orchestrate(
-            decision_state_standard, action_paths_high_energy
-        )
+        result = orchestrator.orchestrate(decision_state_standard, action_paths_high_energy)
 
         assert result["action_taken"] == "wait"
 
@@ -446,9 +420,7 @@ class TestPhysicsOrchestratorCoreFlows:
         assert assessment["net_potential"] != 0  # Some potential exists
 
         # Step 2: Deliberate
-        ranked = orchestrator.deliberate_paths(
-            decision_state_standard, action_paths_standard
-        )
+        ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
         assert len(ranked) > 0
 
         # Step 3: Optimize
@@ -478,9 +450,7 @@ class TestDiffusionFlowModel:
         """Test diffusion_coefficient property is accessible."""
         from agents.physics_orchestrator import DiffusionFlowModel
 
-        model = DiffusionFlowModel(
-            dimensions=2, resolution=10, diffusion_coefficient=0.3
-        )
+        model = DiffusionFlowModel(dimensions=2, resolution=10, diffusion_coefficient=0.3)
 
         assert hasattr(model, "diffusion_coefficient")
         assert model.diffusion_coefficient == 0.3

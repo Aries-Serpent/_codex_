@@ -49,8 +49,16 @@ class TestMemoryEntryReturnValues:
 
         # Verify all fields present
         required_fields = [
-            "memory_id", "category", "content", "context", "confidence",
-            "access_count", "last_accessed", "created_at", "tags", "related_memories"
+            "memory_id",
+            "category",
+            "content",
+            "context",
+            "confidence",
+            "access_count",
+            "last_accessed",
+            "created_at",
+            "tags",
+            "related_memories",
         ]
         for field in required_fields:
             assert field in result
@@ -168,10 +176,20 @@ class TestContextFrameReturnValues:
         assert isinstance(result, dict)
 
         required_fields = [
-            "frame_id", "task_description", "start_time", "end_time",
-            "status", "active_memories", "decisions_made", "lessons_learned",
-            "repository", "branch", "files_modified",
-            "tokens_used", "actions_taken", "errors_encountered"
+            "frame_id",
+            "task_description",
+            "start_time",
+            "end_time",
+            "status",
+            "active_memories",
+            "decisions_made",
+            "lessons_learned",
+            "repository",
+            "branch",
+            "files_modified",
+            "tokens_used",
+            "actions_taken",
+            "errors_encountered",
         ]
         for field in required_fields:
             assert field in result
@@ -459,9 +477,7 @@ class TestAgentMemoryReturnValues:
         assert result.tags == ["tag1", "tag2"]
         assert result.related_memories == ["mem1"]
 
-    def test_retrieve_memories_by_category_returns_list(
-        self, tmp_path: Path
-    ) -> None:
+    def test_retrieve_memories_by_category_returns_list(self, tmp_path: Path) -> None:
         """Test search returns list."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
@@ -587,7 +603,7 @@ class TestOutputValidationEdgeCases:
         entry = MemoryEntry(
             memory_id="id_with_special!@#$%",
             category="test",
-            content='Content with "quotes" and \'apostrophes\'',
+            content="Content with \"quotes\" and 'apostrophes'",
             context={"key": "value\nwith\nnewlines"},
         )
 

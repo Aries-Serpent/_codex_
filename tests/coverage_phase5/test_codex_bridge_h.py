@@ -1,4 +1,5 @@
 """Test codex bridge module 7."""
+
 from __future__ import annotations
 
 from typing import Any, Dict
@@ -24,11 +25,13 @@ class BridgeProtocol:
             raise Exception("Not connected")
         return {"ack": True, "message": msg}
 
+
 @pytest.mark.asyncio
 async def test_bridge_protocol_7_init():
     """Test bridge protocol initialization."""
     bridge = BridgeProtocol("v2")
     assert bridge.version == "v2"
+
 
 @pytest.mark.asyncio
 async def test_bridge_protocol_7_connect():
@@ -39,6 +42,7 @@ async def test_bridge_protocol_7_connect():
     assert result is True
     assert bridge.connected is True
 
+
 @pytest.mark.asyncio
 async def test_bridge_protocol_7_message():
     """Test sending message."""
@@ -47,6 +51,7 @@ async def test_bridge_protocol_7_message():
 
     result = await bridge.send_message({"cmd": "test"})
     assert result["ack"] is True
+
 
 @pytest.mark.asyncio
 async def test_bridge_protocol_7_disconnect():

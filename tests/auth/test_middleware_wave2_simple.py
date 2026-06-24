@@ -3,7 +3,6 @@ Quick auth middleware tests to meet 100+ requirement.
 """
 
 
-
 class TestAuthMiddlewareBasic:
     """Basic middleware tests."""
 

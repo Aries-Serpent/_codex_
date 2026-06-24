@@ -28,9 +28,7 @@ class TestPhysicsOrchestratorExhaustive:
         from agents.physics_orchestrator import ActionPath, ActionType
 
         for action_type in ActionType:
-            path = ActionPath(
-                action_type=action_type, description=f"Test {action_type.value}"
-            )
+            path = ActionPath(action_type=action_type, description=f"Test {action_type.value}")
             assert path.action_type == action_type
 
     def test_decision_state_various_resources(self):

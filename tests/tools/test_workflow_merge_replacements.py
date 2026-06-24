@@ -151,9 +151,7 @@ class TestReplaceInFile:
 
 
 class TestUpdateReferences:
-    def test_compiles_mapping_once_and_updates_matching_files(
-        self, tmp_path: Path, monkeypatch
-    ):
+    def test_compiles_mapping_once_and_updates_matching_files(self, tmp_path: Path, monkeypatch):
         """update_references must scan every file in REPO and apply replacements."""
         (tmp_path / "a.py").write_text("import old_mod\n", encoding="utf-8")
         (tmp_path / "b.py").write_text("import other\n", encoding="utf-8")

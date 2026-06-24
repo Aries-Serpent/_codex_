@@ -77,7 +77,9 @@ def test_load_hf_dataset_with_owner_and_config() -> None:
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
         datasets_mod._LAST_HF_REVISION = None
-        data = load_dataset("hf://openai/gsm8k/main", max_samples=1)  # nosec B615 - Test code with mocked HF dataset loader
+        data = load_dataset(
+            "hf://openai/gsm8k/main", max_samples=1
+        )  # nosec B615 - Test code with mocked HF dataset loader
         mock_load.assert_called_once_with("openai/gsm8k", "main", split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("sample", "sample")]
@@ -97,7 +99,9 @@ def test_load_hf_dataset_with_config_only() -> None:
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
         datasets_mod._LAST_HF_REVISION = None
-        data = load_dataset("hf://glue/mrpc", max_samples=1)  # nosec B615 - Test code with mocked HF dataset loader
+        data = load_dataset(
+            "hf://glue/mrpc", max_samples=1
+        )  # nosec B615 - Test code with mocked HF dataset loader
         mock_load.assert_called_once_with("glue", "mrpc", split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("sample", "sample")]
@@ -140,7 +144,9 @@ def test_load_hf_dataset_infer_common_target_field() -> None:
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
         datasets_mod._LAST_HF_REVISION = None
-        data = load_dataset("hf://dummy", max_samples=1)  # nosec B615 - Test code with mocked HF dataset loader
+        data = load_dataset(
+            "hf://dummy", max_samples=1
+        )  # nosec B615 - Test code with mocked HF dataset loader
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("q", "a")]
@@ -160,7 +166,9 @@ def test_load_hf_dataset_missing_target_raises() -> None:
     ):
         datasets_mod._LAST_HF_REVISION = None
         with pytest.raises(ValueError):
-            load_dataset("hf://dummy", max_samples=1)  # nosec B615 - Test code with mocked HF dataset loader
+            load_dataset(
+                "hf://dummy", max_samples=1
+            )  # nosec B615 - Test code with mocked HF dataset loader
         mock_load.assert_called_once_with("dummy", None, split="train")
 
 
@@ -176,7 +184,9 @@ def test_load_hf_dataset_with_text_field_alias() -> None:
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
         datasets_mod._LAST_HF_REVISION = None
-        data = load_dataset("hf://dummy", max_samples=1, hf_text_field="content")  # nosec B615 - Test code with mocked HF dataset loader
+        data = load_dataset(
+            "hf://dummy", max_samples=1, hf_text_field="content"
+        )  # nosec B615 - Test code with mocked HF dataset loader
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("x", "x")]
@@ -210,5 +220,7 @@ def test_plain_hf_dataset_respects_split() -> None:
         patch("codex_ml.eval.datasets.HAS_DATASETS", True),
     ):
         datasets_mod._LAST_HF_REVISION = None
-        load_dataset("imdb", hf_split="test")  # nosec B615 - Test code with mocked HF dataset loader
+        load_dataset(
+            "imdb", hf_split="test"
+        )  # nosec B615 - Test code with mocked HF dataset loader
         mock_load.assert_called_once_with("imdb", split="test")

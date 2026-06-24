@@ -62,6 +62,7 @@ class TestImportSmoke:
         """src.config.openai_client imports without error."""
         t0 = time.monotonic()
         from src.config.openai_client import CodexOpenAIClient  # noqa: F401
+
         elapsed = time.monotonic() - t0
         assert elapsed < 5.0, (
             f"src.config.openai_client took {elapsed:.2f}s to import — "
@@ -72,6 +73,7 @@ class TestImportSmoke:
         """src.services.github.client imports without error."""
         t0 = time.monotonic()
         from src.services.github.client import GitHubClient  # noqa: F401
+
         elapsed = time.monotonic() - t0
         assert elapsed < 5.0, (
             f"src.services.github.client took {elapsed:.2f}s to import — "
@@ -125,19 +127,17 @@ class TestImportSmoke:
 
         class _BlockingSocket:
             """Raises if any real socket connection is attempted."""
+
             def __init__(self, *a: object, **kw: object) -> None:
                 network_called.append(f"socket({a}, {kw})")
-                raise OSError(
-                    "Network call during import of config.openai_client is forbidden"
-                )
+                raise OSError("Network call during import of config.openai_client is forbidden")
 
         import socket as _socket
+
         with patch.object(_socket, "socket", _BlockingSocket):
             importlib.import_module("src.config.openai_client")
 
-        assert not network_called, (
-            f"Network I/O detected during import: {network_called}"
-        )
+        assert not network_called, f"Network I/O detected during import: {network_called}"
 
     def test_github_client_empty_token_no_auth_header(self) -> None:
         """GitHubClient(token='') must not include Authorization header.

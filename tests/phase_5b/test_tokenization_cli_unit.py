@@ -10,20 +10,18 @@ Tests cover:
 """
 
 import sys
-import types
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
-import click
 import pytest
 
 from tokenization.cli import (
-    _FallbackExit,
-    _FallbackTyper,
     _append_error_block,
     _fail,
     _fallback_echo,
     _fallback_option,
+    _FallbackExit,
+    _FallbackTyper,
     _format_context,
     _load_tokenizer,
     _resolve_root,
@@ -450,9 +448,7 @@ class TestVocabCommand:
         """Test vocab with convert_ids_to_tokens method."""
         mock_tokenizer = MagicMock()
         mock_tokenizer.vocab_size = 1000
-        mock_tokenizer.convert_ids_to_tokens = MagicMock(
-            side_effect=lambda x: f"token_{x}"
-        )
+        mock_tokenizer.convert_ids_to_tokens = MagicMock(side_effect=lambda x: f"token_{x}")
         mock_load.return_value = mock_tokenizer
 
         vocab(Path("tokenizer.json"), limit=3)

@@ -29,26 +29,26 @@ class TestParserInitialization:
     def test_parser_init_empty_cache(self):
         """Test parser initializes with empty cache."""
         parser = WorkflowParser()
-        assert hasattr(parser, '_cache')
+        assert hasattr(parser, "_cache")
         assert isinstance(parser._cache, dict)
         assert len(parser._cache) == 0
 
     def test_parser_has_parse_file_method(self):
         """Test parser has parse_file method."""
         parser = WorkflowParser()
-        assert hasattr(parser, 'parse_file')
+        assert hasattr(parser, "parse_file")
         assert callable(parser.parse_file)
 
     def test_parser_has_parse_content_method(self):
         """Test parser has parse_content method."""
         parser = WorkflowParser()
-        assert hasattr(parser, 'parse_content')
+        assert hasattr(parser, "parse_content")
         assert callable(parser.parse_content)
 
     def test_parser_has_parse_method(self):
         """Test parser has parse convenience method."""
         parser = WorkflowParser()
-        assert hasattr(parser, 'parse')
+        assert hasattr(parser, "parse")
         assert callable(parser.parse)
 
 
@@ -72,7 +72,9 @@ class TestParsingValidWorkflows:
     def test_parse_workflow_with_push_trigger(self):
         """Test parsing workflow with push trigger."""
         parser = WorkflowParser()
-        yaml_content = "name: push-workflow\non: push\njobs:\n  build:\n    runs-on: ubuntu-latest\n"
+        yaml_content = (
+            "name: push-workflow\non: push\njobs:\n  build:\n    runs-on: ubuntu-latest\n"
+        )
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
         assert any(t.type == TriggerType.PUSH for t in result.triggers)
@@ -134,7 +136,9 @@ class TestParsingValidWorkflows:
     def test_parse_workflow_with_permissions(self):
         """Test parsing workflow with permissions."""
         parser = WorkflowParser()
-        yaml_content = "name: perms\non: push\npermissions:\n  contents: read\n  actions: write\njobs: {}\n"
+        yaml_content = (
+            "name: perms\non: push\npermissions:\n  contents: read\n  actions: write\njobs: {}\n"
+        )
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
         assert isinstance(result.permissions, dict)
@@ -348,7 +352,7 @@ class TestSchemaValidation:
         yaml_content = "name: test-workflow\non: push\njobs: {}\n"
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
-        assert hasattr(result, 'name')
+        assert hasattr(result, "name")
         assert result.name == "test-workflow"
 
     def test_workflow_name_defaults_to_filename(self):
@@ -373,7 +377,7 @@ class TestSchemaValidation:
         yaml_content = "name: test\non: push\njobs: {}\n"
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
-        assert hasattr(result, 'triggers')
+        assert hasattr(result, "triggers")
         assert isinstance(result.triggers, list)
 
     def test_workflow_has_jobs_field(self):
@@ -382,7 +386,7 @@ class TestSchemaValidation:
         yaml_content = "name: test\non: push\njobs: {}\n"
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
-        assert hasattr(result, 'jobs')
+        assert hasattr(result, "jobs")
         assert isinstance(result.jobs, dict)
 
     def test_workflow_has_inputs_field(self):
@@ -391,7 +395,7 @@ class TestSchemaValidation:
         yaml_content = "name: test\non: push\njobs: {}\n"
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
-        assert hasattr(result, 'inputs')
+        assert hasattr(result, "inputs")
         assert isinstance(result.inputs, dict)
 
     def test_workflow_has_dependencies_field(self):
@@ -400,7 +404,7 @@ class TestSchemaValidation:
         yaml_content = "name: test\non: push\njobs: {}\n"
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
-        assert hasattr(result, 'dependencies')
+        assert hasattr(result, "dependencies")
         assert isinstance(result.dependencies, list)
 
     def test_job_has_required_fields(self):
@@ -437,7 +441,7 @@ class TestSchemaValidation:
         assert result is not None
         assert len(result.triggers) > 0
         trigger = result.triggers[0]
-        assert hasattr(trigger, 'type')
+        assert hasattr(trigger, "type")
         assert trigger.type == TriggerType.PUSH
 
 
@@ -507,9 +511,7 @@ class TestErrorHandlingExceptions:
         parser = WorkflowParser()
         on_config = {
             "workflow_dispatch": {
-                "inputs": {
-                    "test": {"type": "unsupported_type", "description": "test"}
-                }
+                "inputs": {"test": {"type": "unsupported_type", "description": "test"}}
             }
         }
         inputs = parser._parse_inputs(on_config)
@@ -547,8 +549,7 @@ class TestEdgeCases:
         """Test parsing workflow with branch filters."""
         parser = WorkflowParser()
         yaml_content = (
-            "name: branch-filter\non:\n"
-            "  push:\n    branches: [main, develop]\njobs: {}\n"
+            "name: branch-filter\non:\n" "  push:\n    branches: [main, develop]\njobs: {}\n"
         )
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
@@ -559,8 +560,7 @@ class TestEdgeCases:
         """Test parsing workflow with path filters."""
         parser = WorkflowParser()
         yaml_content = (
-            "name: path-filter\non:\n"
-            "  push:\n    paths: ['src/**', 'tests/**']\njobs: {}\n"
+            "name: path-filter\non:\n" "  push:\n    paths: ['src/**', 'tests/**']\njobs: {}\n"
         )
         result = parser.parse(yaml_content, Path("test.yml"))
         assert result is not None
@@ -591,7 +591,6 @@ class TestEdgeCases:
         assert result is not None
         assert result.last_modified is not None
 
-
     def test_parse_workflow_cache_invalidation(self):
         """Test cache can be cleared and repopulated."""
         parser = WorkflowParser()
@@ -602,6 +601,6 @@ class TestEdgeCases:
         assert result1 is not None
         assert result1.name == "cache-test"
 
-        if hasattr(parser, 'clear_cache'):
+        if hasattr(parser, "clear_cache"):
             parser.clear_cache()
             assert len(parser._cache) == 0

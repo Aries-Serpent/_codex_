@@ -113,9 +113,7 @@ class TestTokenizeNarrative:
             assert abs(total - 1.0) < 0.01
 
     def test_filename_boost(self):
-        tokens_without = tokenize_narrative(
-            "Updated auth module", modified_filenames=[]
-        )
+        tokens_without = tokenize_narrative("Updated auth module", modified_filenames=[])
         tokens_with = tokenize_narrative(
             "Updated auth module", modified_filenames=["src/auth/module.py"]
         )

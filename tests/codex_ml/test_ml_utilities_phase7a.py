@@ -24,6 +24,7 @@ import pytest
 # Defensive imports for optional dependencies
 try:
     import torch
+
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
@@ -200,10 +201,7 @@ class TestRNGStateManagement:
         torch.set_rng_state(state1)
         vals_restored = [torch.randn(1).item() for _ in range(5)]
 
-        assert all(
-            abs(v1 - v2) < 1e-6
-            for v1, v2 in zip(vals, vals_restored)
-        )
+        assert all(abs(v1 - v2) < 1e-6 for v1, v2 in zip(vals, vals_restored))
 
     def test_seed_set_deterministically(self):
         """Test seed setting produces deterministic results."""
@@ -316,17 +314,14 @@ class TestModelInitialization:
 
         from codex_ml.train_loop import _load_or_create_model
 
-        model = _load_or_create_model(
-            identifier="gpt2",
-            device="cpu",
-            dtype="float32"
-        )
+        model = _load_or_create_model(identifier="gpt2", device="cpu", dtype="float32")
 
         # Mock was called (if registry available)
         assert mock_model is not None or model is not None
 
     def test_model_parameter_counting(self):
         """Test model parameter counting utility."""
+
         def count_params(state_dict):
             """Count total parameters in state dict."""
             total = 0
@@ -524,9 +519,7 @@ class TestMetricsAndLogging:
     def test_logging_handler_creation(self):
         """Test logging handler can be created."""
         handler = logging.StreamHandler()
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
 
         assert handler.formatter is not None
@@ -650,6 +643,7 @@ class TestEdgeCasesAndErrorHandling:
 
             with pytest.raises(ValueError):
                 from codex_ml.train_loop import _load_or_create_model
+
                 _load_or_create_model("nonexistent_model")
 
     def test_zero_batch_size_handling(self):

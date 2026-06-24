@@ -3,6 +3,7 @@ Tests for the inbound GitHub webhook endpoints:
   POST /webhook/github        — HMAC-SHA256 verified event receiver
   GET  /api/webhooks/recent   — recent event log query
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -40,14 +41,17 @@ def _make_client(db_path: str, monkeypatch, **extra_env: str) -> TestClient:
         monkeypatch.setenv(key, value)
 
     import cognitive_app.src.server.cli_api_server as _mod
+
     importlib.reload(_mod)
     from cognitive_app.src.server.cli_api_server import app
+
     return TestClient(app, raise_server_exceptions=False)
 
 
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def db_path(tmp_path):
@@ -58,6 +62,7 @@ def db_path(tmp_path):
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
+
 
 class TestWebhookValidSignature:
     """POST /webhook/github — happy path with valid HMAC."""

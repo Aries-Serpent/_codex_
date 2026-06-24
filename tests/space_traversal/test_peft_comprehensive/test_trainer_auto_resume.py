@@ -3,10 +3,10 @@ Test Trainer Auto Resume
 
 Test module for trainer auto resume.
 """
+
 import pytest
 
 pytest.importorskip("numpy", reason="numpy required")
-
 
 
 from training.checkpointing import save_checkpoint
@@ -34,11 +34,16 @@ def disable_torch_profiler(monkeypatch):
         return
     try:
         import torch.profiler as profiler_module
+
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):
-            monkeypatch.setattr(profiler_module, "_record_function_enter", lambda *args, **kwargs: None)
+            monkeypatch.setattr(
+                profiler_module, "_record_function_enter", lambda *args, **kwargs: None
+            )
         if hasattr(profiler_module, "_record_function_exit"):
-            monkeypatch.setattr(profiler_module, "_record_function_exit", lambda *args, **kwargs: None)
+            monkeypatch.setattr(
+                profiler_module, "_record_function_exit", lambda *args, **kwargs: None
+            )
     except (ImportError, AttributeError):
         _ = None  # PyTorch profiler not available or already disabled
 

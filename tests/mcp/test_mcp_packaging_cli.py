@@ -22,9 +22,7 @@ import select_components
 
 def _load_mcp_package_module():
     """Load the mcp-package script as a module (no .py extension)."""
-    loader = importlib.machinery.SourceFileLoader(
-        "mcp_package", str(scripts_mcp / "mcp-package")
-    )
+    loader = importlib.machinery.SourceFileLoader("mcp_package", str(scripts_mcp / "mcp-package"))
     spec = importlib.util.spec_from_loader("mcp_package", loader)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
@@ -126,9 +124,7 @@ class TestFilterByGlobsExclude:
         (tmp_path / "a.py").write_text("a")
         (tmp_path / "b.md").write_text("b")
 
-        result = select_components.filter_by_globs(
-            "*.py,*.md", tmp_path, exclude_patterns=["*.md"]
-        )
+        result = select_components.filter_by_globs("*.py,*.md", tmp_path, exclude_patterns=["*.md"])
         names = {p.name for p in result}
         assert "a.py" in names
         assert "b.md" not in names
@@ -146,7 +142,7 @@ class TestMCPPackagerEstimate:
         """MCPPackager has an estimate method."""
         mcp_mod = _load_mcp_package_module()
         packager = mcp_mod.MCPPackager(Path.cwd())
-        assert hasattr(packager, 'estimate')
+        assert hasattr(packager, "estimate")
         assert callable(packager.estimate)
 
     def test_estimate_returns_zero_on_valid_topic(self):

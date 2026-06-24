@@ -47,9 +47,10 @@ class TestMFASecret:
         code = provider.generate_totp(secret.secret, algorithm=secret.algorithm)
 
         assert secret.algorithm == "SHA1"
-        assert provider.verify_totp(
-            secret.secret, code, secret.user_id, algorithm=secret.algorithm
-        ) is True
+        assert (
+            provider.verify_totp(secret.secret, code, secret.user_id, algorithm=secret.algorithm)
+            is True
+        )
 
     def test_provisioning_uri(self):
         """Test provisioning URI generation."""
@@ -237,7 +238,9 @@ class TestMFAProvider:
     def test_secret_creation_invalid_algorithm(self):
         """Test invalid secret algorithms are rejected during construction."""
         with pytest.raises(ValueError, match="Unsupported TOTP algorithm"):
-            MFASecret(secret="JBSWY3DPEHPK3PXP", user_id="user123", algorithm="MD5")  # pragma: allowlist secret
+            MFASecret(
+                secret="JBSWY3DPEHPK3PXP", user_id="user123", algorithm="MD5"
+            )  # pragma: allowlist secret
 
     def test_verify_totp_invalid_algorithm(self):
         """Test invalid verify_totp algorithms are rejected."""
@@ -289,7 +292,7 @@ class TestMFAProvider:
         # Codes should be in format XXXX-XXXX
         for code in codes:
             assert len(code) == 9  # 4 + 1 + 4
-            assert '-' in code
+            assert "-" in code
 
     def test_backup_codes_unique(self):
         """Test that backup codes are unique."""

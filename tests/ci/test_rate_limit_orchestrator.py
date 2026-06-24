@@ -4,7 +4,9 @@ from scripts.ci import rate_limit_orchestrator as orchestrator
 
 
 def test_parse_args_keep_latest_defaults_true():
-    args = orchestrator._parse_args(["--deduplicate", "--workflow", "validate.yml", "--branch", "main"])
+    args = orchestrator._parse_args(
+        ["--deduplicate", "--workflow", "validate.yml", "--branch", "main"]
+    )
     assert args.keep_latest is True
 
 

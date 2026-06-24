@@ -119,9 +119,7 @@ def pytest_configure(config: pytest.Config) -> None:
         _torch_ref = sys.modules.get("torch")
         if _torch_ref is not None:
             version = getattr(_torch_ref, "__version__", "unknown")
-            logger.info(
-                f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)"
-            )
+            logger.info(f"✓ PyTorch {version} available (RAG modules use device='cpu' directly)")
     except AttributeError:
         _ = None  # PyTorch stub module without __version__
 
@@ -152,12 +150,8 @@ def pytest_configure(config: pytest.Config) -> None:
         "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
     )
     config.addinivalue_line("markers", "integration: marks tests as integration tests")
-    config.addinivalue_line(
-        "markers", "gpu: marks tests that require GPU (skipped without GPU)"
-    )
-    config.addinivalue_line(
-        "markers", "network: marks tests that require network access"
-    )
+    config.addinivalue_line("markers", "gpu: marks tests that require GPU (skipped without GPU)")
+    config.addinivalue_line("markers", "network: marks tests that require network access")
 
 
 # Note: pytest_configure_node hook removed in PR #3248 Attempt 15
@@ -223,9 +217,7 @@ OPTIONAL_DEP_MARKERS: dict[str, list[str]] = {
 }
 
 
-def _is_stub_module(
-    name: str, spec: importlib.machinery.ModuleSpec | None = None
-) -> bool:
+def _is_stub_module(name: str, spec: importlib.machinery.ModuleSpec | None = None) -> bool:
     """Return True when ``name`` resolves to an in-repo stub instead of the real package."""
 
     module = sys.modules.get(name)
@@ -258,9 +250,7 @@ def _find_spec_prefer_real(modname: str) -> importlib.machinery.ModuleSpec | Non
     if primary_spec and not _is_stub_module(modname, primary_spec):
         return primary_spec
 
-    clean_paths = [
-        p for p in sys.path if not Path(p).resolve().is_relative_to(REPO_ROOT)
-    ]
+    clean_paths = [p for p in sys.path if not Path(p).resolve().is_relative_to(REPO_ROOT)]
     try:
         alternate = importlib.machinery.PathFinder.find_spec(modname, clean_paths)
     except ValueError:
@@ -339,7 +329,9 @@ def pytest_collection_modifyitems(session, config, items):
             if marker in item.keywords:
                 missing = _missing_modules(modules)
                 if missing:
-                    reason = f"skipped: optional dependency missing for {marker}: {', '.join(missing)}"
+                    reason = (
+                        f"skipped: optional dependency missing for {marker}: {', '.join(missing)}"
+                    )
                     item.add_marker(pytest.mark.skip(reason=reason))
 
         if "heavy_dep" in item.keywords:
@@ -1048,9 +1040,7 @@ def _restore_torch_tensor():
     try:
         _sys = sys
 
-        _torch = _sys.modules.get(
-            "torch"
-        )  # use already-imported module, avoid duplicate import
+        _torch = _sys.modules.get("torch")  # use already-imported module, avoid duplicate import
         if _torch is None:
             raise ImportError("torch not loaded")
         _original_tensor_class = _torch.Tensor
@@ -1086,7 +1076,9 @@ def _isolate_rng_state():
     except ImportError:
         _has_numpy = False
 
-    _torch = None  # bound before try so teardown reuses reference (fixes CodeQL duplicate-import alert)
+    _torch = (
+        None  # bound before try so teardown reuses reference (fixes CodeQL duplicate-import alert)
+    )
     torch_state = None
     try:
         import torch as _torch
@@ -1119,9 +1111,9 @@ def pool_state_tracker():
 
     def assert_pool_grew():
         current = _pool_size()
-        assert current > baseline, (
-            f"Expected pool to grow beyond {baseline}, current size {current}"
-        )
+        assert (
+            current > baseline
+        ), f"Expected pool to grow beyond {baseline}, current size {current}"
 
     def assert_pool_size(expected: int):
         current = _pool_size()
@@ -1417,9 +1409,7 @@ def mock_transformer_model():
 
             mock_output = Mock()
             mock_output.attentions = attentions if output_attentions else None
-            mock_output.last_hidden_state = torch.randn(
-                batch_size, seq_len, self.hidden_dim
-            )
+            mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
 
             return mock_output
 
@@ -1481,7 +1471,7 @@ def serializable_mock_model():
 def sentence_transformers_available():
     """Check if sentence_transformers is available (session-scoped for performance)."""
     try:
-        return importlib.util.find_spec('sentence_transformers') is not None
+        return importlib.util.find_spec("sentence_transformers") is not None
     except ValueError:
         # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
         # Module is in sys.modules but its spec is broken — treat as not importable.
@@ -1492,7 +1482,7 @@ def sentence_transformers_available():
 def faiss_available():
     """Check if faiss is available (session-scoped for performance)."""
     try:
-        return importlib.util.find_spec('faiss') is not None
+        return importlib.util.find_spec("faiss") is not None
     except ValueError:
         # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
         # Module is in sys.modules but its spec is broken — treat as not importable.
@@ -1541,9 +1531,7 @@ def ensure_cpu_device():
         if torch is None:
             raise ImportError
         # Check if this is a stub/placeholder torch module
-        if not hasattr(torch, "Tensor") or not callable(
-            getattr(torch, "manual_seed", None)
-        ):
+        if not hasattr(torch, "Tensor") or not callable(getattr(torch, "manual_seed", None)):
             # Stub torch module, skip fixture
             yield
             return
@@ -1630,7 +1618,7 @@ def mock_sentence_transformer(monkeypatch):
 
     _st_present: bool
     try:
-        _st_present = importlib.util.find_spec('sentence_transformers') is not None
+        _st_present = importlib.util.find_spec("sentence_transformers") is not None
     except ValueError:
         # Python 3.12: find_spec raises ValueError when module.__spec__ is None.
         # Module is in sys.modules but spec is broken — attempt to patch anyway.
@@ -1640,22 +1628,14 @@ def mock_sentence_transformer(monkeypatch):
             raise ImportError("sentence_transformers not available")
 
         # Patch multiple import paths for comprehensive coverage
-        monkeypatch.setattr(
-            "sentence_transformers.SentenceTransformer", MockSentenceTransformer
-        )
+        monkeypatch.setattr("sentence_transformers.SentenceTransformer", MockSentenceTransformer)
         # Also patch in specific modules that import it
         with contextlib.suppress(AttributeError):
-            monkeypatch.setattr(
-                "codex.rag.embeddings.SentenceTransformer", MockSentenceTransformer
-            )
+            monkeypatch.setattr("codex.rag.embeddings.SentenceTransformer", MockSentenceTransformer)
         with contextlib.suppress(AttributeError):
-            monkeypatch.setattr(
-                "codex.rag.indexer.SentenceTransformer", MockSentenceTransformer
-            )
+            monkeypatch.setattr("codex.rag.indexer.SentenceTransformer", MockSentenceTransformer)
         with contextlib.suppress(AttributeError):
-            monkeypatch.setattr(
-                "codex.rag.retriever.SentenceTransformer", MockSentenceTransformer
-            )
+            monkeypatch.setattr("codex.rag.retriever.SentenceTransformer", MockSentenceTransformer)
         with contextlib.suppress(AttributeError):
             monkeypatch.setattr(
                 "codex.rag._model_utils.SentenceTransformer", MockSentenceTransformer
@@ -1745,9 +1725,7 @@ def session_resource_manager():
 
         process = psutil.Process()
         initial_files = set(f.path for f in process.open_files())
-        logger.info(
-            f"✓ Session resource manager: {len(initial_files)} files open at start"
-        )
+        logger.info(f"✓ Session resource manager: {len(initial_files)} files open at start")
     except (ImportError, Exception) as e:
         logger.debug(f"psutil not available for resource tracking: {e}")
 
@@ -1777,7 +1755,11 @@ def session_resource_manager():
                 warnings.warn(f"  ... and {leak_count - 5} more", ResourceWarning)
         else:
             logger.info("✓ No resource leaks detected at session end")
-    except (ImportError, AttributeError, ModuleNotFoundError):  # Best-effort cleanup; psutil may not be available
+    except (
+        ImportError,
+        AttributeError,
+        ModuleNotFoundError,
+    ):  # Best-effort cleanup; psutil may not be available
         _ = None
 
 
@@ -1891,11 +1873,7 @@ def force_file_cleanup():
 
         try:
             # Check if object is file-like
-            if (
-                close_method is not None
-                and closed_attr is not None
-                and name_attr is not None
-            ):
+            if close_method is not None and closed_attr is not None and name_attr is not None:
                 if any(obj is stream for stream in protected_streams):
                     continue
                 if name_attr in ("<stdin>", "<stdout>", "<stderr>"):
@@ -1935,7 +1913,11 @@ def pytest_runtest_protocol(item, nextitem):
         process = psutil.Process()
         before_files = len(process.open_files())
         before_memory = process.memory_info().rss / 1024 / 1024  # MB
-    except (ImportError, AttributeError, ModuleNotFoundError):  # psutil optional; skip resource tracking if unavailable
+    except (
+        ImportError,
+        AttributeError,
+        ModuleNotFoundError,
+    ):  # psutil optional; skip resource tracking if unavailable
         _ = None
 
     yield
@@ -1962,7 +1944,11 @@ def pytest_runtest_protocol(item, nextitem):
                 f"+{after_memory - before_memory:.1f}MB)",
                 ResourceWarning,
             )
-    except (ImportError, AttributeError, ModuleNotFoundError):  # psutil optional; skip leak check if unavailable
+    except (
+        ImportError,
+        AttributeError,
+        ModuleNotFoundError,
+    ):  # psutil optional; skip leak check if unavailable
         _ = None
 
 
@@ -2014,19 +2000,13 @@ def disable_torch_profiler(monkeypatch):
             import torch._C as _torch_c
 
             if hasattr(_torch_c, "_jit_set_profiling_executor"):
-                monkeypatch.setattr(
-                    _torch_c, "_jit_set_profiling_executor", lambda *a, **k: None
-                )
+                monkeypatch.setattr(_torch_c, "_jit_set_profiling_executor", lambda *a, **k: None)
             if hasattr(_torch_c, "_jit_set_profiling_mode"):
-                monkeypatch.setattr(
-                    _torch_c, "_jit_set_profiling_mode", lambda *a, **k: None
-                )
+                monkeypatch.setattr(_torch_c, "_jit_set_profiling_mode", lambda *a, **k: None)
         except (ImportError, AttributeError):
             _ = None  # torch._C not available in this environment — skip JIT profiling patch
         try:
-            if hasattr(torch, "profiler") and hasattr(
-                torch.profiler, "record_function"
-            ):
+            if hasattr(torch, "profiler") and hasattr(torch.profiler, "record_function"):
                 monkeypatch.setattr(
                     torch.profiler,
                     "record_function",

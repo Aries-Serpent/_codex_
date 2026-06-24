@@ -2,7 +2,6 @@
 Comprehensive tests for FAISS Vector Store with safeguards
 """
 
-
 import tempfile
 
 import pytest
@@ -149,7 +148,9 @@ class TestFAISSStoreSearch:
             if key in results[0]:
                 result_id = results[0][key]
                 break
-        assert result_id == 0, f"Expected first result to be vector 0, got {result_id}. Result keys: {results[0].keys()}"
+        assert (
+            result_id == 0
+        ), f"Expected first result to be vector 0, got {result_id}. Result keys: {results[0].keys()}"
         assert 0.0 <= results[0]["score"] <= 1.0
         assert "document" in results[0]
 

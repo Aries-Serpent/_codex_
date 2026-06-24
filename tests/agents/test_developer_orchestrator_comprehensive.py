@@ -386,18 +386,16 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
     def test_component_complexity_tracking(self, orchestrator):
         """Test tracking component complexity."""
-        simple = CodeComponent(
-            "simple.py", "module", "Simple", "x=1", complexity_score=0.1
-        )
+        simple = CodeComponent("simple.py", "module", "Simple", "x=1", complexity_score=0.1)
         complex = CodeComponent(
             "complex.py", "module", "Complex", "# lots of code", complexity_score=0.9
         )
 
         orchestrator.components = [simple, complex]
 
-        avg_complexity = sum(
-            c.complexity_score or 0 for c in orchestrator.components
-        ) / len(orchestrator.components)
+        avg_complexity = sum(c.complexity_score or 0 for c in orchestrator.components) / len(
+            orchestrator.components
+        )
         assert 0 < avg_complexity < 1
 
     def test_dependency_tracking(self, orchestrator):
@@ -434,9 +432,7 @@ class TestPhysicsIntegration:
 
     def test_chaos_suggestions_fallback(self):
         """Test chaos suggestions work with fallback."""
-        var = RequirementVariable(
-            "param", "Parameter", "int", suggested_values=[1, 2, 3]
-        )
+        var = RequirementVariable("param", "Parameter", "int", suggested_values=[1, 2, 3])
 
         suggestions = var.suggest_from_chaos(cnn=None)
         assert suggestions == [1, 2, 3]

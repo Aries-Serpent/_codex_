@@ -9,8 +9,8 @@ Tests cover:
 - Repository implementations
 """
 
-from datetime import ( # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-    datetime,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from datetime import (
+    datetime,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret; pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 from uuid import uuid4
 
@@ -31,38 +31,39 @@ class TestUserRepositoryContract:
 
     def test_user_repository_has_create_method(self):
         """Test UserRepository has create method."""
-        assert hasattr(UserRepository, 'create')
-        assert callable(getattr(UserRepository, 'create', None))
+        assert hasattr(UserRepository, "create")
+        assert callable(getattr(UserRepository, "create", None))
 
     def test_user_repository_has_get_method(self):
         """Test UserRepository has get method."""
-        assert hasattr(UserRepository, 'get_by_id')
-        assert callable(getattr(UserRepository, 'get_by_id', None))
+        assert hasattr(UserRepository, "get_by_id")
+        assert callable(getattr(UserRepository, "get_by_id", None))
 
     def test_user_repository_has_update_method(self):
         """Test UserRepository has update method."""
-        assert hasattr(UserRepository, 'update')
-        assert callable(getattr(UserRepository, 'update', None))
+        assert hasattr(UserRepository, "update")
+        assert callable(getattr(UserRepository, "update", None))
 
     def test_user_repository_has_delete_method(self):
         """Test UserRepository has delete method."""
-        assert hasattr(UserRepository, 'delete')
-        assert callable(getattr(UserRepository, 'delete', None))
+        assert hasattr(UserRepository, "delete")
+        assert callable(getattr(UserRepository, "delete", None))
 
     def test_user_repository_has_list_method(self):
         """Test UserRepository has list method."""
-        assert hasattr(UserRepository, 'list')
-        assert callable(getattr(UserRepository, 'list', None))
+        assert hasattr(UserRepository, "list")
+        assert callable(getattr(UserRepository, "list", None))
 
     def test_user_repository_has_get_by_username_method(self):
         """Test UserRepository has get_by_username method."""
-        assert hasattr(UserRepository, 'get_by_username')
-        assert callable(getattr(UserRepository, 'get_by_username', None))
+        assert hasattr(UserRepository, "get_by_username")
+        assert callable(getattr(UserRepository, "get_by_username", None))
 
     def test_user_repository_create_is_abstract(self):
         """Test create method is abstract."""
         # Trying to call abstract methods should raise
         with pytest.raises(TypeError):
+
             class TestRepo(UserRepository):
                 # Don't implement methods
                 pass
@@ -72,12 +73,23 @@ class TestUserRepositoryContract:
     def test_user_repository_update_is_abstract(self):
         """Test update method is abstract."""
         with pytest.raises(TypeError):
+
             class TestRepo(UserRepository):
-                def create(self, user): pass
-                def get_by_id(self, user_id): pass
-                def delete(self, user_id): pass
-                def list(self): pass
-                def get_by_username(self, username): pass
+                def create(self, user):
+                    pass
+
+                def get_by_id(self, user_id):
+                    pass
+
+                def delete(self, user_id):
+                    pass
+
+                def list(self):
+                    pass
+
+                def get_by_username(self, username):
+                    pass
+
                 # Missing update implementation
 
             TestRepo()
@@ -85,12 +97,23 @@ class TestUserRepositoryContract:
     def test_user_repository_delete_is_abstract(self):
         """Test delete method is abstract."""
         with pytest.raises(TypeError):
+
             class TestRepo(UserRepository):
-                def create(self, user): pass
-                def get_by_id(self, user_id): pass
-                def update(self, user): pass
-                def list(self): pass
-                def get_by_username(self, username): pass
+                def create(self, user):
+                    pass
+
+                def get_by_id(self, user_id):
+                    pass
+
+                def update(self, user):
+                    pass
+
+                def list(self):
+                    pass
+
+                def get_by_username(self, username):
+                    pass
+
                 # Missing delete implementation
 
             TestRepo()

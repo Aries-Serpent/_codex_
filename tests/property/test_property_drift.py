@@ -67,15 +67,13 @@ class TestPSIProperties:
         # With identical inputs the PSI formula gives exactly 0 before smoothing;
         # epsilon smoothing makes reference == current so the result stays 0.
         assert result.score >= 0.0
-        assert result.score < 1e-6, (
-            f"PSI of identical distributions should be ~0, got {result.score}"
-        )
+        assert (
+            result.score < 1e-6
+        ), f"PSI of identical distributions should be ~0, got {result.score}"
 
     @given(_paired_pos_float_lists())
     @settings(max_examples=50)
-    def test_psi_score_non_negative(
-        self, pair: tuple[list[float], list[float]]
-    ) -> None:
+    def test_psi_score_non_negative(self, pair: tuple[list[float], list[float]]) -> None:
         """PSI score must always be ≥ 0 for any valid positive inputs."""
         ref, cur = pair
         detector = DataDriftDetector(psi_threshold=0.2)
@@ -96,16 +94,16 @@ class TestPSIProperties:
 
     @given(_paired_pos_float_lists())
     @settings(max_examples=50)
-    def test_psi_severity_is_valid_label(
-        self, pair: tuple[list[float], list[float]]
-    ) -> None:
+    def test_psi_severity_is_valid_label(self, pair: tuple[list[float], list[float]]) -> None:
         """PSI severity must always be one of the documented labels."""
         ref, cur = pair
         detector = DataDriftDetector(psi_threshold=0.2)
         result = detector.detect_psi(ref, cur)
-        assert result.severity in {"none", "slight", "significant"}, (
-            f"Unexpected PSI severity: {result.severity!r}"
-        )
+        assert result.severity in {
+            "none",
+            "slight",
+            "significant",
+        }, f"Unexpected PSI severity: {result.severity!r}"
 
     @given(_paired_pos_float_lists())
     @settings(max_examples=50)
@@ -140,15 +138,13 @@ class TestKLProperties:
         detector = DataDriftDetector(kl_threshold=0.5)
         result = detector.detect_kl(vals, vals)
         assert result.score >= 0.0
-        assert result.score < 1e-6, (
-            f"KL of identical distributions should be ~0, got {result.score}"
-        )
+        assert (
+            result.score < 1e-6
+        ), f"KL of identical distributions should be ~0, got {result.score}"
 
     @given(_paired_pos_float_lists())
     @settings(max_examples=50)
-    def test_kl_score_non_negative(
-        self, pair: tuple[list[float], list[float]]
-    ) -> None:
+    def test_kl_score_non_negative(self, pair: tuple[list[float], list[float]]) -> None:
         """KL score must always be ≥ 0."""
         ref, cur = pair
         detector = DataDriftDetector(kl_threshold=0.5)
@@ -183,16 +179,16 @@ class TestKLProperties:
 
     @given(_paired_pos_float_lists())
     @settings(max_examples=50)
-    def test_kl_severity_is_valid_label(
-        self, pair: tuple[list[float], list[float]]
-    ) -> None:
+    def test_kl_severity_is_valid_label(self, pair: tuple[list[float], list[float]]) -> None:
         """KL severity must always be one of the documented labels."""
         ref, cur = pair
         detector = DataDriftDetector(kl_threshold=0.5)
         result = detector.detect_kl(ref, cur)
-        assert result.severity in {"none", "moderate", "significant"}, (
-            f"Unexpected KL severity: {result.severity!r}"
-        )
+        assert result.severity in {
+            "none",
+            "moderate",
+            "significant",
+        }, f"Unexpected KL severity: {result.severity!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -227,9 +223,9 @@ class TestThresholdMonotonicity:
         # If the loose detector flags drift, so must the strict one
         # (the score is the same; only the threshold differs)
         if loose_result.drifted:
-            assert strict_result.drifted, (
-                "Strict detector should flag drift whenever loose detector does"
-            )
+            assert (
+                strict_result.drifted
+            ), "Strict detector should flag drift whenever loose detector does"
 
 
 # ---------------------------------------------------------------------------
@@ -251,28 +247,26 @@ class TestJSDProperties:
     def test_jsd_identical_distributions_is_zero(self, vals: list[float]) -> None:
         """JSD of identical distributions must be 0."""
         result = jensen_shannon_divergence(vals, vals)
-        assert math.isclose(result, 0.0, abs_tol=1e-9), (
-            f"JSD(P, P) should be 0, got {result}"
-        )
+        assert math.isclose(result, 0.0, abs_tol=1e-9), f"JSD(P, P) should be 0, got {result}"
 
     @given(
         st.integers(min_value=2, max_value=20).flatmap(
             lambda n: st.tuples(
                 st.lists(
                     st.floats(min_value=0.01, max_value=1.0, allow_nan=False, allow_infinity=False),
-                    min_size=n, max_size=n,
+                    min_size=n,
+                    max_size=n,
                 ),
                 st.lists(
                     st.floats(min_value=0.01, max_value=1.0, allow_nan=False, allow_infinity=False),
-                    min_size=n, max_size=n,
+                    min_size=n,
+                    max_size=n,
                 ),
             )
         )
     )
     @settings(max_examples=50)
-    def test_jsd_result_in_unit_interval(
-        self, pq: tuple[list[float], list[float]]
-    ) -> None:
+    def test_jsd_result_in_unit_interval(self, pq: tuple[list[float], list[float]]) -> None:
         """JSD must always be in [0, 1]."""
         p, q = pq
         result = jensen_shannon_divergence(p, q)

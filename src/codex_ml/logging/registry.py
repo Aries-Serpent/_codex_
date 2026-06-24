@@ -13,9 +13,7 @@ from collections.abc import Callable, Iterable, Mapping  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402
 
-from codex_ml.logging.ndjson_logger import (  # noqa: E402
-    NDJSONLogger as _RawNDJSONLogger,
-)
+from codex_ml.logging.ndjson_logger import NDJSONLogger as _RawNDJSONLogger  # noqa: E402
 from codex_ml.utils.optional import optional_import  # noqa: E402
 
 _LOGGERS: dict[str, Callable[[str], None]] = {}

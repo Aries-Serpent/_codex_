@@ -67,7 +67,9 @@ def test_serialization_round_trip(tmp_path) -> None:
     path = tmp_path / "model.pt"
     torch.save(m.state_dict(), path)
     m2 = _tiny_model()
-    m2.load_state_dict(torch.load(path, weights_only=True))  # nosec B614 - weights_only=True ensures safe loading
+    m2.load_state_dict(
+        torch.load(path, weights_only=True)
+    )  # nosec B614 - weights_only=True ensures safe loading
     x = torch.randint(0, m.cfg.vocab_size, (1, 4))
     assert torch.allclose(m(x)["logits"], m2(x)["logits"])
 

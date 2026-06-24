@@ -5,6 +5,7 @@ Covers PollSnapshot serialisation, state-file round-trip, run-ID resolution,
 cherry_pick_delta path filtering, exit-code mapping, session timing (h/m/s/ns),
 and the background-thread API.  No live GitHub API or network calls are made.
 """
+
 from __future__ import annotations
 
 import sys
@@ -39,12 +40,18 @@ except ImportError:
 # PollSnapshot serialisation round-trip
 # ---------------------------------------------------------------------------
 
+
 class TestPollSnapshot:
     def test_to_dict_contains_all_fields(self):
         snap = PollSnapshot(
-            run_id=1234, repo="owner/repo", polled_at="2026-03-17T23:00:00Z",
-            status="in_progress", conclusion=None,
-            head_sha="abc123", head_branch="main", html_url="https://github.com",
+            run_id=1234,
+            repo="owner/repo",
+            polled_at="2026-03-17T23:00:00Z",
+            status="in_progress",
+            conclusion=None,
+            head_sha="abc123",
+            head_branch="main",
+            html_url="https://github.com",
         )
         d = snap.to_dict()
         assert d["run_id"] == 1234
@@ -54,10 +61,16 @@ class TestPollSnapshot:
 
     def test_from_dict_round_trip(self):
         snap = PollSnapshot(
-            run_id=99, repo="a/b", polled_at="2026-03-17T23:00:00Z",
-            status="completed", conclusion="success",
-            head_sha="def456", head_branch="feat", html_url="https://x.com",
-            cherry_picked=["file.py"], triage_passed=True,
+            run_id=99,
+            repo="a/b",
+            polled_at="2026-03-17T23:00:00Z",
+            status="completed",
+            conclusion="success",
+            head_sha="def456",
+            head_branch="feat",
+            html_url="https://x.com",
+            cherry_picked=["file.py"],
+            triage_passed=True,
             completed=True,
         )
         restored = PollSnapshot.from_dict(snap.to_dict())
@@ -69,9 +82,14 @@ class TestPollSnapshot:
 
     def test_from_dict_ignores_unknown_keys(self):
         d = {
-            "run_id": 1, "repo": "a/b", "polled_at": "t",
-            "status": "completed", "conclusion": "success",
-            "head_sha": "", "head_branch": "", "html_url": "",
+            "run_id": 1,
+            "repo": "a/b",
+            "polled_at": "t",
+            "status": "completed",
+            "conclusion": "success",
+            "head_sha": "",
+            "head_branch": "",
+            "html_url": "",
             "unknown_future_field": "ignored",
         }
         snap = PollSnapshot.from_dict(d)
@@ -82,13 +100,19 @@ class TestPollSnapshot:
 # State-file read / write  (uses tmp_path)
 # ---------------------------------------------------------------------------
 
+
 class TestStateFile:
     def test_write_then_read(self, tmp_path, monkeypatch):
         monkeypatch.setattr(mr, "MONITOR_DIR", tmp_path / "monitor")
         snap = PollSnapshot(
-            run_id=42, repo="x/y", polled_at="2026-03-17T23:00:00Z",
-            status="in_progress", conclusion=None,
-            head_sha="", head_branch="", html_url="",
+            run_id=42,
+            repo="x/y",
+            polled_at="2026-03-17T23:00:00Z",
+            status="in_progress",
+            conclusion=None,
+            head_sha="",
+            head_branch="",
+            html_url="",
         )
         _write_state(snap)
         restored = _read_state(42)
@@ -104,9 +128,15 @@ class TestStateFile:
         monkeypatch.setattr(mr, "MONITOR_DIR", tmp_path / "monitor")
         assert poll_status(12345) is None
         snap = PollSnapshot(
-            run_id=12345, repo="x/y", polled_at="2026-03-17T23:00:00Z",
-            status="completed", conclusion="success",
-            head_sha="", head_branch="", html_url="", completed=True,
+            run_id=12345,
+            repo="x/y",
+            polled_at="2026-03-17T23:00:00Z",
+            status="completed",
+            conclusion="success",
+            head_sha="",
+            head_branch="",
+            html_url="",
+            completed=True,
         )
         _write_state(snap)
         result = poll_status(12345)
@@ -118,51 +148,91 @@ class TestStateFile:
 # Exit-code mapping
 # ---------------------------------------------------------------------------
 
+
 class TestExitCode:
     def test_success(self):
         snap = PollSnapshot(
-            run_id=1, repo="a/b", polled_at="t", status="completed",
-            conclusion="success", head_sha="", head_branch="", html_url="",
+            run_id=1,
+            repo="a/b",
+            polled_at="t",
+            status="completed",
+            conclusion="success",
+            head_sha="",
+            head_branch="",
+            html_url="",
             completed=True,
         )
         assert _exit_code(snap) == 0
 
     def test_failure(self):
         snap = PollSnapshot(
-            run_id=1, repo="a/b", polled_at="t", status="completed",
-            conclusion="failure", head_sha="", head_branch="", html_url="",
+            run_id=1,
+            repo="a/b",
+            polled_at="t",
+            status="completed",
+            conclusion="failure",
+            head_sha="",
+            head_branch="",
+            html_url="",
             completed=True,
         )
         assert _exit_code(snap) == 1
 
     def test_timeout(self):
         snap = PollSnapshot(
-            run_id=1, repo="a/b", polled_at="t", status="in_progress",
-            conclusion=None, head_sha="", head_branch="", html_url="",
-            error="Timeout after 90 minutes", completed=True,
+            run_id=1,
+            repo="a/b",
+            polled_at="t",
+            status="in_progress",
+            conclusion=None,
+            head_sha="",
+            head_branch="",
+            html_url="",
+            error="Timeout after 90 minutes",
+            completed=True,
         )
         assert _exit_code(snap) == 2
 
     def test_api_error(self):
         snap = PollSnapshot(
-            run_id=1, repo="a/b", polled_at="t", status="error",
-            conclusion=None, head_sha="", head_branch="", html_url="",
-            error="HTTP 404: ...", completed=True,
+            run_id=1,
+            repo="a/b",
+            polled_at="t",
+            status="error",
+            conclusion=None,
+            head_sha="",
+            head_branch="",
+            html_url="",
+            error="HTTP 404: ...",
+            completed=True,
         )
         assert _exit_code(snap) == 3
 
     def test_triage_failure(self):
         snap = PollSnapshot(
-            run_id=1, repo="a/b", polled_at="t", status="completed",
-            conclusion="success", head_sha="", head_branch="", html_url="",
-            triage_passed=False, completed=True,
+            run_id=1,
+            repo="a/b",
+            polled_at="t",
+            status="completed",
+            conclusion="success",
+            head_sha="",
+            head_branch="",
+            html_url="",
+            triage_passed=False,
+            completed=True,
         )
         assert _exit_code(snap) == 4
 
     def test_skipped_is_success(self):
         snap = PollSnapshot(
-            run_id=1, repo="a/b", polled_at="t", status="completed",
-            conclusion="skipped", head_sha="", head_branch="", html_url="",
+            run_id=1,
+            repo="a/b",
+            polled_at="t",
+            status="completed",
+            conclusion="skipped",
+            head_sha="",
+            head_branch="",
+            html_url="",
             completed=True,
         )
         assert _exit_code(snap) == 0
@@ -171,6 +241,7 @@ class TestExitCode:
 # ---------------------------------------------------------------------------
 # cherry_pick_delta — path filtering
 # ---------------------------------------------------------------------------
+
 
 class TestCherryPickDelta:
     def test_skips_agent_auth_files(self, tmp_path, monkeypatch):
@@ -207,7 +278,7 @@ class TestCherryPickDelta:
         def fake_git(*args):
             if args[0] == "fetch":
                 return ""
-            return ""   # empty diff
+            return ""  # empty diff
 
         monkeypatch.setattr(mr, "_git", fake_git)
         assert cherry_pick_delta("main") == []
@@ -216,6 +287,7 @@ class TestCherryPickDelta:
 # ---------------------------------------------------------------------------
 # cmd_list — no monitors
 # ---------------------------------------------------------------------------
+
 
 class TestCmdList:
     def test_no_monitor_dir(self, tmp_path, monkeypatch, capsys):
@@ -237,14 +309,22 @@ class TestCmdList:
 # API: start_background_monitor returns MonitorThread
 # ---------------------------------------------------------------------------
 
+
 class TestStartBackgroundMonitor:
     def test_returns_thread(self, monkeypatch):
         """start_background_monitor must return a started MonitorThread."""
+
         # Patch _poll_loop so the thread exits immediately
         def instant_poll(*args, **kwargs):
             return PollSnapshot(
-                run_id=1, repo="a/b", polled_at="t", status="completed",
-                conclusion="success", head_sha="", head_branch="", html_url="",
+                run_id=1,
+                repo="a/b",
+                polled_at="t",
+                status="completed",
+                conclusion="success",
+                head_sha="",
+                head_branch="",
+                html_url="",
                 completed=True,
             )
 
@@ -252,7 +332,9 @@ class TestStartBackgroundMonitor:
         monkeypatch.setattr(mr, "_resolve_repo", lambda: "a/b")
 
         handle = start_background_monitor(run_id=1, repo="a/b")
-        assert isinstance(handle, MonitorThread)  # start_background_monitor must return a MonitorThread
+        assert isinstance(
+            handle, MonitorThread
+        )  # start_background_monitor must return a MonitorThread
         handle.join(timeout=5)
         assert handle.result is not None
         assert handle.result.conclusion == "success"
@@ -261,6 +343,7 @@ class TestStartBackgroundMonitor:
 # ---------------------------------------------------------------------------
 # Session timing: _resolve_session_start + _compute_elapsed (h/m/s/ns)
 # ---------------------------------------------------------------------------
+
 
 class TestSessionTiming:
     def test_resolve_prefers_env_var(self, monkeypatch):
@@ -276,9 +359,7 @@ class TestSessionTiming:
         monkeypatch.setenv("GITHUB_RUN_STARTED_AT", "2026-03-17T23:15:08Z")
         override_ts = "2026-01-01T00:00:00Z"
         iso, ns = _resolve_session_start(cli_override=override_ts)
-        assert iso == override_ts, (
-            f"cli_override should beat GITHUB_RUN_STARTED_AT; got {iso!r}"
-        )
+        assert iso == override_ts, f"cli_override should beat GITHUB_RUN_STARTED_AT; got {iso!r}"
         assert ns > 0
 
     def test_resolve_uses_api_fallback(self, monkeypatch):
@@ -295,7 +376,7 @@ class TestSessionTiming:
         iso, ns = _resolve_session_start()
         after_ns = time.time_ns()
         assert before_ns <= ns <= after_ns
-        assert "2026" in iso or "202" in iso   # sanity: recent year
+        assert "2026" in iso or "202" in iso  # sanity: recent year
 
     def test_compute_elapsed_sub_second(self):
         """Elapsed under 1 second produces '0s NNNNNNNNNns' format."""
@@ -306,7 +387,7 @@ class TestSessionTiming:
         assert el_s == 0
         assert 0 <= el_ns < 1_000_000_000
         assert human.endswith("ns")
-        assert len(human.split()[-1].rstrip("ns")) == 9   # 9-digit zero-padded
+        assert len(human.split()[-1].rstrip("ns")) == 9  # 9-digit zero-padded
 
     def test_compute_elapsed_minutes_seconds(self):
         """Elapsed 2m 7s produces 'Xm Ys NNNNNNNNNns' format."""
@@ -341,8 +422,14 @@ class TestSessionTiming:
     def test_snapshot_timing_fields_serialise(self):
         """session_started_ns and session_elapsed_ns survive to_dict/from_dict."""
         snap = PollSnapshot(
-            run_id=1, repo="a/b", polled_at="t", status="completed",
-            conclusion="success", head_sha="", head_branch="", html_url="",
+            run_id=1,
+            repo="a/b",
+            polled_at="t",
+            status="completed",
+            conclusion="success",
+            head_sha="",
+            head_branch="",
+            html_url="",
             session_started_at="2026-03-17T23:15:08Z",
             session_started_ns=1742252108_000000000,
             current_dt="2026-03-17T23:48:22Z",
@@ -352,13 +439,13 @@ class TestSessionTiming:
             completed=True,
         )
         d = snap.to_dict()
-        assert d["session_started_ns"]  == 1742252108_000000000
-        assert d["session_elapsed_ns"]  == 123456789
+        assert d["session_started_ns"] == 1742252108_000000000
+        assert d["session_elapsed_ns"] == 123456789
         assert d["session_elapsed_str"] == "33m 14s 123456789ns"
 
         restored = PollSnapshot.from_dict(d)
-        assert restored.session_started_ns  == 1742252108_000000000
-        assert restored.session_elapsed_ns  == 123456789
+        assert restored.session_started_ns == 1742252108_000000000
+        assert restored.session_elapsed_ns == 123456789
         assert restored.session_elapsed_str == "33m 14s 123456789ns"
 
     def test_poll_loop_stamps_timing(self, monkeypatch, tmp_path):
@@ -369,9 +456,14 @@ class TestSessionTiming:
         class FakeClient:
             def get_run(self, repo, run_id):
                 snap = PollSnapshot(
-                    run_id=run_id, repo=repo, polled_at=mr._now(),
-                    status="completed", conclusion="success",
-                    head_sha="abc", head_branch="main", html_url="https://x",
+                    run_id=run_id,
+                    repo=repo,
+                    polled_at=mr._now(),
+                    status="completed",
+                    conclusion="success",
+                    head_sha="abc",
+                    head_branch="main",
+                    html_url="https://x",
                 )
                 snap._api_run_started_at = ""  # type: ignore[attr-defined]
                 return snap
@@ -380,10 +472,16 @@ class TestSessionTiming:
         start_ns = time.time_ns() - 65_000_000_000  # 65s ago
 
         result = mr._poll_loop(
-            run_id=1, repo="a/b", client=FakeClient(),  # type: ignore[arg-type]
-            interval=1, timeout=1,
-            check_only=True, do_cherry=False, do_triage=False,
-            session_started_at="", session_started_ns=start_ns,
+            run_id=1,
+            repo="a/b",
+            client=FakeClient(),  # type: ignore[arg-type]
+            interval=1,
+            timeout=1,
+            check_only=True,
+            do_cherry=False,
+            do_triage=False,
+            session_started_at="",
+            session_started_ns=start_ns,
         )
 
         assert result.session_elapsed_s >= 65

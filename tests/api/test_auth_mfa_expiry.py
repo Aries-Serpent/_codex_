@@ -256,7 +256,10 @@ class TestTokenExpiry:
         )
         login = client.post(
             "/auth/login",
-            json={"username_or_email": "carol", "password": "Str0ngPass!"},  # pragma: allowlist secret
+            json={
+                "username_or_email": "carol",
+                "password": "Str0ngPass!",
+            },  # pragma: allowlist secret
         )
         assert login.status_code == 200
         refresh_token = login.json()["refresh_token"]

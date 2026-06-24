@@ -5,7 +5,6 @@ This module contains tests for writing consolidation shims and pointers.
 """
 
 
-
 class TestWritePythonShim:
     """Tests for write_python_shim function."""
 

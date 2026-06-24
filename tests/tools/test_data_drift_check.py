@@ -65,9 +65,7 @@ class TestDataDriftCheck:
         ref_file.write_text(json.dumps(ref_data), encoding="utf-8")
         cur_file.write_text(json.dumps(cur_data), encoding="utf-8")
 
-        result = main(
-            ["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.2"]
-        )
+        result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.2"])
         assert result == 0  # No drift
 
     def test_main_with_drift_exceeds_threshold(self, tmp_path):
@@ -81,9 +79,7 @@ class TestDataDriftCheck:
         ref_file.write_text(json.dumps(ref_data), encoding="utf-8")
         cur_file.write_text(json.dumps(cur_data), encoding="utf-8")
 
-        result = main(
-            ["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.2"]
-        )
+        result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.2"])
         assert result == 1  # Drift exceeds threshold
 
     def test_main_custom_threshold(self, tmp_path):
@@ -98,15 +94,11 @@ class TestDataDriftCheck:
         cur_file.write_text(json.dumps(cur_data), encoding="utf-8")
 
         # Drift is 0.1, threshold 0.15 -> should pass
-        result = main(
-            ["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.15"]
-        )
+        result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.15"])
         assert result == 0
 
         # Drift is 0.1, threshold 0.05 -> should fail
-        result = main(
-            ["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.05"]
-        )
+        result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.05"])
         assert result == 1
 
     def test_drift_score_extreme_values(self):

@@ -143,9 +143,11 @@ class GracefulDegradation:
             ctx_label,
             type(exc).__name__,
             exc,
-            "using fallback"
-            if self._fallback is not _SENTINEL
-            else "no fallback, raising DegradationError",
+            (
+                "using fallback"
+                if self._fallback is not _SENTINEL
+                else "no fallback, raising DegradationError"
+            ),
         )
         if self._fallback is _SENTINEL:
             raise DegradationError(

@@ -76,6 +76,7 @@ if not _HYDRA_AVAILABLE:
                 resolved = message or f"Missing config file: {missing_cfg_file}"
                 super().__init__(resolved)
                 self.message = resolved
+
 else:
     MissingConfigException = HydraMissingConfigException
 

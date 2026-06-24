@@ -61,6 +61,7 @@ def network_json_path(tmp_path) -> str:
 # CPDTable
 # ---------------------------------------------------------------------------
 
+
 class TestCPDTable:
     def test_from_dict_root_node(self):
         data = NETWORK_DICT["nodes"][0]
@@ -90,6 +91,7 @@ class TestCPDTable:
 # Construction
 # ---------------------------------------------------------------------------
 
+
 class TestBayesianAssessorConstruction:
     def test_from_dict(self, assessor):
         assert "risk_level" in assessor._tables
@@ -107,6 +109,7 @@ class TestBayesianAssessorConstruction:
 # ---------------------------------------------------------------------------
 # Inference — posterior()
 # ---------------------------------------------------------------------------
+
 
 class TestBayesianPoC:
     """Core PoC test cases as specified in Phase 4 plan."""
@@ -155,6 +158,7 @@ class TestBayesianPoC:
 # ---------------------------------------------------------------------------
 # adjust_scores()
 # ---------------------------------------------------------------------------
+
 
 class TestAdjustScores:
     """Validate adjust_scores() blending direction and behaviour."""

@@ -22,9 +22,10 @@ def test_set_reproducible_reseeds_all():
     import sys
 
     import torch as real_torch
+
     # Temporarily replace torch in sys.modules to ensure seeding uses real torch
-    original_torch = sys.modules.get('torch')
-    sys.modules['torch'] = real_torch
+    original_torch = sys.modules.get("torch")
+    sys.modules["torch"] = real_torch
 
     try:
         set_reproducible(123)
@@ -39,4 +40,4 @@ def test_set_reproducible_reseeds_all():
     finally:
         # Restore original torch in sys.modules
         if original_torch is not None:
-            sys.modules['torch'] = original_torch
+            sys.modules["torch"] = original_torch

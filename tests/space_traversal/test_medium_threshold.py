@@ -19,13 +19,11 @@ def test_medium_threshold_in_template_context():
         templates_dir = tmpdir / "templates"
         templates_dir.mkdir()
         template_file = templates_dir / "test.md.j2"
-        template_file.write_text(
-            """
+        template_file.write_text("""
 Low: {{ thresholds.low }}
 Medium: {{ thresholds.medium }}
 High Capabilities: {{ capabilities|selectattr('score', 'ge', thresholds.medium)|list|length }}
-"""
-        )
+""")
 
         cfg = {
             "output": {

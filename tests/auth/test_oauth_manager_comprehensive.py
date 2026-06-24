@@ -26,6 +26,7 @@ from codex.auth.oauth_manager import (
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def oauth_config():
     """Create standard OAuth config."""
@@ -59,6 +60,7 @@ def valid_oauth_token():
 # ============================================================================
 # OAuth Token Tests
 # ============================================================================
+
 
 class TestOAuthToken:
     """OAuth token functionality."""
@@ -174,6 +176,7 @@ class TestTokenExpiration:
 # Authorization Code Flow Tests
 # ============================================================================
 
+
 class TestAuthorizationCodeFlow:
     """OAuth authorization code flow."""
 
@@ -196,13 +199,13 @@ class TestAuthorizationCodeFlow:
     def test_authorization_url_unique_state(self, oauth_manager):
         url1 = oauth_manager.get_authorization_url()
         url2 = oauth_manager.get_authorization_url()
-        state1 = parse_qs(urlparse(url1).query)['state'][0]
-        state2 = parse_qs(urlparse(url2).query)['state'][0]
+        state1 = parse_qs(urlparse(url1).query)["state"][0]
+        state2 = parse_qs(urlparse(url2).query)["state"][0]
         assert state1 != state2
 
     def test_authorization_url_pkce_challenge_format(self, oauth_manager):
         url = oauth_manager.get_authorization_url(use_pkce=True)
-        challenge = parse_qs(urlparse(url).query)['code_challenge'][0]
+        challenge = parse_qs(urlparse(url).query)["code_challenge"][0]
         assert len(challenge) >= 43  # PKCE minimum
 
 
@@ -238,18 +241,19 @@ class TestPKCEFlow:
 # Token Exchange Tests
 # ============================================================================
 
+
 class TestTokenExchange:
     """Authorization code token exchange."""
 
     @pytest.mark.asyncio
     async def test_exchange_code_for_token(self, oauth_manager):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
-                'access_token': 'token123',
-                'token_type': 'Bearer',
-                'expires_in': 3600,
-                'refresh_token': 'refresh123',
+                "access_token": "token123",
+                "token_type": "Bearer",
+                "expires_in": 3600,
+                "refresh_token": "refresh123",
             }
             mock_post.return_value = mock_response
 
@@ -259,18 +263,17 @@ class TestTokenExchange:
 
     @pytest.mark.asyncio
     async def test_exchange_code_with_pkce(self, oauth_manager):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
-                'access_token': 'token123',
-                'token_type': 'Bearer',
-                'expires_in': 3600,
+                "access_token": "token123",
+                "token_type": "Bearer",
+                "expires_in": 3600,
             }
             mock_post.return_value = mock_response
 
             token = await oauth_manager.exchange_code_for_token(
-                "auth_code_123",
-                code_verifier="a" * 128
+                "auth_code_123", code_verifier="a" * 128
             )
             assert token.access_token == "token123"
 
@@ -286,10 +289,10 @@ class TestTokenExchange:
 
     @pytest.mark.asyncio
     async def test_exchange_code_http_error(self, oauth_manager):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.status_code = 400
-            mock_response.json.return_value = {'error': 'invalid_code'}
+            mock_response.json.return_value = {"error": "invalid_code"}
             mock_post.return_value = mock_response
 
             with pytest.raises(Exception):
@@ -300,18 +303,19 @@ class TestTokenExchange:
 # Token Refresh Tests
 # ============================================================================
 
+
 class TestTokenRefresh:
     """Token refresh and rotation."""
 
     @pytest.mark.asyncio
     async def test_refresh_token(self, oauth_manager, valid_oauth_token):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
-                'access_token': 'new_token_123',
-                'token_type': 'Bearer',
-                'expires_in': 3600,
-                'refresh_token': 'new_refresh_123',
+                "access_token": "new_token_123",
+                "token_type": "Bearer",
+                "expires_in": 3600,
+                "refresh_token": "new_refresh_123",
             }
             mock_post.return_value = mock_response
 
@@ -336,13 +340,13 @@ class TestTokenRefresh:
 
     @pytest.mark.asyncio
     async def test_refresh_token_updates_created_at(self, oauth_manager, valid_oauth_token):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
-                'access_token': 'new_token_123',
-                'token_type': 'Bearer',
-                'expires_in': 3600,
-                'refresh_token': 'new_refresh_123',
+                "access_token": "new_token_123",
+                "token_type": "Bearer",
+                "expires_in": 3600,
+                "refresh_token": "new_refresh_123",
             }
             mock_post.return_value = mock_response
 
@@ -351,15 +355,15 @@ class TestTokenRefresh:
 
     @pytest.mark.asyncio
     async def test_refresh_multiple_times(self, oauth_manager, valid_oauth_token):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             token = valid_oauth_token
             for i in range(3):
                 mock_response = Mock()
                 mock_response.json.return_value = {
-                    'access_token': f'token_{i}',
-                    'token_type': 'Bearer',
-                    'expires_in': 3600,
-                    'refresh_token': f'refresh_{i}',
+                    "access_token": f"token_{i}",
+                    "token_type": "Bearer",
+                    "expires_in": 3600,
+                    "refresh_token": f"refresh_{i}",
                 }
                 mock_post.return_value = mock_response
                 token = await oauth_manager.refresh_token(token)
@@ -371,6 +375,7 @@ class TestTokenRefresh:
 # Scope Management Tests
 # ============================================================================
 
+
 class TestScopeManagement:
     """OAuth scope handling."""
 
@@ -380,9 +385,7 @@ class TestScopeManagement:
         assert len(scopes) == 3
 
     def test_authorization_url_with_multiple_scopes(self, oauth_manager):
-        url = oauth_manager.get_authorization_url(
-            scope="user:email repository public_repo"
-        )
+        url = oauth_manager.get_authorization_url(scope="user:email repository public_repo")
         assert "scope=" in url
 
     def test_scope_space_separated(self):
@@ -402,6 +405,7 @@ class TestScopeManagement:
 # State Management Tests
 # ============================================================================
 
+
 class TestStateManagement:
     """OAuth state parameter handling."""
 
@@ -409,25 +413,26 @@ class TestStateManagement:
         states = set()
         for _ in range(100):
             url = oauth_manager.get_authorization_url()
-            state = parse_qs(urlparse(url).query)['state'][0]
+            state = parse_qs(urlparse(url).query)["state"][0]
             states.add(state)
         assert len(states) == 100  # All unique
 
     def test_state_minimum_length(self, oauth_manager):
         url = oauth_manager.get_authorization_url()
-        state = parse_qs(urlparse(url).query)['state'][0]
+        state = parse_qs(urlparse(url).query)["state"][0]
         assert len(state) >= 20  # Reasonable minimum
 
     def test_state_validation_required(self, oauth_manager):
         # State should be validated during callback
         url = oauth_manager.get_authorization_url()
-        state = parse_qs(urlparse(url).query)['state'][0]
+        state = parse_qs(urlparse(url).query)["state"][0]
         assert state  # State exists
 
 
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
 
 class TestErrorHandling:
     """Error handling and edge cases."""
@@ -444,29 +449,27 @@ class TestErrorHandling:
         assert manager  # Should handle empty config
 
     def test_malformed_token_response(self, oauth_manager):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
                 # Missing required fields
-                'token_type': 'Bearer',
+                "token_type": "Bearer",
             }
             mock_post.return_value = mock_response
 
             with pytest.raises((KeyError, ValueError)):
                 import asyncio
-                asyncio.run(
-                    oauth_manager.exchange_code_for_token("code123")
-                )
+
+                asyncio.run(oauth_manager.exchange_code_for_token("code123"))
 
     def test_network_error_on_exchange(self, oauth_manager):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_post.side_effect = Exception("Network error")
 
             with pytest.raises(Exception):
                 import asyncio
-                asyncio.run(
-                    oauth_manager.exchange_code_for_token("code123")
-                )
+
+                asyncio.run(oauth_manager.exchange_code_for_token("code123"))
 
     def test_token_type_case_insensitive(self):
         # Most OAuth implementations are case-insensitive
@@ -489,49 +492,43 @@ class TestErrorHandling:
 # Integration Tests
 # ============================================================================
 
+
 class TestOAuthFlow:
     """Full OAuth flow integration."""
 
     def test_authorization_flow_components(self, oauth_manager):
         # Get authorization URL
-        url = oauth_manager.get_authorization_url(
-            scope="user:email",
-            use_pkce=True
-        )
+        url = oauth_manager.get_authorization_url(scope="user:email", use_pkce=True)
         assert url
 
         # Extract state
         parsed = urlparse(url)
         params = parse_qs(parsed.query)
-        state = params['state'][0]
-        code_challenge = params.get('code_challenge', [None])[0]
+        state = params["state"][0]
+        code_challenge = params.get("code_challenge", [None])[0]
 
         assert state
         assert code_challenge
 
     @pytest.mark.asyncio
     async def test_full_oauth_flow_with_pkce(self, oauth_manager):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
-                'access_token': 'token123',
-                'token_type': 'Bearer',
-                'expires_in': 3600,
-                'refresh_token': 'refresh123',
+                "access_token": "token123",
+                "token_type": "Bearer",
+                "expires_in": 3600,
+                "refresh_token": "refresh123",
             }
             mock_post.return_value = mock_response
 
             # Get authorization URL
-            url = oauth_manager.get_authorization_url(
-                scope="user:email",
-                use_pkce=True
-            )
+            url = oauth_manager.get_authorization_url(scope="user:email", use_pkce=True)
             assert url
 
             # Exchange code (with PKCE)
             token = await oauth_manager.exchange_code_for_token(
-                "auth_code_123",
-                code_verifier="a" * 128
+                "auth_code_123", code_verifier="a" * 128
             )
             assert token.access_token == "token123"
 
@@ -543,6 +540,7 @@ class TestOAuthFlow:
 # ============================================================================
 # Security Tests
 # ============================================================================
+
 
 class TestSecurityConsiderations:
     """Security-related tests."""
@@ -559,6 +557,7 @@ class TestSecurityConsiderations:
         )
         with pytest.raises(ValueError):
             import asyncio
+
             asyncio.run(oauth_manager.refresh_token(token))
 
     def test_pkce_verifier_randomness(self, oauth_manager):

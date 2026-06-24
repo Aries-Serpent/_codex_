@@ -15,8 +15,7 @@ from __future__ import annotations
 
 import json
 import logging
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -227,7 +226,9 @@ class TestQuantumOrchestratorCLIIntegration:
         # Act & Assert: Mock error scenario
         with patch("codex.quantum_orchestrator.cli.create_observable_orchestrator") as mock_create:
             mock_orchestrator = Mock()
-            mock_orchestrator.get_task = Mock(side_effect=KeyError(f"Task {invalid_task_id} not found"))
+            mock_orchestrator.get_task = Mock(
+                side_effect=KeyError(f"Task {invalid_task_id} not found")
+            )
             mock_create.return_value = mock_orchestrator
 
             # Attempt to retrieve invalid task
@@ -281,7 +282,9 @@ class TestQuantumOrchestratorCLIIntegration:
         """Test: Verbose logging captures orchestration details."""
         # Arrange: Enable verbose logging
         with caplog.at_level(logging.DEBUG):
-            with patch("codex.quantum_orchestrator.cli.create_observable_orchestrator") as mock_create:
+            with patch(
+                "codex.quantum_orchestrator.cli.create_observable_orchestrator"
+            ) as mock_create:
                 mock_orchestrator = Mock()
                 mock_orchestrator.execute = Mock(return_value={"status": "ok"})
                 mock_create.return_value = mock_orchestrator
@@ -381,7 +384,11 @@ class TestQuantumOrchestratorCLIEndToEnd:
 
         # Assert
         assert result.exit_code == 0 or result.exit_code is None
-        assert "usage" in result.output.lower() or "commands" in result.output.lower() or len(result.output) > 0
+        assert (
+            "usage" in result.output.lower()
+            or "commands" in result.output.lower()
+            or len(result.output) > 0
+        )
 
     def test_cli_version_compatibility(self):
         """Test: CLI maintains compatibility with orchestrator API."""
@@ -430,9 +437,7 @@ class TestQuantumOrchestratorErrorPaths:
         # Arrange: Mock orchestration failure
         with patch("codex.quantum_orchestrator.cli.create_observable_orchestrator") as mock_create:
             mock_orchestrator = Mock()
-            mock_orchestrator.execute = Mock(
-                side_effect=RuntimeError("Orchestration failed")
-            )
+            mock_orchestrator.execute = Mock(side_effect=RuntimeError("Orchestration failed"))
             mock_create.return_value = mock_orchestrator
 
             # Act & Assert: Error is caught

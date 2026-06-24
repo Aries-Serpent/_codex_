@@ -11,12 +11,15 @@ import pytest
 
 try:
     import torch as _torch_json
+
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_json.__version__.startswith("2.")
 except (ImportError, AttributeError):
     _TORCH_312_BUG = False
 
 
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
+@pytest.mark.skipif(
+    _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
+)
 def test_telemetry_json_disable_env(tmp_path: Path, monkeypatch):
     from src.codex_ml.train_loop import run_training
 

@@ -381,21 +381,25 @@ class TestZendeskAgentCoreExports:
     def test_agent_config_exported(self):
         """Test that AgentConfig is exported."""
         from src.codex.zendesk.agent import AgentConfig
+
         assert AgentConfig is not None
 
     def test_agent_core_exported(self):
         """Test that AgentCore is exported."""
         from src.codex.zendesk.agent import AgentCore
+
         assert AgentCore is not None
 
     def test_zendesk_agent_core_exported(self):
         """Test that ZendeskAgentCore is exported."""
         from src.codex.zendesk.agent import ZendeskAgentCore
+
         assert ZendeskAgentCore is not None
 
     def test_all_exports(self):
         """Test that __all__ includes expected exports."""
         from src.codex.zendesk import agent
+
         if hasattr(agent, "__all__"):
             all_exports = agent.__all__
             assert "ZendeskAgentCore" in all_exports

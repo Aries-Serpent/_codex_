@@ -1839,12 +1839,8 @@ def run_training(
     # ------------------------------------------------------------------
     _perf_monitor = None
     try:
-        from codex.monitoring.performance_monitor import (
-            PerformanceMonitor as _PerfMon,
-        )
-        from codex.monitoring.performance_monitor import (
-            PerformanceSnapshot as _PerfSnap,
-        )
+        from codex.monitoring.performance_monitor import PerformanceMonitor as _PerfMon
+        from codex.monitoring.performance_monitor import PerformanceSnapshot as _PerfSnap
 
         _perf_monitor = _PerfMon.from_env(run_id=_TRAIN_RUN_ID)
     except Exception:  # pragma: no cover — optional dependency

@@ -38,8 +38,7 @@ def test_track_bootstrap_sets_env(tmp_path, monkeypatch):
         or payload.get("MLFLOW_TRACKING_URI")
         or (payload.get("env") or {}).get("MLFLOW_TRACKING_URI")
     )
-    assert mlflow_uri and mlflow_uri.startswith("file:"), \
-        f"Expected file:// URI, got: {mlflow_uri}"
+    assert mlflow_uri and mlflow_uri.startswith("file:"), f"Expected file:// URI, got: {mlflow_uri}"
 
     wandb_section = payload.get("wandb", {})
     wandb_disabled = (
@@ -48,8 +47,7 @@ def test_track_bootstrap_sets_env(tmp_path, monkeypatch):
         or payload.get("WANDB_DISABLED")
         or (payload.get("env") or {}).get("WANDB_DISABLED")
     )
-    assert wandb_disabled == "true", \
-        f"Expected WANDB_DISABLED='true', got: {wandb_disabled}"
+    assert wandb_disabled == "true", f"Expected WANDB_DISABLED='true', got: {wandb_disabled}"
 
     assert (root / "mlruns").exists(), "mlruns directory not created"
     assert (root / "wandb").exists(), "wandb directory not created"

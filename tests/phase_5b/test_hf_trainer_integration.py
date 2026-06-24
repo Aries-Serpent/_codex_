@@ -17,8 +17,6 @@ from __future__ import annotations
 
 import json
 import logging
-import tempfile
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
@@ -265,9 +263,7 @@ class TestHFTrainerIntegration:
         """Test: Invalid model name produces appropriate error."""
         # Arrange & Act: Mock model loading error
         with patch("training.engine_hf_trainer.AutoModel") as mock_model_cls:
-            mock_model_cls.from_pretrained = Mock(
-                side_effect=OSError("Model not found on hub")
-            )
+            mock_model_cls.from_pretrained = Mock(side_effect=OSError("Model not found on hub"))
 
             with pytest.raises(OSError):
                 mock_model_cls.from_pretrained("nonexistent-model")
@@ -278,16 +274,16 @@ class TestHFTrainerIntegration:
         with patch("training.engine_hf_trainer.Trainer") as mock_trainer_cls:
             mock_trainer = Mock()
             mock_trainer_cls.return_value = mock_trainer
-            mock_trainer.train = Mock(
-                side_effect=RuntimeError("Training failed")
-            )
+            mock_trainer.train = Mock(side_effect=RuntimeError("Training failed"))
 
             with pytest.raises(RuntimeError):
                 trainer = mock_trainer_cls()
                 trainer.train()
 
 
-@pytest.mark.skipif(not (HF_TRAINER_AVAILABLE and TORCH_AVAILABLE), reason="Requirements not available")
+@pytest.mark.skipif(
+    not (HF_TRAINER_AVAILABLE and TORCH_AVAILABLE), reason="Requirements not available"
+)
 class TestHFTrainerWithTorch:
     """HF Trainer tests with PyTorch."""
 
@@ -415,9 +411,7 @@ class TestHFTrainerErrorPaths:
         with patch("training.engine_hf_trainer.Trainer") as mock_trainer_cls:
             mock_trainer = Mock()
             mock_trainer_cls.return_value = mock_trainer
-            mock_trainer.train = Mock(
-                side_effect=ValueError("Train dataset not found")
-            )
+            mock_trainer.train = Mock(side_effect=ValueError("Train dataset not found"))
 
             with pytest.raises(ValueError):
                 trainer = mock_trainer_cls()
@@ -428,7 +422,9 @@ class TestHFTrainerErrorPaths:
         try:
             from training import engine_hf_trainer
 
-            assert hasattr(engine_hf_trainer, "HFTrainer") or hasattr(engine_hf_trainer, "create_trainer")
+            assert hasattr(engine_hf_trainer, "HFTrainer") or hasattr(
+                engine_hf_trainer, "create_trainer"
+            )
         except ImportError:
             pytest.skip("Trainer module not available, but should handle gracefully")
 
@@ -454,9 +450,7 @@ class TestHFTrainerEndToEnd:
                     # Step 3: Create trainer
                     mock_trainer = Mock()
                     mock_trainer_cls.return_value = mock_trainer
-                    mock_trainer.train = Mock(
-                        return_value={"training_loss": 0.45}
-                    )
+                    mock_trainer.train = Mock(return_value={"training_loss": 0.45})
                     mock_trainer.save_model = Mock()
 
                     # Execute pipeline
@@ -478,12 +472,8 @@ class TestHFTrainerEndToEnd:
             mock_trainer_cls.return_value = mock_trainer
 
             # Mock training with evaluation
-            mock_trainer.train = Mock(
-                return_value={"training_loss": 0.45, "epoch": 1.0}
-            )
-            mock_trainer.evaluate = Mock(
-                return_value={"eval_loss": 0.5, "eval_accuracy": 0.85}
-            )
+            mock_trainer.train = Mock(return_value={"training_loss": 0.45, "epoch": 1.0})
+            mock_trainer.evaluate = Mock(return_value={"eval_loss": 0.5, "eval_accuracy": 0.85})
             mock_trainer.save_model = Mock()
 
             # Execute workflow
@@ -508,10 +498,12 @@ class TestHFTrainerEndToEnd:
             mock_trainer.state = Mock()
             mock_trainer.state.log_history = []
             for epoch in range(3):
-                mock_trainer.state.log_history.append({
-                    "epoch": epoch + 1,
-                    "loss": 0.6 - (epoch * 0.05),
-                })
+                mock_trainer.state.log_history.append(
+                    {
+                        "epoch": epoch + 1,
+                        "loss": 0.6 - (epoch * 0.05),
+                    }
+                )
 
             mock_trainer.train = Mock(return_value={"epoch": 3})
 

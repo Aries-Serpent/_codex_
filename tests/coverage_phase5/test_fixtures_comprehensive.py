@@ -1,4 +1,5 @@
 """Comprehensive fixture-based testing."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,11 +18,7 @@ class TestContext:
 @pytest.fixture
 def test_context():
     """Provide a test context."""
-    return TestContext(
-        name="test_run",
-        data={"key": "value"},
-        results=[]
-    )
+    return TestContext(name="test_run", data={"key": "value"}, results=[])
 
 
 @pytest.fixture

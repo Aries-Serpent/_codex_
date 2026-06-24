@@ -18,10 +18,7 @@ class TestMetricStorage:
         json_dir = tmp_path / "json"
         sqlite_path = tmp_path / "test.db"
 
-        storage = MetricStorage(
-            json_dir=json_dir,
-            sqlite_path=sqlite_path
-        )
+        storage = MetricStorage(json_dir=json_dir, sqlite_path=sqlite_path)
 
         assert storage.json_dir == json_dir
         assert storage.sqlite_path == sqlite_path
@@ -35,11 +32,7 @@ class TestMetricStorage:
 
         json_dir = tmp_path / "json"
 
-        storage = MetricStorage(
-            json_dir=json_dir,
-            enable_json=True,
-            enable_sqlite=False
-        )
+        storage = MetricStorage(json_dir=json_dir, enable_json=True, enable_sqlite=False)
 
         assert storage.enable_json is True
         assert storage.enable_sqlite is False
@@ -51,11 +44,7 @@ class TestMetricStorage:
 
         sqlite_path = tmp_path / "test.db"
 
-        storage = MetricStorage(
-            sqlite_path=sqlite_path,
-            enable_json=False,
-            enable_sqlite=True
-        )
+        storage = MetricStorage(sqlite_path=sqlite_path, enable_json=False, enable_sqlite=True)
 
         assert storage.enable_json is False
         assert storage.enable_sqlite is True
@@ -68,10 +57,7 @@ class TestMetricStorage:
         json_dir = tmp_path / "nested" / "json" / "dir"
         sqlite_path = tmp_path / "nested" / "db" / "test.db"
 
-        MetricStorage(
-            json_dir=json_dir,
-            sqlite_path=sqlite_path
-        )
+        MetricStorage(json_dir=json_dir, sqlite_path=sqlite_path)
 
         assert json_dir.exists()
         assert sqlite_path.parent.exists()
@@ -84,7 +70,7 @@ class TestMetricStorage:
             json_dir=tmp_path / "json",
             sqlite_path=tmp_path / "test.db",
             enable_json=False,
-            enable_sqlite=False
+            enable_sqlite=False,
         )
 
         assert storage.enable_json is False

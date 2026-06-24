@@ -579,12 +579,12 @@ class QuantumMemoryManager:
         return {
             "stm_size": stm_size,
             "ltm_size": ltm_size,
-            "stm_utilization": (stm_size / self.stm_capacity * 100)
-            if self.stm_capacity > 0
-            else 0.0,
-            "ltm_utilization": (ltm_size / self.ltm_capacity * 100)
-            if self.ltm_capacity > 0
-            else 0.0,
+            "stm_utilization": (
+                (stm_size / self.stm_capacity * 100) if self.stm_capacity > 0 else 0.0
+            ),
+            "ltm_utilization": (
+                (ltm_size / self.ltm_capacity * 100) if self.ltm_capacity > 0 else 0.0
+            ),
             "cache_hit_rate": self.get_cache_hit_rate(),
             "avg_age_hours": avg_age_hours,
             "avg_access_count": avg_access_count,

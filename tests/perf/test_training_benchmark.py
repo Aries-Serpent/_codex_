@@ -26,6 +26,7 @@ import pytest
 @dataclass
 class BenchmarkResult:
     """Result of a benchmark run."""
+
     name: str
     duration_ms: float
     iterations: int
@@ -47,6 +48,7 @@ def get_memory_usage_mb() -> float:
     """Get current memory usage in MB."""
     try:
         import psutil
+
         process = psutil.Process(os.getpid())
         return process.memory_info().rss / 1024 / 1024
     except ImportError:
@@ -90,15 +92,18 @@ class TestTrainingThroughputBenchmarks:
 
     def test_batch_processing_throughput(self) -> None:
         """Benchmark batch processing throughput."""
+
         def process_batch() -> dict[str, float]:
             # Simulate batch processing
             batch = [{"input": f"sample_{i}", "label": i % 10} for i in range(32)]
             processed = []
             for item in batch:
-                processed.append({
-                    "tokens": len(item["input"]),
-                    "label": item["label"],
-                })
+                processed.append(
+                    {
+                        "tokens": len(item["input"]),
+                        "label": item["label"],
+                    }
+                )
             return {"processed": len(processed)}
 
         result = benchmark(process_batch, iterations=1000)
@@ -107,6 +112,7 @@ class TestTrainingThroughputBenchmarks:
 
     def test_gradient_computation_throughput(self) -> None:
         """Benchmark gradient computation simulation."""
+
         def compute_gradients() -> dict[str, float]:
             # Simulate gradient computation
             params = [0.1 * i for i in range(1000)]
@@ -131,6 +137,7 @@ class TestTrainingThroughputBenchmarks:
 
     def test_loss_computation_throughput(self) -> None:
         """Benchmark loss computation."""
+
         def compute_loss() -> float:
             predictions = [0.5 + 0.1 * i for i in range(100)]
             targets = [0.0 if i < 50 else 1.0 for i in range(100)]
@@ -145,6 +152,7 @@ class TestTrainingThroughputBenchmarks:
 
     def test_forward_pass_throughput(self) -> None:
         """Benchmark forward pass simulation."""
+
         def forward_pass() -> list[float]:
             # Simulate simple forward pass
             input_data = [0.1 * i for i in range(512)]
@@ -169,11 +177,9 @@ class TestTrainingMemoryBenchmarks:
 
     def test_batch_memory_allocation(self) -> None:
         """Benchmark memory allocation for batches."""
+
         def allocate_batch() -> list[dict[str, Any]]:
-            return [
-                {"input_ids": list(range(512)), "attention_mask": [1] * 512}
-                for _ in range(32)
-            ]
+            return [{"input_ids": list(range(512)), "attention_mask": [1] * 512} for _ in range(32)]
 
         result = benchmark(allocate_batch, iterations=100)
         # Memory increase should be reasonable
@@ -194,6 +200,7 @@ class TestTrainingMemoryBenchmarks:
 
     def test_checkpoint_memory_overhead(self) -> None:
         """Benchmark checkpoint creation memory."""
+
         def create_checkpoint() -> dict[str, Any]:
             return {
                 "model_state": {f"layer_{i}": list(range(100)) for i in range(10)},
@@ -226,6 +233,7 @@ class TestTrainingLatencyBenchmarks:
 
     def test_single_step_latency(self) -> None:
         """Benchmark latency of a single training step."""
+
         def training_step() -> dict[str, float]:
             # Simulate complete training step
             batch = [{"x": i, "y": i % 2} for i in range(32)]
@@ -239,7 +247,7 @@ class TestTrainingLatencyBenchmarks:
             # Backward (simulated)
             grads = [2 * (logit - item["y"]) / len(batch) for logit, item in zip(logits, batch)]
 
-            return {"loss": loss, "grad_norm": sum(g ** 2 for g in grads) ** 0.5}
+            return {"loss": loss, "grad_norm": sum(g**2 for g in grads) ** 0.5}
 
         result = benchmark(training_step, iterations=100)
         # Each step should be fast
@@ -248,6 +256,7 @@ class TestTrainingLatencyBenchmarks:
 
     def test_data_loading_latency(self) -> None:
         """Benchmark data loading latency."""
+
         def load_batch() -> list[dict[str, Any]]:
             return [
                 {
@@ -267,13 +276,15 @@ class TestTrainingLatencyBenchmarks:
         logs: list[dict[str, Any]] = []
 
         def log_metrics() -> None:
-            logs.append({
-                "step": len(logs),
-                "loss": 0.5,
-                "lr": 0.001,
-                "grad_norm": 1.0,
-                "throughput": 1000.0,
-            })
+            logs.append(
+                {
+                    "step": len(logs),
+                    "loss": 0.5,
+                    "lr": 0.001,
+                    "grad_norm": 1.0,
+                    "throughput": 1000.0,
+                }
+            )
             if len(logs) > 100:
                 logs.clear()
 
@@ -330,6 +341,7 @@ class TestTrainingScalabilityBenchmarks:
     @pytest.mark.parametrize("batch_size", [1, 8, 32, 64, 128])
     def test_batch_size_scaling(self, batch_size: int) -> None:
         """Benchmark scaling with different batch sizes."""
+
         def process_batch() -> int:
             batch = [{"x": i} for i in range(batch_size)]
             return len([item["x"] * 2 for item in batch])
@@ -340,6 +352,7 @@ class TestTrainingScalabilityBenchmarks:
     @pytest.mark.parametrize("sequence_length", [64, 128, 256, 512])
     def test_sequence_length_scaling(self, sequence_length: int) -> None:
         """Benchmark scaling with different sequence lengths."""
+
         def process_sequence() -> int:
             sequence = list(range(sequence_length))
             return sum(sequence)
@@ -350,6 +363,7 @@ class TestTrainingScalabilityBenchmarks:
     @pytest.mark.parametrize("num_layers", [1, 4, 8, 12])
     def test_layer_scaling(self, num_layers: int) -> None:
         """Benchmark scaling with different number of layers."""
+
         def forward_layers() -> list[float]:
             x = [0.1] * 128
             for _ in range(num_layers):
@@ -377,7 +391,7 @@ class TestTrainingEfficiencyBenchmarks:
             nonlocal samples_processed
             samples_processed += batch_size
             # Simulate processing
-            _ = [i ** 2 for i in range(batch_size)]
+            _ = [i**2 for i in range(batch_size)]
             return samples_processed
 
         result = benchmark(process_samples, iterations=1000)
@@ -401,6 +415,7 @@ class TestTrainingEfficiencyBenchmarks:
 
     def test_gpu_utilization_simulation(self) -> None:
         """Benchmark simulated GPU utilization patterns."""
+
         def gpu_kernel_simulation() -> float:
             # Simulate compute-bound operation
             result = 0.0

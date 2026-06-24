@@ -17,6 +17,7 @@ class TestMainModuleImport:
         """Test that main module can be imported."""
         try:
             from codex_ml.cli import main
+
             assert main is not None
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
@@ -31,7 +32,7 @@ class TestMainCLI:
             [sys.executable, "-m", "codex_ml.cli.main", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -41,7 +42,7 @@ class TestMainCLI:
             [sys.executable, "-m", "codex_ml.cli.main", "--version"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -52,10 +53,7 @@ class TestMainFunctionality:
     def test_main_without_args(self):
         """Test main shows help without arguments."""
         result = subprocess.run(
-            [sys.executable, "-m", "codex_ml.cli.main"],
-            capture_output=True,
-            text=True,
-            timeout=30
+            [sys.executable, "-m", "codex_ml.cli.main"], capture_output=True, text=True, timeout=30
         )
         assert result.returncode in (0, 1, 2)
 
@@ -65,7 +63,7 @@ class TestMainFunctionality:
             [sys.executable, "-m", "codex_ml.cli.main", "invalid_xyz_command"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # Should fail or show help
         assert result.returncode in (0, 1, 2)

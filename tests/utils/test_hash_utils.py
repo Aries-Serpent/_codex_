@@ -109,6 +109,7 @@ class TestNormalizationEigenstates:
     def test_path_normalization_idempotent(self):
         """Path normalization is idempotent."""
         import os.path
+
         path = "/foo/../bar/./baz"
         result1 = os.path.normpath(path)
         result2 = os.path.normpath(result1)
@@ -118,9 +119,10 @@ class TestNormalizationEigenstates:
     def test_whitespace_collapse_idempotent(self):
         """Whitespace collapse is idempotent."""
         import re
+
         s = "multiple   spaces   here"
-        result1 = re.sub(r'\s+', ' ', s)
-        result2 = re.sub(r'\s+', ' ', result1)
+        result1 = re.sub(r"\s+", " ", s)
+        result2 = re.sub(r"\s+", " ", result1)
 
         assert result1 == result2 == "multiple spaces here"
 
@@ -130,6 +132,7 @@ class TestCacheKeyGeneration:
 
     def test_cache_key_from_args(self):
         """Cache key generation is deterministic."""
+
         def make_cache_key(*args, **kwargs):
             parts = [str(a) for a in args]
             parts.extend(f"{k}={v}" for k, v in sorted(kwargs.items()))
@@ -142,6 +145,7 @@ class TestCacheKeyGeneration:
 
     def test_cache_key_order_independence(self):
         """Kwargs order doesn't affect cache key."""
+
         def make_cache_key(**kwargs):
             parts = [f"{k}={v}" for k, v in sorted(kwargs.items())]
             return hashlib.sha256(":".join(parts).encode()).hexdigest()
@@ -153,6 +157,7 @@ class TestCacheKeyGeneration:
 
     def test_different_args_different_keys(self):
         """Different arguments produce different cache keys."""
+
         def make_cache_key(*args):
             return hashlib.sha256(str(args).encode()).hexdigest()
 
@@ -185,8 +190,9 @@ class TestContentDigest:
         json2 = json.dumps(data2, sort_keys=True)
 
         assert json1 == json2
-        assert hashlib.sha256(json1.encode()).hexdigest() == \
-               hashlib.sha256(json2.encode()).hexdigest()
+        assert (
+            hashlib.sha256(json1.encode()).hexdigest() == hashlib.sha256(json2.encode()).hexdigest()
+        )
 
     def test_binary_digest_chunked(self):
         """Chunked hashing produces same result as full hash."""
@@ -199,7 +205,7 @@ class TestContentDigest:
         h = hashlib.sha256()
         chunk_size = 256
         for i in range(0, len(data), chunk_size):
-            h.update(data[i:i+chunk_size])
+            h.update(data[i : i + chunk_size])
         chunked_hash = h.hexdigest()
 
         assert full_hash == chunked_hash

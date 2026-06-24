@@ -1,4 +1,5 @@
 """Tests for language registry."""
+
 import pytest
 
 from codex.ast.language_registry import LanguageRegistry

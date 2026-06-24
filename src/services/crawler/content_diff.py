@@ -46,12 +46,12 @@ class DiffSegment:
         """Serialize to dictionary."""
         return {
             "change_type": self.change_type,
-            "old_content_preview": self.old_content[:100] + "..."
-            if len(self.old_content) > 100
-            else self.old_content,
-            "new_content_preview": self.new_content[:100] + "..."
-            if len(self.new_content) > 100
-            else self.new_content,
+            "old_content_preview": (
+                self.old_content[:100] + "..." if len(self.old_content) > 100 else self.old_content
+            ),
+            "new_content_preview": (
+                self.new_content[:100] + "..." if len(self.new_content) > 100 else self.new_content
+            ),
             "line_start": self.line_start,
             "line_end": self.line_end,
         }

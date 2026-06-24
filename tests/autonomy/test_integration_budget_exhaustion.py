@@ -7,6 +7,7 @@ These tests are "integration-style" — they exercise real module code paths
 using tight budgets to force early exit, validating the safety mechanisms.
 All filesystem writes are redirected to tmp_path, so no repo state is mutated.
 """
+
 from __future__ import annotations
 
 import json
@@ -30,6 +31,7 @@ def _import(name: str):
 
 
 # ── budget_uncertainty (Phase 4/5) ──────────────────────────────────────────
+
 
 class TestBudgetCap:
     """Tests for @budget_cap decorator — wall-clock exhaustion stops execution."""
@@ -64,7 +66,7 @@ class TestBudgetCap:
         max_attempts = 2
         exception_raised = False
         last_exception = None
-        
+
         for attempt in range(max_attempts):
             try:
                 with pytest.raises(Exception):
@@ -75,8 +77,8 @@ class TestBudgetCap:
                 # pytest.raises failed (timeout was not raised)
                 last_exception = e
                 if attempt < max_attempts - 1:
-                    time.sleep(0.05 * (2 ** attempt))  # Exponential backoff
-        
+                    time.sleep(0.05 * (2**attempt))  # Exponential backoff
+
         if not exception_raised and last_exception:
             raise last_exception
 
@@ -163,6 +165,7 @@ class TestDirichletBeliefUpdate:
 
 # ── autonomy_scheduler (Phase 1) — budget exhaustion ────────────────────────
 
+
 class TestAutonomySchedulerBudgetExhaustion:
     """Tests for budget exhaustion in the autonomy scheduler loop."""
 
@@ -171,11 +174,13 @@ class TestAutonomySchedulerBudgetExhaustion:
         if not hasattr(mod, "run_autonomy_loop"):
             pytest.skip("run_autonomy_loop not exported")
 
-        with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
-             patch.object(mod, "DRY_RUN", True), \
-             patch.object(mod, "MAX_ITERATIONS", 100), \
-             patch.object(mod, "BUDGET_SECONDS", 0.001), \
-             patch.object(mod, "KILL_SWITCH", False):
+        with (
+            patch.object(mod, "SESSION_DIR", tmp_path / "sessions"),
+            patch.object(mod, "DRY_RUN", True),
+            patch.object(mod, "MAX_ITERATIONS", 100),
+            patch.object(mod, "BUDGET_SECONDS", 0.001),
+            patch.object(mod, "KILL_SWITCH", False),
+        ):
             start = time.monotonic()
             mod.run_autonomy_loop()
             elapsed = time.monotonic() - start
@@ -188,11 +193,13 @@ class TestAutonomySchedulerBudgetExhaustion:
         if not hasattr(mod, "run_autonomy_loop"):
             pytest.skip("run_autonomy_loop not exported")
 
-        with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
-             patch.object(mod, "DRY_RUN", True), \
-             patch.object(mod, "MAX_ITERATIONS", 100), \
-             patch.object(mod, "BUDGET_SECONDS", 300), \
-             patch.object(mod, "KILL_SWITCH", True):
+        with (
+            patch.object(mod, "SESSION_DIR", tmp_path / "sessions"),
+            patch.object(mod, "DRY_RUN", True),
+            patch.object(mod, "MAX_ITERATIONS", 100),
+            patch.object(mod, "BUDGET_SECONDS", 300),
+            patch.object(mod, "KILL_SWITCH", True),
+        ):
             start = time.monotonic()
             mod.run_autonomy_loop()
             elapsed = time.monotonic() - start
@@ -223,20 +230,23 @@ class TestAutonomySchedulerBudgetExhaustion:
         def _stub_sensor_ok(*args, **kwargs):
             return {"status": "ok"}
 
-        with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
-             patch.object(mod, "DRY_RUN", True), \
-             patch.object(mod, "MAX_ITERATIONS", 2), \
-             patch.object(mod, "BUDGET_SECONDS", 60), \
-             patch.object(mod, "KILL_SWITCH", False), \
-             patch.object(mod, "sense_json_health", counting_sense), \
-             patch.object(mod, "sense_yaml_health", _stub_sensor_ok), \
-             patch.object(mod, "sense_test_health", _stub_sensor_ok):
+        with (
+            patch.object(mod, "SESSION_DIR", tmp_path / "sessions"),
+            patch.object(mod, "DRY_RUN", True),
+            patch.object(mod, "MAX_ITERATIONS", 2),
+            patch.object(mod, "BUDGET_SECONDS", 60),
+            patch.object(mod, "KILL_SWITCH", False),
+            patch.object(mod, "sense_json_health", counting_sense),
+            patch.object(mod, "sense_yaml_health", _stub_sensor_ok),
+            patch.object(mod, "sense_test_health", _stub_sensor_ok),
+        ):
             mod.run_autonomy_loop()
 
         assert len(call_count) <= 2
 
 
 # ── agent_runner (Phase 7) — budget exhaustion ──────────────────────────────
+
 
 class TestAgentRunnerBudgetExhaustion:
     """Tests for budget exhaustion in the agent runner orchestrator."""
@@ -258,8 +268,7 @@ class TestAgentRunnerBudgetExhaustion:
         if not hasattr(mod, "run_once"):
             pytest.skip("run_once not exported")
 
-        with patch.object(mod, "REPO_ROOT", tmp_path), \
-             patch.object(mod, "_KILL_SWITCH", True):
+        with patch.object(mod, "REPO_ROOT", tmp_path), patch.object(mod, "_KILL_SWITCH", True):
             # run_once should return without doing anything
             mod.run_once(budget_seconds=30, dry_run=True)
 
@@ -291,6 +300,7 @@ class TestAgentRunnerBudgetExhaustion:
 
 
 # ── session_tracker (Phase 2) — concurrent session creation ─────────────────
+
 
 class TestSessionTrackerConcurrency:
     """Integration tests for concurrent session tracking."""

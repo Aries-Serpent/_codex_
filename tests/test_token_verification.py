@@ -38,10 +38,9 @@ class TestTokenScopeVerifier:
 
     def test_initialization_prefers_github_token(self):
         """Test GITHUB_TOKEN takes precedence over GH_TOKEN."""
-        with patch.dict(os.environ, {
-            "GITHUB_TOKEN": "primary_token",
-            "GH_TOKEN": "fallback_token"
-        }):
+        with patch.dict(
+            os.environ, {"GITHUB_TOKEN": "primary_token", "GH_TOKEN": "fallback_token"}
+        ):
             verifier = TokenScopeVerifier()
             assert verifier.token == "primary_token"
 
@@ -51,7 +50,7 @@ class TestTokenScopeVerifier:
             verifier = TokenScopeVerifier()
             assert verifier.token is None
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_verify_scopes_with_valid_token(self, mock_requests):
         """Test scope verification with valid token."""
         # Mock API response
@@ -60,7 +59,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo, workflow, read:org",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -74,7 +73,7 @@ class TestTokenScopeVerifier:
         assert "read:org" in results["scopes"]
         assert results["rate_limit_remaining"] == 5000
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_verify_scopes_with_all_required_scopes(self, mock_requests):
         """Test verification passes with all required scopes."""
         mock_response = Mock()
@@ -82,7 +81,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo, workflow, write:packages, read:org",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -92,7 +91,7 @@ class TestTokenScopeVerifier:
         assert results["required_scopes_met"] is True
         assert len(results["missing_required_scopes"]) == 0
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_verify_scopes_with_missing_required_scopes(self, mock_requests):
         """Test verification detects missing required scopes."""
         mock_response = Mock()
@@ -100,7 +99,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo, read:org",  # Missing: workflow, write:packages
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -111,7 +110,7 @@ class TestTokenScopeVerifier:
         assert "workflow" in results["missing_required_scopes"]
         assert "write:packages" in results["missing_required_scopes"]
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_verify_scopes_with_invalid_token(self, mock_requests):
         """Test verification handles invalid token."""
         mock_response = Mock()
@@ -119,7 +118,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "",
             "x-ratelimit-remaining": "0",
-            "x-ratelimit-reset": "0"
+            "x-ratelimit-reset": "0",
         }
         mock_requests.get.return_value = mock_response
 
@@ -140,7 +139,7 @@ class TestTokenScopeVerifier:
         assert results["status"] == "error"
         assert "No token available" in results["error"]
 
-    @patch('scripts.security.verify_token_scope.REQUESTS_AVAILABLE', False)
+    @patch("scripts.security.verify_token_scope.REQUESTS_AVAILABLE", False)
     def test_verify_scopes_without_requests_library(self):
         """Test verification handles missing requests library."""
         verifier = TokenScopeVerifier(token="test_token")
@@ -149,10 +148,11 @@ class TestTokenScopeVerifier:
         assert results["status"] == "error"
         assert "requests library not available" in results["error"]
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_verify_scopes_with_network_error(self, mock_requests):
         """Test verification handles network errors."""
         import requests as real_requests
+
         mock_requests.RequestException = real_requests.RequestException
         mock_requests.get.side_effect = real_requests.RequestException("Network error")
 
@@ -162,7 +162,7 @@ class TestTokenScopeVerifier:
         assert results["status"] == "error"
         assert "API request failed" in results["error"]
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_check_scope_with_granted_scope(self, mock_requests):
         """Test check_scope returns True for granted scope."""
         mock_response = Mock()
@@ -170,7 +170,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo, workflow",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -180,7 +180,7 @@ class TestTokenScopeVerifier:
         assert verifier.check_scope("repo") is True
         assert verifier.check_scope("workflow") is True
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_check_scope_with_missing_scope(self, mock_requests):
         """Test check_scope returns False for missing scope."""
         mock_response = Mock()
@@ -188,7 +188,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -202,7 +202,7 @@ class TestTokenScopeVerifier:
         verifier = TokenScopeVerifier(token="test_token")
         assert verifier.check_scope("repo") is False
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_print_report_with_valid_results(self, mock_requests, capsys):
         """Test print_report generates readable output."""
         mock_response = Mock()
@@ -210,7 +210,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo, workflow, read:org",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -232,7 +232,7 @@ class TestTokenScopeVerifier:
         captured = capsys.readouterr()
         assert "No verification results available" in captured.out
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_verify_github_token_convenience_function(self, mock_requests):
         """Test convenience function works correctly."""
         mock_response = Mock()
@@ -240,7 +240,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -250,7 +250,7 @@ class TestTokenScopeVerifier:
             assert results["status"] == "valid"
             assert "repo" in results["scopes"]
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_verify_scopes_includes_timestamp(self, mock_requests):
         """Test verification results include UTC timestamp."""
         mock_response = Mock()
@@ -258,7 +258,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -268,7 +268,7 @@ class TestTokenScopeVerifier:
         assert "timestamp" in results
         assert "T" in results["timestamp"]  # ISO format
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_token_never_logged_in_verification(self, mock_requests):
         """Test that token value is never exposed in logs or output."""
         mock_response = Mock()
@@ -276,7 +276,7 @@ class TestTokenScopeVerifier:
         mock_response.headers = {
             "x-oauth-scopes": "repo",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -293,7 +293,7 @@ class TestTokenScopeVerifier:
 class TestSecurityPrinciples:
     """Test suite verifying security principles."""
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_no_token_decoding(self, mock_requests):
         """Verify token is NEVER decoded, only used in Authorization header."""
         mock_response = Mock()
@@ -301,7 +301,7 @@ class TestSecurityPrinciples:
         mock_response.headers = {
             "x-oauth-scopes": "repo",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 
@@ -322,7 +322,7 @@ class TestSecurityPrinciples:
             # Token loaded from environment, not hardcoded
             assert verifier.token == "env_test_token"
 
-    @patch('scripts.security.verify_token_scope.requests')
+    @patch("scripts.security.verify_token_scope.requests")
     def test_api_based_verification(self, mock_requests):
         """Verify verification uses API, not token decoding."""
         mock_response = Mock()
@@ -330,7 +330,7 @@ class TestSecurityPrinciples:
         mock_response.headers = {
             "x-oauth-scopes": "repo",
             "x-ratelimit-remaining": "5000",
-            "x-ratelimit-reset": "1234567890"
+            "x-ratelimit-reset": "1234567890",
         }
         mock_requests.get.return_value = mock_response
 

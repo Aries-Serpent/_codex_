@@ -31,7 +31,7 @@ def test_manifest_contains_integrity_chain_and_weights(tmp_path):
     if not runner.exists():
         pytest.skip("audit runner missing")
     # Dependencies are optional
-    if importlib.util.find_spec('jinja2') is None or importlib.util.find_spec('yaml') is None:
+    if importlib.util.find_spec("jinja2") is None or importlib.util.find_spec("yaml") is None:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # Run S1..S7

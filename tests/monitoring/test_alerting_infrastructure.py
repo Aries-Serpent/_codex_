@@ -280,9 +280,7 @@ class TestNotificationChannels:
         assert "webhook_url" in slack["config"]
         assert "channel" in slack["config"]
 
-    def test_pagerduty_channel_config(
-        self, notification_channels: list[dict[str, Any]]
-    ):
+    def test_pagerduty_channel_config(self, notification_channels: list[dict[str, Any]]):
         """Test PagerDuty notification channel configuration."""
         pd = next(c for c in notification_channels if c["type"] == "pagerduty")
         assert "integration_key" in pd["config"]
@@ -346,9 +344,7 @@ class TestEscalationPolicies:
         first_step = escalation_policy["steps"][0]
         assert first_step["delay_minutes"] == 0
 
-    def test_escalation_includes_notify_targets(
-        self, escalation_policy: dict[str, Any]
-    ):
+    def test_escalation_includes_notify_targets(self, escalation_policy: dict[str, Any]):
         """Test each escalation step has notify targets."""
         for step in escalation_policy["steps"]:
             assert "notify" in step

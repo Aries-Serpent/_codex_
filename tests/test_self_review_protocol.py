@@ -1,4 +1,5 @@
 """Tests for autonomous self-review protocol."""
+
 import json
 import sys
 from pathlib import Path
@@ -25,7 +26,7 @@ def test_issue_creation():
         priority=Priority.HIGH,
         description="Test gap",
         location="test.py",
-        discovered_at="2025-12-21T00:00:00"
+        discovered_at="2025-12-21T00:00:00",
     )
 
     assert issue.id == "test123"
@@ -42,7 +43,7 @@ def test_issue_auto_id_generation():
         priority=Priority.CRITICAL,
         description="Security risk",
         location="app.py",
-        discovered_at="2025-12-21T00:00:00"
+        discovered_at="2025-12-21T00:00:00",
     )
 
     assert issue.id
@@ -79,10 +80,7 @@ def test_identify_issue():
     protocol.start_cycle()
 
     issue = protocol.identify_issue(
-        IssueType.MISSING_TEST,
-        Priority.HIGH,
-        "No tests for module",
-        "src/module.py"
+        IssueType.MISSING_TEST, Priority.HIGH, "No tests for module", "src/module.py"
     )
 
     assert issue.id in protocol.all_issues
@@ -95,12 +93,7 @@ def test_fix_issue():
     protocol = SelfReviewProtocol("Test task")
     protocol.start_cycle()
 
-    issue = protocol.identify_issue(
-        IssueType.GAP,
-        Priority.HIGH,
-        "Missing feature",
-        "src/app.py"
-    )
+    issue = protocol.identify_issue(IssueType.GAP, Priority.HIGH, "Missing feature", "src/app.py")
 
     success = protocol.fix_issue(issue.id, "Implemented missing feature")
 
@@ -116,10 +109,7 @@ def test_defer_issue():
     protocol.start_cycle()
 
     issue = protocol.identify_issue(
-        IssueType.OPTIMIZATION,
-        Priority.LOW,
-        "Could optimize algorithm",
-        "src/utils.py"
+        IssueType.OPTIMIZATION, Priority.LOW, "Could optimize algorithm", "src/utils.py"
     )
 
     success = protocol.defer_issue(issue.id, "Will optimize in separate PR")
@@ -135,10 +125,7 @@ def test_validate_fix():
     protocol.start_cycle()
 
     issue = protocol.identify_issue(
-        IssueType.RISK,
-        Priority.CRITICAL,
-        "Security vulnerability",
-        "src/auth.py"
+        IssueType.RISK, Priority.CRITICAL, "Security vulnerability", "src/auth.py"
     )
 
     protocol.fix_issue(issue.id, "Added input validation")
@@ -154,12 +141,8 @@ def test_calculate_convergence():
     protocol.start_cycle()
 
     # Add 2 high-priority issues
-    issue1 = protocol.identify_issue(
-        IssueType.GAP, Priority.HIGH, "Gap 1", "file1.py"
-    )
-    issue2 = protocol.identify_issue(
-        IssueType.RISK, Priority.HIGH, "Risk 1", "file2.py"
-    )
+    issue1 = protocol.identify_issue(IssueType.GAP, Priority.HIGH, "Gap 1", "file1.py")
+    issue2 = protocol.identify_issue(IssueType.RISK, Priority.HIGH, "Risk 1", "file2.py")
 
     # Initial convergence should be 0%
     assert protocol.calculate_convergence() == 0.0
@@ -193,9 +176,7 @@ def test_check_convergence_critical_issues():
 
     # Cycle 1
     protocol.start_cycle()
-    protocol.identify_issue(
-        IssueType.RISK, Priority.CRITICAL, "Critical bug", "app.py"
-    )
+    protocol.identify_issue(IssueType.RISK, Priority.CRITICAL, "Critical bug", "app.py")
     protocol.complete_cycle(["Identified issues"])
 
     # Cycle 2
@@ -214,9 +195,7 @@ def test_check_convergence_success():
 
     # Cycle 1
     protocol.start_cycle()
-    issue = protocol.identify_issue(
-        IssueType.GAP, Priority.HIGH, "Gap", "file.py"
-    )
+    issue = protocol.identify_issue(IssueType.GAP, Priority.HIGH, "Gap", "file.py")
     protocol.complete_cycle(["Identified issues"])
 
     # Cycle 2
@@ -267,9 +246,7 @@ def test_production_readiness():
 
     # Cycle 1: Identify high-priority issue
     protocol.start_cycle()
-    issue = protocol.identify_issue(
-        IssueType.GAP, Priority.HIGH, "Gap", "file.py"
-    )
+    issue = protocol.identify_issue(IssueType.GAP, Priority.HIGH, "Gap", "file.py")
     protocol.complete_cycle(["Identified"])
 
     # Cycle 2: Don't fix - should not be production ready
@@ -312,9 +289,7 @@ def test_report_to_dict():
     protocol = SelfReviewProtocol("Test task")
 
     protocol.start_cycle()
-    protocol.identify_issue(
-        IssueType.GAP, Priority.HIGH, "Gap", "file.py"
-    )
+    protocol.identify_issue(IssueType.GAP, Priority.HIGH, "Gap", "file.py")
     protocol.complete_cycle(["Work"])
     protocol.finalize_review()
 

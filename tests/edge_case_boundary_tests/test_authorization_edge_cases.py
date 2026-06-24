@@ -213,7 +213,7 @@ class TestPermissionChecking:
         cache_entry = {
             "permission": "read",
             "cached_at": datetime.now() - timedelta(hours=2),
-            "ttl": 3600
+            "ttl": 3600,
         }
         current_time = datetime.now()
 

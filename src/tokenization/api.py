@@ -19,9 +19,7 @@ _warnings.warn(
 
 # Provide thin re-exports for compatibility
 try:  # pragma: no cover
-    from codex_ml.tokenization.adapter import (
-        HFTokenizerAdapter as _CanonicalLegacyTokenizer,
-    )
+    from codex_ml.tokenization.adapter import HFTokenizerAdapter as _CanonicalLegacyTokenizer
     from codex_ml.tokenization.adapter import (
         SentencePieceTokenizer,
     )

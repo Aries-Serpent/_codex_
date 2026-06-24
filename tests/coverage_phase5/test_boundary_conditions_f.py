@@ -1,4 +1,5 @@
 """Boundary condition tests 5."""
+
 from __future__ import annotations
 
 

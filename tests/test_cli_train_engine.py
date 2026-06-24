@@ -27,6 +27,7 @@ def test_cli_train_engine_option():
 
 def test_cli_train_custom_engine_forwards_args(monkeypatch):
     import sys
+
     runner = CliRunner()
     captured: dict[str, list[str] | None] = {}
 

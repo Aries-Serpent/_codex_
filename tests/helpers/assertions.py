@@ -47,12 +47,8 @@ def assert_non_empty_list(value: Any, name: str = "value") -> None:
         ...
     AssertionError: expected non-empty list for 'results', got [] (len=0)
     """
-    assert isinstance(value, list), (
-        f"expected list for '{name}', got {type(value).__name__!r}"
-    )
-    assert len(value) > 0, (
-        f"expected non-empty list for '{name}', got {value!r} (len=0)"
-    )
+    assert isinstance(value, list), f"expected list for '{name}', got {type(value).__name__!r}"
+    assert len(value) > 0, f"expected non-empty list for '{name}', got {value!r} (len=0)"
 
 
 def assert_collection(
@@ -74,9 +70,9 @@ def assert_collection(
         ...
     AssertionError: expected a collection for 'value', got str
     """
-    assert isinstance(value, types), (
-        f"expected a collection for '{name}', got {type(value).__name__}"
-    )
+    assert isinstance(
+        value, types
+    ), f"expected a collection for '{name}', got {type(value).__name__}"
 
 
 def assert_non_negative_count(value: Any, name: str = "value") -> None:
@@ -93,11 +89,13 @@ def assert_non_negative_count(value: Any, name: str = "value") -> None:
         ...
     AssertionError: expected a sized object for 'value', got int
     """
-    assert hasattr(value, "__len__"), (
-        f"expected a sized object for '{name}', got {type(value).__name__}"
-    )
+    assert hasattr(
+        value, "__len__"
+    ), f"expected a sized object for '{name}', got {type(value).__name__}"
     length = len(value)  # type: ignore[arg-type]
-    assert length >= 0, f"negative length for '{name}': {length}"  # always true but now documents intent
+    assert (
+        length >= 0
+    ), f"negative length for '{name}': {length}"  # always true but now documents intent
 
 
 def assert_no_exception(callable_: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
@@ -117,9 +115,7 @@ def assert_no_exception(callable_: Callable[..., Any], *args: Any, **kwargs: Any
     try:
         return callable_(*args, **kwargs)
     except Exception as exc:
-        raise AssertionError(
-            f"{callable_.__name__!r} raised {type(exc).__name__}: {exc}"
-        ) from exc
+        raise AssertionError(f"{callable_.__name__!r} raised {type(exc).__name__}: {exc}") from exc
 
 
 def assert_dict_has_keys(d: Any, *keys: str, name: str = "dict") -> None:
@@ -145,9 +141,9 @@ def assert_positive(value: Any, name: str = "value") -> None:
         ...
     AssertionError: expected positive number for 'value', got 0
     """
-    assert isinstance(value, (int, float)), (
-        f"expected numeric for '{name}', got {type(value).__name__}"
-    )
+    assert isinstance(
+        value, (int, float)
+    ), f"expected numeric for '{name}', got {type(value).__name__}"
     assert value > 0, f"expected positive number for '{name}', got {value}"
 
 
@@ -168,8 +164,7 @@ def assert_callable_returns(
     result = callable_(*args, **kwargs)
     label = name or callable_.__name__
     assert isinstance(result, expected_type), (
-        f"'{label}' returned {type(result).__name__!r}, "
-        f"expected {expected_type.__name__!r}"
+        f"'{label}' returned {type(result).__name__!r}, " f"expected {expected_type.__name__!r}"
     )
     return result  # type: ignore[return-value]
 
@@ -183,13 +178,13 @@ def assert_string_non_empty(value: Any, name: str = "value") -> None:
         ...
     AssertionError: expected non-empty string for 'value', got ''
     """
-    assert isinstance(value, str), (
-        f"expected str for '{name}', got {type(value).__name__}"
-    )
+    assert isinstance(value, str), f"expected str for '{name}', got {type(value).__name__}"
     assert len(value) > 0, f"expected non-empty string for '{name}', got {value!r}"
 
 
-def assert_instance(value: Any, expected_type: type | tuple[type, ...], name: str = "value") -> None:
+def assert_instance(
+    value: Any, expected_type: type | tuple[type, ...], name: str = "value"
+) -> None:
     """Assert that *value* is an instance of *expected_type*.
 
     Thin wrapper around ``isinstance`` that produces a descriptive message.
@@ -204,6 +199,6 @@ def assert_instance(value: Any, expected_type: type | tuple[type, ...], name: st
         type_names = " | ".join(t.__name__ for t in expected_type)
     else:
         type_names = expected_type.__name__
-    assert isinstance(value, expected_type), (
-        f"expected {type_names} for '{name}', got {type(value).__name__}"
-    )
+    assert isinstance(
+        value, expected_type
+    ), f"expected {type_names} for '{name}', got {type(value).__name__}"

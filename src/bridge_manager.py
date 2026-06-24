@@ -49,12 +49,8 @@ try:
         MAGIC_BYTES,  # Import magic bytes constant for consistency
         MultiClientBridge,
     )
-    from bridge_protocol_v2 import (
-        decode_message as v2_decode,
-    )
-    from bridge_protocol_v2 import (
-        encode_message as v2_encode,
-    )
+    from bridge_protocol_v2 import decode_message as v2_decode
+    from bridge_protocol_v2 import encode_message as v2_encode
 
     HAS_PROTOCOL_V2 = True
 except ImportError:

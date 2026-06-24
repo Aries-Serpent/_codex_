@@ -54,8 +54,7 @@ def test_backend_config_infers_backend_from_url() -> None:
 
 def test_archive_app_config_file_precedence(tmp_path: Path) -> None:
     config_path = tmp_path / "archive.toml"
-    config_path.write_text(
-        """
+    config_path.write_text("""
         [backend]
         backend = "mariadb"
         url = "mariadb://example/db"
@@ -63,8 +62,7 @@ def test_archive_app_config_file_precedence(tmp_path: Path) -> None:
         [retry]
         max_attempts = 9
         initial_delay = 0.5
-        """
-    )
+        """)
 
     cfg = archive_config.ArchiveAppConfig.load(
         config_file=config_path,
@@ -79,13 +77,11 @@ def test_archive_app_config_file_precedence(tmp_path: Path) -> None:
 
 def test_archive_app_config_env_can_reset_to_defaults(tmp_path: Path) -> None:
     config_path = tmp_path / "archive.toml"
-    config_path.write_text(
-        """
+    config_path.write_text("""
         [logging]
         level = "debug"
         format = "json"
-        """
-    )
+        """)
 
     cfg = archive_config.ArchiveAppConfig.load(
         config_file=config_path,

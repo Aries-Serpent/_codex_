@@ -18,12 +18,12 @@ class TestDataLoaderEdgeCases:
 
     def test_loader_empty_file(self):
         """Test data loader with empty file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write("")
             empty_file = f.name
 
         try:
-            with open(empty_file, 'r') as f:
+            with open(empty_file, "r") as f:
                 content = f.read()
             assert content == ""
         finally:
@@ -36,8 +36,8 @@ class TestDataLoaderEdgeCases:
 
     def test_loader_binary_file_as_text(self):
         """Test data loader attempting to read binary as text"""
-        with tempfile.NamedTemporaryFile(mode='wb', suffix='.bin', delete=False) as f:
-            f.write(b'\x00\x01\x02\xFF\xFE')
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=".bin", delete=False) as f:
+            f.write(b"\x00\x01\x02\xff\xfe")
             binary_file = f.name
 
         try:
@@ -78,7 +78,7 @@ class TestDataLoaderEdgeCases:
         """Test data loader with UTF-8 BOM"""
         bom_content = '\ufeff{"key": "value"}'
         # Should handle BOM correctly
-        parsed = json.loads(bom_content.lstrip('\ufeff'))
+        parsed = json.loads(bom_content.lstrip("\ufeff"))
         assert parsed == {"key": "value"}
 
     def test_loader_mixed_line_endings(self):
@@ -91,6 +91,7 @@ class TestDataLoaderEdgeCases:
     def test_loader_concurrent_reads(self):
         """Test data loader with concurrent file reads"""
         import threading
+
         results = []
 
         def read_file():
@@ -140,7 +141,7 @@ class TestConfigEdgeCases:
 
     def test_config_environment_override(self):
         """Test config environment variable override"""
-        with patch.dict(os.environ, {'CODEX_BATCH_SIZE': '128'}):
+        with patch.dict(os.environ, {"CODEX_BATCH_SIZE": "128"}):
             # Should apply environment overrides
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 

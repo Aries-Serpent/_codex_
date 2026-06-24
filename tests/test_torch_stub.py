@@ -49,6 +49,7 @@ import pytest
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _reload_torch_stub() -> types.ModuleType:
     """Force-reload the repo's torch stub by temporarily removing real torch."""
     # Save current state
@@ -60,14 +61,17 @@ def _reload_torch_stub() -> types.ModuleType:
     # Import the stub source directly
     import importlib.util as _ilu
     import pathlib
+
     stub_path = pathlib.Path(__file__).resolve().parents[1] / "torch" / "__init__.py"
     spec = _ilu.spec_from_file_location("torch", stub_path)
     assert spec and spec.loader
     mod = _ilu.module_from_spec(spec)
     sys.modules["torch"] = mod
-    with patch.object(
-        mod, "_load_real_module", return_value=None
-    ) if hasattr(mod, "_load_real_module") else _noop():
+    with (
+        patch.object(mod, "_load_real_module", return_value=None)
+        if hasattr(mod, "_load_real_module")
+        else _noop()
+    ):
         # exec the module with _real = None
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
     return mod
@@ -75,16 +79,22 @@ def _reload_torch_stub() -> types.ModuleType:
 
 class _noop:
     """No-op context manager when attribute patching is not needed."""
-    def __enter__(self) -> "_noop": return self
-    def __exit__(self, *_: Any) -> None: pass
+
+    def __enter__(self) -> "_noop":
+        return self
+
+    def __exit__(self, *_: Any) -> None:
+        pass
 
 
 HAS_REAL_TORCH = False
 try:
     import importlib as _il
+
     _spec = _il.util.find_spec("torch")
     if _spec and _spec.origin:
         import pathlib as _pl
+
         _stub_dir = _pl.Path(__file__).resolve().parents[1] / "torch"
         if not _pl.Path(_spec.origin).is_relative_to(_stub_dir):
             HAS_REAL_TORCH = True
@@ -96,21 +106,41 @@ except (ImportError, AttributeError, TypeError, ValueError):
 # 1. Stub-mode: nn module classes exist and are usable
 # ---------------------------------------------------------------------------
 
+
 class TestNNStubClasses:
     """Verify torch.nn stub exposes all classes referenced in src/."""
 
     EXPECTED_NN_CLASSES = [
-        "Module", "Linear", "Sequential", "Dropout", "LayerNorm",
-        "Embedding", "GELU", "ReLU", "Tanh", "Sigmoid",
-        "ModuleList", "MultiheadAttention",
-        "CrossEntropyLoss", "MSELoss", "BCELoss", "BCEWithLogitsLoss",
-        "Conv1d", "Conv2d", "LSTM", "GRU",
-        "BatchNorm1d", "BatchNorm2d", "Parameter", "functional",
+        "Module",
+        "Linear",
+        "Sequential",
+        "Dropout",
+        "LayerNorm",
+        "Embedding",
+        "GELU",
+        "ReLU",
+        "Tanh",
+        "Sigmoid",
+        "ModuleList",
+        "MultiheadAttention",
+        "CrossEntropyLoss",
+        "MSELoss",
+        "BCELoss",
+        "BCEWithLogitsLoss",
+        "Conv1d",
+        "Conv2d",
+        "LSTM",
+        "GRU",
+        "BatchNorm1d",
+        "BatchNorm2d",
+        "Parameter",
+        "functional",
     ]
 
     def _get_nn(self) -> types.ModuleType:
         """Return torch.nn (stub or real — both must pass the interface checks)."""
         import torch.nn as nn  # uses whatever is on sys.path
+
         return nn
 
     def test_all_expected_classes_present(self) -> None:
@@ -156,10 +186,20 @@ class TestNNStubClasses:
         result = m.to("cpu")
         assert result is m
 
-    @pytest.mark.parametrize("cls_name", [
-        "Linear", "Sequential", "Dropout", "LayerNorm",
-        "Embedding", "GELU", "ReLU", "Tanh", "ModuleList",
-    ])
+    @pytest.mark.parametrize(
+        "cls_name",
+        [
+            "Linear",
+            "Sequential",
+            "Dropout",
+            "LayerNorm",
+            "Embedding",
+            "GELU",
+            "ReLU",
+            "Tanh",
+            "ModuleList",
+        ],
+    )
     def test_subclass_is_module(self, cls_name: str) -> None:
         nn = self._get_nn()
         cls = getattr(nn, cls_name)
@@ -190,26 +230,63 @@ class TestNNStubClasses:
 # 2. Stub-mode: Tensor class exposes all required attributes / methods
 # ---------------------------------------------------------------------------
 
+
 class TestTensorStub:
     """Verify torch.Tensor stub resolves all attributes needed by src/ code."""
 
     EXPECTED_ATTRS = [
-        "shape", "dtype", "device", "ndim", "requires_grad",
-        "to", "cuda", "cpu", "float", "half", "detach", "clone",
-        "contiguous", "numpy", "item", "tolist", "backward",
-        "size", "dim", "numel", "view", "reshape", "squeeze",
-        "unsqueeze", "expand", "permute", "transpose", "flatten",
-        "sum", "mean", "var", "max", "min", "abs", "argmax",
-        "clamp", "softmax", "sigmoid", "tanh",
-        "fill_", "zero_", "requires_grad_",
+        "shape",
+        "dtype",
+        "device",
+        "ndim",
+        "requires_grad",
+        "to",
+        "cuda",
+        "cpu",
+        "float",
+        "half",
+        "detach",
+        "clone",
+        "contiguous",
+        "numpy",
+        "item",
+        "tolist",
+        "backward",
+        "size",
+        "dim",
+        "numel",
+        "view",
+        "reshape",
+        "squeeze",
+        "unsqueeze",
+        "expand",
+        "permute",
+        "transpose",
+        "flatten",
+        "sum",
+        "mean",
+        "var",
+        "max",
+        "min",
+        "abs",
+        "argmax",
+        "clamp",
+        "softmax",
+        "sigmoid",
+        "tanh",
+        "fill_",
+        "zero_",
+        "requires_grad_",
     ]
 
     def test_tensor_class_exists(self) -> None:
         import torch
+
         assert hasattr(torch, "Tensor"), "torch.Tensor must exist"
 
     def test_all_expected_attributes_present(self) -> None:
         import torch
+
         T = torch.Tensor
         missing = [a for a in self.EXPECTED_ATTRS if not hasattr(T, a)]
         assert not missing, (
@@ -221,6 +298,7 @@ class TestTensorStub:
     def test_tensor_stub_attributes_are_annotations_or_methods(self) -> None:
         """In stub mode, every expected attr must resolve (not raise AttributeError)."""
         import torch
+
         T = torch.Tensor
         for attr in self.EXPECTED_ATTRS:
             assert hasattr(T, attr), f"torch.Tensor.{attr} missing in stub mode"
@@ -230,12 +308,14 @@ class TestTensorStub:
 # 3. Delegation contract: real torch takes precedence
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.skipif(not HAS_REAL_TORCH, reason="requires real torch installation")
 class TestRealTorchDelegation:
     """When real torch is installed the stub must delegate fully to it."""
 
     def test_is_codex_stub_absent(self) -> None:
         import torch
+
         # IS_CODEX_STUB is only set in the stub's else-branch
         assert not getattr(torch, "IS_CODEX_STUB", False), (
             "torch.IS_CODEX_STUB is True even though real torch is installed. "
@@ -244,6 +324,7 @@ class TestRealTorchDelegation:
 
     def test_tensor_is_real(self) -> None:
         import torch
+
         t = torch.tensor([1.0, 2.0, 3.0])
         assert t.shape == (3,)
         assert t.dtype == torch.float32
@@ -251,6 +332,7 @@ class TestRealTorchDelegation:
     def test_nn_linear_is_real(self) -> None:
         import torch
         import torch.nn as nn
+
         layer = nn.Linear(4, 2)
         out = layer(torch.randn(1, 4))
         assert out.shape == (1, 2)
@@ -258,18 +340,21 @@ class TestRealTorchDelegation:
     def test_stub_not_on_syspath_before_real(self) -> None:
         """The repo-local torch/ stub must not appear before real torch on sys.path."""
         import pathlib
+
         stub_dir = pathlib.Path(__file__).resolve().parents[1]
         import torch
+
         real_origin = pathlib.Path(torch.__file__).resolve()
         stub_origin = stub_dir / "torch" / "__init__.py"
-        assert real_origin != stub_origin, (
-            "torch.__file__ points to the repo stub, not the installed wheel."
-        )
+        assert (
+            real_origin != stub_origin
+        ), "torch.__file__ points to the repo stub, not the installed wheel."
 
 
 # ---------------------------------------------------------------------------
 # 4. mypy type-resolution smoke test (always-on)
 # ---------------------------------------------------------------------------
+
 
 class TestMypyResolution:
     """Document (and lightly verify) the mypy coverage this stub provides.
@@ -282,6 +367,7 @@ class TestMypyResolution:
     def test_nn_module_subclasses_are_importable(self) -> None:
         """Every nn.* class in __all__ must be importable with no error."""
         import torch.nn as nn
+
         nn_all = getattr(nn, "__all__", [])  # avoid mixed import-from
         for name in nn_all:
             obj = getattr(nn, name, None)
@@ -290,6 +376,7 @@ class TestMypyResolution:
     def test_tensor_subclass_chain_resolves(self) -> None:
         """Tensor methods that return Tensor allow method chaining in type world."""
         import torch
+
         T = torch.Tensor
         # Verify chain-returning methods exist (each returns Tensor in stubs)
         chain_methods = ["detach", "clone", "contiguous", "float", "cpu", "squeeze"]
@@ -299,6 +386,7 @@ class TestMypyResolution:
     def test_stub_baseline_file_exists(self) -> None:
         """The .mypy_baseline file must exist and contain a reasonable number."""
         import pathlib
+
         baseline_path = pathlib.Path(__file__).resolve().parents[1] / ".mypy_baseline"
         assert baseline_path.exists(), ".mypy_baseline missing — mypy ratchet gate broken"
         count = int(baseline_path.read_text().strip())

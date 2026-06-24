@@ -55,7 +55,10 @@ class TestConcision:
         assert good_score >= short_score
 
     def test_very_long_sentences_penalised(self, scorer):
-        long_text = "This is an extremely long sentence that goes on and on with many words that make it hard to read and understand and parse and the information density is extremely low because so many words are used to convey very little actual information about the topic at hand." * 3
+        long_text = (
+            "This is an extremely long sentence that goes on and on with many words that make it hard to read and understand and parse and the information density is extremely low because so many words are used to convey very little actual information about the topic at hand."
+            * 3
+        )
         normal_text = "Use structured data. Define clear interfaces. Apply consistent naming."
         long_score = scorer.score(long_text).concision
         normal_score = scorer.score(normal_text).concision
@@ -100,7 +103,9 @@ class TestStructure:
 class TestClarity:
     def test_passive_voice_penalised(self, scorer):
         active = "The system validates all inputs. Execute the handler. Return the result."
-        passive = "Inputs are validated by the system. The handler is executed. The result is returned."
+        passive = (
+            "Inputs are validated by the system. The handler is executed. The result is returned."
+        )
         active_score = scorer.score(active).clarity
         passive_score = scorer.score(passive).clarity
         assert active_score >= passive_score

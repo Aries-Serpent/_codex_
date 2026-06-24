@@ -80,10 +80,7 @@ def test_split_length_normalization():
     """Test split lengths normalize to dataset size."""
     torch = pytest.importorskip("torch")
 
-    dataset = torch.utils.data.TensorDataset(
-        torch.randn(100, 10),
-        torch.randint(0, 2, (100,))
-    )
+    dataset = torch.utils.data.TensorDataset(torch.randn(100, 10), torch.randint(0, 2, (100,)))
 
     train_ds, val_ds = datasets.split_dataset(dataset, split_ratio=(0.8, 0.2))
     assert len(train_ds) + len(val_ds) == 100
@@ -93,10 +90,7 @@ def test_split_error_conditions():
     """Test split_dataset handles error conditions."""
     torch = pytest.importorskip("torch")
 
-    torch.utils.data.TensorDataset(
-        torch.randn(10, 5),
-        torch.randint(0, 2, (10,))
-    )
+    torch.utils.data.TensorDataset(torch.randn(10, 5), torch.randint(0, 2, (10,)))
 
     # Empty dataset
     with pytest.raises(ValueError, match="Cannot split empty dataset"):
@@ -109,7 +103,7 @@ def test_split_error_conditions():
     with pytest.raises(ValueError, match="Insufficient samples for validation split"):
         datasets.split_dataset(
             torch.utils.data.TensorDataset(torch.randn(1, 5), torch.tensor([0])),
-            split_ratio=(0.5, 0.5)
+            split_ratio=(0.5, 0.5),
         )
 
 
@@ -117,10 +111,7 @@ def test_deterministic_split_reproducibility():
     """Test splits are reproducible with fixed seed."""
     torch = pytest.importorskip("torch")
 
-    dataset = torch.utils.data.TensorDataset(
-        torch.randn(100, 10),
-        torch.randint(0, 2, (100,))
-    )
+    dataset = torch.utils.data.TensorDataset(torch.randn(100, 10), torch.randint(0, 2, (100,)))
 
     train1, val1 = datasets.split_dataset(dataset, split_ratio=(0.8, 0.2), seed=123)
     train2, val2 = datasets.split_dataset(dataset, split_ratio=(0.8, 0.2), seed=123)

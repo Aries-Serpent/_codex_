@@ -20,6 +20,7 @@ from cognitive_brain.learning.rl_algorithms import (  # noqa: E402
 # ReplayBuffer
 # ---------------------------------------------------------------------------
 
+
 class TestReplayBuffer:
     def test_add_and_len(self):
         buf = ReplayBuffer(capacity=100)
@@ -58,6 +59,7 @@ class TestReplayBuffer:
 # ---------------------------------------------------------------------------
 # QLearning
 # ---------------------------------------------------------------------------
+
 
 class TestQLearning:
     @pytest.fixture()
@@ -131,6 +133,7 @@ class TestQLearning:
 # ---------------------------------------------------------------------------
 # DQN
 # ---------------------------------------------------------------------------
+
 
 class TestDQN:
     @pytest.fixture()

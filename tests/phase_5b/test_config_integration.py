@@ -15,10 +15,8 @@ Part of Phase 5B-II: Integration Test Development
 
 from __future__ import annotations
 
-import json
 import logging
 import os
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
@@ -373,15 +371,10 @@ class TestHydraConfigIntegration:
         """Test: Command-line overrides propagate through Hydra."""
         # Arrange & Act: Mock override propagation
         with patch("codex_ml.config.compose_config") as mock_compose:
-            mock_compose.return_value = {
-                "training": {"epochs": 10, "batch_size": 32}
-            }
+            mock_compose.return_value = {"training": {"epochs": 10, "batch_size": 32}}
 
             # Compose with override
-            config = mock_compose(
-                config_name="config",
-                overrides=["training.epochs=10"]
-            )
+            config = mock_compose(config_name="config", overrides=["training.epochs=10"])
 
             # Assert: Override applied
             assert config["training"]["epochs"] == 10
@@ -475,9 +468,7 @@ training:
     def test_multi_stage_config_override(self):
         """Test: Configuration overridden at multiple stages."""
         # Arrange: Setup config with overrides
-        base_config = {
-            "training": {"epochs": 3, "batch_size": 32}
-        }
+        base_config = {"training": {"epochs": 3, "batch_size": 32}}
 
         # Act & Assert: Mock multi-stage overrides
         with patch("codex_ml.config.merge_configs") as mock_merge:

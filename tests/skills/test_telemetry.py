@@ -69,6 +69,7 @@ class TestEmitEvent:
 
     def test_emit_returns_telemetry_event(self, telemetry_path, sample_metrics):
         from codex.skills.models import TelemetryEvent
+
         event = emit_event(
             skill_id="test.skill",
             version="1.0.0",
@@ -96,8 +97,14 @@ class TestEmitEvent:
 
 class TestReadEvents:
     def test_read_events_from_file(self, telemetry_path, sample_metrics):
-        emit_event(skill_id="s1", version="1.0.0", status="ok",
-                   metrics=sample_metrics, trace_id="t1", emit_jsonl=True)
+        emit_event(
+            skill_id="s1",
+            version="1.0.0",
+            status="ok",
+            metrics=sample_metrics,
+            trace_id="t1",
+            emit_jsonl=True,
+        )
         events = read_events(telemetry_path)
         assert len(events) == 1
         assert events[0].skill_id == "s1"
@@ -111,11 +118,15 @@ class TestReadEvents:
         assert read_events(tmp_path / "nonexistent.jsonl") == []
 
     def test_read_events_skips_malformed_lines(self, telemetry_path, sample_metrics):
-        emit_event(skill_id="s1", version="1.0.0", status="ok",
-                   metrics=sample_metrics, trace_id="t1", emit_jsonl=True)
-        telemetry_path.write_text(
-            telemetry_path.read_text() + "not valid json\n"
+        emit_event(
+            skill_id="s1",
+            version="1.0.0",
+            status="ok",
+            metrics=sample_metrics,
+            trace_id="t1",
+            emit_jsonl=True,
         )
+        telemetry_path.write_text(telemetry_path.read_text() + "not valid json\n")
         events = read_events(telemetry_path)
         assert len(events) == 1  # malformed line skipped
 
@@ -123,8 +134,14 @@ class TestReadEvents:
 class TestSummariseEvents:
     def test_summary_counts(self, telemetry_path, sample_metrics):
         for status in ["ok", "ok", "error"]:
-            emit_event(skill_id="s1", version="1.0.0", status=status,
-                       metrics=sample_metrics, trace_id="t", emit_jsonl=True)
+            emit_event(
+                skill_id="s1",
+                version="1.0.0",
+                status=status,
+                metrics=sample_metrics,
+                trace_id="t",
+                emit_jsonl=True,
+            )
         events = read_events(telemetry_path)
         summary = summarise_events(events)
         assert summary["total"] == 3
@@ -134,10 +151,22 @@ class TestSummariseEvents:
     def test_summary_avg_latency(self, telemetry_path):
         metrics_100 = ExecutionMetrics(latency_ms=100, budget_used=BudgetUsed())
         metrics_200 = ExecutionMetrics(latency_ms=200, budget_used=BudgetUsed())
-        emit_event(skill_id="s", version="1.0.0", status="ok",
-                   metrics=metrics_100, trace_id="t1", emit_jsonl=True)
-        emit_event(skill_id="s", version="1.0.0", status="ok",
-                   metrics=metrics_200, trace_id="t2", emit_jsonl=True)
+        emit_event(
+            skill_id="s",
+            version="1.0.0",
+            status="ok",
+            metrics=metrics_100,
+            trace_id="t1",
+            emit_jsonl=True,
+        )
+        emit_event(
+            skill_id="s",
+            version="1.0.0",
+            status="ok",
+            metrics=metrics_200,
+            trace_id="t2",
+            emit_jsonl=True,
+        )
         events = read_events(telemetry_path)
         summary = summarise_events(events)
         assert summary["avg_latency_ms"] == 150.0

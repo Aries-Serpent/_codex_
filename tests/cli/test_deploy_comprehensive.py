@@ -21,6 +21,7 @@ class TestDeployFunctions:
         """Test that deploy module can be imported."""
         try:
             from codex_ml.cli import deploy
+
             assert deploy is not None
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
@@ -31,9 +32,7 @@ class TestDeployFunctions:
             from codex_ml.cli.deploy import _load_yaml_file
 
             # Create temporary YAML file
-            with tempfile.NamedTemporaryFile(
-                mode='w', suffix='.yaml', delete=False
-            ) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
                 yaml.dump({"test": "value", "nested": {"key": 123}}, f)
                 temp_path = Path(f.name)
 
@@ -52,9 +51,7 @@ class TestDeployFunctions:
             from codex_ml.cli.deploy import _load_json_file
 
             # Create temporary JSON file
-            with tempfile.NamedTemporaryFile(
-                mode='w', suffix='.json', delete=False
-            ) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
                 json.dump({"test": "value", "number": 42}, f)
                 temp_path = Path(f.name)
 
@@ -80,7 +77,7 @@ class TestDeployDryRun:
                 run_deploy_dry_run(
                     config_path=Path("/fake/config.yaml"),
                     dry_run=False,
-                    run_metadata_dir=Path("/fake/metadata")
+                    run_metadata_dir=Path("/fake/metadata"),
                 )
             # Test that error message contains expected text (not URL validation)
             assert "Only --dry-run deployments are permitted" in str(excinfo.value)
@@ -93,9 +90,7 @@ class TestDeployDryRun:
             from codex_ml.cli.deploy import run_deploy_dry_run
 
             # Create temp config without rollout_ring
-            with tempfile.NamedTemporaryFile(
-                mode='w', suffix='.yaml', delete=False
-            ) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
                 yaml.dump({"pod": {"name": "test"}}, f)
                 config_path = Path(f.name)
 
@@ -104,7 +99,7 @@ class TestDeployDryRun:
                     run_deploy_dry_run(
                         config_path=config_path,
                         dry_run=True,
-                        run_metadata_dir=Path("/fake/metadata")
+                        run_metadata_dir=Path("/fake/metadata"),
                     )
                 # Test that error message contains expected text (not URL validation)
                 assert "missing rollout_ring" in str(excinfo.value)
@@ -119,9 +114,7 @@ class TestDeployDryRun:
             from codex_ml.cli.deploy import run_deploy_dry_run
 
             # Create temp config with rollout_ring
-            with tempfile.NamedTemporaryFile(
-                mode='w', suffix='.yaml', delete=False
-            ) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
                 yaml.dump({"pod": {"ring": "0A_base_"}}, f)
                 config_path = Path(f.name)
 
@@ -130,9 +123,7 @@ class TestDeployDryRun:
                 try:
                     with pytest.raises(RuntimeError) as excinfo:
                         run_deploy_dry_run(
-                            config_path=config_path,
-                            dry_run=True,
-                            run_metadata_dir=Path(temp_dir)
+                            config_path=config_path, dry_run=True, run_metadata_dir=Path(temp_dir)
                         )
                     assert "run_metadata.json not found" in str(excinfo.value)
                 finally:
@@ -150,7 +141,7 @@ class TestDeployCLI:
             [sys.executable, "-m", "codex_ml.cli.deploy", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # May or may not have CLI entry point
         assert result.returncode in (0, 1, 2)
@@ -164,15 +155,8 @@ class TestDeployValidation:
         try:
             from codex_ml.cli.deploy import _load_yaml_file
 
-            with tempfile.NamedTemporaryFile(
-                mode='w', suffix='.yaml', delete=False
-            ) as f:
-                yaml.dump({
-                    "pod": {
-                        "ring": "0A_base_",
-                        "name": "test-pod"
-                    }
-                }, f)
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+                yaml.dump({"pod": {"ring": "0A_base_", "name": "test-pod"}}, f)
                 config_path = Path(f.name)
 
             try:
@@ -188,13 +172,8 @@ class TestDeployValidation:
         try:
             from codex_ml.cli.deploy import _load_yaml_file
 
-            with tempfile.NamedTemporaryFile(
-                mode='w', suffix='.yaml', delete=False
-            ) as f:
-                yaml.dump({
-                    "rollout_ring": "0B_base_",
-                    "name": "test-deployment"
-                }, f)
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+                yaml.dump({"rollout_ring": "0B_base_", "name": "test-deployment"}, f)
                 config_path = Path(f.name)
 
             try:

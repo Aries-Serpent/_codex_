@@ -14,6 +14,7 @@ class TestFlatListHelper:
         """Test flattening a simple list."""
         try:
             from codex_ml.metrics.metric_implementations import _to_flat_list
+
             result = _to_flat_list([1, 2, 3])
             assert result == [1, 2, 3]
         except ImportError as exc:
@@ -23,6 +24,7 @@ class TestFlatListHelper:
         """Test flattening a nested list."""
         try:
             from codex_ml.metrics.metric_implementations import _to_flat_list
+
             result = _to_flat_list([[1, 2], [3, 4]])
             assert result == [1, 2, 3, 4]
         except ImportError as exc:
@@ -32,6 +34,7 @@ class TestFlatListHelper:
         """Test flattening a scalar value."""
         try:
             from codex_ml.metrics.metric_implementations import _to_flat_list
+
             result = _to_flat_list(42)
             assert result == [42]
         except ImportError as exc:
@@ -49,6 +52,7 @@ class TestMetricBase:
             class DummyMetric(MetricBase):
                 def update(self, predictions, targets):
                     pass
+
                 def compute(self):
                     return {}
 
@@ -61,6 +65,7 @@ class TestMetricBase:
         """Test MetricBase cannot be instantiated directly."""
         try:
             from codex_ml.metrics.metric_implementations import MetricBase
+
             with pytest.raises(TypeError):
                 MetricBase("test")
         except ImportError as exc:
@@ -74,6 +79,7 @@ class TestClassificationStats:
         """Test creating classification stats."""
         try:
             from codex_ml.metrics.metric_implementations import _ClassificationStats
+
             stats = _ClassificationStats()
             assert stats is not None
         except ImportError as exc:
@@ -83,6 +89,7 @@ class TestClassificationStats:
         """Test updating classification stats."""
         try:
             from codex_ml.metrics.metric_implementations import _ClassificationStats
+
             stats = _ClassificationStats()
             stats.update([0, 1, 1], [0, 1, 0])
             assert stats.tp[0] == 1

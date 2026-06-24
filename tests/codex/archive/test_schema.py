@@ -14,10 +14,7 @@ class TestSchemaBundle:
         """Test SchemaBundle basic creation."""
         from codex.archive.schema import SchemaBundle
 
-        bundle = SchemaBundle(
-            name="test",
-            statements=("CREATE TABLE t1", "CREATE TABLE t2")
-        )
+        bundle = SchemaBundle(name="test", statements=("CREATE TABLE t1", "CREATE TABLE t2"))
 
         assert bundle.name == "test"
         assert len(bundle.statements) == 2

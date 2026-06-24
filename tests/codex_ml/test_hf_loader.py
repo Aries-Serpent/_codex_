@@ -26,6 +26,7 @@ class TestCausalLMRegistry:
 
     def test_register_and_get(self) -> None:
         """Test registering and retrieving a custom loader."""
+
         # Create a mock loader
         def custom_loader(**kwargs: Any) -> MagicMock:
             return MagicMock(name="custom_model")
@@ -56,6 +57,7 @@ class TestCausalLMRegistry:
 
     def test_registry_decorator_pattern(self) -> None:
         """Test the decorator pattern for registration."""
+
         @hf_loader.register_causal_lm("decorated_model")
         def my_loader(**kwargs: Any) -> str:
             return "loaded"
@@ -64,6 +66,7 @@ class TestCausalLMRegistry:
 
         # Clean up
         hf_loader.unregister_causal_lm("decorated_model")
+
 
 class TestLocalIdentifier:
     """Tests for _is_local_identifier function."""
@@ -98,6 +101,7 @@ class TestLocalIdentifier:
         # Path object is PathLike
         assert hf_loader._is_local_identifier(tmp_path) is True
 
+
 class TestAmpDtypeMapping:
     """Tests for _map_amp_dtype function."""
 
@@ -106,8 +110,9 @@ class TestAmpDtypeMapping:
         """Skip test if torch not available or is a stub."""
         try:
             import torch
+
             # Check if it's the real torch or a stub
-            if not hasattr(torch, 'float16') or not hasattr(torch, 'bfloat16'):
+            if not hasattr(torch, "float16") or not hasattr(torch, "bfloat16"):
                 pytest.skip("torch is a stub, not the real library")
         except (ImportError, AttributeError):
             pytest.skip("torch not installed")
@@ -141,6 +146,7 @@ class TestAmpDtypeMapping:
     def test_unknown_dtype(self, skip_without_torch: None) -> None:
         """Test unknown dtype returns None."""
         assert hf_loader._map_amp_dtype("unknown") is None
+
 
 class TestRequiredRevision:
     """Tests for _required_revision function."""
@@ -180,6 +186,7 @@ class TestRequiredRevision:
                     with pytest.raises(RuntimeError, match="revision.*required"):
                         hf_loader._required_revision("facebook/opt-125m", None)
 
+
 class TestTransformersAvailability:
     """Tests for transformers availability checking."""
 
@@ -200,6 +207,7 @@ class TestTransformersAvailability:
             with pytest.raises(ImportError, match="transformers.*required"):
                 hf_loader.load_model("gpt2", revision="main")
 
+
 class TestRepoIdTypes:
     """Tests for different repo_id types."""
 
@@ -218,6 +226,7 @@ class TestRepoIdTypes:
         (model_dir / "config.json").write_text("{}")
 
         assert hf_loader._is_local_identifier(model_dir) is True
+
 
 class TestIntegration:
     """Integration tests (require optional dependencies)."""

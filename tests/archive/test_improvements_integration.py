@@ -33,8 +33,7 @@ def _parse_json_from_output(text: str) -> dict:
 
 def test_cli_config_show_outputs_json(tmp_path: Path) -> None:
     config_path = tmp_path / "config.toml"
-    config_path.write_text(
-        """
+    config_path.write_text("""
         [backend]
         backend = "sqlite"
         url = "sqlite:///./test.sqlite"
@@ -42,8 +41,7 @@ def test_cli_config_show_outputs_json(tmp_path: Path) -> None:
         [logging]
         level = "warning"
         format = "text"
-        """
-    )
+        """)
     runner = CliRunner()
     result = runner.invoke(cli, ["config-show", "--config-file", str(config_path)])
 
@@ -76,13 +74,11 @@ def test_batch_restore_executes_with_stub_service(tmp_path: Path, monkeypatch) -
     manifest = tmp_path / "manifest.json"
     manifest.write_text(json.dumps([{"tombstone": "a", "output": "out.bin"}]))
     config_path = tmp_path / "config.toml"
-    config_path.write_text(
-        """
+    config_path.write_text("""
         [batch]
         results_path = "results.json"
         progress_interval = 1
-        """
-    )
+        """)
 
     service = StubService(tmp_path)
 

@@ -12,6 +12,7 @@ import pytest
 try:
     from codex.rag.indexer import build_index_from_files
     from codex.rag.retriever import MultiIndexRetriever, Retriever
+
     RAG_RETRIEVER_AVAILABLE = True
 except ImportError:
     RAG_RETRIEVER_AVAILABLE = False
@@ -26,12 +27,13 @@ except ImportError:
 
 pytestmark = pytest.mark.skipif(
     not RAG_RETRIEVER_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
-    reason="RAG retriever dependencies (sentence_transformers, faiss) not installed"
+    reason="RAG retriever dependencies (sentence_transformers, faiss) not installed",
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
     import torch as _torch
+
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
     _cuda_available = False
@@ -257,10 +259,12 @@ class TestMultiIndexRetriever:
                     overlap=50,
                 )
 
-                indices_info.append({
-                    "index_name": f"index_{idx}",
-                    "tenant_id": "test",
-                })
+                indices_info.append(
+                    {
+                        "index_name": f"index_{idx}",
+                        "tenant_id": "test",
+                    }
+                )
 
             yield {
                 "index_dir": str(tmpdir / "indices"),
@@ -320,9 +324,7 @@ class TestMultiIndexRetriever:
 
     def test_multi_index_with_invalid_index(self, multiple_indices):
         """Test multi-index with some invalid indices"""
-        indices = multiple_indices["indices"] + [
-            {"index_name": "nonexistent", "tenant_id": "test"}
-        ]
+        indices = multiple_indices["indices"] + [{"index_name": "nonexistent", "tenant_id": "test"}]
 
         retriever = MultiIndexRetriever(
             indices=indices,
@@ -383,9 +385,7 @@ class TestRetrieverEdgeCases:
             assert retriever._extract_file_from_metadata(chunk2) == "unknown"
 
             # With files in index metadata
-            retriever.index_metadata = {
-                "files": [{"file": "metadata_file.txt"}]
-            }
+            retriever.index_metadata = {"files": [{"file": "metadata_file.txt"}]}
             assert retriever._extract_file_from_metadata(chunk2) == "metadata_file.txt"
 
 
@@ -404,9 +404,12 @@ class TestRetrieverIntegration:
 
             files = []
             corpus = {
-                "python.txt": "Python is a versatile programming language used for web development, data science, and automation. " * 20,
-                "machine_learning.txt": "Machine learning algorithms learn patterns from data to make predictions and decisions without explicit programming. " * 20,
-                "docker.txt": "Docker provides containerization for consistent deployment across different environments. " * 20,
+                "python.txt": "Python is a versatile programming language used for web development, data science, and automation. "
+                * 20,
+                "machine_learning.txt": "Machine learning algorithms learn patterns from data to make predictions and decisions without explicit programming. "
+                * 20,
+                "docker.txt": "Docker provides containerization for consistent deployment across different environments. "
+                * 20,
             }
 
             for filename, content in corpus.items():
@@ -555,6 +558,7 @@ class TestMultiIndexRetrieverErrorPaths:
 
         # Mock one retriever to raise exception during query
         original_query = retriever.retrievers[0].query
+
         def mock_query_error(*args, **kwargs):
             raise Exception("Query failed")
 
@@ -593,10 +597,12 @@ class TestMultiIndexRetrieverErrorPaths:
                     index_dir=str(index_dir),
                 )
 
-                indices_info.append({
-                    "index_name": f"index_{idx}",
-                    "tenant_id": "test",
-                })
+                indices_info.append(
+                    {
+                        "index_name": f"index_{idx}",
+                        "tenant_id": "test",
+                    }
+                )
 
             retriever = MultiIndexRetriever(
                 indices=indices_info,
@@ -642,10 +648,12 @@ class TestMultiIndexRetrieverErrorPaths:
                     overlap=50,
                 )
 
-                indices_info.append({
-                    "index_name": f"index_{idx}",
-                    "tenant_id": "test",
-                })
+                indices_info.append(
+                    {
+                        "index_name": f"index_{idx}",
+                        "tenant_id": "test",
+                    }
+                )
 
             yield {
                 "index_dir": str(tmpdir / "indices"),

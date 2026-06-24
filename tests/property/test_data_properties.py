@@ -13,38 +13,47 @@ from typing import Any
 
 import pytest
 
-pytest.importorskip('hypothesis')
+pytest.importorskip("hypothesis")
 try:
     from hypothesis import HealthCheck, assume, given, settings
     from hypothesis import strategies as st
+
     HAS_HYPOTHESIS = True
 except ImportError:
     HAS_HYPOTHESIS = False
+
     # Provide stubs for when hypothesis is not available
     def given(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return pytest.mark.skip(reason="hypothesis not installed")(f)
+
         return decorator
 
     class st:  # type: ignore
         @staticmethod
         def text(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def integers(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def floats(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def lists(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def dictionaries(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def booleans(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def sampled_from(*args: Any, **kwargs: Any) -> Any:
             return None
@@ -55,6 +64,7 @@ except ImportError:
     def settings(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return f
+
         return decorator
 
 
@@ -87,6 +97,7 @@ class TestTextTransformationProperties:
     @given(st.text(min_size=0, max_size=1000))
     def test_normalize_preserves_alphanumeric_count(self, text: str) -> None:
         """Normalization preserves count of alphanumeric characters."""
+
         def normalize(s: str) -> str:
             return s.lower().strip()
 
@@ -150,8 +161,10 @@ class TestListTransformationProperties:
         """Maximum is always in the list."""
         assert max(lst) in lst
 
-    @given(st.lists(st.integers(), min_size=0, max_size=50),
-           st.lists(st.integers(), min_size=0, max_size=50))
+    @given(
+        st.lists(st.integers(), min_size=0, max_size=50),
+        st.lists(st.integers(), min_size=0, max_size=50),
+    )
     def test_concatenation_length(self, lst1: list[int], lst2: list[int]) -> None:
         """Concatenation length is sum of lengths."""
         assert len(lst1 + lst2) == len(lst1) + len(lst2)
@@ -232,6 +245,7 @@ class TestNumericTransformationProperties:
     def test_factorial_property(self, n: int) -> None:
         """Factorial is always positive for non-negative integers."""
         import math
+
         result = math.factorial(n)
         assert result > 0
 
@@ -254,13 +268,14 @@ class TestNumericTransformationProperties:
 class TestDataPipelineProperties:
     """Property-based tests for data pipeline transformations."""
 
-    @given(st.lists(st.dictionaries(
-        st.text(min_size=1, max_size=10),
-        st.text(min_size=0, max_size=50)
-    ), min_size=0, max_size=20))
-    def test_filter_reduces_or_preserves_length(
-        self, records: list[dict[str, str]]
-    ) -> None:
+    @given(
+        st.lists(
+            st.dictionaries(st.text(min_size=1, max_size=10), st.text(min_size=0, max_size=50)),
+            min_size=0,
+            max_size=20,
+        )
+    )
+    def test_filter_reduces_or_preserves_length(self, records: list[dict[str, str]]) -> None:
         """Filtering never increases length."""
         filtered = [r for r in records if len(r) > 0]
         assert len(filtered) <= len(records)
@@ -284,6 +299,7 @@ class TestDataPipelineProperties:
     def test_reduce_sum_matches_builtin(self, lst: list[int]) -> None:
         """Manual reduce matches builtin sum."""
         from functools import reduce
+
         reduced = reduce(lambda a, b: a + b, lst, 0) if lst else 0
         assert reduced == sum(lst)
 
@@ -306,8 +322,13 @@ class TestTokenizationProperties:
         result_words = set(w for w in rejoined.split() if w.isalnum())
         assert original_words == result_words
 
-    @given(st.lists(st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
-                    min_size=1, max_size=50))
+    @given(
+        st.lists(
+            st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
+            min_size=1,
+            max_size=50,
+        )
+    )
     def test_token_count_bounded(self, tokens: list[str]) -> None:
         """Token count is bounded by character count."""
         text = " ".join(tokens)

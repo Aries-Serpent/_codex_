@@ -1,4 +1,5 @@
 """Tests for delta analysis."""
+
 import tempfile
 
 import pytest
@@ -24,14 +25,10 @@ def test_delta_result_summary():
 
 def test_delta_result_has_changes():
     """Test DeltaResult has_changes."""
-    result_with_changes = DeltaResult(
-        added=["a.py"], removed=[], modified=[], unchanged=[]
-    )
+    result_with_changes = DeltaResult(added=["a.py"], removed=[], modified=[], unchanged=[])
     assert result_with_changes.has_changes()
 
-    result_no_changes = DeltaResult(
-        added=[], removed=[], modified=[], unchanged=["a.py"]
-    )
+    result_no_changes = DeltaResult(added=[], removed=[], modified=[], unchanged=["a.py"])
     assert not result_no_changes.has_changes()
 
 
@@ -125,16 +122,10 @@ def test_analyze_file():
         manager.save_baseline("existing.py", "abc123", 10, 1)
 
         # Modified file
-        assert (
-            analyzer.analyze_file("existing.py", {"ast_hash": "def456"})
-            == "modified"
-        )
+        assert analyzer.analyze_file("existing.py", {"ast_hash": "def456"}) == "modified"
 
         # Unchanged file
-        assert (
-            analyzer.analyze_file("existing.py", {"ast_hash": "abc123"})
-            == "unchanged"
-        )
+        assert analyzer.analyze_file("existing.py", {"ast_hash": "abc123"}) == "unchanged"
 
 
 if __name__ == "__main__":

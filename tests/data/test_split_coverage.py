@@ -59,6 +59,7 @@ class TestModuleImport:
         """Verify split module can be imported."""
         try:
             from codex_ml.data import split
+
             assert split is not None
         except ImportError as e:
             pytest.skip(f"split module not available: {e}")
@@ -67,6 +68,7 @@ class TestModuleImport:
         """Verify split function can be imported."""
         try:
             from codex_ml.data.split import split_dataset
+
             assert callable(split_dataset)
         except ImportError:
             pytest.skip("split_dataset not available")
@@ -84,6 +86,7 @@ class TestTrainValTestSplit:
         """Test default 80/10/10 split ratios."""
         try:
             from codex_ml.data.split import split_dataset
+
             train, val, test = split_dataset(
                 sample_dataset,
                 train_ratio=0.8,
@@ -100,6 +103,7 @@ class TestTrainValTestSplit:
         """Test custom split ratios."""
         try:
             from codex_ml.data.split import split_dataset
+
             train, val, test = split_dataset(
                 sample_dataset,
                 train_ratio=0.7,
@@ -116,6 +120,7 @@ class TestTrainValTestSplit:
         """Test that split preserves all data."""
         try:
             from codex_ml.data.split import split_dataset
+
             train, val, test = split_dataset(sample_dataset)
             total = len(train) + len(val) + len(test)
             assert total == len(sample_dataset)
@@ -135,6 +140,7 @@ class TestDeterministicSplitting:
         """Test that seeded splits are deterministic."""
         try:
             from codex_ml.data.split import split_dataset
+
             train1, val1, test1 = split_dataset(sample_dataset, seed=42)
             train2, val2, test2 = split_dataset(sample_dataset, seed=42)
             assert train1 == train2
@@ -147,6 +153,7 @@ class TestDeterministicSplitting:
         """Test that different seeds produce different splits."""
         try:
             from codex_ml.data.split import split_dataset
+
             train1, _, _ = split_dataset(sample_dataset, seed=42)
             train2, _, _ = split_dataset(sample_dataset, seed=123)
             assert train1 != train2
@@ -166,11 +173,9 @@ class TestStratifiedSplitting:
         """Test stratified split by label."""
         try:
             from codex_ml.data.split import split_dataset
+
             # Create dataset with labels
-            dataset = [
-                {"id": i, "label": i % 2}
-                for i in range(100)
-            ]
+            dataset = [{"id": i, "label": i % 2} for i in range(100)]
             train, _val, _test = split_dataset(
                 dataset,
                 stratify_by="label",
@@ -194,6 +199,7 @@ class TestEdgeCases:
         """Test splitting empty dataset."""
         try:
             from codex_ml.data.split import split_dataset
+
             train, val, test = split_dataset([])
             assert len(train) == 0
             assert len(val) == 0
@@ -205,6 +211,7 @@ class TestEdgeCases:
         """Test splitting single element dataset."""
         try:
             from codex_ml.data.split import split_dataset
+
             train, val, test = split_dataset([{"id": 1}])
             total = len(train) + len(val) + len(test)
             assert total == 1
@@ -215,6 +222,7 @@ class TestEdgeCases:
         """Test that invalid ratios are rejected."""
         try:
             from codex_ml.data.split import split_dataset
+
             with pytest.raises(ValueError):
                 split_dataset(
                     sample_dataset,
@@ -238,6 +246,7 @@ class TestSplitUtils:
         """Test computing split indices."""
         try:
             from codex_ml.data.split import compute_split_indices
+
             indices = compute_split_indices(100, train=0.8, val=0.1, test=0.1)
             assert len(indices["train"]) == 80
             assert len(indices["val"]) == 10
@@ -249,6 +258,7 @@ class TestSplitUtils:
         """Test that split indices don't overlap."""
         try:
             from codex_ml.data.split import compute_split_indices
+
             indices = compute_split_indices(100, train=0.8, val=0.1, test=0.1)
             all_indices = set(indices["train"]) | set(indices["val"]) | set(indices["test"])
             assert len(all_indices) == 100

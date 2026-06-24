@@ -58,7 +58,7 @@ class TestNetworkFailuresAndRetries:
 
         delays = []
         for retry in range(max_retries):
-            delay = base_delay * (2 ** retry)
+            delay = base_delay * (2**retry)
             delays.append(delay)
 
         assert delays == [1.0, 2.0, 4.0, 8.0]
@@ -89,13 +89,12 @@ class TestNetworkFailuresAndRetries:
         response = {
             "status": "partial",
             "data": {"field1": "value1"},
-            "expected_fields": ["field1", "field2", "field3"]
+            "expected_fields": ["field1", "field2", "field3"],
         }
 
         # Check if response is complete
         is_complete = all(
-            field in response.get("data", {})
-            for field in response["expected_fields"]
+            field in response.get("data", {}) for field in response["expected_fields"]
         )
 
         assert not is_complete
@@ -148,6 +147,7 @@ class TestNetworkFailuresAndRetries:
 
     def test_fallback_on_service_unavailable(self):
         """Test fallback mechanism when service unavailable."""
+
         def primary_service():
             raise ConnectionError("Service unavailable")
 
@@ -164,11 +164,7 @@ class TestNetworkFailuresAndRetries:
 
     def test_request_timeout_configuration(self):
         """Test configurable request timeouts."""
-        timeout_config = {
-            "connect_timeout": 5.0,
-            "read_timeout": 30.0,
-            "total_timeout": 60.0
-        }
+        timeout_config = {"connect_timeout": 5.0, "read_timeout": 30.0, "total_timeout": 60.0}
 
         # Verify timeout values are reasonable
         assert timeout_config["connect_timeout"] < timeout_config["read_timeout"]
@@ -193,6 +189,7 @@ class TestNetworkFailuresAndRetries:
 
     def test_dns_resolution_failure_handling(self):
         """Test handling of DNS resolution failures."""
+
         def resolve_host(hostname):
             if hostname == "invalid.domain":
                 raise ConnectionError("DNS resolution failed")
@@ -289,7 +286,7 @@ class TestResourceExhaustionScenarios:
 
         # Process in batches to limit memory
         for i in range(0, len(large_dataset), batch_size):
-            batch = large_dataset[i:i + batch_size]
+            batch = large_dataset[i : i + batch_size]
             assert len(batch) <= batch_size
             processed_count += len(batch)
 
@@ -321,14 +318,14 @@ class TestResourceExhaustionScenarios:
         chunk_size = 1024
         num_chunks = 100
 
-        with open(large_file, 'w') as f:
+        with open(large_file, "w") as f:
             for i in range(num_chunks):
                 chunk = "x" * chunk_size
                 f.write(chunk)
 
         # Read in chunks
         bytes_read = 0
-        with open(large_file, 'r') as f:
+        with open(large_file, "r") as f:
             while True:
                 chunk = f.read(chunk_size)
                 if not chunk:
@@ -371,18 +368,10 @@ class TestResourceExhaustionScenarios:
         available_memory_mb = 100
 
         # Try to allocate features based on available memory
-        features = {
-            "high_quality_mode": 200,  # MB required
-            "standard_mode": 80,
-            "basic_mode": 30
-        }
+        features = {"high_quality_mode": 200, "standard_mode": 80, "basic_mode": 30}  # MB required
 
         selected_mode = None
-        for mode, required_mb in sorted(
-            features.items(),
-            key=lambda x: x[1],
-            reverse=True
-        ):
+        for mode, required_mb in sorted(features.items(), key=lambda x: x[1], reverse=True):
             if required_mb <= available_memory_mb:
                 selected_mode = mode
                 break
@@ -444,10 +433,7 @@ class TestConcurrentAccessAndLocking:
 
     def test_read_write_lock_allows_concurrent_reads(self):
         """Test read-write lock allows concurrent reads."""
-        lock_state = {
-            "readers": 0,
-            "writer": False
-        }
+        lock_state = {"readers": 0, "writer": False}
 
         def acquire_read_lock():
             if not lock_state["writer"]:
@@ -513,10 +499,7 @@ class TestConcurrentAccessAndLocking:
 
     def test_deadlock_prevention_with_lock_ordering(self):
         """Test deadlock prevention using lock ordering."""
-        locks = {
-            "resource_A": threading.Lock(),
-            "resource_B": threading.Lock()
-        }
+        locks = {"resource_A": threading.Lock(), "resource_B": threading.Lock()}
 
         def acquire_in_order(resource_names):
             # Always acquire in sorted order to prevent deadlock
@@ -543,10 +526,7 @@ class TestConcurrentAccessAndLocking:
 
     def test_optimistic_locking_with_version_check(self):
         """Test optimistic locking with version checking."""
-        data = {
-            "value": 100,
-            "version": 1
-        }
+        data = {"value": 100, "version": 1}
 
         def update_with_version_check(expected_version, new_value):
             if data["version"] == expected_version:
@@ -816,7 +796,7 @@ class TestPartialFailuresAndRollback:
         operations = [
             {"op": "SET", "key": "a", "value": 1},
             {"op": "SET", "key": "b", "value": 2},
-            {"op": "DELETE", "key": "c"}
+            {"op": "DELETE", "key": "c"},
         ]
 
         wal_file.write_text("\n".join(json.dumps(op) for op in operations))
@@ -854,10 +834,7 @@ class TestPartialFailuresAndRollback:
 
     def test_graceful_shutdown_on_failure(self):
         """Test graceful shutdown preserves state."""
-        state = {
-            "in_flight_requests": 5,
-            "completed": 100
-        }
+        state = {"in_flight_requests": 5, "completed": 100}
 
         shutdown_sequence = []
 
@@ -898,7 +875,7 @@ class TestPartialFailuresAndRollback:
         tenant_states = {
             "tenant_a": {"healthy": True, "errors": 0},
             "tenant_b": {"healthy": True, "errors": 0},
-            "tenant_c": {"healthy": True, "errors": 0}
+            "tenant_c": {"healthy": True, "errors": 0},
         }
 
         # Tenant B has failures
@@ -942,12 +919,7 @@ class TestPartialFailuresAndRollback:
             return {"status": "success", "id": item_id}
 
         # Process multiple items
-        items = [
-            (1, False),
-            (2, True),
-            (3, False),
-            (4, True)
-        ]
+        items = [(1, False), (2, True), (3, False), (4, True)]
 
         for item_id, should_fail in items:
             async_operation(item_id, should_fail)
@@ -960,7 +932,7 @@ class TestPartialFailuresAndRollback:
         service_timeouts = {
             "service_a": 5.0,
             "service_b": 3.0,  # Depends on A
-            "service_c": 2.0   # Depends on B
+            "service_c": 2.0,  # Depends on B
         }
 
         # Calculate safe timeout for C

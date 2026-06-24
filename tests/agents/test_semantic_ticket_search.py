@@ -28,9 +28,7 @@ class TestSemanticSearch:
         result = semantic_search("test query", tickets)
 
         MockBridge.assert_called_once()
-        mock_bridge.retrieve_ticket_context.assert_called_once_with(
-            "test query", tickets, top_k=5
-        )
+        mock_bridge.retrieve_ticket_context.assert_called_once_with("test query", tickets, top_k=5)
         assert result == ["result1", "result2"]
 
     @patch("agents.semantic_ticket_search.ZendeskRAGBridge")
@@ -44,9 +42,7 @@ class TestSemanticSearch:
 
         semantic_search("query", [], top_k=10)
 
-        mock_bridge.retrieve_ticket_context.assert_called_once_with(
-            "query", [], top_k=10
-        )
+        mock_bridge.retrieve_ticket_context.assert_called_once_with("query", [], top_k=10)
 
 
 class TestModuleExports:

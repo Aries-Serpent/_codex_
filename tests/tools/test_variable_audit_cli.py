@@ -1,4 +1,5 @@
 """Unit tests for scripts/tools/variable_audit_cli.py"""
+
 from __future__ import annotations
 
 import json
@@ -34,20 +35,27 @@ from variable_audit_cli import (  # type: ignore[import]
 # Registry sanity checks
 # ---------------------------------------------------------------------------
 
+
 class TestRegistry:
     def test_registry_is_non_empty(self):
         assert len(_REGISTRY) >= 80
 
     def test_all_entries_have_required_fields(self):
         for entry in _REGISTRY:
-            assert entry.name,     f"Empty name: {entry}"
-            assert entry.layer,    f"Empty layer: {entry}"
+            assert entry.name, f"Empty name: {entry}"
+            assert entry.layer, f"Empty layer: {entry}"
             assert entry.category, f"Empty category: {entry}"
-            assert entry.purpose,  f"Empty purpose: {entry}"
+            assert entry.purpose, f"Empty purpose: {entry}"
 
     def test_layers_are_valid(self):
-        valid = {LAYER_ORG_SECRETS, LAYER_REPO_SECRETS, LAYER_ENV_SECRETS,
-                 LAYER_REPO_VARS, LAYER_ENV_VARS, LAYER_CODESPACE}
+        valid = {
+            LAYER_ORG_SECRETS,
+            LAYER_REPO_SECRETS,
+            LAYER_ENV_SECRETS,
+            LAYER_REPO_VARS,
+            LAYER_ENV_VARS,
+            LAYER_CODESPACE,
+        }
         for entry in _REGISTRY:
             assert entry.layer in valid, f"Unknown layer '{entry.layer}' for {entry.name}"
 
@@ -74,6 +82,7 @@ class TestRegistry:
 # ---------------------------------------------------------------------------
 # Formatters
 # ---------------------------------------------------------------------------
+
 
 def _make_report(status: str = "present") -> AuditReport:
     entry = ExpectedEntry(
@@ -183,6 +192,7 @@ class TestFormatExpectedTable:
 # run_audit with mocked API
 # ---------------------------------------------------------------------------
 
+
 class TestRunAuditOffline:
     """Test run_audit when no token is available (offline / expected-only mode)."""
 
@@ -267,6 +277,7 @@ class TestRunAuditMocked:
 # ---------------------------------------------------------------------------
 # CLI entry-point
 # ---------------------------------------------------------------------------
+
 
 class TestCLICommands:
     def test_expected_command_returns_0(self, capsys):

@@ -1,4 +1,5 @@
 """Tests for batch triage learning engine"""
+
 import shutil
 import sys
 import tempfile
@@ -23,8 +24,7 @@ def temp_kb_dir():
 @pytest.fixture
 def learning_engine(temp_kb_dir):
     return BatchTriageLearningEngine(
-        kb_path=temp_kb_dir / "cognitive_brain",
-        metrics_path=temp_kb_dir / "metrics"
+        kb_path=temp_kb_dir / "cognitive_brain", metrics_path=temp_kb_dir / "metrics"
     )
 
 

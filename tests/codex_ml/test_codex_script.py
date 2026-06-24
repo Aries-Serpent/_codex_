@@ -154,20 +154,26 @@ class TestDeterminismEnvironmentVariables:
 
     def test_invalid_seed_raises_value_error(self) -> None:
         """Test invalid seed value raises ValueError."""
-        with patch.dict(
-            os.environ,
-            {"CODEX_DETERMINISM": "1", "CODEX_SEED": "not_a_number"},
-            clear=True,
-        ), pytest.raises(ValueError):
+        with (
+            patch.dict(
+                os.environ,
+                {"CODEX_DETERMINISM": "1", "CODEX_SEED": "not_a_number"},
+                clear=True,
+            ),
+            pytest.raises(ValueError),
+        ):
             codex_script._init_determinism_from_env()
 
     def test_invalid_num_threads_raises_value_error(self) -> None:
         """Test invalid num_threads raises ValueError."""
-        with patch.dict(
-            os.environ,
-            {"CODEX_DETERMINISM": "1", "CODEX_NUM_THREADS": "invalid"},
-            clear=True,
-        ), pytest.raises(ValueError):
+        with (
+            patch.dict(
+                os.environ,
+                {"CODEX_DETERMINISM": "1", "CODEX_NUM_THREADS": "invalid"},
+                clear=True,
+            ),
+            pytest.raises(ValueError),
+        ):
             codex_script._init_determinism_from_env()
 
 
@@ -199,6 +205,8 @@ class TestModuleLevelInitialization:
         # This is tricky to test since it's initialized at import time
         # Just verify the module structure is as expected
         # The module should have the internal summary
-        assert hasattr(codex_script, "_TestModuleLevelInitialization__determinism_summary") or \
-               hasattr(codex_script, "_codex_script__determinism_summary") or \
-               "_init_determinism_from_env" in dir(codex_script)
+        assert (
+            hasattr(codex_script, "_TestModuleLevelInitialization__determinism_summary")
+            or hasattr(codex_script, "_codex_script__determinism_summary")
+            or "_init_determinism_from_env" in dir(codex_script)
+        )

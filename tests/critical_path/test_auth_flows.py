@@ -34,9 +34,7 @@ class TestLoginLogoutFlows:
 
         # Generate session token
         session_token, session_id = manager.generate_session_token(
-            user_id=user_id,
-            ip_address="192.168.1.1",
-            user_agent="TestBrowser/1.0"
+            user_id=user_id, ip_address="192.168.1.1", user_agent="TestBrowser/1.0"
         )
 
         assert session_token
@@ -86,8 +84,12 @@ class TestLoginLogoutFlows:
         user_id = "user123"
 
         # Create multiple sessions
-        session1_token, _session1_id = manager.generate_session_token(user_id, ip_address="192.168.1.1")
-        session2_token, _session2_id = manager.generate_session_token(user_id, ip_address="192.168.1.2")
+        session1_token, _session1_id = manager.generate_session_token(
+            user_id, ip_address="192.168.1.1"
+        )
+        session2_token, _session2_id = manager.generate_session_token(
+            user_id, ip_address="192.168.1.2"
+        )
 
         # Both sessions valid
         manager.validate_token(session1_token)
@@ -103,8 +105,7 @@ class TestLoginLogoutFlows:
 
         # Login with MFA
         _session_token, session_id = manager.generate_session_token(
-            user_id="user123",
-            mfa_verified=True
+            user_id="user123", mfa_verified=True
         )
 
         session = manager.get_session(session_id)
@@ -197,10 +198,7 @@ class TestSessionManagement:
         manager = TokenManager(secret_key="test-secret-key")
 
         _token, session_id = manager.generate_session_token(
-            user_id="user123",
-            ip_address="10.0.0.1",
-            user_agent="Chrome/90.0",
-            mfa_verified=True
+            user_id="user123", ip_address="10.0.0.1", user_agent="Chrome/90.0", mfa_verified=True
         )
 
         session = manager.get_session(session_id)

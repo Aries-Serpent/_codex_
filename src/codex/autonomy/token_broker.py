@@ -338,7 +338,10 @@ class TokenCircuitBreaker:
 
         # Check if circuit should transition from OPEN → HALF_OPEN (recovery probe)
         if record.state == CircuitBreakerState.OPEN:
-            if record.last_failure_time and (now - record.last_failure_time) >= self._RECOVERY_PROBE_INTERVAL:
+            if (
+                record.last_failure_time
+                and (now - record.last_failure_time) >= self._RECOVERY_PROBE_INTERVAL
+            ):
                 logger.info(
                     "Circuit breaker: recovery probe for %s",
                     source.value,
@@ -516,7 +519,6 @@ class TokenRotationScheduler:
         }
 
 
-
 @dataclass(frozen=True)
 class TokenResolution:
     """Result of a token broker lookup."""
@@ -539,7 +541,6 @@ class TokenResolution:
         if self.health_check is None:
             return True  # No health check means assume healthy
         return self.health_check.status == TokenHealthStatus.HEALTHY
-
 
 
 class TokenBrokerError(RuntimeError):

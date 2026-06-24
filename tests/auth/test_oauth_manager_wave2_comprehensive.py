@@ -18,6 +18,7 @@ from codex.auth.oauth_manager import OAuthConfig, OAuthManager
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def oauth_config():
     """Create OAuth configuration."""
@@ -39,6 +40,7 @@ def oauth_manager(oauth_config):
 # ============================================================================
 # Initialization Tests
 # ============================================================================
+
 
 class TestOAuthInitialization:
     """Test OAuth manager initialization."""
@@ -62,6 +64,7 @@ class TestOAuthInitialization:
 # ============================================================================
 # Authorization URL Tests
 # ============================================================================
+
 
 class TestAuthorizationUrl:
     """Test authorization URL generation."""
@@ -110,6 +113,7 @@ class TestAuthorizationUrl:
 # State Management Tests
 # ============================================================================
 
+
 class TestStateManagement:
     """Test OAuth state parameter handling."""
 
@@ -144,6 +148,7 @@ class TestStateManagement:
 # ============================================================================
 # Token Exchange Tests
 # ============================================================================
+
 
 class TestTokenExchange:
     """Test OAuth token exchange."""
@@ -195,6 +200,7 @@ class TestTokenExchange:
 # Callback Handling Tests
 # ============================================================================
 
+
 class TestCallbackHandling:
     """Test OAuth callback handling."""
 
@@ -242,6 +248,7 @@ class TestCallbackHandling:
 # User Info Retrieval Tests
 # ============================================================================
 
+
 class TestUserInfoRetrieval:
     """Test retrieving user information via OAuth token."""
 
@@ -277,6 +284,7 @@ class TestUserInfoRetrieval:
 # Token Refresh Tests
 # ============================================================================
 
+
 class TestTokenRefresh:
     """Test token refresh functionality."""
 
@@ -311,6 +319,7 @@ class TestTokenRefresh:
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
 
 class TestErrorHandling:
     """Test error handling in OAuth."""
@@ -354,6 +363,7 @@ class TestErrorHandling:
 # ============================================================================
 # Edge Cases Tests
 # ============================================================================
+
 
 class TestOAuthEdgeCases:
     """Test edge cases in OAuth."""
@@ -422,6 +432,7 @@ class TestOAuthEdgeCases:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestOAuthIntegration:
     """Integration tests for OAuth manager."""

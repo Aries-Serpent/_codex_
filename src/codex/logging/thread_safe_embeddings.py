@@ -12,23 +12,24 @@ from __future__ import annotations
 
 import json
 import logging
-import threading
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .concurrency import ReadWriteLock, LockMetrics, log_error, save_metrics
+from .concurrency import ReadWriteLock, log_error, save_metrics
 
 logger = logging.getLogger(__name__)
 
 try:
     import numpy as np
+
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
 
 try:
     import faiss
+
     HAS_FAISS = True
 except ImportError:
     HAS_FAISS = False
@@ -36,6 +37,7 @@ except ImportError:
 
 try:
     from sentence_transformers import SentenceTransformer
+
     HAS_SENTENCE_TRANSFORMERS = True
 except ImportError:
     HAS_SENTENCE_TRANSFORMERS = False
@@ -93,9 +95,7 @@ class ThreadSafeSessionEmbeddings:
                 # Load metadata
                 with open(self.metadata_path, "r") as f:
                     self._metadata = json.load(f)
-                    logger.info(
-                        f"Loaded metadata for {len(self._metadata)} sessions"
-                    )
+                    logger.info(f"Loaded metadata for {len(self._metadata)} sessions")
             else:
                 # Create new index
                 if HAS_FAISS:
@@ -204,9 +204,7 @@ class ThreadSafeSessionEmbeddings:
                         "similarity_score": 0.9 - (i * 0.05),
                         "description": meta.get("description", ""),
                     }
-                    for i, (sid, meta) in enumerate(
-                        list(self._metadata.items())[:k]
-                    )
+                    for i, (sid, meta) in enumerate(list(self._metadata.items())[:k])
                     if sid != query_session_id
                 ]
 
@@ -227,11 +225,13 @@ class ThreadSafeSessionEmbeddings:
                 # Find session_id by index
                 for sid, meta in self._metadata.items():
                     if meta.get("index_id") == idx and sid != query_session_id:
-                        results.append({
-                            "session_id": sid,
-                            "similarity_score": float(1.0 / (1.0 + float(dist))),
-                            "description": meta.get("description", ""),
-                        })
+                        results.append(
+                            {
+                                "session_id": sid,
+                                "similarity_score": float(1.0 / (1.0 + float(dist))),
+                                "description": meta.get("description", ""),
+                            }
+                        )
                         if len(results) >= k:
                             break
 

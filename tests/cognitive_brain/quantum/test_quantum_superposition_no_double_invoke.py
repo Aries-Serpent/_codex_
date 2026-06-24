@@ -7,7 +7,6 @@ Validates that the ``@quantum_superposition()`` decorator:
   - Preserves the decorated function's identity (__name__, __wrapped__)
 """
 
-
 from cognitive_brain.quantum.superposition import quantum_superposition
 
 # ---------------------------------------------------------------------------
@@ -29,9 +28,9 @@ class TestQuantumSuperpositionNoDoubleInvoke:
 
         result = compute(5)
 
-        assert call_count["n"] == 1, (
-            f"Expected func to be called exactly once, but it was called {call_count['n']} times."
-        )
+        assert (
+            call_count["n"] == 1
+        ), f"Expected func to be called exactly once, but it was called {call_count['n']} times."
         assert result == 10
 
     def test_func_called_exactly_once_with_side_effects(self):
@@ -105,6 +104,6 @@ class TestQuantumSuperpositionNoDoubleInvoke:
             result = identity(i)
             assert result == i
 
-        assert call_count["n"] == 5, (
-            f"Expected 5 total invocations for 5 calls, got {call_count['n']}."
-        )
+        assert (
+            call_count["n"] == 5
+        ), f"Expected 5 total invocations for 5 calls, got {call_count['n']}."

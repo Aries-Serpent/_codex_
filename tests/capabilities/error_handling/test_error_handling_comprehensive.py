@@ -42,7 +42,6 @@ class ConfigurationError(CodexError):
     """Configuration related errors."""
 
 
-
 class ValidationError(CodexError):
     """Validation errors."""
 

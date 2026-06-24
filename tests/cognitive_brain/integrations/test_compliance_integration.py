@@ -82,17 +82,13 @@ def monitor(config, repository):
 @pytest.fixture
 def quantum_assessor(config, monitor, repository):
     """Create quantum compliance assessor"""
-    return QuantumComplianceAssessor(
-        config, monitor, repository, enable_superposition=True
-    )
+    return QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
 
 
 @pytest.fixture
 def classical_assessor(config, monitor, repository):
     """Create classical compliance assessor"""
-    return QuantumComplianceAssessor(
-        config, monitor, repository, enable_superposition=False
-    )
+    return QuantumComplianceAssessor(config, monitor, repository, enable_superposition=False)
 
 
 class TestAuditResult:
@@ -141,9 +137,7 @@ class TestQuantumComplianceAssessor:
 
     def test_initialization_with_superposition(self, config, monitor, repository):
         """Test assessor initializes with superposition enabled"""
-        assessor = QuantumComplianceAssessor(
-            config, monitor, repository, enable_superposition=True
-        )
+        assessor = QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
         assert assessor.enable_superposition is True
         assert assessor.engine is not None
 
@@ -288,8 +282,12 @@ class TestQuantumVsClassical:
         audits = [
             AuditResult("A1", "low", 100, score=0.95, business_impact=0.9),
             AuditResult("A2", "medium", 500, score=0.75, business_impact=0.7, violations=["v1"]),
-            AuditResult("A3", "medium", 800, score=0.5, business_impact=0.6, violations=["v1", "v2"]),
-            AuditResult("A4", "high", 2000, score=0.3, business_impact=0.3, violations=["c1", "c2"]),
+            AuditResult(
+                "A3", "medium", 800, score=0.5, business_impact=0.6, violations=["v1", "v2"]
+            ),
+            AuditResult(
+                "A4", "high", 2000, score=0.3, business_impact=0.3, violations=["c1", "c2"]
+            ),
         ]
 
         for audit in audits:
@@ -304,8 +302,12 @@ class TestQuantumVsClassical:
         audits = [
             AuditResult("A1", "low", 100, score=0.95, business_impact=0.9),
             AuditResult("A2", "medium", 500, score=0.75, business_impact=0.7, violations=["v1"]),
-            AuditResult("A3", "medium", 800, score=0.5, business_impact=0.6, violations=["v1", "v2"]),
-            AuditResult("A4", "high", 2000, score=0.3, business_impact=0.3, violations=["c1", "c2"]),
+            AuditResult(
+                "A3", "medium", 800, score=0.5, business_impact=0.6, violations=["v1", "v2"]
+            ),
+            AuditResult(
+                "A4", "high", 2000, score=0.3, business_impact=0.3, violations=["c1", "c2"]
+            ),
         ]
 
         for audit in audits:
@@ -330,7 +332,9 @@ class TestQuantumVsClassical:
 
     def test_reasoning_includes_details(self, quantum_assessor, classical_assessor):
         """Test that assessments include detailed reasoning"""
-        audit = AuditResult("A-REASON", "low", 300, score=0.8, business_impact=0.75, violations=["minor"])
+        audit = AuditResult(
+            "A-REASON", "low", 300, score=0.8, business_impact=0.75, violations=["minor"]
+        )
 
         quantum_assessment = quantum_assessor.assess_compliance(audit)
         classical_assessment = classical_assessor.assess_compliance(audit)

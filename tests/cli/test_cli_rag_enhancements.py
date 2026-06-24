@@ -20,6 +20,7 @@ from typer.testing import CliRunner
 
 try:
     from codex.cli_rag import app
+
     HAS_CLI_RAG = True
 except ImportError:
     HAS_CLI_RAG = False
@@ -60,8 +61,10 @@ class TestCLIRAGErrorHandling:
             app,
             [
                 "build",
-                "--files", str(docs_dir / "*.md"),
-                "--chunk-size", "0",  # Invalid: must be > 0
+                "--files",
+                str(docs_dir / "*.md"),
+                "--chunk-size",
+                "0",  # Invalid: must be > 0
             ],
         )
         assert result.exit_code != 0
@@ -76,8 +79,10 @@ class TestCLIRAGErrorHandling:
             app,
             [
                 "build",
-                "--files", str(docs_dir / "*.md"),
-                "--overlap", "-100",  # Invalid: must be >= 0
+                "--files",
+                str(docs_dir / "*.md"),
+                "--overlap",
+                "-100",  # Invalid: must be >= 0
             ],
         )
         assert result.exit_code != 0
@@ -88,8 +93,10 @@ class TestCLIRAGErrorHandling:
             app,
             [
                 "query",
-                "--query", "test query",
-                "--index", "",  # Empty name
+                "--query",
+                "test query",
+                "--index",
+                "",  # Empty name
             ],
         )
         assert result.exit_code != 0
@@ -122,8 +129,10 @@ class TestCLIRAGErrorHandling:
             app,
             [
                 "merge",
-                "--sources", "same_index",
-                "--destination", "same_index",
+                "--sources",
+                "same_index",
+                "--destination",
+                "same_index",
             ],
         )
         assert result.exit_code != 0
@@ -148,8 +157,10 @@ class TestCLIRAGErrorHandling:
             app,
             [
                 "build",
-                "--files", str(docs_dir / "*.md"),
-                "--model", "invalid-model-xyz",
+                "--files",
+                str(docs_dir / "*.md"),
+                "--model",
+                "invalid-model-xyz",
             ],
         )
         assert result.exit_code != 0
@@ -203,9 +214,12 @@ class TestCLIRAGArgumentValidation:
                 app,
                 [
                     "build",
-                    "--files", str(docs_dir / "*.md"),
-                    "--index-name", "test",
-                    "--tenant-id", "valid_tenant",
+                    "--files",
+                    str(docs_dir / "*.md"),
+                    "--index-name",
+                    "test",
+                    "--tenant-id",
+                    "valid_tenant",
                 ],
             )
             # Should accept valid tenant ID
@@ -221,9 +235,12 @@ class TestCLIRAGArgumentValidation:
                 app,
                 [
                     "build",
-                    "--files", str(docs_dir / "*.md"),
-                    "--index-name", "test",
-                    "--model", "custom/model-v2.1",
+                    "--files",
+                    str(docs_dir / "*.md"),
+                    "--index-name",
+                    "test",
+                    "--model",
+                    "custom/model-v2.1",
                 ],
             )
             # Should validate model name format
@@ -264,9 +281,7 @@ class TestCLIRAGOutputFormats:
         index_dir = tmp_path / "indices" / "default"
         index_dir.mkdir(parents=True)
         (index_dir / "test_index").mkdir()
-        (index_dir / "test_index" / "metadata.json").write_text(
-            json.dumps({"num_chunks": 10})
-        )
+        (index_dir / "test_index" / "metadata.json").write_text(json.dumps({"num_chunks": 10}))
 
         with patch("codex.rag.list_indices", return_value=["test_index"]):
             result = runner.invoke(
@@ -323,9 +338,7 @@ class TestCLIRAGIntegration:
             with patch("codex.rag.Retriever") as mock_retriever_class:
                 mock_build.return_value = tmp_path / "index"
                 mock_retriever = MagicMock()
-                mock_retriever.query.return_value = [
-                    {"score": 0.9, "text": "Found result"}
-                ]
+                mock_retriever.query.return_value = [{"score": 0.9, "text": "Found result"}]
                 mock_retriever_class.return_value = mock_retriever
 
                 # Build
@@ -333,8 +346,10 @@ class TestCLIRAGIntegration:
                     app,
                     [
                         "build",
-                        "--files", str(docs_dir / "*.md"),
-                        "--index-name", "docs",
+                        "--files",
+                        str(docs_dir / "*.md"),
+                        "--index-name",
+                        "docs",
                     ],
                 )
                 assert build_result.exit_code == 0
@@ -354,8 +369,10 @@ class TestCLIRAGIntegration:
                 app,
                 [
                     "merge",
-                    "--sources", "index1,index2",
-                    "--destination", "merged",
+                    "--sources",
+                    "index1,index2",
+                    "--destination",
+                    "merged",
                 ],
             )
             assert result.exit_code == 0
@@ -372,9 +389,12 @@ class TestCLIRAGIntegration:
                 app,
                 [
                     "build",
-                    "--files", str(docs_dir / "*.md"),
-                    "--index-name", "test_a",
-                    "--tenant-id", "tenant_a",
+                    "--files",
+                    str(docs_dir / "*.md"),
+                    "--index-name",
+                    "test_a",
+                    "--tenant-id",
+                    "tenant_a",
                 ],
             )
             assert result_a.exit_code == 0
@@ -384,9 +404,12 @@ class TestCLIRAGIntegration:
                 app,
                 [
                     "build",
-                    "--files", str(docs_dir / "*.md"),
-                    "--index-name", "test_b",
-                    "--tenant-id", "tenant_b",
+                    "--files",
+                    str(docs_dir / "*.md"),
+                    "--index-name",
+                    "test_b",
+                    "--tenant-id",
+                    "tenant_b",
                 ],
             )
             assert result_b.exit_code == 0
@@ -446,8 +469,10 @@ class TestCLIRAGBoundary:
                 app,
                 [
                     "build",
-                    "--files", str(docs_dir / "single.md"),
-                    "--index-name", "single",
+                    "--files",
+                    str(docs_dir / "single.md"),
+                    "--index-name",
+                    "single",
                 ],
             )
             assert result.exit_code == 0
@@ -464,8 +489,10 @@ class TestCLIRAGBoundary:
                 app,
                 [
                     "build",
-                    "--files", str(docs_dir / "*.md"),
-                    "--index-name", "many",
+                    "--files",
+                    str(docs_dir / "*.md"),
+                    "--index-name",
+                    "many",
                 ],
             )
             # Should handle large file count
@@ -491,8 +518,10 @@ class TestCLIRAGBoundary:
                 app,
                 [
                     "merge",
-                    "--sources", "single_index",
-                    "--destination", "merged",
+                    "--sources",
+                    "single_index",
+                    "--destination",
+                    "merged",
                 ],
             )
             # May need multiple sources
@@ -508,9 +537,12 @@ class TestCLIRAGBoundary:
                 app,
                 [
                     "build",
-                    "--files", str(docs_dir / "*.md"),
-                    "--index-name", "test",
-                    "--chunk-size", "10000",
+                    "--files",
+                    str(docs_dir / "*.md"),
+                    "--index-name",
+                    "test",
+                    "--chunk-size",
+                    "10000",
                 ],
             )
             # Should accept reasonable chunk sizes

@@ -115,9 +115,7 @@ class TestDetectedIssue:
         )
         assert issue.context["package"] == "numpy"
 
-    def test_issue_timestamp_auto_generated(
-        self, DetectedIssue, IssueType, IssueSeverity
-    ):
+    def test_issue_timestamp_auto_generated(self, DetectedIssue, IssueType, IssueSeverity):
         """Test that detected_at timestamp is auto-generated."""
         issue = DetectedIssue(
             issue_type=IssueType.LINT_ERROR,

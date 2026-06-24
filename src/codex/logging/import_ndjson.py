@@ -70,8 +70,7 @@ def _db_path(override: str | None = None) -> Path:
 
 
 def _init_db(conn: sqlite3.Connection) -> None:
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS session_events (
             session_id TEXT NOT NULL,
             ts REAL,
@@ -80,8 +79,7 @@ def _init_db(conn: sqlite3.Connection) -> None:
             seq INTEGER,
             meta TEXT
         )
-        """
-    )
+        """)
     cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
     if "seq" not in cols:
         conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
@@ -96,14 +94,12 @@ def _init_db(conn: sqlite3.Connection) -> None:
     conn.execute(
         "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx ON session_events(session_id, ts)"
     )
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS session_ingest_watermark (
             session_id TEXT PRIMARY KEY,
             seq INTEGER NOT NULL
         )
-        """
-    )
+        """)
 
 
 def _parse_ts(ts: str | None) -> float | None:

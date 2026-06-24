@@ -61,13 +61,13 @@ class TestTrainingEdgeCases:
     def test_training_nan_loss(self):
         """Test training when loss becomes NaN"""
         # Simulate NaN loss scenario
-        nan_loss = float('nan')
+        nan_loss = float("nan")
         # Should detect and handle NaN loss
         assert np.isnan(nan_loss)
 
     def test_training_inf_loss(self):
         """Test training when loss becomes infinite"""
-        inf_loss = float('inf')
+        inf_loss = float("inf")
         # Should detect and handle infinite loss
         assert np.isinf(inf_loss)
 
@@ -99,7 +99,8 @@ class TestTrainingEdgeCases:
         The corrupted data is a test fixture we create, not external untrusted data.
         """
         import tempfile
-        with tempfile.NamedTemporaryFile(suffix='.pt', delete=False) as f:
+
+        with tempfile.NamedTemporaryFile(suffix=".pt", delete=False) as f:
             f.write(b"corrupted data")
             checkpoint_path = f.name
 
@@ -110,6 +111,7 @@ class TestTrainingEdgeCases:
                 torch.load(checkpoint_path, weights_only=True)
         finally:
             import os
+
             os.unlink(checkpoint_path)
 
     def test_training_inconsistent_shapes(self):
@@ -138,7 +140,7 @@ class TestTrainingEdgeCases:
 
     def test_training_empty_dataset_handling(self):
         """Test training pipeline handles empty dataset properly"""
-        with patch('torch.utils.data.DataLoader') as mock_dataloader:
+        with patch("torch.utils.data.DataLoader") as mock_dataloader:
             # Empty dataset
             mock_dataloader.return_value = iter([])
 
@@ -184,7 +186,7 @@ class TestTrainingEdgeCases:
 
         # Loss calculation should handle different batch sizes
         for batch in batches:
-            loss = torch.mean(batch ** 2)
+            loss = torch.mean(batch**2)
             assert not torch.isnan(loss)
             assert not torch.isinf(loss)
 
@@ -193,9 +195,9 @@ class TestTrainingEdgeCases:
         # Mix of good and bad samples
         good_samples = [torch.randn(10) for _ in range(5)]
         bad_samples = [
-            torch.tensor([float('nan')] * 10),
-            torch.tensor([float('inf')] * 10),
-            torch.tensor([])  # Empty tensor
+            torch.tensor([float("nan")] * 10),
+            torch.tensor([float("inf")] * 10),
+            torch.tensor([]),  # Empty tensor
         ]
 
         for sample in good_samples:
@@ -231,7 +233,7 @@ class TestTrainingEdgeCases:
     def test_training_nan_loss_detection(self):
         """Test training detects and handles NaN loss"""
         # Simulate NaN loss
-        loss = torch.tensor(float('nan'), requires_grad=True)
+        loss = torch.tensor(float("nan"), requires_grad=True)
 
         assert torch.isnan(loss)
 
@@ -250,7 +252,7 @@ class TestTrainingEdgeCases:
     def test_training_inf_loss_detection(self):
         """Test training detects and handles infinite loss"""
         # Simulate infinite loss
-        loss = torch.tensor(float('inf'), requires_grad=True)
+        loss = torch.tensor(float("inf"), requires_grad=True)
 
         assert torch.isinf(loss)
 
@@ -263,7 +265,7 @@ class TestTrainingEdgeCases:
         assert loss == max_loss
 
         # Warning should be logged
-        warning_triggered = torch.isinf(torch.tensor(float('inf')))
+        warning_triggered = torch.isinf(torch.tensor(float("inf")))
         assert warning_triggered
 
     def test_training_gradient_explosion(self):
@@ -332,8 +334,8 @@ class TestTrainingEdgeCases:
     def test_training_oom_handling(self):
         """Test training handles CUDA Out of Memory error"""
         # Simulate OOM error
-        with patch('torch.cuda.OutOfMemoryError') as mock_oom:
-            mock_oom.__name__ = 'OutOfMemoryError'
+        with patch("torch.cuda.OutOfMemoryError") as mock_oom:
+            mock_oom.__name__ = "OutOfMemoryError"
 
             try:
                 # Simulate large allocation
@@ -355,14 +357,14 @@ class TestTrainingEdgeCases:
         import os
         import tempfile
 
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             checkpoint_path = f.name
 
         try:
             # Simulate disk full
-            with patch('builtins.open', side_effect=OSError("No space left on device")):
+            with patch("builtins.open", side_effect=OSError("No space left on device")):
                 try:
-                    with open(checkpoint_path, 'w') as f:
+                    with open(checkpoint_path, "w") as f:
                         f.write("checkpoint data")
                 except OSError as e:
                     assert "No space left" in str(e)
@@ -389,6 +391,7 @@ class TestTrainingEdgeCases:
 
         # Garbage collection
         import gc
+
         gc.collect()
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
@@ -408,7 +411,7 @@ class TestTrainingEdgeCases:
         import os
         import tempfile
 
-        with tempfile.NamedTemporaryFile(mode='wb', suffix='.pt', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=".pt", delete=False) as f:
             # Write corrupted data
             f.write(b"corrupted checkpoint data")
             corrupted_path = f.name
@@ -423,14 +426,14 @@ class TestTrainingEdgeCases:
 
             # Fallback to previous checkpoint
             fallback_checkpoint = {
-                'epoch': 0,
-                'model_state_dict': {},
-                'optimizer_state_dict': {},
-                'loss': 0.0
+                "epoch": 0,
+                "model_state_dict": {},
+                "optimizer_state_dict": {},
+                "loss": 0.0,
             }
 
-            assert 'epoch' in fallback_checkpoint
-            assert fallback_checkpoint['epoch'] == 0
+            assert "epoch" in fallback_checkpoint
+            assert fallback_checkpoint["epoch"] == 0
 
         finally:
             if os.path.exists(corrupted_path):
@@ -474,7 +477,7 @@ class TestTrainingEdgeCases:
         if torch.cuda.is_available():
             # Try to allocate huge tensor
             try:
-                torch.randn(10000, 10000, 10000, device='cuda')
+                torch.randn(10000, 10000, 10000, device="cuda")
             except RuntimeError as e:
                 assert "out of memory" in str(e).lower()
 
@@ -482,13 +485,14 @@ class TestTrainingEdgeCases:
         """Test training with tensors on different devices"""
         cpu_tensor = torch.randn(10, 10)
         if torch.cuda.is_available():
-            cuda_tensor = torch.randn(10, 10, device='cuda')
+            cuda_tensor = torch.randn(10, 10, device="cuda")
             # Should detect device mismatch
             with pytest.raises(RuntimeError):
                 _ = cpu_tensor + cuda_tensor
 
     def test_training_callback_exception(self):
         """Test training when callback raises exception"""
+
         def bad_callback():
             raise RuntimeError("Callback error")
 
@@ -531,7 +535,8 @@ class TestDataLoadingEdgeCases:
         Production code should NOT use raw pickle.load - use safe_pickle_load instead.
         """
         import tempfile
-        with tempfile.NamedTemporaryFile(mode='wb', suffix='.pkl', delete=False) as f:
+
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=".pkl", delete=False) as f:
             f.write(b"not a valid pickle")
             corrupted_file = f.name
 
@@ -540,6 +545,7 @@ class TestDataLoadingEdgeCases:
                 safe_pickle_load(corrupted_file, use_restricted_unpickler=True)
         finally:
             import os
+
             os.unlink(corrupted_file)
 
     def test_data_loader_missing_features(self):

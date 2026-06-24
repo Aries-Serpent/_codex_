@@ -279,9 +279,11 @@ class TestCodexBackwardCompatibility:
         """Test reimporting module is idempotent."""
         # Arrange & Act
         import codex
+
         first_id = id(codex)
 
         import codex as codex2
+
         second_id = id(codex2)
 
         # Assert

@@ -1,4 +1,5 @@
 """Tests for codex_ml.utils.serialization — DictSerializable mixin."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

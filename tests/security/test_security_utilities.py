@@ -14,6 +14,7 @@ Test Pickle Usage:
 - These are trusted sources used to validate security controls
 - Production code should use safe_pickle_load with RestrictedUnpickler
 """
+
 import hashlib
 import io
 import os
@@ -27,6 +28,7 @@ import pytest
 # Import torch with error handling for CI environments
 try:
     import torch
+
     TORCH_AVAILABLE = True
 except (ImportError, OSError):
     torch = None
@@ -34,7 +36,7 @@ except (ImportError, OSError):
 
 pytestmark = pytest.mark.skipif(
     not TORCH_AVAILABLE,
-    reason="PyTorch not available or failed to load (expected in some CI environments)"
+    reason="PyTorch not available or failed to load (expected in some CI environments)",
 )
 
 # Import security utilities
@@ -51,38 +53,38 @@ class TestSafeTorchLoader:
 
     def test_safe_load_with_weights_only_true(self):
         """Test that safe_load enforces weights_only=True."""
-        with tempfile.NamedTemporaryFile(suffix='.pth', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".pth", delete=False) as f:
             temp_path = f.name
             # Save a simple tensor
-            torch.save({'weight': torch.randn(3, 3)}, temp_path)
+            torch.save({"weight": torch.randn(3, 3)}, temp_path)
 
         try:
             # Should load successfully with weights_only=True
             loaded = safe_load(temp_path, weights_only=True)
-            assert 'weight' in loaded
-            assert isinstance(loaded['weight'], torch.Tensor)
+            assert "weight" in loaded
+            assert isinstance(loaded["weight"], torch.Tensor)
         finally:
             os.unlink(temp_path)
 
     def test_safe_load_rejects_weights_only_false(self):
         """Test that safe_load rejects weights_only=False."""
         with pytest.raises(ValueError, match="weights_only=False is a security vulnerability"):
-            safe_load('dummy.pth', weights_only=False)
+            safe_load("dummy.pth", weights_only=False)
 
     def test_safe_load_file_not_found(self):
         """Test that safe_load handles missing files."""
         with pytest.raises(FileNotFoundError):
-            safe_load('nonexistent_file.pth')
+            safe_load("nonexistent_file.pth")
 
     def test_safe_load_with_map_location(self):
         """Test that safe_load respects map_location parameter."""
-        with tempfile.NamedTemporaryFile(suffix='.pth', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".pth", delete=False) as f:
             temp_path = f.name
-            torch.save({'weight': torch.randn(2, 2)}, temp_path)
+            torch.save({"weight": torch.randn(2, 2)}, temp_path)
 
         try:
-            loaded = safe_load(temp_path, map_location='cpu', weights_only=True)
-            assert loaded['weight'].device.type == 'cpu'
+            loaded = safe_load(temp_path, map_location="cpu", weights_only=True)
+            assert loaded["weight"].device.type == "cpu"
         finally:
             os.unlink(temp_path)
 
@@ -96,7 +98,7 @@ class TestSafePickle:
         SECURITY NOTE: We're creating a test pickle here, so it's a trusted source.
         This validates that safe_pickle_load can handle legitimate data.
         """
-        data = {'key': 'value', 'number': 42, 'list': [1, 2, 3]}
+        data = {"key": "value", "number": 42, "list": [1, 2, 3]}
 
         with tempfile.NamedTemporaryFile(delete=False) as f:
             temp_path = f.name
@@ -129,7 +131,7 @@ class TestSafePickle:
 
         SECURITY NOTE: Creating test pickle with safe data to validate allowlist.
         """
-        safe_data = {'int': 42, 'str': 'hello', 'list': [1, 2, 3]}
+        safe_data = {"int": 42, "str": "hello", "list": [1, 2, 3]}
 
         buffer = io.BytesIO()
         buffer.write(trusted_pickle_dumps(safe_data))
@@ -146,6 +148,7 @@ class TestSafePickle:
         SECURITY TEST: This validates that the allowlist works by attempting
         to unpickle a custom class that should be blocked.
         """
+
         # Create a custom class that should be blocked
         class UnsafeClass:
             def __init__(self):
@@ -171,7 +174,7 @@ class TestSafePickle:
         try:
             import numpy as np
 
-            data = {'array': np.array([1, 2, 3])}
+            data = {"array": np.array([1, 2, 3])}
 
             with tempfile.NamedTemporaryFile(delete=False) as f:
                 temp_path = f.name
@@ -179,7 +182,7 @@ class TestSafePickle:
 
             try:
                 loaded = safe_pickle_load(temp_path, use_restricted_unpickler=True)
-                assert np.array_equal(loaded['array'], data['array'])
+                assert np.array_equal(loaded["array"], data["array"])
             finally:
                 os.unlink(temp_path)
         except ImportError:
@@ -194,7 +197,7 @@ class TestSecurityMiddleware:
         """Create a mock request object."""
         request = Mock()
         request.headers = {}
-        request.client.host = '127.0.0.1'
+        request.client.host = "127.0.0.1"
         return request
 
     def test_form_size_validation(self, mock_request):
@@ -205,8 +208,8 @@ class TestSecurityMiddleware:
         middleware = SecureMultipartMiddleware(None)
 
         # Test request within limits
-        mock_request.headers['content-type'] = 'multipart/form-data'
-        mock_request.headers['content-length'] = '1000000'  # 1MB
+        mock_request.headers["content-type"] = "multipart/form-data"
+        mock_request.headers["content-length"] = "1000000"  # 1MB
 
         # Should not raise an error (would need full async test for actual validation)
         assert middleware.MAX_FORM_SIZE == 10 * 1024 * 1024
@@ -216,7 +219,7 @@ class TestSecurityMiddleware:
         from services.api.config import APIConfig
 
         assert APIConfig.MAX_UPLOAD_SIZE == 50 * 1024 * 1024  # 50MB
-        assert APIConfig.MAX_FIELD_SIZE == 1 * 1024 * 1024    # 1MB
+        assert APIConfig.MAX_FIELD_SIZE == 1 * 1024 * 1024  # 1MB
         assert APIConfig.MAX_FIELDS == 1000
         assert APIConfig.REQUEST_TIMEOUT == 30
 
@@ -253,9 +256,9 @@ class TestSubprocessSecurity:
         import subprocess
 
         # Safe: list form
-        result = subprocess.run(['echo', 'hello'], capture_output=True, text=True)
+        result = subprocess.run(["echo", "hello"], capture_output=True, text=True)
         assert result.returncode == 0
-        assert 'hello' in result.stdout
+        assert "hello" in result.stdout
 
     def test_shlex_split_for_command_parsing(self):
         """Test shlex.split for safe command parsing."""
@@ -264,7 +267,7 @@ class TestSubprocessSecurity:
         command = "git status --short"
         args = shlex.split(command)
 
-        assert args == ['git', 'status', '--short']
+        assert args == ["git", "status", "--short"]
         assert isinstance(args, list)
 
     def test_secure_wrapper_rejects_shell_true(self):
@@ -305,21 +308,21 @@ class TestErrorHandling:
 
 def test_security_utilities_exist():
     """Verify all security utilities are present."""
-    utils_dir = Path(__file__).parent.parent.parent / 'utils'
+    utils_dir = Path(__file__).parent.parent.parent / "utils"
 
-    assert (utils_dir / 'safe_torch_loader.py').exists()
-    assert (utils_dir / 'safe_pickle.py').exists()
-    assert (utils_dir / 'torch_resource_manager.py').exists()
+    assert (utils_dir / "safe_torch_loader.py").exists()
+    assert (utils_dir / "safe_pickle.py").exists()
+    assert (utils_dir / "torch_resource_manager.py").exists()
 
 
 def test_security_documentation_exists():
     """Verify security documentation is present."""
-    docs_dir = Path(__file__).parent.parent.parent / 'docs'
+    docs_dir = Path(__file__).parent.parent.parent / "docs"
 
-    assert (docs_dir / 'SECURITY.md').exists()
-    assert (docs_dir / 'PYTORCH_MIGRATION_GUIDE.md').exists()
-    assert (docs_dir / 'ERROR_HANDLING_IMPROVEMENT_GUIDE.md').exists()
+    assert (docs_dir / "SECURITY.md").exists()
+    assert (docs_dir / "PYTORCH_MIGRATION_GUIDE.md").exists()
+    assert (docs_dir / "ERROR_HANDLING_IMPROVEMENT_GUIDE.md").exists()
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

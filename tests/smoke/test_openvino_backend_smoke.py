@@ -9,6 +9,7 @@ so they pass on CPU-only CI runners and only run when a GPU is present.
 
 See docs/ops/openvino_integration.md Phase B/C for context.
 """
+
 from __future__ import annotations
 
 import importlib
@@ -112,6 +113,7 @@ class TestOpenVINOBackendAvailable:
 # ---------------------------------------------------------------------------
 try:
     from codex_ml.backends.openvino_backend import is_available as _ov_is_available
+
     _GPU_PRESENT = _ov_is_available("GPU")
 except (ImportError, AttributeError):
     _GPU_PRESENT = False
@@ -136,6 +138,7 @@ class TestOpenVINOPhaseC:
     def setup_method(self):
         """Import the real (non-mocked) backend."""
         from codex_ml.backends import openvino_backend
+
         self.backend = openvino_backend
 
     def test_gpu_is_available_live(self):

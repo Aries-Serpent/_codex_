@@ -12,6 +12,7 @@ import pytest
 
 # ==================== Import Tests ====================
 
+
 class TestModuleImports:
     """Tests for module imports."""
 
@@ -19,6 +20,7 @@ class TestModuleImports:
         """Test that codex_plans module can be imported."""
         try:
             from src import codex_plans
+
             assert codex_plans is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -27,6 +29,7 @@ class TestModuleImports:
         """Test list_plan_documents function import."""
         try:
             from src.codex_plans import list_plan_documents
+
             assert list_plan_documents is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -35,12 +38,14 @@ class TestModuleImports:
         """Test __all__ exports."""
         try:
             from src.codex_plans import __all__
+
             assert "list_plan_documents" in __all__
         except ImportError:
             pytest.skip("Module not available")
 
 
 # ==================== list_plan_documents Tests ====================
+
 
 class TestListPlanDocuments:
     """Tests for list_plan_documents function."""
@@ -49,6 +54,7 @@ class TestListPlanDocuments:
         """Test that function returns a list."""
         try:
             from src.codex_plans import list_plan_documents
+
             result = list_plan_documents()
             assert isinstance(result, list)
         except ImportError:
@@ -58,6 +64,7 @@ class TestListPlanDocuments:
         """Test that returned items are Path objects."""
         try:
             from src.codex_plans import list_plan_documents
+
             result = list_plan_documents()
             for item in result:
                 assert isinstance(item, Path)
@@ -68,6 +75,7 @@ class TestListPlanDocuments:
         """Test that function finds .md files."""
         try:
             from src.codex_plans import list_plan_documents
+
             result = list_plan_documents()
             # All returned files should be markdown
             for item in result:
@@ -79,6 +87,7 @@ class TestListPlanDocuments:
         """Test that results are sorted."""
         try:
             from src.codex_plans import list_plan_documents
+
             result = list_plan_documents()
             assert result == sorted(result)
         except ImportError:
@@ -128,6 +137,7 @@ class TestListPlanDocuments:
 
 
 # ==================== Edge Cases ====================
+
 
 class TestEdgeCases:
     """Edge case tests - Tunneling Pattern."""

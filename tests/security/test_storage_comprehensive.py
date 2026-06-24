@@ -26,6 +26,7 @@ from codex.security.storage import (
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def encryption_key():
     """Generate a test encryption key."""
@@ -60,6 +61,7 @@ def chacha20_storage(encryption_key):
 # ============================================================================
 # Initialization Tests
 # ============================================================================
+
 
 class TestSecureStorageInitialization:
     """Test SecureStorage initialization."""
@@ -112,6 +114,7 @@ class TestSecureStorageInitialization:
 # Key Generation Tests
 # ============================================================================
 
+
 class TestGenerateKey:
     """Test key generation."""
 
@@ -125,6 +128,7 @@ class TestGenerateKey:
         key = generate_key()
         # Base64 keys should be decodable
         from base64 import b64decode
+
         decoded = b64decode(key)
         assert isinstance(decoded, bytes)
 
@@ -152,6 +156,7 @@ class TestGenerateKey:
 # ============================================================================
 # Key Derivation Tests
 # ============================================================================
+
 
 class TestDeriveKeyFromPassword:
     """Test password-based key derivation."""
@@ -229,6 +234,7 @@ class TestDeriveKeyFromPassword:
 # ============================================================================
 # Encryption/Decryption Tests (Fernet)
 # ============================================================================
+
 
 class TestFernetEncryption:
     """Test Fernet encryption/decryption."""
@@ -310,6 +316,7 @@ class TestFernetEncryption:
 # Encryption/Decryption Tests (AES-GCM)
 # ============================================================================
 
+
 class TestAESGCMEncryption:
     """Test AES-GCM encryption/decryption."""
 
@@ -339,6 +346,7 @@ class TestAESGCMEncryption:
 # Encryption/Decryption Tests (ChaCha20)
 # ============================================================================
 
+
 class TestChaCha20Encryption:
     """Test ChaCha20-Poly1305 encryption/decryption."""
 
@@ -360,6 +368,7 @@ class TestChaCha20Encryption:
 # ============================================================================
 # File Storage Tests
 # ============================================================================
+
 
 class TestFileStorage:
     """Test file-based secret storage."""
@@ -458,6 +467,7 @@ class TestFileStorage:
 # Cross-Algorithm Tests
 # ============================================================================
 
+
 class TestCrossAlgorithmCompatibility:
     """Test interactions between algorithms."""
 
@@ -493,6 +503,7 @@ class TestCrossAlgorithmCompatibility:
 # ============================================================================
 # Edge Cases and Error Handling Tests
 # ============================================================================
+
 
 class TestEdgeCasesAndErrors:
     """Test edge cases and error conditions."""
@@ -530,6 +541,7 @@ class TestEdgeCasesAndErrors:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestStorageIntegration:
     """Integration tests for secure storage."""

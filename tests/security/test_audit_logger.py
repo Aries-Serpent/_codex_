@@ -11,6 +11,7 @@ from security.audit_logger import AuditLogger, log_audit_event
 # AuditLogger construction
 # ---------------------------------------------------------------------------
 
+
 def test_audit_logger_with_explicit_path(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
     al = AuditLogger(path=log_path)
@@ -30,6 +31,7 @@ def test_audit_logger_default_path() -> None:
 # ---------------------------------------------------------------------------
 # Core append + verify_chain
 # ---------------------------------------------------------------------------
+
 
 def test_audit_logger_appends_and_verifies(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
@@ -124,6 +126,7 @@ def test_append_uses_current_time_when_ts_not_provided(tmp_path: Path) -> None:
 # log_event helper method
 # ---------------------------------------------------------------------------
 
+
 def test_log_event_writes_structured_entry(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
     al = AuditLogger(log_path)
@@ -152,6 +155,7 @@ def test_log_event_chain_is_valid(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # log_audit_event standalone function
 # ---------------------------------------------------------------------------
+
 
 def test_log_audit_event_creates_file(tmp_path: Path) -> None:
     log_audit_event("authentication", "testuser", "login", success=True, log_dir=tmp_path)
@@ -187,6 +191,7 @@ def test_log_audit_event_default_success(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # _last_hash edge cases
 # ---------------------------------------------------------------------------
+
 
 def test_last_hash_nonexistent_file(tmp_path: Path) -> None:
     log_path = tmp_path / "nonexistent.log"

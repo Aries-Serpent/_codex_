@@ -124,9 +124,7 @@ class TestMentalMapNode:
             from agents.mental_mapping import (
                 MentalMapNode,
             )
-            from agents.mental_mapping import (
-                NodeType as NodeType,
-            )
+            from agents.mental_mapping import NodeType as NodeType
 
             return MentalMapNode
         except ImportError:
@@ -222,9 +220,7 @@ class TestMentalMap:
         node1 = mental_map.create_node(NodeType.PROBLEM, content="Problem")
         node2 = mental_map.create_node(NodeType.HYPOTHESIS, content="Hypothesis")
 
-        edge = mental_map.connect_nodes(
-            source_id=node1.node_id, target_id=node2.node_id
-        )
+        edge = mental_map.connect_nodes(source_id=node1.node_id, target_id=node2.node_id)
 
         # Edge should exist
         assert edge is not None

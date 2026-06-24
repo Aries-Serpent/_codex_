@@ -37,9 +37,7 @@ def test_train_script_runs_training(tmp_path: Path, monkeypatch, capsys) -> None
 
     monkeypatch.setattr(train, "run_hf_trainer", fake_run)
     override_dir = tmp_path / "override"
-    exit_code = train.main(
-        ["--config", str(config_path), "--output", str(override_dir)]
-    )
+    exit_code = train.main(["--config", str(config_path), "--output", str(override_dir)])
     assert exit_code == 0
     assert captured["texts"] == ["hello", "world"]
     assert captured["output_dir"] == override_dir

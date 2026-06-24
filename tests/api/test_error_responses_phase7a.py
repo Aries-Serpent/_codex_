@@ -55,11 +55,7 @@ def registered_user(auth_components, test_client):
     """Create a registered user."""
     _, _, auth = auth_components
     auth.register("errortest", "error@example.com", "SecurePass123!")
-    return {
-        "username": "errortest",
-        "password": "SecurePass123!",
-        "email": "error@example.com"
-    }
+    return {"username": "errortest", "password": "SecurePass123!", "email": "error@example.com"}
 
 
 # ---------------------------------------------------------------------------
@@ -73,8 +69,7 @@ class TestErrorMessageFormat:
     def test_validation_error_has_detail_field(self, test_client):
         """Validation error should include detail field."""
         response = test_client.post(
-            "/auth/register",
-            json={"username": "test"}  # Missing required fields
+            "/auth/register", json={"username": "test"}  # Missing required fields
         )
         assert response.status_code == 422
         data = response.json()
@@ -83,8 +78,7 @@ class TestErrorMessageFormat:
     def test_error_response_is_json(self, test_client):
         """Error response should be valid JSON."""
         response = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
         if response.status_code >= 400:
             # Should be valid JSON
@@ -93,10 +87,7 @@ class TestErrorMessageFormat:
 
     def test_error_contains_description(self, test_client):
         """Error should contain human-readable description."""
-        response = test_client.post(
-            "/auth/register",
-            json={"username": "test", "password": "weak"}
-        )
+        response = test_client.post("/auth/register", json={"username": "test", "password": "weak"})
         if response.status_code >= 400:
             data = response.json()
             # Should have some descriptive field
@@ -113,11 +104,7 @@ class TestErrorMessageFormat:
         """400 error should indicate which field is wrong."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": "invalid-email",
-                "password": "SecurePass123!"
-            }
+            json={"username": "test", "email": "invalid-email", "password": "SecurePass123!"},
         )
         if response.status_code >= 400:
             data = response.json()
@@ -136,12 +123,10 @@ class TestErrorCodeConsistency:
     def test_same_error_returns_same_code(self, test_client):
         """Same error type should return same code consistently."""
         response1 = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent1", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent1", "password": "wrong"}
         )
         response2 = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent2", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent2", "password": "wrong"}
         )
         # Both should return same error code
         assert response1.status_code == response2.status_code
@@ -150,11 +135,11 @@ class TestErrorCodeConsistency:
         """Validation errors should be consistent."""
         response1 = test_client.post(
             "/auth/register",
-            json={"username": 123, "email": "test@example.com", "password": "Pass1!"}
+            json={"username": 123, "email": "test@example.com", "password": "Pass1!"},
         )
         response2 = test_client.post(
             "/auth/register",
-            json={"username": None, "email": "test@example.com", "password": "Pass1!"}
+            json={"username": None, "email": "test@example.com", "password": "Pass1!"},
         )
         # Both should return validation error
         assert response1.status_code == 422 or response1.status_code == 400
@@ -163,12 +148,10 @@ class TestErrorCodeConsistency:
     def test_authentication_errors_consistent(self, test_client):
         """Authentication errors should be consistent."""
         response1 = test_client.post(
-            "/auth/login",
-            json={"username": "user1", "password": "wrongpass"}
+            "/auth/login", json={"username": "user1", "password": "wrongpass"}
         )
         response2 = test_client.post(
-            "/auth/login",
-            json={"username": "user2", "password": "wrongpass"}
+            "/auth/login", json={"username": "user2", "password": "wrongpass"}
         )
         # Both should return same auth error code
         assert response1.status_code == response2.status_code
@@ -184,10 +167,7 @@ class TestStackTraceHandling:
 
     def test_error_response_no_stack_trace_in_production(self, test_client):
         """Production errors should not expose stack traces."""
-        response = test_client.post(
-            "/auth/login",
-            json={"username": "test", "password": "wrong"}
-        )
+        response = test_client.post("/auth/login", json={"username": "test", "password": "wrong"})
         if response.status_code >= 400:
             data = response.json()
             data_str = str(data)
@@ -204,8 +184,8 @@ class TestStackTraceHandling:
                 json={
                     "username": "test",
                     "email": "test@example.com",
-                    "password": "SecurePass123!"
-                }
+                    "password": "SecurePass123!",
+                },
             )
             if response.status_code == 500:
                 data = response.json()
@@ -216,8 +196,7 @@ class TestStackTraceHandling:
     def test_error_response_sanitized(self, test_client):
         """Error responses should be sanitized."""
         response = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
         if response.status_code >= 400:
             data = response.json()
@@ -240,8 +219,7 @@ class TestErrorHTTPHeaders:
     def test_error_response_has_content_type(self, test_client):
         """Error response should have Content-Type header."""
         response = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
         if response.status_code >= 400:
             assert "content-type" in response.headers
@@ -249,27 +227,18 @@ class TestErrorHTTPHeaders:
 
     def test_error_response_has_status_code_header(self, test_client):
         """Error response should have proper status code."""
-        response = test_client.post(
-            "/auth/register",
-            json={"username": "test"}
-        )
+        response = test_client.post("/auth/register", json={"username": "test"})
         assert response.status_code in [400, 422]
 
     def test_validation_error_content_type(self, test_client):
         """Validation error should be JSON."""
-        response = test_client.post(
-            "/auth/register",
-            json={}
-        )
+        response = test_client.post("/auth/register", json={})
         assert response.status_code == 422
         assert "application/json" in response.headers.get("content-type", "")
 
     def test_unauthorized_error_includes_www_authenticate(self, test_client):
         """401 error may include WWW-Authenticate header."""
-        response = test_client.get(
-            "/protected",
-            headers={}
-        )
+        response = test_client.get("/protected", headers={})
         # May return 401 or 404 depending on endpoint
         if response.status_code == 401:
             # May have WWW-Authenticate header
@@ -312,8 +281,7 @@ class TestAuthenticationErrors:
     def test_invalid_credentials_error_message(self, test_client):
         """Invalid credentials should return appropriate message."""
         response = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
         assert response.status_code == 400
         data = response.json()
@@ -322,18 +290,13 @@ class TestAuthenticationErrors:
 
     def test_expired_token_error_message(self, test_client):
         """Expired token should return appropriate message."""
-        response = test_client.get(
-            "/protected",
-            headers={"Authorization": "******"}
-        )
+        response = test_client.get("/protected", headers={"Authorization": "******"})
         # Depends on implementation
         assert response.status_code in [401, 404, 403]
 
     def test_missing_token_error_message(self, test_client):
         """Missing token should return appropriate message."""
-        response = test_client.get(
-            "/protected"
-        )
+        response = test_client.get("/protected")
         # May return 401 or 404
         if response.status_code == 401:
             data = response.json()
@@ -341,19 +304,13 @@ class TestAuthenticationErrors:
 
     def test_invalid_token_format_error(self, test_client):
         """Invalid token format should return appropriate error."""
-        response = test_client.get(
-            "/protected",
-            headers={"Authorization": "InvalidFormat"}
-        )
+        response = test_client.get("/protected", headers={"Authorization": "InvalidFormat"})
         # Should return 401
         assert response.status_code in [401, 404, 403]
 
     def test_token_verification_error(self, test_client):
         """Token verification failure should be handled."""
-        response = test_client.get(
-            "/protected",
-            headers={"Authorization": "******"}
-        )
+        response = test_client.get("/protected", headers={"Authorization": "******"})
         assert response.status_code in [401, 404, 403]
 
 
@@ -372,8 +329,8 @@ class TestBusinessLogicErrors:
             json={
                 "username": registered_user["username"],
                 "email": "different@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code == 400
         data = response.json()
@@ -383,11 +340,7 @@ class TestBusinessLogicErrors:
         """Weak password error should be informative."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "weakpass",
-                "email": "weak@example.com",
-                "password": "weak"
-            }
+            json={"username": "weakpass", "email": "weak@example.com", "password": "weak"},
         )
         assert response.status_code in [400, 422]
         data = response.json()
@@ -398,11 +351,7 @@ class TestBusinessLogicErrors:
         """Invalid email error should be clear."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": "not-an-email",
-                "password": "SecurePass123!"
-            }
+            json={"username": "test", "email": "not-an-email", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
         data = response.json()
@@ -412,8 +361,7 @@ class TestBusinessLogicErrors:
     def test_missing_required_field_error(self, test_client):
         """Missing required field should have clear error."""
         response = test_client.post(
-            "/auth/register",
-            json={"username": "test", "email": "test@example.com"}
+            "/auth/register", json={"username": "test", "email": "test@example.com"}
         )
         assert response.status_code == 422
         data = response.json()
@@ -431,10 +379,7 @@ class TestErrorResponseConsistency:
 
     def test_error_response_structure(self, test_client):
         """Error responses should have consistent structure."""
-        response = test_client.post(
-            "/auth/login",
-            json={"username": "test", "password": "wrong"}
-        )
+        response = test_client.post("/auth/login", json={"username": "test", "password": "wrong"})
         if response.status_code >= 400:
             data = response.json()
             # Should be dict with error info
@@ -443,10 +388,7 @@ class TestErrorResponseConsistency:
 
     def test_validation_error_structure(self, test_client):
         """Validation errors should have consistent structure."""
-        response = test_client.post(
-            "/auth/register",
-            json={}
-        )
+        response = test_client.post("/auth/register", json={})
         assert response.status_code == 422
         data = response.json()
         assert "detail" in data
@@ -459,7 +401,7 @@ class TestErrorResponseConsistency:
                 "username": 123,  # Wrong type
                 "password": 456,  # Wrong type
                 # Missing email
-            }
+            },
         )
         assert response.status_code in [400, 422]
         data = response.json()
@@ -478,8 +420,7 @@ class TestErrorMessageContent:
     def test_error_not_empty(self, test_client):
         """Error message should not be empty."""
         response = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
         if response.status_code >= 400:
             data = response.json()
@@ -488,10 +429,7 @@ class TestErrorMessageContent:
 
     def test_error_is_readable(self, test_client):
         """Error message should be human-readable."""
-        response = test_client.post(
-            "/auth/register",
-            json={"username": "test"}
-        )
+        response = test_client.post("/auth/register", json={"username": "test"})
         if response.status_code >= 400:
             data = response.json()
             # Should contain readable text, not just codes
@@ -500,10 +438,7 @@ class TestErrorMessageContent:
 
     def test_error_language_professional(self, test_client):
         """Error messages should be professional."""
-        response = test_client.post(
-            "/auth/login",
-            json={"username": "test", "password": "wrong"}
-        )
+        response = test_client.post("/auth/login", json={"username": "test", "password": "wrong"})
         if response.status_code >= 400:
             data = response.json()
             detail = str(data).lower()
@@ -513,10 +448,7 @@ class TestErrorMessageContent:
 
     def test_error_not_revealing_internals(self, test_client):
         """Error messages should not reveal internal information."""
-        response = test_client.post(
-            "/auth/login",
-            json={"username": "test", "password": "wrong"}
-        )
+        response = test_client.post("/auth/login", json={"username": "test", "password": "wrong"})
         if response.status_code >= 400:
             data = str(response.json()).lower()
             # Should not reveal implementation details
@@ -540,8 +472,8 @@ class TestSpecificErrorConditions:
             json={
                 "username": "test",
                 "email": "test@example.com",
-                "password": "short"  # Too short, no uppercase, no digits
-            }
+                "password": "short",  # Too short, no uppercase, no digits
+            },
         )
         if response.status_code in [400, 422]:
             data = response.json()
@@ -552,11 +484,7 @@ class TestSpecificErrorConditions:
         """Email error should indicate format issue."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": "invalid.email",
-                "password": "SecurePass123!"
-            }
+            json={"username": "test", "email": "invalid.email", "password": "SecurePass123!"},
         )
         if response.status_code in [400, 422]:
             data = response.json()
@@ -570,8 +498,8 @@ class TestSpecificErrorConditions:
             json={
                 "username": registered_user["username"],
                 "email": "newemail@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code == 400
         data = response.json()

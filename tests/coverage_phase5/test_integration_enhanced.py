@@ -16,6 +16,7 @@ import pytest
 
 class IntegrationStatus(Enum):
     """Integration status enum."""
+
     IDLE = 0
     CONNECTING = 1
     CONNECTED = 2
@@ -109,6 +110,7 @@ class RecoveryPipeline:
 # TEST SUITE 1: Integration Bridge Initialization
 # ============================================================================
 
+
 class TestIntegrationBridgeInitialization:
     """Test integration bridge initialization."""
 
@@ -165,6 +167,7 @@ class TestIntegrationBridgeInitialization:
 # TEST SUITE 2: Bridge Connection Management
 # ============================================================================
 
+
 class TestBridgeConnectionManagement:
     """Test bridge connection operations."""
 
@@ -217,6 +220,7 @@ class TestBridgeConnectionManagement:
 # ============================================================================
 # TEST SUITE 3: Message Sending and Queueing
 # ============================================================================
+
 
 class TestMessageSendingAndQueueing:
     """Test message sending with comprehensive assertions."""
@@ -296,6 +300,7 @@ class TestMessageSendingAndQueueing:
 # ============================================================================
 # TEST SUITE 4: Recovery Pipeline
 # ============================================================================
+
 
 class TestRecoveryPipeline:
     """Test recovery pipeline with semantic assertions."""
@@ -407,6 +412,7 @@ class TestRecoveryPipeline:
 # ============================================================================
 # TEST SUITE 5: Operator Mutation Defense
 # ============================================================================
+
 
 class TestOperatorMutationDefense:
     """Test operators for mutation defense."""

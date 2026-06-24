@@ -351,7 +351,7 @@ class TestErrorPaths:
     def test_import_error_handling(self) -> None:
         """Test ImportError handling."""
         with pytest.raises(ImportError):
-            importlib.import_module('nonexistent_module_xyz')
+            importlib.import_module("nonexistent_module_xyz")
 
 
 # =============================================================================
@@ -507,6 +507,7 @@ class TestResourceManagement:
 
     def test_generator_exhaustion(self) -> None:
         """Test generator exhaustion behavior."""
+
         def gen():
             yield 1
             yield 2

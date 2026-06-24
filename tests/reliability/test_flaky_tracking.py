@@ -71,11 +71,13 @@ class TestFlakyTestIdentification:
         access_log = []
         for _ in range(10):
             resource = random.choice(resources)
-            access_log.append({
-                "resource": resource,
-                "time": datetime.now(),
-                "action": random.choice(["acquire", "release"]),
-            })
+            access_log.append(
+                {
+                    "resource": resource,
+                    "time": datetime.now(),
+                    "action": random.choice(["acquire", "release"]),
+                }
+            )
 
         # Check for potential contention (same resource accessed multiple times)
         resource_counts = {}
@@ -112,9 +114,24 @@ class TestFlakyTestTracking:
             history = {
                 "test_name": "test_example",
                 "results": [
-                    {"run_id": 1, "passed": True, "duration": 0.1, "timestamp": "2026-01-18T12:00:00"},
-                    {"run_id": 2, "passed": False, "duration": 0.2, "timestamp": "2026-01-18T12:01:00"},
-                    {"run_id": 3, "passed": True, "duration": 0.1, "timestamp": "2026-01-18T12:02:00"},
+                    {
+                        "run_id": 1,
+                        "passed": True,
+                        "duration": 0.1,
+                        "timestamp": "2026-01-18T12:00:00",
+                    },
+                    {
+                        "run_id": 2,
+                        "passed": False,
+                        "duration": 0.2,
+                        "timestamp": "2026-01-18T12:01:00",
+                    },
+                    {
+                        "run_id": 3,
+                        "passed": True,
+                        "duration": 0.1,
+                        "timestamp": "2026-01-18T12:02:00",
+                    },
                 ],
             }
 
@@ -130,10 +147,7 @@ class TestFlakyTestTracking:
         results = [True, True, False, True, False, True, True, True, False, True]
 
         # Flakiness score = number of state changes / (total runs - 1)
-        state_changes = sum(
-            1 for i in range(1, len(results))
-            if results[i] != results[i-1]
-        )
+        state_changes = sum(1 for i in range(1, len(results)) if results[i] != results[i - 1])
         flakiness_score = state_changes / (len(results) - 1)
 
         assert 0 <= flakiness_score <= 1
@@ -190,8 +204,9 @@ class TestFlakyTestTracking:
         # Calculate flakiness for recent period
         if len(recent_results) > 1:
             changes = sum(
-                1 for i in range(1, len(recent_results))
-                if recent_results[i]["passed"] != recent_results[i-1]["passed"]
+                1
+                for i in range(1, len(recent_results))
+                if recent_results[i]["passed"] != recent_results[i - 1]["passed"]
             )
             window_flakiness = changes / (len(recent_results) - 1)
         else:

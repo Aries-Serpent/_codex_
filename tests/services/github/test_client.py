@@ -27,6 +27,7 @@ from src.services.github.types import (
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def client():
     """Create a GitHub client with test token."""
@@ -106,6 +107,7 @@ def mock_artifact_data():
 # ============================================================================
 # Type Tests
 # ============================================================================
+
 
 class TestWorkflowInfo:
     """Tests for WorkflowInfo model."""
@@ -236,6 +238,7 @@ class TestRateLimitInfo:
 # Exception Tests
 # ============================================================================
 
+
 class TestExceptions:
     """Tests for exception classes."""
 
@@ -272,6 +275,7 @@ class TestExceptions:
 # ============================================================================
 # Client Tests
 # ============================================================================
+
 
 class TestGitHubClient:
     """Tests for GitHubClient."""
@@ -496,6 +500,7 @@ class TestGitHubClientAsync:
 # Integration-style Tests (mocked)
 # ============================================================================
 
+
 class TestWorkflowOperations:
     """Integration-style tests for workflow operations."""
 
@@ -519,7 +524,9 @@ class TestWorkflowOperations:
         with patch.object(client, "_request", new_callable=AsyncMock) as mock_request:
             mock_request.side_effect = [trigger_response, list_response]
             run_id = await client.trigger_workflow(
-                "owner", "repo", "test.yml",
+                "owner",
+                "repo",
+                "test.yml",
                 ref="main",
                 inputs={"env": "test"},
             )

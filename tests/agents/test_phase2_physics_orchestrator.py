@@ -176,7 +176,13 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
         # Empty list → None
         assert orch.optimize([]) is None
         # Single path → that path
-        path = ActionPath(action_type=ActionType.ANALYZE, description="test", confidence=0.8, impact=0.9, energy=0.1)
+        path = ActionPath(
+            action_type=ActionType.ANALYZE,
+            description="test",
+            confidence=0.8,
+            impact=0.9,
+            energy=0.1,
+        )
         result = orch.optimize([path])
         assert result is not None
 
@@ -192,8 +198,20 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
         orch = PhysicsInspiredOrchestrator()
         state = DecisionState()
         paths = [
-            ActionPath(action_type=ActionType.ANALYZE, description="p1", confidence=0.8, impact=0.9, energy=0.1),
-            ActionPath(action_type=ActionType.TEST, description="p2", confidence=0.7, impact=0.8, energy=0.2),
+            ActionPath(
+                action_type=ActionType.ANALYZE,
+                description="p1",
+                confidence=0.8,
+                impact=0.9,
+                energy=0.1,
+            ),
+            ActionPath(
+                action_type=ActionType.TEST,
+                description="p2",
+                confidence=0.7,
+                impact=0.8,
+                energy=0.2,
+            ),
         ]
         result = orch.deliberate_paths(state, paths)
         assert isinstance(result, list)
@@ -268,9 +286,14 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
             import inspect
 
             from agents.physics_orchestrator import ForceVector
+
             sig = inspect.signature(ForceVector)
             # Build with required params, filling in sensible defaults
-            params = {p: (-5.0 if "magnitude" in p else "backward") for p in sig.parameters if sig.parameters[p].default is inspect.Parameter.empty}
+            params = {
+                p: (-5.0 if "magnitude" in p else "backward")
+                for p in sig.parameters
+                if sig.parameters[p].default is inspect.Parameter.empty
+            }
             force = ForceVector(**params) if params else ForceVector()
             assert force is not None
         except (ImportError, TypeError, AttributeError):
@@ -320,6 +343,7 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
         """Test ForceVector class is importable."""
         try:
             from agents.physics_orchestrator import ForceVector
+
             assert ForceVector is not None
         except ImportError:
             pytest.skip("ForceVector not available")

@@ -150,13 +150,9 @@ class TestTaskDecomposer:
 
         decomposer = TaskDecomposer()
 
-        task = ActionPath(
-            action_type=ActionType.TEST, description="Run full test suite"
-        )
+        task = ActionPath(action_type=ActionType.TEST, description="Run full test suite")
 
-        subtasks = decomposer.decompose_task(
-            task, decomposition_strategy="energy_balanced"
-        )
+        subtasks = decomposer.decompose_task(task, decomposition_strategy="energy_balanced")
 
         assert isinstance(subtasks, list)
 
@@ -396,9 +392,7 @@ class TestQuantumState:
         try:
             from agents.physics_orchestrator import QuantumState
 
-            state = QuantumState(
-                amplitudes={"up": complex(0.7, 0.0), "down": complex(0.7, 0.0)}
-            )
+            state = QuantumState(amplitudes={"up": complex(0.7, 0.0), "down": complex(0.7, 0.0)})
 
             measurement = state.collapse()
 

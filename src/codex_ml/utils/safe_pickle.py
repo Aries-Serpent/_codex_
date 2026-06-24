@@ -240,7 +240,9 @@ def trusted_pickle_dumps(obj: Any, *, protocol: int | None = None) -> bytes:
         remain interoperable with existing checkpoint consumers.
     """
     resolved_protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
-    return pickle.dumps(obj, protocol=resolved_protocol)  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
+    return pickle.dumps(
+        obj, protocol=resolved_protocol
+    )  # nosec B301 # nosemgrep: semgrep_rules.py-pickle-dump
 
 
 def safe_pickle_dump(
@@ -269,7 +271,9 @@ def safe_pickle_dump(
     encrypted_data = _encrypt_pickle_payload(data, key)
 
     # Security: payload is encrypted (and optionally signed) pickle bytes; path is trusted from caller  # noqa: E501
-    path.write_bytes(encrypted_data)  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret
+    path.write_bytes(
+        encrypted_data
+    )  # nosec  # codeql[py/clear-text-storage-sensitive-data]  # pragma: allowlist secret
     logger.debug("Saved pickle to %s (%d bytes)", path, len(encrypted_data))
 
 

@@ -47,63 +47,60 @@ from codex.skills.mypy_manager.handler import (
 
 SAMPLE_OPT_IMPORT = (
     "src/codex/logging/query_logs.py:56: error: "
-    "Incompatible types in assignment (expression has type \"None\", "
-    "variable has type \"type[Console]\")  [assignment]\n"
+    'Incompatible types in assignment (expression has type "None", '
+    'variable has type "type[Console]")  [assignment]\n'
     "src/codex/logging/query_logs.py:56: error: "
     "Cannot assign to a type  [misc]\n"
 )
 
 SAMPLE_REDUNDANT_CAST = (
-    "src/security/encryption.py:54: error: "
-    "Redundant cast to \"bytes\"  [redundant-cast]\n"
+    "src/security/encryption.py:54: error: " 'Redundant cast to "bytes"  [redundant-cast]\n'
 )
 
 SAMPLE_UNUSED_IGNORE = (
-    "src/some/module.py:10: error: "
-    "Unused \"type: ignore\" comment  [unused-ignore]\n"
+    "src/some/module.py:10: error: " 'Unused "type: ignore" comment  [unused-ignore]\n'
 )
 
 SAMPLE_NONE_GUARD = (
     "src/codex_ml/serving/inference_server.py:469: error: "
-    "Item \"None\" of \"Address | None\" has no attribute \"host\"  [union-attr]\n"
+    'Item "None" of "Address | None" has no attribute "host"  [union-attr]\n'
 )
 
 SAMPLE_ARG_NONE = (
     "src/mcp/server/middleware/auth.py:51: error: "
-    "Argument 1 to \"get\" of \"dict\" has incompatible type "
-    "\"str | None\"; expected \"str\"  [arg-type]\n"
+    'Argument 1 to "get" of "dict" has incompatible type '
+    '"str | None"; expected "str"  [arg-type]\n'
 )
 
 SAMPLE_TYPEDDICT = (
     "src/codex_ml/config/settings.py:49: error: "
-    "Unsupported type \"dict[str, Any]\" for ** expansion in TypedDict  [typeddict-item]\n"
+    'Unsupported type "dict[str, Any]" for ** expansion in TypedDict  [typeddict-item]\n'
 )
 
 SAMPLE_ARG_TYPE = (
     "src/services/workflow/parser.py:283: error: "
-    "Argument \"schedule_cron\" to \"WorkflowTrigger\" has incompatible type "
-    "\"list[Any | None] | None\"; expected \"list[str] | None\"  [arg-type]\n"
+    'Argument "schedule_cron" to "WorkflowTrigger" has incompatible type '
+    '"list[Any | None] | None"; expected "list[str] | None"  [arg-type]\n'
 )
 
 SAMPLE_CALL_ARG = (
     "src/codex/dynamics/model/sla.py:550: error: "
-    "Missing named argument \"business_hours_only\" for \"SLAPolicy\"  [call-arg]\n"
+    'Missing named argument "business_hours_only" for "SLAPolicy"  [call-arg]\n'
 )
 
 SAMPLE_UNION_NARROW = (
     "src/codex/auth/github_app.py:203: error: "
-    "Item \"DHPrivateKey\" of \"DHPrivateKey | RSAPrivateKey\" "
-    "has no attribute \"sign\"  [union-attr]\n"
+    'Item "DHPrivateKey" of "DHPrivateKey | RSAPrivateKey" '
+    'has no attribute "sign"  [union-attr]\n'
 )
 
 SAMPLE_NO_REDEF = (
     "src/codex_ml/serving/inference_server.py:29: error: "
-    "Name \"Field\" already defined (possibly by an import)  [no-redef]\n"
+    'Name "Field" already defined (possibly by an import)  [no-redef]\n'
 )
 
 SAMPLE_STRUCTURAL = (
-    "src/some/module.py:99: error: "
-    "Value of type \"int\" is not indexable  [index]\n"
+    "src/some/module.py:99: error: " 'Value of type "int" is not indexable  [index]\n'
 )
 
 ALL_SAMPLES = (
@@ -124,6 +121,7 @@ ALL_SAMPLES = (
 # ---------------------------------------------------------------------------
 # _parse_errors
 # ---------------------------------------------------------------------------
+
 
 class TestParseErrors:
     def test_parses_assignment_misc(self):
@@ -192,6 +190,7 @@ class TestParseErrors:
 # Aggregation helpers
 # ---------------------------------------------------------------------------
 
+
 class TestAggregation:
     def test_by_pattern(self):
         errors = _parse_errors(ALL_SAMPLES)
@@ -210,6 +209,7 @@ class TestAggregation:
 # ---------------------------------------------------------------------------
 # Fix functions (unit tests on string manipulation)
 # ---------------------------------------------------------------------------
+
 
 class TestFixFunctions:
     def test_fix_optional_import_fallback_adds_ignore(self):
@@ -298,46 +298,55 @@ class TestFixFunctions:
 # run() — action=classify (uses provided mypy_output, no subprocess)
 # ---------------------------------------------------------------------------
 
+
 class TestRunClassify:
     def test_classify_action_uses_provided_output(self):
-        result = run({
-            "action": "classify",
-            "mypy_output": SAMPLE_REDUNDANT_CAST,
-            "pda_log": False,
-        })
+        result = run(
+            {
+                "action": "classify",
+                "mypy_output": SAMPLE_REDUNDANT_CAST,
+                "pda_log": False,
+            }
+        )
         assert result["status"] in ("pass", "fail")
         assert result["error_count"] == 1
         assert result["by_pattern"]["MYPY-REDUNDANT-CAST"] == 1
 
     def test_classify_all_samples(self):
-        result = run({
-            "action": "classify",
-            "mypy_output": ALL_SAMPLES,
-            "pda_log": False,
-        })
+        result = run(
+            {
+                "action": "classify",
+                "mypy_output": ALL_SAMPLES,
+                "pda_log": False,
+            }
+        )
         assert result["error_count"] >= 10
         assert "MYPY-STRUCTURAL" in result["by_pattern"]
         assert "errors" in result
         assert "by_file" in result
 
     def test_classify_empty_output_passes(self):
-        result = run({
-            "action": "classify",
-            "mypy_output": "",
-            "pda_log": False,
-        })
+        result = run(
+            {
+                "action": "classify",
+                "mypy_output": "",
+                "pda_log": False,
+            }
+        )
         assert result["error_count"] == 0
         assert result["status"] == "pass"
 
     def test_classify_respects_baseline(self, tmp_path):
         baseline = tmp_path / ".mypy_baseline"
         baseline.write_text("5\n")
-        result = run({
-            "action": "classify",
-            "mypy_output": ALL_SAMPLES,
-            "pda_log": False,
-            "baseline_file": str(baseline),
-        })
+        result = run(
+            {
+                "action": "classify",
+                "mypy_output": ALL_SAMPLES,
+                "pda_log": False,
+                "baseline_file": str(baseline),
+            }
+        )
         # ALL_SAMPLES has >5 errors, so regression=True
         assert result["regression"] is True
         assert result["status"] == "fail"
@@ -352,6 +361,7 @@ class TestRunClassify:
 # run() — action=baseline (mocked subprocess)
 # ---------------------------------------------------------------------------
 
+
 class TestRunBaseline:
     def test_baseline_updates_file(self, tmp_path):
         baseline = tmp_path / ".mypy_baseline"
@@ -360,11 +370,13 @@ class TestRunBaseline:
             "codex.skills.mypy_manager.handler._run_mypy",
             return_value=SAMPLE_REDUNDANT_CAST,
         ):
-            result = run({
-                "action": "baseline",
-                "baseline_file": str(baseline),
-                "pda_log": False,
-            })
+            result = run(
+                {
+                    "action": "baseline",
+                    "baseline_file": str(baseline),
+                    "pda_log": False,
+                }
+            )
         assert result["status"] == "pass"
         assert result["error_count"] == 1
         assert baseline.read_text().strip() == "1"
@@ -376,12 +388,14 @@ class TestRunBaseline:
             "codex.skills.mypy_manager.handler._run_mypy",
             return_value=SAMPLE_REDUNDANT_CAST,
         ):
-            run({
-                "action": "baseline",
-                "baseline_file": str(baseline),
-                "pda_log": False,
-                "dry_run": True,
-            })
+            run(
+                {
+                    "action": "baseline",
+                    "baseline_file": str(baseline),
+                    "pda_log": False,
+                    "dry_run": True,
+                }
+            )
         # dry_run=True → baseline file unchanged
         assert baseline.read_text().strip() == "10"
 
@@ -390,27 +404,33 @@ class TestRunBaseline:
 # run() — action=fix (mocked subprocess + temp files)
 # ---------------------------------------------------------------------------
 
+
 class TestRunFix:
     def test_fix_dry_run_returns_dry_run_status(self, tmp_path):
         src_file = tmp_path / "test_module.py"
         src_file.write_text("    Console = None\n")
-        with patch(
-            "codex.skills.mypy_manager.handler._run_mypy",
-            return_value=(
-                f"{src_file}:1: error: "
-                "Incompatible types in assignment "
-                '(expression has type "None", '
-                'variable has type "type[Console]")  [assignment]\n'
+        with (
+            patch(
+                "codex.skills.mypy_manager.handler._run_mypy",
+                return_value=(
+                    f"{src_file}:1: error: "
+                    "Incompatible types in assignment "
+                    '(expression has type "None", '
+                    'variable has type "type[Console]")  [assignment]\n'
+                ),
             ),
-        ), patch(
-            "codex.skills.mypy_manager.handler._repo_root",
-            return_value=tmp_path,
+            patch(
+                "codex.skills.mypy_manager.handler._repo_root",
+                return_value=tmp_path,
+            ),
         ):
-            result = run({
-                "action": "fix",
-                "dry_run": True,
-                "pda_log": False,
-            })
+            result = run(
+                {
+                    "action": "fix",
+                    "dry_run": True,
+                    "pda_log": False,
+                }
+            )
         assert result["status"] == "dry-run"
         # dry_run=True → file NOT written
         assert src_file.read_text() == "    Console = None\n"
@@ -418,23 +438,28 @@ class TestRunFix:
     def test_fix_applies_opt_import(self, tmp_path):
         src_file = tmp_path / "module.py"
         src_file.write_text("    Console = None\n")
-        with patch(
-            "codex.skills.mypy_manager.handler._run_mypy",
-            return_value=(
-                f"{src_file}:1: error: "
-                "Incompatible types in assignment "
-                '(expression has type "None", '
-                'variable has type "type[Console]")  [assignment]\n'
+        with (
+            patch(
+                "codex.skills.mypy_manager.handler._run_mypy",
+                return_value=(
+                    f"{src_file}:1: error: "
+                    "Incompatible types in assignment "
+                    '(expression has type "None", '
+                    'variable has type "type[Console]")  [assignment]\n'
+                ),
             ),
-        ), patch(
-            "codex.skills.mypy_manager.handler._repo_root",
-            return_value=tmp_path,
+            patch(
+                "codex.skills.mypy_manager.handler._repo_root",
+                return_value=tmp_path,
+            ),
         ):
-            result = run({
-                "action": "fix",
-                "dry_run": False,
-                "pda_log": False,
-            })
+            result = run(
+                {
+                    "action": "fix",
+                    "dry_run": False,
+                    "pda_log": False,
+                }
+            )
         assert result["status"] == "fixed"
         written = src_file.read_text()
         assert "# type: ignore[assignment]" in written
@@ -442,21 +467,25 @@ class TestRunFix:
     def test_fix_applies_redundant_cast(self, tmp_path):
         src_file = tmp_path / "enc.py"
         src_file.write_text("    ct = cast(bytes, aesgcm.encrypt(nonce, pt, aad))\n")
-        with patch(
-            "codex.skills.mypy_manager.handler._run_mypy",
-            return_value=(
-                f"{src_file}:1: error: "
-                'Redundant cast to "bytes"  [redundant-cast]\n'
+        with (
+            patch(
+                "codex.skills.mypy_manager.handler._run_mypy",
+                return_value=(
+                    f"{src_file}:1: error: " 'Redundant cast to "bytes"  [redundant-cast]\n'
+                ),
             ),
-        ), patch(
-            "codex.skills.mypy_manager.handler._repo_root",
-            return_value=tmp_path,
+            patch(
+                "codex.skills.mypy_manager.handler._repo_root",
+                return_value=tmp_path,
+            ),
         ):
-            result = run({
-                "action": "fix",
-                "dry_run": False,
-                "pda_log": False,
-            })
+            result = run(
+                {
+                    "action": "fix",
+                    "dry_run": False,
+                    "pda_log": False,
+                }
+            )
         assert result["status"] == "fixed"
         written = src_file.read_text()
         assert "cast(" not in written
@@ -466,6 +495,7 @@ class TestRunFix:
 # PDA log integration (smoke test)
 # ---------------------------------------------------------------------------
 
+
 class TestPDALog:
     def test_pda_log_creates_file(self, tmp_path):
         pda_dir = tmp_path / ".codex" / "aftermath"
@@ -473,6 +503,7 @@ class TestPDALog:
 
         # Monkey-patch the pda_path used by _pda_log
         import codex.skills.mypy_manager.handler as h
+
         original = h._repo_root
 
         def _mock_root():
@@ -480,12 +511,14 @@ class TestPDALog:
 
         h._repo_root = _mock_root  # type: ignore[assignment]
         try:
-            run({
-                "action": "classify",
-                "mypy_output": SAMPLE_REDUNDANT_CAST,
-                "pda_log": True,
-                "session": "TEST-S000",
-            })
+            run(
+                {
+                    "action": "classify",
+                    "mypy_output": SAMPLE_REDUNDANT_CAST,
+                    "pda_log": True,
+                    "session": "TEST-S000",
+                }
+            )
         finally:
             h._repo_root = original  # type: ignore[assignment]
 
@@ -493,12 +526,14 @@ class TestPDALog:
         lines = pda_file.read_text().splitlines()
         assert len(lines) >= 1
         import json
+
         entry = json.loads(lines[0])
         assert entry["session"] == "TEST-S000"
         assert "MYPY-REDUNDANT-CAST" in entry["pattern_id"]
 
     def test_pda_log_false_skips_write(self, tmp_path):
         import codex.skills.mypy_manager.handler as h
+
         original = h._repo_root
 
         def _mock_root():
@@ -506,12 +541,14 @@ class TestPDALog:
 
         h._repo_root = _mock_root  # type: ignore[assignment]
         try:
-            result = run({
-                "action": "classify",
-                "mypy_output": SAMPLE_REDUNDANT_CAST,
-                "pda_log": False,
-                "session": "TEST-S000",
-            })
+            result = run(
+                {
+                    "action": "classify",
+                    "mypy_output": SAMPLE_REDUNDANT_CAST,
+                    "pda_log": False,
+                    "session": "TEST-S000",
+                }
+            )
         finally:
             h._repo_root = original  # type: ignore[assignment]
 

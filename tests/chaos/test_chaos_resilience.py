@@ -19,6 +19,7 @@ from codex.resilience.retry import RetryExhausted, retry_with_backoff
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 class _FlakyService:
     """A service that fails exactly *fail_count* times then always succeeds."""
 

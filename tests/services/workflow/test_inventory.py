@@ -158,8 +158,7 @@ def test_get_reusable_workflows(
 def test_get_by_trigger_type(temp_workflows_dir):
     """Test filtering by trigger type."""
     push_workflow = temp_workflows_dir / "push.yml"
-    push_workflow.write_text(
-        """
+    push_workflow.write_text("""
 name: Push Workflow
 on: push
 jobs:
@@ -167,12 +166,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "test"
-"""
-    )
+""")
 
     pr_workflow = temp_workflows_dir / "pr.yml"
-    pr_workflow.write_text(
-        """
+    pr_workflow.write_text("""
 name: PR Workflow
 on: pull_request
 jobs:
@@ -180,8 +177,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "test"
-"""
-    )
+""")
 
     inventory = WorkflowInventory(temp_workflows_dir)
     inventory.scan()
@@ -557,7 +553,9 @@ def test_refresh_nonexistent_workflow(temp_workflows_dir):
     assert success is False
 
 
-def test_scan_continues_when_parser_raises(temp_workflows_dir, sample_workflow_content, monkeypatch):
+def test_scan_continues_when_parser_raises(
+    temp_workflows_dir, sample_workflow_content, monkeypatch
+):
     """Test scan continues gracefully when parser.parse_file raises unexpectedly."""
     workflow_file = temp_workflows_dir / "test.yml"
     workflow_file.write_text(sample_workflow_content)
@@ -845,6 +843,7 @@ jobs:
     assert "test" in wf.inputs
     # Should fall back to STRING for invalid type
     from src.services.workflow.types import InputType
+
     assert wf.inputs["test"].type == InputType.STRING
 
 
@@ -950,7 +949,7 @@ jobs:
 
     push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
     assert push_trigger.paths is not None
-    assert 'src/**' in push_trigger.paths
+    assert "src/**" in push_trigger.paths
 
 
 def test_trigger_with_types_filter(temp_workflows_dir):

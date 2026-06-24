@@ -3,6 +3,7 @@
 Tests use mocking so they run without network access and without the
 sigstore SDK being installed.
 """
+
 from __future__ import annotations
 
 import json
@@ -24,6 +25,7 @@ import scripts.security.sigstore_verify as sv  # noqa: E402
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_lock_txt(tmp_path: Path, content: str) -> Path:
     """Write a pip-compile style lock file and return its path."""
     f = tmp_path / "lock.txt"
@@ -34,6 +36,7 @@ def _make_lock_txt(tmp_path: Path, content: str) -> Path:
 # ---------------------------------------------------------------------------
 # Test 1: parse_requirements — pip-compile format
 # ---------------------------------------------------------------------------
+
 
 class TestParseRequirements:
     """Tests for the parse_requirements() helper."""
@@ -61,9 +64,7 @@ class TestParseRequirements:
         """Comment and blank lines are not parsed as packages."""
         lock = _make_lock_txt(
             tmp_path,
-            "# This is a comment\n\n"
-            "requests==2.31.0\n"
-            "-r base.txt\n",
+            "# This is a comment\n\n" "requests==2.31.0\n" "-r base.txt\n",
         )
         pkgs = sv.parse_requirements(lock)
         assert len(pkgs) == 1
@@ -73,8 +74,7 @@ class TestParseRequirements:
         """Duplicate package names appear only once in the output."""
         lock = _make_lock_txt(
             tmp_path,
-            "requests==2.31.0\n"
-            "requests==2.31.0\n",
+            "requests==2.31.0\n" "requests==2.31.0\n",
         )
         pkgs = sv.parse_requirements(lock)
         assert len(pkgs) == 1
@@ -83,7 +83,7 @@ class TestParseRequirements:
         """parse_requirements handles the uv.lock TOML-ish format."""
         uv_lock = tmp_path / "uv.lock"
         uv_lock.write_text(
-            'version = 1\n\n'
+            "version = 1\n\n"
             '[[package]]\nname = "cryptography"\nversion = "42.0.5"\n\n'
             '[[package]]\nname = "requests"\nversion = "2.31.0"\n',
             encoding="utf-8",
@@ -97,6 +97,7 @@ class TestParseRequirements:
 # ---------------------------------------------------------------------------
 # Test 2: verify_package — sigstore SDK absent
 # ---------------------------------------------------------------------------
+
 
 class TestVerifyPackageWithoutSigstore:
     """Behaviour when the sigstore SDK is NOT installed."""
@@ -133,6 +134,7 @@ class TestVerifyPackageWithoutSigstore:
 # Test 3: verify_package — sigstore SDK present, no attestation
 # ---------------------------------------------------------------------------
 
+
 class TestVerifyPackageWithSigstoreNoAttestation:
     """Behaviour when sigstore is installed but the package has no attestation."""
 
@@ -150,8 +152,10 @@ class TestVerifyPackageWithSigstoreNoAttestation:
         mock_resp.__enter__ = lambda s: s
         mock_resp.__exit__ = MagicMock(return_value=False)
 
-        with patch.object(sv, "_SIGSTORE_AVAILABLE", True), \
-             patch("urllib.request.urlopen", return_value=mock_resp):
+        with (
+            patch.object(sv, "_SIGSTORE_AVAILABLE", True),
+            patch("urllib.request.urlopen", return_value=mock_resp),
+        ):
             result = sv._verify_with_sigstore("requests", "2.31.0")
 
         assert result.status == "unverified"
@@ -161,10 +165,15 @@ class TestVerifyPackageWithSigstoreNoAttestation:
         """Network failures produce status='error', not an uncaught exception."""
         import urllib.error
 
-        with patch.object(sv, "_SIGSTORE_AVAILABLE", True), \
-             patch("urllib.request.urlopen", side_effect=urllib.error.HTTPError(
-                 url="", code=404, msg="Not Found", hdrs=None, fp=None  # type: ignore[arg-type]
-             )):
+        with (
+            patch.object(sv, "_SIGSTORE_AVAILABLE", True),
+            patch(
+                "urllib.request.urlopen",
+                side_effect=urllib.error.HTTPError(
+                    url="", code=404, msg="Not Found", hdrs=None, fp=None  # type: ignore[arg-type]
+                ),
+            ),
+        ):
             result = sv._verify_with_sigstore("cryptography", "41.0.3")
 
         assert result.status == "error"
@@ -174,6 +183,7 @@ class TestVerifyPackageWithSigstoreNoAttestation:
 # ---------------------------------------------------------------------------
 # Test 4: verify_package — attestation present, SDK verifies
 # ---------------------------------------------------------------------------
+
 
 class TestVerifyPackageWithAttestation:
     """Behaviour when attestation exists and sigstore SDK verifies it."""
@@ -211,21 +221,27 @@ class TestVerifyPackageWithAttestation:
         mock_sigstore.verify.Verifier = mock_verifier_cls
         mock_sigstore.models.Bundle = mock_bundle_cls
 
-        with patch.object(sv, "_SIGSTORE_AVAILABLE", True), \
-             patch("urllib.request.urlopen", return_value=mock_resp), \
-             patch.dict(
-                 "sys.modules",
-                 {
-                     "sigstore": mock_sigstore,
-                     "sigstore.verify": mock_sigstore.verify,
-                     "sigstore.models": mock_sigstore.models,
-                 },
-             ):
+        with (
+            patch.object(sv, "_SIGSTORE_AVAILABLE", True),
+            patch("urllib.request.urlopen", return_value=mock_resp),
+            patch.dict(
+                "sys.modules",
+                {
+                    "sigstore": mock_sigstore,
+                    "sigstore.verify": mock_sigstore.verify,
+                    "sigstore.models": mock_sigstore.models,
+                },
+            ),
+        ):
             # Patch the import inside the function
-            with patch("scripts.security.sigstore_verify._verify_with_sigstore",
-                       wraps=sv._verify_with_sigstore):
+            with patch(
+                "scripts.security.sigstore_verify._verify_with_sigstore",
+                wraps=sv._verify_with_sigstore,
+            ):
                 # Directly patch the inner imports via builtins.__import__
-                original_import = __builtins__.__import__ if hasattr(__builtins__, "__import__") else __import__
+                original_import = (
+                    __builtins__.__import__ if hasattr(__builtins__, "__import__") else __import__
+                )
 
                 def fake_import(name, *args, **kwargs):
                     if name == "sigstore.verify":
@@ -247,22 +263,23 @@ class TestVerifyPackageWithAttestation:
         mock_resp2.__enter__ = lambda s: s
         mock_resp2.__exit__ = MagicMock(return_value=False)
 
-        with patch.object(sv, "_SIGSTORE_AVAILABLE", True), \
-             patch("urllib.request.urlopen", return_value=mock_resp2):
+        with (
+            patch.object(sv, "_SIGSTORE_AVAILABLE", True),
+            patch("urllib.request.urlopen", return_value=mock_resp2),
+        ):
             # Patch the SDK import within the function scope
-            with patch.dict("sys.modules", {
-                "sigstore": MagicMock(),
-                "sigstore.verify": MagicMock(
-                    Verifier=MagicMock(
-                        production=MagicMock(return_value=mock_verifier)
-                    )
-                ),
-                "sigstore.models": MagicMock(
-                    Bundle=MagicMock(
-                        from_dict=MagicMock(return_value=mock_bundle)
-                    )
-                ),
-            }):
+            with patch.dict(
+                "sys.modules",
+                {
+                    "sigstore": MagicMock(),
+                    "sigstore.verify": MagicMock(
+                        Verifier=MagicMock(production=MagicMock(return_value=mock_verifier))
+                    ),
+                    "sigstore.models": MagicMock(
+                        Bundle=MagicMock(from_dict=MagicMock(return_value=mock_bundle))
+                    ),
+                },
+            ):
                 result = sv._verify_with_sigstore("cryptography", "42.0.5")
 
         # Should be either "verified" (SDK ran) or "unverified" (no exception path)
@@ -282,21 +299,22 @@ class TestVerifyPackageWithAttestation:
         mock_verifier = MagicMock()
         mock_verifier.verify_artifact.side_effect = ValueError("Signature mismatch!")
 
-        with patch.object(sv, "_SIGSTORE_AVAILABLE", True), \
-             patch("urllib.request.urlopen", return_value=mock_resp), \
-             patch.dict("sys.modules", {
-                 "sigstore": MagicMock(),
-                 "sigstore.verify": MagicMock(
-                     Verifier=MagicMock(
-                         production=MagicMock(return_value=mock_verifier)
-                     )
-                 ),
-                 "sigstore.models": MagicMock(
-                     Bundle=MagicMock(
-                         from_dict=MagicMock(return_value=MagicMock())
-                     )
-                 ),
-             }):
+        with (
+            patch.object(sv, "_SIGSTORE_AVAILABLE", True),
+            patch("urllib.request.urlopen", return_value=mock_resp),
+            patch.dict(
+                "sys.modules",
+                {
+                    "sigstore": MagicMock(),
+                    "sigstore.verify": MagicMock(
+                        Verifier=MagicMock(production=MagicMock(return_value=mock_verifier))
+                    ),
+                    "sigstore.models": MagicMock(
+                        Bundle=MagicMock(from_dict=MagicMock(return_value=MagicMock()))
+                    ),
+                },
+            ),
+        ):
             result = sv._verify_with_sigstore("cryptography", "42.0.5")
 
         assert result.status == "mismatch"
@@ -306,6 +324,7 @@ class TestVerifyPackageWithAttestation:
 # ---------------------------------------------------------------------------
 # Test 5: build_report — structure and exit-code logic
 # ---------------------------------------------------------------------------
+
 
 class TestBuildReport:
     """Tests for build_report() and the overall JSON output structure."""
@@ -346,6 +365,7 @@ class TestBuildReport:
 # Test 6: main() — CLI integration
 # ---------------------------------------------------------------------------
 
+
 class TestMainCLI:
     """Integration tests for the main() entry point."""
 
@@ -376,17 +396,13 @@ class TestMainCLI:
         """--critical-only only checks packages in CRITICAL_PACKAGES."""
         lock = _make_lock_txt(
             tmp_path,
-            "requests==2.31.0\n"
-            "some-random-lib==1.0.0\n",
+            "requests==2.31.0\n" "some-random-lib==1.0.0\n",
         )
         out = tmp_path / "report.json"
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             sv.main(["--requirements", str(lock), "--critical-only", "--output", str(out)])
         data = json.loads(out.read_text())
-        checked_names = {
-            p["name"]
-            for p in data["verified"] + data["unverified"] + data["errors"]
-        }
+        checked_names = {p["name"] for p in data["verified"] + data["unverified"] + data["errors"]}
         # some-random-lib is not in CRITICAL_PACKAGES → should be excluded
         assert "some-random-lib" not in checked_names
         # requests IS in CRITICAL_PACKAGES → should be included
@@ -398,8 +414,10 @@ class TestMainCLI:
         mismatch_result = sv.VerificationResult(
             "cryptography", "41.0.3", "mismatch", "Tampered bundle"
         )
-        with patch.object(sv, "_SIGSTORE_AVAILABLE", True), \
-             patch.object(sv, "verify_package", return_value=mismatch_result):
+        with (
+            patch.object(sv, "_SIGSTORE_AVAILABLE", True),
+            patch.object(sv, "verify_package", return_value=mismatch_result),
+        ):
             rc = sv.main(["--requirements", str(lock)])
         assert rc == 1
 
@@ -409,7 +427,9 @@ class TestMainCLI:
         mismatch_result = sv.VerificationResult(
             "some-random-lib", "1.0.0", "mismatch", "Tampered bundle"
         )
-        with patch.object(sv, "_SIGSTORE_AVAILABLE", True), \
-             patch.object(sv, "verify_package", return_value=mismatch_result):
+        with (
+            patch.object(sv, "_SIGSTORE_AVAILABLE", True),
+            patch.object(sv, "verify_package", return_value=mismatch_result),
+        ):
             rc = sv.main(["--requirements", str(lock)])
         assert rc == 0

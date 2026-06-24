@@ -10,13 +10,13 @@ import pytest
 pytest.importorskip("numpy")
 
 
-
 import json
 import time
 
 import numpy as np
 
 # Training Loop Performance Tests
+
 
 def test_training_loop_iteration_time():
     """Test that training loop iterations complete within acceptable time."""
@@ -113,6 +113,7 @@ def test_loss_computation_performance():
 
 # Data Loading Performance Tests
 
+
 def test_data_loading_throughput(tmp_path):
     """Test data loading throughput for training."""
     np.random.seed(42)
@@ -151,8 +152,8 @@ def test_batch_generation_speed():
     num_batches = 0
     checksum = 0.0
     for i in range(0, dataset_size, batch_size):
-        batch_data = dataset[i:i+batch_size]
-        batch_labels = labels[i:i+batch_size]
+        batch_data = dataset[i : i + batch_size]
+        batch_labels = labels[i : i + batch_size]
         # Accumulate checksum to ensure slicing actually happens
         checksum += batch_data.sum() + batch_labels.sum()
         num_batches += 1
@@ -239,6 +240,7 @@ def test_data_preprocessing_pipeline(tmp_path):
 
 # API Response Time Tests
 
+
 def test_api_prediction_latency():
     """Test API prediction endpoint latency."""
     np.random.seed(42)
@@ -301,13 +303,13 @@ def test_api_json_serialization_performance():
 
     # Create response data
     response = {
-        'predictions': np.random.randn(100, 10).tolist(),
-        'probabilities': np.random.rand(100, 10).tolist(),
-        'metadata': {
-            'model_version': '1.0.0',
-            'timestamp': '2024-01-01T00:00:00Z',
-            'latency_ms': 15.3
-        }
+        "predictions": np.random.randn(100, 10).tolist(),
+        "probabilities": np.random.rand(100, 10).tolist(),
+        "metadata": {
+            "model_version": "1.0.0",
+            "timestamp": "2024-01-01T00:00:00Z",
+            "latency_ms": 15.3,
+        },
     }
 
     start = time.perf_counter()
@@ -323,19 +325,19 @@ def test_api_request_validation_performance():
     """Test performance of input validation for API requests."""
 
     def validate_request(data):
-        required_fields = ['input', 'model_id', 'options']
+        required_fields = ["input", "model_id", "options"]
         for field in required_fields:
             if field not in data:
                 return False
 
-        if not isinstance(data['input'], list):
+        if not isinstance(data["input"], list):
             return False
-        return not (len(data['input']) == 0 or len(data['input']) > 1000)
+        return not (len(data["input"]) == 0 or len(data["input"]) > 1000)
 
     valid_request = {
-        'input': [[1.0] * 100],
-        'model_id': 'model-v1',
-        'options': {'temperature': 0.7}
+        "input": [[1.0] * 100],
+        "model_id": "model-v1",
+        "options": {"temperature": 0.7},
     }
 
     start = time.perf_counter()
@@ -344,7 +346,9 @@ def test_api_request_validation_performance():
     elapsed = time.perf_counter() - start
 
     validations_per_second = 10000 / elapsed
-    assert validations_per_second > 1000, f"Validation throughput {validations_per_second:.0f}/s too low"
+    assert (
+        validations_per_second > 1000
+    ), f"Validation throughput {validations_per_second:.0f}/s too low"
 
 
 def test_api_rate_limiting_overhead():
@@ -370,13 +374,14 @@ def test_api_rate_limiting_overhead():
 
     start = time.perf_counter()
     for i in range(1000):
-        check_rate_limit('client-1')
+        check_rate_limit("client-1")
     elapsed = time.perf_counter() - start
 
     assert elapsed < 0.1, f"1000 rate limit checks took {elapsed:.3f}s"
 
 
 # Memory Profiling Tests
+
 
 def test_memory_allocation_training_loop():
     """Test memory allocation patterns in training loop."""

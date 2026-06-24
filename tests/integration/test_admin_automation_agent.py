@@ -13,7 +13,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent / ".github" / "agents" / "admin-automation-agent" / "src"))
+sys.path.insert(
+    0, str(Path(__file__).parent.parent / ".github" / "agents" / "admin-automation-agent" / "src")
+)
 
 try:
     from agent import AdminAutomationAgent
@@ -35,8 +37,7 @@ class TestAdminAutomationAgentIntegration:
         """Create an agent instance with mocked dependencies."""
         with patch.dict(os.environ, {"GITHUB_TOKEN": mock_github_token}):
             return AdminAutomationAgent(
-                github_token=mock_github_token,
-                config_path=tmp_path / "config.yml"
+                github_token=mock_github_token, config_path=tmp_path / "config.yml"
             )
 
     def test_agent_initialization(self, agent, mock_github_token):
@@ -66,7 +67,7 @@ class TestAdminAutomationAgentIntegration:
         task = agent.results["tasks"][0]
         assert task["details"] == details
 
-    @patch('agent.GitHubSecretsManager')
+    @patch("agent.GitHubSecretsManager")
     def test_setup_phase10_no_secrets_manager(self, mock_secrets_mgr, agent):
         """Test Phase 10 setup when secrets manager is not available."""
         agent.secrets_manager = None
@@ -78,7 +79,7 @@ class TestAdminAutomationAgentIntegration:
         # Environment validation should run
         assert any("validate" in str(t) or "environment" in str(t) for t in result["tasks"])
 
-    @patch('agent.Phase10Validator')
+    @patch("agent.Phase10Validator")
     def test_health_check_no_validator(self, mock_validator, agent):
         """Test health check when validator is not available."""
         agent.validator = None
@@ -111,7 +112,7 @@ class TestSecretsManagerIntegration:
     @pytest.fixture
     def mock_requests(self):
         """Mock requests library for API calls."""
-        with patch('agent.requests') as mock:
+        with patch("agent.requests") as mock:
             yield mock
 
     @pytest.fixture
@@ -121,20 +122,13 @@ class TestSecretsManagerIntegration:
         from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"}):
-            return GitHubSecretsManager(
-                owner="test-owner",
-                repo="test-repo",
-                token="test_token"
-            )
+            return GitHubSecretsManager(owner="test-owner", repo="test-repo", token="test_token")
 
     def test_generate_secure_key(self, secrets_manager):
         """Test secure key generation."""
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             # Mock openssl command output
-            mock_run.return_value = Mock(
-                stdout="YWJjZGVmZ2hpamtsbW5vcA==\n",
-                returncode=0
-            )
+            mock_run.return_value = Mock(stdout="YWJjZGVmZ2hpamtsbW5vcA==\n", returncode=0)
 
             key = secrets_manager.generate_secure_key(length=32)
 
@@ -146,10 +140,7 @@ class TestSecretsManagerIntegration:
         # Mock API response
         mock_response = Mock()
         mock_response.status_code = 200
-        mock_response.json.return_value = {
-            "key": "test_public_key",
-            "key_id": "123456"
-        }
+        mock_response.json.return_value = {"key": "test_public_key", "key_id": "123456"}
         mock_requests.get.return_value = mock_response
 
         public_key, key_id = secrets_manager.get_public_key()
@@ -189,7 +180,7 @@ class TestWorkflowIntegration:
             "setup_secrets",
             "validate_configuration",
             "run_validation",
-            "generate_report"
+            "generate_report",
         ]
 
         # Verify each step is documented
@@ -228,22 +219,20 @@ class TestSecurityCompliance:
         # Log only the already-redacted placeholder.
         # nosec: safe_value is a [REDACTED] string - raw token never reaches the logger.
         import logging
+
         logger = logging.getLogger(__name__)
-        logger.info("Secret value: %s", safe_value)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        logger.info(
+            "Secret value: %s", safe_value
+        )  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 
         # Confirm the raw token is absent from captured log output
         assert secret_value not in caplog.text
-
 
     def test_secret_name_redaction(self):
         """Test that sensitive secret names are redacted."""
         from src.codex.security_utils import redact_secret_name
 
-        sensitive_names = [
-            "PROD_DATABASE_PASSWORD",
-            "AWS_SECRET_ACCESS_KEY",
-            "PRIVATE_KEY"
-        ]
+        sensitive_names = ["PROD_DATABASE_PASSWORD", "AWS_SECRET_ACCESS_KEY", "PRIVATE_KEY"]
 
         for name in sensitive_names:
             redacted = redact_secret_name(name)
@@ -253,11 +242,7 @@ class TestSecurityCompliance:
         """Test that dictionary keys containing secrets are redacted."""
         from src.codex.security_utils import redact_dict_with_secret_keys
 
-        secrets_dict = {
-            "GITHUB_TOKEN": "value1",
-            "API_KEY": "value2",
-            "SECRET_KEY": "value3"
-        }
+        secrets_dict = {"GITHUB_TOKEN": "value1", "API_KEY": "value2", "SECRET_KEY": "value3"}
 
         redacted = redact_dict_with_secret_keys(secrets_dict)
 
@@ -276,8 +261,8 @@ class TestSecurityCompliance:
 class TestEndToEndWorkflow:
     """End-to-end integration tests."""
 
-    @patch('agent.GitHubSecretsManager')
-    @patch('agent.Phase10Validator')
+    @patch("agent.GitHubSecretsManager")
+    @patch("agent.Phase10Validator")
     def test_complete_phase10_setup(self, mock_validator, mock_secrets_mgr):
         """Test complete Phase 10 setup workflow."""
         if AdminAutomationAgent is None:
@@ -289,7 +274,7 @@ class TestEndToEndWorkflow:
             "secret1": "configured",
             "secret2": "configured",
             "secret3": "configured",
-            "secret4": "configured"
+            "secret4": "configured",
         }
         mock_secrets_mgr.return_value = mock_sm_instance
 
@@ -299,7 +284,7 @@ class TestEndToEndWorkflow:
         mock_val_instance.results = {
             "summary": "All tests passed",
             "tests": [],
-            "timestamp": datetime.now(UTC).isoformat()
+            "timestamp": datetime.now(UTC).isoformat(),
         }
         mock_validator.return_value = mock_val_instance
 

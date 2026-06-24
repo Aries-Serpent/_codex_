@@ -108,7 +108,9 @@ def test_checkpoint_pointer_written_with_mocked_torch_save(monkeypatch, tmp_path
 
     monkeypatch.setattr(trainer_module.torch, "save", fake_save)
 
-    cfg = TrainerConfig(epochs=1, checkpoint=CheckpointConfig(directory=str(tmp_path / "ckpts"), best_k=1))
+    cfg = TrainerConfig(
+        epochs=1, checkpoint=CheckpointConfig(directory=str(tmp_path / "ckpts"), best_k=1)
+    )
     trainer = _build_trainer(cfg)
     trainer.train()
     latest = tmp_path / "ckpts" / "latest.json"

@@ -16,9 +16,7 @@ from omegaconf import OmegaConf
 # Prefer the project unified config if present; otherwise use a tiny fallback.
 try:
     # Existing project config (if available)
-    from codex_ml.training.unified_training import (
-        UnifiedTrainingConfig as _Cfg,  # type: ignore
-    )
+    from codex_ml.training.unified_training import UnifiedTrainingConfig as _Cfg  # type: ignore
 except ImportError:
 
     @dataclasses.dataclass
@@ -35,9 +33,7 @@ _IS_STRUCTURED_TYPE = isinstance(_STRUCTURED, type)
 
 def _make_base_cfg() -> Any:
     if _IS_STRUCTURED_TYPE:
-        instance = (
-            _STRUCTURED() if dataclasses.is_dataclass(_STRUCTURED) else _STRUCTURED
-        )
+        instance = _STRUCTURED() if dataclasses.is_dataclass(_STRUCTURED) else _STRUCTURED
         return OmegaConf.create(dataclasses.asdict(instance))
     if dataclasses.is_dataclass(_STRUCTURED):
         return OmegaConf.create(dataclasses.asdict(_STRUCTURED))

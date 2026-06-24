@@ -84,7 +84,7 @@ class TestAccuracy:
         labels = np.array([1, 1, -100, 1])
         result = accuracy(preds, labels, ignore_index=-100)
         # 3 valid: [1==1, 0!=1, 1==1] = 2/3
-        assert abs(result - 2/3) < 1e-6
+        assert abs(result - 2 / 3) < 1e-6
 
     def test_shape_mismatch_raises(self) -> None:
         preds = np.array([1, 0, 1])
@@ -244,7 +244,7 @@ class TestStreamingAccuracy:
         batches = [
             (np.array([1, 1, 1]), np.array([1, 1, 0])),  # 2/3 correct
             (np.array([0, 0, 0]), np.array([0, 0, 1])),  # 2/3 correct
-            (np.array([1, 0]), np.array([1, 0])),        # 2/2 correct
+            (np.array([1, 0]), np.array([1, 0])),  # 2/2 correct
         ]
 
         for preds, labels in batches:

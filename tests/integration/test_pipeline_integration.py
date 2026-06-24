@@ -47,11 +47,19 @@ def sample_documents(pipeline_workspace):
     docs_dir.mkdir(parents=True)
 
     documents = [
-        {"id": "doc1", "content": "Python programming basics", "metadata": {"category": "programming"}},
+        {
+            "id": "doc1",
+            "content": "Python programming basics",
+            "metadata": {"category": "programming"},
+        },
         {"id": "doc2", "content": "Machine learning fundamentals", "metadata": {"category": "ml"}},
         {"id": "doc3", "content": "Data structures and algorithms", "metadata": {"category": "cs"}},
         {"id": "doc4", "content": "Neural network architectures", "metadata": {"category": "ml"}},
-        {"id": "doc5", "content": "Software testing best practices", "metadata": {"category": "programming"}},
+        {
+            "id": "doc5",
+            "content": "Software testing best practices",
+            "metadata": {"category": "programming"},
+        },
     ]
 
     for doc in documents:
@@ -88,11 +96,13 @@ class TestRAGIndexingQueryPipeline:
 
         for doc_file in docs_dir.glob("*.json"):
             doc = json.loads(doc_file.read_text())
-            index_data["documents"].append({
-                "id": doc["id"],
-                "content": doc["content"],
-                "embedding": [0.1, 0.2, 0.3],  # Mock embedding
-            })
+            index_data["documents"].append(
+                {
+                    "id": doc["id"],
+                    "content": doc["content"],
+                    "embedding": [0.1, 0.2, 0.3],  # Mock embedding
+                }
+            )
             index_data["metadata"]["total"] += 1
 
         # Save index
@@ -141,19 +151,21 @@ class TestRAGIndexingQueryPipeline:
         # Create mock index
         index = []
         for doc in documents:
-            index.append({
-                "id": doc["id"],
-                "content": doc["content"],
-                "embedding": [0.1, 0.2, 0.3],
-            })
+            index.append(
+                {
+                    "id": doc["id"],
+                    "content": doc["content"],
+                    "embedding": [0.1, 0.2, 0.3],
+                }
+            )
 
         query_embedding = [0.15, 0.25, 0.35]
 
         # Simple similarity computation (cosine)
         def cosine_similarity(a, b):
             dot_product = sum(x * y for x, y in zip(a, b))
-            norm_a = sum(x ** 2 for x in a) ** 0.5
-            norm_b = sum(x ** 2 for x in b) ** 0.5
+            norm_a = sum(x**2 for x in a) ** 0.5
+            norm_b = sum(x**2 for x in b) ** 0.5
             return dot_product / (norm_a * norm_b) if norm_a * norm_b != 0 else 0
 
         results = []
@@ -210,11 +222,13 @@ class TestRAGIndexingQueryPipeline:
         for doc_file in docs_dir.glob("*.json"):
             doc = json.loads(doc_file.read_text())
             # Use normalized embeddings for better similarity scores
-            index.append({
-                "id": doc["id"],
-                "content": doc["content"],
-                "embedding": [0.5, 0.6, 0.7],  # Higher values for better similarity
-            })
+            index.append(
+                {
+                    "id": doc["id"],
+                    "content": doc["content"],
+                    "embedding": [0.5, 0.6, 0.7],  # Higher values for better similarity
+                }
+            )
 
         # Step 3: Process query
         query = "machine learning"
@@ -227,7 +241,9 @@ class TestRAGIndexingQueryPipeline:
             text_match = 1.0 if query.lower() in doc["content"].lower() else 0.2
             # Simple cosine-like similarity with query embedding
             # Higher when embeddings are similar
-            embedding_sim = sum(q * d for q, d in zip(query_embedding, doc["embedding"])) / len(query_embedding)
+            embedding_sim = sum(q * d for q, d in zip(query_embedding, doc["embedding"])) / len(
+                query_embedding
+            )
             # Weight text match more heavily for this test
             score = 0.7 * text_match + 0.3 * embedding_sim
             results.append({"doc_id": doc["id"], "content": doc["content"], "score": score})
@@ -411,12 +427,15 @@ class TestTrainingEvaluationCheckpointPipeline:
 
         # Checkpoint
         checkpoint_path = pipeline_workspace / "checkpoints" / "final.pt"
-        torch.save({
-            "model_state_dict": model.state_dict(),
-            "optimizer_state_dict": optimizer.state_dict(),
-            "train_losses": train_losses,
-            "eval_loss": eval_loss.item(),
-        }, checkpoint_path)
+        torch.save(
+            {
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "train_losses": train_losses,
+                "eval_loss": eval_loss.item(),
+            },
+            checkpoint_path,
+        )
 
         # Verify pipeline completion
         assert len(train_losses) == 5
@@ -476,11 +495,13 @@ class TestDataIngestionProcessingStorage:
         # Transform: lowercase text, extract features
         transformed = []
         for item in raw_data:
-            transformed.append({
-                "text": item["text"].lower(),
-                "label": item["label"],
-                "length": len(item["text"]),
-            })
+            transformed.append(
+                {
+                    "text": item["text"].lower(),
+                    "label": item["label"],
+                    "length": len(item["text"]),
+                }
+            )
 
         assert transformed[0]["text"] == "hello world"
         assert transformed[0]["length"] == 11
@@ -490,7 +511,7 @@ class TestDataIngestionProcessingStorage:
         data = list(range(100))
         batch_size = 10
 
-        batches = [data[i:i + batch_size] for i in range(0, len(data), batch_size)]
+        batches = [data[i : i + batch_size] for i in range(0, len(data), batch_size)]
 
         assert len(batches) == 10
         assert len(batches[0]) == 10
@@ -562,11 +583,13 @@ class TestDataIngestionProcessingStorage:
         loaded_data = json.loads(raw_file.read_text())
         processed = []
         for item in loaded_data:
-            processed.append({
-                "id": item["id"],
-                "text": item["text"].lower(),
-                "word_count": len(item["text"].split()),
-            })
+            processed.append(
+                {
+                    "id": item["id"],
+                    "text": item["text"].lower(),
+                    "word_count": len(item["text"].split()),
+                }
+            )
 
         # Step 3: Store
         processed_dir = pipeline_workspace / "data" / "processed"

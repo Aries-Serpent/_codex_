@@ -180,11 +180,11 @@ class TestUserModel:
         )
 
         # Should be able to access all attributes
-        assert hasattr(user, 'id')
-        assert hasattr(user, 'username')
-        assert hasattr(user, 'email')
-        assert hasattr(user, 'password_hash')
-        assert hasattr(user, 'created_at')
+        assert hasattr(user, "id")
+        assert hasattr(user, "username")
+        assert hasattr(user, "email")
+        assert hasattr(user, "password_hash")
+        assert hasattr(user, "created_at")
 
     def test_user_string_representation(self):
         """Test user string representation."""
@@ -291,7 +291,7 @@ class TestUserModel:
         )
 
         # Check if is_active attribute exists and can be modified
-        if hasattr(user, 'is_active'):
+        if hasattr(user, "is_active"):
             assert user.is_active == True
 
     def test_user_with_mfa_enabled(self):
@@ -306,7 +306,7 @@ class TestUserModel:
         )
 
         # Check if mfa_enabled attribute exists
-        if hasattr(user, 'mfa_enabled'):
+        if hasattr(user, "mfa_enabled"):
             assert user.mfa_enabled == True
 
 

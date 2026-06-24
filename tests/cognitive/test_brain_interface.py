@@ -33,6 +33,7 @@ from codex.cognitive.brain_interface import (
 # Environment isolation
 # =========================================================================
 
+
 @pytest.fixture(autouse=True)
 def _reset_pattern_min_confidence():
     """Isolate tests from COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE environment variable.
@@ -55,6 +56,7 @@ def _reset_pattern_min_confidence():
 # Fixtures
 # =========================================================================
 
+
 @pytest.fixture
 def temp_repo():
     """Create a temporary repository structure."""
@@ -67,61 +69,36 @@ def temp_repo():
 
         # Create pattern store
         pattern_store = {
-            "metadata": {
-                "version": "1.0.0",
-                "created": "2026-02-05T09:20:00Z"
-            },
+            "metadata": {"version": "1.0.0", "created": "2026-02-05T09:20:00Z"},
             "patterns": {
                 "test_failure_resolution": {
                     "id": "TFR-001",
                     "category": "testing",
-                    "symptoms": [
-                        "pytest collection error",
-                        "exit code 2",
-                        "ImportError in tests"
-                    ],
-                    "diagnosis_steps": [
-                        "Run pytest --collect-only",
-                        "Check for circular imports"
-                    ],
-                    "solutions": [
-                        "Add missing imports",
-                        "Rename conflicting files"
-                    ],
+                    "symptoms": ["pytest collection error", "exit code 2", "ImportError in tests"],
+                    "diagnosis_steps": ["Run pytest --collect-only", "Check for circular imports"],
+                    "solutions": ["Add missing imports", "Rename conflicting files"],
                     "success_rate": 0.95,
                     "times_applied": 5,
                     "last_used": "2026-02-05T06:28:44Z",
-                    "related_prs": ["#3155", "#3154"]
+                    "related_prs": ["#3155", "#3154"],
                 },
                 "workflow_failure": {
                     "id": "WFR-001",
                     "category": "ci_cd",
-                    "symptoms": [
-                        "GitHub Actions workflow failure",
-                        "action_required status"
-                    ],
-                    "diagnosis_steps": [
-                        "Check workflow logs",
-                        "Identify failing step"
-                    ],
-                    "solutions": [
-                        "Fix specific failing step",
-                        "Add retry logic"
-                    ],
+                    "symptoms": ["GitHub Actions workflow failure", "action_required status"],
+                    "diagnosis_steps": ["Check workflow logs", "Identify failing step"],
+                    "solutions": ["Fix specific failing step", "Add retry logic"],
                     "success_rate": 0.88,
                     "times_applied": 7,
                     "last_used": "2026-02-05T06:28:44Z",
-                    "related_prs": ["#3157"]
-                }
+                    "related_prs": ["#3157"],
+                },
             },
-            "statistics": {
-                "total_patterns": 2,
-                "total_applications": 12
-            }
+            "statistics": {"total_patterns": 2, "total_applications": 12},
         }
 
         pattern_path = cognitive_dir / "pattern_learning_store.json"
-        with open(pattern_path, 'w') as f:
+        with open(pattern_path, "w") as f:
             json.dump(pattern_store, f, indent=2)
 
         # Create session tracker
@@ -158,36 +135,26 @@ def temp_repo():
 @pytest.fixture
 def brain_interface(temp_repo):
     """Create an AgentBrainInterface instance."""
-    return AgentBrainInterface(
-        agent_id="test-agent",
-        repo_root=temp_repo,
-        auto_register=True
-    )
+    return AgentBrainInterface(agent_id="test-agent", repo_root=temp_repo, auto_register=True)
 
 
 @pytest.fixture
 def ci_agent_interface(temp_repo):
     """Create an AgentBrainInterface for a CI/CD agent."""
-    return AgentBrainInterface(
-        agent_id="ci-testing-agent",
-        repo_root=temp_repo,
-        auto_register=True
-    )
+    return AgentBrainInterface(agent_id="ci-testing-agent", repo_root=temp_repo, auto_register=True)
 
 
 # =========================================================================
 # Initialization Tests
 # =========================================================================
 
+
 class TestInitialization:
     """Tests for interface initialization."""
 
     def test_basic_initialization(self, temp_repo):
         """Test basic interface initialization."""
-        brain = AgentBrainInterface(
-            agent_id="test-agent",
-            repo_root=temp_repo
-        )
+        brain = AgentBrainInterface(agent_id="test-agent", repo_root=temp_repo)
 
         assert brain.agent_id == "test-agent"
         assert brain.agent_category == AgentCategory.UNKNOWN
@@ -195,10 +162,7 @@ class TestInitialization:
 
     def test_known_agent_category(self, temp_repo):
         """Test that known agents get correct category."""
-        brain = AgentBrainInterface(
-            agent_id="ci-testing-agent",
-            repo_root=temp_repo
-        )
+        brain = AgentBrainInterface(agent_id="ci-testing-agent", repo_root=temp_repo)
 
         assert brain.agent_category == AgentCategory.CI_CD
 
@@ -222,10 +186,7 @@ class TestInitialization:
     def test_empty_repo_graceful(self):
         """Test graceful handling of empty repository."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            brain = AgentBrainInterface(
-                agent_id="test-agent",
-                repo_root=tmpdir
-            )
+            brain = AgentBrainInterface(agent_id="test-agent", repo_root=tmpdir)
 
             assert len(brain._patterns) == 0
             assert len(brain._objectives) == 0
@@ -241,6 +202,7 @@ class TestInitialization:
 # Pattern Query Tests
 # =========================================================================
 
+
 class TestPatternQuery:
     """Tests for pattern querying functionality."""
 
@@ -253,30 +215,23 @@ class TestPatternQuery:
 
     def test_query_multiple_symptoms(self, brain_interface):
         """Test querying with multiple symptoms."""
-        patterns = brain_interface.query_patterns([
-            "pytest collection error",
-            "ImportError in tests"
-        ])
+        patterns = brain_interface.query_patterns(
+            ["pytest collection error", "ImportError in tests"]
+        )
 
         assert len(patterns) > 0
         assert patterns[0].category == "testing"
 
     def test_query_with_category_filter(self, brain_interface):
         """Test querying with category filter."""
-        patterns = brain_interface.query_patterns(
-            "error",
-            category="testing"
-        )
+        patterns = brain_interface.query_patterns("error", category="testing")
 
         for pattern in patterns:
             assert pattern.category == "testing"
 
     def test_query_min_confidence(self, brain_interface):
         """Test querying with minimum confidence."""
-        patterns = brain_interface.query_patterns(
-            "pytest",
-            min_confidence=PatternConfidence.HIGH
-        )
+        patterns = brain_interface.query_patterns("pytest", min_confidence=PatternConfidence.HIGH)
 
         for pattern in patterns:
             assert pattern.confidence == PatternConfidence.HIGH
@@ -293,15 +248,13 @@ class TestPatternQuery:
 
         for pattern in patterns:
             assert isinstance(pattern, PatternMatch)
-            assert hasattr(pattern, 'pattern_id')
-            assert hasattr(pattern, 'solutions')
-            assert hasattr(pattern, 'success_rate')
+            assert hasattr(pattern, "pattern_id")
+            assert hasattr(pattern, "solutions")
+            assert hasattr(pattern, "success_rate")
 
     def test_query_no_match(self, brain_interface):
         """Test query with no matching patterns."""
-        patterns = brain_interface.query_patterns(
-            "completely unrelated string xyz123"
-        )
+        patterns = brain_interface.query_patterns("completely unrelated string xyz123")
 
         # Should return empty or low-confidence matches
         assert isinstance(patterns, list)
@@ -325,6 +278,7 @@ class TestPatternQuery:
 # Pattern Submission Tests
 # =========================================================================
 
+
 class TestPatternSubmission:
     """Tests for pattern submission functionality."""
 
@@ -335,7 +289,7 @@ class TestPatternSubmission:
             category="testing",
             symptoms=["new symptom 1", "new symptom 2"],
             solutions=["solution 1", "solution 2"],
-            diagnosis_steps=["step 1", "step 2"]
+            diagnosis_steps=["step 1", "step 2"],
         )
 
         assert result is True
@@ -351,7 +305,7 @@ class TestPatternSubmission:
             pattern_id="PERSIST-001",
             category="testing",
             symptoms=["test symptom"],
-            solutions=["test solution"]
+            solutions=["test solution"],
         )
 
         # Read the file directly
@@ -366,6 +320,7 @@ class TestPatternSubmission:
 # Objective Alignment Tests
 # =========================================================================
 
+
 class TestObjectiveAlignment:
     """Tests for objective alignment checking."""
 
@@ -373,10 +328,7 @@ class TestObjectiveAlignment:
         """Test detection of aligned actions."""
         alignment = brain_interface.check_alignment("increase test coverage")
 
-        assert alignment in [
-            ObjectiveAlignment.ALIGNED,
-            ObjectiveAlignment.PARTIALLY_ALIGNED
-        ]
+        assert alignment in [ObjectiveAlignment.ALIGNED, ObjectiveAlignment.PARTIALLY_ALIGNED]
 
     def test_misaligned_action(self, brain_interface):
         """Test detection of misaligned actions."""
@@ -387,10 +339,7 @@ class TestObjectiveAlignment:
     def test_unknown_alignment(self):
         """Test unknown alignment when no objectives loaded."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            brain = AgentBrainInterface(
-                agent_id="test-agent",
-                repo_root=tmpdir
-            )
+            brain = AgentBrainInterface(agent_id="test-agent", repo_root=tmpdir)
 
             alignment = brain.check_alignment("some action")
             assert alignment == ObjectiveAlignment.UNKNOWN
@@ -407,9 +356,7 @@ class TestObjectiveAlignment:
         objectives = brain_interface.get_objectives()
         if objectives:
             result = brain_interface.update_objective_progress(
-                objectives[0],
-                completed=False,
-                progress_note="Making progress"
+                objectives[0], completed=False, progress_note="Making progress"
             )
 
             assert result is True
@@ -418,6 +365,7 @@ class TestObjectiveAlignment:
 # =========================================================================
 # Session State Tests
 # =========================================================================
+
 
 class TestSessionState:
     """Tests for session state management."""
@@ -430,9 +378,7 @@ class TestSessionState:
 
     def test_update_session_state_merge(self, brain_interface):
         """Test updating session state with merge."""
-        brain_interface.update_session_state({
-            "new_key": "new_value"
-        }, merge=True)
+        brain_interface.update_session_state({"new_key": "new_value"}, merge=True)
 
         state = brain_interface.get_session_state()
         assert state.get("new_key") == "new_value"
@@ -440,9 +386,7 @@ class TestSessionState:
 
     def test_update_session_state_replace(self, brain_interface):
         """Test updating session state with replace."""
-        brain_interface.update_session_state({
-            "new_key": "new_value"
-        }, merge=False)
+        brain_interface.update_session_state({"new_key": "new_value"}, merge=False)
 
         state = brain_interface.get_session_state()
         assert state.get("new_key") == "new_value"
@@ -461,6 +405,7 @@ class TestSessionState:
 # Learning Feedback Tests
 # =========================================================================
 
+
 class TestLearningFeedback:
     """Tests for learning feedback submission."""
 
@@ -469,7 +414,7 @@ class TestLearningFeedback:
         result = brain_interface.submit_learning(
             pattern_id="TFR-001",
             outcome="success",
-            context={"error": "import error", "fix": "added mock"}
+            context={"error": "import error", "fix": "added mock"},
         )
 
         assert result is True
@@ -477,9 +422,7 @@ class TestLearningFeedback:
     def test_submit_failure_learning(self, brain_interface):
         """Test submitting failure learning feedback."""
         result = brain_interface.submit_learning(
-            pattern_id="TFR-001",
-            outcome="failure",
-            context={"error": "still failing"}
+            pattern_id="TFR-001", outcome="failure", context={"error": "still failing"}
         )
 
         assert result is True
@@ -487,9 +430,7 @@ class TestLearningFeedback:
     def test_submit_partial_learning(self, brain_interface):
         """Test submitting partial success learning feedback."""
         result = brain_interface.submit_learning(
-            pattern_id="TFR-001",
-            outcome="partial",
-            context={"note": "some tests fixed"}
+            pattern_id="TFR-001", outcome="partial", context={"note": "some tests fixed"}
         )
 
         assert result is True
@@ -518,7 +459,7 @@ class TestLearningFeedback:
             context={"pr": 3160},
             resolution_details="Fixed by adding mock",
             new_symptoms=["new error discovered"],
-            suggested_improvements=["add more solutions"]
+            suggested_improvements=["add more solutions"],
         )
 
         assert result is True
@@ -527,6 +468,7 @@ class TestLearningFeedback:
 # =========================================================================
 # Diagnosis Tests
 # =========================================================================
+
 
 class TestDiagnosis:
     """Tests for the diagnose convenience method."""
@@ -570,16 +512,15 @@ class TestDiagnosis:
 # Match Score Tests
 # =========================================================================
 
+
 class TestMatchScore:
     """Tests for pattern match scoring."""
 
     def test_exact_match_high_score(self, brain_interface):
         """Test that exact matches get high scores."""
-        patterns = brain_interface.query_patterns([
-            "pytest collection error",
-            "exit code 2",
-            "ImportError in tests"
-        ])
+        patterns = brain_interface.query_patterns(
+            ["pytest collection error", "exit code 2", "ImportError in tests"]
+        )
 
         if patterns:
             assert patterns[0].match_score > 0.5
@@ -604,6 +545,7 @@ class TestMatchScore:
 # Data Type Tests
 # =========================================================================
 
+
 class TestDataTypes:
     """Tests for data type correctness."""
 
@@ -615,7 +557,7 @@ class TestDataTypes:
             session_id="session-001",
             pr_number=3160,
             symptoms=["error 1"],
-            current_phase="testing"
+            current_phase="testing",
         )
 
         assert context.agent_id == "test-agent"
@@ -631,7 +573,7 @@ class TestDataTypes:
             symptoms=["symptom"],
             solutions=["solution"],
             success_rate=0.9,
-            times_applied=5
+            times_applied=5,
         )
 
         assert match.pattern_id == "TEST-001"
@@ -643,7 +585,7 @@ class TestDataTypes:
             pattern_id="TEST-001",
             outcome="success",
             agent_id="test-agent",
-            context={"key": "value"}
+            context={"key": "value"},
         )
 
         assert feedback.pattern_id == "TEST-001"
@@ -652,10 +594,7 @@ class TestDataTypes:
     def test_brain_response(self):
         """Test BrainResponse dataclass."""
         response = BrainResponse(
-            success=True,
-            message="Test message",
-            patterns=[],
-            objectives=["obj1"]
+            success=True, message="Test message", patterns=[], objectives=["obj1"]
         )
 
         assert response.success is True
@@ -665,6 +604,7 @@ class TestDataTypes:
 # =========================================================================
 # Edge Case Tests
 # =========================================================================
+
 
 class TestEdgeCases:
     """Tests for edge cases and error handling."""
@@ -690,9 +630,7 @@ class TestEdgeCases:
 
     def test_special_characters_in_symptoms(self, brain_interface):
         """Test querying with special characters."""
-        patterns = brain_interface.query_patterns(
-            "error: [Errno 2] No such file <test> & 'quote'"
-        )
+        patterns = brain_interface.query_patterns("error: [Errno 2] No such file <test> & 'quote'")
 
         assert isinstance(patterns, list)
 
@@ -706,6 +644,7 @@ class TestEdgeCases:
 # =========================================================================
 # Integration Tests
 # =========================================================================
+
 
 class TestIntegration:
     """Integration tests for complete workflows."""
@@ -726,16 +665,14 @@ class TestIntegration:
 
         # 4. Submit learning
         result = brain_interface.submit_learning(
-            pattern_id=patterns[0].pattern_id,
-            outcome="success"
+            pattern_id=patterns[0].pattern_id, outcome="success"
         )
         assert result is True
 
         # 5. Update session state
-        brain_interface.update_session_state({
-            "diagnosis_complete": True,
-            "patterns_applied": [patterns[0].pattern_id]
-        })
+        brain_interface.update_session_state(
+            {"diagnosis_complete": True, "patterns_applied": [patterns[0].pattern_id]}
+        )
 
         state = brain_interface.get_session_state()
         assert state.get("diagnosis_complete") is True
@@ -747,7 +684,7 @@ class TestIntegration:
             pattern_id="CYCLE-001",
             category="testing",
             symptoms=["unique symptom xyz"],
-            solutions=["unique solution"]
+            solutions=["unique solution"],
         )
 
         # Query for the pattern

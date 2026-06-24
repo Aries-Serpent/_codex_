@@ -113,7 +113,9 @@ def test_metrics_registry_exists():
 
         # Check for some expected stable names (if they exist)
         # This validates the registry has been populated
-        assert isinstance(BUILTIN_METRICS, (list, tuple, set, dict))# At minimum, should be defined
+        assert isinstance(
+            BUILTIN_METRICS, (list, tuple, set, dict)
+        )  # At minimum, should be defined
 
     except ImportError:
         pytest.skip("codex_ml.metrics.registry not available")

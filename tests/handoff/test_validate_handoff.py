@@ -211,19 +211,17 @@ class TestHandoffValidator:
         tracking_file = temp_dir / "tracking.json"
         tracking_data = {"handoffs": [{"id": "HO-001"}], "metrics": {}}
 
-        with open(tracking_file, 'w') as f:
+        with open(tracking_file, "w") as f:
             json.dump(tracking_data, f)
 
-        with patch('validate_handoff.TRACKING_FILE', tracking_file):
+        with patch("validate_handoff.TRACKING_FILE", tracking_file):
             validator = HandoffValidator()
 
         assert len(validator.tracking_data["handoffs"]) == 1
 
     def test_get_handoff_found(self, validator):
         """Test getting existing handoff."""
-        validator.tracking_data = {
-            "handoffs": [{"id": "HO-001", "status": "pending"}]
-        }
+        validator.tracking_data = {"handoffs": [{"id": "HO-001", "status": "pending"}]}
 
         result = validator.get_handoff("HO-001")
 
@@ -246,7 +244,7 @@ class TestHandoffValidator:
             "to_agent": "codex",
             "phase": "Plan 1",
             "status": "pending",
-            "created": "2026-02-05T12:00:00Z"
+            "created": "2026-02-05T12:00:00Z",
         }
 
         result = validator.validate_context_completeness(handoff)
@@ -255,10 +253,7 @@ class TestHandoffValidator:
 
     def test_validate_context_completeness_missing_fields(self, validator):
         """Test context completeness validation - missing fields."""
-        handoff = {
-            "id": "HO-001",
-            "status": "pending"
-        }
+        handoff = {"id": "HO-001", "status": "pending"}
 
         result = validator.validate_context_completeness(handoff)
 
@@ -268,11 +263,7 @@ class TestHandoffValidator:
     def test_validate_context_summary_with_data(self, validator):
         """Test context summary validation with data."""
         handoff = {
-            "context_summary": {
-                "completed_tasks": 5,
-                "deliverables": 3,
-                "files_modified": 10
-            }
+            "context_summary": {"completed_tasks": 5, "deliverables": 3, "files_modified": 10}
         }
 
         result = validator.validate_context_summary(handoff)
@@ -283,11 +274,7 @@ class TestHandoffValidator:
     def test_validate_context_summary_empty(self, validator):
         """Test context summary validation - empty."""
         handoff = {
-            "context_summary": {
-                "completed_tasks": 0,
-                "deliverables": 0,
-                "files_modified": 0
-            }
+            "context_summary": {"completed_tasks": 0, "deliverables": 0, "files_modified": 0}
         }
 
         result = validator.validate_context_summary(handoff)
@@ -311,10 +298,8 @@ class TestHandoffValidator:
         file1.touch()
         file2.touch()
 
-        with patch('validate_handoff.REPO_ROOT', temp_dir):
-            result = validator.validate_deliverables_exist(
-                ["file1.py", "file2.py"]
-            )
+        with patch("validate_handoff.REPO_ROOT", temp_dir):
+            result = validator.validate_deliverables_exist(["file1.py", "file2.py"])
 
         assert result.passed is True
         assert "All 2 deliverables exist" in result.message
@@ -324,10 +309,8 @@ class TestHandoffValidator:
         file1 = temp_dir / "file1.py"
         file1.touch()
 
-        with patch('validate_handoff.REPO_ROOT', temp_dir):
-            result = validator.validate_deliverables_exist(
-                ["file1.py", "missing.py"]
-            )
+        with patch("validate_handoff.REPO_ROOT", temp_dir):
+            result = validator.validate_deliverables_exist(["file1.py", "missing.py"])
 
         assert result.passed is False
         assert "missing" in result.message.lower()
@@ -343,10 +326,7 @@ class TestHandoffValidator:
         now = datetime.utcnow()
         created = (now - timedelta(minutes=30)).isoformat() + "Z"
 
-        handoff = {
-            "status": "pending",
-            "created": created
-        }
+        handoff = {"status": "pending", "created": created}
 
         result = validator.validate_timeout(handoff, timeout_minutes=60)
 
@@ -357,10 +337,7 @@ class TestHandoffValidator:
         now = datetime.utcnow()
         created = (now - timedelta(minutes=90)).isoformat() + "Z"
 
-        handoff = {
-            "status": "pending",
-            "created": created
-        }
+        handoff = {"status": "pending", "created": created}
 
         result = validator.validate_timeout(handoff, timeout_minutes=60)
 
@@ -369,10 +346,7 @@ class TestHandoffValidator:
 
     def test_validate_timeout_completed_status(self, validator):
         """Test timeout validation - completed status."""
-        handoff = {
-            "status": "complete",
-            "created": "2026-01-01T00:00:00Z"  # Very old
-        }
+        handoff = {"status": "complete", "created": "2026-01-01T00:00:00Z"}  # Very old
 
         result = validator.validate_timeout(handoff)
 
@@ -383,10 +357,20 @@ class TestHandoffValidator:
         """Test chain integrity - valid chain."""
         validator.tracking_data = {
             "handoffs": [
-                {"id": "HO-001", "from_agent": "copilot", "to_agent": "codex",
-                 "status": "complete", "created": "2026-02-05T10:00:00Z"},
-                {"id": "HO-002", "from_agent": "codex", "to_agent": "copilot",
-                 "status": "complete", "created": "2026-02-05T11:00:00Z"}
+                {
+                    "id": "HO-001",
+                    "from_agent": "copilot",
+                    "to_agent": "codex",
+                    "status": "complete",
+                    "created": "2026-02-05T10:00:00Z",
+                },
+                {
+                    "id": "HO-002",
+                    "from_agent": "codex",
+                    "to_agent": "copilot",
+                    "status": "complete",
+                    "created": "2026-02-05T11:00:00Z",
+                },
             ]
         }
 
@@ -398,10 +382,20 @@ class TestHandoffValidator:
         """Test chain integrity - agent mismatch."""
         validator.tracking_data = {
             "handoffs": [
-                {"id": "HO-001", "from_agent": "copilot", "to_agent": "codex",
-                 "status": "complete", "created": "2026-02-05T10:00:00Z"},
-                {"id": "HO-002", "from_agent": "copilot", "to_agent": "codex",  # Should be from codex
-                 "status": "complete", "created": "2026-02-05T11:00:00Z"}
+                {
+                    "id": "HO-001",
+                    "from_agent": "copilot",
+                    "to_agent": "codex",
+                    "status": "complete",
+                    "created": "2026-02-05T10:00:00Z",
+                },
+                {
+                    "id": "HO-002",
+                    "from_agent": "copilot",
+                    "to_agent": "codex",  # Should be from codex
+                    "status": "complete",
+                    "created": "2026-02-05T11:00:00Z",
+                },
             ]
         }
 
@@ -413,19 +407,21 @@ class TestHandoffValidator:
     def test_validate_handoff_full(self, validator):
         """Test full handoff validation."""
         validator.tracking_data = {
-            "handoffs": [{
-                "id": "HO-001",
-                "from_agent": "copilot",
-                "to_agent": "codex",
-                "phase": "Plan 1",
-                "status": "pending",
-                "created": datetime.utcnow().isoformat() + "Z",
-                "context_summary": {
-                    "completed_tasks": 3,
-                    "deliverables": 2,
-                    "files_modified": 5
+            "handoffs": [
+                {
+                    "id": "HO-001",
+                    "from_agent": "copilot",
+                    "to_agent": "codex",
+                    "phase": "Plan 1",
+                    "status": "pending",
+                    "created": datetime.utcnow().isoformat() + "Z",
+                    "context_summary": {
+                        "completed_tasks": 3,
+                        "deliverables": 2,
+                        "files_modified": 5,
+                    },
                 }
-            }]
+            ]
         }
 
         report = validator.validate_handoff("HO-001")
@@ -447,7 +443,7 @@ class TestHandoffValidator:
         action_log = temp_dir / "action_log.ndjson"
         action_log.touch()
 
-        with patch('validate_handoff.ACTION_LOG_PATH', action_log):
+        with patch("validate_handoff.ACTION_LOG_PATH", action_log):
             report = validator.pre_handoff_check("Test Phase")
 
         assert len(report.results) >= 3
@@ -456,11 +452,17 @@ class TestHandoffValidator:
     def test_post_handoff_check_success(self, validator):
         """Test post-handoff check - success."""
         validator.tracking_data = {
-            "handoffs": [{
-                "id": "HO-001",
-                "status": "pending",
-                "context_summary": {"completed_tasks": 1, "deliverables": 1, "files_modified": 1}
-            }]
+            "handoffs": [
+                {
+                    "id": "HO-001",
+                    "status": "pending",
+                    "context_summary": {
+                        "completed_tasks": 1,
+                        "deliverables": 1,
+                        "files_modified": 1,
+                    },
+                }
+            ]
         }
 
         report = validator.post_handoff_check("HO-001")
@@ -480,10 +482,15 @@ class TestHandoffValidator:
         """Test chain validation."""
         validator.tracking_data = {
             "handoffs": [
-                {"id": "HO-001", "from_agent": "copilot", "to_agent": "codex",
-                 "status": "complete", "created": datetime.utcnow().isoformat() + "Z"}
+                {
+                    "id": "HO-001",
+                    "from_agent": "copilot",
+                    "to_agent": "codex",
+                    "status": "complete",
+                    "created": datetime.utcnow().isoformat() + "Z",
+                }
             ],
-            "metrics": {"success_rate": 95}
+            "metrics": {"success_rate": 95},
         }
 
         report = validator.chain_validation()
@@ -495,15 +502,11 @@ class TestHandoffValidator:
         """Test marking handoff for retry - success."""
         tracking_file = temp_dir / "tracking.json"
         validator.tracking_data = {
-            "handoffs": [{
-                "id": "HO-001",
-                "status": "failed",
-                "retry_count": 0
-            }],
-            "metrics": {"failed": 1, "pending": 0}
+            "handoffs": [{"id": "HO-001", "status": "failed", "retry_count": 0}],
+            "metrics": {"failed": 1, "pending": 0},
         }
 
-        with patch('validate_handoff.TRACKING_FILE', tracking_file):
+        with patch("validate_handoff.TRACKING_FILE", tracking_file):
             success, message = validator.mark_failed_for_retry("HO-001")
 
         assert success is True
@@ -512,11 +515,7 @@ class TestHandoffValidator:
     def test_mark_failed_for_retry_max_exceeded(self, validator):
         """Test marking handoff for retry - max exceeded."""
         validator.tracking_data = {
-            "handoffs": [{
-                "id": "HO-001",
-                "status": "failed",
-                "retry_count": 3
-            }]
+            "handoffs": [{"id": "HO-001", "status": "failed", "retry_count": 3}]
         }
 
         success, message = validator.mark_failed_for_retry("HO-001", max_retries=3)

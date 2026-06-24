@@ -177,9 +177,7 @@ class TestOptimizerBranches:
             ("adafactor", "Adafactor"),
         ],
     )
-    def test_optimizer_selection_branches(
-        self, optimizer_name: str, expected_class: str
-    ) -> None:
+    def test_optimizer_selection_branches(self, optimizer_name: str, expected_class: str) -> None:
         """Test optimizer selection branches."""
         optimizer_map = {
             "adamw": "AdamW",
@@ -227,9 +225,7 @@ class TestLRSchedulerBranches:
             ("cosine_with_restarts", "cosine_restarts_schedule"),
         ],
     )
-    def test_scheduler_type_branches(
-        self, scheduler_type: str, expected: str
-    ) -> None:
+    def test_scheduler_type_branches(self, scheduler_type: str, expected: str) -> None:
         """Test scheduler type selection branches."""
         scheduler_map = {
             "linear": "linear_schedule",

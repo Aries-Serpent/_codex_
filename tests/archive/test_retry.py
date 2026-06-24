@@ -24,9 +24,7 @@ def test_retry_eventually_succeeds(monkeypatch: pytest.MonkeyPatch) -> None:
     slept: list[float] = []
     monkeypatch.setattr("codex.archive.retry.time.sleep", slept.append)
 
-    @retry_with_backoff(
-        RetryConfig(max_attempts=3, initial_delay=0, max_delay=0, jitter=0)
-    )
+    @retry_with_backoff(RetryConfig(max_attempts=3, initial_delay=0, max_delay=0, jitter=0))
     def flaky() -> str:
         result = calls.popleft()
         if isinstance(result, Exception):

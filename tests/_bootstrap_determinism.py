@@ -61,4 +61,6 @@ except ImportError:
 except Exception as e:
     print(f"⚠ TensorFlow determinism partially enabled: {e}", file=sys.stderr)
 
-print("✓ Determinism bootstrap complete", file=sys.stderr)  # intentional: diagnostic output on import via conftest
+print(
+    "✓ Determinism bootstrap complete", file=sys.stderr
+)  # intentional: diagnostic output on import via conftest

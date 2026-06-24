@@ -86,9 +86,9 @@ class TestClassifyFiles:
 
     def test_mixed_batch(self):
         files = [
-            ".github/workflows/ci.yml",      # allowed
-            ".github/workflows/deploy.yml",   # denied (deploy* pattern)
-            "src/codex/app.py",               # excluded
+            ".github/workflows/ci.yml",  # allowed
+            ".github/workflows/deploy.yml",  # denied (deploy* pattern)
+            "src/codex/app.py",  # excluded
         ]
         allowed, excluded, denied = classify_files(files, self._config)
         assert allowed == [".github/workflows/ci.yml"]
@@ -150,7 +150,11 @@ class TestBuildPlanDryRun:
             patch("fast_forward_safe_files._get_pr_files", return_value=all_changed),
         ):
             plan = build_plan(
-                "owner/repo", "fake-token", 99, "main", "create-pr",
+                "owner/repo",
+                "fake-token",
+                99,
+                "main",
+                "create-pr",
                 force_files=[".github/workflows/ci.yml"],
             )
 

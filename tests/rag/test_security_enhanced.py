@@ -40,9 +40,16 @@ def sanitize_input(text: str) -> str:
     sanitized = html.escape(sanitized)
     # Remove SQL injection patterns (demonstration - use parameterized queries in production)
     # Note: Don't remove semicolons as they're used in HTML entities
-    sanitized = re.sub(r"(--|\b(OR|AND|DROP|DELETE|INSERT|UPDATE|SELECT|UNION|EXEC)\b)", "", sanitized, flags=re.IGNORECASE)
+    sanitized = re.sub(
+        r"(--|\b(OR|AND|DROP|DELETE|INSERT|UPDATE|SELECT|UNION|EXEC)\b)",
+        "",
+        sanitized,
+        flags=re.IGNORECASE,
+    )
     # Remove path traversal patterns (including encoded variants)
-    sanitized = sanitized.replace("..", "").replace("~", "").replace("%2e%2e", "").replace("%2E%2E", "")
+    sanitized = (
+        sanitized.replace("..", "").replace("~", "").replace("%2e%2e", "").replace("%2E%2E", "")
+    )
     # Remove leading slashes that could result from path traversal removal
     sanitized = sanitized.lstrip("/")
     return sanitized.strip()
@@ -89,7 +96,11 @@ def validate_config(config: dict) -> tuple:
 def check_permissions(user_role: str, resource: str, action: str) -> bool:
     """Check if user has permission for action on resource."""
     permissions = {
-        "admin": {"documents": ["read", "write", "delete"], "config": ["read", "write"], "users": ["read", "write", "delete"]},
+        "admin": {
+            "documents": ["read", "write", "delete"],
+            "config": ["read", "write"],
+            "users": ["read", "write", "delete"],
+        },
         "user": {"documents": ["read", "write"], "config": ["read"], "users": []},
         "guest": {"documents": ["read"], "config": [], "users": []},
     }

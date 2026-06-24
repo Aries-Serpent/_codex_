@@ -3,9 +3,10 @@
 Tests for src/services/mcp/lifecycle.py to improve module coverage.
 """
 
+from unittest.mock import AsyncMock, Mock
+
 import pytest
-import asyncio
-from unittest.mock import Mock, AsyncMock, patch, MagicMock
+
 from src.services.mcp.lifecycle import LifecycleManager
 
 
@@ -22,10 +23,10 @@ class TestLifecycleManagerInitialization:
     def test_initialization_empty_hooks(self):
         """Test that hooks are initialized as empty lists."""
         manager = LifecycleManager()
-        assert hasattr(manager, '_startup_hooks')
-        assert hasattr(manager, '_shutdown_hooks')
-        assert hasattr(manager, '_health_checks')
-        assert hasattr(manager, '_resources')
+        assert hasattr(manager, "_startup_hooks")
+        assert hasattr(manager, "_shutdown_hooks")
+        assert hasattr(manager, "_health_checks")
+        assert hasattr(manager, "_resources")
 
 
 class TestStartupHookRegistration:
@@ -41,10 +42,10 @@ class TestStartupHookRegistration:
     def test_register_startup_hook_async(self):
         """Test registering an asynchronous startup hook."""
         manager = LifecycleManager()
-        
+
         async def async_hook():
             pass
-        
+
         manager.register_startup_hook(async_hook)
         assert len(manager._startup_hooks) == 1
 
@@ -83,10 +84,10 @@ class TestShutdownHookRegistration:
     def test_register_shutdown_hook_async(self):
         """Test registering an asynchronous shutdown hook."""
         manager = LifecycleManager()
-        
+
         async def async_hook():
             pass
-        
+
         manager.register_shutdown_hook(async_hook)
         assert len(manager._shutdown_hooks) == 1
 
@@ -157,10 +158,10 @@ class TestHealthCheckRegistration:
     def test_register_health_check_async(self):
         """Test registering an asynchronous health check."""
         manager = LifecycleManager()
-        
+
         async def async_check():
             return True
-        
+
         manager.register_health_check(async_check)
         assert len(manager._health_checks) == 1
 
@@ -191,9 +192,9 @@ class TestStartupExecution:
         hook2 = Mock()
         manager.register_startup_hook(hook1)
         manager.register_startup_hook(hook2)
-        
+
         await manager.startup()
-        
+
         hook1.assert_called_once()
         hook2.assert_called_once()
         assert manager.is_ready() is True
@@ -203,13 +204,13 @@ class TestStartupExecution:
     async def test_startup_with_async_hooks(self):
         """Test startup with asynchronous hooks."""
         manager = LifecycleManager()
-        
+
         async def async_hook():
             pass
-        
+
         manager.register_startup_hook(async_hook)
         await manager.startup()
-        
+
         assert manager.is_ready() is True
         assert manager.is_healthy() is True
 
@@ -218,15 +219,15 @@ class TestStartupExecution:
         """Test startup with mixed sync and async hooks."""
         manager = LifecycleManager()
         sync_hook = Mock()
-        
+
         async def async_hook():
             pass
-        
+
         manager.register_startup_hook(sync_hook)
         manager.register_startup_hook(async_hook)
-        
+
         await manager.startup()
-        
+
         sync_hook.assert_called_once()
         assert manager.is_ready() is True
 
@@ -236,13 +237,13 @@ class TestStartupExecution:
         manager = LifecycleManager()
         hook1 = Mock()
         hook2 = Mock(side_effect=RuntimeError("Hook failed"))
-        
+
         manager.register_startup_hook(hook1)
         manager.register_startup_hook(hook2)
-        
+
         with pytest.raises(RuntimeError):
             await manager.startup()
-        
+
         assert manager.is_ready() is False
 
     @pytest.mark.asyncio
@@ -250,7 +251,7 @@ class TestStartupExecution:
         """Test startup with no hooks."""
         manager = LifecycleManager()
         await manager.startup()
-        
+
         assert manager.is_ready() is True
         assert manager.is_healthy() is True
 
@@ -268,9 +269,9 @@ class TestShutdownExecution:
         manager.register_shutdown_hook(hook2)
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         hook1.assert_called_once()
         hook2.assert_called_once()
         assert manager.is_ready() is False
@@ -280,16 +281,16 @@ class TestShutdownExecution:
     async def test_shutdown_with_async_hooks(self):
         """Test shutdown with asynchronous hooks."""
         manager = LifecycleManager()
-        
+
         async def async_hook():
             pass
-        
+
         manager.register_shutdown_hook(async_hook)
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         assert manager.is_ready() is False
 
     @pytest.mark.asyncio
@@ -304,9 +305,9 @@ class TestShutdownExecution:
         manager.register_shutdown_hook(hook3)
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         # All hooks should be attempted
         hook1.assert_called_once()
         hook3.assert_called_once()
@@ -317,9 +318,9 @@ class TestShutdownExecution:
         manager = LifecycleManager()
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         assert manager.is_ready() is False
         assert manager.is_healthy() is False
 
@@ -336,9 +337,9 @@ class TestResourceCleanup:
         manager.register_resource("test", resource)
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         resource.cleanup.assert_called_once()
 
     @pytest.mark.asyncio
@@ -350,23 +351,23 @@ class TestResourceCleanup:
         manager.register_resource("test", resource)
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         resource.cleanup.assert_called_once()
 
     @pytest.mark.asyncio
     async def test_cleanup_with_close_method(self):
         """Test cleanup with close method when cleanup not available."""
         manager = LifecycleManager()
-        resource = Mock(spec=['close'])
+        resource = Mock(spec=["close"])
         resource.close = Mock()
         manager.register_resource("test", resource)
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         resource.close.assert_called_once()
 
     @pytest.mark.asyncio
@@ -379,15 +380,15 @@ class TestResourceCleanup:
         resource2.cleanup = Mock(side_effect=RuntimeError("Cleanup failed"))
         resource3 = Mock()
         resource3.cleanup = Mock()
-        
+
         manager.register_resource("resource1", resource1)
         manager.register_resource("resource2", resource2)
         manager.register_resource("resource3", resource3)
         manager._is_ready = True
         manager._is_healthy = True
-        
+
         await manager.shutdown()
-        
+
         resource1.cleanup.assert_called_once()
         resource3.cleanup.assert_called_once()
 
@@ -404,11 +405,11 @@ class TestHealthCheck:
         manager.register_health_check(check2)
         manager._is_healthy = True
         manager._is_ready = True
-        
+
         result = manager.healthz()
-        
-        assert result['status'] == 'healthy'
-        assert result['ready'] is True
+
+        assert result["status"] == "healthy"
+        assert result["ready"] is True
         check1.assert_called_once()
         check2.assert_called_once()
 
@@ -421,10 +422,10 @@ class TestHealthCheck:
         manager.register_health_check(check2)
         manager._is_healthy = True
         manager._is_ready = True
-        
+
         result = manager.healthz()
-        
-        assert result['status'] == 'unhealthy'
+
+        assert result["status"] == "unhealthy"
 
     def test_health_check_sync_exception_handling(self):
         """Test health check handles exceptions gracefully."""
@@ -435,10 +436,10 @@ class TestHealthCheck:
         manager.register_health_check(check2)
         manager._is_healthy = True
         manager._is_ready = True
-        
+
         result = manager.healthz()
-        
-        assert result['status'] == 'unhealthy'
+
+        assert result["status"] == "unhealthy"
 
     def test_health_check_not_healthy_status(self):
         """Test health check when not healthy."""
@@ -447,11 +448,11 @@ class TestHealthCheck:
         manager.register_health_check(check)
         manager._is_healthy = False
         manager._is_ready = False
-        
+
         result = manager.healthz()
-        
-        assert result['status'] == 'unhealthy'
-        assert result['ready'] is False
+
+        assert result["status"] == "unhealthy"
+        assert result["ready"] is False
 
     def test_health_check_resources_count(self):
         """Test health check includes resource count."""
@@ -460,10 +461,10 @@ class TestHealthCheck:
         manager.register_resource("res2", Mock())
         manager._is_healthy = True
         manager._is_ready = True
-        
+
         result = manager.healthz()
-        
-        assert result['resources'] == 2
+
+        assert result["resources"] == 2
 
 
 class TestStatusMethods:
@@ -484,7 +485,7 @@ class TestStatusMethods:
         """Test status after successful startup."""
         manager = LifecycleManager()
         await manager.startup()
-        
+
         assert manager.is_healthy() is True
         assert manager.is_ready() is True
 
@@ -494,6 +495,6 @@ class TestStatusMethods:
         manager = LifecycleManager()
         await manager.startup()
         await manager.shutdown()
-        
+
         assert manager.is_healthy() is False
         assert manager.is_ready() is False

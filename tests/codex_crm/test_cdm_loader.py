@@ -21,7 +21,7 @@ class TestFieldDef:
             ftype="text",
             required=True,
             choices=["a", "b", "c"],
-            default="a"
+            default="a",
         )
         assert field.name == "Test Field"
         assert field.key == "test_field"
@@ -34,13 +34,7 @@ class TestFieldDef:
         """Test FieldDef with no default."""
         from codex_crm.cdm.loader import FieldDef
 
-        field = FieldDef(
-            name="Field",
-            key="field",
-            ftype="integer",
-            required=False,
-            choices=[]
-        )
+        field = FieldDef(name="Field", key="field", ftype="integer", required=False, choices=[])
         assert field.default is None
 
     def test_field_def_slots(self):
@@ -108,7 +102,7 @@ class TestLoadCdm:
                 "type": "text",
                 "required": "true",
                 "choices": "a|b|c",
-                "default": "a"
+                "default": "a",
             }
         ]
 
@@ -137,7 +131,7 @@ class TestLoadCdm:
                 "type": "text",
                 "required": "false",
                 "choices": "",
-                "default": ""
+                "default": "",
             }
         ]
 
@@ -162,7 +156,7 @@ class TestLoadMapping:
 
         mock_iter_csv.return_value = [
             {"cdm_key": "field1", "platform_key": "zd_field1"},
-            {"cdm_key": "field2", "platform_key": "zd_field2"}
+            {"cdm_key": "field2", "platform_key": "zd_field2"},
         ]
 
         mappings = load_mapping()

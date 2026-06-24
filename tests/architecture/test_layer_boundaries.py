@@ -45,6 +45,7 @@ def _files_under(directory: Path) -> list[Path]:
 # L1 boundary: CLI / apps / tools must NOT import from tests/
 # ---------------------------------------------------------------------------
 
+
 @pytest.mark.parametrize("layer_dir", ["cli", "apps", "tools"])
 def test_l1_no_test_imports(layer_dir: str) -> None:
     """CLI/apps/tools layers must not import from tests."""
@@ -54,9 +55,10 @@ def test_l1_no_test_imports(layer_dir: str) -> None:
         for mod in _imports_from(f):
             if mod == "tests":
                 violations.append(str(f.relative_to(ROOT)))
-    assert not violations, (
-        f"Layer 1 ({layer_dir}) imports 'tests' — prohibited upward dependency:\n"
-        + "\n".join(violations)
+    assert (
+        not violations
+    ), f"Layer 1 ({layer_dir}) imports 'tests' — prohibited upward dependency:\n" + "\n".join(
+        violations
     )
 
 
@@ -64,6 +66,7 @@ def test_l1_no_test_imports(layer_dir: str) -> None:
 # L5 boundary: tests/ must not import production cli/apps/tools directly
 # (only src.* packages)
 # ---------------------------------------------------------------------------
+
 
 def test_tests_no_direct_cli_import() -> None:
     """Test files should import src.* not CLI entry-point scripts directly."""
@@ -88,6 +91,7 @@ def test_tests_no_direct_cli_import() -> None:
 # ---------------------------------------------------------------------------
 # Architecture document integrity
 # ---------------------------------------------------------------------------
+
 
 def test_architecture_doc_exists() -> None:
     """D1 — architecture layer document must be present."""
@@ -169,25 +173,25 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
 
     block = "\n".join(lines[step_start:step_end])
 
-    assert "run: |" in block, (
-        "'Session Context Pre-load' step: expected canonical 'run: |' block scalar form"
-    )
-    assert "python3 .github/scripts/session_preload.py" in block, (
-        "'Session Context Pre-load' step: expected session_preload.py invocation"
-    )
+    assert (
+        "run: |" in block
+    ), "'Session Context Pre-load' step: expected canonical 'run: |' block scalar form"
+    assert (
+        "python3 .github/scripts/session_preload.py" in block
+    ), "'Session Context Pre-load' step: expected session_preload.py invocation"
     assert "session_preload.py failed (non-blocking)" in block, (
         "'Session Context Pre-load' step: fallback echo is missing — "
         "the non-blocking error message must be preserved"
     )
-    assert "SESSION_PRELOAD_STATUS=failed" in block, (
-        "'Session Context Pre-load' step: expected SESSION_PRELOAD_STATUS env var export on failure"
-    )
-    assert "::group::Session Context Pre-load" in block, (
-        "'Session Context Pre-load' step: expected ::group:: log grouping marker"
-    )
-    assert "::endgroup::" in block, (
-        "'Session Context Pre-load' step: expected ::endgroup:: closing marker"
-    )
+    assert (
+        "SESSION_PRELOAD_STATUS=failed" in block
+    ), "'Session Context Pre-load' step: expected SESSION_PRELOAD_STATUS env var export on failure"
+    assert (
+        "::group::Session Context Pre-load" in block
+    ), "'Session Context Pre-load' step: expected ::group:: log grouping marker"
+    assert (
+        "::endgroup::" in block
+    ), "'Session Context Pre-load' step: expected ::endgroup:: closing marker"
 
 
 def test_copilot_setup_steps_session_preload_step_nonblocking() -> None:
@@ -226,6 +230,7 @@ def test_copilot_setup_steps_session_preload_step_nonblocking() -> None:
 # ---------------------------------------------------------------------------
 # Source structure integrity (no empty __init__ stubs in critical packages)
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.parametrize("pkg", ["codex_ml", "codex", "mcp"])
 def test_src_package_has_init(pkg: str) -> None:

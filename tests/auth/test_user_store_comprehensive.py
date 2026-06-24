@@ -26,6 +26,7 @@ from codex.auth.user_store import PasswordHasher, User, UserStore
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def user_store():
     """Create in-memory user store."""
@@ -41,6 +42,7 @@ def password_hasher():
 # ============================================================================
 # PasswordHasher Tests
 # ============================================================================
+
 
 class TestPasswordHasher:
     """Password hashing and verification."""
@@ -116,6 +118,7 @@ class TestPasswordHasher:
 # User Creation Tests
 # ============================================================================
 
+
 class TestUserCreation:
     """User creation and storage."""
 
@@ -126,12 +129,7 @@ class TestUserCreation:
         assert user.email == "alice@example.com"
 
     def test_create_user_with_roles(self, user_store):
-        user = user_store.create_user(
-            "bob",
-            "bob@example.com",
-            "Str0ngPass!",
-            roles=["admin"]
-        )
+        user = user_store.create_user("bob", "bob@example.com", "Str0ngPass!", roles=["admin"])
         assert "admin" in user.roles
 
     def test_duplicate_username(self, user_store):
@@ -169,6 +167,7 @@ class TestUserCreation:
 # ============================================================================
 # User Retrieval Tests
 # ============================================================================
+
 
 class TestUserRetrieval:
     """User lookup and retrieval."""
@@ -222,6 +221,7 @@ class TestUserRetrieval:
 # Authentication Tests
 # ============================================================================
 
+
 class TestAuthentication:
     """User authentication."""
 
@@ -259,24 +259,19 @@ class TestAuthentication:
 # User Update Tests
 # ============================================================================
 
+
 class TestUserUpdate:
     """User profile updates."""
 
     def test_update_email(self, user_store):
         user = user_store.create_user("sam", "sam@example.com", "Str0ngPass!")
-        updated_user = user_store.update_user(
-            user.user_id,
-            email="sam.new@example.com"
-        )
+        updated_user = user_store.update_user(user.user_id, email="sam.new@example.com")
         assert updated_user.email == "sam.new@example.com"
 
     def test_update_password(self, user_store):
         user = user_store.create_user("tina", "tina@example.com", "Str0ngPass!")
         new_password = "NewPass123!"
-        updated_user = user_store.update_user(
-            user.user_id,
-            password=new_password
-        )
+        updated_user = user_store.update_user(user.user_id, password=new_password)
         # New password should work
         authenticated = user_store.authenticate("tina", new_password)
         assert authenticated.user_id == user.user_id
@@ -288,9 +283,7 @@ class TestUserUpdate:
     def test_update_multiple_fields(self, user_store):
         user = user_store.create_user("uma", "uma@example.com", "Str0ngPass!")
         updated_user = user_store.update_user(
-            user.user_id,
-            email="uma.new@example.com",
-            password="Str0ngPass!"
+            user.user_id, email="uma.new@example.com", password="Str0ngPass!"
         )
         assert updated_user.email == "uma.new@example.com"
         # Verify new password works
@@ -299,16 +292,14 @@ class TestUserUpdate:
 
     def test_update_preserves_user_id(self, user_store):
         user = user_store.create_user("victor", "victor@example.com", "Str0ngPass!")
-        updated_user = user_store.update_user(
-            user.user_id,
-            email="victor.new@example.com"
-        )
+        updated_user = user_store.update_user(user.user_id, email="victor.new@example.com")
         assert updated_user.user_id == user.user_id
 
 
 # ============================================================================
 # Role Management Tests
 # ============================================================================
+
 
 class TestRoleManagement:
     """User role management."""
@@ -320,10 +311,7 @@ class TestRoleManagement:
 
     def test_remove_role(self, user_store):
         user = user_store.create_user(
-            "xavier",
-            "xavier@example.com",
-            "Str0ngPass!",
-            roles=["admin"]
+            "xavier", "xavier@example.com", "Str0ngPass!", roles=["admin"]
         )
         updated_user = user_store.remove_role(user.user_id, "admin")
         assert "admin" not in updated_user.roles
@@ -353,6 +341,7 @@ class TestRoleManagement:
 # Concurrent Access Tests
 # ============================================================================
 
+
 class TestConcurrentAccess:
     """Concurrent user operations."""
 
@@ -362,21 +351,14 @@ class TestConcurrentAccess:
 
         def create_user(username, email):
             try:
-                user = user_store.create_user(
-                    username,
-                    email,
-                    "Str0ngPass!"
-                )
+                user = user_store.create_user(username, email, "Str0ngPass!")
                 users.append(user)
             except Exception as e:
                 errors.append(e)
 
         threads = []
         for i in range(5):
-            t = threading.Thread(
-                target=create_user,
-                args=(f"user{i}", f"user{i}@example.com")
-            )
+            t = threading.Thread(target=create_user, args=(f"user{i}", f"user{i}@example.com"))
             threads.append(t)
             t.start()
 
@@ -412,6 +394,7 @@ class TestConcurrentAccess:
 # Edge Cases Tests
 # ============================================================================
 
+
 class TestEdgeCases:
     """Edge cases and boundary conditions."""
 
@@ -421,21 +404,13 @@ class TestEdgeCases:
 
     def test_very_long_username(self, user_store):
         long_username = "a" * 255
-        user = user_store.create_user(
-            long_username,
-            "long@example.com",
-            "Str0ngPass!"
-        )
+        user = user_store.create_user(long_username, "long@example.com", "Str0ngPass!")
         assert len(user.username) <= 255
 
     def test_very_long_email(self, user_store):
         long_email = "a" * 240 + "@example.com"
         try:
-            user = user_store.create_user(
-                "longemail",
-                long_email,
-                "Str0ngPass!"
-            )
+            user = user_store.create_user("longemail", long_email, "Str0ngPass!")
             assert user.email
         except ValueError:
             pass  # Email length limit is acceptable
@@ -464,6 +439,7 @@ class TestEdgeCases:
 # ============================================================================
 # User Model Tests
 # ============================================================================
+
 
 class TestUserModel:
     """User data model."""
@@ -501,6 +477,7 @@ class TestUserModel:
 
     def test_user_created_at(self):
         import time
+
         before = time.time()
         user = User(
             user_id="123",
@@ -515,6 +492,7 @@ class TestUserModel:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestIntegration:
     """Integration scenarios."""
@@ -544,11 +522,7 @@ class TestIntegration:
     def test_multiple_users(self, user_store):
         users = []
         for i in range(10):
-            user = user_store.create_user(
-                f"user{i}",
-                f"user{i}@example.com",
-                "Str0ngPass!"
-            )
+            user = user_store.create_user(f"user{i}", f"user{i}@example.com", "Str0ngPass!")
             users.append(user)
 
         assert len(users) == 10

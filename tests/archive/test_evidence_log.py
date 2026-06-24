@@ -72,12 +72,8 @@ def test_append_evidence_preserves_existing_lines(tmp_path: Path, monkeypatch) -
     assert final_text.startswith(seed_text)
     assert final_text[: len(seed_text)] == seed_text
 
-    parsed_actions = [
-        json.loads(line)["action"] for line in final_text.strip().splitlines()
-    ]
-    assert parsed_actions[: len(seed_lines)] == [
-        json.loads(line)["action"] for line in seed_lines
-    ]
+    parsed_actions = [json.loads(line)["action"] for line in final_text.strip().splitlines()]
+    assert parsed_actions[: len(seed_lines)] == [json.loads(line)["action"] for line in seed_lines]
     assert parsed_actions[len(seed_lines) : len(seed_lines) + 2] == [
         "FIRST_APPEND",
         "SECOND_APPEND",

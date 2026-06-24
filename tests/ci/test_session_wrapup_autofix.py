@@ -48,6 +48,7 @@ import session_wrapup_autofix as swa
 # _extract_wec_state
 # ===========================================================================
 
+
 class TestExtractWecState:
     def test_empty_body_returns_empty(self):
         assert swa._extract_wec_state("") == {}
@@ -115,6 +116,7 @@ class TestExtractWecState:
 # _build_wec_block
 # ===========================================================================
 
+
 class TestBuildWecBlock:
     def test_always_required_always_checked(self):
         block = swa._build_wec_block(existing_state={})
@@ -147,9 +149,9 @@ class TestBuildWecBlock:
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
             block = swa._build_wec_block(existing_state={})
         for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
-            assert f"- [x] {fname}" in block, (
-                f"{fname} should be [x] when COPILOT_AGENT_AUTH_ENABLED=true"
-            )
+            assert (
+                f"- [x] {fname}" in block
+            ), f"{fname} should be [x] when COPILOT_AGENT_AUTH_ENABLED=true"
 
     def test_autonomous_auto_check_items_unchecked_when_auth_disabled(self):
         """Items in _WEC_AUTONOMOUS_AUTO_CHECK stay [ ] when auth is disabled + state empty."""
@@ -157,20 +159,18 @@ class TestBuildWecBlock:
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
             block = swa._build_wec_block(existing_state={})
         for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
-            assert f"- [ ] {fname}" in block, (
-                f"{fname} should be [ ] when auth disabled and no existing state"
-            )
+            assert (
+                f"- [ ] {fname}" in block
+            ), f"{fname} should be [ ] when auth disabled and no existing state"
 
     def test_autonomous_auto_check_respects_explicit_uncheck(self):
         """Explicit maintainer uncheck (state[fname]=False) is respected even when auth is on."""
         mock = unittest.mock
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
-            block = swa._build_wec_block(
-                existing_state={"auto-approve-workflows": False}
-            )
-        assert "- [ ] auto-approve-workflows" in block, (
-            "explicit [ ] uncheck by maintainer must be preserved even with auth enabled"
-        )
+            block = swa._build_wec_block(existing_state={"auto-approve-workflows": False})
+        assert (
+            "- [ ] auto-approve-workflows" in block
+        ), "explicit [ ] uncheck by maintainer must be preserved even with auth enabled"
 
     def test_never_check_items_are_unchecked_by_default(self):
         block = swa._build_wec_block(existing_state={})
@@ -221,7 +221,7 @@ class TestBuildWecBlock:
         for fname, _, _ in swa._WEC_ITEMS:
             # Use word-boundary pattern so 'pre-merge-validation.yml' does not
             # match as a substring of 'pages-pre-merge-validation.yml'.
-            pattern = re.compile(r'(?<![a-zA-Z0-9/-])' + re.escape(fname))
+            pattern = re.compile(r"(?<![a-zA-Z0-9/-])" + re.escape(fname))
             count = len(pattern.findall(block))
             assert count == 1, f"{fname} appears more than once in WEC block"
 
@@ -232,6 +232,7 @@ class TestBuildWecBlock:
 # ===========================================================================
 # fix_pr_body_checkboxes
 # ===========================================================================
+
 
 class TestFixPrBodyCheckboxes:
     def _make_run(self, stdout: str, returncode: int = 0):
@@ -339,6 +340,7 @@ class TestFixPrBodyCheckboxes:
 # fix_manifest_baseline
 # ===========================================================================
 
+
 class TestFixManifestBaseline:
     """Tests for fix_manifest_baseline() which delegates to sync_tracked_files.py."""
 
@@ -361,8 +363,7 @@ class TestFixManifestBaseline:
         repo = self._make_repo(tmp_path)
         with (
             patch.object(swa, "REPO_ROOT", repo),
-            patch.object(swa.subprocess, "run",
-                         return_value=self._make_proc(0)) as mock_run,
+            patch.object(swa.subprocess, "run", return_value=self._make_proc(0)) as mock_run,
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=False)
         assert result is True
@@ -373,8 +374,7 @@ class TestFixManifestBaseline:
         repo = self._make_repo(tmp_path)
         with (
             patch.object(swa, "REPO_ROOT", repo),
-            patch.object(swa.subprocess, "run",
-                         return_value=self._make_proc(0)),
+            patch.object(swa.subprocess, "run", return_value=self._make_proc(0)),
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=False)
         assert result is True
@@ -384,8 +384,7 @@ class TestFixManifestBaseline:
         repo = self._make_repo(tmp_path)
         with (
             patch.object(swa, "REPO_ROOT", repo),
-            patch.object(swa.subprocess, "run",
-                         return_value=self._make_proc(1)) as mock_run,
+            patch.object(swa.subprocess, "run", return_value=self._make_proc(1)) as mock_run,
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=True)
         assert result is True
@@ -405,6 +404,7 @@ class TestFixManifestBaseline:
             result = swa.fix_manifest_baseline()
         assert result is False
 
+
 class TestAutoFixAllMissing:
     def test_returns_dict_with_all_keys(self):
         with (
@@ -418,8 +418,13 @@ class TestAutoFixAllMissing:
         ):
             results = swa.auto_fix_all_missing(pr_number="42")
         assert set(results.keys()) == {
-            "accountability", "changelog", "manifest_baseline",
-            "pda_today", "pr_description", "pr_body_wec", "wec_workflow_activation",
+            "accountability",
+            "changelog",
+            "manifest_baseline",
+            "pda_today",
+            "pr_description",
+            "pr_body_wec",
+            "wec_workflow_activation",
             "req14",
         }
 
@@ -483,6 +488,7 @@ class TestAutoFixAllMissing:
 # ===========================================================================
 # main() — CLI routing
 # ===========================================================================
+
 
 class TestMain:
     def test_fix_all_calls_auto_fix_all_missing(self):
@@ -548,6 +554,7 @@ class TestMain:
 # ===========================================================================
 # WEC constants integrity
 # ===========================================================================
+
 
 class TestWecConstants:
     def test_wec_items_count_matches_sections(self):
@@ -621,8 +628,7 @@ class TestWecConstants:
         wec_filenames = {item[0] for item in swa._WEC_ITEMS}
         unknown = swa._MERGE_REQUIRED_WORKFLOWS - wec_filenames
         assert not unknown, (
-            f"_MERGE_REQUIRED_WORKFLOWS contains workflows not in _WEC_ITEMS: "
-            f"{sorted(unknown)}"
+            f"_MERGE_REQUIRED_WORKFLOWS contains workflows not in _WEC_ITEMS: " f"{sorted(unknown)}"
         )
 
     def test_build_wec_block_does_not_auto_check_never_check_when_state_empty(self):
@@ -632,12 +638,12 @@ class TestWecConstants:
         block = swa._build_wec_block({})
         for fname in swa._WEC_NEVER_CHECK:
             # Each never-check item must appear in the block, unchecked.
-            assert f"- [ ] {fname}" in block, (
-                f"never-check item {fname!r} not rendered as `[ ]` in WEC block"
-            )
-            assert f"- [x] {fname}" not in block, (
-                f"never-check item {fname!r} was auto-rendered as `[x]`"
-            )
+            assert (
+                f"- [ ] {fname}" in block
+            ), f"never-check item {fname!r} not rendered as `[ ]` in WEC block"
+            assert (
+                f"- [x] {fname}" not in block
+            ), f"never-check item {fname!r} was auto-rendered as `[x]`"
 
     def test_build_wec_block_preserves_maintainer_x_for_never_check(self):
         """When a maintainer has explicitly checked a never-check item in the
@@ -645,9 +651,7 @@ class TestWecConstants:
         """
         for fname in swa._WEC_NEVER_CHECK:
             block = swa._build_wec_block({fname: True})
-            assert f"- [x] {fname}" in block, (
-                f"maintainer [x] for {fname!r} was not preserved"
-            )
+            assert f"- [x] {fname}" in block, f"maintainer [x] for {fname!r} was not preserved"
 
     def test_required_pr_checkboxes_contains_auto_approve(self):
         assert "auto-approve-workflows" in swa._REQUIRED_PR_CHECKBOXES
@@ -683,7 +687,9 @@ class TestWecTemplateDefaults:
             pytest.skip(f"Template file not available in this environment: {template_path}")
         template = template_path.read_text(encoding="utf-8")
         for fname in swa._WEC_NEVER_CHECK:
-            assert f"- [ ] {fname}" in template, f"{fname} should be unchecked in secondary template"
+            assert (
+                f"- [ ] {fname}" in template
+            ), f"{fname} should be unchecked in secondary template"
 
 
 class TestWecNeverCheckTelemetry:
@@ -705,7 +711,8 @@ class TestWecNeverCheckTelemetry:
         never_check_item = next(iter(swa._WEC_NEVER_CHECK))
         original_merge_required = swa._MERGE_REQUIRED_WORKFLOWS
         monkeypatch.setattr(
-            swa, "_MERGE_REQUIRED_WORKFLOWS",
+            swa,
+            "_MERGE_REQUIRED_WORKFLOWS",
             original_merge_required | {never_check_item},
         )
 
@@ -721,12 +728,12 @@ class TestWecNeverCheckTelemetry:
         # The step summary file must exist and contain the warning text.
         assert summary_file.exists(), "GITHUB_STEP_SUMMARY was not written"
         content = summary_file.read_text(encoding="utf-8")
-        assert "WEC Never-Check Guard" in content, (
-            "Step summary missing 'WEC Never-Check Guard' telemetry heading"
-        )
-        assert never_check_item in content, (
-            f"Step summary missing the skipped item name '{never_check_item}'"
-        )
+        assert (
+            "WEC Never-Check Guard" in content
+        ), "Step summary missing 'WEC Never-Check Guard' telemetry heading"
+        assert (
+            never_check_item in content
+        ), f"Step summary missing the skipped item name '{never_check_item}'"
 
     def test_no_step_summary_when_no_skipped_items(self, tmp_path, monkeypatch):
         """When no never-check items are skipped, GITHUB_STEP_SUMMARY must NOT
@@ -761,6 +768,7 @@ class TestHumanGrantTracking:
             },
         }
         import json
+
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
 
@@ -777,12 +785,17 @@ class TestHumanGrantTracking:
                 "1234": {
                     "last_agent_write": {"auto-approve-workflows": True},
                     "human_grants": {
-                        "auto-approve-workflows": {"status": "active", "granted_at": "...", "granted_sha": "abc"},
+                        "auto-approve-workflows": {
+                            "status": "active",
+                            "granted_at": "...",
+                            "granted_sha": "abc",
+                        },
                     },
                 }
             },
         }
         import json
+
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
 
@@ -799,22 +812,24 @@ class TestHumanGrantTracking:
                 existing_state={never_check_item: False},
                 human_grants=grants,
             )
-        assert f"- [x] {never_check_item}" in block, (
-            "human grant must override _WEC_NEVER_CHECK and render [x]"
-        )
+        assert (
+            f"- [x] {never_check_item}" in block
+        ), "human grant must override _WEC_NEVER_CHECK and render [x]"
 
     def test_revoked_grant_does_not_force_checked(self):
         """A revoked human grant must NOT force [x]."""
         mock = unittest.mock
-        grants = {"auto-approve-workflows": {"status": "revoked", "granted_at": "...", "granted_sha": "x"}}
+        grants = {
+            "auto-approve-workflows": {"status": "revoked", "granted_at": "...", "granted_sha": "x"}
+        }
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
             block = swa._build_wec_block(
                 existing_state={"auto-approve-workflows": False},
                 human_grants=grants,
             )
-        assert "- [ ] auto-approve-workflows" in block, (
-            "revoked grant should result in [ ] when state is False"
-        )
+        assert (
+            "- [ ] auto-approve-workflows" in block
+        ), "revoked grant should result in [ ] when state is False"
 
     def test_no_grant_for_unchanged_state(self, tmp_path, monkeypatch):
         """No grant should be recorded when agent last wrote [x] and it's still [x]."""
@@ -829,6 +844,7 @@ class TestHumanGrantTracking:
             },
         }
         import json
+
         state_file.write_text(json.dumps(state_data))
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
 

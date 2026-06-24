@@ -23,10 +23,11 @@ def test_registry_lists_builtins():
     # Descriptions present
     assert isinstance(reg.describe("step_lr"), str)
 
+
 def test_build_step_lr_and_step_once():
     model = torch.nn.Linear(4, 2)
     # Ensure model is materialized (not meta tensor) before creating optimizer
-    if hasattr(model.weight, 'is_meta') and model.weight.is_meta:
+    if hasattr(model.weight, "is_meta") and model.weight.is_meta:
         pytest.skip("Model is on meta device - cannot create optimizer")
 
     opt = torch.optim.SGD(model.parameters(), lr=0.1)
@@ -47,10 +48,11 @@ def test_build_step_lr_and_step_once():
     sched.step()  # epoch 2 -> decay
     assert opt.param_groups[0]["lr"] == pytest.approx(initial_lr * 0.5)
 
+
 def test_build_cosine_annealing_progression():
     model = torch.nn.Linear(4, 2)
     # Ensure model is materialized (not meta tensor) before creating optimizer
-    if hasattr(model.weight, 'is_meta') and model.weight.is_meta:
+    if hasattr(model.weight, "is_meta") and model.weight.is_meta:
         pytest.skip("Model is on meta device - cannot create optimizer")
 
     opt = torch.optim.SGD(model.parameters(), lr=0.1)

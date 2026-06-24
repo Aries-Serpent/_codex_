@@ -166,9 +166,7 @@ def fetch_rows(
             sql = f"SELECT * FROM ({inner_sql}) sub ORDER BY {ts_col} {order_clause}"  # nosec B608
             params.append(last_n)
         else:
-            sql = (  # nosec B608
-                f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"  # nosec B608
-            )
+            sql = f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"  # nosec B608  # nosec B608
         cur = conn.cursor()
         rows = list(cur.execute(sql, params))
         return rows, cols

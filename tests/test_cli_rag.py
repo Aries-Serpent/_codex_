@@ -11,7 +11,6 @@ Comprehensive test coverage for:
 - Metrics export
 """
 
-
 import importlib.util
 import json
 from unittest.mock import MagicMock, patch
@@ -46,12 +45,8 @@ def sample_docs(tmp_path):
     docs_dir.mkdir()
 
     # Create sample markdown files
-    (docs_dir / "intro.md").write_text(
-        "# Introduction\n\nThis is a sample documentation file.\n"
-    )
-    (docs_dir / "guide.md").write_text(
-        "# User Guide\n\nDetailed instructions for users.\n"
-    )
+    (docs_dir / "intro.md").write_text("# Introduction\n\nThis is a sample documentation file.\n")
+    (docs_dir / "guide.md").write_text("# User Guide\n\nDetailed instructions for users.\n")
 
     return docs_dir
 
@@ -89,8 +84,10 @@ class TestBuildCommand:
             app,
             [
                 "build",
-                "--files", str(sample_docs / "*.md"),
-                "--index-name", "test_index",
+                "--files",
+                str(sample_docs / "*.md"),
+                "--index-name",
+                "test_index",
             ],
         )
 
@@ -108,12 +105,18 @@ class TestBuildCommand:
             app,
             [
                 "build",
-                "--files", str(sample_docs / "*.md"),
-                "--index-name", "custom_index",
-                "--tenant-id", "customer_a",
-                "--chunk-size", "1500",
-                "--overlap", "200",
-                "--model", "custom-model",
+                "--files",
+                str(sample_docs / "*.md"),
+                "--index-name",
+                "custom_index",
+                "--tenant-id",
+                "customer_a",
+                "--chunk-size",
+                "1500",
+                "--overlap",
+                "200",
+                "--model",
+                "custom-model",
             ],
         )
 
@@ -140,9 +143,12 @@ class TestBuildCommand:
             app,
             [
                 "build",
-                "--files", str(sample_docs / "*.md"),
-                "--chunk-size", "1000",
-                "--overlap", "1000",
+                "--files",
+                str(sample_docs / "*.md"),
+                "--chunk-size",
+                "1000",
+                "--overlap",
+                "1000",
             ],
         )
 
@@ -199,11 +205,16 @@ class TestQueryCommand:
         result = runner.invoke(
             app,
             [
-                "query", "test query",
-                "--index-name", "custom_index",
-                "--tenant-id", "customer_a",
-                "--top-k", "10",
-                "--min-score", "0.7",
+                "query",
+                "test query",
+                "--index-name",
+                "custom_index",
+                "--tenant-id",
+                "customer_a",
+                "--top-k",
+                "10",
+                "--min-score",
+                "0.7",
             ],
         )
 
@@ -216,9 +227,7 @@ class TestQueryCommand:
     def test_query_json_output(self, mock_retriever_class, runner):
         """Test JSON output format."""
         mock_retriever = MagicMock()
-        mock_retriever.query.return_value = [
-            {"text": "Test", "file": "test.md", "score": 0.9}
-        ]
+        mock_retriever.query.return_value = [{"text": "Test", "file": "test.md", "score": 0.9}]
         mock_retriever_class.return_value = mock_retriever
 
         result = runner.invoke(
@@ -283,7 +292,8 @@ class TestListCommand:
             app,
             [
                 "list",
-                "--index-dir", str(mock_index_metadata),
+                "--index-dir",
+                str(mock_index_metadata),
             ],
         )
 
@@ -297,7 +307,8 @@ class TestListCommand:
             app,
             [
                 "list",
-                "--index-dir", str(temp_index_dir),
+                "--index-dir",
+                str(temp_index_dir),
             ],
         )
 
@@ -322,8 +333,10 @@ class TestListCommand:
             app,
             [
                 "list",
-                "--tenant-id", "customer_a",
-                "--index-dir", str(mock_index_metadata),
+                "--tenant-id",
+                "customer_a",
+                "--index-dir",
+                str(mock_index_metadata),
             ],
         )
 
@@ -340,8 +353,10 @@ class TestDeleteCommand:
             app,
             [
                 "delete",
-                "--index-name", "test_index",
-                "--index-dir", str(mock_index_metadata),
+                "--index-name",
+                "test_index",
+                "--index-dir",
+                str(mock_index_metadata),
                 "--yes",  # Skip confirmation
             ],
         )
@@ -359,8 +374,10 @@ class TestDeleteCommand:
             app,
             [
                 "delete",
-                "--index-name", "nonexistent",
-                "--index-dir", str(temp_index_dir),
+                "--index-name",
+                "nonexistent",
+                "--index-dir",
+                str(temp_index_dir),
                 "--yes",
             ],
         )
@@ -374,8 +391,10 @@ class TestDeleteCommand:
             app,
             [
                 "delete",
-                "--index-name", "test_index",
-                "--index-dir", str(mock_index_metadata),
+                "--index-name",
+                "test_index",
+                "--index-dir",
+                str(mock_index_metadata),
             ],
             input="n\n",  # Decline confirmation
         )
@@ -409,9 +428,12 @@ class TestMergeCommand:
             app,
             [
                 "merge",
-                "--source", "index1",
-                "--source", "index2",
-                "--target", "merged",
+                "--source",
+                "index1",
+                "--source",
+                "index2",
+                "--target",
+                "merged",
             ],
         )
 
@@ -436,9 +458,12 @@ class TestMergeCommand:
             app,
             [
                 "merge",
-                "--source", "index1",
-                "--source", "index2",
-                "--target", "merged",
+                "--source",
+                "index1",
+                "--source",
+                "index2",
+                "--target",
+                "merged",
             ],
         )
 
@@ -451,8 +476,10 @@ class TestMergeCommand:
             app,
             [
                 "merge",
-                "--source", "index1",
-                "--target", "merged",
+                "--source",
+                "index1",
+                "--target",
+                "merged",
             ],
         )
 
@@ -469,8 +496,10 @@ class TestStatsCommand:
             app,
             [
                 "stats",
-                "--index-name", "test_index",
-                "--index-dir", str(mock_index_metadata),
+                "--index-name",
+                "test_index",
+                "--index-dir",
+                str(mock_index_metadata),
             ],
         )
 
@@ -486,8 +515,10 @@ class TestStatsCommand:
             app,
             [
                 "stats",
-                "--index-name", "nonexistent",
-                "--index-dir", str(temp_index_dir),
+                "--index-name",
+                "nonexistent",
+                "--index-dir",
+                str(temp_index_dir),
             ],
         )
 
@@ -504,8 +535,10 @@ class TestStatsCommand:
             app,
             [
                 "stats",
-                "--index-name", "broken_index",
-                "--index-dir", str(temp_index_dir),
+                "--index-name",
+                "broken_index",
+                "--index-dir",
+                str(temp_index_dir),
             ],
         )
 
@@ -616,7 +649,7 @@ class TestIntegration:
     def test_build_and_query_integration(self, runner, sample_docs, tmp_path):
         """Test full build and query workflow."""
         # Skip if sentence-transformers not available
-        if importlib.util.find_spec('sentence_transformers') is None:
+        if importlib.util.find_spec("sentence_transformers") is None:
             pytest.skip("sentence-transformers not installed")
 
         index_dir = tmp_path / "indices"
@@ -626,9 +659,12 @@ class TestIntegration:
             app,
             [
                 "build",
-                "--files", str(sample_docs / "*.md"),
-                "--index-name", "test",
-                "--index-dir", str(index_dir),
+                "--files",
+                str(sample_docs / "*.md"),
+                "--index-name",
+                "test",
+                "--index-dir",
+                str(index_dir),
             ],
         )
 
@@ -650,8 +686,10 @@ class TestIntegration:
             app,
             [
                 "stats",
-                "--index-name", "test_index",
-                "--index-dir", str(mock_index_metadata),
+                "--index-name",
+                "test_index",
+                "--index-dir",
+                str(mock_index_metadata),
             ],
         )
         assert stats_result.exit_code == 0

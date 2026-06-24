@@ -366,6 +366,7 @@ class TestEvaluationRunner:
     def test_runner_uses_callable_fallback(self):
         """Test evaluation with a model that is only callable."""
         with tempfile.TemporaryDirectory() as tmpdir:
+
             class CallableModel:
                 def __init__(self):
                     self.calls = 0
@@ -392,7 +393,7 @@ class TestEvaluationRunner:
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",
-        strict=False
+        strict=False,
     )
     def test_runner_tracking_writer_integration(self):
         """Test tracking writer integration."""

@@ -23,6 +23,7 @@ from codex.config.env_vars import (
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def env_manager():
     """Create an environment manager."""
@@ -39,6 +40,7 @@ def clean_env():
 # ============================================================================
 # Initialization Tests
 # ============================================================================
+
 
 class TestEnvironmentManagerInit:
     """Test environment manager initialization."""
@@ -68,6 +70,7 @@ class TestEnvironmentManagerInit:
 # EnvVarConfig Tests
 # ============================================================================
 
+
 class TestEnvVarConfig:
     """Test EnvVarConfig data class."""
 
@@ -89,6 +92,7 @@ class TestEnvVarConfig:
 
     def test_create_config_with_validator(self):
         """Test creating config with validator."""
+
         def is_number(value):
             return value.isdigit()
 
@@ -119,6 +123,7 @@ class TestEnvVarConfig:
 # Python Version Tests
 # ============================================================================
 
+
 class TestPythonVersionConfig:
     """Test Python version configuration."""
 
@@ -147,6 +152,7 @@ class TestPythonVersionConfig:
 # Session ID Tests
 # ============================================================================
 
+
 class TestSessionIdConfig:
     """Test session ID configuration."""
 
@@ -174,6 +180,7 @@ class TestSessionIdConfig:
 # Session Log Directory Tests
 # ============================================================================
 
+
 class TestSessionLogDirConfig:
     """Test session log directory configuration."""
 
@@ -200,6 +207,7 @@ class TestSessionLogDirConfig:
 # ============================================================================
 # Language Version Configs Tests
 # ============================================================================
+
 
 class TestLanguageVersionConfigs:
     """Test language version environment configurations."""
@@ -242,12 +250,15 @@ class TestLanguageVersionConfigs:
 # Database Path Tests
 # ============================================================================
 
+
 class TestDatabasePathConfigs:
     """Test database configuration paths."""
 
     def test_db_path_config_exists(self, env_manager):
         """Test database path config."""
-        assert "CODEX_DB_PATH" in env_manager.ENV_VARS or "CODEX_LOG_DB_PATH" in env_manager.ENV_VARS
+        assert (
+            "CODEX_DB_PATH" in env_manager.ENV_VARS or "CODEX_LOG_DB_PATH" in env_manager.ENV_VARS
+        )
 
     def test_userstore_backend_config_exists(self, env_manager):
         """Test userstore backend config."""
@@ -258,11 +269,13 @@ class TestDatabasePathConfigs:
 # Variable Validator Tests
 # ============================================================================
 
+
 class TestVariableValidators:
     """Test variable validators."""
 
     def test_config_with_validator(self):
         """Test config with custom validator."""
+
         def validate_port(value):
             try:
                 port = int(value)
@@ -281,8 +294,7 @@ class TestVariableValidators:
         """Test that boolean validators are available."""
         # Check if any configs have validators
         configs_with_validators = [
-            config for config in env_manager.ENV_VARS.values()
-            if config.validator is not None
+            config for config in env_manager.ENV_VARS.values() if config.validator is not None
         ]
         # Should have at least some configs with validators
         assert isinstance(configs_with_validators, list)
@@ -291,6 +303,7 @@ class TestVariableValidators:
 # ============================================================================
 # Required Variable Tests
 # ============================================================================
+
 
 class TestRequiredVariables:
     """Test required variable handling."""
@@ -323,6 +336,7 @@ class TestRequiredVariables:
 # ============================================================================
 # Edge Cases Tests
 # ============================================================================
+
 
 class TestEdgeCases:
     """Test edge cases in environment configuration."""
@@ -364,6 +378,7 @@ class TestEdgeCases:
 # Manager Methods Tests
 # ============================================================================
 
+
 class TestEnvironmentManagerMethods:
     """Test EnvironmentManager methods."""
 
@@ -396,16 +411,20 @@ class TestEnvironmentManagerMethods:
 # Integration Tests
 # ============================================================================
 
+
 class TestEnvironmentConfigIntegration:
     """Integration tests for environment configuration."""
 
     def test_complete_config_workflow(self):
         """Test complete workflow with environment config."""
-        with patch.dict(os.environ, {
-            "CODEX_SESSION_ID": "test-session-123",
-            "CODEX_SESSION_LOG_DIR": "/custom/logs",
-            "CODEX_ENV_PYTHON_VERSION": "3.11",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "CODEX_SESSION_ID": "test-session-123",
+                "CODEX_SESSION_LOG_DIR": "/custom/logs",
+                "CODEX_ENV_PYTHON_VERSION": "3.11",
+            },
+        ):
             manager = EnvironmentManager()
             assert manager is not None
             assert len(manager.ENV_VARS) > 0
@@ -450,6 +469,7 @@ class TestEnvironmentConfigIntegration:
 # Documentation Tests
 # ============================================================================
 
+
 class TestConfigDocumentation:
     """Test that configurations are properly documented."""
 
@@ -470,6 +490,7 @@ class TestConfigDocumentation:
 # ============================================================================
 # Boolean Configuration Tests
 # ============================================================================
+
 
 class TestBooleanConfigs:
     """Test boolean-type configurations."""

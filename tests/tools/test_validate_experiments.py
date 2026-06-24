@@ -317,10 +317,7 @@ def test_validator_empty_directory():
         )
         # Should succeed with 0 files validated
         assert result.returncode == 0
-        assert (
-            "0 config file(s)" in result.stdout
-            or "No config files found" in result.stdout
-        )
+        assert "0 config file(s)" in result.stdout or "No config files found" in result.stdout
 
 
 def test_validator_multiple_paths():

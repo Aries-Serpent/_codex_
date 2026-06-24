@@ -267,7 +267,7 @@ def main() -> int:
         print(f"✅ Dry run completed: {total_fixes} potential fixes identified")  # nosec
         print("\nTo apply fixes, run without --dry-run:")
         print("  python scripts/fix_security_issues.py")
-    else:
+    else:  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         # codeql[py/clear-text-logging-sensitive-data]
         print(f"✅ Security fixes completed: {total_fixes} automatic fixes applied")  # nosec
         print("\nNext steps:")

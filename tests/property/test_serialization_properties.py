@@ -18,42 +18,54 @@ import pytest
 try:
     from hypothesis import assume, given
     from hypothesis import strategies as st
+
     HAS_HYPOTHESIS = True
 except ImportError:
     HAS_HYPOTHESIS = False
+
     def given(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return pytest.mark.skip(reason="hypothesis not installed")(f)
+
         return decorator
 
     class st:  # type: ignore
         @staticmethod
         def text(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def integers(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def floats(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def lists(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def dictionaries(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def booleans(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def none(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def one_of(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def recursive(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def binary(*args: Any, **kwargs: Any) -> Any:
             return None
@@ -64,6 +76,7 @@ except ImportError:
     def settings(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return f
+
         return decorator
 
 
@@ -177,7 +190,7 @@ class TestBase64Properties:
         encoded = base64.b64encode(data)
         # Should be decodable as ASCII
         try:
-            encoded.decode('ascii')
+            encoded.decode("ascii")
             is_ascii = True
         except UnicodeDecodeError:
             is_ascii = False
@@ -195,23 +208,26 @@ class TestStringEncodingProperties:
     @given(st.text(max_size=500))
     def test_utf8_roundtrip(self, s: str) -> None:
         """UTF-8 encode then decode is identity."""
-        encoded = s.encode('utf-8')
-        decoded = encoded.decode('utf-8')
+        encoded = s.encode("utf-8")
+        decoded = encoded.decode("utf-8")
         assert decoded == s
 
-    @given(st.text(alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-                   max_size=500))
+    @given(
+        st.text(
+            alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", max_size=500
+        )
+    )
     def test_ascii_roundtrip(self, s: str) -> None:
         """ASCII encode then decode is identity for ASCII strings."""
-        encoded = s.encode('ascii')
-        decoded = encoded.decode('ascii')
+        encoded = s.encode("ascii")
+        decoded = encoded.decode("ascii")
         assert decoded == s
 
     @given(st.text(max_size=500))
     def test_utf16_roundtrip(self, s: str) -> None:
         """UTF-16 encode then decode is identity."""
-        encoded = s.encode('utf-16')
-        decoded = encoded.decode('utf-16')
+        encoded = s.encode("utf-16")
+        decoded = encoded.decode("utf-16")
         assert decoded == s
 
     @given(st.binary(max_size=500))
@@ -230,11 +246,16 @@ class TestStringEncodingProperties:
 class TestURLEncodingProperties:
     """Property-based tests for URL encoding."""
 
-    @given(st.text(alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~",
-                   max_size=200))
+    @given(
+        st.text(
+            alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~",
+            max_size=200,
+        )
+    )
     def test_url_safe_chars_unchanged(self, s: str) -> None:
         """URL-safe characters are not encoded."""
         from urllib.parse import quote, unquote
+
         encoded = quote(s, safe="")
         # For URL-safe chars, encoding should only use the chars themselves
         decoded = unquote(encoded)
@@ -244,6 +265,7 @@ class TestURLEncodingProperties:
     def test_url_encode_roundtrip(self, s: str) -> None:
         """URL encode then decode is identity."""
         from urllib.parse import quote, unquote
+
         encoded = quote(s, safe="")
         decoded = unquote(encoded)
         assert decoded == s
@@ -257,23 +279,35 @@ class TestURLEncodingProperties:
 class TestConfigSerializationProperties:
     """Property-based tests for configuration serialization."""
 
-    @given(st.dictionaries(
-        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"),  # pragma: allowlist secret
-        st.one_of(st.integers(), st.floats(allow_nan=False, allow_infinity=False),
-                  st.text(max_size=50), st.booleans()),
-        max_size=20
-    ))
+    @given(
+        st.dictionaries(
+            st.text(
+                min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"
+            ),  # pragma: allowlist secret
+            st.one_of(
+                st.integers(),
+                st.floats(allow_nan=False, allow_infinity=False),
+                st.text(max_size=50),
+                st.booleans(),
+            ),
+            max_size=20,
+        )
+    )
     def test_config_dict_roundtrip(self, config: dict[str, Any]) -> None:
         """Configuration dictionary roundtrip."""
         serialized = json.dumps(config)
         deserialized = json.loads(serialized)
         assert deserialized == config
 
-    @given(st.dictionaries(
-        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"),  # pragma: allowlist secret
-        st.integers(),
-        max_size=50
-    ))
+    @given(
+        st.dictionaries(
+            st.text(
+                min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz_"
+            ),  # pragma: allowlist secret
+            st.integers(),
+            max_size=50,
+        )
+    )
     def test_nested_config_roundtrip(self, inner: dict[str, int]) -> None:
         """Nested configuration roundtrip."""
         config = {"outer": {"inner": inner, "name": "test"}}
@@ -294,6 +328,7 @@ class TestPickleProperties:
     def test_repr_eval_for_simple_lists(self, lst: list[int]) -> None:
         """repr() can be eval'd back for simple lists using ast.literal_eval."""
         import ast
+
         repr_str = repr(lst)
         # Use ast.literal_eval for safe evaluation of literals
         restored = ast.literal_eval(repr_str)
@@ -319,14 +354,20 @@ class TestChecksumProperties:
     def test_md5_deterministic(self, data: bytes) -> None:
         """MD5 hash is deterministic."""
         import hashlib
-        hash1 = hashlib.md5(data, usedforsecurity=False).hexdigest()  # nosec B324 - Not for security, test property verification only
-        hash2 = hashlib.md5(data, usedforsecurity=False).hexdigest()  # nosec B324 - Not for security, test property verification only
+
+        hash1 = hashlib.md5(
+            data, usedforsecurity=False
+        ).hexdigest()  # nosec B324 - Not for security, test property verification only
+        hash2 = hashlib.md5(
+            data, usedforsecurity=False
+        ).hexdigest()  # nosec B324 - Not for security, test property verification only
         assert hash1 == hash2
 
     @given(st.binary(max_size=1000))
     def test_sha256_deterministic(self, data: bytes) -> None:
         """SHA256 hash is deterministic."""
         import hashlib
+
         hash1 = hashlib.sha256(data).hexdigest()
         hash2 = hashlib.sha256(data).hexdigest()
         assert hash1 == hash2
@@ -335,6 +376,7 @@ class TestChecksumProperties:
     def test_sha256_length(self, data: bytes) -> None:
         """SHA256 hash always has 64 hex characters."""
         import hashlib
+
         hash_hex = hashlib.sha256(data).hexdigest()
         assert len(hash_hex) == 64
 
@@ -342,6 +384,7 @@ class TestChecksumProperties:
     def test_different_data_different_hash(self, data1: bytes, data2: bytes) -> None:
         """Different data (usually) produces different hashes."""
         import hashlib
+
         assume(data1 != data2)
         hash1 = hashlib.sha256(data1).hexdigest()
         hash2 = hashlib.sha256(data2).hexdigest()

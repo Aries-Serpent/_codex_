@@ -6,6 +6,7 @@ Covers:
 - `.current_session.json` pointer management
 - Multiple concurrent sessions do not clobber each other
 """
+
 from __future__ import annotations
 
 import json
@@ -179,7 +180,11 @@ class TestSessionArchive:
 
     def test_archive_session_in_list(self, tmp_path):
         mod = _import_tracker()
-        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session") and hasattr(mod, "list_sessions")):
+        if not (
+            hasattr(mod, "start_session")
+            and hasattr(mod, "archive_session")
+            and hasattr(mod, "list_sessions")
+        ):
             pytest.skip("start_session / archive_session / list_sessions not exported")
 
         with patch.object(mod, "SESSION_DIR", tmp_path):
@@ -205,8 +210,9 @@ class TestSessionArchiveDryRun:
             rc = mod.cmd_archive(session_id=session_id, reason="dry test", dry_run=True)
 
         assert rc == 0
-        assert not (tmp_path / f"session_{session_id}.json").exists(), \
-            "dry-run must not write any files"
+        assert not (
+            tmp_path / f"session_{session_id}.json"
+        ).exists(), "dry-run must not write any files"
 
     def test_dry_run_existing_session_unchanged(self, tmp_path):
         mod = _import_tracker()
@@ -220,8 +226,7 @@ class TestSessionArchiveDryRun:
             after_status = mod._load_json(mod._session_path(sid))["status"]
 
         assert rc == 0
-        assert after_status == original_status, \
-            "dry-run must leave the session file unchanged"
+        assert after_status == original_status, "dry-run must leave the session file unchanged"
 
 
 class TestSessionMetrics:
@@ -241,7 +246,11 @@ class TestSessionMetrics:
 
     def test_metrics_counts_statuses(self, tmp_path):
         mod = _import_tracker()
-        if not (hasattr(mod, "start_session") and hasattr(mod, "archive_session") and hasattr(mod, "session_metrics")):
+        if not (
+            hasattr(mod, "start_session")
+            and hasattr(mod, "archive_session")
+            and hasattr(mod, "session_metrics")
+        ):
             pytest.skip("required functions not exported")
 
         with patch.object(mod, "SESSION_DIR", tmp_path):
@@ -252,7 +261,14 @@ class TestSessionMetrics:
 
         assert result["active"] >= 1
         assert result["archived"] >= 1
-        assert result["total"] == result["active"] + result["completed"] + result["error"] + result["archived"] + result["unknown"]
+        assert (
+            result["total"]
+            == result["active"]
+            + result["completed"]
+            + result["error"]
+            + result["archived"]
+            + result["unknown"]
+        )
 
     def test_metrics_tombstone_counted(self, tmp_path):
         mod = _import_tracker()

@@ -70,6 +70,7 @@ class TestModuleImport:
         """Verify strategies module can be imported."""
         try:
             from codex_ml.training import strategies
+
             assert strategies is not None
         except ImportError as e:
             pytest.skip(f"strategies module not available: {e}")
@@ -78,6 +79,7 @@ class TestModuleImport:
         """Verify resolve_strategy function can be imported."""
         try:
             from codex_ml.training.strategies import resolve_strategy
+
             assert callable(resolve_strategy)
         except ImportError:
             pytest.skip("resolve_strategy not available")
@@ -86,6 +88,7 @@ class TestModuleImport:
         """Verify TrainingCallback can be imported."""
         try:
             from codex_ml.training.strategies import TrainingCallback
+
             assert TrainingCallback is not None
         except ImportError:
             pytest.skip("TrainingCallback not available")
@@ -94,6 +97,7 @@ class TestModuleImport:
         """Verify TrainingResult can be imported."""
         try:
             from codex_ml.training.strategies import TrainingResult
+
             assert TrainingResult is not None
         except ImportError:
             pytest.skip("TrainingResult not available")
@@ -112,6 +116,7 @@ class TestStrategyResolution:
         """Test resolving valid strategy names."""
         try:
             from codex_ml.training.strategies import resolve_strategy
+
             strategy = resolve_strategy(strategy_name)
             assert strategy is not None
         except ImportError:
@@ -124,6 +129,7 @@ class TestStrategyResolution:
         """Test resolving invalid strategy name."""
         try:
             from codex_ml.training.strategies import resolve_strategy
+
             with pytest.raises((ValueError, KeyError)):
                 resolve_strategy("nonexistent_strategy")
         except ImportError:
@@ -133,6 +139,7 @@ class TestStrategyResolution:
         """Test that resolved strategy has a run method."""
         try:
             from codex_ml.training.strategies import resolve_strategy
+
             strategy = resolve_strategy("functional")
             assert hasattr(strategy, "run") or callable(strategy)
         except (ImportError, ValueError, KeyError):
@@ -151,6 +158,7 @@ class TestTrainingCallback:
         """Test creating a TrainingCallback-compatible instance."""
         try:
             from codex_ml.training.strategies import NoOpCallback
+
             callback = NoOpCallback()
             assert callback is not None
         except ImportError:
@@ -160,6 +168,7 @@ class TestTrainingCallback:
         """Test on_epoch_start callback method."""
         try:
             from codex_ml.training.strategies import NoOpCallback
+
             callback = NoOpCallback()
             if hasattr(callback, "on_epoch_start"):
                 result = callback.on_epoch_start(epoch=0, state={})
@@ -172,6 +181,7 @@ class TestTrainingCallback:
         """Test on_epoch_end callback method."""
         try:
             from codex_ml.training.strategies import NoOpCallback
+
             callback = NoOpCallback()
             if hasattr(callback, "on_epoch_end"):
                 result = callback.on_epoch_end(epoch=0, metrics={}, state={})
@@ -183,6 +193,7 @@ class TestTrainingCallback:
         """Test on_step callback method."""
         try:
             from codex_ml.training.strategies import NoOpCallback
+
             callback = NoOpCallback()
             if hasattr(callback, "on_step"):
                 result = callback.on_step(batch_index=0, global_step=0, loss=0.5, state={})
@@ -203,6 +214,7 @@ class TestTrainingResult:
         """Test creating a TrainingResult instance."""
         try:
             from codex_ml.training.strategies import TrainingResult
+
             result = TrainingResult(
                 success=True,
                 epochs_completed=5,
@@ -216,6 +228,7 @@ class TestTrainingResult:
         """Test TrainingResult with metrics."""
         try:
             from codex_ml.training.strategies import TrainingResult
+
             result = TrainingResult(
                 success=True,
                 epochs_completed=1,
@@ -229,6 +242,7 @@ class TestTrainingResult:
         """Test TrainingResult for failed training."""
         try:
             from codex_ml.training.strategies import TrainingResult
+
             result = TrainingResult(
                 success=False,
                 error_message="Out of memory",
@@ -250,6 +264,7 @@ class TestStrategyInterface:
         """Test that resolved strategy has run method."""
         try:
             from codex_ml.training.strategies import resolve_strategy
+
             strategy = resolve_strategy("functional")
             assert hasattr(strategy, "run") or callable(strategy)
         except (ImportError, ValueError, KeyError):

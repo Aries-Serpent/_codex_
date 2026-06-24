@@ -4,7 +4,6 @@ Test Codex Logging Json
 Test module for codex logging json.
 """
 
-
 from codex_ml.monitoring.codex_logging import init_logger
 
 

@@ -13,6 +13,7 @@ import sys
 
 def test_json_output_stays_on_stdout() -> None:
     import os
+
     env = os.environ.copy()
     env["PYTHONWARNINGS"] = "ignore"  # Suppress Python warnings
     env["CODEX_LOG_LEVEL"] = "ERROR"  # Suppress info/warning logs

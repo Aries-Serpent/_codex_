@@ -63,7 +63,8 @@ def test_fuzz_deterministic_split_ids_partition(ids, fraction, seed):
     train, eval_ = deterministic_split_ids(ids, cfg)
     assert set(train) | set(eval_) == set(ids) or (
         # Duplicated IDs: combined count must equal original
-        len(train) + len(eval_) == len(ids)
+        len(train) + len(eval_)
+        == len(ids)
     )
     assert len(train) + len(eval_) == len(ids)
 
@@ -181,9 +182,7 @@ def test_fuzz_normalise_text_string_returns_list(text):
         st.just('{"text": "hello"}'),
         st.just('{"text": null}'),
         st.just('{"other": 42}'),
-        st.binary(min_size=0, max_size=256).map(
-            lambda b: b.decode("utf-8", errors="replace")
-        ),
+        st.binary(min_size=0, max_size=256).map(lambda b: b.decode("utf-8", errors="replace")),
     )
 )
 @settings(max_examples=100, deadline=None)

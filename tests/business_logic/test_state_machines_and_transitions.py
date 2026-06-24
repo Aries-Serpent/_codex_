@@ -14,6 +14,7 @@ from enum import Enum
 
 class TrainingState(Enum):
     """Training workflow states."""
+
     INITIALIZED = "initialized"
     LOADING_DATA = "loading_data"
     TRAINING = "training"
@@ -28,10 +29,7 @@ class TestStateBasics:
 
     def test_state_initialization(self):
         """Test state starts in initialized state."""
-        state_machine = {
-            "current_state": TrainingState.INITIALIZED,
-            "history": []
-        }
+        state_machine = {"current_state": TrainingState.INITIALIZED, "history": []}
 
         assert state_machine["current_state"] == TrainingState.INITIALIZED
 
@@ -97,7 +95,7 @@ class TestStateTransitions:
             TrainingState.TRAINING: [
                 TrainingState.VALIDATING,
                 TrainingState.CHECKPOINTING,
-                TrainingState.FAILED
+                TrainingState.FAILED,
             ]
         }
 
@@ -123,7 +121,7 @@ class TestStateTransitions:
         # Can retry or terminate
         recovery_options = [
             TrainingState.INITIALIZED,  # Retry
-            TrainingState.COMPLETED,    # Terminate
+            TrainingState.COMPLETED,  # Terminate
         ]
 
         assert TrainingState.INITIALIZED in recovery_options
@@ -154,10 +152,7 @@ class TestTransitionGuards:
         data_loaded = True
         current_state = TrainingState.LOADING_DATA
 
-        can_start_training = (
-            current_state == TrainingState.LOADING_DATA and
-            data_loaded
-        )
+        can_start_training = current_state == TrainingState.LOADING_DATA and data_loaded
 
         assert can_start_training is True
 
@@ -173,10 +168,7 @@ class TestTransitionGuards:
         checkpoint_saved = False
         current_state = TrainingState.TRAINING
 
-        can_finalize = (
-            current_state == TrainingState.TRAINING and
-            checkpoint_saved
-        )
+        can_finalize = current_state == TrainingState.TRAINING and checkpoint_saved
 
         assert can_finalize is False
 
@@ -186,11 +178,7 @@ class TestTransitionGuards:
         model_ready = True
         resources_available = True
 
-        can_start = (
-            data_ready and
-            model_ready and
-            resources_available
-        )
+        can_start = data_ready and model_ready and resources_available
 
         assert can_start is True
 
@@ -256,7 +244,7 @@ class TestEventHandling:
             "type": "error",
             "error_code": 500,
             "message": "Training failed",
-            "timestamp": "2024-01-01T00:00:00Z"
+            "timestamp": "2024-01-01T00:00:00Z",
         }
 
         assert event["error_code"] == 500
@@ -342,10 +330,7 @@ class TestStateCallbacks:
         callbacks = []
 
         def on_transition(from_state, to_state):
-            callbacks.append({
-                "from": from_state,
-                "to": to_state
-            })
+            callbacks.append({"from": from_state, "to": to_state})
 
         on_transition(TrainingState.LOADING_DATA, TrainingState.TRAINING)
 
@@ -405,12 +390,8 @@ class TestConcurrentStateTransitions:
         """Test queued transitions maintain order."""
         transition_queue = []
 
-        transition_queue.append(
-            (TrainingState.TRAINING, TrainingState.VALIDATING)
-        )
-        transition_queue.append(
-            (TrainingState.VALIDATING, TrainingState.CHECKPOINTING)
-        )
+        transition_queue.append((TrainingState.TRAINING, TrainingState.VALIDATING))
+        transition_queue.append((TrainingState.VALIDATING, TrainingState.CHECKPOINTING))
 
         current = TrainingState.TRAINING
         while transition_queue:

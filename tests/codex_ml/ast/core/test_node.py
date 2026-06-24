@@ -6,6 +6,7 @@ Tests cover:
 - StandardizedASTNode: creation, ID generation, parent-child relationships, weakref behavior, tree traversal (60 tests)
 - Finding: creation, severity validation, ID generation, serialization (30 tests)
 """
+
 import json
 from pathlib import Path
 
@@ -41,13 +42,13 @@ class TestSourceLocation:
 
     @pytest.mark.parametrize("line", [1, 10, 100, 1000])
     def test_creation_various_line_numbers(self, line):
-        loc = SourceLocation(Path("test.py"), line, line+5)
+        loc = SourceLocation(Path("test.py"), line, line + 5)
         assert loc.line_start == line
         assert loc.line_end == line + 5
 
     @pytest.mark.parametrize("col", [0, 5, 10, 50])
     def test_creation_various_columns(self, col):
-        loc = SourceLocation(Path("test.py"), 1, 1, col, col+10)
+        loc = SourceLocation(Path("test.py"), 1, 1, col, col + 10)
         assert loc.column_start == col
         assert loc.column_end == col + 10
 
@@ -70,12 +71,9 @@ class TestSourceLocation:
         assert loc.line_start == 15
         assert loc.column_start == 0
 
-    @pytest.mark.parametrize("input_str", [
-        "file.py:1:0",
-        "test.py:100:50",
-        "/path/file.py:10:5",
-        "module.py:1:1"
-    ])
+    @pytest.mark.parametrize(
+        "input_str", ["file.py:1:0", "test.py:100:50", "/path/file.py:10:5", "module.py:1:1"]
+    )
     def test_from_string_valid_formats(self, input_str):
         loc = SourceLocation.from_string(input_str)
         assert loc.file_path is not None
@@ -198,8 +196,11 @@ class TestStandardizedASTNode:
     def test_creation_with_all_params(self):
         loc = SourceLocation(Path("test.py"), 1, 5)
         node = StandardizedASTNode(
-            node_id="node1", type="function", name="test_func",
-            location=loc, metadata={"key": "value"}
+            node_id="node1",
+            type="function",
+            name="test_func",
+            location=loc,
+            metadata={"key": "value"},
         )
         assert node.node_id == "node1"
         assert node.type == "function"
@@ -211,6 +212,7 @@ class TestStandardizedASTNode:
         node = StandardizedASTNode(node_id="", type="function", name="test")
         assert node.node_id != ""
         import uuid
+
         try:
             uuid.UUID(node.node_id)
             assert True
@@ -285,6 +287,7 @@ class TestStandardizedASTNode:
         parent.add_child(child)
         del parent
         import gc
+
         gc.collect()
         assert child.parent is None
 
@@ -450,15 +453,30 @@ class TestStandardizedASTNode:
         assert node.name == "test"
 
     def test_from_dict_with_location(self):
-        loc_dict = {"file_path": "test.py", "line_start": 1, "line_end": 5, "column_start": 0, "column_end": 0}
-        d = {"node_id": "n1", "type": "function", "name": "test", "location": loc_dict, "children": [], "metadata": {}}
+        loc_dict = {
+            "file_path": "test.py",
+            "line_start": 1,
+            "line_end": 5,
+            "column_start": 0,
+            "column_end": 0,
+        }
+        d = {
+            "node_id": "n1",
+            "type": "function",
+            "name": "test",
+            "location": loc_dict,
+            "children": [],
+            "metadata": {},
+        }
         node = StandardizedASTNode.from_dict(d)
         assert node.location is not None
         assert str(node.location.file_path) == "test.py"
 
     def test_roundtrip_serialization(self):
         loc = SourceLocation(Path("test.py"), 5, 10)
-        node = StandardizedASTNode(node_id="n1", type="function", name="test", location=loc, metadata={"key": "value"})
+        node = StandardizedASTNode(
+            node_id="n1", type="function", name="test", location=loc, metadata={"key": "value"}
+        )
         d = node.to_dict()
         restored = StandardizedASTNode.from_dict(d)
         assert restored.node_id == node.node_id
@@ -536,6 +554,7 @@ class TestFinding:
         finding = Finding(type="error", message="Test")
         assert finding.finding_id != ""
         import uuid
+
         try:
             uuid.UUID(finding.finding_id)
             assert True
@@ -580,9 +599,13 @@ class TestFinding:
     def test_to_dict_with_all_fields(self):
         loc = SourceLocation(Path("test.py"), 5, 10)
         finding = Finding(
-            finding_id="f1", type="error", message="Test",
-            severity="critical", location=loc, analyzer="test_analyzer",
-            metadata={"key": "value"}
+            finding_id="f1",
+            type="error",
+            message="Test",
+            severity="critical",
+            location=loc,
+            analyzer="test_analyzer",
+            metadata={"key": "value"},
         )
         d = finding.to_dict()
         assert d["finding_id"] == "f1"
@@ -598,7 +621,13 @@ class TestFinding:
         assert finding.severity == "warning"
 
     def test_from_dict_with_location(self):
-        loc_dict = {"file_path": "test.py", "line_start": 1, "line_end": 5, "column_start": 0, "column_end": 0}
+        loc_dict = {
+            "file_path": "test.py",
+            "line_start": 1,
+            "line_end": 5,
+            "column_start": 0,
+            "column_end": 0,
+        }
         d = {"type": "error", "message": "Test", "location": loc_dict}
         finding = Finding.from_dict(d)
         assert finding.location is not None
@@ -607,9 +636,13 @@ class TestFinding:
     def test_roundtrip_serialization(self):
         loc = SourceLocation(Path("test.py"), 5, 10)
         original = Finding(
-            finding_id="f1", type="error", message="Test error",
-            severity="critical", location=loc, analyzer="test_analyzer",
-            metadata={"key": "value"}
+            finding_id="f1",
+            type="error",
+            message="Test error",
+            severity="critical",
+            location=loc,
+            analyzer="test_analyzer",
+            metadata={"key": "value"},
         )
         d = original.to_dict()
         restored = Finding.from_dict(d)

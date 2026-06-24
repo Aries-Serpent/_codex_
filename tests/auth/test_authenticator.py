@@ -18,6 +18,7 @@ from codex.auth.user_store import UserStore
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_auth(with_mfa: bool = False) -> Authenticator:
     store = UserStore()
     tokens = TokenManager(secret_key="test-secret-key-for-authenticator")
@@ -28,6 +29,7 @@ def _make_auth(with_mfa: bool = False) -> Authenticator:
 # ---------------------------------------------------------------------------
 # Registration
 # ---------------------------------------------------------------------------
+
 
 class TestRegister:
 
@@ -57,6 +59,7 @@ class TestRegister:
 # ---------------------------------------------------------------------------
 # Login
 # ---------------------------------------------------------------------------
+
 
 class TestLogin:
 
@@ -110,8 +113,7 @@ class TestLogin:
         auth = _make_auth()
         tokens = auth._tokens
         auth.register("jan", "jan@example.com", "Str0ngPass!")
-        result = auth.login("jan", "Str0ngPass!",
-                            ip_address="10.0.0.1", user_agent="TestUA/1.0")
+        result = auth.login("jan", "Str0ngPass!", ip_address="10.0.0.1", user_agent="TestUA/1.0")
         session = tokens.get_session(result.session_id)
         assert session.ip_address == "10.0.0.1"
         assert session.user_agent == "TestUA/1.0"
@@ -120,6 +122,7 @@ class TestLogin:
 # ---------------------------------------------------------------------------
 # MFA-enabled login
 # ---------------------------------------------------------------------------
+
 
 class TestLoginWithMFA:
 
@@ -153,6 +156,7 @@ class TestLoginWithMFA:
 # Logout
 # ---------------------------------------------------------------------------
 
+
 class TestLogout:
 
     def test_logout_revokes_session(self):
@@ -181,6 +185,7 @@ class TestLogout:
 # Token refresh
 # ---------------------------------------------------------------------------
 
+
 class TestRefresh:
 
     def test_refresh_returns_new_access_token(self):
@@ -200,6 +205,7 @@ class TestRefresh:
 # ---------------------------------------------------------------------------
 # Password management
 # ---------------------------------------------------------------------------
+
 
 class TestPasswordManagement:
 
@@ -227,8 +233,7 @@ class TestPasswordManagement:
         auth = _make_auth()
         user = auth.register("tina", "tina@example.com", "OldPass123!")
         result = auth.login("tina", "OldPass123!")
-        auth.change_password(user.user_id, "OldPass123!", "NewPass456!",
-                             revoke_sessions=False)
+        auth.change_password(user.user_id, "OldPass123!", "NewPass456!", revoke_sessions=False)
         assert auth._tokens.get_session(result.session_id) is not None
 
     def test_admin_reset_password(self):

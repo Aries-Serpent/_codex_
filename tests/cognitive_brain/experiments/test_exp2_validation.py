@@ -10,6 +10,7 @@ def test_generate_test_audits():
         assert audit.risk_level in ["low", "medium", "high", "critical"]
         assert len(audit.violations) > 0
 
+
 def test_run_exp2():
     # Mocking out the heavier components or allowing them to run if they are lightweight enough
     # run_exp2 simulates with 500 samples by default, let's test with a smaller sample

@@ -65,9 +65,7 @@ class TestCLIHelpCommands:
 
     def test_python_module_help(self):
         """Verify python -m codex --help works."""
-        code, stdout, stderr = self._run_command(
-            [sys.executable, "-m", "codex", "--help"]
-        )
+        code, stdout, stderr = self._run_command([sys.executable, "-m", "codex", "--help"])
         # Allow failure if module not installed
         if code != 0 and "No module named" in stderr:
             pytest.skip("codex module not installed")
@@ -78,9 +76,7 @@ class TestCLIHelpCommands:
 
     def test_cli_version_command(self):
         """Verify CLI version command works."""
-        code, stdout, stderr = self._run_command(
-            [sys.executable, "-m", "codex", "--version"]
-        )
+        code, stdout, stderr = self._run_command([sys.executable, "-m", "codex", "--version"])
         if code != 0:
             pytest.skip("Version command not available")
 

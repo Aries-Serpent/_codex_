@@ -186,7 +186,9 @@ class TestComplianceChainPrompting:
         audit2 = _make_audit(
             risk="medium",
             session_id=sid,
-            prior_decision=str(result1.decision.value if hasattr(result1.decision, "value") else result1.decision),
+            prior_decision=str(
+                result1.decision.value if hasattr(result1.decision, "value") else result1.decision
+            ),
         )
         result2 = assessor.assess_compliance(audit2)
         assert result2 is not None
@@ -214,9 +216,9 @@ class TestBayesianEMChainIntegration:
         assessor.update_cpds_em(corpus, learning_rate=0.5)
         posterior_approve = assessor._tables["compliance"].probs[()]["approve"]
 
-        assert posterior_approve < prior_approve, (
-            "EM update should have shifted approve probability down given reject-heavy corpus"
-        )
+        assert (
+            posterior_approve < prior_approve
+        ), "EM update should have shifted approve probability down given reject-heavy corpus"
 
     def test_em_update_probabilities_sum_to_one(self):
         """Post-EM distribution must still sum to 1.0 (normalisation check)."""

@@ -11,6 +11,7 @@ Covers:
 - Recency ranking
 - Prompt block rendering
 """
+
 from __future__ import annotations
 
 import json
@@ -162,7 +163,7 @@ def test_recency_ranking_max_five():
 
 
 def test_estimate_tokens_basic():
-    assert _estimate_tokens("abcd") == 1      # 4 chars → 1 token
+    assert _estimate_tokens("abcd") == 1  # 4 chars → 1 token
     assert _estimate_tokens("") == 0
     assert _estimate_tokens("a" * 400) == 100
 
@@ -309,7 +310,9 @@ def test_keyword_wave_collapse_surfaces_hf_pattern(failing_api, tmp_path, patter
     # Patch Path(".codex/cognitive_brain/") to point at tmp pattern_library
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
         payload = injector.inject(
             {
@@ -319,7 +322,10 @@ def test_keyword_wave_collapse_surfaces_hf_pattern(failing_api, tmp_path, patter
             }
         )
     # Wave-collapse should find P-043 based on keyword overlap
-    assert any("043" in pid or "038" in pid for pid in payload.injected_patterns) or payload.reconstructed
+    assert (
+        any("043" in pid or "038" in pid for pid in payload.injected_patterns)
+        or payload.reconstructed
+    )
 
 
 def test_entropy_minimization_reads_status_file(failing_api, tmp_path, status_file):
@@ -330,7 +336,9 @@ def test_entropy_minimization_reads_status_file(failing_api, tmp_path, status_fi
     )
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
         payload = injector.inject({"session_number": 108, "pr_title": "misc"})
     # If status file was read, facts should contain something

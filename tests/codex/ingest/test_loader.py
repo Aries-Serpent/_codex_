@@ -12,6 +12,7 @@ class TestIngestLoaderImports:
         """Test that the module can be imported."""
         try:
             from src.codex.ingest import loader
+
             assert loader is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -24,7 +25,8 @@ class TestIngestLoaderOperations:
         """Test loader creation."""
         try:
             from src.codex.ingest import loader
-            if hasattr(loader, 'Loader'):
+
+            if hasattr(loader, "Loader"):
                 ldr = loader.Loader()
                 assert ldr is not None
         except (ImportError, AttributeError):
@@ -34,8 +36,9 @@ class TestIngestLoaderOperations:
         """Test file loading."""
         try:
             from src.codex.ingest import loader
-            if hasattr(loader, 'load_file'):
-                with patch.object(loader, 'load_file') as mock_load:
+
+            if hasattr(loader, "load_file"):
+                with patch.object(loader, "load_file") as mock_load:
                     mock_load.return_value = {"content": "test"}
                     result = loader.load_file("/test/path")
                     assert result["content"] == "test"
@@ -46,8 +49,9 @@ class TestIngestLoaderOperations:
         """Test directory loading."""
         try:
             from src.codex.ingest import loader
-            if hasattr(loader, 'load_directory'):
-                with patch.object(loader, 'load_directory') as mock_load:
+
+            if hasattr(loader, "load_directory"):
+                with patch.object(loader, "load_directory") as mock_load:
                     mock_load.return_value = [{"file": "f1"}, {"file": "f2"}]
                     result = loader.load_directory("/test/dir")
                     assert len(result) == 2
@@ -62,7 +66,8 @@ class TestIngestLoaderFilters:
         """Test filtering by extension."""
         try:
             from src.codex.ingest import loader
-            if hasattr(loader, 'filter_by_extension'):
+
+            if hasattr(loader, "filter_by_extension"):
                 files = ["a.py", "b.txt", "c.py"]
                 result = loader.filter_by_extension(files, ".py")
                 assert len(result) == 2
@@ -73,10 +78,13 @@ class TestIngestLoaderFilters:
         """Test filtering by size."""
         try:
             from src.codex.ingest import loader
-            if hasattr(loader, 'filter_by_size'):
-                with patch.object(loader, 'filter_by_size') as mock_filter:
+
+            if hasattr(loader, "filter_by_size"):
+                with patch.object(loader, "filter_by_size") as mock_filter:
                     mock_filter.return_value = ["large_file.txt"]
                     result = loader.filter_by_size(["a.txt", "b.txt"], min_size=1000)
-                    assert isinstance(result, (list, tuple, set, dict))  # was: len() >= 0 (always true)
+                    assert isinstance(
+                        result, (list, tuple, set, dict)
+                    )  # was: len() >= 0 (always true)
         except (ImportError, AttributeError):
             pytest.skip("filter_by_size not available")

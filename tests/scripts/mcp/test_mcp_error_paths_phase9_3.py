@@ -62,9 +62,12 @@ class TestMainMissingTopicsFile:
         missing_topics = tmp_path / "no_such_topics.json"
         argv = [
             "select_components.py",
-            "--topic", "docs",
-            "--output", str(output),
-            "--topics-file", str(missing_topics),
+            "--topic",
+            "docs",
+            "--output",
+            str(output),
+            "--topics-file",
+            str(missing_topics),
         ]
         with patch("sys.argv", argv):
             result = main()
@@ -85,10 +88,14 @@ class TestMainValueErrorReturns1:
         output = tmp_path / "out.txt"
         argv = [
             "select_components.py",
-            "--topic", "unknown_topic_xyz",
-            "--output", str(output),
-            "--topics-file", str(topics_file),
-            "--base-dir", str(tmp_path),
+            "--topic",
+            "unknown_topic_xyz",
+            "--output",
+            str(output),
+            "--topics-file",
+            str(topics_file),
+            "--base-dir",
+            str(tmp_path),
         ]
         with patch("sys.argv", argv):
             result = main()
@@ -109,10 +116,14 @@ class TestMainKeyboardInterruptReturns130:
         output = tmp_path / "out.txt"
         argv = [
             "select_components.py",
-            "--topic", "agents",
-            "--output", str(output),
-            "--topics-file", str(topics_file),
-            "--base-dir", str(tmp_path),
+            "--topic",
+            "agents",
+            "--output",
+            str(output),
+            "--topics-file",
+            str(topics_file),
+            "--base-dir",
+            str(tmp_path),
         ]
         with patch("sys.argv", argv):
             with patch(

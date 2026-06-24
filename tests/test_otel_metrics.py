@@ -1,4 +1,5 @@
 """Tests for src/codex/monitoring/otel_metrics.py."""
+
 from __future__ import annotations
 
 import pytest

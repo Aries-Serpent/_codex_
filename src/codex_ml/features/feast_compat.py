@@ -719,9 +719,7 @@ class DuckDBBackend:
             self._ensure_table(view_name)
             tbl = self._table(view_name)
             arrow_table: pa.Table = (
-                self._conn.execute(
-                    f"SELECT * FROM {tbl}"  # nosec B608 — tbl validated by _table()
-                )
+                self._conn.execute(f"SELECT * FROM {tbl}")  # nosec B608 — tbl validated by _table()
                 .arrow()
                 .read_all()
             )

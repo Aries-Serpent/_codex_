@@ -113,6 +113,7 @@ class TestBackoffStrategies:
 
     def test_fibonacci_backoff(self):
         """Test Fibonacci backoff strategy."""
+
         def fibonacci(n: int) -> int:
             if n <= 1:
                 return n
@@ -184,11 +185,13 @@ class TestRetryExecution:
         max_retries = 3
 
         for retry in range(max_retries + 1):
-            attempt_log.append({
-                "attempt": retry + 1,
-                "timestamp": datetime.now().isoformat(),
-                "result": "fail" if retry < 2 else "pass",
-            })
+            attempt_log.append(
+                {
+                    "attempt": retry + 1,
+                    "timestamp": datetime.now().isoformat(),
+                    "result": "fail" if retry < 2 else "pass",
+                }
+            )
             if attempt_log[-1]["result"] == "pass":
                 break
 
@@ -242,7 +245,7 @@ class TestRetryMetrics:
 
         retry_success_rate = len(successful_retries) / len(retried_tests)
 
-        assert retry_success_rate == 2/3
+        assert retry_success_rate == 2 / 3
 
     def test_track_retry_reasons(self):
         """Test tracking reasons for retries."""

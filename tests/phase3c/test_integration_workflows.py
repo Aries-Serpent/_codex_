@@ -26,9 +26,7 @@ class TestAgentCommunicationPatterns:
 
             # Agent 1 stores a message
             agent1 = MemoryManager(
-                storage_dir=Path(tmpdir),
-                agent_id="agent-1",
-                session_id="shared-session"
+                storage_dir=Path(tmpdir), agent_id="agent-1", session_id="shared-session"
             )
             agent1.store("Message from agent-1", metadata={"from": "agent-1", "to": "agent-2"})
 
@@ -84,8 +82,7 @@ class TestConfigurationMigration:
         """Test migration from old to new environment variable naming."""
         # Simulate old environment
         with mock.patch.dict(
-            {'CODEX_SESSION_LOG_DIR': '.logs', 'CODEX_LOG_DB_PATH': '.logs/session.db'},
-            clear=False
+            {"CODEX_SESSION_LOG_DIR": ".logs", "CODEX_LOG_DB_PATH": ".logs/session.db"}, clear=False
         ):
             old_manager = EnvironmentManager()
             old_log_dir = old_manager.get_log_dir()
@@ -239,9 +236,9 @@ class TestCrossPlatformBridges:
             backend = MemoryManager(storage_dir=Path(tmpdir)).backend
 
             # Should implement MemoryProtocol methods
-            assert hasattr(backend, 'store')
-            assert hasattr(backend, 'retrieve')
-            assert hasattr(backend, 'clear_session')
+            assert hasattr(backend, "store")
+            assert hasattr(backend, "retrieve")
+            assert hasattr(backend, "clear_session")
 
 
 class TestAgentBridgeInterfaces:
@@ -251,11 +248,7 @@ class TestAgentBridgeInterfaces:
         """Test MemoryEntry protocol compliance."""
         from src.codex.agents.memory.protocol import MemoryEntry
 
-        entry = MemoryEntry(
-            content="test",
-            agent_id="test",
-            session_id="test"
-        )
+        entry = MemoryEntry(content="test", agent_id="test", session_id="test")
 
         # Should support serialization
         data = entry.to_dict()
@@ -269,12 +262,7 @@ class TestAgentBridgeInterfaces:
         """Test MemoryQuery protocol compliance."""
         from src.codex.agents.memory.protocol import MemoryQuery
 
-        query = MemoryQuery(
-            text="test query",
-            agent_id="test",
-            session_id="test",
-            limit=10
-        )
+        query = MemoryQuery(text="test query", agent_id="test", session_id="test", limit=10)
 
         assert query.text == "test query"
         assert query.limit == 10
@@ -284,12 +272,12 @@ class TestAgentBridgeInterfaces:
         manager = EnvironmentManager()
 
         # Should support all required methods
-        assert hasattr(manager, 'get')
-        assert hasattr(manager, 'get_session_id')
-        assert hasattr(manager, 'get_log_dir')
-        assert hasattr(manager, 'get_db_path')
-        assert hasattr(manager, 'validate')
-        assert hasattr(manager, 'dump_config')
+        assert hasattr(manager, "get")
+        assert hasattr(manager, "get_session_id")
+        assert hasattr(manager, "get_log_dir")
+        assert hasattr(manager, "get_db_path")
+        assert hasattr(manager, "validate")
+        assert hasattr(manager, "dump_config")
 
 
 class TestIntegrationErrorHandling:
@@ -314,11 +302,7 @@ class TestIntegrationErrorHandling:
     def test_memory_backend_storage_error_recovery(self):
         """Test recovery from storage errors."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            manager = MemoryManager(
-                storage_dir=Path(tmpdir),
-                agent_id="test",
-                session_id="test"
-            )
+            manager = MemoryManager(storage_dir=Path(tmpdir), agent_id="test", session_id="test")
 
             # Should handle storage gracefully
             manager.store("Data 1")
@@ -374,10 +358,7 @@ class TestIntegrationPerformance:
         manager = MemoryManager(agent_id="test", session_id="test")
 
         # Large metadata
-        large_metadata = {
-            f"key_{i}": f"value_{i}" * 100
-            for i in range(100)
-        }
+        large_metadata = {f"key_{i}": f"value_{i}" * 100 for i in range(100)}
 
         entry = manager.store("Test", metadata=large_metadata)
         assert entry.metadata == large_metadata

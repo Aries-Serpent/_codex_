@@ -31,6 +31,7 @@ def runner():
     """Provide CLI runner instance."""
     return CliRunner()
 
+
 @pytest.fixture
 def temp_test_files(tmp_path: Path):
     """Create temporary test files for indexing."""
@@ -43,6 +44,7 @@ def temp_test_files(tmp_path: Path):
     (files_dir / "subdir" / "doc3.md").write_text("# Document 3\n\nNested content")
 
     return files_dir
+
 
 class TestValidateFiles:
     """Test file validation helper."""
@@ -90,6 +92,7 @@ class TestValidateFiles:
         result = _validate_files([pattern1, pattern2])
         assert len(result) == 2
 
+
 class TestFormatBytes:
     """Test byte size formatting helper."""
 
@@ -113,6 +116,7 @@ class TestFormatBytes:
         """Verify zero byte handling."""
         assert "0.00 B" in _format_bytes(0)
 
+
 class TestBuildCommand:
     """Test RAG index build command."""
 
@@ -121,11 +125,9 @@ class TestBuildCommand:
         """Verify basic build command execution."""
         mock_build_index.return_value = Path("/tmp/test_index")
 
-        result = runner.invoke(app, [
-            "build",
-            "--files", str(temp_test_files / "*.md"),
-            "--index-name", "test_index"
-        ])
+        result = runner.invoke(
+            app, ["build", "--files", str(temp_test_files / "*.md"), "--index-name", "test_index"]
+        )
 
         assert result.exit_code == 0
         mock_build_index.assert_called_once()
@@ -135,24 +137,22 @@ class TestBuildCommand:
         """Verify build with tenant ID."""
         mock_build_index.return_value = Path("/tmp/test_index")
 
-        result = runner.invoke(app, [
-            "build",
-            "--files", str(temp_test_files / "*.md"),
-            "--tenant-id", "tenant_123"
-        ])
+        result = runner.invoke(
+            app, ["build", "--files", str(temp_test_files / "*.md"), "--tenant-id", "tenant_123"]
+        )
 
         assert result.exit_code == 0
 
     @patch("codex.rag.build_index_from_files")
-    def test_build_with_chunk_size(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
+    def test_build_with_chunk_size(
+        self, mock_build_index, runner: CliRunner, temp_test_files: Path
+    ):
         """Verify build with custom chunk size."""
         mock_build_index.return_value = Path("/tmp/test_index")
 
-        result = runner.invoke(app, [
-            "build",
-            "--files", str(temp_test_files / "*.md"),
-            "--chunk-size", "500"
-        ])
+        result = runner.invoke(
+            app, ["build", "--files", str(temp_test_files / "*.md"), "--chunk-size", "500"]
+        )
 
         assert result.exit_code == 0
 
@@ -162,15 +162,23 @@ class TestBuildCommand:
         assert result.exit_code != 0
 
     @patch("codex.rag.build_index_from_files")
-    def test_build_invalid_chunk_size(self, mock_build_index, runner: CliRunner, temp_test_files: Path):
+    def test_build_invalid_chunk_size(
+        self, mock_build_index, runner: CliRunner, temp_test_files: Path
+    ):
         """Verify chunk size validation."""
-        result = runner.invoke(app, [
-            "build",
-            "--files", str(temp_test_files / "*.md"),
-            "--chunk-size", "50"  # Below minimum
-        ])
+        result = runner.invoke(
+            app,
+            [
+                "build",
+                "--files",
+                str(temp_test_files / "*.md"),
+                "--chunk-size",
+                "50",  # Below minimum
+            ],
+        )
 
         assert result.exit_code != 0
+
 
 class TestQueryCommand:
     """Test RAG query command."""
@@ -182,14 +190,10 @@ class TestQueryCommand:
         mock_retriever.return_value = mock_instance
         mock_instance.query.return_value = [
             {"text": "Result 1", "score": 0.95},
-            {"text": "Result 2", "score": 0.87}
+            {"text": "Result 2", "score": 0.87},
         ]
 
-        result = runner.invoke(app, [
-            "query",
-            "test query",
-            "--index-name", "test_index"
-        ])
+        result = runner.invoke(app, ["query", "test query", "--index-name", "test_index"])
 
         assert result.exit_code == 0
         assert "Result 1" in result.output
@@ -202,11 +206,7 @@ class TestQueryCommand:
         mock_retriever.return_value = mock_instance
         mock_instance.query.return_value = [{"text": "Result", "score": 0.9}]
 
-        result = runner.invoke(app, [
-            "query",
-            "test",
-            "--top-k", "10"
-        ])
+        result = runner.invoke(app, ["query", "test", "--top-k", "10"])
 
         assert result.exit_code == 0
 
@@ -217,11 +217,7 @@ class TestQueryCommand:
         mock_retriever.return_value = mock_instance
         mock_instance.query.return_value = []
 
-        result = runner.invoke(app, [
-            "query",
-            "test",
-            "--tenant-id", "tenant_456"
-        ])
+        result = runner.invoke(app, ["query", "test", "--tenant-id", "tenant_456"])
 
         assert result.exit_code == 0
 
@@ -237,15 +233,12 @@ class TestQueryCommand:
         mock_retriever.return_value = mock_instance
         mock_instance.query.return_value = [{"text": "Test", "score": 0.9}]
 
-        result = runner.invoke(app, [
-            "query",
-            "test",
-            "--format", "json"
-        ])
+        result = runner.invoke(app, ["query", "test", "--format", "json"])
 
         assert result.exit_code == 0
         # Should contain JSON-formatted output
         assert "{" in result.output or "[" in result.output
+
 
 class TestStatsCommand:
     """Test RAG statistics command."""
@@ -262,7 +255,7 @@ class TestStatsCommand:
             "num_chunks": 500,
             "embedding_dim": 384,
             "model_name": "sentence-transformers/all-MiniLM-L6-v2",
-            "created_at": "2024-01-01T00:00:00Z"
+            "created_at": "2024-01-01T00:00:00Z",
         }
         (index_path / "metadata.json").write_text(json.dumps(metadata))
 
@@ -283,17 +276,16 @@ class TestStatsCommand:
             "num_chunks": 50,
             "embedding_dim": 384,
             "model_name": "test-model",
-            "created_at": "2024-01-01T00:00:00Z"
+            "created_at": "2024-01-01T00:00:00Z",
         }
         (index_path / "metadata.json").write_text(json.dumps(metadata))
 
-        result = runner.invoke(app, [
-            "stats",
-            "--index-name", "specific_index",
-            "--index-dir", str(tmp_path)
-        ])
+        result = runner.invoke(
+            app, ["stats", "--index-name", "specific_index", "--index-dir", str(tmp_path)]
+        )
 
         assert result.exit_code == 0
+
 
 class TestListCommand:
     """Test RAG index listing command."""
@@ -311,7 +303,7 @@ class TestListCommand:
             metadata = {
                 "num_chunks": num_chunks,
                 "model_name": "test-model",
-                "created_at": "2024-01-01T00:00:00Z"
+                "created_at": "2024-01-01T00:00:00Z",
             }
             (index_path / "metadata.json").write_text(json.dumps(metadata))
 
@@ -320,6 +312,7 @@ class TestListCommand:
         assert result.exit_code == 0
         assert "index1" in result.output
         assert "index2" in result.output
+
 
 class TestTenantCommands:
     """Test tenant management commands."""
@@ -330,11 +323,7 @@ class TestTenantCommands:
         mock_instance = MagicMock()
         mock_indexer.return_value = mock_instance
 
-        runner.invoke(app, [
-            "tenant",
-            "create",
-            "--tenant-id", "new_tenant"
-        ])
+        runner.invoke(app, ["tenant", "create", "--tenant-id", "new_tenant"])
 
         # Command might not exist yet - just verify no crash
         # assert result.exit_code in [0, 2]  # 0 = success, 2 = no command
@@ -346,13 +335,11 @@ class TestTenantCommands:
         mock_indexer.return_value = mock_instance
         mock_instance.list_tenants.return_value = ["tenant1", "tenant2"]
 
-        runner.invoke(app, [
-            "tenant",
-            "list"
-        ])
+        runner.invoke(app, ["tenant", "list"])
 
         # Command might not exist yet
         # assert result.exit_code in [0, 2]
+
 
 class TestEdgeCases:
     """Test edge cases and error handling."""
@@ -365,10 +352,7 @@ class TestEdgeCases:
 
         mock_build.return_value = tmp_path / "index"
 
-        result = runner.invoke(app, [
-            "build",
-            "--files", str(empty_file)
-        ])
+        result = runner.invoke(app, ["build", "--files", str(empty_file)])
 
         # Should handle gracefully
         assert result.exit_code == 0
@@ -380,10 +364,7 @@ class TestEdgeCases:
         mock_retriever.return_value = mock_instance
         mock_instance.query.return_value = []
 
-        result = runner.invoke(app, [
-            "query",
-            "nonexistent term"
-        ])
+        result = runner.invoke(app, ["query", "nonexistent term"])
 
         assert result.exit_code == 0
         # Should indicate no results found
@@ -395,10 +376,7 @@ class TestEdgeCases:
         mock_indexer.return_value = mock_instance
         mock_instance.build_index.side_effect = Exception("Indexing failed")
 
-        result = runner.invoke(app, [
-            "build",
-            "--files", str(temp_test_files / "*.md")
-        ])
+        result = runner.invoke(app, ["build", "--files", str(temp_test_files / "*.md")])
 
         assert result.exit_code != 0
 
@@ -409,33 +387,32 @@ class TestEdgeCases:
         mock_retriever.return_value = mock_instance
         mock_instance.query.side_effect = Exception("Retrieval failed")
 
-        result = runner.invoke(app, [
-            "query",
-            "test"
-        ])
+        result = runner.invoke(app, ["query", "test"])
 
         assert result.exit_code != 0
+
 
 class TestParameterValidation:
     """Test parameter validation across commands."""
 
     def test_invalid_top_k(self, runner: CliRunner):
         """Verify top_k parameter validation."""
-        result = runner.invoke(app, [
-            "query",
-            "test",
-            "--top-k", "-5"  # Negative value
-        ])
+        result = runner.invoke(app, ["query", "test", "--top-k", "-5"])  # Negative value
 
         assert result.exit_code != 0
 
     def test_invalid_chunk_size_too_large(self, runner: CliRunner, temp_test_files: Path):
         """Verify chunk size upper bound."""
-        result = runner.invoke(app, [
-            "build",
-            "--files", str(temp_test_files / "*.md"),
-            "--chunk-size", "20000"  # Above maximum
-        ])
+        result = runner.invoke(
+            app,
+            [
+                "build",
+                "--files",
+                str(temp_test_files / "*.md"),
+                "--chunk-size",
+                "20000",  # Above maximum
+            ],
+        )
 
         assert result.exit_code != 0
 
@@ -445,14 +422,11 @@ class TestParameterValidation:
         mock_instance = MagicMock()
         mock_indexer.return_value = mock_instance
 
-        runner.invoke(app, [
-            "build",
-            "--files", str(temp_test_files / "*.md"),
-            "--index-name", ""
-        ])
+        runner.invoke(app, ["build", "--files", str(temp_test_files / "*.md"), "--index-name", ""])
 
         # Should use default or reject
         # Test behavior without strict assertions
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

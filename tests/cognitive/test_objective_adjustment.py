@@ -16,6 +16,7 @@ from pathlib import Path
 # Phase 3.1: Metric Analysis Engine Tests
 # ============================================================================
 
+
 class TestMetricTypes:
     """Test MetricType enum."""
 
@@ -53,10 +54,7 @@ class TestMetricValue:
 
         now = datetime.now(timezone.utc)
         metric = MetricValue(
-            metric_type=MetricType.COVERAGE,
-            value=75.5,
-            timestamp=now,
-            context={"source": "pytest"}
+            metric_type=MetricType.COVERAGE, value=75.5, timestamp=now, context={"source": "pytest"}
         )
 
         assert metric.metric_type == MetricType.COVERAGE
@@ -83,7 +81,7 @@ class TestMetricValue:
             "metric_type": "coverage",
             "value": 80.0,
             "timestamp": "2026-02-05T10:00:00+00:00",
-            "context": {}
+            "context": {},
         }
         metric = MetricValue.from_dict(data)
 
@@ -99,9 +97,11 @@ class TestMetricThreshold:
         from codex.cognitive.objective_analyzer import MetricThreshold, MetricType
 
         threshold = MetricThreshold(
-            MetricType.COVERAGE, target=70.0,
-            warning_threshold=60.0, critical_threshold=50.0,
-            comparison="gte"
+            MetricType.COVERAGE,
+            target=70.0,
+            warning_threshold=60.0,
+            critical_threshold=50.0,
+            comparison="gte",
         )
 
         is_ok, severity = threshold.check_value(75.0)
@@ -117,9 +117,11 @@ class TestMetricThreshold:
         )
 
         threshold = MetricThreshold(
-            MetricType.COVERAGE, target=70.0,
-            warning_threshold=60.0, critical_threshold=50.0,
-            comparison="gte"
+            MetricType.COVERAGE,
+            target=70.0,
+            warning_threshold=60.0,
+            critical_threshold=50.0,
+            comparison="gte",
         )
 
         is_ok, severity = threshold.check_value(65.0)
@@ -135,9 +137,11 @@ class TestMetricThreshold:
         )
 
         threshold = MetricThreshold(
-            MetricType.COVERAGE, target=70.0,
-            warning_threshold=60.0, critical_threshold=50.0,
-            comparison="gte"
+            MetricType.COVERAGE,
+            target=70.0,
+            warning_threshold=60.0,
+            critical_threshold=50.0,
+            comparison="gte",
         )
 
         is_ok, severity = threshold.check_value(45.0)
@@ -153,9 +157,11 @@ class TestMetricThreshold:
         )
 
         threshold = MetricThreshold(
-            MetricType.SECURITY, target=0,
-            warning_threshold=3, critical_threshold=10,
-            comparison="lte"
+            MetricType.SECURITY,
+            target=0,
+            warning_threshold=3,
+            critical_threshold=10,
+            comparison="lte",
         )
 
         # 0 vulnerabilities - OK (at or below target)
@@ -188,10 +194,7 @@ class TestMetricStore:
             store_path = Path(tmpdir) / "metrics.json"
             store = MetricStore(store_path)
 
-            metric = MetricValue(
-                MetricType.COVERAGE, 75.0,
-                datetime.now(timezone.utc)
-            )
+            metric = MetricValue(MetricType.COVERAGE, 75.0, datetime.now(timezone.utc))
             store.add_metric(metric)
 
             metrics = store.get_metrics(MetricType.COVERAGE, days=1)
@@ -212,10 +215,7 @@ class TestMetricStore:
 
             # Add multiple metrics
             for value in [60.0, 70.0, 80.0]:
-                metric = MetricValue(
-                    MetricType.COVERAGE, value,
-                    datetime.now(timezone.utc)
-                )
+                metric = MetricValue(MetricType.COVERAGE, value, datetime.now(timezone.utc))
                 store.add_metric(metric)
 
             latest = store.get_latest(MetricType.COVERAGE)
@@ -401,6 +401,7 @@ class TestObjectiveAnalyzer:
 # Phase 3.2: Objective Adjustment Logic Tests
 # ============================================================================
 
+
 class TestAdjustmentTypes:
     """Test AdjustmentType enum."""
 
@@ -444,7 +445,7 @@ class TestObjective:
             status="active",
             created_at=now,
             updated_at=now,
-            tags=["test"]
+            tags=["test"],
         )
 
         assert objective.id == "OBJ-001"
@@ -465,7 +466,7 @@ class TestObjective:
             current_value=None,
             status="active",
             created_at=now,
-            updated_at=now
+            updated_at=now,
         )
 
         data = objective.to_dict()
@@ -492,7 +493,7 @@ class TestAdjustmentRule:
             condition=lambda r: True,
             action=AdjustmentType.ADD_OBJECTIVE,
             parameters={},
-            cooldown_hours=24
+            cooldown_hours=24,
         )
 
         # Should be able to apply (no last_applied)
@@ -532,7 +533,7 @@ class TestObjectiveStore:
                 current_value=None,
                 status="active",
                 created_at=now,
-                updated_at=now
+                updated_at=now,
             )
 
             store.add_objective(objective)
@@ -565,7 +566,7 @@ class TestObjectiveStore:
                     current_value=None,
                     status=status,
                     created_at=now,
-                    updated_at=now
+                    updated_at=now,
                 )
                 store.add_objective(obj)
 
@@ -600,7 +601,7 @@ class TestObjectiveAdjuster:
                 description="Improve coverage",
                 priority=ObjectivePriority.P1_HIGH,
                 metric_type=MetricType.COVERAGE,
-                target_value=80.0
+                target_value=80.0,
             )
 
             assert objective.title == "Coverage Sprint"
@@ -622,9 +623,7 @@ class TestObjectiveAdjuster:
             adjuster = ObjectiveAdjuster(analyzer=analyzer, store=obj_store)
 
             objective = adjuster.create_objective(
-                title="Test",
-                description="Test",
-                priority=ObjectivePriority.P2_MEDIUM
+                title="Test", description="Test", priority=ObjectivePriority.P2_MEDIUM
             )
 
             result = adjuster.complete_objective(objective.id)
@@ -637,6 +636,7 @@ class TestObjectiveAdjuster:
 # ============================================================================
 # Phase 3.3: Autonomous Execution Tests
 # ============================================================================
+
 
 class TestAutomationLevel:
     """Test AutomationLevel enum."""
@@ -668,7 +668,7 @@ class TestExecutionPolicy:
             description="Test",
             parameters={},
             status="proposed",
-            proposed_at=datetime.now(timezone.utc)
+            proposed_at=datetime.now(timezone.utc),
         )
 
         can_execute, reason = policy.can_auto_execute(adjustment)
@@ -690,7 +690,7 @@ class TestExecutionPolicy:
             description="Test",
             parameters={},
             status="proposed",
-            proposed_at=datetime.now(timezone.utc)
+            proposed_at=datetime.now(timezone.utc),
         )
 
         can_execute, _ = policy.can_auto_execute(adjustment)
@@ -711,7 +711,7 @@ class TestExecutionPolicy:
             description="Test",
             parameters={},
             status="proposed",
-            proposed_at=datetime.now(timezone.utc)
+            proposed_at=datetime.now(timezone.utc),
         )
 
         can_execute, reason = policy.can_auto_execute(adjustment)
@@ -733,7 +733,7 @@ class TestExecutionPolicy:
             description="Test",
             parameters={},
             status="proposed",
-            proposed_at=datetime.now(timezone.utc)
+            proposed_at=datetime.now(timezone.utc),
         )
 
         can_execute, _ = policy.can_auto_execute(adjustment)
@@ -757,6 +757,7 @@ class TestAutonomousExecutor:
 # ============================================================================
 # Phase 3.4: Safety & Governance Tests
 # ============================================================================
+
 
 class TestAuditEventType:
     """Test AuditEventType enum."""
@@ -828,7 +829,7 @@ class TestScopeRestriction:
             description="Test",
             parameters={},
             status="proposed",
-            proposed_at=datetime.now(timezone.utc)
+            proposed_at=datetime.now(timezone.utc),
         )
 
         allowed, _ = scope.check_adjustment(adjustment)
@@ -840,9 +841,7 @@ class TestScopeRestriction:
         from codex.cognitive.safety_guards import ScopeRestriction
 
         scope = ScopeRestriction(
-            name="test",
-            description="Test scope",
-            blocked_adjustment_types=["remove_objective"]
+            name="test", description="Test scope", blocked_adjustment_types=["remove_objective"]
         )
 
         adjustment = Adjustment(
@@ -853,7 +852,7 @@ class TestScopeRestriction:
             description="Test",
             parameters={},
             status="proposed",
-            proposed_at=datetime.now(timezone.utc)
+            proposed_at=datetime.now(timezone.utc),
         )
 
         allowed, reason = scope.check_adjustment(adjustment)
@@ -872,9 +871,7 @@ class TestAuditLog:
             log = AuditLog(Path(tmpdir) / "audit.json")
 
             event = log.log_event(
-                AuditEventType.ADJUSTMENT_EXECUTED,
-                "test_user",
-                {"adjustment_id": "ADJ-001"}
+                AuditEventType.ADJUSTMENT_EXECUTED, "test_user", {"adjustment_id": "ADJ-001"}
             )
 
             assert event.id.startswith("AUD-")
@@ -947,7 +944,7 @@ class TestSafetyGuard:
                 description="Test",
                 parameters={},
                 status="proposed",
-                proposed_at=datetime.now(timezone.utc)
+                proposed_at=datetime.now(timezone.utc),
             )
 
             allowed, reason = guard.check_adjustment(adjustment)
@@ -990,6 +987,7 @@ class TestSafetyGuard:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestPlan3Integration:
     """Integration tests for Plan 3."""

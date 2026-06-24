@@ -26,7 +26,7 @@ class TestBoundaryConditions:
 
     def test_very_large_input(self):
         """Test handling very large input."""
-        value = 10 ** 10
+        value = 10**10
         assert value > 0
 
     def test_empty_collection(self):
@@ -146,6 +146,7 @@ class TestInvalidInputs:
     def test_malformed_json(self):
         """Test malformed JSON."""
         import json
+
         try:
             json.loads("{not valid json}")
             valid = False
@@ -156,6 +157,7 @@ class TestInvalidInputs:
     def test_invalid_regex(self):
         """Test invalid regex pattern."""
         import re
+
         try:
             re.compile("[invalid(")
             valid = False
@@ -459,7 +461,7 @@ class TestCornerCases:
 
     def test_very_large_number(self):
         """Test very large number."""
-        n = 10 ** 100
+        n = 10**100
         assert n > 0
 
     def test_very_small_float(self):

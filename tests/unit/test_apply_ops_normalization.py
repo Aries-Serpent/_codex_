@@ -23,7 +23,4 @@ def test_apply_functions_noop_ok() -> None:
     plan = {"fields": [{"op": "add", "path": "/fields/A", "value": {"name": "A"}}]}
     with patch.object(zapply.LOGGER, "info") as mock_info:
         zapply.apply_fields(plan, env="dev")
-    assert any(
-        "Prepared" in str(call.args[0])
-        for call in mock_info.call_args_list
-    )
+    assert any("Prepared" in str(call.args[0]) for call in mock_info.call_args_list)

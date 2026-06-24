@@ -20,8 +20,6 @@ def test_services_api_module_import_smoke():
     except ModuleNotFoundError:
         pytest.skip("services.api.main not importable in this environment")
     except Exception as exc:  # pragma: no cover - environment specific
-        pytest.skip(
-            f"services.api.main import skipped due to environment-specific error: {exc!r}"
-        )
+        pytest.skip(f"services.api.main import skipped due to environment-specific error: {exc!r}")
     else:
         assert module is not None

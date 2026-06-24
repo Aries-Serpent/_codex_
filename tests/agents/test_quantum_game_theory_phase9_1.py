@@ -193,17 +193,13 @@ def test_apply_decoherence_full_gamma_collapses_state():
     qe = _quantum_engine()
     qe.apply_decoherence(gamma=1.0)
     # Wavefunction should still be normalized
-    norm = np.vdot(
-        qe.game_state.joint_wavefunction, qe.game_state.joint_wavefunction
-    ).real
+    norm = np.vdot(qe.game_state.joint_wavefunction, qe.game_state.joint_wavefunction).real
     assert norm == pytest.approx(1.0, abs=1e-6)
 
 
 def test_play_round_with_noise():
     qe = _quantum_engine()
-    out = qe.play_round(
-        theta_blue=0.1, theta_red=0.05, apply_noise=True, decoherence_gamma=0.3
-    )
+    out = qe.play_round(theta_blue=0.1, theta_red=0.05, apply_noise=True, decoherence_gamma=0.3)
     assert "blue_payoff" in out and "red_payoff" in out
     assert np.isfinite(out["blue_payoff"])
     assert np.isfinite(out["red_payoff"])

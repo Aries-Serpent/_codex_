@@ -34,7 +34,9 @@ def _app_for_infer() -> FastAPI:
     @app.post("/v1/infer")
     async def infer(request: Request):
         payload = await request.json()
-        return JSONResponse({"ok": True, "max_tokens": payload.get("max_tokens", 0), "tokens_used": 5})
+        return JSONResponse(
+            {"ok": True, "max_tokens": payload.get("max_tokens", 0), "tokens_used": 5}
+        )
 
     return app
 
@@ -56,7 +58,9 @@ def test_dispatch_returns_429_when_preflight_token_quota_is_exhausted(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     app = _app_for_infer()
-    monkeypatch.setattr(rate_limiter, "check_request_limit", lambda tenant_id, quota=None: True)  # noqa: ARG005
+    monkeypatch.setattr(
+        rate_limiter, "check_request_limit", lambda tenant_id, quota=None: True
+    )  # noqa: ARG005
 
     depleted = TokenBucket(capacity=10, tokens=0.0, last_refill=0.0, refill_rate=0.0)
     monkeypatch.setattr(rate_limiter, "_get_or_create_bucket", lambda *args, **kwargs: depleted)
@@ -71,7 +75,9 @@ def test_dispatch_reinserts_request_body_and_handles_accounting_errors(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     app = _app_for_infer()
-    monkeypatch.setattr(rate_limiter, "check_request_limit", lambda tenant_id, quota=None: True)  # noqa: ARG005
+    monkeypatch.setattr(
+        rate_limiter, "check_request_limit", lambda tenant_id, quota=None: True
+    )  # noqa: ARG005
 
     bucket = MagicMock()
     bucket.available_tokens.return_value = 100.0

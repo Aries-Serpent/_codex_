@@ -24,6 +24,7 @@ class TestAppModule:
         """Test app module can be imported."""
         try:
             from codex_cli import app
+
             assert app is not None
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -32,6 +33,7 @@ class TestAppModule:
         """Test REASONING_TEMPLATE_ROOT is defined."""
         try:
             from codex_cli.app import REASONING_TEMPLATE_ROOT
+
             assert isinstance(REASONING_TEMPLATE_ROOT, Path)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -40,6 +42,7 @@ class TestAppModule:
         """Test REASONING_CURRICULA_ROOT is defined."""
         try:
             from codex_cli.app import REASONING_CURRICULA_ROOT
+
             assert isinstance(REASONING_CURRICULA_ROOT, Path)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -52,6 +55,7 @@ class TestTrackSmokeImpl:
         """Test _track_smoke_impl can be imported."""
         try:
             from codex_cli.app import _track_smoke_impl
+
             assert callable(_track_smoke_impl)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -76,6 +80,7 @@ class TestSplitSmokeImpl:
         """Test _split_smoke_impl can be imported."""
         try:
             from codex_cli.app import _split_smoke_impl
+
             assert callable(_split_smoke_impl)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -104,6 +109,7 @@ class TestCheckpointSmokeImpl:
         """Test _checkpoint_smoke_impl can be imported."""
         try:
             from codex_cli.app import _checkpoint_smoke_impl
+
             assert callable(_checkpoint_smoke_impl)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -132,6 +138,7 @@ class TestDiscoverReasoningTemplates:
         """Test _discover_reasoning_templates can be accessed."""
         try:
             from codex_cli.app import _discover_reasoning_templates
+
             assert callable(_discover_reasoning_templates)
         except (ImportError, AttributeError):
             pytest.skip("_discover_reasoning_templates not accessible")
@@ -140,6 +147,7 @@ class TestDiscoverReasoningTemplates:
         """Test _discover_reasoning_templates returns sequence."""
         try:
             from codex_cli.app import _discover_reasoning_templates
+
             result = _discover_reasoning_templates()
             assert isinstance(result, (list, tuple))
         except (ImportError, AttributeError):
@@ -153,6 +161,7 @@ class TestLoadYaml:
         """Test _load_yaml can be accessed."""
         try:
             from codex_cli.app import _load_yaml
+
             assert callable(_load_yaml)
         except (ImportError, AttributeError):
             pytest.skip("_load_yaml not accessible")
@@ -165,6 +174,7 @@ class TestMainFunction:
         """Test main can be imported."""
         try:
             from codex_cli.app import main
+
             assert callable(main)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -177,6 +187,7 @@ class TestAppObject:
         """Test app object is defined."""
         try:
             from codex_cli.app import app
+
             assert app is not None
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -189,6 +200,7 @@ class TestTyperClickFallback:
         """Test _USE_TYPER flag is defined."""
         try:
             from codex_cli.app import _USE_TYPER
+
             assert isinstance(_USE_TYPER, bool)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -197,6 +209,7 @@ class TestTyperClickFallback:
         """Test echo function is available."""
         try:
             from codex_cli.app import echo
+
             assert callable(echo)
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -205,6 +218,7 @@ class TestTyperClickFallback:
         """Test Exit class is available."""
         try:
             from codex_cli.app import Exit
+
             # Should be either typer.Exit or custom SystemExit subclass
             assert Exit is not None
         except ImportError:
@@ -218,6 +232,7 @@ class TestModuleImports:
         """Test codex_cli package can be imported."""
         try:
             import codex_cli
+
             assert codex_cli is not None
         except ImportError:
             pytest.skip("codex_cli package not importable")
@@ -226,6 +241,7 @@ class TestModuleImports:
         """Test app module exists."""
         try:
             from codex_cli import app
+
             assert app is not None
         except ImportError:
             pytest.skip("codex_cli.app not importable")
@@ -238,6 +254,7 @@ class TestPathConstants:
         """Test REASONING_TEMPLATE_ROOT has expected path structure."""
         try:
             from codex_cli.app import REASONING_TEMPLATE_ROOT
+
             path_str = str(REASONING_TEMPLATE_ROOT)
             assert "configs" in path_str or "reasoning" in path_str
         except ImportError:
@@ -247,6 +264,7 @@ class TestPathConstants:
         """Test REASONING_CURRICULA_ROOT is under REASONING_TEMPLATE_ROOT."""
         try:
             from codex_cli.app import REASONING_CURRICULA_ROOT, REASONING_TEMPLATE_ROOT
+
             # Curricula should be a subdirectory
             assert REASONING_TEMPLATE_ROOT in REASONING_CURRICULA_ROOT.parents
         except (ImportError, AssertionError):

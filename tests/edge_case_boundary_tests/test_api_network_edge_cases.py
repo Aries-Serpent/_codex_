@@ -293,7 +293,7 @@ class TestSSLTLSCertificateValidation:
         cert_chain = [
             {"issuer": "root_ca"},
             {"issuer": "intermediate_ca"},
-            {"issuer": "server_cert"}
+            {"issuer": "server_cert"},
         ]
 
         # Act
@@ -388,7 +388,7 @@ class TestRateLimiting:
         response_headers = {
             "X-RateLimit-Limit": "100",
             "X-RateLimit-Remaining": "42",
-            "X-RateLimit-Reset": "1234567890"
+            "X-RateLimit-Reset": "1234567890",
         }
 
         # Act

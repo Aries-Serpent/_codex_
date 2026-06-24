@@ -3,6 +3,7 @@ Integration tests for codex_ml CLI entrypoints.
 
 Tests command-line interface help, validation, and basic functionality.
 """
+
 import subprocess
 import sys
 
@@ -15,10 +16,7 @@ class TestCodexMLCLIMain:
     def test_codex_ml_module_help(self):
         """Test codex_ml module --help."""
         result = subprocess.run(
-            [sys.executable, "-m", "codex_ml", "--help"],
-            capture_output=True,
-            text=True,
-            timeout=30
+            [sys.executable, "-m", "codex_ml", "--help"], capture_output=True, text=True, timeout=30
         )
 
         # Should succeed or fail gracefully
@@ -30,7 +28,7 @@ class TestCodexMLCLIMain:
             [sys.executable, "-m", "codex_ml.cli", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # May have different exit codes depending on CLI framework
@@ -42,7 +40,7 @@ class TestCodexMLCLIMain:
             [sys.executable, "-m", "codex_ml", "--version"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Version may or may not be implemented
@@ -58,7 +56,7 @@ class TestCodexMLSubcommands:
             [sys.executable, "-m", "codex_ml.cli.train", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should show help or indicate command exists
@@ -70,7 +68,7 @@ class TestCodexMLSubcommands:
             [sys.executable, "-m", "codex_ml.cli.evaluate", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         assert result.returncode in (0, 1, 2)
@@ -81,7 +79,7 @@ class TestCodexMLSubcommands:
             [sys.executable, "-m", "codex_ml.cli.config", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         assert result.returncode in (0, 1, 2)
@@ -94,6 +92,7 @@ class TestCodexMLImports:
         """Test importing codex_ml package."""
         try:
             import codex_ml
+
             assert codex_ml is not None
         except ImportError:
             pytest.skip("codex_ml not importable")
@@ -102,6 +101,7 @@ class TestCodexMLImports:
         """Test importing codex_ml.cli."""
         try:
             import codex_ml.cli
+
             assert codex_ml.cli is not None
         except ImportError:
             pytest.skip("codex_ml.cli not importable")
@@ -110,11 +110,12 @@ class TestCodexMLImports:
         """Test codex_ml has version attribute."""
         try:
             import codex_ml
+
             # May have __version__ or VERSION
             has_version = (
-                hasattr(codex_ml, "__version__") or
-                hasattr(codex_ml, "VERSION") or
-                hasattr(codex_ml, "version")
+                hasattr(codex_ml, "__version__")
+                or hasattr(codex_ml, "VERSION")
+                or hasattr(codex_ml, "version")
             )
             # Version may not be set in development - skip if not present
             if not has_version:

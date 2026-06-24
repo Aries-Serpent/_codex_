@@ -27,11 +27,11 @@ class TestPerformanceMetrics:
             query_id = "test_query_1"
             latency_ms = 150.5
 
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 metrics.record_query_latency(query_id, latency_ms)
 
                 # Should be able to retrieve metrics
-                if hasattr(metrics, 'get_query_latency'):
+                if hasattr(metrics, "get_query_latency"):
                     recorded = metrics.get_query_latency(query_id)
                     assert recorded == latency_ms or recorded is not None
         except (ImportError, AttributeError):
@@ -48,7 +48,7 @@ class TestPerformanceMetrics:
             doc_count = 100
             duration_ms = 500.0
 
-            if hasattr(metrics, 'record_embedding_time'):
+            if hasattr(metrics, "record_embedding_time"):
                 metrics.record_embedding_time(doc_count, duration_ms)
 
                 # Calculate throughput
@@ -71,7 +71,7 @@ class TestPerformanceMetrics:
             ]
 
             for op_name, duration in operations:
-                if hasattr(metrics, 'record_index_operation'):
+                if hasattr(metrics, "record_index_operation"):
                     metrics.record_index_operation(op_name, duration)
 
                     # Should be recorded
@@ -93,12 +93,12 @@ class TestMetricsAggregation:
             # Record multiple queries
             latencies = [100, 150, 200, 120, 180]
 
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 for i, latency in enumerate(latencies):
                     metrics.record_query_latency(f"query_{i}", latency)
 
                 # Calculate average
-                if hasattr(metrics, 'get_average_latency'):
+                if hasattr(metrics, "get_average_latency"):
                     avg = metrics.get_average_latency()
                     expected_avg = sum(latencies) / len(latencies)
                     assert abs(avg - expected_avg) < 1.0 or avg > 0
@@ -115,12 +115,12 @@ class TestMetricsAggregation:
             # Record latencies
             latencies = list(range(100, 200))  # 100ms to 199ms
 
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 for i, latency in enumerate(latencies):
                     metrics.record_query_latency(f"query_{i}", latency)
 
                 # Calculate p50, p95, p99
-                if hasattr(metrics, 'get_latency_percentile'):
+                if hasattr(metrics, "get_latency_percentile"):
                     p50 = metrics.get_latency_percentile(50)
                     p95 = metrics.get_latency_percentile(95)
                     metrics.get_latency_percentile(99)
@@ -138,7 +138,7 @@ class TestMetricsAggregation:
             metrics = RAGMetrics()
 
             # Record queries over time
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 start_time = time.time()
                 for i in range(100):
                     metrics.record_query_latency(f"query_{i}", 50)
@@ -146,7 +146,7 @@ class TestMetricsAggregation:
                 assert elapsed >= 0
 
                 # Calculate throughput
-                if hasattr(metrics, 'get_throughput'):
+                if hasattr(metrics, "get_throughput"):
                     throughput = metrics.get_throughput()
                     assert throughput > 0  # queries per second
         except (ImportError, AttributeError):
@@ -164,7 +164,7 @@ class TestIndexHealthMonitoring:
             health = IndexHealth()
 
             # Get index size
-            if hasattr(health, 'get_index_size'):
+            if hasattr(health, "get_index_size"):
                 size = health.get_index_size()
                 assert isinstance(size, (int, float))
                 assert size >= 0
@@ -179,7 +179,7 @@ class TestIndexHealthMonitoring:
             health = IndexHealth()
 
             # Get document count
-            if hasattr(health, 'get_document_count'):
+            if hasattr(health, "get_document_count"):
                 count = health.get_document_count()
                 assert isinstance(count, int)
                 assert count >= 0
@@ -194,7 +194,7 @@ class TestIndexHealthMonitoring:
             health = IndexHealth()
 
             # Check fragmentation
-            if hasattr(health, 'get_fragmentation_score'):
+            if hasattr(health, "get_fragmentation_score"):
                 score = health.get_fragmentation_score()
                 # Should be between 0 and 1 (or 0-100)
                 assert isinstance(score, (int, float))
@@ -210,7 +210,7 @@ class TestIndexHealthMonitoring:
             health = IndexHealth()
 
             # Perform health check
-            if hasattr(health, 'check_health'):
+            if hasattr(health, "check_health"):
                 status = health.check_health()
                 # Should return status dict or boolean
                 assert status is not None
@@ -234,11 +234,11 @@ class TestErrorTracking:
             error_type = "EmbeddingError"
             error_msg = "Failed to generate embedding"
 
-            if hasattr(tracker, 'log_error'):
+            if hasattr(tracker, "log_error"):
                 tracker.log_error(error_type, error_msg)
 
                 # Should be logged
-                if hasattr(tracker, 'get_error_count'):
+                if hasattr(tracker, "get_error_count"):
                     count = tracker.get_error_count(error_type)
                     assert count >= 1 or count is not None
         except (ImportError, AttributeError):
@@ -252,14 +252,14 @@ class TestErrorTracking:
             tracker = ErrorTracker()
 
             # Log successes and errors
-            if hasattr(tracker, 'log_error') and hasattr(tracker, 'log_success'):
+            if hasattr(tracker, "log_error") and hasattr(tracker, "log_success"):
                 for _ in range(90):
                     tracker.log_success()
                 for _ in range(10):
                     tracker.log_error("TestError", "Test error")
 
                 # Calculate error rate
-                if hasattr(tracker, 'get_error_rate'):
+                if hasattr(tracker, "get_error_rate"):
                     rate = tracker.get_error_rate()
                     # Should be around 10%
                     assert 0.05 <= rate <= 0.15 or rate is not None
@@ -274,12 +274,12 @@ class TestErrorTracking:
             tracker = ErrorTracker(alert_threshold=0.1)  # 10% error rate
 
             # Log errors above threshold
-            if hasattr(tracker, 'log_error'):
+            if hasattr(tracker, "log_error"):
                 for _ in range(20):  # 20 errors
                     tracker.log_error("TestError", "Test")
 
                 # Check if alert triggered
-                if hasattr(tracker, 'should_alert'):
+                if hasattr(tracker, "should_alert"):
                     should_alert = tracker.should_alert()
                     # May or may not be True depending on implementation
                     assert isinstance(should_alert, bool) or should_alert is None
@@ -300,12 +300,12 @@ class TestMetricsExport:
             metrics = RAGMetrics()
 
             # Record some metrics
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 metrics.record_query_latency("query_1", 100)
                 metrics.record_query_latency("query_2", 150)
 
             # Export as JSON
-            if hasattr(metrics, 'to_json'):
+            if hasattr(metrics, "to_json"):
                 json_data = metrics.to_json()
                 # Should be valid JSON
                 parsed = json.loads(json_data)
@@ -321,11 +321,11 @@ class TestMetricsExport:
             metrics = RAGMetrics()
 
             # Record some metrics
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 metrics.record_query_latency("query_1", 100)
 
             # Export as dict
-            if hasattr(metrics, 'to_dict'):
+            if hasattr(metrics, "to_dict"):
                 data = metrics.to_dict()
                 assert isinstance(data, dict)
                 # Should have some keys
@@ -341,11 +341,11 @@ class TestMetricsExport:
             metrics = RAGMetrics()
 
             # Record metrics
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 metrics.record_query_latency("query_1", 100)
 
             # Export in Prometheus format
-            if hasattr(metrics, 'to_prometheus'):
+            if hasattr(metrics, "to_prometheus"):
                 prom_data = metrics.to_prometheus()
                 # Should be string in Prometheus format
                 assert isinstance(prom_data, str)
@@ -366,16 +366,16 @@ class TestRealTimeMonitoring:
             metrics = RAGMetrics()
 
             # Set up streaming
-            if hasattr(metrics, 'start_streaming'):
+            if hasattr(metrics, "start_streaming"):
                 metrics.start_streaming()
 
                 # Record metrics
-                if hasattr(metrics, 'record_query_latency'):
+                if hasattr(metrics, "record_query_latency"):
                     for i in range(10):
                         metrics.record_query_latency(f"query_{i}", 100 + i)
 
                 # Stop streaming
-                if hasattr(metrics, 'stop_streaming'):
+                if hasattr(metrics, "stop_streaming"):
                     metrics.stop_streaming()
 
                 assert True
@@ -394,11 +394,11 @@ class TestRealTimeMonitoring:
                 callback_called.append((metric_name, value))
 
             # Register callback
-            if hasattr(metrics, 'register_callback'):
+            if hasattr(metrics, "register_callback"):
                 metrics.register_callback(metrics_callback)
 
                 # Record metric
-                if hasattr(metrics, 'record_query_latency'):
+                if hasattr(metrics, "record_query_latency"):
                     metrics.record_query_latency("query_1", 100)
 
                 # Callback should have been called
@@ -418,12 +418,12 @@ class TestDashboardIntegration:
             metrics = RAGMetrics()
 
             # Record various metrics
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 for i in range(50):
                     metrics.record_query_latency(f"query_{i}", 100 + i * 2)
 
             # Get dashboard data
-            if hasattr(metrics, 'get_dashboard_data'):
+            if hasattr(metrics, "get_dashboard_data"):
                 data = metrics.get_dashboard_data()
                 assert isinstance(data, dict)
                 # Should have key metrics
@@ -440,13 +440,13 @@ class TestDashboardIntegration:
             metrics = RAGMetrics()
 
             # Record metrics over time
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 for i in range(20):
                     metrics.record_query_latency(f"query_{i}", 100)
                     time.sleep(0.01)  # Small delay
 
             # Get time series
-            if hasattr(metrics, 'get_time_series'):
+            if hasattr(metrics, "get_time_series"):
                 series = metrics.get_time_series(metric_name="query_latency")
                 # Should return list of (timestamp, value) tuples or similar
                 assert isinstance(series, (list, dict)) or series is not None
@@ -474,7 +474,7 @@ class TestMetricsIntegration:
             duration = (time.time() - start) * 1000  # ms
 
             # Record metrics
-            if hasattr(metrics, 'record_embedding_time'):
+            if hasattr(metrics, "record_embedding_time"):
                 metrics.record_embedding_time(len(texts), duration)
 
             assert embeddings is not None
@@ -498,7 +498,7 @@ class TestMetricsIntegration:
             duration = (time.time() - start) * 1000
 
             # Record metrics
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 metrics.record_query_latency("test_query", duration)
 
             # Results may be None if no index
@@ -518,11 +518,11 @@ class TestAlerting:
             metrics = RAGMetrics(latency_threshold_ms=200)
 
             # Record high latency
-            if hasattr(metrics, 'record_query_latency'):
+            if hasattr(metrics, "record_query_latency"):
                 metrics.record_query_latency("slow_query", 500)
 
                 # Check if alert triggered
-                if hasattr(metrics, 'get_alerts'):
+                if hasattr(metrics, "get_alerts"):
                     alerts = metrics.get_alerts()
                     # May have alert for high latency
                     assert isinstance(alerts, list) or alerts is not None
@@ -537,12 +537,12 @@ class TestAlerting:
             tracker = ErrorTracker(alert_threshold=0.05)
 
             # Log errors
-            if hasattr(tracker, 'log_error'):
+            if hasattr(tracker, "log_error"):
                 for _ in range(10):
                     tracker.log_error("TestError", "Test")
 
                 # Check alerts
-                if hasattr(tracker, 'get_alerts'):
+                if hasattr(tracker, "get_alerts"):
                     alerts = tracker.get_alerts()
                     assert isinstance(alerts, list) or alerts is not None
         except (ImportError, AttributeError, TypeError):

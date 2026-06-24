@@ -7,6 +7,7 @@ Verifies:
   - ci.monitor.proactive returns error on missing credentials (not an import error)
   - PDALoopConfig model field is present on SkillManifest
 """
+
 from __future__ import annotations
 
 import pytest
@@ -20,6 +21,7 @@ from codex.skills.registry import get_registry, reset_registry
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(autouse=True)
 def fresh_registry():
     reset_registry()
@@ -32,6 +34,7 @@ def fresh_registry():
 # ---------------------------------------------------------------------------
 # Registry discovery
 # ---------------------------------------------------------------------------
+
 
 class TestSkillRegistryDiscovery:
     def test_pda_loop_logger_registered(self, fresh_registry):
@@ -77,6 +80,7 @@ class TestSkillRegistryDiscovery:
 # PDALoopConfig model
 # ---------------------------------------------------------------------------
 
+
 class TestPDALoopConfig:
     def test_pda_loop_config_field_on_manifest(self):
         assert "pda_loop" in SkillManifest.model_fields
@@ -92,6 +96,7 @@ class TestPDALoopConfig:
 
     def test_manifest_with_pda_loop_parsed(self):
         import yaml
+
         raw = """
 id: test.pda.skill
 name: Test PDA Skill
@@ -112,6 +117,7 @@ pda_loop:
 # ---------------------------------------------------------------------------
 # pda.loop.logger handler
 # ---------------------------------------------------------------------------
+
 
 class TestPDALoopLoggerHandler:
     def test_missing_action_returns_error(self):
@@ -140,12 +146,14 @@ class TestPDALoopLoggerHandler:
         assert "Missing fields" in result["message"]
 
     def test_log_failure_writes_entry(self):
-        result = pda_run({
-            "action": "log_failure",
-            "session": "S293-pytest",
-            "pattern_id": "RP-PYTEST-SKILL-TEST",
-            "error_text": "unit test error",
-        })
+        result = pda_run(
+            {
+                "action": "log_failure",
+                "session": "S293-pytest",
+                "pattern_id": "RP-PYTEST-SKILL-TEST",
+                "error_text": "unit test error",
+            }
+        )
         assert result["status"] == "ok"
         assert result["entry"]["pattern_id"] == "RP-PYTEST-SKILL-TEST"
         assert result["entry"]["type"] == "failure"
@@ -155,33 +163,39 @@ class TestPDALoopLoggerHandler:
         assert result["status"] == "error"
 
     def test_log_fix_writes_entry(self):
-        result = pda_run({
-            "action": "log_fix",
-            "session": "S293-pytest",
-            "pattern_id": "RP-PYTEST-SKILL-TEST",
-            "fix_applied": "pytest fix",
-            "verification_passed": True,
-        })
+        result = pda_run(
+            {
+                "action": "log_fix",
+                "session": "S293-pytest",
+                "pattern_id": "RP-PYTEST-SKILL-TEST",
+                "fix_applied": "pytest fix",
+                "verification_passed": True,
+            }
+        )
         assert result["status"] == "ok"
         assert result["entry"]["verification_passed"] is True
 
     def test_log_session_writes_entry(self):
-        result = pda_run({
-            "action": "log_session",
-            "session": "S293-pytest",
-            "summary": "all tests passed",
-            "commit": "abc1234",
-        })
+        result = pda_run(
+            {
+                "action": "log_session",
+                "session": "S293-pytest",
+                "summary": "all tests passed",
+                "commit": "abc1234",
+            }
+        )
         assert result["status"] == "ok"
         assert result["entry"]["type"] == "session"
 
     def test_query_with_pattern_filter(self):
         # First write a known entry
-        pda_run({
-            "action": "log_failure",
-            "session": "S293-pytest",
-            "pattern_id": "RP-QUERY-FILTER-TEST",
-        })
+        pda_run(
+            {
+                "action": "log_failure",
+                "session": "S293-pytest",
+                "pattern_id": "RP-QUERY-FILTER-TEST",
+            }
+        )
         result = pda_run({"action": "query", "pattern_id": "RP-QUERY-FILTER-TEST"})
         assert result["status"] == "ok"
         assert all(e["pattern_id"] == "RP-QUERY-FILTER-TEST" for e in result["entries"])
@@ -189,8 +203,9 @@ class TestPDALoopLoggerHandler:
     def test_summarize_after_fix_shows_success_rate(self):
         pid = "RP-SUCCESS-RATE-TEST"
         pda_run({"action": "log_failure", "session": "S293", "pattern_id": pid})
-        pda_run({"action": "log_fix", "session": "S293", "pattern_id": pid,
-                 "verification_passed": True})
+        pda_run(
+            {"action": "log_fix", "session": "S293", "pattern_id": pid, "verification_passed": True}
+        )
         result = pda_run({"action": "summarize", "pattern_id": pid})
         assert result["status"] == "ok"
         matching = [e for e in result["entries"] if e["pattern_id"] == pid]
@@ -201,6 +216,7 @@ class TestPDALoopLoggerHandler:
 # ---------------------------------------------------------------------------
 # ci.monitor.proactive handler
 # ---------------------------------------------------------------------------
+
 
 class TestCIMonitorProactiveHandler:
     def test_missing_repo_returns_error(self):
@@ -216,19 +232,22 @@ class TestCIMonitorProactiveHandler:
     def test_invalid_token_dry_run_returns_structured_error(self):
         # With an invalid token + dry_run=True, the monitor may fail at the
         # GitHub API call, but it should return a dict (not raise).
-        result = monitor_run({
-            "repo": "Aries-Serpent/_codex_",
-            "token": "invalid-token-for-test",
-            "dry_run": True,
-            "max_age_h": 1,
-            "target_pr": 0,
-        })
+        result = monitor_run(
+            {
+                "repo": "Aries-Serpent/_codex_",
+                "token": "invalid-token-for-test",
+                "dry_run": True,
+                "max_age_h": 1,
+                "target_pr": 0,
+            }
+        )
         # Must always return a dict with "status"
         assert isinstance(result, dict)
         assert "status" in result
 
     def test_entrypoint_is_callable(self, fresh_registry):
         import importlib
+
         skill = fresh_registry.resolve("ci.monitor.proactive")
         mod_path, func_name = skill.manifest.entrypoint.rsplit(":", 1)
         mod = importlib.import_module(mod_path)

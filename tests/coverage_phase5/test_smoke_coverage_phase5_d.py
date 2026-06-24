@@ -1,4 +1,5 @@
 """Smoke tests for coverage phase 5 - batch 3."""
+
 from __future__ import annotations
 
 

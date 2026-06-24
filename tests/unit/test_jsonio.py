@@ -1,4 +1,5 @@
 """Tests for codex_ml.utils.jsonio — CLI JSON stdout helpers."""
+
 from __future__ import annotations
 
 import json

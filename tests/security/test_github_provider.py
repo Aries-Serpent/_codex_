@@ -55,6 +55,7 @@ def _mock_response(status_code: int, json_data=None, text: str = "") -> MagicMoc
 # Token regex
 # ---------------------------------------------------------------------------
 
+
 class TestGitHubTokenRegex:
     @pytest.mark.parametrize(
         "token",
@@ -88,6 +89,7 @@ class TestGitHubTokenRegex:
 # Known installation permissions
 # ---------------------------------------------------------------------------
 
+
 class TestKnownPermissions:
     def test_contains_common_permissions(self) -> None:
         assert "contents" in _KNOWN_INSTALLATION_PERMISSIONS
@@ -105,6 +107,7 @@ class TestKnownPermissions:
 # ---------------------------------------------------------------------------
 # GitHubTokenProvider — construction
 # ---------------------------------------------------------------------------
+
 
 class TestGitHubTokenProviderConstruction:
     def test_provider_type(self) -> None:
@@ -139,6 +142,7 @@ class TestGitHubTokenProviderConstruction:
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
         config = ProviderConfig(ProviderType.GITHUB)
         import logging
+
         with caplog.at_level(logging.WARNING, logger="security.providers.github_provider"):
             GitHubTokenProvider(config)
         assert any("not configured" in r.message.lower() for r in caplog.records)
@@ -147,6 +151,7 @@ class TestGitHubTokenProviderConstruction:
 # ---------------------------------------------------------------------------
 # validate_secret
 # ---------------------------------------------------------------------------
+
 
 class TestValidateSecret:
     def test_no_token_raises_validation_error(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -227,6 +232,7 @@ class TestValidateSecret:
 # get_secret_metadata
 # ---------------------------------------------------------------------------
 
+
 class TestGetSecretMetadata:
     def test_returns_secret_metadata(self) -> None:
         p = _make_provider()
@@ -253,6 +259,7 @@ class TestGetSecretMetadata:
 # get_expiration
 # ---------------------------------------------------------------------------
 
+
 class TestGetExpiration:
     def test_returns_datetime(self) -> None:
         p = _make_provider()
@@ -270,6 +277,7 @@ class TestGetExpiration:
 # get_scopes
 # ---------------------------------------------------------------------------
 
+
 class TestGetScopes:
     def test_returns_list(self) -> None:
         p = _make_provider()
@@ -286,6 +294,7 @@ class TestGetScopes:
 # ---------------------------------------------------------------------------
 # create_token
 # ---------------------------------------------------------------------------
+
 
 class TestCreateToken:
     def test_no_installation_id_returns_failure(self) -> None:
@@ -369,9 +378,7 @@ class TestCreateToken:
     def test_empty_scopes_allowed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
         p = _make_provider(installation_id="123")
-        mock_resp = _mock_response(
-            201, json_data={"token": _FAKE_GHS, "id": 1}
-        )
+        mock_resp = _mock_response(201, json_data={"token": _FAKE_GHS, "id": 1})
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.post.return_value = mock_resp
             result = p.create_token("test-token", scopes=[])
@@ -381,6 +388,7 @@ class TestCreateToken:
 # ---------------------------------------------------------------------------
 # update_token_scopes
 # ---------------------------------------------------------------------------
+
 
 class TestUpdateTokenScopes:
     def test_no_requests_returns_false(self) -> None:
@@ -429,6 +437,7 @@ class TestUpdateTokenScopes:
 # ---------------------------------------------------------------------------
 # revoke_secret
 # ---------------------------------------------------------------------------
+
 
 class TestRevokeSecret:
     def test_no_token_returns_false(self, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -482,6 +491,7 @@ class TestRevokeSecret:
 # list_secrets
 # ---------------------------------------------------------------------------
 
+
 class TestListSecrets:
     def test_no_token_returns_empty(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
@@ -533,6 +543,7 @@ class TestListSecrets:
 # ---------------------------------------------------------------------------
 # rotate_secret
 # ---------------------------------------------------------------------------
+
 
 class TestRotateSecret:
     def test_rotation_delegates_to_create_and_returns_success(

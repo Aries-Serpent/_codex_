@@ -4,7 +4,6 @@ Phase 8.1 Error Handling Tests - QuantumMemoryManager, PatternCompressor, Memory
 Tests error conditions, edge cases, and robustness of memory management components.
 """
 
-
 from datetime import datetime, timezone
 
 import pytest
@@ -44,7 +43,9 @@ class TestQuantumMemoryManagerErrors:
 
     def test_invalid_pattern_none_id(self, quantum_config):
         """Test error when storing pattern with None ID."""
-        QuantumMemoryManager(config=quantum_config, stm_capacity=100, ltm_capacity=1000)  # Context setup
+        QuantumMemoryManager(
+            config=quantum_config, stm_capacity=100, ltm_capacity=1000
+        )  # Context setup
 
         with pytest.raises(ValueError, match="pattern_id must be non-empty string"):
             MemoryPattern(  # Exception expected before pattern is returned
@@ -57,7 +58,9 @@ class TestQuantumMemoryManagerErrors:
 
     def test_invalid_pattern_empty_id(self, quantum_config):
         """Test error when storing pattern with empty string ID."""
-        QuantumMemoryManager(config=quantum_config, stm_capacity=100, ltm_capacity=1000)  # Context setup
+        QuantumMemoryManager(
+            config=quantum_config, stm_capacity=100, ltm_capacity=1000
+        )  # Context setup
 
         with pytest.raises(ValueError, match="pattern_id must be non-empty string"):
             MemoryPattern(  # Exception expected before pattern is returned
@@ -132,9 +135,7 @@ class TestQuantumMemoryManagerErrors:
 
         # Query with very different features
         query_features = {"f1": 0.9, "f2": 0.9}
-        decision = manager.memory_guided_decision(
-            query_features, confidence_threshold=0.99
-        )
+        decision = manager.memory_guided_decision(query_features, confidence_threshold=0.99)
 
         # Should return None (no confident match)
         assert decision is None
@@ -148,7 +149,9 @@ class TestPatternCompressorErrors:
         compressor = PatternCompressor(target_dimensions=2)
 
         with pytest.raises(ValueError, match="Compressor not fitted"):
-            compressor.compress({"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8)
+            compressor.compress(
+                {"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8
+            )
 
     def test_fit_empty_patterns(self):
         """Test error when fitting on empty pattern list."""
@@ -176,7 +179,9 @@ class TestPatternCompressorErrors:
 
         # Try to compress pattern with different features
         with pytest.raises(ValueError, match="Feature mismatch"):
-            compressor.compress({"f1": 0.5, "f3": 0.7}, pattern_id="test", decision="approve", confidence=0.8)
+            compressor.compress(
+                {"f1": 0.5, "f3": 0.7}, pattern_id="test", decision="approve", confidence=0.8
+            )
 
     def test_decompress_invalid_compressed_pattern(self):
         """Test error when decompressing invalid pattern."""
@@ -209,14 +214,18 @@ class TestPatternCompressorErrors:
 
         # Should handle gracefully (use min of target_dimensions and n_features)
         compressor.fit(patterns)
-        compressed = compressor.compress({"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8)
+        compressed = compressor.compress(
+            {"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8
+        )
         assert len(compressed.compressed_features) <= 2
 
 
 class TestMemoryIntegrationErrors:
     """Error handling tests for MemoryAugmentedComplianceAssessor."""
 
-    def test_assess_with_memory_no_compressor(self, quantum_config, coherence_monitor, metric_repository):
+    def test_assess_with_memory_no_compressor(
+        self, quantum_config, coherence_monitor, metric_repository
+    ):
         """Test error when compressor is not set."""
         assessor = MemoryAugmentedComplianceAssessor(
             config=quantum_config,
@@ -239,7 +248,9 @@ class TestMemoryIntegrationErrors:
             # Expected if compressor is required
             _ = None  # suppressed: no action needed
 
-    def test_consolidation_failure_recovery(self, quantum_config, coherence_monitor, metric_repository):
+    def test_consolidation_failure_recovery(
+        self, quantum_config, coherence_monitor, metric_repository
+    ):
         """Test recovery from consolidation failures."""
         assessor = MemoryAugmentedComplianceAssessor(
             config=quantum_config,
@@ -269,7 +280,7 @@ class TestCachePruningEdgeCases:
         manager = QuantumMemoryManager(config=quantum_config, stm_capacity=100, ltm_capacity=1000)
 
         # Prune empty cache
-        result = manager.prune_by_age(max_age_hours=30*24)
+        result = manager.prune_by_age(max_age_hours=30 * 24)
 
         assert result.aged_pruned == 0
 
@@ -309,9 +320,7 @@ class TestDecompressionBackwardCompatibility:
     def test_decompress_old_format_without_variable_bits(self):
         """Test decompressing patterns from old format."""
         compressor = PatternCompressor(target_dimensions=2)
-        compressor.fit(
-            [{"f1": 0.5, "f2": 0.3, "f3": 0.7}, {"f1": 0.6, "f2": 0.4, "f3": 0.8}]
-        )
+        compressor.fit([{"f1": 0.5, "f2": 0.3, "f3": 0.7}, {"f1": 0.6, "f2": 0.4, "f3": 0.8}])
 
         # Create old-style compressed pattern (no variable_bits in metadata)
         from cognitive_brain.quantum.compression import CompressedPattern

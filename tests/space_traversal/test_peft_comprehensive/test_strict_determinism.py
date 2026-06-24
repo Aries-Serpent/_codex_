@@ -46,11 +46,7 @@ def _patch_cuda(monkeypatch, deterministic: bool) -> None:
     monkeypatch.setattr(torch.cuda, "is_available", fake_is_available)
 
     # Use types.SimpleNamespace for proper cudnn mocking to avoid isinstance() errors
-    fake_cudnn = types.SimpleNamespace(
-        deterministic=deterministic,
-        benchmark=False,
-        enabled=True
-    )
+    fake_cudnn = types.SimpleNamespace(deterministic=deterministic, benchmark=False, enabled=True)
     monkeypatch.setattr(torch.backends, "cudnn", fake_cudnn)
 
 
@@ -77,11 +73,7 @@ def _patch_cuda_simple(monkeypatch, deterministic: bool) -> None:
     monkeypatch.setattr(torch.cuda, "manual_seed_all", lambda seed: None)
 
     # Use types.SimpleNamespace for proper cudnn mocking to avoid isinstance() errors
-    fake_cudnn = types.SimpleNamespace(
-        deterministic=deterministic,
-        benchmark=False,
-        enabled=True
-    )
+    fake_cudnn = types.SimpleNamespace(deterministic=deterministic, benchmark=False, enabled=True)
     monkeypatch.setattr(torch.backends, "cudnn", fake_cudnn)
 
 

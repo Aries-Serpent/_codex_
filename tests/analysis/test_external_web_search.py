@@ -54,9 +54,7 @@ def test_external_search_uses_default_endpoint(monkeypatch: pytest.MonkeyPatch) 
     response = _DummyResponse(payload)
     captured: dict[str, Any] = {}
 
-    def fake_get(
-        endpoint: str, params: dict[str, Any], timeout: float
-    ) -> _DummyResponse:
+    def fake_get(endpoint: str, params: dict[str, Any], timeout: float) -> _DummyResponse:
         captured["endpoint"] = endpoint
         captured["params"] = params
         captured["timeout"] = timeout
@@ -101,9 +99,7 @@ def test_external_search_captures_http_errors() -> None:
 
 def test_external_search_handles_http_status_errors() -> None:
     payload: dict[str, Any] = {}
-    response = _DummyResponse(
-        payload, raise_error=RuntimeError("bad response"), status_code=503
-    )
+    response = _DummyResponse(payload, raise_error=RuntimeError("bad response"), status_code=503)
 
     def fake_get(*_args: Any, **_kwargs: Any) -> _DummyResponse:
         return response
@@ -137,9 +133,7 @@ def test_external_search_success_normalises_payload(
 
     response = _DummyResponse(payload)
 
-    def fake_get(
-        endpoint: str, params: dict[str, Any], timeout: float
-    ) -> _DummyResponse:
+    def fake_get(endpoint: str, params: dict[str, Any], timeout: float) -> _DummyResponse:
         assert endpoint == "https://search.example/api"
         assert params["q"] == "python"
         assert params["format"] == "json"

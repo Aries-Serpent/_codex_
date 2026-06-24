@@ -18,9 +18,7 @@ def test_deploy_logging_flags_bootstrap_and_log():
     # Dynamic import of deploy_codex_pipeline.py
     target = Path("deploy/deploy_codex_pipeline.py").resolve()
     if not target.exists():
-        pytest.skip(
-            "deploy/deploy_codex_pipeline.py not present; generate or patch first"
-        )
+        pytest.skip("deploy/deploy_codex_pipeline.py not present; generate or patch first")
 
     spec = importlib.util.spec_from_file_location("deploy_codex_pipeline", str(target))
     mod = importlib.util.module_from_spec(spec)
@@ -46,14 +44,10 @@ def test_deploy_logging_flags_bootstrap_and_log():
     with tempfile.TemporaryDirectory() as tmp:
         run_dir = Path(tmp) / "run"
         run_dir.mkdir(parents=True, exist_ok=True)
-        if not hasattr(mod, "_codex_logging_bootstrap") or not hasattr(
-            mod, "_codex_log_all"
-        ):
+        if not hasattr(mod, "_codex_logging_bootstrap") or not hasattr(mod, "_codex_log_all"):
             pytest.skip("logging helpers missing; patch deploy_codex_pipeline.py")
 
-        handles = mod._codex_logging_bootstrap(
-            ns, run_dir, params={"wandb_project": "codex-smoke"}
-        )
+        handles = mod._codex_logging_bootstrap(ns, run_dir, params={"wandb_project": "codex-smoke"})
         mod._codex_log_all(handles, step=1, metrics={"loss": 0.123})
         tb_dir = run_dir / "tb"
         if handles.get("tb") is not None:

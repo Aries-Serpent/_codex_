@@ -56,8 +56,20 @@ class TestEmitD365Config:
 
         mock_cdm.return_value = {
             "assignment": [
-                FieldDef(name="Status", key="codex_status", ftype="choice", required=True, choices=["open", "closed"]),
-                FieldDef(name="Priority", key="codex_priority", ftype="integer", required=False, choices=[]),
+                FieldDef(
+                    name="Status",
+                    key="codex_status",
+                    ftype="choice",
+                    required=True,
+                    choices=["open", "closed"],
+                ),
+                FieldDef(
+                    name="Priority",
+                    key="codex_priority",
+                    ftype="integer",
+                    required=False,
+                    choices=[],
+                ),
             ]
         }
 

@@ -20,6 +20,7 @@ from codex.auth.token_manager import TokenClaims, TokenManager, TokenType
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def token_manager():
     """Create token manager."""
@@ -30,38 +31,28 @@ def token_manager():
 # Token Creation Tests
 # ============================================================================
 
+
 class TestTokenCreation:
     """Token creation functionality."""
 
     def test_create_access_token(self, token_manager):
-        token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS
-        )
+        token = token_manager.create_token(subject="user123", token_type=TokenType.ACCESS)
         assert token
         assert len(token) > 0
 
     def test_create_refresh_token(self, token_manager):
-        token = token_manager.create_token(
-            subject="user456",
-            token_type=TokenType.REFRESH
-        )
+        token = token_manager.create_token(subject="user456", token_type=TokenType.REFRESH)
         assert token
         assert len(token) > 0
 
     def test_create_session_token(self, token_manager):
-        token = token_manager.create_token(
-            subject="user789",
-            token_type=TokenType.SESSION
-        )
+        token = token_manager.create_token(subject="user789", token_type=TokenType.SESSION)
         assert token
         assert len(token) > 0
 
     def test_create_token_with_scope(self, token_manager):
         token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS,
-            scope="read:repo write:repo"
+            subject="user123", token_type=TokenType.ACCESS, scope="read:repo write:repo"
         )
         claims = token_manager.validate_token(token, expected_type=TokenType.ACCESS)
         assert claims.scope == "read:repo write:repo"
@@ -69,25 +60,17 @@ class TestTokenCreation:
     def test_create_token_with_custom_expiry(self, token_manager):
         custom_exp = 7200  # 2 hours
         token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS,
-            expires_in=custom_exp
+            subject="user123", token_type=TokenType.ACCESS, expires_in=custom_exp
         )
         assert token
 
     def test_token_contains_subject(self, token_manager):
-        token = token_manager.create_token(
-            subject="user_test",
-            token_type=TokenType.ACCESS
-        )
+        token = token_manager.create_token(subject="user_test", token_type=TokenType.ACCESS)
         claims = token_manager.validate_token(token)
         assert claims.sub == "user_test"
 
     def test_token_contains_type(self, token_manager):
-        token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.REFRESH
-        )
+        token = token_manager.create_token(subject="user123", token_type=TokenType.REFRESH)
         claims = token_manager.validate_token(token, expected_type=TokenType.REFRESH)
         assert claims.type == TokenType.REFRESH
 
@@ -101,7 +84,7 @@ class TestTokenClaims:
             iat=time.time(),
             exp=time.time() + 3600,
             type=TokenType.ACCESS,
-            scope="read:user"
+            scope="read:user",
         )
         claims_dict = claims.to_dict()
         assert claims_dict["sub"] == "user123"
@@ -113,7 +96,7 @@ class TestTokenClaims:
             "iat": time.time(),
             "exp": time.time() + 3600,
             "type": "access",
-            "scope": "write:repo"
+            "scope": "write:repo",
         }
         # Implementation dependent
 
@@ -131,6 +114,7 @@ class TestTokenClaims:
 # ============================================================================
 # Token Validation Tests
 # ============================================================================
+
 
 class TestTokenValidation:
     """Token validation."""
@@ -174,14 +158,12 @@ class TestTokenValidation:
 # Token Refresh Tests
 # ============================================================================
 
+
 class TestTokenRefresh:
     """Token refresh functionality."""
 
     def test_refresh_access_token(self, token_manager):
-        refresh_token = token_manager.create_token(
-            "user123",
-            TokenType.REFRESH
-        )
+        refresh_token = token_manager.create_token("user123", TokenType.REFRESH)
         new_access = token_manager.refresh_token(refresh_token)
         assert new_access
         claims = token_manager.validate_token(new_access)
@@ -192,19 +174,13 @@ class TestTokenRefresh:
             token_manager.refresh_token("invalid_token")
 
     def test_refresh_maintains_subject(self, token_manager):
-        refresh_token = token_manager.create_token(
-            "user456",
-            TokenType.REFRESH
-        )
+        refresh_token = token_manager.create_token("user456", TokenType.REFRESH)
         new_access = token_manager.refresh_token(refresh_token)
         claims = token_manager.validate_token(new_access)
         assert claims.sub == "user456"
 
     def test_cannot_refresh_access_token(self, token_manager):
-        access_token = token_manager.create_token(
-            "user123",
-            TokenType.ACCESS
-        )
+        access_token = token_manager.create_token("user123", TokenType.ACCESS)
         with pytest.raises(Exception):
             token_manager.refresh_token(access_token)
 
@@ -212,6 +188,7 @@ class TestTokenRefresh:
 # ============================================================================
 # Token Revocation Tests
 # ============================================================================
+
 
 class TestTokenRevocation:
     """Token revocation and blacklist."""
@@ -252,42 +229,30 @@ class TestTokenRevocation:
 # Scope Tests
 # ============================================================================
 
+
 class TestTokenScopes:
     """Token scope handling."""
 
     def test_token_with_single_scope(self, token_manager):
-        token = token_manager.create_token(
-            "user123",
-            TokenType.ACCESS,
-            scope="read:user"
-        )
+        token = token_manager.create_token("user123", TokenType.ACCESS, scope="read:user")
         claims = token_manager.validate_token(token)
         assert "read:user" in claims.scope
 
     def test_token_with_multiple_scopes(self, token_manager):
         token = token_manager.create_token(
-            "user123",
-            TokenType.ACCESS,
-            scope="read:user write:user read:repo"
+            "user123", TokenType.ACCESS, scope="read:user write:user read:repo"
         )
         claims = token_manager.validate_token(token)
         assert "read:user" in claims.scope
         assert "write:user" in claims.scope
 
     def test_token_without_scope(self, token_manager):
-        token = token_manager.create_token(
-            "user123",
-            TokenType.ACCESS
-        )
+        token = token_manager.create_token("user123", TokenType.ACCESS)
         claims = token_manager.validate_token(token)
         assert claims.scope is None or claims.scope == ""
 
     def test_scope_in_access_only(self, token_manager):
-        token = token_manager.create_token(
-            "user123",
-            TokenType.ACCESS,
-            scope="read:user"
-        )
+        token = token_manager.create_token("user123", TokenType.ACCESS, scope="read:user")
         claims = token_manager.validate_token(token)
         assert claims.scope is not None
 
@@ -295,6 +260,7 @@ class TestTokenScopes:
 # ============================================================================
 # Token ID (JTI) Tests
 # ============================================================================
+
 
 class TestTokenIdentifier:
     """Token identifier (JTI) handling."""
@@ -323,6 +289,7 @@ class TestTokenIdentifier:
 # Edge Cases Tests
 # ============================================================================
 
+
 class TestEdgeCases:
     """Edge cases and boundary conditions."""
 
@@ -339,11 +306,7 @@ class TestEdgeCases:
 
     def test_very_long_scope(self, token_manager):
         long_scope = "scope1:read scope2:write " * 50
-        token = token_manager.create_token(
-            "user123",
-            TokenType.ACCESS,
-            scope=long_scope
-        )
+        token = token_manager.create_token("user123", TokenType.ACCESS, scope=long_scope)
         claims = token_manager.validate_token(token)
         assert long_scope in claims.scope
 
@@ -370,22 +333,19 @@ class TestEdgeCases:
 # Integration Tests
 # ============================================================================
 
+
 class TestTokenManagementFlow:
     """Complete token management flows."""
 
     def test_access_refresh_flow(self, token_manager):
         # Create refresh token
         refresh_token = token_manager.create_token(
-            "user123",
-            TokenType.REFRESH,
-            expires_in=86400  # 24 hours
+            "user123", TokenType.REFRESH, expires_in=86400  # 24 hours
         )
 
         # Create initial access token
         access_token = token_manager.create_token(
-            "user123",
-            TokenType.ACCESS,
-            expires_in=3600  # 1 hour
+            "user123", TokenType.ACCESS, expires_in=3600  # 1 hour
         )
 
         # Validate both
@@ -394,11 +354,7 @@ class TestTokenManagementFlow:
 
     def test_session_token_lifecycle(self, token_manager):
         # Create session
-        session_token = token_manager.create_token(
-            "user123",
-            TokenType.SESSION,
-            expires_in=7200
-        )
+        session_token = token_manager.create_token("user123", TokenType.SESSION, expires_in=7200)
 
         # Use session
         claims = token_manager.validate_token(session_token)
@@ -431,6 +387,7 @@ class TestTokenManagementFlow:
 # Performance Tests
 # ============================================================================
 
+
 class TestPerformance:
     """Performance characteristics."""
 
@@ -449,10 +406,7 @@ class TestPerformance:
         pass  # removed redundant `import time` (top-level import used)
 
         # Pre-create tokens
-        tokens = [
-            token_manager.create_token(f"user{i}", TokenType.ACCESS)
-            for i in range(100)
-        ]
+        tokens = [token_manager.create_token(f"user{i}", TokenType.ACCESS) for i in range(100)]
 
         start = time.time()
         for token in tokens:

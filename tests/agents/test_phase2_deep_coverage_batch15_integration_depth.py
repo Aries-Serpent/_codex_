@@ -8,7 +8,6 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -228,10 +227,7 @@ class TestIntegration_DataFlow:
 
         # Create workflow based on stored data
         # WorkflowStep uses id and action parameters
-        steps = [
-            WorkflowStep(id=f"step{i}", action=f"Step {i}")
-            for i in range(int(step_count))
-        ]
+        steps = [WorkflowStep(id=f"step{i}", action=f"Step {i}") for i in range(int(step_count))]
         workflow_id = navigator.create_workflow("stored_workflow", steps)
 
         # Workflow has a steps attribute
@@ -252,9 +248,7 @@ class TestIntegration_StateManagement:
         # Quantum state with similar parameters
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
-        quantum_state = QuantumGameState(
-            blue, red, entanglement_strength=energy_state.entropy
-        )
+        quantum_state = QuantumGameState(blue, red, entanglement_strength=energy_state.entropy)
 
         # States should be related
         assert quantum_state.entanglement_strength == energy_state.entropy

@@ -88,7 +88,6 @@ def filter_broken_markers(content: str) -> str:
     return re.sub(r"<!--\s*BROKEN:.*?-->", "", content, flags=re.DOTALL | re.IGNORECASE)
 
 
-
 def resolve_doc_path(old_path: str, repo_root: Optional[Path] = None) -> Optional[Path]:
     """Resolve old documentation path to new path after PR #3248 refactoring.
 

@@ -8,6 +8,7 @@ Tests complete CI/CD workflows:
 
 Part of Post-Completion Phase 1.3: CI/CD Workflow Integration Tests
 """
+
 from __future__ import annotations
 
 import json
@@ -24,19 +25,13 @@ class TestOwnerGuardWorkflow:
         # Step 1: Mock PR with human-approved label
         approved_pr = {
             "number": 2750,
-            "labels": [
-                {"name": "human-approved"},
-                {"name": "ready-for-merge"}
-            ],
+            "labels": [{"name": "human-approved"}, {"name": "ready-for-merge"}],
             "user": {"login": "mbaetiong"},
-            "state": "open"
+            "state": "open",
         }
 
         # Step 2: Check approval
-        has_approval = any(
-            label["name"] == "human-approved"
-            for label in approved_pr["labels"]
-        )
+        has_approval = any(label["name"] == "human-approved" for label in approved_pr["labels"])
         assert has_approval is True
 
         # Step 3: Verify owner
@@ -51,12 +46,7 @@ class TestOwnerGuardWorkflow:
         """Test security scanning in CI pipeline"""
 
         # Step 1: Mock security scan results
-        scan_results = {
-            "tool": "bandit",
-            "score": 10,
-            "vulnerabilities": [],
-            "passed": True
-        }
+        scan_results = {"tool": "bandit", "score": 10, "vulnerabilities": [], "passed": True}
 
         # Step 2: Validate scan passed
         assert scan_results["passed"] is True
@@ -74,7 +64,7 @@ class TestOwnerGuardWorkflow:
             "owner_approved": True,
             "security_passed": True,
             "tests_passed": True,
-            "coverage_met": True
+            "coverage_met": True,
         }
 
         # Step 2: Validate all prerequisites
@@ -85,7 +75,7 @@ class TestOwnerGuardWorkflow:
         deployment = {
             "status": "success",
             "environment": "production",
-            "timestamp": "2026-01-09T12:00:00Z"
+            "timestamp": "2026-01-09T12:00:00Z",
         }
 
         assert deployment["status"] == "success"
@@ -107,7 +97,7 @@ class TestPRWorkflow:
             "description": "Test description",
             "branch": "feature/test",
             "base": "0D_base_",
-            "state": "open"
+            "state": "open",
         }
 
         # Step 2: Validate PR structure
@@ -125,14 +115,8 @@ class TestPRWorkflow:
         review = {
             "status": "approved",
             "comments": [],
-            "suggestions": [
-                {
-                    "file": "test.py",
-                    "line": 10,
-                    "suggestion": "Add type hint"
-                }
-            ],
-            "passed": True
+            "suggestions": [{"file": "test.py", "line": 10, "suggestion": "Add type hint"}],
+            "passed": True,
         }
 
         # Step 2: Validate review
@@ -152,7 +136,7 @@ class TestPRWorkflow:
             "tests_passed": True,
             "conflicts": False,
             "required_checks_passed": True,
-            "owner_approved": True
+            "owner_approved": True,
         }
 
         # Step 2: Evaluate conditions
@@ -183,8 +167,8 @@ class TestCoverageWorkflow:
             "files": {
                 "src/bridge_manager.py": 92.0,
                 "src/services/crawler/zendesk_sync.py": 92.0,
-                "scripts/security/verify_token_scope.py": 95.0
-            }
+                "scripts/security/verify_token_scope.py": 95.0,
+            },
         }
 
         # Step 2: Check threshold
@@ -192,10 +176,7 @@ class TestCoverageWorkflow:
         assert meets_threshold is True
 
         # Step 3: Verify P0 modules
-        p0_modules = [
-            "src/bridge_manager.py",
-            "scripts/security/verify_token_scope.py"
-        ]
+        p0_modules = ["src/bridge_manager.py", "scripts/security/verify_token_scope.py"]
 
         for module in p0_modules:
             if module in coverage_report["files"]:
@@ -226,7 +207,7 @@ class TestCoverageWorkflow:
         # Step 3: Mock upload
         uploaded_artifacts = [
             {"name": "coverage-report", "path": str(coverage_file)},
-            {"name": "test-results", "path": str(test_results)}
+            {"name": "test-results", "path": str(test_results)},
         ]
 
         assert len(uploaded_artifacts) == 2

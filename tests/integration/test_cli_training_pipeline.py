@@ -120,9 +120,7 @@ class TestConfigurationLoading:
             from codex.utils.config_loader import (
                 get_loader,
             )
-            from codex.utils.config_loader import (
-                load_config as load_config,
-            )
+            from codex.utils.config_loader import load_config as load_config
 
             get_loader()
             # Config loading should not raise
@@ -137,7 +135,7 @@ class TestConfigurationLoading:
 
             loader = get_loader()
             # Test override mechanism exists
-            assert hasattr(loader, 'load_config') or callable(loader)
+            assert hasattr(loader, "load_config") or callable(loader)
         except ImportError:
             pytest.skip("Config loader not available")
 
@@ -266,7 +264,7 @@ class TestEndToEndTrainingWorkflow:
     def test_training_with_early_stopping(self, temp_workspace):
         """Verify early stopping mechanism in training."""
         # Test early stopping logic structure
-        best_loss = float('inf')
+        best_loss = float("inf")
         patience = 3
         patience_counter = 0
 
@@ -348,7 +346,9 @@ class TestOutputValidation:
             }
             torch.save(checkpoint, checkpoint_path)
 
-            loaded = torch.load(checkpoint_path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
+            loaded = torch.load(
+                checkpoint_path, weights_only=False
+            )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
             assert "model_state_dict" in loaded
             assert "optimizer_state_dict" in loaded
         except ImportError:
@@ -444,10 +444,12 @@ class TestConfigurationIntegration:
         try:
             from omegaconf import OmegaConf
 
-            cfg = OmegaConf.create({
-                "base_lr": 0.001,
-                "scaled_lr": "${base_lr}",
-            })
+            cfg = OmegaConf.create(
+                {
+                    "base_lr": 0.001,
+                    "scaled_lr": "${base_lr}",
+                }
+            )
 
             assert cfg.scaled_lr == cfg.base_lr
         except ImportError:

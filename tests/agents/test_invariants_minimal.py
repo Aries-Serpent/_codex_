@@ -216,9 +216,7 @@ class TestMentalMappingCorrected:
         """Test ReasoningStep can be created."""
         from agents.mental_mapping import ReasoningStep
 
-        step = ReasoningStep(
-            step_id="step1", description="Test step", inputs=[], outputs=[]
-        )
+        step = ReasoningStep(step_id="step1", description="Test step", inputs=[], outputs=[])
 
         assert step.step_id == "step1"
         assert step.description == "Test step"

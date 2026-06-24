@@ -29,9 +29,7 @@ def test_package_cli_summarizes_metrics(tmp_path: Path) -> None:
     env = os.environ.copy()
     src_root = Path(__file__).resolve().parents[2] / "src"
     existing = env.get("PYTHONPATH")
-    env["PYTHONPATH"] = (
-        f"{src_root}{os.pathsep}{existing}" if existing else str(src_root)
-    )
+    env["PYTHONPATH"] = f"{src_root}{os.pathsep}{existing}" if existing else str(src_root)
 
     result = sp.run(
         [

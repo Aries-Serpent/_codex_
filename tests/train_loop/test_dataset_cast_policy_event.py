@@ -9,16 +9,19 @@ from pathlib import Path
 
 import pytest
 
-pytest.importorskip('torch')
+pytest.importorskip("torch")
 
 try:
     import torch as _torch
+
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch.__version__.startswith("2.")
 except ImportError:
     _TORCH_312_BUG = False
 
 
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance() bug on Python 3.12 (fixed in 2.2.0 — DR-003)")
+@pytest.mark.skipif(
+    _TORCH_312_BUG, reason="PyTorch 2.x isinstance() bug on Python 3.12 (fixed in 2.2.0 — DR-003)"
+)
 def test_dataset_cast_policy_emits_event(tmp_path: Path):
     # Run one synthetic epoch and ensure dataset_cast telemetry is written
     from src.codex_ml.train_loop import run_training

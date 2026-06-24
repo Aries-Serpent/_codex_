@@ -1,4 +1,5 @@
 """Test checkpoint manager module 3."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,6 +11,7 @@ class CheckpointMetadata:
     checkpoint_id: str
     epoch: int
     loss: float
+
 
 class CheckpointManager:
     def __init__(self, base_dir: str):
@@ -26,10 +28,12 @@ class CheckpointManager:
     def list_checkpoints(self) -> Dict[str, CheckpointMetadata]:
         return self.checkpoints
 
+
 def test_checkpoint_manager_3_init():
     """Test checkpoint manager initialization."""
     manager = CheckpointManager("/tmp/ckpts")
     assert manager.base_dir == "/tmp/ckpts"
+
 
 def test_checkpoint_manager_3_save():
     """Test saving checkpoints."""
@@ -39,6 +43,7 @@ def test_checkpoint_manager_3_save():
     assert result is True
     assert "ckpt_1" in manager.checkpoints
 
+
 def test_checkpoint_manager_3_load():
     """Test loading checkpoints."""
     manager = CheckpointManager("/tmp")
@@ -47,6 +52,7 @@ def test_checkpoint_manager_3_load():
     ckpt = manager.load_checkpoint("ckpt_2")
     assert ckpt.epoch == 20
     assert ckpt.loss == 0.3
+
 
 def test_checkpoint_manager_3_list():
     """Test listing checkpoints."""

@@ -11,7 +11,7 @@ import pytest
 
 # Import directly from the module file to avoid __init__.py dependency chain
 _mod_path = os.path.join(
-    os.path.dirname(__file__), '..', '..', 'scripts', 'monitoring', 'agent_orchestrator.py'
+    os.path.dirname(__file__), "..", "..", "scripts", "monitoring", "agent_orchestrator.py"
 )
 _spec = importlib.util.spec_from_file_location("agent_orchestrator", _mod_path)
 _mod = importlib.util.module_from_spec(_spec)
@@ -29,8 +29,15 @@ class TestTaskRoutingTable:
         assert len(TASK_ROUTING_TABLE) == 7
 
     def test_required_categories_present(self):
-        expected = {"ci_cd", "testing", "security", "documentation",
-                    "rag_ml", "configuration", "repository"}
+        expected = {
+            "ci_cd",
+            "testing",
+            "security",
+            "documentation",
+            "rag_ml",
+            "configuration",
+            "repository",
+        }
         assert set(TASK_ROUTING_TABLE.keys()) == expected
 
     def test_each_category_has_required_keys(self):

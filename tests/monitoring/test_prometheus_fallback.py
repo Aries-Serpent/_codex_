@@ -30,9 +30,7 @@ def test_prometheus_fallback_writes_ndjson(monkeypatch, tmp_path, capsys):
     sink = tmp_path / "prometheus.ndjson"
     assert sink.exists()
     records = [
-        json.loads(line)
-        for line in sink.read_text(encoding="utf-8").splitlines()
-        if line.strip()
+        json.loads(line) for line in sink.read_text(encoding="utf-8").splitlines() if line.strip()
     ]
     assert any(rec.get("metric") == "requests_total" for rec in records)
     assert any(rec.get("metric") == "queue_depth" for rec in records)

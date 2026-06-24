@@ -33,13 +33,12 @@ from typing import Any, Optional  # noqa: E402
 from codex_ml.connectors.base import ConnectorError  # noqa: E402
 from codex_ml.connectors.registry import get_connector  # noqa: E402
 from codex_ml.data.loader import load_dataset as _load_text_dataset  # noqa: E402
-from codex_ml.safety.filters import SafetyFilters, SafetyResult  # noqa: E402
 from codex_ml.safety.filters import (  # noqa: E402
-    sanitize_output as filter_sanitize_output,
+    SafetyFilters,
+    SafetyResult,
 )
-from codex_ml.safety.filters import (  # noqa: E402
-    sanitize_prompt as filter_sanitize_prompt,
-)
+from codex_ml.safety.filters import sanitize_output as filter_sanitize_output  # noqa: E402
+from codex_ml.safety.filters import sanitize_prompt as filter_sanitize_prompt  # noqa: E402
 from codex_ml.utils.error_log import log_error  # noqa: E402
 
 __all__ = [

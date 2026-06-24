@@ -40,9 +40,7 @@ class TestZendeskRAGBridge:
         tickets = [MagicMock()]
         result = bridge.retrieve_ticket_context("query", tickets, top_k=3)
 
-        mock_core.retrieve_ticket_context.assert_called_once_with(
-            "query", tickets, top_k=3
-        )
+        mock_core.retrieve_ticket_context.assert_called_once_with("query", tickets, top_k=3)
         assert result == ["context1"]
 
 

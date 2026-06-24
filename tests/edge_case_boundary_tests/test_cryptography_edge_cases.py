@@ -378,6 +378,7 @@ class TestCryptographicRandomness:
         # Act
         # Generate samples and check distribution
         import random
+
         values = [random.randint(0, 9) for _ in range(samples)]
         distribution = [values.count(i) for i in range(10)]
 

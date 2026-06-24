@@ -61,9 +61,7 @@ def mock_repo(tmp_path):
     (scripts_mcp / "topics.json").write_text(json.dumps(topics))
 
     # Create select_components.py placeholder
-    (scripts_mcp / "select_components.py").write_text(
-        "#!/usr/bin/env python3\nprint('mock')"
-    )
+    (scripts_mcp / "select_components.py").write_text("#!/usr/bin/env python3\nprint('mock')")
 
     # Create package_flatten.sh placeholder
     (scripts_mcp / "package_flatten.sh").write_text("#!/bin/bash\necho 'mock'")
@@ -128,9 +126,7 @@ class TestMCPPackageCLI:
         # Should show topics or handle gracefully
         assert result.returncode in (0, 1)
         if result.returncode == 0:
-            assert (
-                "topic" in result.stdout.lower() or "available" in result.stdout.lower()
-            )
+            assert "topic" in result.stdout.lower() or "available" in result.stdout.lower()
 
     def test_cli_requires_topic_or_custom(self, mcp_package_cli):
         """Test that CLI requires either --topic or --custom"""

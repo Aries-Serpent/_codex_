@@ -3,19 +3,17 @@
 Tests for src/codex_crm/evidence/emit.py to improve CRM module coverage.
 """
 
-import pytest
-import json
-import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 import hashlib
+import json
 import platform
+import tempfile
 import time
+from pathlib import Path
+from unittest.mock import patch
 
 from src.codex_crm.evidence.emit import (
     sha256_file,
     write_evidence,
-    CONFIG_DIRS,
 )
 
 
@@ -24,10 +22,10 @@ class TestSHA256FileHashing:
 
     def test_sha256_file_basic(self):
         """Test basic SHA256 file hashing."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write("test content")
             temp_path = Path(f.name)
-        
+
         try:
             result = sha256_file(temp_path)
             assert isinstance(result, str)
@@ -38,10 +36,10 @@ class TestSHA256FileHashing:
 
     def test_sha256_file_consistent(self):
         """Test that SHA256 hashing is consistent."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             f.write("test content")
             temp_path = Path(f.name)
-        
+
         try:
             result1 = sha256_file(temp_path)
             result2 = sha256_file(temp_path)
@@ -51,14 +49,14 @@ class TestSHA256FileHashing:
 
     def test_sha256_file_different_content(self):
         """Test that different content produces different hashes."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f1:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f1:
             f1.write("content1")
             temp_path1 = Path(f1.name)
-        
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f2:
+
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f2:
             f2.write("content2")
             temp_path2 = Path(f2.name)
-        
+
         try:
             result1 = sha256_file(temp_path1)
             result2 = sha256_file(temp_path2)
@@ -69,11 +67,11 @@ class TestSHA256FileHashing:
 
     def test_sha256_file_large_file(self):
         """Test SHA256 hashing with larger file."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             # Write > 8192 bytes to test chunked reading
             f.write("x" * 10000)
             temp_path = Path(f.name)
-        
+
         try:
             result = sha256_file(temp_path)
             assert isinstance(result, str)
@@ -83,9 +81,9 @@ class TestSHA256FileHashing:
 
     def test_sha256_file_empty_file(self):
         """Test SHA256 hashing of empty file."""
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as f:
             temp_path = Path(f.name)
-        
+
         try:
             result = sha256_file(temp_path)
             # Empty file hash
@@ -96,10 +94,10 @@ class TestSHA256FileHashing:
 
     def test_sha256_file_binary_content(self):
         """Test SHA256 hashing with binary content."""
-        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as f:
             f.write(b"\x00\x01\x02\x03\x04")
             temp_path = Path(f.name)
-        
+
         try:
             result = sha256_file(temp_path)
             assert isinstance(result, str)
@@ -123,10 +121,10 @@ class TestWriteEvidenceBasic:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             seeds_file = output_path / "seeds.json"
             assert seeds_file.exists()
-            
+
             content = json.loads(seeds_file.read_text())
             assert "rng" in content
             assert content["rng"] == 1337
@@ -136,10 +134,10 @@ class TestWriteEvidenceBasic:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             env_file = output_path / "env.json"
             assert env_file.exists()
-            
+
             content = json.loads(env_file.read_text())
             assert "platform" in content
             assert "python" in content
@@ -150,10 +148,10 @@ class TestWriteEvidenceBasic:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             checksums_file = output_path / "checksums.json"
             assert checksums_file.exists()
-            
+
             content = json.loads(checksums_file.read_text())
             assert isinstance(content, dict)
 
@@ -162,10 +160,10 @@ class TestWriteEvidenceBasic:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             manifest_file = output_path / "run_manifest.json"
             assert manifest_file.exists()
-            
+
             content = json.loads(manifest_file.read_text())
             assert "timestamp" in content
             assert "artifacts" in content
@@ -176,10 +174,10 @@ class TestWriteEvidenceBasic:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             manifest_file = output_path / "manifest.json"
             assert manifest_file.exists()
-            
+
             content = json.loads(manifest_file.read_text())
             assert "message" in content
 
@@ -193,7 +191,7 @@ class TestWriteEvidenceWithSeeds:
             output_path = Path(tmpdir) / "evidence"
             custom_seeds = {"rng": 9999, "other": 42}
             write_evidence(output_path, seeds=custom_seeds)
-            
+
             seeds_file = output_path / "seeds.json"
             content = json.loads(seeds_file.read_text())
             assert content["rng"] == 9999
@@ -204,7 +202,7 @@ class TestWriteEvidenceWithSeeds:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path, seeds=None)
-            
+
             seeds_file = output_path / "seeds.json"
             content = json.loads(seeds_file.read_text())
             assert content["rng"] == 1337
@@ -218,7 +216,7 @@ class TestWriteEvidenceEnvironment:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             env_file = output_path / "env.json"
             content = json.loads(env_file.read_text())
             assert content["platform"] == platform.platform()
@@ -228,7 +226,7 @@ class TestWriteEvidenceEnvironment:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             env_file = output_path / "env.json"
             content = json.loads(env_file.read_text())
             assert content["python"] == platform.python_version()
@@ -240,7 +238,7 @@ class TestWriteEvidenceEnvironment:
             before = time.time()
             write_evidence(output_path)
             after = time.time()
-            
+
             env_file = output_path / "env.json"
             content = json.loads(env_file.read_text())
             assert before <= content["timestamp"] <= after
@@ -253,11 +251,11 @@ class TestWriteEvidenceChecksums:
         """Test that checksums are empty when config dirs don't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
-            
+
             # Mock CONFIG_DIRS to be empty
-            with patch('src.codex_crm.evidence.emit.CONFIG_DIRS', []):
+            with patch("src.codex_crm.evidence.emit.CONFIG_DIRS", []):
                 write_evidence(output_path)
-            
+
             checksums_file = output_path / "checksums.json"
             content = json.loads(checksums_file.read_text())
             assert content == {}
@@ -267,10 +265,10 @@ class TestWriteEvidenceChecksums:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             manifest_file = output_path / "run_manifest.json"
             content = json.loads(manifest_file.read_text())
-            
+
             assert isinstance(content["artifacts"], list)
             # Verify it's sorted
             if len(content["artifacts"]) > 0:
@@ -286,7 +284,7 @@ class TestWriteEvidencePathHandling:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_str = str(Path(tmpdir) / "evidence")
             write_evidence(output_str)
-            
+
             assert Path(output_str).exists()
 
     def test_write_evidence_with_path_object(self):
@@ -294,7 +292,7 @@ class TestWriteEvidencePathHandling:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             assert output_path.exists()
 
     def test_write_evidence_nested_directory(self):
@@ -302,7 +300,7 @@ class TestWriteEvidencePathHandling:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "nested" / "evidence" / "path"
             write_evidence(output_path)
-            
+
             assert output_path.exists()
 
     def test_write_evidence_existing_directory(self):
@@ -310,7 +308,7 @@ class TestWriteEvidencePathHandling:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             output_path.mkdir()
-            
+
             write_evidence(output_path)
             assert output_path.exists()
 
@@ -323,7 +321,7 @@ class TestWriteEvidenceFileContents:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             json_files = [
                 output_path / "seeds.json",
                 output_path / "env.json",
@@ -331,7 +329,7 @@ class TestWriteEvidenceFileContents:
                 output_path / "run_manifest.json",
                 output_path / "manifest.json",
             ]
-            
+
             for json_file in json_files:
                 assert json_file.exists()
                 content = json.loads(json_file.read_text())
@@ -342,7 +340,7 @@ class TestWriteEvidenceFileContents:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            
+
             # Check seeds.json has sorted keys
             seeds_file = output_path / "seeds.json"
             text = seeds_file.read_text()
@@ -361,18 +359,18 @@ class TestEvidenceIntegration:
             output_path = Path(tmpdir) / "evidence"
             custom_seeds = {"rng": 555}
             write_evidence(output_path, seeds=custom_seeds)
-            
+
             # Verify all files exist
             assert (output_path / "seeds.json").exists()
             assert (output_path / "env.json").exists()
             assert (output_path / "checksums.json").exists()
             assert (output_path / "run_manifest.json").exists()
             assert (output_path / "manifest.json").exists()
-            
+
             # Verify seeds content
             seeds = json.loads((output_path / "seeds.json").read_text())
             assert seeds["rng"] == 555
-            
+
             # Verify env structure
             env = json.loads((output_path / "env.json").read_text())
             assert len(env) >= 3
@@ -382,16 +380,16 @@ class TestEvidenceIntegration:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path1 = Path(tmpdir) / "evidence1"
             output_path2 = Path(tmpdir) / "evidence2"
-            
+
             seeds = {"rng": 777}
             write_evidence(output_path1, seeds=seeds)
             write_evidence(output_path2, seeds=seeds)
-            
+
             # Compare seeds files
             seeds1 = json.loads((output_path1 / "seeds.json").read_text())
             seeds2 = json.loads((output_path2 / "seeds.json").read_text())
             assert seeds1 == seeds2
-            
+
             # Compare manifests structure (timestamps will differ)
             manifest1 = json.loads((output_path1 / "run_manifest.json").read_text())
             manifest2 = json.loads((output_path2 / "run_manifest.json").read_text())

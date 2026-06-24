@@ -83,6 +83,7 @@ def test_determinism_with_metrics():
     except ImportError:
         pytest.skip("torch not available")
     else:
+
         def accuracy(outputs, targets):
             preds = outputs.argmax(dim=1)
             return (preds == targets).float().mean().item()

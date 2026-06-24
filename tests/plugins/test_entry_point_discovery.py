@@ -36,6 +36,7 @@ def test_entry_point_discovery(monkeypatch) -> None:
 
     # Patch importlib.metadata.entry_points which is imported in registry.py
     import importlib.metadata
+
     monkeypatch.setattr(importlib.metadata, "entry_points", fake_entry_points)
 
     reg = Registry("x")

@@ -66,7 +66,7 @@ class TestEvaluationMetrics:
     def test_perplexity(self):
         """Test perplexity calculation."""
         cross_entropy = 2.0
-        perplexity = 2 ** cross_entropy
+        perplexity = 2**cross_entropy
         assert perplexity == 4.0
 
     def test_bleu_score(self):

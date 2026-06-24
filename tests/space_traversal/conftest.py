@@ -2,6 +2,7 @@
 
 Ensures scripts/ directory is on sys.path for importing space_traversal modules.
 """
+
 import sys
 from pathlib import Path
 

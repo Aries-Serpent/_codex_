@@ -39,6 +39,7 @@ class TestPooledConnectionProxy:
     def proxy(self, mock_connection):
         """Create a PooledConnectionProxy instance."""
         from codex.db.sqlite_patch import PooledConnectionProxy
+
         key = ("test.db", os.getpid(), threading.get_ident(), "session1")
         return PooledConnectionProxy(mock_connection, key)
 
@@ -65,6 +66,7 @@ class TestKeyGeneration:
     def key_func(self):
         """Import _key function."""
         from codex.db.sqlite_patch import _key
+
         return _key
 
     @pytest.fixture
@@ -115,6 +117,7 @@ class TestApplyPragmas:
     def apply_pragmas(self):
         """Import _apply_pragmas function."""
         from codex.db.sqlite_patch import _apply_pragmas
+
         return _apply_pragmas
 
     def test_apply_pragmas_executes_wal(self, apply_pragmas, tmp_path):
@@ -157,6 +160,7 @@ class TestPooledConnect:
     def pooled_connect(self):
         """Import pooled_connect function."""
         from codex.db.sqlite_patch import pooled_connect
+
         return pooled_connect
 
     def test_pooled_connect_without_pooling_enabled(self, pooled_connect, tmp_path, clean_env):

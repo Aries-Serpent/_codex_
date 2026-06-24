@@ -27,6 +27,21 @@ _IMAGE_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*(?::[A-Za-z0-9._-]+)?$
 
 
 def _validated_smoke_image(raw: str) -> str:
+    """Validate Docker image name to prevent command injection.
+
+    Security measures:
+    - Validates against Docker image name format regex
+    - Prevents shell metacharacters and escape sequences
+
+    Args:
+        raw: Docker image name to validate
+
+    Returns:
+        Validated image name
+
+    Raises:
+        ValueError: If image name is invalid
+    """
     if not _IMAGE_NAME_RE.fullmatch(raw):
         msg = "Invalid SMOKE_IMAGE value; expected docker image reference format"
         raise ValueError(msg)
@@ -42,6 +57,22 @@ def _validated_host_port(raw: str) -> int:
 
 
 def _validated_script_path(name: str) -> str:
+    """Validate script path to prevent path traversal and symlink attacks.
+
+    Security measures:
+    - Only allows files under scripts/ci directory
+    - Rejects path traversal attempts (..)
+    - Rejects symbolic links (prevents symlink following attacks)
+
+    Args:
+        name: Script filename to validate
+
+    Returns:
+        Absolute path to validated script
+
+    Raises:
+        ValueError: If path is invalid or outside allowed root
+    """
     script_path = Path(script(name)).resolve()
     allowed_root = (Path.cwd() / "scripts" / "ci").resolve()
     script_path.relative_to(allowed_root)

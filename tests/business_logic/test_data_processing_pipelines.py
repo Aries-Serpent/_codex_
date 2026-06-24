@@ -10,7 +10,6 @@ Tests cover:
 """
 
 
-
 class TestDataLoadingBasics:
     """Test basic data loading operations."""
 
@@ -134,11 +133,7 @@ class TestDataPreprocessing:
 
     def test_augment_training_data(self):
         """Test data augmentation."""
-        original_data = [
-            "sample text one",
-            "sample text two",
-            "sample text three"
-        ]
+        original_data = ["sample text one", "sample text two", "sample text three"]
 
         # Simulate augmentation by adding variations
         augmented = []
@@ -159,7 +154,7 @@ class TestBatchCreation:
 
         batches = []
         for i in range(0, len(data), batch_size):
-            batch = data[i:i + batch_size]
+            batch = data[i : i + batch_size]
             batches.append(batch)
 
         assert len(batches) == 4
@@ -169,6 +164,7 @@ class TestBatchCreation:
     def test_shuffle_batches(self):
         """Test shuffling data before batching."""
         import random
+
         data = list(range(100))
 
         shuffled = data.copy()
@@ -180,10 +176,7 @@ class TestBatchCreation:
 
     def test_stratified_sampling(self):
         """Test stratified batch sampling."""
-        data = [
-            {"id": i, "label": i % 3}
-            for i in range(30)
-        ]
+        data = [{"id": i, "label": i % 3} for i in range(30)]
 
         # Group by label
         by_label = {}
@@ -203,6 +196,7 @@ class TestBatchCreation:
     def test_weighted_sampling(self):
         """Test weighted random sampling."""
         import random
+
         items = ["a", "b", "c"]
         weights = [0.5, 0.3, 0.2]
 
@@ -218,7 +212,7 @@ class TestBatchCreation:
 
         processed = 0
         for i in range(0, len(data), batch_size):
-            batch = data[i:i + batch_size]
+            batch = data[i : i + batch_size]
             processed += len(batch)
 
         assert processed == 100
@@ -231,7 +225,7 @@ class TestBatchCreation:
 
         batches = []
         for i in range(0, len(data), batch_size):
-            batch = data[i:i + batch_size]
+            batch = data[i : i + batch_size]
             if not drop_last or len(batch) == batch_size:
                 batches.append(batch)
 
@@ -267,7 +261,7 @@ class TestDataValidation:
             "short",
             "this is a medium length text",
             "",  # Empty, invalid
-            "a very long text " * 100
+            "a very long text " * 100,
         ]
 
         min_length = 1
@@ -351,11 +345,7 @@ class TestPipelineOrchestration:
 
     def test_pipeline_state_preservation(self):
         """Test pipeline preserves state across stages."""
-        state = {
-            "loaded": 0,
-            "processed": 0,
-            "validated": 0
-        }
+        state = {"loaded": 0, "processed": 0, "validated": 0}
 
         state["loaded"] = 100
         state["processed"] = 100
@@ -391,7 +381,7 @@ class TestTransformationLogic:
             feature = {
                 "word_count": len(item["text"].split()),
                 "char_count": len(item["text"]),
-                "id": item["id"]
+                "id": item["id"],
             }
             features.append(feature)
 

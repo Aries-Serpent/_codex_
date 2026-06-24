@@ -81,12 +81,14 @@ class TestMCPAPICriticalPath:
 
     def test_jsonrpc_request_parsing(self):
         """Verify JSON-RPC requests are parsed correctly."""
-        raw_request = json.dumps({
-            "jsonrpc": "2.0",
-            "method": "mcp.process",
-            "params": {"query": "test query"},
-            "id": 1,
-        })
+        raw_request = json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "method": "mcp.process",
+                "params": {"query": "test query"},
+                "id": 1,
+            }
+        )
         parsed = json.loads(raw_request)
         assert parsed["jsonrpc"] == "2.0"
         assert parsed["method"] == "mcp.process"

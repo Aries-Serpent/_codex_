@@ -265,12 +265,8 @@ class ModelLoader:
             from transformers import (
                 AutoConfig,
             )
-            from transformers import (
-                AutoModel as AutoModel,
-            )
-            from transformers import (
-                AutoTokenizer as AutoTokenizer,
-            )
+            from transformers import AutoModel as AutoModel
+            from transformers import AutoTokenizer as AutoTokenizer
         except ImportError as e:
             logger.debug(f"ImportError: {e}")
             logger.warning(f"ImportError: {e}", exc_info=True)

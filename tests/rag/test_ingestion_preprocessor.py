@@ -149,9 +149,9 @@ class TestDocumentPreprocessor:
         nfd_text = "cafe\u0301"  # decomposed é
         result = pp.preprocess(nfd_text)
 
-        assert any("unicode_normalized" in c for c in result.changes), (
-            f"Expected 'unicode_normalized_NFKC' in changes, got: {result.changes}"
-        )
+        assert any(
+            "unicode_normalized" in c for c in result.changes
+        ), f"Expected 'unicode_normalized_NFKC' in changes, got: {result.changes}"
 
     def test_unicode_nfc_no_change_when_already_normalized(self):
         """NFC input with NFKC form records no change when text is already NFKC."""

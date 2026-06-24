@@ -197,9 +197,11 @@ class PineconeAdapter(BackendAdapter):
                     {
                         "id": m.get("id"),
                         "score": float(m.get("score", 0.0)),
-                        "content": m.get("metadata", {}).get("content", "")
-                        if isinstance(m.get("metadata", {}), dict)
-                        else "",
+                        "content": (
+                            m.get("metadata", {}).get("content", "")
+                            if isinstance(m.get("metadata", {}), dict)
+                            else ""
+                        ),
                         "metadata": m.get("metadata", {}),
                     }
                 )

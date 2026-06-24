@@ -1,4 +1,5 @@
 """Test restore pipeline module 7."""
+
 from __future__ import annotations
 
 from enum import Enum
@@ -13,6 +14,7 @@ class RestorePhase(Enum):
     VALIDATING = "validating"
     RESTORING = "restoring"
     VERIFIED = "verified"
+
 
 class RestorePipeline:
     def __init__(self, name: str):
@@ -34,11 +36,13 @@ class RestorePipeline:
         self.phase = RestorePhase.VERIFIED
         return True
 
+
 @pytest.mark.asyncio
 async def test_restore_pipeline_7_init():
     """Test restore pipeline initialization."""
     pipeline = RestorePipeline("disaster_recovery_7")
     assert pipeline.name == "disaster_recovery_7"
+
 
 @pytest.mark.asyncio
 async def test_restore_pipeline_7_discover():
@@ -49,6 +53,7 @@ async def test_restore_pipeline_7_discover():
     assert len(artifacts) > 0
     assert pipeline.phase == RestorePhase.DISCOVERING
 
+
 @pytest.mark.asyncio
 async def test_restore_pipeline_7_validate():
     """Test artifact validation."""
@@ -58,6 +63,7 @@ async def test_restore_pipeline_7_validate():
 
     assert result is True
     assert pipeline.phase == RestorePhase.VALIDATING
+
 
 @pytest.mark.asyncio
 async def test_restore_pipeline_7_restore():

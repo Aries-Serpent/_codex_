@@ -1,7 +1,7 @@
 import pytest
 
 """Tests for index sharding module."""
-pytest.importorskip('numpy')
+pytest.importorskip("numpy")
 
 from codex.retrieval.sharding import (
     ConsistentHashRing,
@@ -89,7 +89,7 @@ class TestConsistentHashRing:
         counts = list(distribution.values())
         mean = sum(counts) / len(counts)
         variance = sum((x - mean) ** 2 for x in counts) / len(counts)
-        std_dev = variance ** 0.5
+        std_dev = variance**0.5
 
         # Standard deviation should be relatively small (< 15% of mean)
         assert std_dev < mean * 0.15
@@ -173,31 +173,15 @@ class TestGetShardForId:
 
     def test_consistent_hashing(self):
         """Test consistent hashing mode."""
-        shard_id_1 = get_shard_for_id(
-            "doc-123",
-            total_shards=4,
-            use_consistent_hashing=True
-        )
-        shard_id_2 = get_shard_for_id(
-            "doc-123",
-            total_shards=4,
-            use_consistent_hashing=True
-        )
+        shard_id_1 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=True)
+        shard_id_2 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=True)
 
         assert shard_id_1 == shard_id_2
 
     def test_simple_modulo(self):
         """Test simple modulo hashing mode."""
-        shard_id_1 = get_shard_for_id(
-            "doc-123",
-            total_shards=4,
-            use_consistent_hashing=False
-        )
-        shard_id_2 = get_shard_for_id(
-            "doc-123",
-            total_shards=4,
-            use_consistent_hashing=False
-        )
+        shard_id_1 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=False)
+        shard_id_2 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=False)
 
         assert shard_id_1 == shard_id_2
         assert 0 <= shard_id_1 < 4
@@ -208,12 +192,7 @@ class TestShardInfo:
 
     def test_create_shard_info(self):
         """Test creating shard info instance."""
-        info = ShardInfo(
-            shard_id=0,
-            shard_name="shard_00",
-            total_documents=100,
-            size_bytes=1024000
-        )
+        info = ShardInfo(shard_id=0, shard_name="shard_00", total_documents=100, size_bytes=1024000)
 
         assert info.shard_id == 0
         assert info.shard_name == "shard_00"
@@ -222,12 +201,7 @@ class TestShardInfo:
 
     def test_to_dict(self):
         """Test serialization to dictionary."""
-        info = ShardInfo(
-            shard_id=1,
-            shard_name="shard_01",
-            total_documents=50,
-            size_bytes=512000
-        )
+        info = ShardInfo(shard_id=1, shard_name="shard_01", total_documents=50, size_bytes=512000)
 
         data = info.to_dict()
 
@@ -246,6 +220,7 @@ class TestDistributionQuality:
 
         # Simulate UUIDs
         import uuid
+
         keys = [str(uuid.uuid4()) for _ in range(10000)]
 
         distribution = ring.get_shard_distribution(keys)
@@ -283,7 +258,7 @@ class TestDistributionQuality:
         def cv(counts):
             mean = sum(counts) / len(counts)
             variance = sum((x - mean) ** 2 for x in counts) / len(counts)
-            std_dev = variance ** 0.5
+            std_dev = variance**0.5
             return std_dev / mean if mean > 0 else 0
 
         cv_few = cv(list(dist_few.values()))

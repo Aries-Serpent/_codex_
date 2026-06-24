@@ -123,6 +123,7 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
 
     # Pre-initialize MLflow experiment
     import mlflow
+
     mlflow.set_tracking_uri(f"file:{mlruns_dir}")
     try:
         mlflow.create_experiment("default", artifact_location=str(mlruns_dir))
@@ -197,6 +198,7 @@ def test_typer_cli_track_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
 
     # Initialize MLflow experiment before tracking
     import mlflow
+
     mlflow.set_tracking_uri(f"file:{target}")
     mlflow.create_experiment("default", artifact_location=str(target))
 

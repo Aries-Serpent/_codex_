@@ -16,9 +16,7 @@ import pytest
 pytest.importorskip("hypothesis")
 
 
-pytest.importorskip(
-    "hypothesis", reason="Hypothesis required for NDJSON property tests"
-)
+pytest.importorskip("hypothesis", reason="Hypothesis required for NDJSON property tests")
 
 from hypothesis import given
 from hypothesis import strategies as st
@@ -26,9 +24,7 @@ from hypothesis import strategies as st
 from codex_ml.cli.ndjson_summary import NdjsonSummarizer
 
 
-@given(
-    st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1, max_size=50)
-)
+@given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1, max_size=50))
 def test_summarizer_tracks_loss_bounds(values: list[float]) -> None:
     with tempfile.TemporaryDirectory() as tmp_dir:
         run_dir = Path(tmp_dir)

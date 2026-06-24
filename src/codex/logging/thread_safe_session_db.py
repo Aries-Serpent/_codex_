@@ -16,15 +16,12 @@ import sqlite3
 import threading
 import time
 from contextlib import contextmanager
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from .concurrency import (
-    ArchiveOperationLock,
     DeadlockRecovery,
     LockMetrics,
     SQLiteConnectionPool,
-    ReadWriteLock,
     log_error,
     save_metrics,
 )
@@ -111,9 +108,7 @@ class ThreadSafeSessionDB:
             cursor = conn.cursor()
 
             # Check if sessions table exists
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='sessions'"
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='sessions'")
             if cursor.fetchone():
                 return  # Schema already exists
 

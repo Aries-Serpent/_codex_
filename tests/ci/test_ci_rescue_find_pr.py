@@ -27,6 +27,7 @@ import ci_rescue
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_pr(number: int, sha: str) -> dict[str, Any]:
     """Build a minimal PR dict matching GitHub API shape."""
     return {"number": number, "head": {"sha": sha}}

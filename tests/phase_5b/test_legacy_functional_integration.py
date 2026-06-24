@@ -258,7 +258,9 @@ class TestFunctionalTrainingIntegration:
 
         # Act & Assert: Mock checkpoint operations
         with patch("codex_ml.training.functional_training.save_functional_checkpoint") as mock_save:
-            with patch("codex_ml.training.functional_training.load_functional_checkpoint") as mock_load:
+            with patch(
+                "codex_ml.training.functional_training.load_functional_checkpoint"
+            ) as mock_load:
                 mock_save.return_value = True
                 mock_load.return_value = checkpoint
 
@@ -344,7 +346,7 @@ class TestFunctionalTrainingIntegration:
 
 @pytest.mark.skipif(
     not (LEGACY_API_AVAILABLE and FUNCTIONAL_TRAINING_AVAILABLE),
-    reason="Requirements not available"
+    reason="Requirements not available",
 )
 class TestLegacyFunctionalIntegration:
     """Integration between legacy and functional training."""
@@ -381,7 +383,9 @@ class TestLegacyFunctionalIntegration:
 
         # Act & Assert: Mock checkpoint compatibility
         with patch("codex_ml.training.legacy_api.load_legacy_checkpoint") as mock_legacy_load:
-            with patch("codex_ml.training.functional_training.load_functional_checkpoint") as mock_func_load:
+            with patch(
+                "codex_ml.training.functional_training.load_functional_checkpoint"
+            ) as mock_func_load:
                 mock_legacy_load.return_value = legacy_ckpt
                 mock_func_load.return_value = legacy_ckpt
 
@@ -440,7 +444,10 @@ class TestFunctionalTrainingErrorHandling:
                 mock_load("corrupted.pt")
 
 
-@pytest.mark.skipif(not (LEGACY_API_AVAILABLE and FUNCTIONAL_TRAINING_AVAILABLE), reason="Requirements not available")
+@pytest.mark.skipif(
+    not (LEGACY_API_AVAILABLE and FUNCTIONAL_TRAINING_AVAILABLE),
+    reason="Requirements not available",
+)
 class TestLegacyFunctionalEndToEnd:
     """End-to-end workflows for legacy and functional training."""
 

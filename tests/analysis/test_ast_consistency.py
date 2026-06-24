@@ -81,8 +81,7 @@ class ASTPatternLibrary:
                 description="Classes that define __init__",
                 node_type=ast.ClassDef,
                 matcher=lambda n: any(
-                    isinstance(item, ast.FunctionDef) and item.name == "__init__"
-                    for item in n.body
+                    isinstance(item, ast.FunctionDef) and item.name == "__init__" for item in n.body
                 ),
             )
         )
@@ -126,8 +125,7 @@ class ASTPatternLibrary:
                 description="Functions with TODO in docstring",
                 node_type=ast.FunctionDef,
                 matcher=lambda n: (
-                    ast.get_docstring(n) is not None
-                    and "TODO" in ast.get_docstring(n).upper()
+                    ast.get_docstring(n) is not None and "TODO" in ast.get_docstring(n).upper()
                 ),
             )
         )
@@ -147,10 +145,7 @@ class ASTPatternLibrary:
             if isinstance(stmt, ast.Raise):
                 exc = stmt.exc
                 if isinstance(exc, ast.Call):
-                    if (
-                        isinstance(exc.func, ast.Name)
-                        and exc.func.id == "NotImplementedError"
-                    ):
+                    if isinstance(exc.func, ast.Name) and exc.func.id == "NotImplementedError":
                         return True
                 elif isinstance(exc, ast.Name) and exc.id == "NotImplementedError":
                     return True
@@ -300,8 +295,7 @@ def sync_func():
 def test_analyze_file(tmp_path):
     """Test file analysis."""
     test_file = tmp_path / "test.py"
-    test_file.write_text(
-        """
+    test_file.write_text("""
 from dataclasses import dataclass
 
 @dataclass
@@ -311,8 +305,7 @@ class Config:
 
 def process():
     raise NotImplementedError()
-"""
-    )
+""")
 
     lib = ASTPatternLibrary()
     results = lib.analyze_file(test_file)

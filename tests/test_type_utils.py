@@ -167,9 +167,11 @@ class TestSafeIsinstance:
 
     def test_safe_isinstance_handles_type_error_gracefully(self):
         """Test that safe_isinstance handles TypeError gracefully."""
+
         # If isinstance raises TypeError, safe_isinstance should return False
         class BadType:
             pass
+
         result = safe_isinstance(5, BadType)
         assert result is False or result is True
 
@@ -263,10 +265,10 @@ class TestSafeIsinstanceEdgeCases:
 
     def test_safe_isinstance_special_float_values(self):
         """Test safe_isinstance with special float values."""
-        assert safe_isinstance(float('inf'), float) is True
-        assert safe_isinstance(float('-inf'), float) is True
+        assert safe_isinstance(float("inf"), float) is True
+        assert safe_isinstance(float("-inf"), float) is True
         # NaN is special - NaN != NaN
-        result = safe_isinstance(float('nan'), float)
+        result = safe_isinstance(float("nan"), float)
         assert result is True
 
 

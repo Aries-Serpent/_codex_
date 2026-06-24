@@ -7,6 +7,7 @@ Covers:
 - Budget and iteration limiting
 - CI harness integration (--once flag)
 """
+
 from __future__ import annotations
 
 import json
@@ -73,8 +74,10 @@ class TestSinglePassMode:
         if not hasattr(mod, "run_once"):
             pytest.skip("run_once not exported from agent_runner")
 
-        with patch.object(mod, "REPO_ROOT", tmp_path), \
-             patch.object(mod, "_DRY_RUN", True, create=True):
+        with (
+            patch.object(mod, "REPO_ROOT", tmp_path),
+            patch.object(mod, "_DRY_RUN", True, create=True),
+        ):
             # Should return without raising
             mod.run_once(budget_seconds=10, dry_run=True)
 

@@ -18,12 +18,12 @@ class TestReflectionType:
         try:
             from src.cognitive_brain.meta_cognitive_reflection import ReflectionType
 
-            assert hasattr(ReflectionType, 'DECISION')
-            assert hasattr(ReflectionType, 'STRATEGY')
-            assert hasattr(ReflectionType, 'OUTCOME')
-            assert hasattr(ReflectionType, 'PATTERN')
-            assert hasattr(ReflectionType, 'ERROR')
-            assert hasattr(ReflectionType, 'SUCCESS')
+            assert hasattr(ReflectionType, "DECISION")
+            assert hasattr(ReflectionType, "STRATEGY")
+            assert hasattr(ReflectionType, "OUTCOME")
+            assert hasattr(ReflectionType, "PATTERN")
+            assert hasattr(ReflectionType, "ERROR")
+            assert hasattr(ReflectionType, "SUCCESS")
         except ImportError:
             pytest.skip("meta_cognitive_reflection module not available")
 
@@ -47,11 +47,11 @@ class TestQualityAssessment:
         try:
             from src.cognitive_brain.meta_cognitive_reflection import QualityAssessment
 
-            assert hasattr(QualityAssessment, 'EXCELLENT')
-            assert hasattr(QualityAssessment, 'GOOD')
-            assert hasattr(QualityAssessment, 'ADEQUATE')
-            assert hasattr(QualityAssessment, 'POOR')
-            assert hasattr(QualityAssessment, 'FAILED')
+            assert hasattr(QualityAssessment, "EXCELLENT")
+            assert hasattr(QualityAssessment, "GOOD")
+            assert hasattr(QualityAssessment, "ADEQUATE")
+            assert hasattr(QualityAssessment, "POOR")
+            assert hasattr(QualityAssessment, "FAILED")
         except ImportError:
             pytest.skip("meta_cognitive_reflection module not available")
 

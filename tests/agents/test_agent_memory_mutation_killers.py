@@ -114,7 +114,7 @@ class TestMemoryEntryMutationKillers:
         assert isinstance(entry.related_memories, list)
 
     def test_last_accessed_default_is_none_not_empty_string(self) -> None:
-        """Catch mutation: last_accessed: Optional[str] = None → ""  """
+        """Catch mutation: last_accessed: Optional[str] = None → "" """
         entry = MemoryEntry(
             memory_id="test",
             category="decision",
@@ -129,7 +129,7 @@ class TestContextFrameStatusMutations:
     """Tests to catch mutations in ContextFrame status field."""
 
     def test_default_status_is_exactly_active(self) -> None:
-        """Catch mutation: status: str = "active" → "pending" or "completed"  """
+        """Catch mutation: status: str = "active" → "pending" or "completed" """
         frame = ContextFrame(
             frame_id="f1",
             task_description="task",
@@ -141,7 +141,7 @@ class TestContextFrameStatusMutations:
         assert frame.status != "failed"
 
     def test_default_end_time_is_none(self) -> None:
-        """Catch mutation: end_time: Optional[str] = None → ""  """
+        """Catch mutation: end_time: Optional[str] = None → "" """
         frame = ContextFrame(
             frame_id="f1",
             task_description="task",
@@ -247,13 +247,13 @@ class TestPatternLibraryMutationKillers:
     @pytest.mark.parametrize(
         "pattern_rate,threshold,should_match",
         [
-            (0.3, 0.5, False),   # Below threshold
-            (0.5, 0.5, True),    # At threshold (boundary)
-            (0.7, 0.5, True),    # Above threshold
-            (0.0, 0.5, False),   # Zero rate
-            (1.0, 0.5, True),    # Max rate
+            (0.3, 0.5, False),  # Below threshold
+            (0.5, 0.5, True),  # At threshold (boundary)
+            (0.7, 0.5, True),  # Above threshold
+            (0.0, 0.5, False),  # Zero rate
+            (1.0, 0.5, True),  # Max rate
             (0.99, 1.0, False),  # High rate, but below 1.0
-            (1.0, 1.0, True),    # Exact max
+            (1.0, 1.0, True),  # Exact max
         ],
     )
     def test_match_patterns_success_rate_threshold_parametrized(
@@ -300,7 +300,9 @@ class TestPatternLibraryMutationKillers:
         assert "p1" in library.pattern_index["tag3"]
 
         # Verify pattern is indexed under all tags
-        assert len([t for t in library.pattern_index if "p1" in library.pattern_index.get(t, [])]) == 3
+        assert (
+            len([t for t in library.pattern_index if "p1" in library.pattern_index.get(t, [])]) == 3
+        )
 
     def test_record_pattern_usage_increments_count_exactly_once(self) -> None:
         """Catch mutation: usage_count += 1 → += 2 or no increment"""
@@ -535,23 +537,13 @@ class TestMemoryEntryBoundaryComprehensive:
         assert not results
 
         # Test single result with category filter
-        memory.store_memory(
-            memory_id="test",
-            category="decision",
-            content="content",
-            context={}
-        )
+        memory.store_memory(memory_id="test", category="decision", content="content", context={})
         results = memory.search_memories(category="decision")
         assert len(results) >= 1
         assert len(results) > 0
 
         # Test multiple results
-        memory.store_memory(
-            memory_id="test2",
-            category="decision",
-            content="content",
-            context={}
-        )
+        memory.store_memory(memory_id="test2", category="decision", content="content", context={})
         results = memory.search_memories(category="decision")
         assert len(results) >= 2
 
@@ -582,18 +574,8 @@ class TestBooleanLogicComprehensive:
         memory = AgentMemory(db_path=db_path)
 
         # Store multiple memories
-        memory.store_memory(
-            memory_id="mem1",
-            category="decision",
-            content="content1",
-            context={}
-        )
-        memory.store_memory(
-            memory_id="mem2",
-            category="decision",
-            content="content2",
-            context={}
-        )
+        memory.store_memory(memory_id="mem1", category="decision", content="content1", context={})
+        memory.store_memory(memory_id="mem2", category="decision", content="content2", context={})
 
         # Test consolidate_memories - returns int (count of consolidated)
         result1 = memory.consolidate_memories()
@@ -616,10 +598,7 @@ class TestReturnValueComprehensive:
 
         # Test valid memory
         memory.store_memory(
-            memory_id="valid_id",
-            category="decision",
-            content="content",
-            context={}
+            memory_id="valid_id", category="decision", content="content", context={}
         )
         result = memory.retrieve_memory("valid_id")
         assert result is not None
@@ -648,12 +627,7 @@ class TestReturnValueComprehensive:
             assert result == "" or isinstance(result, MemoryEntry)
 
         # Test data case
-        memory.store_memory(
-            memory_id="test_id",
-            category="decision",
-            content="content",
-            context={}
-        )
+        memory.store_memory(memory_id="test_id", category="decision", content="content", context={})
         result = memory.retrieve_memory("test_id")
         assert result is not None or result == ""
         if result is not None and isinstance(result, MemoryEntry):
@@ -704,24 +678,14 @@ class TestExceptionHandlingComprehensive:
         """Fix #10: Catch exception suppression mutations in recovery paths."""
         db_path = tmp_path / "test_recovery.db"
         memory = AgentMemory(db_path=db_path)
-        memory.store_memory(
-            memory_id="mem1",
-            category="decision",
-            content="content",
-            context={}
-        )
+        memory.store_memory(memory_id="mem1", category="decision", content="content", context={})
 
         # Verify memory still accessible
         result = memory.retrieve_memory("mem1")
         assert result is not None
 
         # Store another memory
-        memory.store_memory(
-            memory_id="mem2",
-            category="decision",
-            content="content",
-            context={}
-        )
+        memory.store_memory(memory_id="mem2", category="decision", content="content", context={})
 
         # Both memories should be retrievable after operations
         mem1 = memory.retrieve_memory("mem1")
@@ -735,12 +699,7 @@ class TestDictionarySetComprehensive:
 
     def test_memory_context_dict_operation_comprehensive(self) -> None:
         """Fix #11: Catch dictionary operation mutations in context handling."""
-        entry = MemoryEntry(
-            "id",
-            "cat",
-            "content",
-            {"timestamp": "2024-01-01", "source": "api"}
-        )
+        entry = MemoryEntry("id", "cat", "content", {"timestamp": "2024-01-01", "source": "api"})
 
         # Test correct keys exist
         assert "timestamp" in entry.context

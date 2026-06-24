@@ -174,9 +174,7 @@ class TestConfigurationOverrides:
         try:
             from omegaconf import OmegaConf
 
-            config = OmegaConf.create({
-                "layers": [64, 128, 256]
-            })
+            config = OmegaConf.create({"layers": [64, 128, 256]})
 
             # Override list
             OmegaConf.update(config, "layers", [32, 64, 128])
@@ -300,12 +298,7 @@ class TestConfigurationValidation:
         try:
             from omegaconf import OmegaConf
 
-            config = OmegaConf.create({
-                "model": {
-                    "hidden_size": 512,
-                    "num_layers": 6
-                }
-            })
+            config = OmegaConf.create({"model": {"hidden_size": 512, "num_layers": 6}})
 
             # Validate types
             assert isinstance(config.model.hidden_size, int)
@@ -417,11 +410,13 @@ class TestConfigInterpolation:
         try:
             from omegaconf import OmegaConf
 
-            config = OmegaConf.create({
-                "base_dir": "/data",
-                "train_dir": "${base_dir}/train",
-                "val_dir": "${base_dir}/val",
-            })
+            config = OmegaConf.create(
+                {
+                    "base_dir": "/data",
+                    "train_dir": "${base_dir}/train",
+                    "val_dir": "${base_dir}/val",
+                }
+            )
 
             resolved = OmegaConf.to_container(config, resolve=True)
 
@@ -435,13 +430,15 @@ class TestConfigInterpolation:
         try:
             from omegaconf import OmegaConf
 
-            config = OmegaConf.create({
-                "project": "codex",
-                "paths": {
-                    "root": "/projects/${project}",
-                    "data": "${paths.root}/data",
+            config = OmegaConf.create(
+                {
+                    "project": "codex",
+                    "paths": {
+                        "root": "/projects/${project}",
+                        "data": "${paths.root}/data",
+                    },
                 }
-            })
+            )
 
             resolved = OmegaConf.to_container(config, resolve=True)
 
@@ -455,12 +452,18 @@ class TestConfigInterpolation:
         try:
             from omegaconf import OmegaConf
 
-            config = OmegaConf.create({
-                "use_gpu": True,
-                "device": "cuda" if OmegaConf.to_container(
-                    OmegaConf.create({"use_gpu": True}), resolve=True
-                )["use_gpu"] else "cpu"
-            })
+            config = OmegaConf.create(
+                {
+                    "use_gpu": True,
+                    "device": (
+                        "cuda"
+                        if OmegaConf.to_container(
+                            OmegaConf.create({"use_gpu": True}), resolve=True
+                        )["use_gpu"]
+                        else "cpu"
+                    ),
+                }
+            )
 
             # Basic structure validation
             assert "device" in config
@@ -558,12 +561,8 @@ class TestConfigurationMerging:
         try:
             from omegaconf import OmegaConf
 
-            base = OmegaConf.create({
-                "model": {"hidden_size": 512, "num_layers": 6}
-            })
-            override = OmegaConf.create({
-                "model": {"num_layers": 12}
-            })
+            base = OmegaConf.create({"model": {"hidden_size": 512, "num_layers": 6}})
+            override = OmegaConf.create({"model": {"num_layers": 12}})
 
             merged = OmegaConf.merge(base, override)
 

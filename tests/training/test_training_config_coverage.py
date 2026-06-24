@@ -8,7 +8,6 @@ Tests focus on:
 - Learning rate scheduling
 """
 
-
 import pytest
 
 pytest.importorskip("torch")

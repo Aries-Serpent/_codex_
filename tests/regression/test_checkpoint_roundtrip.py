@@ -32,6 +32,7 @@ pytestmark = pytest.mark.regression
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
+
 def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -49,6 +50,7 @@ def _write_checkpoint(directory: Path, epoch: int, meta: dict) -> Path:
 # 1. JSON metadata round-trip
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestCheckpointMetadataRoundTrip:
     """Checkpoint metadata written as JSON must reload byte-identical."""
 
@@ -64,22 +66,23 @@ class TestCheckpointMetadataRoundTrip:
         path = _write_checkpoint(checkpoint_dir, epoch=1, meta=sample_checkpoint_meta)
         reloaded = json.loads(path.read_text(encoding="utf-8"))
         for key, expected in sample_checkpoint_meta.items():
-            assert reloaded[key] == expected, (
-                f"Meta[{key!r}] changed during round-trip: {reloaded[key]!r} != {expected!r}"
-            )
+            assert (
+                reloaded[key] == expected
+            ), f"Meta[{key!r}] changed during round-trip: {reloaded[key]!r} != {expected!r}"
 
     def test_meta_checksum_stable(self, checkpoint_dir, sample_checkpoint_meta):
         """SHA-256 of the serialised checkpoint file must be identical across two writes."""
         path1 = _write_checkpoint(checkpoint_dir / "run_a", epoch=1, meta=sample_checkpoint_meta)
         path2 = _write_checkpoint(checkpoint_dir / "run_b", epoch=1, meta=sample_checkpoint_meta)
-        assert _sha256_bytes(path1.read_bytes()) == _sha256_bytes(path2.read_bytes()), (
-            "Checkpoint file checksum is not deterministic for identical content"
-        )
+        assert _sha256_bytes(path1.read_bytes()) == _sha256_bytes(
+            path2.read_bytes()
+        ), "Checkpoint file checksum is not deterministic for identical content"
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # 2. Model state pickle round-trip
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestModelStatePickleRoundTrip:
     """ModelHandle state must survive a pickle serialisation round-trip."""
@@ -89,16 +92,18 @@ class TestModelStatePickleRoundTrip:
         state_path = checkpoint_dir / "state.pkl"
         state_path.write_bytes(pickle.dumps(pretrained_model))
 
-        reloaded = pickle.loads(state_path.read_bytes())  # noqa: S301 — test uses trusted local file
-        assert reloaded.name == pretrained_model.name, (
-            f"name changed after pickle: {reloaded.name!r}"
-        )
-        assert reloaded.stage == pretrained_model.stage, (
-            f"stage changed after pickle: {reloaded.stage!r}"
-        )
-        assert reloaded.meta.get("seed") == pretrained_model.meta.get("seed"), (
-            "seed in meta changed after pickle"
-        )
+        reloaded = pickle.loads(
+            state_path.read_bytes()
+        )  # noqa: S301 — test uses trusted local file
+        assert (
+            reloaded.name == pretrained_model.name
+        ), f"name changed after pickle: {reloaded.name!r}"
+        assert (
+            reloaded.stage == pretrained_model.stage
+        ), f"stage changed after pickle: {reloaded.stage!r}"
+        assert reloaded.meta.get("seed") == pretrained_model.meta.get(
+            "seed"
+        ), "seed in meta changed after pickle"
 
     def test_model_handle_pickle_checksum_stable(self, checkpoint_dir, pretrained_model):
         """Pickle bytes for the same object must be identical when written twice."""
@@ -107,14 +112,15 @@ class TestModelStatePickleRoundTrip:
         path_b = checkpoint_dir / "state_b.pkl"
         path_a.write_bytes(blob)
         path_b.write_bytes(blob)
-        assert _sha256_bytes(path_a.read_bytes()) == _sha256_bytes(path_b.read_bytes()), (
-            "Pickle checksum differs between identical writes"
-        )
+        assert _sha256_bytes(path_a.read_bytes()) == _sha256_bytes(
+            path_b.read_bytes()
+        ), "Pickle checksum differs between identical writes"
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # 3. Multi-epoch checkpoint enumeration
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestMultiEpochCheckpoints:
     """Multiple sequential checkpoints must all be readable and epoch-ordered."""
@@ -142,14 +148,15 @@ class TestMultiEpochCheckpoints:
             key=lambda d: d.name,
         )
         epoch_nums = [int(d.name.split("-")[1]) for d in dirs]
-        assert epoch_nums == sorted(epoch_nums), (
-            f"Epoch directories not in ascending order: {epoch_nums}"
-        )
+        assert epoch_nums == sorted(
+            epoch_nums
+        ), f"Epoch directories not in ascending order: {epoch_nums}"
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # 4. Missing checkpoint error handling
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestMissingCheckpointHandling:
     def test_missing_checkpoint_file_raises(self, checkpoint_dir):

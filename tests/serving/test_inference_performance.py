@@ -224,9 +224,9 @@ class TestCachePerformance:
         # the 50 ms floor prevents false failures when first latency is ~0 ms.
         MAX_LATENCY_MULTIPLIER = 10
         LATENCY_BUFFER_MS = 50
-        assert last < first * MAX_LATENCY_MULTIPLIER + LATENCY_BUFFER_MS, (
-            f"Latency grew unexpectedly: first={first:.1f}ms last={last:.1f}ms"
-        )
+        assert (
+            last < first * MAX_LATENCY_MULTIPLIER + LATENCY_BUFFER_MS
+        ), f"Latency grew unexpectedly: first={first:.1f}ms last={last:.1f}ms"
 
     def test_cache_eviction_performance(self, perf_client):
         """Verify server handles requests to multiple distinct model names without errors."""
@@ -242,9 +242,7 @@ class TestCachePerformance:
             if response.status_code == 200:
                 success_count += 1
 
-        assert success_count == 5, (
-            f"Only {success_count}/5 model-name requests succeeded"
-        )
+        assert success_count == 5, f"Only {success_count}/5 model-name requests succeeded"
 
 
 class TestResourceUtilization:

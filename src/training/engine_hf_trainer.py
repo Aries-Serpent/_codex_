@@ -23,6 +23,7 @@ Features:
 """
 
 from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -121,11 +122,11 @@ import re
 import shutil
 import time
 import warnings
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 from typing import Any, Optional, cast
-from collections.abc import Iterable, Mapping
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
@@ -265,7 +266,11 @@ from codex_ml.monitoring.codex_logging import (
 )
 from codex_ml.monitoring.schema import LogRecord
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed  # type: ignore[attr-defined]
+from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
+    build_payload_bytes,
+    load_payload,
+    set_seed,
+)
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.provenance import snapshot_hydra_config

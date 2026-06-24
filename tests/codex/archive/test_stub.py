@@ -10,7 +10,7 @@ from unittest.mock import patch
 class TestMakeStubText:
     """Tests for make_stub_text function."""
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_basic_stub(self, mock_utcnow):
         """Test basic stub generation."""
         from codex.archive.stub import make_stub_text
@@ -23,12 +23,12 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts_abc123",
             sha256="sha256_hash_value",
-            commit="abc123def456"
+            commit="abc123def456",
         )
 
         assert isinstance(result, str)
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_header(self, mock_utcnow):
         """Test stub contains header."""
         from codex.archive.stub import make_stub_text
@@ -41,12 +41,12 @@ class TestMakeStubText:
             reason="legacy",
             tombstone="ts_1",
             sha256="hash",
-            commit="commit"
+            commit="commit",
         )
 
         assert "TOMBSTONE ARCHIVE STUB" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_path(self, mock_utcnow):
         """Test stub contains file path."""
         from codex.archive.stub import make_stub_text
@@ -59,12 +59,12 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts",
             sha256="hash",
-            commit="commit"
+            commit="commit",
         )
 
         assert "src/modules/module.py" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_actor(self, mock_utcnow):
         """Test stub contains actor."""
         from codex.archive.stub import make_stub_text
@@ -77,12 +77,12 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts",
             sha256="hash",
-            commit="commit"
+            commit="commit",
         )
 
         assert "test_user@company.com" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_reason(self, mock_utcnow):
         """Test stub contains reason."""
         from codex.archive.stub import make_stub_text
@@ -95,12 +95,12 @@ class TestMakeStubText:
             reason="deprecated",
             tombstone="ts",
             sha256="hash",
-            commit="commit"
+            commit="commit",
         )
 
         assert "deprecated" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_tombstone(self, mock_utcnow):
         """Test stub contains tombstone ID."""
         from codex.archive.stub import make_stub_text
@@ -113,12 +113,12 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts_unique_123",
             sha256="hash",
-            commit="commit"
+            commit="commit",
         )
 
         assert "ts_unique_123" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_restore_instructions(self, mock_utcnow):
         """Test stub contains restore instructions."""
         from codex.archive.stub import make_stub_text
@@ -131,13 +131,13 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts_123",
             sha256="hash",
-            commit="commit"
+            commit="commit",
         )
 
         assert "restore" in result.lower()
         assert "codex.cli archive restore" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_sha256(self, mock_utcnow):
         """Test stub contains SHA256 hash."""
         from codex.archive.stub import make_stub_text
@@ -150,12 +150,12 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts",
             sha256="abc123def456789hash",
-            commit="commit"
+            commit="commit",
         )
 
         assert "abc123def456789hash" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_contains_commit(self, mock_utcnow):
         """Test stub contains commit SHA."""
         from codex.archive.stub import make_stub_text
@@ -168,12 +168,12 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts",
             sha256="hash",
-            commit="f1e2d3c4b5a6"
+            commit="f1e2d3c4b5a6",
         )
 
         assert "f1e2d3c4b5a6" in result
 
-    @patch('codex.archive.stub.utcnow_iso')
+    @patch("codex.archive.stub.utcnow_iso")
     def test_uses_utcnow(self, mock_utcnow):
         """Test stub uses utcnow_iso for timestamp."""
         from codex.archive.stub import make_stub_text
@@ -186,7 +186,7 @@ class TestMakeStubText:
             reason="dead",
             tombstone="ts",
             sha256="hash",
-            commit="commit"
+            commit="commit",
         )
 
         mock_utcnow.assert_called_once()

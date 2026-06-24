@@ -55,9 +55,7 @@ def test_pack_and_verify(tmp_path, monkeypatch):
         "post_unpack_commands": [],
         "checks": {"sha256_manifest": "<filled at pack time>"},
     }
-    (root / "release.manifest.json").write_text(
-        json.dumps(manifest, indent=2), encoding="utf-8"
-    )
+    (root / "release.manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     # Pack
     bundle, locked = pack_release(
         root / "release.manifest.json",

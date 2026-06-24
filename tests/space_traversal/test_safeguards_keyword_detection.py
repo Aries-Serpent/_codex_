@@ -203,8 +203,7 @@ class TestDetectorIntegration:
 
         # Create test file with safeguards
         with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-            f.write(
-                """
+            f.write("""
 # Validation: check input
 def process(data):
     # Safeguard: sanitize user input
@@ -215,8 +214,7 @@ def process(data):
     # Checksum validation
     assert verify_checksum(result, sha256_hash)
     return result
-"""
-            )
+""")
             file_path = f.name
 
         try:
@@ -235,12 +233,10 @@ def process(data):
 
         # Create test file without safeguards
         with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-            f.write(
-                """
+            f.write("""
 def simple_function(x):
     return x + 1
-"""
-            )
+""")
             file_path = f.name
 
         try:

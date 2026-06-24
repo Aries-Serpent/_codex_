@@ -32,7 +32,9 @@ def test_cache_tokenized_writes_manifest(tmp_path: Path) -> None:
         if sample_file.suffix == ".pt":
             torch = pytest.importorskip("torch")
             if hasattr(torch, "load"):
-                stored = torch.load(sample_file, weights_only=True)  # nosec B614 - weights_only=True ensures safe loading
+                stored = torch.load(
+                    sample_file, weights_only=True
+                )  # nosec B614 - weights_only=True ensures safe loading
                 if hasattr(stored, "tolist"):
                     stored = stored.tolist()
             else:

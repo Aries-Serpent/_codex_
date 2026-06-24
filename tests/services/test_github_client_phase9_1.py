@@ -19,6 +19,7 @@ import pytest
 try:
     from src.services.github.client import GitHubClient, GitHubException
     from src.services.github.types import Issue, PullRequest, Repository
+
     HAS_GITHUB_CLIENT = True
 except ImportError:
     HAS_GITHUB_CLIENT = False
@@ -134,9 +135,7 @@ class TestGitHubClient:
         )
 
         client = GitHubClient(token="fake_token")
-        issue = client.create_issue(
-            "user/repo", title="New Issue", body="Issue body"
-        )
+        issue = client.create_issue("user/repo", title="New Issue", body="Issue body")
 
         assert issue is not None
 

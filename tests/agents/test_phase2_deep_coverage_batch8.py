@@ -12,7 +12,6 @@ Systematically applies orchestration and workflow patterns:
 Target: +4-5% coverage gain (57% → 62%)
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -45,6 +44,7 @@ class TestPhase2_DeveloperOrchestrator:
         """Test PhysicsGuidedDeveloperOrchestrator is importable (scipy-dependent)."""
         try:
             from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+
             orchestrator = PhysicsGuidedDeveloperOrchestrator()
             assert orchestrator is not None
         except (ImportError, AttributeError):
@@ -63,6 +63,7 @@ class TestPhase2_DeveloperOrchestrator:
         """Test PhysicsGuidedDeveloperOrchestrator pause/resume (scipy-dependent)."""
         try:
             from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+
             orchestrator = PhysicsGuidedDeveloperOrchestrator()
             # Verify methods exist if instantiation succeeds
             assert orchestrator is not None
@@ -73,6 +74,7 @@ class TestPhase2_DeveloperOrchestrator:
         """Test PhysicsGuidedDeveloperOrchestrator cancel (scipy-dependent)."""
         try:
             from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+
             orchestrator = PhysicsGuidedDeveloperOrchestrator()
             assert orchestrator is not None
         except (ImportError, AttributeError):
@@ -401,9 +403,7 @@ class TestPhase2_ErrorHandling:
             (False, False, "error"),
         ],
     )
-    def test_fallback_strategy_logic(
-        self, primary_available, fallback_available, expected_result
-    ):
+    def test_fallback_strategy_logic(self, primary_available, fallback_available, expected_result):
         """Test simplified fallback decision logic."""
         if primary_available:
             result = "primary"
@@ -438,10 +438,7 @@ class TestPhase2_WorkflowOptimization:
         """Test batching small tasks"""
         small_tasks = [{"id": i, "size": 1} for i in range(10)]
         batch_size = 5
-        batches = [
-            small_tasks[i : i + batch_size]
-            for i in range(0, len(small_tasks), batch_size)
-        ]
+        batches = [small_tasks[i : i + batch_size] for i in range(0, len(small_tasks), batch_size)]
         assert len(batches) == 2
 
     def test_load_balancing(self):

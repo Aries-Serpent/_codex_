@@ -58,11 +58,7 @@ class TestClaim:
     def test_claim_creation(self) -> None:
         """Test creating a claim."""
         # Arrange & Act
-        claim = Claim(
-            id="claim1",
-            text="Python was created in 1991",
-            source_span=(0, 28)
-        )
+        claim = Claim(id="claim1", text="Python was created in 1991", source_span=(0, 28))
 
         # Assert
         assert claim.id == "claim1"
@@ -75,10 +71,7 @@ class TestClaim:
         """Test claim with custom type."""
         # Arrange & Act
         claim = Claim(
-            id="claim2",
-            text="The value is 42%",
-            source_span=(0, 16),
-            claim_type="numerical"
+            id="claim2", text="The value is 42%", source_span=(0, 16), claim_type="numerical"
         )
 
         # Assert
@@ -87,12 +80,7 @@ class TestClaim:
     def test_claim_with_confidence(self) -> None:
         """Test claim with custom confidence."""
         # Arrange & Act
-        claim = Claim(
-            id="claim3",
-            text="Test claim",
-            source_span=(0, 10),
-            confidence=0.85
-        )
+        claim = Claim(id="claim3", text="Test claim", source_span=(0, 10), confidence=0.85)
 
         # Assert
         assert claim.confidence == 0.85
@@ -107,10 +95,7 @@ class TestVerificationResult:
         claim = Claim(id="c1", text="Test", source_span=(0, 4))
 
         # Act
-        result = VerificationResult(
-            claim=claim,
-            status=VerificationStatus.VERIFIED
-        )
+        result = VerificationResult(claim=claim, status=VerificationStatus.VERIFIED)
 
         # Assert
         assert result.claim == claim
@@ -128,9 +113,7 @@ class TestVerificationResult:
 
         # Act
         result = VerificationResult(
-            claim=claim,
-            status=VerificationStatus.VERIFIED,
-            evidence=evidence
+            claim=claim, status=VerificationStatus.VERIFIED, evidence=evidence
         )
 
         # Assert
@@ -144,9 +127,7 @@ class TestVerificationResult:
 
         # Act
         result = VerificationResult(
-            claim=claim,
-            status=VerificationStatus.CONTRADICTED,
-            reasoning="Contradicts known facts"
+            claim=claim, status=VerificationStatus.CONTRADICTED, reasoning="Contradicts known facts"
         )
 
         # Assert
@@ -160,10 +141,7 @@ class TestCoVeResult:
         """Test creating a CoVe result."""
         # Arrange
         claim = Claim(id="c1", text="Test", source_span=(0, 4))
-        verification = VerificationResult(
-            claim=claim,
-            status=VerificationStatus.VERIFIED
-        )
+        verification = VerificationResult(claim=claim, status=VerificationStatus.VERIFIED)
 
         # Act
         result = CoVeResult(
@@ -172,7 +150,7 @@ class TestCoVeResult:
             claims=[claim],
             verifications=[verification],
             overall_score=0.95,
-            overall_status=VerificationStatus.VERIFIED
+            overall_status=VerificationStatus.VERIFIED,
         )
 
         # Assert
@@ -200,7 +178,7 @@ class TestCoVeResult:
             claims=[claim1, claim2],
             verifications=verifications,
             overall_score=0.5,
-            overall_status=VerificationStatus.VERIFIED
+            overall_status=VerificationStatus.VERIFIED,
         )
 
         # Act
@@ -226,7 +204,7 @@ class TestCoVeResult:
             claims=[claim1, claim2],
             verifications=verifications,
             overall_score=1.0,
-            overall_status=VerificationStatus.VERIFIED
+            overall_status=VerificationStatus.VERIFIED,
         )
 
         # Act
@@ -244,7 +222,7 @@ class TestCoVeResult:
             claims=[],
             verifications=[],
             overall_score=1.0,
-            overall_status=VerificationStatus.UNKNOWN
+            overall_status=VerificationStatus.UNKNOWN,
         )
 
         # Act
@@ -262,7 +240,7 @@ class TestCoVeResult:
             claims=[],
             verifications=[],
             overall_score=0.0,
-            overall_status=VerificationStatus.UNKNOWN
+            overall_status=VerificationStatus.UNKNOWN,
         )
 
         # Assert

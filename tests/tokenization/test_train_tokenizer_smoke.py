@@ -8,8 +8,8 @@ import json
 
 import pytest
 
-pytest.importorskip('sentencepiece')
-pytest.importorskip('sentencepiece')
+pytest.importorskip("sentencepiece")
+pytest.importorskip("sentencepiece")
 from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 

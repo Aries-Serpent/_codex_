@@ -72,8 +72,7 @@ class ASTStorage:
             cursor = conn.cursor()
 
             # Analyses table
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS analyses (
                     analysis_id TEXT PRIMARY KEY,
                     file_path TEXT NOT NULL,
@@ -84,12 +83,10 @@ class ASTStorage:
                     metrics TEXT,
                     status TEXT DEFAULT 'completed'
                 )
-            """
-            )
+            """)
 
             # Findings table
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS findings (
                     finding_id TEXT PRIMARY KEY,
                     analysis_id TEXT NOT NULL,
@@ -105,12 +102,10 @@ class ASTStorage:
                     metadata TEXT,
                     FOREIGN KEY (analysis_id) REFERENCES analyses(analysis_id)
                 )
-            """
-            )
+            """)
 
             # Nodes table (optional, for caching parsed ASTs)
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS nodes (
                     node_id TEXT PRIMARY KEY,
                     analysis_id TEXT NOT NULL,
@@ -123,12 +118,10 @@ class ASTStorage:
                     metadata TEXT,
                     FOREIGN KEY (analysis_id) REFERENCES analyses(analysis_id)
                 )
-            """
-            )
+            """)
 
             # Metrics table
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS metrics (
                     metric_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     analysis_id TEXT NOT NULL,
@@ -137,8 +130,7 @@ class ASTStorage:
                     metadata TEXT,
                     FOREIGN KEY (analysis_id) REFERENCES analyses(analysis_id)
                 )
-            """
-            )
+            """)
 
             # Create indexes
             cursor.execute(

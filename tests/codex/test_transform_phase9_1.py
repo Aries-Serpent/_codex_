@@ -451,12 +451,10 @@ class TestTransformTierB:
     def test_tier_b_type_hints_suggestion(self, tmp_path: Path) -> None:
         """Test Tier B suggests type hints."""
         test_file = tmp_path / "test.py"
-        test_file.write_text(
-            """
+        test_file.write_text("""
 def func(x, y):
     return x + y
-"""
-        )
+""")
 
         result = transform(tmp_path, "test", tier=Tier.B, dry_run=True)
 
@@ -477,8 +475,8 @@ def func(x, y):
         assert result is not None
         # If errors are tracked, they should be present
         # If not tracked, at least no patches should be generated for syntax-invalid files
-        if hasattr(result, 'errors') and result.errors is not None:
-            assert isinstance(result.errors, (list, tuple, set, dict))# Changed from > 0 to >= 0
+        if hasattr(result, "errors") and result.errors is not None:
+            assert isinstance(result.errors, (list, tuple, set, dict))  # Changed from > 0 to >= 0
 
 
 class TestTransformTierC:
@@ -487,21 +485,21 @@ class TestTransformTierC:
     def test_tier_c_async_conversion_suggestion(self, tmp_path: Path) -> None:
         """Test Tier C suggests async conversion."""
         test_file = tmp_path / "test.py"
-        test_file.write_text(
-            """
+        test_file.write_text("""
 import requests
 
 def fetch_data():
     response = requests.get('https://api.example.com')
     return response.json()
-"""
-        )
+""")
 
         result = transform(tmp_path, "test", tier=Tier.C, dry_run=True)
 
         # Should suggest async conversion
         assert len(result.tier_c_suggestions) > 0
-        async_suggestions = [s for s in result.tier_c_suggestions if s["rule_id"] == "async-conversion"]
+        async_suggestions = [
+            s for s in result.tier_c_suggestions if s["rule_id"] == "async-conversion"
+        ]
         assert len(async_suggestions) > 0
 
     def test_tier_c_includes_checklist(self, tmp_path: Path) -> None:
@@ -523,8 +521,7 @@ class TestTransformAllTiers:
     def test_transform_all_tiers(self, tmp_path: Path) -> None:
         """Test transformation processes all tiers when tier=None."""
         test_file = tmp_path / "test.py"
-        test_file.write_text(
-            """
+        test_file.write_text("""
 import requests
 import os
 
@@ -532,8 +529,7 @@ def func(x):
     path = os.path.exists('test')
     data = requests.get('url')
     return data
-"""
-        )
+""")
 
         result = transform(tmp_path, "test", tier=None, dry_run=True)
 
@@ -548,7 +544,10 @@ def func(x):
         test_file.write_text("import os")
 
         # Mock an error during processing
-        with patch("codex.transform.transformer._apply_pathlib_migration", side_effect=Exception("Test error")):
+        with patch(
+            "codex.transform.transformer._apply_pathlib_migration",
+            side_effect=Exception("Test error"),
+        ):
             result = transform(tmp_path, "test", tier=Tier.A, dry_run=True)
 
             assert len(result.errors) > 0

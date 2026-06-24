@@ -1,6 +1,5 @@
 """Comprehensive integration tests for RAG pipeline."""
 
-
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -30,14 +29,18 @@ def temp_rag_workspace(tmp_path):
 
     # Create sample documents
     doc1 = workspace["test_docs"] / "python.txt"
-    doc1.write_text("Python is a high-level programming language. "
-                    "It is widely used for web development and data science. "
-                    "Python has a simple and readable syntax.")
+    doc1.write_text(
+        "Python is a high-level programming language. "
+        "It is widely used for web development and data science. "
+        "Python has a simple and readable syntax."
+    )
 
     doc2 = workspace["test_docs"] / "ml.txt"
-    doc2.write_text("Machine learning is a subset of artificial intelligence. "
-                    "It uses algorithms to learn patterns from data. "
-                    "Popular ML frameworks include TensorFlow and PyTorch.")
+    doc2.write_text(
+        "Machine learning is a subset of artificial intelligence. "
+        "It uses algorithms to learn patterns from data. "
+        "Popular ML frameworks include TensorFlow and PyTorch."
+    )
 
     return workspace
 
@@ -65,7 +68,7 @@ class TestEndToEndRAGPipeline:
         mock_index = MagicMock()
         mock_index.ntotal = len(chunks)
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -73,7 +76,7 @@ class TestEndToEndRAGPipeline:
                 index_name="test_index",
                 embeddings=mock_embeddings,
                 chunks=chunks,
-                index_dir=str(temp_rag_workspace["index_dir"])
+                index_dir=str(temp_rag_workspace["index_dir"]),
             )
 
             assert index_path.exists()
@@ -90,12 +93,9 @@ class TestEndToEndRAGPipeline:
         mock_embeddings = np.random.randn(len(chunks), 384).astype(np.float32)
         mock_index = MagicMock()
         mock_index.ntotal = len(chunks)
-        mock_index.search.return_value = (
-            np.array([[0.5, 1.0]]),
-            np.array([[0, 1]])
-        )
+        mock_index.search.return_value = (np.array([[0.5, 1.0]]), np.array([[0, 1]]))
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
             mock_faiss.read_index.return_value = mock_index
@@ -105,17 +105,16 @@ class TestEndToEndRAGPipeline:
                 index_name="python_docs",
                 embeddings=mock_embeddings,
                 chunks=chunks,
-                index_dir=str(temp_rag_workspace["index_dir"])
+                index_dir=str(temp_rag_workspace["index_dir"]),
             )
 
             # Retrieve
             mock_model = MagicMock()
             mock_model.encode.return_value = np.random.randn(1, 384).astype(np.float32)
 
-            with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+            with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
                 retriever = Retriever(
-                    index_dir=str(temp_rag_workspace["index_dir"]),
-                    index_name="python_docs"
+                    index_dir=str(temp_rag_workspace["index_dir"]), index_name="python_docs"
                 )
 
                 results = retriever.query("What is Python?", top_k=2)
@@ -128,20 +127,20 @@ class TestEndToEndRAGPipeline:
             {
                 "content": "Python is a programming language",
                 "metadata": {"source_id": "python.txt"},
-                "score": 0.9
+                "score": 0.9,
             },
             {
                 "content": "Python is used for web development",
                 "metadata": {"source_id": "python.txt"},
-                "score": 0.8
-            }
+                "score": 0.8,
+            },
         ]
 
         # Assemble prompt
         prompt = build_prompt(
             query="What is Python?",
             system_prompt="You are a helpful assistant.",
-            retrieved_docs=retrieved_docs
+            retrieved_docs=retrieved_docs,
         )
 
         assert "What is Python?" in prompt
@@ -158,15 +157,13 @@ class TestEndToEndRAGPipeline:
             {
                 "content": "Python is a programming language",
                 "score": 0.9,
-                "metadata": {"source_id": "python.txt", "chunk_id": 0}
+                "metadata": {"source_id": "python.txt", "chunk_id": 0},
             }
         ]
 
         # Post-process
         processed, _evidence = postprocess_output(
-            output=llm_output,
-            retrieved_docs=retrieved_docs,
-            include_citations=True
+            output=llm_output, retrieved_docs=retrieved_docs, include_citations=True
         )
 
         assert "Python" in processed
@@ -185,8 +182,7 @@ class TestRAGCaching:
         mock_provider.encode.return_value = np.random.randn(2, 384).astype(np.float32)
 
         cache = CachedEmbeddingProvider(
-            provider=mock_provider,
-            cache_dir=str(temp_rag_workspace["cache_dir"])
+            provider=mock_provider, cache_dir=str(temp_rag_workspace["cache_dir"])
         )
 
         texts = ["Text 1", "Text 2"]
@@ -223,7 +219,7 @@ class TestRAGErrorHandling:
                 index_name="test",
                 embeddings=embeddings,
                 chunks=chunks,
-                index_dir=str(temp_rag_workspace["index_dir"])
+                index_dir=str(temp_rag_workspace["index_dir"]),
             )
 
     def test_retriever_empty_query(self, temp_rag_workspace):
@@ -231,8 +227,8 @@ class TestRAGErrorHandling:
         mock_index = MagicMock()
         mock_model = MagicMock()
 
-        with patch('codex.rag.indexer.load_index', return_value=(mock_index, [], {})):
-            with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+        with patch("codex.rag.indexer.load_index", return_value=(mock_index, [], {})):
+            with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
                 retriever = Retriever(index_dir=str(temp_rag_workspace["index_dir"]))
                 results = retriever.query("", top_k=5)
 
@@ -242,11 +238,10 @@ class TestRAGErrorHandling:
         """Test retriever when index doesn't exist."""
         mock_model = MagicMock()
 
-        with patch('codex.rag.indexer.load_index', side_effect=FileNotFoundError):
-            with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+        with patch("codex.rag.indexer.load_index", side_effect=FileNotFoundError):
+            with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
                 retriever = Retriever(
-                    index_dir=str(temp_rag_workspace["index_dir"]),
-                    index_name="nonexistent"
+                    index_dir=str(temp_rag_workspace["index_dir"]), index_name="nonexistent"
                 )
 
                 # Should not crash
@@ -265,7 +260,7 @@ class TestRAGMultiTenancy:
         mock_index = MagicMock()
         mock_index.ntotal = 1
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -275,7 +270,7 @@ class TestRAGMultiTenancy:
                 embeddings=embeddings,
                 chunks=chunks,
                 tenant_id="tenant1",
-                index_dir=str(temp_rag_workspace["index_dir"])
+                index_dir=str(temp_rag_workspace["index_dir"]),
             )
 
             path2 = persist_index(
@@ -283,7 +278,7 @@ class TestRAGMultiTenancy:
                 embeddings=embeddings,
                 chunks=chunks,
                 tenant_id="tenant2",
-                index_dir=str(temp_rag_workspace["index_dir"])
+                index_dir=str(temp_rag_workspace["index_dir"]),
             )
 
             # Verify they're in different directories
@@ -307,7 +302,7 @@ class TestRAGPerformance:
 
     def test_batch_embedding_efficiency(self):
         """Test that batch embedding is used."""
-        chunks = [(i, i+10, f"Chunk {i}") for i in range(100)]
+        chunks = [(i, i + 10, f"Chunk {i}") for i in range(100)]
 
         mock_model = MagicMock()
         mock_model.encode.return_value = np.random.randn(100, 384).astype(np.float32)
@@ -315,7 +310,7 @@ class TestRAGPerformance:
         mock_model.to_empty.return_value = mock_model
         mock_model.eval.return_value = mock_model
 
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+        with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
             embed_chunks(chunks)
 
             # Should call encode once with batch
@@ -329,7 +324,7 @@ class TestRAGPerformance:
         # Mock search returns many results
         mock_index.search.return_value = (
             np.random.randn(1, 100).astype(np.float32),
-            np.arange(100).reshape(1, -1)
+            np.arange(100).reshape(1, -1),
         )
 
         chunks = [{"id": i, "text": f"Chunk {i}"} for i in range(100)]
@@ -337,8 +332,8 @@ class TestRAGPerformance:
         mock_model = MagicMock()
         mock_model.encode.return_value = np.random.randn(1, 384).astype(np.float32)
 
-        with patch('codex.rag.indexer.load_index', return_value=(mock_index, chunks, {})):
-            with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+        with patch("codex.rag.indexer.load_index", return_value=(mock_index, chunks, {})):
+            with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
                 retriever = Retriever(index_dir=str(temp_rag_workspace["index_dir"]))
                 results = retriever.query("test", top_k=10)
 
@@ -360,7 +355,7 @@ class TestRAGDataConsistency:
 
     def test_embedding_dimension_consistency(self):
         """Test embedding dimensions are consistent."""
-        chunks = [(i, i+10, f"Text {i}") for i in range(5)]
+        chunks = [(i, i + 10, f"Text {i}") for i in range(5)]
 
         mock_model = MagicMock()
         embeddings = np.random.randn(5, 384).astype(np.float32)
@@ -369,7 +364,7 @@ class TestRAGDataConsistency:
         mock_model.to_empty.return_value = mock_model
         mock_model.eval.return_value = mock_model
 
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_model):
+        with patch("sentence_transformers.SentenceTransformer", return_value=mock_model):
             result = embed_chunks(chunks)
 
             # All embeddings should have same dimension
@@ -380,15 +375,12 @@ class TestRAGDataConsistency:
         chunks = [(0, 10, "Test")]
         embeddings = np.random.randn(1, 384).astype(np.float32)
 
-        custom_metadata = {
-            "source_file": "test.py",
-            "created_by": "test_user"
-        }
+        custom_metadata = {"source_file": "test.py", "created_by": "test_user"}
 
         mock_index = MagicMock()
         mock_index.ntotal = 1
 
-        with patch('codex.rag.indexer.faiss') as mock_faiss:
+        with patch("codex.rag.indexer.faiss") as mock_faiss:
             mock_faiss.IndexFlatL2.return_value = mock_index
             mock_faiss.write_index.side_effect = _touch_index_file
 
@@ -397,7 +389,7 @@ class TestRAGDataConsistency:
                 embeddings=embeddings,
                 chunks=chunks,
                 metadata=custom_metadata,
-                index_dir=str(temp_rag_workspace["index_dir"])
+                index_dir=str(temp_rag_workspace["index_dir"]),
             )
 
             # Load and verify metadata

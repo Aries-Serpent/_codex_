@@ -35,6 +35,7 @@ from security.scope_validator import (
 # TokenScope — from_string
 # ---------------------------------------------------------------------------
 
+
 class TestTokenScopeFromString:
     def test_repo_shorthand(self) -> None:
         s = TokenScope.from_string("repo")
@@ -99,6 +100,7 @@ class TestTokenScopeFromString:
 # TokenScope — from_list
 # ---------------------------------------------------------------------------
 
+
 class TestTokenScopeFromList:
     def test_empty_list_returns_none(self) -> None:
         s = TokenScope.from_list([])
@@ -123,6 +125,7 @@ class TestTokenScopeFromList:
 # TokenScope — to_strings / has
 # ---------------------------------------------------------------------------
 
+
 class TestTokenScopeToStrings:
     def test_read_repo_roundtrip(self) -> None:
         s = TokenScope.READ_REPO
@@ -145,6 +148,7 @@ class TestTokenScopeToStrings:
 # ---------------------------------------------------------------------------
 # ScopeValidator
 # ---------------------------------------------------------------------------
+
 
 class TestScopeValidator:
     def test_init_from_list(self) -> None:
@@ -216,6 +220,7 @@ class TestScopeValidator:
 # Context helpers
 # ---------------------------------------------------------------------------
 
+
 class TestContextHelpers:
     def setup_method(self) -> None:
         clear_scope_validator()
@@ -245,6 +250,7 @@ class TestContextHelpers:
 # ---------------------------------------------------------------------------
 # require_scope decorator
 # ---------------------------------------------------------------------------
+
 
 class TestRequireScopeDecorator:
     def setup_method(self) -> None:
@@ -330,6 +336,7 @@ class TestRequireScopeDecorator:
 # require_any_scope decorator
 # ---------------------------------------------------------------------------
 
+
 class TestRequireAnyScopeDecorator:
     def setup_method(self) -> None:
         clear_scope_validator()
@@ -376,6 +383,7 @@ class TestRequireAnyScopeDecorator:
 # optional_scope decorator
 # ---------------------------------------------------------------------------
 
+
 class TestOptionalScopeDecorator:
     def setup_method(self) -> None:
         clear_scope_validator()
@@ -419,6 +427,7 @@ class TestOptionalScopeDecorator:
 # ---------------------------------------------------------------------------
 # scope_metadata helper
 # ---------------------------------------------------------------------------
+
 
 class TestScopeMetadata:
     def test_undecorated_function(self) -> None:

@@ -23,9 +23,7 @@ from pathlib import Path  # noqa: E402
 from typing import Any  # noqa: E402
 
 from .datamodule import StreamingDataModule  # noqa: E402
-from .datamodule import (  # noqa: E402
-    default_example_validator as _default_example_validator,
-)
+from .datamodule import default_example_validator as _default_example_validator  # noqa: E402
 
 Validator = Callable[[Any], None]
 

@@ -3,9 +3,10 @@ Test Train Codex Cli Merge
 
 Test module for train codex cli merge.
 """
+
 import pytest
 
-pytest.importorskip('transformers')
+pytest.importorskip("transformers")
 
 import argparse
 

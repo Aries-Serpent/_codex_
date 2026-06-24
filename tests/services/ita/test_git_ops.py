@@ -32,7 +32,10 @@ def test_pull_request_simulation_to_message_handles_labels() -> None:
 
 def test_build_pr_url_uses_default_github_domain(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("GITHUB_SERVER_URL", raising=False)
-    assert _build_pr_url("octo/repo", "feature/tests") == "https://github.com/octo/repo/pull/new/feature/tests"
+    assert (
+        _build_pr_url("octo/repo", "feature/tests")
+        == "https://github.com/octo/repo/pull/new/feature/tests"
+    )
 
 
 def test_simulate_pull_request_dry_run() -> None:

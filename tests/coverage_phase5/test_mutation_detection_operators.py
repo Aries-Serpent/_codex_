@@ -1,4 +1,5 @@
 """Tests for mutation detection - operator replacement."""
+
 from __future__ import annotations
 
 import pytest

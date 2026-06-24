@@ -109,7 +109,9 @@ def test_load_model_applies_lora(monkeypatch: pytest.MonkeyPatch) -> None:
     cfg = modeling.ModelConfig(
         model_name="demo",
         device="cpu",
-        lora=modeling.LoRASettings(enabled=True, r=4, alpha=32, dropout=0.1, target_modules=("linear",)),
+        lora=modeling.LoRASettings(
+            enabled=True, r=4, alpha=32, dropout=0.1, target_modules=("linear",)
+        ),
     )
     model = modeling.load_model(cfg)
 

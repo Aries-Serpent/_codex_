@@ -9,7 +9,8 @@ Categories tested:
 - H3: Partial Failure Scenarios (cascade prevention)
 - H4: Error Message Handling (information leakage prevention)
 """
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from unittest.mock import MagicMock
 
 import pytest
@@ -20,6 +21,7 @@ class TestExceptionChaining:
 
     def test_nested_exception_handling(self):
         """Test handling of nested exceptions."""
+
         # Arrange
         class CustomException(Exception):
             pass
@@ -284,7 +286,9 @@ class TestErrorMessages:
         user_friendly_message = "An unexpected error occurred. Please try again."
 
         # Act
-        is_user_friendly = len(user_friendly_message) < 100 and ("Error" in user_friendly_message or "error" in user_friendly_message)
+        is_user_friendly = len(user_friendly_message) < 100 and (
+            "Error" in user_friendly_message or "error" in user_friendly_message
+        )
 
         # Assert
         assert is_user_friendly

@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import json
 import logging
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
@@ -112,10 +111,11 @@ class TestDataLoadersIntegration:
         with patch("codex_ml.data.loaders.DataLoader") as mock_loader_cls:
             mock_loader = Mock()
             mock_loader.__len__ = Mock(return_value=expected_batches)
-            mock_loader.__iter__ = Mock(return_value=iter([
-                {"input_ids": [1, 2, 3], "labels": [1]}
-                for _ in range(expected_batches)
-            ]))
+            mock_loader.__iter__ = Mock(
+                return_value=iter(
+                    [{"input_ids": [1, 2, 3], "labels": [1]} for _ in range(expected_batches)]
+                )
+            )
             mock_loader_cls.return_value = mock_loader
 
             # Iterate through batches
@@ -137,12 +137,19 @@ class TestDataLoadersIntegration:
         with patch("codex_ml.data.loaders.split_dataset") as mock_split:
             mock_split.return_value = (
                 list(range(int(total_samples * train_ratio))),  # Train
-                list(range(int(total_samples * train_ratio), int(total_samples * (train_ratio + eval_ratio)))),  # Eval
+                list(
+                    range(
+                        int(total_samples * train_ratio),
+                        int(total_samples * (train_ratio + eval_ratio)),
+                    )
+                ),  # Eval
                 list(range(int(total_samples * (train_ratio + eval_ratio)), total_samples)),  # Test
             )
 
             # Split dataset
-            train, eval_set, test = mock_split(list(range(total_samples)), [train_ratio, eval_ratio, test_ratio])
+            train, eval_set, test = mock_split(
+                list(range(total_samples)), [train_ratio, eval_ratio, test_ratio]
+            )
 
             # Assert: Splits correct
             assert len(train) == 70
@@ -333,8 +340,7 @@ class TestUnifiedTrainingIntegration:
 
 
 @pytest.mark.skipif(
-    not (DATA_LOADERS_AVAILABLE and UNIFIED_TRAINING_AVAILABLE),
-    reason="Requirements not available"
+    not (DATA_LOADERS_AVAILABLE and UNIFIED_TRAINING_AVAILABLE), reason="Requirements not available"
 )
 class TestDataLoaderTrainerIntegration:
     """Integration between data loaders and training."""
@@ -346,9 +352,9 @@ class TestDataLoaderTrainerIntegration:
             with patch("codex_ml.training.unified_training.UnifiedTrainer") as mock_trainer_cls:
                 # Step 1: Create data loader
                 mock_loader = Mock()
-                mock_loader.__iter__ = Mock(return_value=iter([
-                    {"input_ids": [1, 2], "labels": [1]}
-                ]))
+                mock_loader.__iter__ = Mock(
+                    return_value=iter([{"input_ids": [1, 2], "labels": [1]}])
+                )
                 mock_create_loader.return_value = mock_loader
 
                 # Step 2: Create trainer
@@ -441,16 +447,16 @@ class TestUnifiedTrainingErrorHandling:
         with patch("codex_ml.training.unified_training.UnifiedTrainer") as mock_trainer_cls:
             mock_trainer = Mock()
             mock_trainer_cls.return_value = mock_trainer
-            mock_trainer.train = Mock(
-                side_effect=RuntimeError("Training failed")
-            )
+            mock_trainer.train = Mock(side_effect=RuntimeError("Training failed"))
 
             with pytest.raises(RuntimeError):
                 trainer = mock_trainer_cls({})
                 trainer.train()
 
 
-@pytest.mark.skipif(not (DATA_LOADERS_AVAILABLE and UNIFIED_TRAINING_AVAILABLE), reason="Requirements not available")
+@pytest.mark.skipif(
+    not (DATA_LOADERS_AVAILABLE and UNIFIED_TRAINING_AVAILABLE), reason="Requirements not available"
+)
 class TestDataTrainingEndToEnd:
     """End-to-end data loading and training workflows."""
 
@@ -458,10 +464,7 @@ class TestDataTrainingEndToEnd:
         """Test: Complete workflow from data loading to training."""
         # Arrange: Create sample data
         dataset_file = tmp_path / "data.jsonl"
-        dataset_file.write_text(
-            '{"text": "text1", "label": 1}\n'
-            '{"text": "text2", "label": 0}\n'
-        )
+        dataset_file.write_text('{"text": "text1", "label": 1}\n' '{"text": "text2", "label": 0}\n')
 
         # Act & Assert: Mock complete workflow
         with patch("codex_ml.data.loaders.load_jsonl") as mock_load:
@@ -505,10 +508,9 @@ class TestDataTrainingEndToEnd:
             epoch_data = []
 
             for epoch in range(num_epochs):
-                mock_loader.__iter__ = Mock(return_value=iter([
-                    {"data": f"sample_{i}"}
-                    for i in range(samples_per_epoch)
-                ]))
+                mock_loader.__iter__ = Mock(
+                    return_value=iter([{"data": f"sample_{i}"} for i in range(samples_per_epoch)])
+                )
                 mock_loader_cls.return_value = mock_loader
 
                 # Iterate epoch

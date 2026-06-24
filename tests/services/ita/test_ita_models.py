@@ -8,9 +8,7 @@ from services.ita.app.models import (
     HealthResponse,
     RepoHygieneRequest,
 )
-from services.ita.app.models import (
-    TestsRunRequest as ITATestsRunRequest,
-)
+from services.ita.app.models import TestsRunRequest as ITATestsRunRequest
 
 
 def test_health_response_has_timestamp_default() -> None:

@@ -3,9 +3,10 @@ Test Dataset Hashing
 
 Test module for dataset hashing.
 """
+
 import pytest
 
-pytest.importorskip('numpy')
+pytest.importorskip("numpy")
 
 from pathlib import Path
 

@@ -12,6 +12,7 @@ class TestRagPipelineImports:
         """Test that the module can be imported."""
         try:
             from src.codex.rag import pipeline
+
             assert pipeline is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -24,7 +25,8 @@ class TestRagPipelineOperations:
         """Test RAG pipeline creation."""
         try:
             from src.codex.rag import pipeline
-            if hasattr(pipeline, 'RagPipeline'):
+
+            if hasattr(pipeline, "RagPipeline"):
                 rag = pipeline.RagPipeline()
                 assert rag is not None
         except (ImportError, AttributeError):
@@ -34,8 +36,9 @@ class TestRagPipelineOperations:
         """Test document ingestion."""
         try:
             from src.codex.rag import pipeline
-            if hasattr(pipeline, 'ingest_document'):
-                with patch.object(pipeline, 'ingest_document') as mock_ingest:
+
+            if hasattr(pipeline, "ingest_document"):
+                with patch.object(pipeline, "ingest_document") as mock_ingest:
                     mock_ingest.return_value = {"id": "doc1"}
                     result = pipeline.ingest_document("test content")
                     assert result["id"] == "doc1"
@@ -46,8 +49,9 @@ class TestRagPipelineOperations:
         """Test query processing."""
         try:
             from src.codex.rag import pipeline
-            if hasattr(pipeline, 'process_query'):
-                with patch.object(pipeline, 'process_query') as mock_query:
+
+            if hasattr(pipeline, "process_query"):
+                with patch.object(pipeline, "process_query") as mock_query:
                     mock_query.return_value = ["result1", "result2"]
                     results = pipeline.process_query("test query")
                     assert len(results) == 2
@@ -62,7 +66,8 @@ class TestRagPipelineConfiguration:
         """Test default configuration."""
         try:
             from src.codex.rag import pipeline
-            if hasattr(pipeline, 'DEFAULT_CONFIG'):
+
+            if hasattr(pipeline, "DEFAULT_CONFIG"):
                 assert pipeline.DEFAULT_CONFIG is not None
         except (ImportError, AttributeError):
             pytest.skip("DEFAULT_CONFIG not available")
@@ -71,7 +76,8 @@ class TestRagPipelineConfiguration:
         """Test custom embedding model."""
         try:
             from src.codex.rag import pipeline
-            if hasattr(pipeline, 'RagPipeline'):
+
+            if hasattr(pipeline, "RagPipeline"):
                 rag = pipeline.RagPipeline(embedding_model="custom")
                 assert rag is not None
         except (ImportError, AttributeError):

@@ -58,21 +58,18 @@ from .orchestrator import (
 
 # QFT Extensions (Phases C.1, C.2, C.3)
 try:
-    from .qft import (
+    from .qft import (  # C.2 - Entanglement; C.3 - Path Integral; C.1 - Second Quantization
         ActionFunctional,
         AdaptivePathOptimizer,
         AnnihilationOperator,
         BatchCreationOperator,
-        # C.2 - Entanglement
         BellState,
         CreationOperator,
         EntangledPair,
         EntanglementManager,
-        # C.3 - Path Integral
         ExecutionPath,
         FockState,
         NumberOperator,
-        # C.1 - Second Quantization
         ParticleStatistics,
         PathIntegralOptimizer,
         PathSampler,

@@ -79,12 +79,17 @@ class TestBuildParser:
         from codex_crm.cli import build_parser
 
         parser = build_parser()
-        args = parser.parse_args([
-            "gen-diagram",
-            "--flow", "test_flow",
-            "--steps", "step1;step2;step3",
-            "--out", "diagram.mmd"
-        ])
+        args = parser.parse_args(
+            [
+                "gen-diagram",
+                "--flow",
+                "test_flow",
+                "--steps",
+                "step1;step2;step3",
+                "--out",
+                "diagram.mmd",
+            ]
+        )
         assert args.command == "gen-diagram"
         assert args.flow == "test_flow"
         assert args.steps == "step1;step2;step3"
@@ -138,12 +143,9 @@ class TestMainFunction:
         mock_flow.return_value = "graph TD\n  A --> B"
         output_file = tmp_path / "test.mmd"
 
-        result = main([
-            "gen-diagram",
-            "--flow", "test",
-            "--steps", "A;B",
-            "--out", str(output_file)
-        ])
+        result = main(
+            ["gen-diagram", "--flow", "test", "--steps", "A;B", "--out", str(output_file)]
+        )
         assert result == 0
         mock_flow.assert_called_once_with("test", ["A", "B"])
 
@@ -155,12 +157,17 @@ class TestMainFunction:
 
         with patch("codex_crm.cli.flow_to_mermaid") as mock_flow:
             mock_flow.return_value = "graph TD"
-            main([
-                "gen-diagram",
-                "--flow", "flow",
-                "--steps", "  step1 ; step2 ; ; step3  ",
-                "--out", str(output_file)
-            ])
+            main(
+                [
+                    "gen-diagram",
+                    "--flow",
+                    "flow",
+                    "--steps",
+                    "  step1 ; step2 ; ; step3  ",
+                    "--out",
+                    str(output_file),
+                ]
+            )
             # Should strip whitespace and filter empty
             mock_flow.assert_called_once_with("flow", ["step1", "step2", "step3"])
 

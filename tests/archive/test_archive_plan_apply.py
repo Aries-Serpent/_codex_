@@ -76,11 +76,7 @@ def test_apply_plan_then_restore(tmp_path: Path, monkeypatch) -> None:
     payload = json.loads(result.stdout)
     assert payload["applied"], "expected at least one applied entry"
     entry = next(
-        (
-            item
-            for item in payload["applied"]
-            if item.get("path") == target_file.as_posix()
-        ),
+        (item for item in payload["applied"] if item.get("path") == target_file.as_posix()),
         payload["applied"][0],
     )
     tombstone = entry["tombstone"]
@@ -96,10 +92,7 @@ def test_apply_plan_then_restore(tmp_path: Path, monkeypatch) -> None:
 
     evidence_file = evidence_dir / "archive_ops.jsonl"
     assert evidence_file.exists(), "expected evidence log to exist"
-    events = [
-        json.loads(line)
-        for line in evidence_file.read_text(encoding="utf-8").splitlines()
-    ]
+    events = [json.loads(line) for line in evidence_file.read_text(encoding="utf-8").splitlines()]
 
     plan_apply_events = [
         event
@@ -188,10 +181,7 @@ def test_apply_plan_multiple_entries(tmp_path: Path, monkeypatch) -> None:
 
     evidence_file = evidence_dir / "archive_ops.jsonl"
     assert evidence_file.exists(), "expected evidence log to exist"
-    events = [
-        json.loads(line)
-        for line in evidence_file.read_text(encoding="utf-8").splitlines()
-    ]
+    events = [json.loads(line) for line in evidence_file.read_text(encoding="utf-8").splitlines()]
 
     for path in targets:
         path_key = path.as_posix()
@@ -199,8 +189,7 @@ def test_apply_plan_multiple_entries(tmp_path: Path, monkeypatch) -> None:
         plan_events = [
             event
             for event in events
-            if event.get("action") == "PLAN_APPLY"
-            and event.get("tombstone") == tombstone
+            if event.get("action") == "PLAN_APPLY" and event.get("tombstone") == tombstone
         ]
         archive_events = [
             event

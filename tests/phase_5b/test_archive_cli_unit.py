@@ -8,7 +8,6 @@ Tests cover:
 - Error handling
 """
 
-import json
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
@@ -92,7 +91,7 @@ class TestParseMetadata:
 
     def test_parse_metadata_json_like_value(self):
         """Test parsing metadata with JSON-like value."""
-        result = _parse_metadata(["config={\"key\":\"value\"}"])
+        result = _parse_metadata(['config={"key":"value"}'])
         assert "{" in result["config"]
 
     def test_parse_metadata_path_value(self):

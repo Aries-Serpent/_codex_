@@ -223,9 +223,7 @@ class TestMetricsAndObservability:
             "requests_error": 5,
         }
         assert metrics["requests_total"] > 0
-        assert metrics["requests_success"] + metrics["requests_error"] == metrics[
-            "requests_total"
-        ]
+        assert metrics["requests_success"] + metrics["requests_error"] == metrics["requests_total"]
 
     def test_latency_metrics_format(self):
         """Verify latency metrics have correct format."""

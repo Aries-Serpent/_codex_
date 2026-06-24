@@ -138,6 +138,7 @@ class TestAsyncEdgeCases:
     @pytest.mark.asyncio
     async def test_async_cancellation(self):
         """Test async task cancellation"""
+
         async def long_task():
             await asyncio.sleep(100)
 
@@ -150,6 +151,7 @@ class TestAsyncEdgeCases:
     @pytest.mark.asyncio
     async def test_async_timeout(self):
         """Test async operation timeout"""
+
         async def slow_op():
             await asyncio.sleep(10)
 
@@ -159,6 +161,7 @@ class TestAsyncEdgeCases:
     @pytest.mark.asyncio
     async def test_async_exception_propagation(self):
         """Test async exception propagation"""
+
         async def failing_task():
             raise ValueError("Test error")
 

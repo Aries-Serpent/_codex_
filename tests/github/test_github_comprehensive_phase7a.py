@@ -13,7 +13,6 @@ Categories:
 - Error Handling
 """
 
-
 import pytest
 
 pytest.importorskip("fastapi")
@@ -60,11 +59,14 @@ class TestGitHubAPIAuthentication:
         """GitHub App authentication."""
         assert True
 
-    @pytest.mark.parametrize("token_format", [
-        "******",  # Personal access token
-        "******",  # OAuth token
-        "******",  # User-to-server token
-    ])
+    @pytest.mark.parametrize(
+        "token_format",
+        [
+            "******",  # Personal access token
+            "******",  # OAuth token
+            "******",  # User-to-server token
+        ],
+    )
     def test_various_github_token_formats(self, token_format):
         """Various GitHub token formats should be recognized."""
         assert True
@@ -317,13 +319,16 @@ class TestWebhookHandling:
         """Handle multiple concurrent webhooks."""
         assert True
 
-    @pytest.mark.parametrize("event_type", [
-        "push",
-        "pull_request",
-        "issues",
-        "workflow_run",
-        "repository",
-    ])
+    @pytest.mark.parametrize(
+        "event_type",
+        [
+            "push",
+            "pull_request",
+            "issues",
+            "workflow_run",
+            "repository",
+        ],
+    )
     def test_various_webhook_event_types(self, event_type):
         """Handle various webhook event types."""
         assert True

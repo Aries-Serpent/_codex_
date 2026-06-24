@@ -25,29 +25,19 @@ def test_pad_sequences_empty():
 def test_pad_sequences_basic():
     seqs = [[1, 2], [3, 4, 5], [6]]
     padded = pad_sequences(seqs, pad_id=0)
-    assert padded == [
-        [1, 2, 0],
-        [3, 4, 5],
-        [6, 0, 0]
-    ]
+    assert padded == [[1, 2, 0], [3, 4, 5], [6, 0, 0]]
 
 
 def test_pad_sequences_max_length():
     seqs = [[1, 2, 3], [4, 5]]
     padded = pad_sequences(seqs, pad_id=0, max_length=4)
-    assert padded == [
-        [1, 2, 3, 0],
-        [4, 5, 0, 0]
-    ]
+    assert padded == [[1, 2, 3, 0], [4, 5, 0, 0]]
 
 
 def test_pad_sequences_truncate():
     seqs = [[1, 2, 3, 4], [5]]
     padded = pad_sequences(seqs, pad_id=0, max_length=2, truncate=True)
-    assert padded == [
-        [1, 2],
-        [5, 0]
-    ]
+    assert padded == [[1, 2], [5, 0]]
 
 
 def test_pad_sequences_no_truncate_raises():

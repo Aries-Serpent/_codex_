@@ -14,6 +14,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 try:
     import services as _svc_pkg
+
     if hasattr(_svc_pkg, "__path__") and _ROOT_SERVICES not in _svc_pkg.__path__:
         _svc_pkg.__path__.append(_ROOT_SERVICES)
 except ImportError:
@@ -25,12 +26,14 @@ except ImportError:
 # PolicyEnforcer
 # ---------------------------------------------------------------------------
 
+
 class TestPolicyEnforcer:
     """Tests for PolicyEnforcer with mocked filesystem."""
 
     def _make_enforcer(self, safelist: dict | None = None, denylist: dict | None = None):
         """Return a PolicyEnforcer with policies injected directly."""
         from services.msp_gateway.security import PolicyEnforcer
+
         enforcer = PolicyEnforcer.__new__(PolicyEnforcer)
         enforcer.safelist = safelist or {}
         enforcer.denylist = denylist or {}
@@ -50,30 +53,22 @@ class TestPolicyEnforcer:
         assert "Blocked" in result
 
     def test_check_blocked_patterns_case_insensitive(self):
-        enforcer = self._make_enforcer(
-            denylist={"blocked_prompt_patterns": ["DROP TABLE"]}
-        )
+        enforcer = self._make_enforcer(denylist={"blocked_prompt_patterns": ["DROP TABLE"]})
         result = enforcer.check_blocked_patterns("drop table users")
         assert result is not None
 
     def test_check_blocked_patterns_no_match(self):
-        enforcer = self._make_enforcer(
-            denylist={"blocked_prompt_patterns": ["evil pattern"]}
-        )
+        enforcer = self._make_enforcer(denylist={"blocked_prompt_patterns": ["evil pattern"]})
         result = enforcer.check_blocked_patterns("totally benign text")
         assert result is None
 
     def test_check_blocked_actions_blocked(self):
-        enforcer = self._make_enforcer(
-            denylist={"blocked_actions": ["delete_all", "shutdown"]}
-        )
+        enforcer = self._make_enforcer(denylist={"blocked_actions": ["delete_all", "shutdown"]})
         assert enforcer.check_blocked_actions("delete_all") is True
         assert enforcer.check_blocked_actions("shutdown") is True
 
     def test_check_blocked_actions_allowed(self):
-        enforcer = self._make_enforcer(
-            denylist={"blocked_actions": ["delete_all"]}
-        )
+        enforcer = self._make_enforcer(denylist={"blocked_actions": ["delete_all"]})
         assert enforcer.check_blocked_actions("read_data") is False
 
     def test_check_blocked_actions_empty_denylist(self):
@@ -82,6 +77,7 @@ class TestPolicyEnforcer:
 
     def test_redact_sensitive_content_disabled(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "redaction_enabled", False)
         enforcer = self._make_enforcer()
         text = "my ssn is 123-45-6789"
@@ -91,12 +87,11 @@ class TestPolicyEnforcer:
 
     def test_redact_sensitive_content_regex_pattern(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "redaction_enabled", True)
         enforcer = self._make_enforcer(
             denylist={
-                "redaction_patterns": [
-                    {"pattern": r"\d{3}-\d{2}-\d{4}", "replacement": "[SSN]"}
-                ],
+                "redaction_patterns": [{"pattern": r"\d{3}-\d{2}-\d{4}", "replacement": "[SSN]"}],
                 "sensitive_terms": [],
             }
         )
@@ -107,6 +102,7 @@ class TestPolicyEnforcer:
 
     def test_redact_sensitive_terms(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "redaction_enabled", True)
         enforcer = self._make_enforcer(
             denylist={
@@ -121,6 +117,7 @@ class TestPolicyEnforcer:
 
     def test_redact_no_match_no_change(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "redaction_enabled", True)
         enforcer = self._make_enforcer(
             denylist={
@@ -136,6 +133,7 @@ class TestPolicyEnforcer:
     def test_load_policies_with_missing_files(self, tmp_path):
         """Loading with missing policy files logs warning but sets empty dicts."""
         from services.msp_gateway.security import PolicyEnforcer
+
         enforcer = PolicyEnforcer(policy_dir=str(tmp_path))
         assert enforcer.safelist == {}
         assert enforcer.denylist == {}
@@ -143,6 +141,7 @@ class TestPolicyEnforcer:
     def test_load_policies_with_valid_yaml(self, tmp_path):
         """Load policies from actual YAML files."""
         import yaml
+
         safelist_path = tmp_path / "safelist.yaml"
         denylist_path = tmp_path / "denylist.yaml"
 
@@ -156,6 +155,7 @@ class TestPolicyEnforcer:
         )
 
         from services.msp_gateway.security import PolicyEnforcer
+
         enforcer = PolicyEnforcer(policy_dir=str(tmp_path))
         assert "allowed_topics" in enforcer.safelist
         assert "blocked_prompt_patterns" in enforcer.denylist
@@ -165,9 +165,11 @@ class TestPolicyEnforcer:
 # AuthManager
 # ---------------------------------------------------------------------------
 
+
 class TestAuthManager:
     def _make_auth(self):
         from services.msp_gateway.security import AuthManager
+
         return AuthManager()
 
     def test_hash_api_key_uses_versioned_kdf_format(self):
@@ -223,25 +225,30 @@ class TestAuthManager:
 # OfflineGuard
 # ---------------------------------------------------------------------------
 
+
 class TestOfflineGuard:
     def _make_guard(self):
         from services.msp_gateway.security import OfflineGuard
+
         return OfflineGuard()
 
     def test_check_network_access_offline_true(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "offline", True)
         guard = self._make_guard()
         assert guard.check_network_access() is True
 
     def test_check_network_access_offline_false(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "offline", False)
         guard = self._make_guard()
         assert guard.check_network_access() is False
 
     def test_block_external_call_raises_when_offline(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "offline", True)
         guard = self._make_guard()
         with pytest.raises(RuntimeError, match="offline mode"):
@@ -249,6 +256,7 @@ class TestOfflineGuard:
 
     def test_block_external_call_passes_when_online(self, monkeypatch):
         from services.msp_gateway.security import settings as sec_settings
+
         monkeypatch.setattr(sec_settings, "offline", False)
         guard = self._make_guard()
         guard.block_external_call("http_request")  # Should not raise
@@ -258,19 +266,20 @@ class TestOfflineGuard:
 # Module-level validate_prompt and redact_content
 # ---------------------------------------------------------------------------
 
+
 class TestModuleLevelFunctions:
     def test_validate_prompt_valid(self, monkeypatch):
         from services.msp_gateway import security
+
         # Inject a clean enforcer
-        monkeypatch.setattr(
-            security.policy_enforcer, "check_blocked_patterns", lambda _: None
-        )
+        monkeypatch.setattr(security.policy_enforcer, "check_blocked_patterns", lambda _: None)
         valid, error = security.validate_prompt("Hello, world!", "tenant_x")
         assert valid is True
         assert error is None
 
     def test_validate_prompt_blocked(self, monkeypatch):
         from services.msp_gateway import security
+
         monkeypatch.setattr(
             security.policy_enforcer,
             "check_blocked_patterns",
@@ -282,9 +291,8 @@ class TestModuleLevelFunctions:
 
     def test_validate_prompt_too_long(self, monkeypatch):
         from services.msp_gateway import security
-        monkeypatch.setattr(
-            security.policy_enforcer, "check_blocked_patterns", lambda _: None
-        )
+
+        monkeypatch.setattr(security.policy_enforcer, "check_blocked_patterns", lambda _: None)
         long_prompt = "a" * 10001
         valid, error = security.validate_prompt(long_prompt, "tenant_x")
         assert valid is False
@@ -292,6 +300,7 @@ class TestModuleLevelFunctions:
 
     def test_redact_content_returns_tuple(self, monkeypatch):
         from services.msp_gateway import security
+
         monkeypatch.setattr(
             security.policy_enforcer,
             "redact_sensitive_content",
@@ -303,6 +312,7 @@ class TestModuleLevelFunctions:
 
     def test_redact_content_no_redactions(self, monkeypatch):
         from services.msp_gateway import security
+
         monkeypatch.setattr(
             security.policy_enforcer,
             "redact_sensitive_content",

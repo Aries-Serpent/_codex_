@@ -64,6 +64,7 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
     monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
     # Also patch the module-level SentenceTransformer variable in retriever module
     from codex.rag import retriever as retriever_module
+
     monkeypatch.setattr(retriever_module, "SentenceTransformer", FakeSentenceTransformer)
     return SentenceTransformerSpy(calls=calls, instances=instances)
 

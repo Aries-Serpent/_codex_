@@ -26,6 +26,7 @@ from agents.physics_orchestrator import (
 # ForceVector
 # ---------------------------------------------------------------------------
 
+
 class TestForceVector:
     def test_default_construction(self):
         fv = ForceVector()
@@ -62,6 +63,7 @@ class TestForceVector:
 # ---------------------------------------------------------------------------
 # ActionPath
 # ---------------------------------------------------------------------------
+
 
 class TestActionPath:
     def test_default_construction(self):
@@ -121,8 +123,14 @@ class TestActionPath:
 
     def test_extract_mlp_features_length(self):
         ap = ActionPath(
-            potential_energy=50.0, kinetic_energy=20.0, friction=2.0, momentum=5.0,
-            confidence=0.8, risk=0.2, impact=0.7, urgency=0.4
+            potential_energy=50.0,
+            kinetic_energy=20.0,
+            friction=2.0,
+            momentum=5.0,
+            confidence=0.8,
+            risk=0.2,
+            impact=0.7,
+            urgency=0.4,
         )
         features = ap._extract_mlp_features()
         assert len(features) == 8
@@ -132,6 +140,7 @@ class TestActionPath:
 # ---------------------------------------------------------------------------
 # DecisionState
 # ---------------------------------------------------------------------------
+
 
 class TestDecisionState:
     def test_default_construction(self):
@@ -148,6 +157,7 @@ class TestDecisionState:
 # ---------------------------------------------------------------------------
 # PhysicsInspiredOrchestrator — private helpers
 # ---------------------------------------------------------------------------
+
 
 class TestPhysicsOrchestratorPrivateHelpers:
     @pytest.fixture
@@ -185,10 +195,22 @@ class TestPhysicsOrchestratorPrivateHelpers:
         assert orch.optimize([]) is None
 
     def test_optimize_returns_best(self, orch):
-        ap1 = ActionPath(confidence=0.9, impact=0.8, momentum=5.0, potential_energy=10.0,
-                         kinetic_energy=5.0, friction=0.5)
-        ap2 = ActionPath(confidence=0.3, impact=0.1, momentum=1.0, potential_energy=50.0,
-                         kinetic_energy=5.0, friction=3.0)
+        ap1 = ActionPath(
+            confidence=0.9,
+            impact=0.8,
+            momentum=5.0,
+            potential_energy=10.0,
+            kinetic_energy=5.0,
+            friction=0.5,
+        )
+        ap2 = ActionPath(
+            confidence=0.3,
+            impact=0.1,
+            momentum=1.0,
+            potential_energy=50.0,
+            kinetic_energy=5.0,
+            friction=3.0,
+        )
         for ap in [ap1, ap2]:
             ap.calculate_total_energy()
             ap.calculate_optimization_score()
@@ -201,6 +223,7 @@ class TestPhysicsOrchestratorPrivateHelpers:
         orch.save_decision_history(out)
         assert out.exists()
         import json
+
         loaded = json.loads(out.read_text())
         assert loaded[0]["action_taken"] == "test"
 
@@ -209,11 +232,10 @@ class TestPhysicsOrchestratorPrivateHelpers:
 # EnergyState
 # ---------------------------------------------------------------------------
 
+
 class TestEnergyState:
     def test_free_energy_calculation(self):
-        state = EnergyState(
-            configuration={"a": 1}, energy=5.0, entropy=2.0, temperature=1.0
-        )
+        state = EnergyState(configuration={"a": 1}, energy=5.0, entropy=2.0, temperature=1.0)
         # F = E - T*S = 5 - 1*2 = 3
         assert state.free_energy() == pytest.approx(3.0)
 
@@ -235,6 +257,7 @@ class TestEnergyState:
 # ---------------------------------------------------------------------------
 # EnergyLandscape
 # ---------------------------------------------------------------------------
+
 
 class TestEnergyLandscape:
     def test_empty_select_returns_none(self):
@@ -293,6 +316,7 @@ class TestEnergyLandscape:
 # ---------------------------------------------------------------------------
 # FlowVector & DiffusionFlowModel
 # ---------------------------------------------------------------------------
+
 
 class TestFlowVector:
     def test_step_returns_tuple(self):
@@ -354,6 +378,7 @@ class TestDiffusionFlowModel:
 # ImportMigration
 # ---------------------------------------------------------------------------
 
+
 class TestImportMigration:
     def test_calculate_properties_cli_file(self):
         migration = ImportMigration(
@@ -401,6 +426,7 @@ class TestImportMigration:
 # ---------------------------------------------------------------------------
 # ImportMigrationOrchestrator
 # ---------------------------------------------------------------------------
+
 
 class TestImportMigrationOrchestrator:
     def test_construction(self):
@@ -498,6 +524,7 @@ class TestImportMigrationOrchestrator:
 # SwarmIntelligence / SwarmParticle
 # ---------------------------------------------------------------------------
 
+
 class TestSwarmIntelligence:
     def _make_swarm(self) -> "SwarmIntelligence":
         return SwarmIntelligence(num_particles=3, dimensions=2)
@@ -511,6 +538,7 @@ class TestSwarmIntelligence:
 
     def test_optimize_returns_best_position(self):
         swarm = self._make_swarm()
+
         def objective(pos):
             return -sum(x**2 for x in pos)  # Maximum at origin
 
@@ -522,6 +550,7 @@ class TestSwarmIntelligence:
 
     def test_optimize_improves_over_initial(self):
         swarm = SwarmIntelligence(num_particles=5, dimensions=1)
+
         def rosenbrock(pos):
             return -(pos[0] ** 2)  # Simple concave function
 

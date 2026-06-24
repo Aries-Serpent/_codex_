@@ -14,6 +14,7 @@ class TestSchedulerTypeConstant:
         """Test SchedulerType is available."""
         try:
             from codex_ml.training.scheduler_factory import SchedulerType
+
             assert SchedulerType is not None
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
@@ -49,7 +50,7 @@ class TestCreateScheduler:
                 optimizer,
                 scheduler_type="constant_with_warmup",
                 num_warmup_steps=100,
-                num_training_steps=1000
+                num_training_steps=1000,
             )
             assert scheduler is not None
         except ImportError as exc:
@@ -65,9 +66,7 @@ class TestCreateScheduler:
             param = torch.tensor([0.01], requires_grad=True)
             optimizer = torch.optim.SGD([param], lr=0.01)
             scheduler = create_scheduler(
-                optimizer,
-                scheduler_type="linear",
-                num_training_steps=1000
+                optimizer, scheduler_type="linear", num_training_steps=1000
             )
             assert scheduler is not None
         except ImportError as exc:
@@ -83,9 +82,7 @@ class TestCreateScheduler:
             param = torch.tensor([0.01], requires_grad=True)
             optimizer = torch.optim.SGD([param], lr=0.01)
             scheduler = create_scheduler(
-                optimizer,
-                scheduler_type="cosine",
-                num_training_steps=1000
+                optimizer, scheduler_type="cosine", num_training_steps=1000
             )
             assert scheduler is not None
         except ImportError as exc:

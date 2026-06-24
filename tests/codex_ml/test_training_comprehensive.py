@@ -420,6 +420,7 @@ class TestErrorHandling:
 
     def test_normalize_callable_in_params(self):
         """Test normalizing callable objects in parameters."""
+
         def dummy_func():
             pass
 

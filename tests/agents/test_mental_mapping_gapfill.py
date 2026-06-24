@@ -15,7 +15,8 @@ import pytest
 # Test imports with proper error handling
 try:
     import sys
-    sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
+
+    sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
     from agents.mental_mapping import (
         EdgeType,
         MentalEdge,
@@ -34,7 +35,7 @@ class TestNodeType:
     def test_node_type_values(self):
         """Test NodeType enum has expected values."""
         # Check that NodeType is an enum
-        assert hasattr(NodeType, '__members__')
+        assert hasattr(NodeType, "__members__")
 
         # Should have node types
         members = list(NodeType.__members__.keys())
@@ -63,7 +64,7 @@ class TestEdgeType:
     def test_edge_type_values(self):
         """Test EdgeType enum has expected values."""
         # Check that EdgeType is an enum
-        assert hasattr(EdgeType, '__members__')
+        assert hasattr(EdgeType, "__members__")
 
         # Should have edge types
         members = list(EdgeType.__members__.keys())
@@ -92,20 +93,15 @@ class TestReasoningStep:
         """Test creating a ReasoningStep."""
         step = ReasoningStep(step_id="step_1", thought="Test step")
         assert step is not None
-        assert hasattr(step, 'thought')
+        assert hasattr(step, "thought")
 
     def test_reasoning_step_attributes(self):
         """Test ReasoningStep attributes."""
-        step = ReasoningStep(
-            step_id="step_2",
-            thought="Test",
-            inputs=[1, 2],
-            outputs=[3]
-        )
+        step = ReasoningStep(step_id="step_2", thought="Test", inputs=[1, 2], outputs=[3])
         assert step.thought == "Test"
-        if hasattr(step, 'inputs'):
+        if hasattr(step, "inputs"):
             assert step.inputs == [1, 2]
-        if hasattr(step, 'outputs'):
+        if hasattr(step, "outputs"):
             assert step.outputs == [3]
 
     def test_reasoning_step_with_timestamp(self):
@@ -118,7 +114,7 @@ class TestReasoningStep:
         """Test ReasoningStep is dataclass (frozen or mutable)."""
         step = ReasoningStep(step_id="step_4", thought="Original")
         # Dataclass attributes should be accessible
-        assert hasattr(step, 'thought')
+        assert hasattr(step, "thought")
 
 
 class TestMentalNode:
@@ -131,7 +127,7 @@ class TestMentalNode:
             node_id="node_1",
             content="Test concept",
             node_type=members[0],
-            timestamp="2024-01-01T00:00:00"
+            timestamp="2024-01-01T00:00:00",
         )
         assert node is not None
         assert node.node_id == "node_1"
@@ -145,7 +141,7 @@ class TestMentalNode:
                     node_id="node_2",
                     content="Concept",
                     node_type=members[0],
-                    timestamp="2024-01-01T00:00:00"
+                    timestamp="2024-01-01T00:00:00",
                 )
                 assert node is not None
         except Exception as _err:
@@ -159,7 +155,7 @@ class TestMentalNode:
             node_id="test",
             content="test content",
             node_type=members[0],
-            timestamp="2024-01-01T00:00:00"
+            timestamp="2024-01-01T00:00:00",
         )
 
         # Should have basic properties
@@ -173,14 +169,14 @@ class TestMentalNode:
             node_id="node_parent",
             content="Parent concept",
             node_type=members[0],
-            timestamp="2024-01-01T00:00:00"
+            timestamp="2024-01-01T00:00:00",
         )
 
         # Should be able to add relationships
-        if hasattr(node, 'add_reasoning_step'):
+        if hasattr(node, "add_reasoning_step"):
             step = node.add_reasoning_step("reasoning", "deductive", 0.8)
             # Should have reasoning chain
-            if hasattr(node, 'reasoning_chain'):
+            if hasattr(node, "reasoning_chain"):
                 assert len(node.reasoning_chain) > 0
 
     def test_mental_node_activation(self):
@@ -190,10 +186,10 @@ class TestMentalNode:
             node_id="active_node",
             content="Active concept",
             node_type=members[0],
-            timestamp="2024-01-01T00:00:00"
+            timestamp="2024-01-01T00:00:00",
         )
 
-        if hasattr(node, 'confidence'):
+        if hasattr(node, "confidence"):
             node.confidence = 0.8
             assert 0 <= node.confidence <= 1
 
@@ -201,22 +197,16 @@ class TestMentalNode:
         """Test activation spreading through network."""
         members = list(NodeType.__members__.values())
         node1 = MentalNode(
-            node_id="n1",
-            content="Concept 1",
-            node_type=members[0],
-            timestamp="2024-01-01T00:00:00"
+            node_id="n1", content="Concept 1", node_type=members[0], timestamp="2024-01-01T00:00:00"
         )
         node2 = MentalNode(
-            node_id="n2",
-            content="Concept 2",
-            node_type=members[0],
-            timestamp="2024-01-01T00:00:00"
+            node_id="n2", content="Concept 2", node_type=members[0], timestamp="2024-01-01T00:00:00"
         )
 
-        if hasattr(node1, 'connected_nodes'):
+        if hasattr(node1, "connected_nodes"):
             node1.connected_nodes.add("n2")
 
-            if hasattr(node1, 'importance'):
+            if hasattr(node1, "importance"):
                 node1.importance = 1.0
                 # node2 should receive some importance
                 assert True
@@ -229,10 +219,7 @@ class TestMentalEdge:
         """Test creating a MentalEdge."""
         members = list(EdgeType.__members__.values())
         edge = MentalEdge(
-            edge_id="edge_1",
-            source_id="node_1",
-            target_id="node_2",
-            edge_type=members[0]
+            edge_id="edge_1", source_id="node_1", target_id="node_2", edge_type=members[0]
         )
         assert edge is not None
 
@@ -242,10 +229,7 @@ class TestMentalEdge:
             members = list(EdgeType.__members__.values())
             if members:
                 edge = MentalEdge(
-                    edge_id="edge_2",
-                    source_id="n1",
-                    target_id="n2",
-                    edge_type=members[0]
+                    edge_id="edge_2", source_id="n1", target_id="n2", edge_type=members[0]
                 )
                 assert edge is not None
         except Exception as _err:
@@ -260,21 +244,16 @@ class TestMentalEdge:
             source_id="src",
             target_id="tgt",
             edge_type=members[0],
-            weight=0.75
+            weight=0.75,
         )
         assert edge.weight == 0.75
 
     def test_mental_edge_strength(self):
         """Test MentalEdge connection strength."""
         members = list(EdgeType.__members__.values())
-        edge = MentalEdge(
-            edge_id="edge_3",
-            source_id="a",
-            target_id="b",
-            edge_type=members[0]
-        )
+        edge = MentalEdge(edge_id="edge_3", source_id="a", target_id="b", edge_type=members[0])
 
-        if hasattr(edge, 'weight'):
+        if hasattr(edge, "weight"):
             # Should have weight property
             assert isinstance(edge.weight, (int, float))
 
@@ -282,16 +261,13 @@ class TestMentalEdge:
         """Test MentalEdge properties."""
         members = list(EdgeType.__members__.values())
         edge = MentalEdge(
-            edge_id="test_edge",
-            source_id="source_id",
-            target_id="target_id",
-            edge_type=members[0]
+            edge_id="test_edge", source_id="source_id", target_id="target_id", edge_type=members[0]
         )
 
         # Should have identifiable endpoints
-        if hasattr(edge, 'source'):
+        if hasattr(edge, "source"):
             assert edge.source == "source_id"
-        if hasattr(edge, 'target'):
+        if hasattr(edge, "target"):
             assert edge.target == "target_id"
 
 
@@ -307,17 +283,17 @@ class TestMentalMappingModel:
         """Test adding nodes to model."""
         model = MentalMappingModel()
 
-        if hasattr(model, 'add_node'):
+        if hasattr(model, "add_node"):
             members = list(NodeType.__members__.values())
             node = MentalNode(
                 node_id="node_a",
                 content="Concept A",
                 node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                timestamp="2024-01-01T00:00:00",
             )
             model.add_node(node)
 
-            if hasattr(model, 'get_node'):
+            if hasattr(model, "get_node"):
                 retrieved = model.get_node("node_a")
                 assert retrieved is not None
 
@@ -325,17 +301,12 @@ class TestMentalMappingModel:
         """Test adding edges to model."""
         model = MentalMappingModel()
 
-        if hasattr(model, 'add_edge'):
+        if hasattr(model, "add_edge"):
             members = list(EdgeType.__members__.values())
-            edge = MentalEdge(
-                edge_id="e1",
-                source_id="n1",
-                target_id="n2",
-                edge_type=members[0]
-            )
+            edge = MentalEdge(edge_id="e1", source_id="n1", target_id="n2", edge_type=members[0])
             model.add_edge(edge)
 
-            if hasattr(model, 'get_edge'):
+            if hasattr(model, "get_edge"):
                 retrieved = model.get_edge("e1")
                 assert retrieved is not None
 
@@ -343,19 +314,19 @@ class TestMentalMappingModel:
         """Test retrieving nodes from model."""
         model = MentalMappingModel()
 
-        if hasattr(model, 'add_node') and hasattr(model, 'get_nodes'):
+        if hasattr(model, "add_node") and hasattr(model, "get_nodes"):
             members = list(NodeType.__members__.values())
             node1 = MentalNode(
                 node_id="n1",
                 content="Concept 1",
                 node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                timestamp="2024-01-01T00:00:00",
             )
             node2 = MentalNode(
                 node_id="n2",
                 content="Concept 2",
                 node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                timestamp="2024-01-01T00:00:00",
             )
 
             model.add_node(node1)
@@ -368,7 +339,7 @@ class TestMentalMappingModel:
         """Test finding paths between nodes."""
         model = MentalMappingModel()
 
-        if hasattr(model, 'add_node') and hasattr(model, 'add_edge'):
+        if hasattr(model, "add_node") and hasattr(model, "add_edge"):
             # Create node structure
             members = list(NodeType.__members__.values())
             edge_members = list(EdgeType.__members__.values())
@@ -377,19 +348,16 @@ class TestMentalMappingModel:
                 node_id="start",
                 content="Start",
                 node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                timestamp="2024-01-01T00:00:00",
             )
             n2 = MentalNode(
                 node_id="middle",
                 content="Middle",
                 node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                timestamp="2024-01-01T00:00:00",
             )
             n3 = MentalNode(
-                node_id="end",
-                content="End",
-                node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                node_id="end", content="End", node_type=members[0], timestamp="2024-01-01T00:00:00"
             )
 
             model.add_node(n1)
@@ -397,23 +365,17 @@ class TestMentalMappingModel:
             model.add_node(n3)
 
             e1 = MentalEdge(
-                edge_id="e1",
-                source_id="start",
-                target_id="middle",
-                edge_type=edge_members[0]
+                edge_id="e1", source_id="start", target_id="middle", edge_type=edge_members[0]
             )
             e2 = MentalEdge(
-                edge_id="e2",
-                source_id="middle",
-                target_id="end",
-                edge_type=edge_members[0]
+                edge_id="e2", source_id="middle", target_id="end", edge_type=edge_members[0]
             )
 
             model.add_edge(e1)
             model.add_edge(e2)
 
             # If path finding available
-            if hasattr(model, 'find_path'):
+            if hasattr(model, "find_path"):
                 path = model.find_path("start", "end")
                 assert path is not None
 
@@ -421,13 +383,13 @@ class TestMentalMappingModel:
         """Test spreading activation through model."""
         model = MentalMappingModel()
 
-        if hasattr(model, 'add_node') and hasattr(model, 'set_activation'):
+        if hasattr(model, "add_node") and hasattr(model, "set_activation"):
             node = MentalNode(node_id="active", content="Active")
             model.add_node(node)
 
             model.set_activation("active", 1.0)
 
-            if hasattr(model, 'spread_activation'):
+            if hasattr(model, "spread_activation"):
                 model.spread_activation(decay=0.7)
                 # Should complete without error
                 assert True
@@ -436,14 +398,14 @@ class TestMentalMappingModel:
         """Test linking concepts in model."""
         model = MentalMappingModel()
 
-        if hasattr(model, 'link_concepts'):
+        if hasattr(model, "link_concepts"):
             concept1 = "python"
             concept2 = "programming"
 
             model.link_concepts(concept1, concept2)
 
             # Should have linked them
-            if hasattr(model, 'are_linked'):
+            if hasattr(model, "are_linked"):
                 linked = model.are_linked(concept1, concept2)
                 assert linked or linked is False  # Boolean
 
@@ -451,11 +413,11 @@ class TestMentalMappingModel:
         """Test model visualization capabilities."""
         model = MentalMappingModel()
 
-        if hasattr(model, 'to_dict'):
+        if hasattr(model, "to_dict"):
             model_dict = model.to_dict()
             assert isinstance(model_dict, dict)
 
-        if hasattr(model, 'to_json'):
+        if hasattr(model, "to_json"):
             json_str = model.to_json()
             assert json_str is not None
 
@@ -472,7 +434,7 @@ class TestMentalMappingIntegration:
             # Create concepts
             concepts = ["python", "programming", "function", "loop", "data"]
 
-            if hasattr(model, 'add_node'):
+            if hasattr(model, "add_node"):
                 members = list(NodeType.__members__.values())
                 nodes = []
                 for concept in concepts:
@@ -480,13 +442,13 @@ class TestMentalMappingIntegration:
                         node_id=concept,
                         content=concept,
                         node_type=members[0],
-                        timestamp="2024-01-01T00:00:00"
+                        timestamp="2024-01-01T00:00:00",
                     )
                     model.add_node(node)
                     nodes.append(node)
 
                 # Create relationships
-                if hasattr(model, 'add_edge'):
+                if hasattr(model, "add_edge"):
                     edge_members = list(EdgeType.__members__.values())
                     edges = [
                         ("python", "programming"),
@@ -499,12 +461,12 @@ class TestMentalMappingIntegration:
                             edge_id=f"{src}-{tgt}",
                             source_id=src,
                             target_id=tgt,
-                            edge_type=edge_members[0]
+                            edge_type=edge_members[0],
                         )
                         model.add_edge(edge)
 
                 # Verify network
-                if hasattr(model, 'get_nodes'):
+                if hasattr(model, "get_nodes"):
                     all_nodes = model.get_nodes()
                     assert len(all_nodes) == 5
         except Exception as e:
@@ -520,50 +482,41 @@ class TestMentalMappingIntegration:
             edge_members = list(EdgeType.__members__.values())
 
             n1 = MentalNode(
-                node_id="n1",
-                content="Root",
-                node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                node_id="n1", content="Root", node_type=members[0], timestamp="2024-01-01T00:00:00"
             )
             n2 = MentalNode(
                 node_id="n2",
                 content="Child1",
                 node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                timestamp="2024-01-01T00:00:00",
             )
             n3 = MentalNode(
                 node_id="n3",
                 content="Child2",
                 node_type=members[0],
-                timestamp="2024-01-01T00:00:00"
+                timestamp="2024-01-01T00:00:00",
             )
 
-            if hasattr(model, 'add_node'):
+            if hasattr(model, "add_node"):
                 model.add_node(n1)
                 model.add_node(n2)
                 model.add_node(n3)
 
-                if hasattr(model, 'add_edge'):
+                if hasattr(model, "add_edge"):
                     e1 = MentalEdge(
-                        edge_id="e1",
-                        source_id="n1",
-                        target_id="n2",
-                        edge_type=edge_members[0]
+                        edge_id="e1", source_id="n1", target_id="n2", edge_type=edge_members[0]
                     )
                     e2 = MentalEdge(
-                        edge_id="e2",
-                        source_id="n1",
-                        target_id="n3",
-                        edge_type=edge_members[0]
+                        edge_id="e2", source_id="n1", target_id="n3", edge_type=edge_members[0]
                     )
                     model.add_edge(e1)
                     model.add_edge(e2)
 
                 # Spread activation
-                if hasattr(model, 'set_activation'):
+                if hasattr(model, "set_activation"):
                     model.set_activation("n1", 1.0)
 
-                    if hasattr(model, 'spread_activation'):
+                    if hasattr(model, "spread_activation"):
                         model.spread_activation(decay=0.5, steps=2)
                         # Activation should propagate
                         assert True
@@ -592,18 +545,18 @@ class TestMentalMappingIntegration:
                     node_id=f"step_{i}",
                     content=step.thought,
                     node_type=members[0],
-                    timestamp="2024-01-01T00:00:00"
+                    timestamp="2024-01-01T00:00:00",
                 )
-                if hasattr(model, 'add_node'):
+                if hasattr(model, "add_node"):
                     model.add_node(node)
 
             # Verify trace recorded
-            if hasattr(model, 'get_nodes'):
+            if hasattr(model, "get_nodes"):
                 nodes = model.get_nodes()
                 assert len(nodes) >= 3
         except Exception as e:
             pytest.skip(f"Reasoning trace failed: {e}")
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "--tb=short"])

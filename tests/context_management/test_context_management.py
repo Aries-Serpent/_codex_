@@ -109,7 +109,7 @@ class TestContextNormalizer:
         """When normalize_unicode=False, NFD and NFC forms are NOT equated."""
         from context_management.normalizer import ContextNormalizer
 
-        nfc_cafe = "caf\u00e9"   # precomposed NFC
+        nfc_cafe = "caf\u00e9"  # precomposed NFC
         nfd_cafe = "cafe\u0301"  # decomposed NFD
 
         normalizer = ContextNormalizer(normalize_unicode=False, lowercase=False)

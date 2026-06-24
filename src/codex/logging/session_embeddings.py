@@ -21,7 +21,7 @@ import json
 import logging
 import threading
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 
@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 # Optional imports with graceful fallback
 try:
     import faiss
+
     HAS_FAISS = True
 except ImportError:
     HAS_FAISS = False
@@ -37,6 +38,7 @@ except ImportError:
 
 try:
     from sentence_transformers import SentenceTransformer
+
     HAS_SENTENCE_TRANSFORMERS = True
 except ImportError:
     HAS_SENTENCE_TRANSFORMERS = False
@@ -194,6 +196,7 @@ class SessionEmbeddings:
             if self.embeddings_path.exists():
                 # Try to load pickled embeddings as fallback
                 import pickle
+
                 try:
                     with open(self.embeddings_path, "rb") as f:
                         self._embeddings = pickle.load(f)  # nosec B301 - trusted data only
@@ -218,6 +221,7 @@ class SessionEmbeddings:
                 else:
                     # Save embeddings as pickle for fallback
                     import pickle
+
                     with open(self.embeddings_path, "wb") as f:
                         pickle.dump(self._embeddings, f)
 
@@ -236,9 +240,7 @@ class SessionEmbeddings:
                 json.dump(metadata_dict, f, indent=2)
             temp_path.replace(self.metadata_path)
 
-            logger.info(
-                f"Saved index: {len(self._metadata)} sessions to {self.metadata_path}"
-            )
+            logger.info(f"Saved index: {len(self._metadata)} sessions to {self.metadata_path}")
 
     def add_session(
         self,
@@ -297,9 +299,7 @@ class SessionEmbeddings:
                 logger.error(f"Failed to add session {session_id}: {e}")
                 return False
 
-    def find_similar(
-        self, session_id: str, k: int = 5
-    ) -> list[tuple[str, float]]:
+    def find_similar(self, session_id: str, k: int = 5) -> list[tuple[str, float]]:
         """Find k sessions most similar to given session.
 
         Args:

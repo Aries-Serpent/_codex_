@@ -30,9 +30,7 @@ from .plugin_registry import (
     QuantumPlugin,
     QuantumPluginRegistry,
 )
-from .plugin_registry import (
-    calculate_thermodynamic_load_priority as calculate_plugin_priority,
-)
+from .plugin_registry import calculate_thermodynamic_load_priority as calculate_plugin_priority
 from .testing import (
     QuantumTest,
     QuantumTestSuite,

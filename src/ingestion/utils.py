@@ -38,9 +38,7 @@ logger = logging.getLogger(__name__)
 
 # Try to import the repository-provided encoding detector if present.
 try:
-    from .encoding_detect import (
-        detect_encoding as _repo_detect_encoding,
-    )
+    from .encoding_detect import detect_encoding as _repo_detect_encoding
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore[assignment]
@@ -339,7 +337,9 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
                     return result
                 # Unexpected object: coerce to string
                 return str(result)
-            except Exception as exc:  # nosec B110 - fall through to manual reader; log for visibility
+            except (
+                Exception
+            ) as exc:  # nosec B110 - fall through to manual reader; log for visibility
                 logger.debug(
                     "ingestion.utils: primary reader result normalisation failed: %s",
                     exc,

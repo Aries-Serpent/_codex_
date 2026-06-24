@@ -253,10 +253,26 @@ def build_solution_tree(config: SolutionManifestConfig) -> str:
 
 
 def emit_solution_xml(config: SolutionManifestConfig) -> str:
-    """Serialize ``config`` to the Dynamics unmanaged solution XML string."""
+    """Serialize ``config`` to the Dynamics unmanaged solution XML string.
+    
+    Security Guarantees:
+    - Uses defusedxml.ElementTree for XXE attack prevention
+    - Validates against DOCTYPE declarations
+    - Prevents XML entity expansion attacks
+    - No external entity resolution
+    """
 
     xml = f'<?xml version="1.0" encoding="utf-8"?>{build_solution_tree(config)}'
+
+    # XXE Protection: Check for DOCTYPE declarations which could be attack vectors
     if "<!DOCTYPE" in xml.upper():
         raise ValueError("DOCTYPE declarations are not permitted in solution XML")
-    safe_xml_fromstring(xml)
+
+    # XXE Protection: Validate with defusedxml parser (prevents XXE, billion laughs, etc.)
+    try:
+        safe_xml_fromstring(xml)
+    except Exception as exc:
+        logger.error(f"XML validation failed: {exc}")
+        raise ValueError(f"Generated XML failed validation: {exc}") from exc
+
     return xml

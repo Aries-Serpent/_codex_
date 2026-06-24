@@ -41,9 +41,7 @@ def temp_source_dir():
 @pytest.fixture
 def package_flatten_script():
     """Path to package_flatten.sh script"""
-    script = (
-        Path(__file__).parent.parent.parent / "scripts" / "mcp" / "package_flatten.sh"
-    )
+    script = Path(__file__).parent.parent.parent / "scripts" / "mcp" / "package_flatten.sh"
     if not script.exists():
         pytest.skip("package_flatten.sh not found")
     return script
@@ -59,9 +57,7 @@ class TestPackageFlattenScript:
 
     def test_script_shows_usage_with_no_args(self, package_flatten_script):
         """Test that script shows usage when called with no arguments"""
-        result = subprocess.run(
-            [str(package_flatten_script)], capture_output=True, text=True
-        )
+        result = subprocess.run([str(package_flatten_script)], capture_output=True, text=True)
 
         assert result.returncode != 0
         assert "Usage:" in result.stdout or "Usage:" in result.stderr
@@ -133,9 +129,7 @@ class TestPackageFlattenScript:
             import zipfile
 
             with zipfile.ZipFile(output_zip, "r") as zf:
-                assert "manifest.json" in zf.namelist(), (
-                    "manifest.json not found in package"
-                )
+                assert "manifest.json" in zf.namelist(), "manifest.json not found in package"
 
                 manifest_data = zf.read("manifest.json")
                 manifest = json.loads(manifest_data)
@@ -145,9 +139,7 @@ class TestPackageFlattenScript:
                 assert isinstance(manifest["files"], list)
                 assert len(manifest["files"]) > 0
 
-    def test_script_flattens_directory_structure(
-        self, package_flatten_script, temp_source_dir
-    ):
+    def test_script_flattens_directory_structure(self, package_flatten_script, temp_source_dir):
         """Test that nested paths are flattened correctly"""
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
@@ -170,14 +162,10 @@ class TestPackageFlattenScript:
                 filenames = zf.namelist()
 
                 # Should have flattened names like src__module__main.py
-                flattened_python = [
-                    f for f in filenames if f.endswith(".py") and "__" in f
-                ]
+                flattened_python = [f for f in filenames if f.endswith(".py") and "__" in f]
                 assert len(flattened_python) > 0, "No flattened Python files found"
 
-    def test_script_includes_sha256_in_manifest(
-        self, package_flatten_script, temp_source_dir
-    ):
+    def test_script_includes_sha256_in_manifest(self, package_flatten_script, temp_source_dir):
         """Test that manifest includes SHA256 hashes"""
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"
@@ -252,13 +240,9 @@ class TestPackageFlattenScript:
             import zipfile
 
             with zipfile.ZipFile(output_zip, "r") as zf:
-                assert "README_dataset.md" in zf.namelist(), (
-                    "README_dataset.md not found"
-                )
+                assert "README_dataset.md" in zf.namelist(), "README_dataset.md not found"
 
-    def test_script_with_custom_repo_root(
-        self, package_flatten_script, temp_source_dir
-    ):
+    def test_script_with_custom_repo_root(self, package_flatten_script, temp_source_dir):
         """Test --repo-root option"""
         with tempfile.TemporaryDirectory() as tmpdir:
             output_zip = Path(tmpdir) / "test_package.zip"

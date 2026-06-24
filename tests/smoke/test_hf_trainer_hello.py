@@ -57,9 +57,7 @@ def test_hf_trainer_on_tiny_hello_dataset():
             report_to=[],
             fp16=False,
         )
-        trainer = Trainer(
-            model=model, args=args, train_dataset=ds_tok, data_collator=collator
-        )
+        trainer = Trainer(model=model, args=args, train_dataset=ds_tok, data_collator=collator)
         trainer.train()
         trainer.save_state()
         assert (out / "trainer_state.json").exists()

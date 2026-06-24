@@ -1,4 +1,5 @@
 """Test async protocol handling and concurrency."""
+
 from __future__ import annotations
 
 import asyncio

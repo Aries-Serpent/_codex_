@@ -7,7 +7,6 @@ Tests convergence, improvement metrics, and OutcomeAnalyzer integration.
 AfterMath: Phase 8.3 Pre-commit 3-4 - Strategy Optimizer Testing
 """
 
-
 import pytest
 
 np = pytest.importorskip("numpy")
@@ -482,9 +481,7 @@ def test_strategy_improvement_target():
         outcomes.append(outcome)
 
     # Optimize with target improvement
-    results = optimizer.optimize_strategy(
-        outcomes, max_episodes=200, target_improvement=0.20
-    )
+    results = optimizer.optimize_strategy(outcomes, max_episodes=200, target_improvement=0.20)
 
     # Check improvement
     assert "improvement_percentage" in results

@@ -101,5 +101,6 @@ def test_license_files_present():
     else:
         # Fallback: check if LICENSE file exists in repo
         import pathlib
+
         repo_root = pathlib.Path(__file__).parent.parent
         assert (repo_root / "LICENSE").exists()

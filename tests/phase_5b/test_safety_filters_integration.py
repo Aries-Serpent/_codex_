@@ -94,9 +94,7 @@ class TestSafetyFiltersIntegration:
         with patch("codex_ml.safety.filters.TokenFilter") as mock_filter_cls:
             mock_filter = Mock()
             mock_filter_cls.return_value = mock_filter
-            mock_filter.filter_tokens = Mock(
-                return_value={"filtered": True, "removed_tokens": 2}
-            )
+            mock_filter.filter_tokens = Mock(return_value={"filtered": True, "removed_tokens": 2})
 
             # Apply token filter
             filter_instance = mock_filter_cls()
@@ -141,9 +139,7 @@ class TestSafetyFiltersIntegration:
             mock_chain_cls.return_value = mock_chain
 
             # Mock exception
-            mock_chain.apply_filters = Mock(
-                side_effect=Exception("Safety violation detected")
-            )
+            mock_chain.apply_filters = Mock(side_effect=Exception("Safety violation detected"))
 
             # Execute and catch
             chain = mock_chain_cls()
@@ -157,9 +153,7 @@ class TestSafetyFiltersIntegration:
             with patch("codex_ml.safety.filters.create_filter_chain") as mock_create:
                 # Setup tokenizer integration
                 mock_filter = Mock()
-                mock_filter.check_tokens = Mock(
-                    return_value={"safe": True, "token_count": 10}
-                )
+                mock_filter.check_tokens = Mock(return_value={"safe": True, "token_count": 10})
                 mock_token_filter.return_value = mock_filter
 
                 # Setup chain creation
@@ -182,9 +176,7 @@ class TestSafetyFiltersIntegration:
             mock_chain_cls.return_value = mock_chain
 
             # Mock failure and recovery
-            mock_chain.apply_filters = Mock(
-                side_effect=RuntimeError("Filter execution failed")
-            )
+            mock_chain.apply_filters = Mock(side_effect=RuntimeError("Filter execution failed"))
             mock_chain.fallback_filter = Mock(return_value={"text": "original", "filtered": False})
 
             # Attempt filtering
@@ -234,9 +226,7 @@ class TestSafetyFiltersIntegration:
             mock_chain = Mock()
             mock_chain_cls.return_value = mock_chain
             mock_chain.apply_filters_batch = Mock(
-                return_value=[
-                    {"text": t, "passed": True} for t in batch
-                ]
+                return_value=[{"text": t, "passed": True} for t in batch]
             )
 
             # Filter batch
@@ -333,7 +323,9 @@ class TestSafetyFiltersErrorHandling:
             pytest.skip("Safety filters not available, but should handle gracefully")
 
 
-@pytest.mark.skipif(not (SAFETY_FILTERS_AVAILABLE and TRANSFORMERS_AVAILABLE), reason="Requirements not available")
+@pytest.mark.skipif(
+    not (SAFETY_FILTERS_AVAILABLE and TRANSFORMERS_AVAILABLE), reason="Requirements not available"
+)
 class TestSafetyFiltersWithTransformers:
     """Safety filters integration with Transformers library."""
 
@@ -475,9 +467,7 @@ class TestSafetyFiltersEndToEnd:
             mock_chain_cls.return_value = mock_chain
 
             # Stage 1: Primary filter
-            mock_chain.apply_filters = Mock(
-                side_effect=[Exception("Filter 1 failed"), None]
-            )
+            mock_chain.apply_filters = Mock(side_effect=[Exception("Filter 1 failed"), None])
 
             # Stage 2: Fallback filter
             mock_chain.fallback_filter = Mock(return_value={"filtered": False})

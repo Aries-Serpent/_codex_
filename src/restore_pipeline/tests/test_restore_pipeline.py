@@ -315,9 +315,9 @@ def test_cli_smoke_run(clean_image: np.ndarray, tmp_dir: Path) -> None:
         text=True,
         timeout=120,
     )
-    assert result.returncode == 0, (
-        f"CLI failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
-    )
+    assert (
+        result.returncode == 0
+    ), f"CLI failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
     out_files = list(out_dir.iterdir())
     assert len(out_files) >= 1, "No output files produced"
 

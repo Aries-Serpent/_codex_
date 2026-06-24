@@ -376,9 +376,7 @@ def test_database_persistence(temp_db):
         repository.save_metric(**metric)
 
     # Retrieve and verify
-    retrieved = repository.get_recent_metrics(
-        feature=QuantumFeature.SUPERPOSITION.value, limit=10
-    )
+    retrieved = repository.get_recent_metrics(feature=QuantumFeature.SUPERPOSITION.value, limit=10)
 
     assert len(retrieved) >= 5
 
@@ -419,9 +417,7 @@ def test_full_system_stress(integrated_system, temp_db):
     monitor = integrated_system["monitor"]
 
     # Create multiple assessors
-    assessor = QuantumComplianceAssessor(
-        config, monitor, repository, enable_superposition=True
-    )
+    assessor = QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
 
     # Run multiple assessments
     results = []

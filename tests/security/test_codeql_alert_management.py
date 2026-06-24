@@ -74,7 +74,7 @@ class TestCodeScanningAlert:
 class TestCodeQLAlertFetcher:
     """Tests for CodeQLAlertFetcher class."""
 
-    @patch('fetch_codeql_alerts.requests.Session')
+    @patch("fetch_codeql_alerts.requests.Session")
     def test_fetcher_initialization(self, mock_session):
         """Test initializing the fetcher."""
         fetcher = CodeQLAlertFetcher(
@@ -87,7 +87,7 @@ class TestCodeQLAlertFetcher:
         assert fetcher.repo == "test-repo"
         assert fetcher.token == "test-token"
 
-    @patch('fetch_codeql_alerts.requests.Session')
+    @patch("fetch_codeql_alerts.requests.Session")
     def test_fetcher_without_token_warning(self, mock_session):
         """Test fetcher logs warning without token."""
         fetcher = CodeQLAlertFetcher(
@@ -208,7 +208,7 @@ class TestAlertExporter:
 class TestAlertCloser:
     """Tests for AlertCloser class."""
 
-    @patch('close_codeql_alert.requests.Session')
+    @patch("close_codeql_alert.requests.Session")
     def test_closer_initialization(self, mock_session):
         """Test initializing the closer."""
         closer = AlertCloser(
@@ -221,7 +221,7 @@ class TestAlertCloser:
         assert closer.repo == "test-repo"
         assert closer.token == "test-token"
 
-    @patch('close_codeql_alert.requests.Session')
+    @patch("close_codeql_alert.requests.Session")
     def test_closer_dry_run(self, mock_session):
         """Test dry run mode doesn't make API calls."""
         closer = AlertCloser(

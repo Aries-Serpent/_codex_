@@ -26,14 +26,19 @@ from codex.agents.brain_client import _DEFAULT_URL, BrainClient, BrainClientErro
 
 # All env vars consulted by BrainClient._auth_header() — must be excluded
 # in tests that assert "no auth header".
-_AUTH_ENV_VARS = frozenset({
-    "CODEX_MASTER_KEY", "CODEX_BACKUP_KEY",
-    "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN",
-})
+_AUTH_ENV_VARS = frozenset(
+    {
+        "CODEX_MASTER_KEY",
+        "CODEX_BACKUP_KEY",
+        "AGENT_GITHUB_TOKEN",
+        "GITHUB_TOKEN",
+    }
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_response(body: Any, status: int = 200) -> MagicMock:
     """Return a mock response object compatible with urllib.request.urlopen."""
@@ -48,14 +53,18 @@ def _make_response(body: Any, status: int = 200) -> MagicMock:
 
 def _http_error(code: int, msg: str = "Error") -> urllib.error.HTTPError:
     return urllib.error.HTTPError(
-        url="http://x", code=code, msg=msg,
-        hdrs=None, fp=BytesIO(b"error body"),  # type: ignore[arg-type]
+        url="http://x",
+        code=code,
+        msg=msg,
+        hdrs=None,
+        fp=BytesIO(b"error body"),  # type: ignore[arg-type]
     )
 
 
 # ---------------------------------------------------------------------------
 # URL resolution
 # ---------------------------------------------------------------------------
+
 
 class TestUrlResolution:
     def test_explicit_base_url_wins(self) -> None:
@@ -81,8 +90,11 @@ class TestUrlResolution:
         assert b.base_url == "http://copilot-url:7777"
 
     def test_default_url_when_no_env(self) -> None:
-        env_copy = {k: v for k, v in os.environ.items()
-                    if k not in ("CODEX_CLI_API_URL", "COPILOT_CLI_BASE_URL")}
+        env_copy = {
+            k: v
+            for k, v in os.environ.items()
+            if k not in ("CODEX_CLI_API_URL", "COPILOT_CLI_BASE_URL")
+        }
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient()
         assert b.base_url == _DEFAULT_URL
@@ -101,9 +113,12 @@ class TestUrlResolution:
 # _auth_header
 # ---------------------------------------------------------------------------
 
+
 class TestAuthHeader:
     def test_master_key_used_when_set(self) -> None:
-        with patch.dict(os.environ, {"CODEX_MASTER_KEY": "masterkey123", "CODEX_BACKUP_KEY": ""}, clear=False):
+        with patch.dict(
+            os.environ, {"CODEX_MASTER_KEY": "masterkey123", "CODEX_BACKUP_KEY": ""}, clear=False
+        ):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
         assert hdr == {"Authorization": "Bearer masterkey123"}
@@ -117,16 +132,14 @@ class TestAuthHeader:
         assert hdr == {"Authorization": "Bearer backupkey456"}
 
     def test_empty_when_no_keys(self) -> None:
-        env_copy = {k: v for k, v in os.environ.items()
-                    if k not in _AUTH_ENV_VARS}
+        env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
         assert hdr == {}
 
     def test_whitespace_only_key_ignored(self) -> None:
-        env_copy = {k: v for k, v in os.environ.items()
-                    if k not in _AUTH_ENV_VARS}
+        env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
         env_copy.update({"CODEX_MASTER_KEY": "   ", "CODEX_BACKUP_KEY": ""})
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
@@ -134,7 +147,9 @@ class TestAuthHeader:
         assert hdr == {}
 
     def test_master_key_stripped(self) -> None:
-        with patch.dict(os.environ, {"CODEX_MASTER_KEY": "  trimmed  ", "CODEX_BACKUP_KEY": ""}, clear=False):
+        with patch.dict(
+            os.environ, {"CODEX_MASTER_KEY": "  trimmed  ", "CODEX_BACKUP_KEY": ""}, clear=False
+        ):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
         assert hdr == {"Authorization": "Bearer trimmed"}
@@ -143,6 +158,7 @@ class TestAuthHeader:
 # ---------------------------------------------------------------------------
 # is_available
 # ---------------------------------------------------------------------------
+
 
 class TestIsAvailable:
     def test_true_when_server_healthy(self) -> None:
@@ -170,9 +186,15 @@ class TestIsAvailable:
 # health()
 # ---------------------------------------------------------------------------
 
+
 class TestHealth:
     def test_returns_health_dict(self) -> None:
-        payload = {"status": "ok", "repo_root": "/repo", "timestamp": "2026-03-04T00:00:00", "history_db": "/db"}
+        payload = {
+            "status": "ok",
+            "repo_root": "/repo",
+            "timestamp": "2026-03-04T00:00:00",
+            "history_db": "/db",
+        }
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.health()
@@ -196,12 +218,17 @@ class TestHealth:
 # run_command()
 # ---------------------------------------------------------------------------
 
+
 class TestRunCommand:
     def _run_response(self, cmd: str, stdout: str = "", rc: int = 0) -> dict:
         return {
-            "command": cmd, "stdout": stdout, "stderr": "",
-            "returncode": rc, "duration_ms": 5.0,
-            "cwd": "/repo", "timestamp": "2026-03-04T00:00:00",
+            "command": cmd,
+            "stdout": stdout,
+            "stderr": "",
+            "returncode": rc,
+            "duration_ms": 5.0,
+            "cwd": "/repo",
+            "timestamp": "2026-03-04T00:00:00",
         }
 
     def test_basic_command(self) -> None:
@@ -239,11 +266,15 @@ class TestRunCommand:
 # proxy_request()
 # ---------------------------------------------------------------------------
 
+
 class TestProxyRequest:
     def _proxy_response(self, status: int = 200, body: Any = None) -> dict:
         return {
-            "status_code": status, "headers": {}, "body": body or {},
-            "duration_ms": 100.0, "url": "https://api.github.com/repos/x",
+            "status_code": status,
+            "headers": {},
+            "body": body or {},
+            "duration_ms": 100.0,
+            "url": "https://api.github.com/repos/x",
             "method": "GET",
         }
 
@@ -295,12 +326,17 @@ class TestProxyRequest:
 # memory_state() — auth required
 # ---------------------------------------------------------------------------
 
+
 class TestMemoryState:
     def test_returns_memory_dict(self) -> None:
         payload = {
-            "stm_count": 5, "ltm_count": 2, "capacity": 1000,
-            "cache_hit_rate": 0.4, "compression_rate": 0.28,
-            "patterns": [], "timestamp": "2026-03-04T00:00:00",
+            "stm_count": 5,
+            "ltm_count": 2,
+            "capacity": 1000,
+            "cache_hit_rate": 0.4,
+            "compression_rate": 0.28,
+            "patterns": [],
+            "timestamp": "2026-03-04T00:00:00",
         }
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
@@ -324,6 +360,7 @@ class TestMemoryState:
 # ---------------------------------------------------------------------------
 # memory_search()
 # ---------------------------------------------------------------------------
+
 
 class TestMemorySearch:
     def test_url_encodes_query(self) -> None:
@@ -354,12 +391,17 @@ class TestMemorySearch:
 # Convenience helpers
 # ---------------------------------------------------------------------------
 
+
 class TestConvenienceHelpers:
     def test_git_status_returns_string(self) -> None:
         payload = {
-            "command": "git status --short", "stdout": "M src/foo.py\n",
-            "stderr": "", "returncode": 0, "duration_ms": 5.0,
-            "cwd": "/repo", "timestamp": "2026-03-04T00:00:00",
+            "command": "git status --short",
+            "stdout": "M src/foo.py\n",
+            "stderr": "",
+            "returncode": 0,
+            "duration_ms": 5.0,
+            "cwd": "/repo",
+            "timestamp": "2026-03-04T00:00:00",
         }
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
@@ -370,8 +412,11 @@ class TestConvenienceHelpers:
         payload = {
             "command": "git --no-pager log --oneline -5",
             "stdout": "abc1234 First commit\ndef5678 Second commit\n",
-            "stderr": "", "returncode": 0, "duration_ms": 6.0,
-            "cwd": "/repo", "timestamp": "2026-03-04T00:00:00",
+            "stderr": "",
+            "returncode": 0,
+            "duration_ms": 6.0,
+            "cwd": "/repo",
+            "timestamp": "2026-03-04T00:00:00",
         }
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
@@ -382,9 +427,11 @@ class TestConvenienceHelpers:
 
     def test_github_repo_info_extracts_body(self) -> None:
         proxy_payload = {
-            "status_code": 200, "headers": {},
+            "status_code": 200,
+            "headers": {},
             "body": {"name": "_codex_", "default_branch": "main"},
-            "duration_ms": 200.0, "url": "https://api.github.com/repos/x/_codex_",
+            "duration_ms": 200.0,
+            "url": "https://api.github.com/repos/x/_codex_",
             "method": "GET",
         }
         b = BrainClient(base_url="http://x")
@@ -395,9 +442,11 @@ class TestConvenienceHelpers:
 
     def test_github_workflow_runs_extracts_list(self) -> None:
         proxy_payload = {
-            "status_code": 200, "headers": {},
+            "status_code": 200,
+            "headers": {},
             "body": {"workflow_runs": [{"id": 1, "name": "CI", "conclusion": "success"}]},
-            "duration_ms": 200.0, "url": "https://api.github.com/repos/x/_codex_/actions/runs",
+            "duration_ms": 200.0,
+            "url": "https://api.github.com/repos/x/_codex_/actions/runs",
             "method": "GET",
         }
         b = BrainClient(base_url="http://x")
@@ -408,9 +457,12 @@ class TestConvenienceHelpers:
 
     def test_github_workflow_runs_empty_on_bad_body(self) -> None:
         proxy_payload = {
-            "status_code": 200, "headers": {},
+            "status_code": 200,
+            "headers": {},
             "body": "not a dict",
-            "duration_ms": 10.0, "url": "https://x", "method": "GET",
+            "duration_ms": 10.0,
+            "url": "https://x",
+            "method": "GET",
         }
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(proxy_payload)):
@@ -421,6 +473,7 @@ class TestConvenienceHelpers:
 # ---------------------------------------------------------------------------
 # URL validation in __init__
 # ---------------------------------------------------------------------------
+
 
 class TestBaseUrlValidation:
     def test_bare_host_port_normalised_to_http(self) -> None:
@@ -444,6 +497,7 @@ class TestBaseUrlValidation:
 # Auth header actually sent on requests (regression guard)
 # ---------------------------------------------------------------------------
 
+
 class TestAuthHeaderSentOnRequests:
     """Verify that Authorization is included in the outgoing Request when a
     key is configured.  These tests catch the regression where _auth_header()
@@ -461,9 +515,13 @@ class TestAuthHeaderSentOnRequests:
 
     def test_memory_state_sends_auth_header(self) -> None:
         payload = {
-            "stm_count": 1, "ltm_count": 0, "capacity": 100,
-            "cache_hit_rate": 0.0, "compression_rate": 0.0,
-            "patterns": [], "timestamp": "2026-03-04T00:00:00",
+            "stm_count": 1,
+            "ltm_count": 0,
+            "capacity": 100,
+            "cache_hit_rate": 0.0,
+            "compression_rate": 0.0,
+            "patterns": [],
+            "timestamp": "2026-03-04T00:00:00",
         }
         captured, fake = self._capture_headers(payload)
         with patch.dict(os.environ, {"CODEX_MASTER_KEY": "secretkey"}, clear=False):
@@ -498,9 +556,13 @@ class TestAuthHeaderSentOnRequests:
 
     def test_backup_key_sent_when_master_absent(self) -> None:
         payload = {
-            "stm_count": 0, "ltm_count": 0, "capacity": 100,
-            "cache_hit_rate": 0.0, "compression_rate": 0.0,
-            "patterns": [], "timestamp": "2026-03-04T00:00:00",
+            "stm_count": 0,
+            "ltm_count": 0,
+            "capacity": 100,
+            "cache_hit_rate": 0.0,
+            "compression_rate": 0.0,
+            "patterns": [],
+            "timestamp": "2026-03-04T00:00:00",
         }
         captured, fake = self._capture_headers(payload)
         env_copy = {k: v for k, v in os.environ.items() if k != "CODEX_MASTER_KEY"}

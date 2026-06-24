@@ -32,6 +32,7 @@ class TestParseWhen:
     def parse_when(self):
         """Import parse_when function."""
         from codex.logging.query_logs import parse_when
+
         return parse_when
 
     def test_parse_zulu_timestamp(self, parse_when):
@@ -96,6 +97,7 @@ class TestBuildQuery:
     def build_query(self):
         """Import build_query function."""
         from codex.logging.query_logs import build_query
+
         return build_query
 
     @pytest.fixture
@@ -306,11 +308,13 @@ class TestFormatText:
     def format_text(self):
         """Import format_text function."""
         from codex.logging.query_logs import format_text
+
         return format_text
 
     @pytest.fixture
     def mock_rows(self):
         """Create mock rows for testing."""
+
         # Create mock Row objects with dict-like access
         class MockRow:
             def __init__(self, data):
@@ -323,8 +327,24 @@ class TestFormatText:
                 return self._data.keys()
 
         return [
-            MockRow({"ts": "2025-01-01T10:00:00", "role": "user", "message": "Hello", "session_id": "S1", "metadata": None}),
-            MockRow({"ts": "2025-01-01T10:01:00", "role": "assistant", "message": "Hi there", "session_id": "S1", "metadata": '{"key": "value"}'}),
+            MockRow(
+                {
+                    "ts": "2025-01-01T10:00:00",
+                    "role": "user",
+                    "message": "Hello",
+                    "session_id": "S1",
+                    "metadata": None,
+                }
+            ),
+            MockRow(
+                {
+                    "ts": "2025-01-01T10:01:00",
+                    "role": "assistant",
+                    "message": "Hi there",
+                    "session_id": "S1",
+                    "metadata": '{"key": "value"}',
+                }
+            ),
         ]
 
     @pytest.fixture
@@ -374,6 +394,7 @@ class TestLogQueryEngine:
     def engine(self):
         """Create LogQueryEngine instance."""
         from codex.logging.query_logs import LogQueryEngine
+
         return LogQueryEngine()
 
     def test_engine_instantiation(self, engine):
@@ -426,6 +447,7 @@ class TestResolvDbPath:
     def resolve_db_path(self):
         """Import _resolve_db_path function."""
         from codex.logging.query_logs import _resolve_db_path
+
         return _resolve_db_path
 
     def test_resolve_existing_path(self, resolve_db_path, tmp_path):

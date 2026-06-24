@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-pytest.importorskip('numpy')
+pytest.importorskip("numpy")
 
 from cognitive_brain.experiments.complex_scenarios import generate_complex_scenarios
 from cognitive_brain.integrations.memory_integration import (
@@ -152,8 +152,8 @@ class TestEndToEndWorkflows:
 
         # Verify compression produces valid result
         # Note: compressed size may include metadata so not necessarily smaller in bytes
-        assert hasattr(compressed, 'compressed_features')
-        assert hasattr(compressed, 'pattern_id')
+        assert hasattr(compressed, "compressed_features")
+        assert hasattr(compressed, "pattern_id")
         assert compressed.pattern_id == "test_pattern"
 
         # Decompress
@@ -189,7 +189,7 @@ class TestEndToEndWorkflows:
         prune_result = manager.auto_prune()
 
         # Verify prune_result is valid and has expected attributes
-        assert hasattr(prune_result, 'total_pruned')
+        assert hasattr(prune_result, "total_pruned")
         assert isinstance(prune_result.total_pruned, int)
         # LTM should be within capacity
         assert len(manager.ltm) <= 20

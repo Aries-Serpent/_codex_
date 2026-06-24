@@ -17,6 +17,7 @@ import pytest
 
 class WorkflowState(Enum):
     """Training workflow states."""
+
     PENDING = auto()
     PREPARING = auto()
     TRAINING = auto()
@@ -28,6 +29,7 @@ class WorkflowState(Enum):
 @dataclass
 class TrainingRun:
     """Training run configuration and state."""
+
     run_id: str
     config: dict[str, Any]
     state: WorkflowState = WorkflowState.PENDING
@@ -40,6 +42,7 @@ class TestDataPreparation:
 
     def test_dataset_splitting(self):
         """Dataset is split into train/val/test."""
+
         def split_dataset(data, train_ratio=0.8, val_ratio=0.1):
             n = len(data)
             train_end = int(n * train_ratio)
@@ -48,7 +51,7 @@ class TestDataPreparation:
             return {
                 "train": data[:train_end],
                 "val": data[train_end:val_end],
-                "test": data[val_end:]
+                "test": data[val_end:],
             }
 
         data = list(range(100))
@@ -79,10 +82,11 @@ class TestDataPreparation:
 
     def test_batch_creation(self):
         """Batches are created correctly."""
+
         def create_batches(data, batch_size):
             batches = []
             for i in range(0, len(data), batch_size):
-                batches.append(data[i:i+batch_size])
+                batches.append(data[i : i + batch_size])
             return batches
 
         data = list(range(100))
@@ -97,6 +101,7 @@ class TestTrainingLoop:
 
     def test_epoch_iteration(self):
         """Training iterates through epochs."""
+
         class MockTrainer:
             def __init__(self, epochs):
                 self.epochs = epochs
@@ -119,6 +124,7 @@ class TestTrainingLoop:
 
     def test_gradient_update(self):
         """Gradients update parameters correctly."""
+
         class MockOptimizer:
             def __init__(self, params, lr=0.01):
                 self.params = params
@@ -140,6 +146,7 @@ class TestTrainingLoop:
 
     def test_loss_aggregation(self):
         """Loss is aggregated correctly over batches."""
+
         class LossAggregator:
             def __init__(self):
                 self.total_loss = 0.0
@@ -166,6 +173,7 @@ class TestEvaluationPhase:
 
     def test_validation_metrics(self):
         """Validation computes correct metrics."""
+
         def compute_accuracy(predictions, labels):
             correct = sum(p == label for p, label in zip(predictions, labels))
             return correct / len(labels)
@@ -178,6 +186,7 @@ class TestEvaluationPhase:
 
     def test_f1_score_computation(self):
         """F1 score is computed correctly."""
+
         def compute_f1(predictions, labels, positive=1):
             tp = sum(p == positive and label == positive for p, label in zip(predictions, labels))
             fp = sum(p == positive and label != positive for p, label in zip(predictions, labels))
@@ -195,10 +204,11 @@ class TestEvaluationPhase:
 
         f1 = compute_f1(predictions, labels)
         # TP=2, FP=1, FN=1 -> precision=2/3, recall=2/3 -> F1=2/3
-        assert f1 == pytest.approx(2/3)
+        assert f1 == pytest.approx(2 / 3)
 
     def test_evaluation_no_grad(self):
         """Evaluation runs without gradient computation."""
+
         class MockModel:
             def __init__(self):
                 self.training = True
@@ -221,6 +231,7 @@ class TestCheckpointing:
 
     def test_checkpoint_saving(self):
         """Checkpoints are saved correctly."""
+
         class CheckpointManager:
             def __init__(self, save_dir):
                 self.save_dir = save_dir
@@ -231,7 +242,7 @@ class TestCheckpointing:
                     "epoch": epoch,
                     "model_state": model_state,
                     "optimizer_state": optimizer_state,
-                    "metrics": metrics
+                    "metrics": metrics,
                 }
                 path = f"{self.save_dir}/checkpoint_epoch_{epoch}.pt"
                 self.saved.append((path, checkpoint))
@@ -243,7 +254,7 @@ class TestCheckpointing:
             epoch=5,
             model_state={"weights": [1, 2, 3]},
             optimizer_state={"lr": 0.001},
-            metrics={"loss": 0.5, "accuracy": 0.9}
+            metrics={"loss": 0.5, "accuracy": 0.9},
         )
 
         assert "epoch_5" in path
@@ -251,6 +262,7 @@ class TestCheckpointing:
 
     def test_checkpoint_loading(self):
         """Checkpoints are loaded correctly."""
+
         class MockCheckpoint:
             @staticmethod
             def load(path):
@@ -259,7 +271,7 @@ class TestCheckpointing:
                     "epoch": 5,
                     "model_state": {"weights": [1, 2, 3]},
                     "optimizer_state": {"lr": 0.001},
-                    "metrics": {"loss": 0.5}
+                    "metrics": {"loss": 0.5},
                 }
 
         checkpoint = MockCheckpoint.load("/models/checkpoint.pt")
@@ -269,16 +281,19 @@ class TestCheckpointing:
 
     def test_best_checkpoint_tracking(self):
         """Best checkpoint is tracked by metric."""
+
         class BestCheckpointTracker:
             def __init__(self, metric_name, mode="min"):
                 self.metric_name = metric_name
                 self.mode = mode
-                self.best_value = float('inf') if mode == "min" else float('-inf')
+                self.best_value = float("inf") if mode == "min" else float("-inf")
                 self.best_checkpoint = None
 
             def update(self, checkpoint_path, metrics):
                 value = metrics.get(self.metric_name, 0)
-                is_best = (value < self.best_value) if self.mode == "min" else (value > self.best_value)
+                is_best = (
+                    (value < self.best_value) if self.mode == "min" else (value > self.best_value)
+                )
 
                 if is_best:
                     self.best_value = value
@@ -302,6 +317,7 @@ class TestWorkflowOrchestration:
 
     def test_workflow_state_machine(self):
         """Workflow follows state machine."""
+
         class TrainingWorkflow:
             def __init__(self, run_id):
                 self.run = TrainingRun(run_id=run_id, config={})
@@ -339,6 +355,7 @@ class TestWorkflowOrchestration:
 
     def test_workflow_error_recovery(self):
         """Workflow can recover from errors."""
+
         class RecoverableWorkflow:
             def __init__(self):
                 self.attempts = 0
@@ -355,6 +372,7 @@ class TestWorkflowOrchestration:
         workflow = RecoverableWorkflow()
 
         call_count = [0]
+
         def flaky_operation():
             call_count[0] += 1
             if call_count[0] < 3:
@@ -367,6 +385,7 @@ class TestWorkflowOrchestration:
 
     def test_distributed_training_coordination(self):
         """Distributed training coordinates across workers."""
+
         class DistributedCoordinator:
             def __init__(self, world_size):
                 self.world_size = world_size

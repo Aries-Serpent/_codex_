@@ -40,7 +40,7 @@ class TestRetryConfig:
             max_delay=10.0,
             multiplier=3.0,
             jitter=0.2,
-            seed=42
+            seed=42,
         )
 
         assert config.enabled is False

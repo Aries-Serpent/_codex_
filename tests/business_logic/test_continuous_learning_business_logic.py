@@ -23,9 +23,7 @@ class TestRetrainingJobBasics:
     def test_retraining_job_creation(self):
         """Test basic retraining job creation."""
         job = RetrainingJob(
-            job_id="job_20240101_001",
-            trigger=None,
-            config={"epochs": 5, "lr": 1e-4}
+            job_id="job_20240101_001", trigger=None, config={"epochs": 5, "lr": 1e-4}
         )
         assert job.job_id == "job_20240101_001"
         assert job.config["epochs"] == 5
@@ -33,10 +31,7 @@ class TestRetrainingJobBasics:
 
     def test_retraining_job_status_transitions(self):
         """Test retraining job status progression."""
-        job = RetrainingJob(
-            job_id="job_001",
-            trigger=None
-        )
+        job = RetrainingJob(job_id="job_001", trigger=None)
 
         assert job.status == "pending"
         job.status = "running"
@@ -51,13 +46,9 @@ class TestRetrainingJobBasics:
             "batch_size": 32,
             "learning_rate": 0.001,
             "optimizer": "adam",
-            "warmup_steps": 100
+            "warmup_steps": 100,
         }
-        job = RetrainingJob(
-            job_id="job_cfg",
-            trigger=None,
-            config=config
-        )
+        job = RetrainingJob(job_id="job_cfg", trigger=None, config=config)
 
         assert job.config == config
         assert job.config["batch_size"] == 32
@@ -65,10 +56,7 @@ class TestRetrainingJobBasics:
     def test_retraining_job_to_dict(self):
         """Test job serialization to dictionary."""
         job = RetrainingJob(
-            job_id="job_serial",
-            trigger=None,
-            config={"epochs": 5},
-            status="running"
+            job_id="job_serial", trigger=None, config={"epochs": 5}, status="running"
         )
         job_dict = job.to_dict()
 
@@ -78,19 +66,12 @@ class TestRetrainingJobBasics:
 
     def test_retraining_job_empty_config(self):
         """Test job with empty configuration."""
-        job = RetrainingJob(
-            job_id="job_empty",
-            trigger=None,
-            config={}
-        )
+        job = RetrainingJob(job_id="job_empty", trigger=None, config={})
         assert job.config == {}
 
     def test_retraining_job_status_failed(self):
         """Test job failure status."""
-        job = RetrainingJob(
-            job_id="job_fail",
-            trigger=None
-        )
+        job = RetrainingJob(job_id="job_fail", trigger=None)
         job.status = "failed"
         assert job.status == "failed"
 
@@ -109,7 +90,7 @@ class TestContinuousLearningPipelineBasics:
             drift_threshold=0.25,
             eval_gate_min_accuracy=0.85,
             eval_gate_max_loss=0.3,
-            eval_gate_min_improvement_pct=2.0
+            eval_gate_min_improvement_pct=2.0,
         )
         assert pipeline is not None
 
@@ -121,17 +102,12 @@ class TestContinuousLearningPipelineBasics:
 
     def test_pipeline_threshold_storage(self):
         """Test thresholds are stored correctly."""
-        thresholds = {
-            "drift": 0.3,
-            "min_accuracy": 0.80,
-            "max_loss": 0.5,
-            "min_improvement": 1.0
-        }
+        thresholds = {"drift": 0.3, "min_accuracy": 0.80, "max_loss": 0.5, "min_improvement": 1.0}
         pipeline = ContinuousLearningPipeline(
             drift_threshold=thresholds["drift"],
             eval_gate_min_accuracy=thresholds["min_accuracy"],
             eval_gate_max_loss=thresholds["max_loss"],
-            eval_gate_min_improvement_pct=thresholds["min_improvement"]
+            eval_gate_min_improvement_pct=thresholds["min_improvement"],
         )
         assert pipeline is not None
 
@@ -221,12 +197,7 @@ class TestRetrainingTrigger:
         """Test trigger_retrain preserves training configuration."""
         pipeline = ContinuousLearningPipeline()
 
-        config = {
-            "epochs": 10,
-            "batch_size": 32,
-            "learning_rate": 0.001,
-            "optimizer": "adam"
-        }
+        config = {"epochs": 10, "batch_size": 32, "learning_rate": 0.001, "optimizer": "adam"}
         job = pipeline.trigger_retrain(config)
 
         assert job.config == config
@@ -253,59 +224,37 @@ class TestEvaluationGate:
     def test_eval_gate_passes_good_model(self):
         """Test eval gate accepts model meeting all criteria."""
         pipeline = ContinuousLearningPipeline(
-            eval_gate_min_accuracy=0.80,
-            eval_gate_max_loss=0.5,
-            eval_gate_min_improvement_pct=1.0
+            eval_gate_min_accuracy=0.80, eval_gate_max_loss=0.5, eval_gate_min_improvement_pct=1.0
         )
 
-        metrics = {
-            "accuracy": 0.87,
-            "loss": 0.38,
-            "baseline_accuracy": 0.83
-        }
+        metrics = {"accuracy": 0.87, "loss": 0.38, "baseline_accuracy": 0.83}
 
         result = pipeline.eval_gate(metrics)
         assert isinstance(result, bool)
 
     def test_eval_gate_rejects_low_accuracy(self):
         """Test eval gate rejects model with low accuracy."""
-        pipeline = ContinuousLearningPipeline(
-            eval_gate_min_accuracy=0.85
-        )
+        pipeline = ContinuousLearningPipeline(eval_gate_min_accuracy=0.85)
 
-        metrics = {
-            "accuracy": 0.75,
-            "loss": 0.4
-        }
+        metrics = {"accuracy": 0.75, "loss": 0.4}
 
         result = pipeline.eval_gate(metrics)
         assert isinstance(result, bool)
 
     def test_eval_gate_rejects_high_loss(self):
         """Test eval gate rejects model with high loss."""
-        pipeline = ContinuousLearningPipeline(
-            eval_gate_max_loss=0.3
-        )
+        pipeline = ContinuousLearningPipeline(eval_gate_max_loss=0.3)
 
-        metrics = {
-            "accuracy": 0.90,
-            "loss": 0.6
-        }
+        metrics = {"accuracy": 0.90, "loss": 0.6}
 
         result = pipeline.eval_gate(metrics)
         assert isinstance(result, bool)
 
     def test_eval_gate_rejects_no_improvement(self):
         """Test eval gate rejects model with no improvement."""
-        pipeline = ContinuousLearningPipeline(
-            eval_gate_min_improvement_pct=2.0
-        )
+        pipeline = ContinuousLearningPipeline(eval_gate_min_improvement_pct=2.0)
 
-        metrics = {
-            "accuracy": 0.83,
-            "baseline_accuracy": 0.83,
-            "loss": 0.4
-        }
+        metrics = {"accuracy": 0.83, "baseline_accuracy": 0.83, "loss": 0.4}
 
         result = pipeline.eval_gate(metrics)
         assert isinstance(result, bool)
@@ -313,18 +262,12 @@ class TestEvaluationGate:
     def test_eval_gate_various_thresholds(self):
         """Test eval gate with various threshold combinations."""
         test_cases = [
-            {
-                "thresholds": {"min_accuracy": 0.80},
-                "metrics": {"accuracy": 0.85}
-            },
-            {
-                "thresholds": {"max_loss": 0.5},
-                "metrics": {"loss": 0.3}
-            },
+            {"thresholds": {"min_accuracy": 0.80}, "metrics": {"accuracy": 0.85}},
+            {"thresholds": {"max_loss": 0.5}, "metrics": {"loss": 0.3}},
             {
                 "thresholds": {"min_improvement": 1.0},
-                "metrics": {"accuracy": 0.85, "baseline_accuracy": 0.84}
-            }
+                "metrics": {"accuracy": 0.85, "baseline_accuracy": 0.84},
+            },
         ]
 
         for case in test_cases:
@@ -354,14 +297,10 @@ class TestModelPromotion:
         metadata = {
             "version": "1.0",
             "timestamp": datetime.now(UTC).isoformat(),
-            "metrics": {"accuracy": 0.87}
+            "metrics": {"accuracy": 0.87},
         }
 
-        pipeline.promote(
-            "/path/to/model.pt",
-            registry=registry,
-            **metadata
-        )
+        pipeline.promote("/path/to/model.pt", registry=registry, **metadata)
 
     def test_promote_preserves_model_path(self):
         """Test promotion preserves model path."""
@@ -377,11 +316,7 @@ class TestModelPromotion:
         pipeline = ContinuousLearningPipeline()
 
         registry = {}
-        models = [
-            "/models/model_v1.pt",
-            "/models/model_v2.pt",
-            "/models/model_v3.pt"
-        ]
+        models = ["/models/model_v1.pt", "/models/model_v2.pt", "/models/model_v3.pt"]
 
         for model_path in models:
             pipeline.promote(model_path, registry=registry)
@@ -393,9 +328,7 @@ class TestPipelineWorkflows:
     def test_complete_retraining_workflow(self):
         """Test complete workflow from drift detection to promotion."""
         pipeline = ContinuousLearningPipeline(
-            drift_threshold=0.2,
-            eval_gate_min_accuracy=0.80,
-            eval_gate_max_loss=0.5
+            drift_threshold=0.2, eval_gate_min_accuracy=0.80, eval_gate_max_loss=0.5
         )
 
         # Step 1: Detect drift
@@ -427,10 +360,7 @@ class TestPipelineWorkflows:
 
     def test_pipeline_retraining_fails_eval(self):
         """Test pipeline when retrained model fails evaluation."""
-        pipeline = ContinuousLearningPipeline(
-            drift_threshold=0.2,
-            eval_gate_min_accuracy=0.85
-        )
+        pipeline = ContinuousLearningPipeline(drift_threshold=0.2, eval_gate_min_accuracy=0.85)
 
         # Detect drift
         drift_info = {"score": 0.35, "method": "psi"}
@@ -469,8 +399,8 @@ class TestErrorHandling:
 
         test_cases = [
             {"score": -0.1},  # Negative score
-            {"score": 1.5},   # Score > 1
-            {"score": float('inf')},  # Infinity
+            {"score": 1.5},  # Score > 1
+            {"score": float("inf")},  # Infinity
         ]
 
         for drift_info in test_cases:
@@ -491,12 +421,7 @@ class TestErrorHandling:
         """Test pipeline handles invalid training config."""
         pipeline = ContinuousLearningPipeline()
 
-        invalid_configs = [
-            None,
-            {},
-            {"epochs": -1},
-            {"lr": "invalid"}
-        ]
+        invalid_configs = [None, {}, {"epochs": -1}, {"lr": "invalid"}]
 
         for config in invalid_configs:
             try:
@@ -511,11 +436,7 @@ class TestErrorHandling:
         """Test promotion handles invalid model paths."""
         pipeline = ContinuousLearningPipeline()
 
-        invalid_paths = [
-            "",
-            None,
-            "/nonexistent/path/model.pt"
-        ]
+        invalid_paths = ["", None, "/nonexistent/path/model.pt"]
 
         for path in invalid_paths:
             if path:
@@ -531,20 +452,14 @@ class TestMetricsTracking:
 
     def test_accuracy_metrics_storage(self):
         """Test storing accuracy metrics."""
-        metrics = {
-            "accuracy": 0.87,
-            "baseline_accuracy": 0.83
-        }
+        metrics = {"accuracy": 0.87, "baseline_accuracy": 0.83}
 
         improvement = metrics["accuracy"] - metrics["baseline_accuracy"]
         assert improvement == 0.04
 
     def test_loss_metrics_storage(self):
         """Test storing loss metrics."""
-        metrics = {
-            "loss": 0.35,
-            "baseline_loss": 0.45
-        }
+        metrics = {"loss": 0.35, "baseline_loss": 0.45}
 
         improvement = metrics["baseline_loss"] - metrics["loss"]
         assert improvement == 0.1
@@ -557,7 +472,7 @@ class TestMetricsTracking:
             "recall": 0.85,
             "f1": 0.87,
             "loss": 0.35,
-            "val_loss": 0.38
+            "val_loss": 0.38,
         }
 
         assert len(metrics) == 6

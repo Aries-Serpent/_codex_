@@ -61,9 +61,7 @@ class TestSwarmParticle:
 
     def test_particle_negative_coordinates(self):
         """Test particle with negative coordinates."""
-        particle = SwarmParticle(
-            position=(-10.0, -20.0, -5.0), velocity=(-0.5, 0.3, -0.1)
-        )
+        particle = SwarmParticle(position=(-10.0, -20.0, -5.0), velocity=(-0.5, 0.3, -0.1))
 
         assert particle.position[0] < 0
         assert particle.position[1] < 0

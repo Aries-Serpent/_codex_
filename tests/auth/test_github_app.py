@@ -34,6 +34,7 @@ from codex.auth.github_app import (
 # RSA key fixture — 2048-bit key generated once for the whole test session
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(scope="session")
 def rsa_private_key_pem() -> str:
     """Generate a throwaway RSA-2048 private key (PEM) for tests."""
@@ -66,6 +67,7 @@ def github_app(app_config) -> GitHubApp:
 # GitHubAppConfig
 # ---------------------------------------------------------------------------
 
+
 class TestGitHubAppConfig:
 
     def test_valid_config(self, rsa_private_key_pem):
@@ -92,6 +94,7 @@ class TestGitHubAppConfig:
 # ---------------------------------------------------------------------------
 # JWT generation
 # ---------------------------------------------------------------------------
+
 
 class TestGenerateJWT:
 
@@ -133,24 +136,30 @@ class TestGenerateJWT:
         jwt = github_app.generate_jwt()
         sig = jwt.split(".")[2]
         # Should only contain base64url characters
-        assert all(c in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" for c in sig)
+        assert all(
+            c in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" for c in sig
+        )
 
 
 # ---------------------------------------------------------------------------
 # Installation token (mocked HTTP)
 # ---------------------------------------------------------------------------
 
+
 class TestInstallationToken:
 
     def _make_mock_response(self, token: str, expires_delta: int = 3600) -> mock.MagicMock:
         from datetime import datetime, timedelta, timezone
+
         expires = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
-        body = json.dumps({
-            "token": token,
-            "expires_at": expires.isoformat().replace("+00:00", "Z"),
-            "permissions": {"contents": "read"},
-            "repository_selection": "all",
-        }).encode("utf-8")
+        body = json.dumps(
+            {
+                "token": token,
+                "expires_at": expires.isoformat().replace("+00:00", "Z"),
+                "permissions": {"contents": "read"},
+                "repository_selection": "all",
+            }
+        ).encode("utf-8")
         resp = mock.MagicMock()
         resp.read.return_value = body
         resp.__enter__ = lambda s: s
@@ -190,16 +199,23 @@ class TestInstallationToken:
 
     def test_http_error_raises_auth_error(self, github_app):
         import urllib.error
-        with mock.patch("urllib.request.urlopen",
-                        side_effect=urllib.error.HTTPError(
-                            url="", code=401, msg="Unauthorized", hdrs=None, fp=None
-                        )), pytest.raises(AuthenticationError, match="HTTP 401"):
+
+        with (
+            mock.patch(
+                "urllib.request.urlopen",
+                side_effect=urllib.error.HTTPError(
+                    url="", code=401, msg="Unauthorized", hdrs=None, fp=None
+                ),
+            ),
+            pytest.raises(AuthenticationError, match="HTTP 401"),
+        ):
             github_app.get_installation_token(installation_id=1)
 
 
 # ---------------------------------------------------------------------------
 # InstallationToken.is_expired
 # ---------------------------------------------------------------------------
+
 
 class TestInstallationTokenExpiry:
 
@@ -232,6 +248,7 @@ class TestInstallationTokenExpiry:
 # WebhookVerifier
 # ---------------------------------------------------------------------------
 
+
 class TestWebhookVerifier:
 
     def test_compute_signature_format(self):
@@ -243,9 +260,7 @@ class TestWebhookVerifier:
         secret = "webhook-secret-123"
         payload = b'{"action": "opened"}'
         # Compute expected signature
-        expected_digest = hmac.new(
-            secret.encode(), payload, hashlib.sha256
-        ).hexdigest()
+        expected_digest = hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
         header = f"sha256={expected_digest}"
 
         v = WebhookVerifier(secret)
@@ -284,6 +299,7 @@ class TestWebhookVerifier:
 # build_app_manifest
 # ---------------------------------------------------------------------------
 
+
 class TestBuildAppManifest:
 
     def test_returns_dict(self):
@@ -315,34 +331,37 @@ class TestBuildAppManifest:
         assert "contents" in m["default_permissions"]
 
     def test_description_truncated_to_255(self):
-        m = build_app_manifest("x", "https://x.com", "https://x.com/wh",
-                                description="A" * 300)
+        m = build_app_manifest("x", "https://x.com", "https://x.com/wh", description="A" * 300)
         assert len(m["description"]) == 255
 
     def test_custom_events(self):
-        m = build_app_manifest("x", "https://x.com", "https://x.com/wh",
-                                default_events=["push"])
+        m = build_app_manifest("x", "https://x.com", "https://x.com/wh", default_events=["push"])
         assert m["default_events"] == ["push"]
 
     def test_custom_permissions(self):
-        m = build_app_manifest("x", "https://x.com", "https://x.com/wh",
-                                default_permissions={"issues": "write"})
+        m = build_app_manifest(
+            "x", "https://x.com", "https://x.com/wh", default_permissions={"issues": "write"}
+        )
         assert m["default_permissions"] == {"issues": "write"}
 
     def test_public_flag(self):
-        m = build_app_manifest("x", "https://x.com", "https://x.com/wh",
-                                public=True)
+        m = build_app_manifest("x", "https://x.com", "https://x.com/wh", public=True)
         assert m["public"] is True
 
     def test_callback_urls(self):
-        m = build_app_manifest("x", "https://x.com", "https://x.com/wh",
-                                callback_urls=["https://x.com/cb1", "https://x.com/cb2"])
+        m = build_app_manifest(
+            "x",
+            "https://x.com",
+            "https://x.com/wh",
+            callback_urls=["https://x.com/cb1", "https://x.com/cb2"],
+        )
         assert "https://x.com/cb1" in m["callback_urls"]
         assert m["redirect_url"] == "https://x.com/cb1"
 
     def test_setup_url_included_when_provided(self):
-        m = build_app_manifest("x", "https://x.com", "https://x.com/wh",
-                                setup_url="https://x.com/setup")
+        m = build_app_manifest(
+            "x", "https://x.com", "https://x.com/wh", setup_url="https://x.com/setup"
+        )
         assert m["setup_url"] == "https://x.com/setup"
 
     def test_no_setup_url_by_default(self):
@@ -350,8 +369,7 @@ class TestBuildAppManifest:
         assert "setup_url" not in m
 
     def test_serialisable_to_json(self):
-        m = build_app_manifest("codex-bot", "https://example.com",
-                                "https://example.com/webhook")
+        m = build_app_manifest("codex-bot", "https://example.com", "https://example.com/webhook")
         # Should not raise
         encoded = json.dumps(m)
         assert "codex-bot" in encoded
@@ -360,6 +378,7 @@ class TestBuildAppManifest:
 # ---------------------------------------------------------------------------
 # Private utilities
 # ---------------------------------------------------------------------------
+
 
 class TestUtilities:
 
@@ -374,6 +393,7 @@ class TestUtilities:
     def test_parse_iso8601_utc_z(self):
         ts = _parse_iso8601("2024-01-15T12:00:00Z")
         from datetime import datetime, timezone
+
         expected = datetime(2024, 1, 15, 12, 0, 0, tzinfo=timezone.utc).timestamp()
         assert abs(ts - expected) < 2
 
@@ -437,9 +457,7 @@ class TestResolveGitHubToken:
             return good_resp
 
         with mock.patch("urllib.request.urlopen", side_effect=side_effect):
-            result = github_app.pat_api_get(
-                "https://api.github.com/repos/Aries-Serpent/_codex_"
-            )
+            result = github_app.pat_api_get("https://api.github.com/repos/Aries-Serpent/_codex_")
 
         assert result["name"] == "test-repo"
         assert call_count == 2  # tried master (401), then backup (200)
@@ -448,17 +466,12 @@ class TestResolveGitHubToken:
         """pat_api_get raises AuthenticationError when all tokens are exhausted."""
         import urllib.error
 
-        for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY",
-                    "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"):
+        for var in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"):
             monkeypatch.setenv(var, "bad-token")
 
         def side_effect(req, timeout=30):
-            raise urllib.error.HTTPError(
-                url="", code=403, msg="Forbidden", hdrs=None, fp=None
-            )
+            raise urllib.error.HTTPError(url="", code=403, msg="Forbidden", hdrs=None, fp=None)
 
         with mock.patch("urllib.request.urlopen", side_effect=side_effect):
             with pytest.raises(AuthenticationError, match="exhausted"):
-                github_app.pat_api_get(
-                    "https://api.github.com/repos/Aries-Serpent/_codex_"
-                )
+                github_app.pat_api_get("https://api.github.com/repos/Aries-Serpent/_codex_")

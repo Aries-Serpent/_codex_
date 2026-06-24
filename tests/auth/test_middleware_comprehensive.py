@@ -23,6 +23,7 @@ from codex.auth.token_manager import TokenManager, TokenType
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def token_manager():
     """Create token manager."""
@@ -49,20 +50,17 @@ def valid_token(token_manager):
 # Token Extraction Tests
 # ============================================================================
 
+
 class TestTokenExtraction:
     """Token extraction from requests."""
 
     def test_extract_bearer_token(self, middleware):
-        headers = {
-            "Authorization": "******"
-        }
+        headers = {"Authorization": "******"}
         token = middleware.extract_token(headers)
         assert token == "token123"
 
     def test_extract_bearer_token_case_insensitive(self, middleware):
-        headers = {
-            "Authorization": "bearer token456"
-        }
+        headers = {"Authorization": "bearer token456"}
         token = middleware.extract_token(headers)
         assert token == "token456"
 
@@ -72,45 +70,33 @@ class TestTokenExtraction:
         assert token is None
 
     def test_extract_missing_authorization_header(self, middleware):
-        headers = {
-            "Content-Type": "application/json"
-        }
+        headers = {"Content-Type": "application/json"}
         token = middleware.extract_token(headers)
         assert token is None
 
     def test_extract_malformed_authorization_header(self, middleware):
-        headers = {
-            "Authorization": "NotBearer token123"
-        }
+        headers = {"Authorization": "NotBearer token123"}
         token = middleware.extract_token(headers)
         assert token is None
 
     def test_extract_empty_authorization_header(self, middleware):
-        headers = {
-            "Authorization": ""
-        }
+        headers = {"Authorization": ""}
         token = middleware.extract_token(headers)
         assert token is None
 
     def test_extract_authorization_only_scheme(self, middleware):
-        headers = {
-            "Authorization": "Bearer"
-        }
+        headers = {"Authorization": "Bearer"}
         token = middleware.extract_token(headers)
         assert token is None or token == ""
 
     def test_extract_authorization_extra_spaces(self, middleware):
-        headers = {
-            "Authorization": "******  "
-        }
+        headers = {"Authorization": "******  "}
         # Should handle gracefully
         token = middleware.extract_token(headers)
         assert token
 
     def test_extract_token_with_special_chars(self, middleware):
-        headers = {
-            "Authorization": "******"
-        }
+        headers = {"Authorization": "******"}
         token = middleware.extract_token(headers)
         assert "token" in token
 
@@ -118,6 +104,7 @@ class TestTokenExtraction:
 # ============================================================================
 # ****** Validation Tests
 # ============================================================================
+
 
 class TestBearerTokenValidation:
     """****** format and validation."""
@@ -141,6 +128,7 @@ class TestBearerTokenValidation:
 # Request Authentication Tests
 # ============================================================================
 
+
 class TestRequestAuthentication:
     """Request-level authentication."""
 
@@ -149,9 +137,7 @@ class TestRequestAuthentication:
             subject="user123",
             token_type=TokenType.ACCESS,
         )
-        headers = {
-            "Authorization": "******"
-        }
+        headers = {"Authorization": "******"}
 
         result = middleware.authenticate_request(headers)
         assert result.user_id == "user123"
@@ -163,20 +149,16 @@ class TestRequestAuthentication:
             middleware.authenticate_request(headers)
 
     def test_authenticate_request_invalid_token(self, middleware):
-        headers = {
-            "Authorization": "******"
-        }
+        headers = {"Authorization": "******"}
 
         with pytest.raises((InvalidCredentialsError, ValueError)):
             middleware.authenticate_request(headers)
 
     def test_authenticate_request_expired_token(self, middleware, token_manager):
-        with patch.object(token_manager, 'validate_token') as mock_validate:
+        with patch.object(token_manager, "validate_token") as mock_validate:
             mock_validate.side_effect = Exception("Token expired")
 
-            headers = {
-                "Authorization": "******"
-            }
+            headers = {"Authorization": "******"}
 
             with pytest.raises(Exception):
                 middleware.authenticate_request(headers)
@@ -193,6 +175,7 @@ class TestRequestAuthentication:
 # ============================================================================
 # Error Response Tests
 # ============================================================================
+
 
 class TestErrorResponses:
     """Error response handling."""
@@ -221,14 +204,13 @@ class TestErrorResponses:
 # Scope/Permission Tests
 # ============================================================================
 
+
 class TestScopeAndPermissions:
     """Token scope and permission validation."""
 
     def test_verify_scope_valid(self, middleware, token_manager):
         token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS,
-            scope="user:read user:write"
+            subject="user123", token_type=TokenType.ACCESS, scope="user:read user:write"
         )
 
         is_valid = middleware.verify_scope(token, "user:read")
@@ -236,9 +218,7 @@ class TestScopeAndPermissions:
 
     def test_verify_scope_insufficient(self, middleware, token_manager):
         token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS,
-            scope="user:read"
+            subject="user123", token_type=TokenType.ACCESS, scope="user:read"
         )
 
         is_valid = middleware.verify_scope(token, "user:write")
@@ -246,9 +226,7 @@ class TestScopeAndPermissions:
 
     def test_verify_scope_multiple_required(self, middleware, token_manager):
         token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS,
-            scope="user:read user:write admin:read"
+            subject="user123", token_type=TokenType.ACCESS, scope="user:read user:write admin:read"
         )
 
         # Has both required scopes
@@ -258,9 +236,7 @@ class TestScopeAndPermissions:
 
     def test_verify_scope_missing(self, middleware, token_manager):
         token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS,
-            scope="user:read"
+            subject="user123", token_type=TokenType.ACCESS, scope="user:read"
         )
 
         is_valid = middleware.verify_scope(token, "admin:write")
@@ -270,6 +246,7 @@ class TestScopeAndPermissions:
 # ============================================================================
 # Rate Limiting Tests
 # ============================================================================
+
 
 class TestRateLimiting:
     """Rate limiting functionality."""
@@ -287,7 +264,7 @@ class TestRateLimiting:
         ip_address = "192.168.1.2"
 
         # Simulate multiple requests
-        with patch.object(middleware, 'get_request_count', return_value=1000):
+        with patch.object(middleware, "get_request_count", return_value=1000):
             is_limited = middleware.is_rate_limited(user_id, ip_address)
             # Depends on rate limit threshold
 
@@ -318,6 +295,7 @@ class TestRateLimiting:
 # Token Type Validation Tests
 # ============================================================================
 
+
 class TestTokenTypeValidation:
     """Token type specific validation."""
 
@@ -329,8 +307,7 @@ class TestTokenTypeValidation:
 
         # Should accept ACCESS tokens
         result = middleware.authenticate_request(
-            {"Authorization": "******"},
-            required_token_type=TokenType.ACCESS
+            {"Authorization": "******"}, required_token_type=TokenType.ACCESS
         )
         assert result
 
@@ -343,8 +320,7 @@ class TestTokenTypeValidation:
         # Should reject REFRESH token when ACCESS is required
         with pytest.raises((InvalidCredentialsError, ValueError)):
             middleware.authenticate_request(
-                {"Authorization": "******"},
-                required_token_type=TokenType.ACCESS
+                {"Authorization": "******"}, required_token_type=TokenType.ACCESS
             )
 
     def test_validate_session_token_type(self, middleware, token_manager):
@@ -355,8 +331,7 @@ class TestTokenTypeValidation:
 
         # Should accept SESSION tokens
         result = middleware.authenticate_request(
-            {"Authorization": "******"},
-            required_token_type=TokenType.SESSION
+            {"Authorization": "******"}, required_token_type=TokenType.SESSION
         )
         assert result
 
@@ -364,6 +339,7 @@ class TestTokenTypeValidation:
 # ============================================================================
 # CORS and Security Headers Tests
 # ============================================================================
+
 
 class TestSecurityHeaders:
     """Security header handling."""
@@ -409,6 +385,7 @@ class TestSecurityHeaders:
 # Header Case Sensitivity Tests
 # ============================================================================
 
+
 class TestHeaderHandling:
     """HTTP header handling and case sensitivity."""
 
@@ -426,9 +403,7 @@ class TestHeaderHandling:
         assert token1 is None or isinstance(token1, str)  # Valid return type (token or None)
 
     def test_custom_header_extraction(self, middleware):
-        headers = {
-            "X-Auth-Token": "custom_token_123"
-        }
+        headers = {"X-Auth-Token": "custom_token_123"}
 
         # Should be able to extract from custom header
         token = middleware.extract_token(headers, header_name="X-Auth-Token")
@@ -440,15 +415,14 @@ class TestHeaderHandling:
 # Integration Tests
 # ============================================================================
 
+
 class TestMiddlewareIntegration:
     """Middleware integration scenarios."""
 
     def test_full_authentication_flow(self, middleware, token_manager):
         # Create token
         token = token_manager.create_token(
-            subject="user123",
-            token_type=TokenType.ACCESS,
-            scope="user:read user:write"
+            subject="user123", token_type=TokenType.ACCESS, scope="user:read user:write"
         )
 
         # Extract from headers
@@ -480,6 +454,7 @@ class TestMiddlewareIntegration:
 # Edge Cases Tests
 # ============================================================================
 
+
 class TestEdgeCases:
     """Edge cases and boundary conditions."""
 
@@ -499,25 +474,19 @@ class TestEdgeCases:
 
     def test_multiple_authorization_headers(self, middleware):
         # Some implementations might have multiple values
-        headers = {
-            "Authorization": "****** ******"
-        }
+        headers = {"Authorization": "****** ******"}
 
         token = middleware.extract_token(headers)
         # Should extract first or raise error
 
     def test_bearer_with_extra_whitespace(self, middleware):
-        headers = {
-            "Authorization": "   ******   "
-        }
+        headers = {"Authorization": "   ******   "}
 
         token = middleware.extract_token(headers)
         # Should handle gracefully
 
     def test_unicode_in_authorization_header(self, middleware):
-        headers = {
-            "Authorization": "******"
-        }
+        headers = {"Authorization": "******"}
 
         token = middleware.extract_token(headers)
         assert token
@@ -526,6 +495,7 @@ class TestEdgeCases:
 # ============================================================================
 # MUTATION-KILLING TESTS FOR MIDDLEWARE
 # ============================================================================
+
 
 class TestMiddlewareReturnValueMutations:
     """Kill return value mutations."""
@@ -546,5 +516,3 @@ class TestMiddlewareReturnValueMutations:
 
         # MUST handle missing gracefully (None, empty string, or exception)
         assert result_missing is None or isinstance(result_missing, str)
-
-

@@ -17,6 +17,7 @@ class TestInferModuleImport:
         """Test that infer module can be imported."""
         try:
             from codex_ml.cli import infer
+
             assert infer is not None
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
@@ -31,7 +32,7 @@ class TestInferCLI:
             [sys.executable, "-m", "codex_ml.cli.infer", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -41,7 +42,7 @@ class TestInferCLI:
             [sys.executable, "-m", "codex_ml.cli.infer", "batch", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -51,7 +52,7 @@ class TestInferCLI:
             [sys.executable, "-m", "codex_ml.cli.infer", "single", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -62,10 +63,7 @@ class TestInferFunctionality:
     def test_infer_without_model(self):
         """Test that inference requires a model."""
         result = subprocess.run(
-            [sys.executable, "-m", "codex_ml.cli.infer"],
-            capture_output=True,
-            text=True,
-            timeout=30
+            [sys.executable, "-m", "codex_ml.cli.infer"], capture_output=True, text=True, timeout=30
         )
         # Should fail or show help without model
         assert result.returncode in (0, 1, 2)

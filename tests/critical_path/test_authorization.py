@@ -11,8 +11,6 @@ Comprehensive test suite for authorization critical paths including:
 All tests are deterministic and isolated.
 """
 
-
-
 from codex.auth.middleware import (
     APIKeyValidator,
     AuthConfig,
@@ -109,7 +107,7 @@ class TestRoleBasedAccessControl:
             key_hash=key_hash,
             user_id="admin1",
             scopes=["admin", "read", "write", "delete"],
-            name="Admin Key"
+            name="Admin Key",
         )
 
         # Validate key
@@ -126,10 +124,7 @@ class TestRoleBasedAccessControl:
         readonly_key = "readonly-key-12345"
         key_hash = api_validator.hash_api_key(readonly_key)
         api_validator.register_key(
-            key_hash=key_hash,
-            user_id="reader1",
-            scopes=["read"],
-            name="Read Only Key"
+            key_hash=key_hash, user_id="reader1", scopes=["read"], name="Read Only Key"
         )
 
         # Validate key
@@ -171,8 +166,7 @@ class TestRoleBasedAccessControl:
 
         # User with multiple roles
         token = manager.generate_access_token(
-            "user123",
-            scope="role:developer role:reviewer role:user"
+            "user123", scope="role:developer role:reviewer role:user"
         )
         claims = manager.validate_token(token)
 
@@ -351,10 +345,7 @@ class TestAPIEndpointAuthorization:
 
     def test_public_endpoint_no_auth_required(self):
         """Test public endpoints don't require authentication."""
-        config = AuthConfig(
-            enabled=True,
-            exempt_paths={"/health", "/public"}
-        )
+        config = AuthConfig(enabled=True, exempt_paths={"/health", "/public"})
 
         # Health endpoint is exempt
         assert "/health" in config.exempt_paths
@@ -362,10 +353,7 @@ class TestAPIEndpointAuthorization:
 
     def test_protected_endpoint_requires_auth(self):
         """Test protected endpoints require authentication."""
-        config = AuthConfig(
-            enabled=True,
-            exempt_paths={"/health"}
-        )
+        config = AuthConfig(enabled=True, exempt_paths={"/health"})
 
         # Protected endpoint not exempt
         assert "/api/users" not in config.exempt_paths
@@ -441,7 +429,7 @@ class TestAPIEndpointAuthorization:
             key_hash=key_hash,
             user_id="service-account",
             scopes=["api:read", "api:write"],
-            name="Service Key"
+            name="Service Key",
         )
 
         # Validate API key
@@ -457,10 +445,7 @@ class TestAPIEndpointAuthorization:
         api_key = "test-api-key-456"
         key_hash = api_validator.hash_api_key(api_key)
         api_validator.register_key(
-            key_hash=key_hash,
-            user_id="user123",
-            scopes=["read"],
-            name="Temp Key"
+            key_hash=key_hash, user_id="user123", scopes=["read"], name="Temp Key"
         )
 
         # Revoke
@@ -479,10 +464,7 @@ class TestAPIEndpointAuthorization:
         api_key = "test-api-key-789"
         key_hash = api_validator.hash_api_key(api_key)
         api_validator.register_key(
-            key_hash=key_hash,
-            user_id="user123",
-            scopes=["read"],
-            name="Track Key"
+            key_hash=key_hash, user_id="user123", scopes=["read"], name="Track Key"
         )
 
         # Use key

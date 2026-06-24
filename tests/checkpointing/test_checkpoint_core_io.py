@@ -36,7 +36,9 @@ def test_save_and_load_roundtrip(tmp_path) -> None:
     assert loaded_meta.rng == {}  # include_rng was False
 
 
-def test_deserialize_payload_prefers_weights_only_torch_load(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_deserialize_payload_prefers_weights_only_torch_load(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     payload = {"state": {"epoch": 1}, "meta": {"schema_version": checkpoint_core.SCHEMA_VERSION}}
     raw = checkpoint_core.trusted_pickle_dumps(payload)
     captured: dict[str, object] = {}

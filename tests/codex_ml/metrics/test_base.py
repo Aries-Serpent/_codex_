@@ -87,6 +87,7 @@ class TestBaseMetric:
 
     def test_kwargs_are_passed(self) -> None:
         """Update should accept arbitrary kwargs."""
+
         class KwargsMetric(BaseMetric):
             def __init__(self) -> None:
                 self.received_kwargs: dict = {}
@@ -124,6 +125,7 @@ class TestMetricInterface:
 
     def test_incomplete_subclass_raises(self) -> None:
         """Subclass missing required methods should raise TypeError."""
+
         class IncompleteMetric(BaseMetric):
             def update(self, preds: Any, labels: Any, **kwargs) -> None:
                 pass

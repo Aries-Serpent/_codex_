@@ -13,21 +13,18 @@ import tools.codex_yaml_gap_check as cygc
 def test_yaml_gap_check_reports_unmapped_gap(tmp_path: Path):
     registry_path = tmp_path / "codex_gap_registry.yaml"
     registry_path.write_text(
-        textwrap.dedent(
-            """
+        textwrap.dedent("""
             gaps:
               - id: tokenization.fast_backend
                 yaml_phase_step: "2.4"
               - id: training.grad_accumulation
-            """
-        ),
+            """),
         encoding="utf-8",
     )
 
     sequence_path = tmp_path / "codex_task_sequence.yaml"
     sequence_path.write_text(
-        textwrap.dedent(
-            """
+        textwrap.dedent("""
             codex_task_sequence:
               phases:
                 - id: 2
@@ -36,8 +33,7 @@ def test_yaml_gap_check_reports_unmapped_gap(tmp_path: Path):
                     - id: "2.4"
                       description: Dummy
                       actions: []
-            """
-        ),
+            """),
         encoding="utf-8",
     )
 

@@ -17,6 +17,7 @@ from codex_ml.utils.checkpointing import save_checkpoint
 @pytest.mark.ml
 def test_checkpoint_records_git_commit(tmp_path):
     """Test that checkpoint records git commit hash."""
+
     class Toy(torch.nn.Module):
         def __init__(self):
             super().__init__()
@@ -30,7 +31,9 @@ def test_checkpoint_records_git_commit(tmp_path):
 
     save_checkpoint(str(path), model, None, None, epoch=0)
     # Use map_location to avoid device issues and weights_only=False for custom classes
-    ckpt = torch.load(str(path), weights_only=False, map_location='cpu')  # nosec B614 - Test checkpoint with custom model class requires weights_only=False
+    ckpt = torch.load(
+        str(path), weights_only=False, map_location="cpu"
+    )  # nosec B614 - Test checkpoint with custom model class requires weights_only=False
     extra = ckpt["extra"]
     repo_root = Path(__file__).resolve().parent.parent
     commit = subprocess.check_output(

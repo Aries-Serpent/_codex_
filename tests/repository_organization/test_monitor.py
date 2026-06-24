@@ -4,6 +4,7 @@ Tests for repository organization monitoring script
 Tests candidate identification, category classification, JSON report generation,
 and action log integration.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -21,7 +22,10 @@ class TestMonitorOffloadCandidates:
         """Test file age calculation"""
         # Import after path setup
         import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        sys.path.insert(
+            0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+        )
 
         from monitor_offload_candidates import get_file_age_days
 
@@ -33,11 +37,14 @@ class TestMonitorOffloadCandidates:
     def test_get_file_size_mb(self):
         """Test file size calculation"""
         import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        sys.path.insert(
+            0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+        )
 
         from monitor_offload_candidates import get_file_size_mb
 
-        with tempfile.NamedTemporaryFile(mode='w') as tmp:
+        with tempfile.NamedTemporaryFile(mode="w") as tmp:
             tmp_path = Path(tmp.name)
             # Write 1MB of data
             tmp.write("x" * 1024 * 1024)
@@ -49,7 +56,10 @@ class TestMonitorOffloadCandidates:
     def test_matches_pattern(self):
         """Test pattern matching logic"""
         import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        sys.path.insert(
+            0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+        )
 
         from monitor_offload_candidates import matches_pattern
 
@@ -67,7 +77,10 @@ class TestMonitorOffloadCandidates:
     def test_categorize_file(self):
         """Test file categorization"""
         import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        sys.path.insert(
+            0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+        )
 
         from monitor_offload_candidates import categorize_file
 
@@ -94,7 +107,10 @@ class TestMonitorOffloadCandidates:
     def test_scan_repository_basic(self):
         """Test basic repository scanning"""
         import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        sys.path.insert(
+            0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+        )
 
         from monitor_offload_candidates import scan_repository
 
@@ -119,7 +135,10 @@ class TestMonitorOffloadCandidates:
     def test_json_report_generation(self):
         """Test JSON report structure"""
         import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        sys.path.insert(
+            0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+        )
 
         from monitor_offload_candidates import scan_repository
 
@@ -137,19 +156,25 @@ class TestMonitorOffloadCandidates:
             assert parsed["metadata"]["criteria"]["temp_files_age_days"] == 90
             assert parsed["metadata"]["criteria"]["large_file_size_mb"] == 1.0
 
-    @pytest.mark.parametrize("category,age,size,expected", [
-        ("temp", 100, 0.5, "offload_to_temp-outputs"),
-        ("reports", 200, 0.5, "offload_to_deprecated-reports"),
-        ("logs", 200, 0.5, "offload_to_historical-logs"),
-        ("coverage", 100, 0.5, "offload_to_historical-coverage"),
-        ("artifacts", 200, 0.5, "offload_to_historical-artifacts"),
-        (None, 10, 6.0, "compress_or_offload"),
-        ("unknown", 50, 0.3, "review_manually"),
-    ])
+    @pytest.mark.parametrize(
+        "category,age,size,expected",
+        [
+            ("temp", 100, 0.5, "offload_to_temp-outputs"),
+            ("reports", 200, 0.5, "offload_to_deprecated-reports"),
+            ("logs", 200, 0.5, "offload_to_historical-logs"),
+            ("coverage", 100, 0.5, "offload_to_historical-coverage"),
+            ("artifacts", 200, 0.5, "offload_to_historical-artifacts"),
+            (None, 10, 6.0, "compress_or_offload"),
+            ("unknown", 50, 0.3, "review_manually"),
+        ],
+    )
     def test_recommendation_generation(self, category, age, size, expected):
         """Test recommendation logic"""
         import sys
-        sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+        sys.path.insert(
+            0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+        )
 
         from monitor_offload_candidates import _get_recommendation
 
@@ -182,13 +207,14 @@ class TestMonitorOffloadCandidates:
             assert "uv.lock" not in candidate_paths
 
 
-@pytest.mark.skipif(
-    True, reason="Integration test - requires full repository setup"
-)
+@pytest.mark.skipif(True, reason="Integration test - requires full repository setup")
 def test_integration_scan_real_repo():
     """Integration test with real repository (skipped by default)"""
     import sys
-    sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization"))
+
+    sys.path.insert(
+        0, str(Path(__file__).parent.parent.parent / "scripts" / "repository_organization")
+    )
 
     from monitor_offload_candidates import scan_repository
 

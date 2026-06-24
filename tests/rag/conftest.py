@@ -37,6 +37,7 @@ import pytest
 
 try:
     import numpy as _np
+
     _HAS_NUMPY = True
 except ImportError:  # pragma: no cover
     _np = None

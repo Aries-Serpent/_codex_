@@ -61,13 +61,13 @@ class TestGetBranchHeadSha:
         assert len(calls) == 1
         path_lower = calls[0].lower()
         # Spaces in the branch name must be percent-encoded as %20.
-        assert "%20" in path_lower, (
-            f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
-        )
+        assert (
+            "%20" in path_lower
+        ), f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
         # Slashes in branch names must also be percent-encoded as %2f (%2F).
-        assert "%2f" in path_lower, (
-            f"Expected slash to be percent-encoded in branch path, got: {calls[0]!r}"
-        )
+        assert (
+            "%2f" in path_lower
+        ), f"Expected slash to be percent-encoded in branch path, got: {calls[0]!r}"
 
 
 class TestRescueCommentUpsert:
@@ -177,9 +177,9 @@ class TestSelfSuppressMainLogic:
         self._patch_env(monkeypatch, PR_NUMBER="4200")
         current_head = "1122334455661122334455661122334455661122"
         failure_sha = self._ENV_BASE["COMMIT_SHA"]
-        assert current_head != failure_sha, (
-            "Test setup error: current_head must differ from COMMIT_SHA for this test"
-        )
+        assert (
+            current_head != failure_sha
+        ), "Test setup error: current_head must differ from COMMIT_SHA for this test"
 
         with patch.object(prc, "_get_branch_head_sha", return_value=current_head):
             with patch.object(prc, "_gh") as mock_gh:
@@ -187,9 +187,9 @@ class TestSelfSuppressMainLogic:
 
         assert result is None
         out = capsys.readouterr().out
-        assert "suppressed" in out.lower() or "superseded" in out.lower(), (
-            f"Expected suppression message in stdout, got: {out!r}"
-        )
+        assert (
+            "suppressed" in out.lower() or "superseded" in out.lower()
+        ), f"Expected suppression message in stdout, got: {out!r}"
         # _gh must NOT have been called to post a comment
         post_calls = [c for c in mock_gh.call_args_list if c.args[0] == "POST"]
         assert not post_calls, "POST should not be called for superseded commit"
@@ -201,9 +201,9 @@ class TestSelfSuppressMainLogic:
         self._patch_env(monkeypatch)
         current_head = "1122334455661122334455661122334455661122"
         failure_sha = self._ENV_BASE["COMMIT_SHA"]
-        assert current_head != failure_sha, (
-            "Test setup error: current_head must differ from COMMIT_SHA for this test"
-        )
+        assert (
+            current_head != failure_sha
+        ), "Test setup error: current_head must differ from COMMIT_SHA for this test"
 
         def _gh_side_effect(method, path, token, body=None):
             if method == "GET":
@@ -216,9 +216,9 @@ class TestSelfSuppressMainLogic:
 
         assert result is None
         out = capsys.readouterr().out
-        assert "suppressed" in out.lower() or "superseded" in out.lower(), (
-            f"Expected suppression message in stdout, got: {out!r}"
-        )
+        assert (
+            "suppressed" in out.lower() or "superseded" in out.lower()
+        ), f"Expected suppression message in stdout, got: {out!r}"
         get_calls = [c for c in mock_gh.call_args_list if c.args[0] == "GET"]
         assert get_calls, "Expected GET call(s) for PR lookup in push mode"
         post_calls = [c for c in mock_gh.call_args_list if c.args[0] == "POST"]
@@ -236,13 +236,15 @@ class TestSelfSuppressMainLogic:
                 # via build_comment_context (from discussion_context_store), but
                 # that enrichment is not required for this behavior. Returning 201
                 # from _gh keeps the test deterministic and validates post-attempt flow.
-                with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})):
+                with patch.object(
+                    prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})
+                ):
                     prc.main()
 
         out = capsys.readouterr().out
-        assert "✅" in out or "Posted" in out, (
-            f"Expected success message for matching SHA, got: {out!r}"
-        )
+        assert (
+            "✅" in out or "Posted" in out
+        ), f"Expected success message for matching SHA, got: {out!r}"
 
     def test_posts_when_head_matches_with_enrichment_enabled(self, monkeypatch, capsys):
         """When discussion_context_store is available, main() calls build_comment_context
@@ -270,15 +272,17 @@ class TestSelfSuppressMainLogic:
         ):
             prc.main()
 
-        assert mock_ctx.called, (
-            "Expected build_comment_context to be called when discussion_context_store is available"
-        )
+        assert (
+            mock_ctx.called
+        ), "Expected build_comment_context to be called when discussion_context_store is available"
         post_calls = [c for c in mock_gh.call_args_list if c.args and c.args[0] == "POST"]
-        assert post_calls, "Expected POST to be attempted on matching SHA with enrichment path enabled"
+        assert (
+            post_calls
+        ), "Expected POST to be attempted on matching SHA with enrichment path enabled"
         out = capsys.readouterr().out
-        assert "✅" in out or "Posted" in out, (
-            f"Expected success message for matching SHA with enrichment, got: {out!r}"
-        )
+        assert (
+            "✅" in out or "Posted" in out
+        ), f"Expected success message for matching SHA with enrichment, got: {out!r}"
 
     def test_no_suppress_when_head_unavailable(self, monkeypatch, capsys):
         """When the branch HEAD SHA cannot be retrieved (API error), the guard
@@ -288,7 +292,9 @@ class TestSelfSuppressMainLogic:
 
         with patch.object(prc, "_get_branch_head_sha", return_value=None):
             with patch.object(prc, "_find_rescue_comment", return_value=(None, "")):
-                with patch.object(prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})):
+                with patch.object(
+                    prc, "_gh", return_value=(201, {"html_url": "https://example.com/c/1"})
+                ):
                     prc.main()
 
         out = capsys.readouterr().out
@@ -353,9 +359,7 @@ class TestDefensiveShaResolution:
                 prc.main()
 
         out = capsys.readouterr().out
-        assert "resolved" in out.lower(), (
-            f"Expected SHA resolution log message, got: {out!r}"
-        )
+        assert "resolved" in out.lower(), f"Expected SHA resolution log message, got: {out!r}"
 
     def test_resolves_branch_from_pr_api_when_branch_empty(self, monkeypatch, capsys):
         """When BRANCH is empty the script must fetch it from the PR API."""
@@ -373,9 +377,9 @@ class TestDefensiveShaResolution:
                 return 200, []
             if method == "POST":
                 posted_body = body.get("body", "") if body else ""
-                assert "0D_base_" in posted_body, (
-                    f"Expected resolved branch '0D_base_' in posted body: {posted_body[:200]!r}"
-                )
+                assert (
+                    "0D_base_" in posted_body
+                ), f"Expected resolved branch '0D_base_' in posted body: {posted_body[:200]!r}"
                 return 201, {"id": 2, "html_url": "https://example.com/c/2"}
             return 200, {}
 
@@ -384,9 +388,7 @@ class TestDefensiveShaResolution:
                 prc.main()
 
         out = capsys.readouterr().out
-        assert "resolved" in out.lower(), (
-            f"Expected branch resolution log message, got: {out!r}"
-        )
+        assert "resolved" in out.lower(), f"Expected branch resolution log message, got: {out!r}"
 
     def test_continues_with_warning_when_pr_api_lookup_fails(self, monkeypatch, capsys):
         """When the PR API lookup fails, the script warns and continues (best-effort)."""
@@ -406,9 +408,9 @@ class TestDefensiveShaResolution:
                 prc.main()
 
         out = capsys.readouterr().out
-        assert "⚠️" in out or "warning" in out.lower() or "404" in out, (
-            f"Expected warning about failed PR lookup, got: {out!r}"
-        )
+        assert (
+            "⚠️" in out or "warning" in out.lower() or "404" in out
+        ), f"Expected warning about failed PR lookup, got: {out!r}"
 
     def test_skips_lookup_when_both_sha_and_branch_provided(self, monkeypatch):
         """When COMMIT_SHA and BRANCH are both non-empty, the PR API must NOT

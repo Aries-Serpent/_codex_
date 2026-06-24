@@ -38,10 +38,10 @@ def test_ci_precommit_config_present_and_valid_yaml():
 
 #: Workflows that were flagged by CodeQL alerts 13200-13207
 _FLAGGED_WORKFLOWS = [
-    "rust_swarm_ci.yml",    # alerts 13200-13204 (five jobs)
-    "status_gate.yml",      # alert 13205
-    "template_lint.yml",    # alert 13206
-    "test-rag.yml",         # alert 13207
+    "rust_swarm_ci.yml",  # alerts 13200-13204 (five jobs)
+    "status_gate.yml",  # alert 13205
+    "template_lint.yml",  # alert 13206
+    "test-rag.yml",  # alert 13207
 ]
 
 WORKFLOWS_DIR = REPO_ROOT / ".github" / "workflows"
@@ -69,9 +69,9 @@ def test_workflow_top_level_permissions_not_read_all(filename: str) -> None:
         f"{filename}: top-level 'permissions: read-all' is too broad. "
         "Use 'permissions: {}' instead and set explicit per-job permissions."
     )
-    assert top_perms != "write-all", (
-        f"{filename}: top-level 'permissions: write-all' is dangerously broad."
-    )
+    assert (
+        top_perms != "write-all"
+    ), f"{filename}: top-level 'permissions: write-all' is dangerously broad."
 
 
 @pytest.mark.parametrize("filename", _FLAGGED_WORKFLOWS)

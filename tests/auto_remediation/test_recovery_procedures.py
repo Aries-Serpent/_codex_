@@ -23,6 +23,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def recovery_config() -> dict[str, Any]:
     """Configuration for recovery procedures."""
@@ -70,6 +71,7 @@ def mock_checkpoint_data() -> dict[str, Any]:
 # ============================================================================
 # State Restoration Tests
 # ============================================================================
+
 
 class TestStateRestoration:
     """Tests for state restoration procedures."""
@@ -143,6 +145,7 @@ class TestStateRestoration:
 # ============================================================================
 # Rollback Procedures Tests
 # ============================================================================
+
 
 class TestRollbackProcedures:
     """Tests for rollback procedures."""
@@ -218,6 +221,7 @@ class TestRollbackProcedures:
 # Checkpoint Recovery Tests
 # ============================================================================
 
+
 class TestCheckpointRecovery:
     """Tests for checkpoint-based recovery."""
 
@@ -279,6 +283,7 @@ class TestCheckpointRecovery:
 # Transaction Recovery Tests
 # ============================================================================
 
+
 class TestTransactionRecovery:
     """Tests for transaction recovery."""
 
@@ -333,6 +338,7 @@ class TestTransactionRecovery:
 # Data Consistency Tests
 # ============================================================================
 
+
 class TestDataConsistency:
     """Tests for data consistency during recovery."""
 
@@ -352,10 +358,7 @@ class TestDataConsistency:
         valid_users = [1, 2, 3]
         valid_orders = [100, 101, 102]
 
-        is_valid = (
-            data["user_id"] in valid_users
-            and data["order_id"] in valid_orders
-        )
+        is_valid = data["user_id"] in valid_users and data["order_id"] in valid_orders
 
         assert is_valid is True
 
@@ -386,6 +389,7 @@ class TestDataConsistency:
 # Partial Recovery Tests
 # ============================================================================
 
+
 class TestPartialRecovery:
     """Tests for partial recovery scenarios."""
 
@@ -411,10 +415,7 @@ class TestPartialRecovery:
         ]
 
         # Sort by priority
-        recovery_order = sorted(
-            [c for c in components if c["failed"]],
-            key=lambda c: c["priority"]
-        )
+        recovery_order = sorted([c for c in components if c["failed"]], key=lambda c: c["priority"])
 
         assert recovery_order[0]["name"] == "database"
 
@@ -432,6 +433,7 @@ class TestPartialRecovery:
 # ============================================================================
 # Recovery Orchestration Tests
 # ============================================================================
+
 
 class TestRecoveryOrchestration:
     """Tests for recovery orchestration."""
@@ -475,6 +477,7 @@ class TestRecoveryOrchestration:
 # ============================================================================
 # Recovery Validation Tests
 # ============================================================================
+
 
 class TestRecoveryValidation:
     """Tests for recovery validation."""
@@ -525,6 +528,7 @@ class TestRecoveryValidation:
 # Idempotency Tests
 # ============================================================================
 
+
 class TestIdempotency:
     """Tests for idempotent recovery operations."""
 
@@ -561,6 +565,7 @@ class TestIdempotency:
 # ============================================================================
 # Recovery Time Objective Tests
 # ============================================================================
+
 
 class TestRecoveryTimeObjective:
     """Tests for recovery time objective (RTO) compliance."""

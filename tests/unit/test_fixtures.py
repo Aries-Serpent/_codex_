@@ -9,8 +9,9 @@ class TestFixtureReusability:
     """Verify fixtures can be called multiple times without exhaustion."""
 
     @pytest.mark.skipif(
-        not hasattr(pytest, "importorskip") or pytest.importorskip("torch", minversion=None) is None,
-        reason="torch not available in test environment"
+        not hasattr(pytest, "importorskip")
+        or pytest.importorskip("torch", minversion=None) is None,
+        reason="torch not available in test environment",
     )
     def test_mock_model_fixture_multiple_calls(self, mock_transformer_model):
         """Test mock_model fixture works across multiple calls."""
@@ -25,8 +26,9 @@ class TestFixtureReusability:
         assert len(result2) > 0
 
     @pytest.mark.skipif(
-        not hasattr(pytest, "importorskip") or pytest.importorskip("torch", minversion=None) is None,
-        reason="torch not available in test environment"
+        not hasattr(pytest, "importorskip")
+        or pytest.importorskip("torch", minversion=None) is None,
+        reason="torch not available in test environment",
     )
     def test_fixture_independence(self, mock_transformer_model):
         """Test fixture provides independent instances."""
@@ -34,10 +36,10 @@ class TestFixtureReusability:
         mock_transformer_model.custom_attr = "modified"
 
         # Should have custom attribute
-        assert hasattr(mock_transformer_model, 'custom_attr')
+        assert hasattr(mock_transformer_model, "custom_attr")
 
         # Should have standard attributes
-        assert hasattr(mock_transformer_model, 'num_layers')
+        assert hasattr(mock_transformer_model, "num_layers")
 
     def test_mock_not_using_side_effect_list(self):
         """Test that mocks don't use side_effect with list (causes StopIteration)."""
@@ -69,12 +71,12 @@ class TestSerializationPatterns:
         import json
 
         # Should have to_dict method
-        assert hasattr(serializable_mock_model, 'to_dict')
+        assert hasattr(serializable_mock_model, "to_dict")
 
         # Should be JSON serializable
         model_dict = serializable_mock_model.to_dict()
         json_str = json.dumps(model_dict)
         parsed = json.loads(json_str)
 
-        assert 'config' in parsed
-        assert 'call_count' in parsed
+        assert "config" in parsed
+        assert "call_count" in parsed

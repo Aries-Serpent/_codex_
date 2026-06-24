@@ -1,4 +1,5 @@
 """Tests for codex_ml.utils.opt_import — optional import helper."""
+
 from __future__ import annotations
 
 import logging
@@ -18,6 +19,7 @@ class TestTryImport:
 
     def test_returns_module_type(self):
         import types
+
         mod = try_import("os")
         assert isinstance(mod, types.ModuleType)
 

@@ -90,49 +90,41 @@ class TestImportMigrationOrchestrator:
 
         # Create test Python files with deprecated imports
         test_file1 = repo_path / "module1.py"
-        test_file1.write_text(
-            """
+        test_file1.write_text("""
 from training.model import Model
 from models.classifier import Classifier
 import training.trainer as trainer
 
 def test():
     pass
-"""
-        )
+""")
 
         test_file2 = repo_path / "module2.py"
-        test_file2.write_text(
-            """
+        test_file2.write_text("""
 import models.utils
 from training.data import DataLoader
 
 class MyClass:
     pass
-"""
-        )
+""")
 
         # Create file that should be skipped (already migrated)
         test_file3 = repo_path / "module3.py"
-        test_file3.write_text(
-            """
+        test_file3.write_text("""
 from src.training.model import Model
 from src.models.classifier import Classifier
 
 def already_migrated():
     pass
-"""
-        )
+""")
 
         # Create nested directory
         nested_dir = repo_path / "subdir"
         nested_dir.mkdir()
         nested_file = nested_dir / "nested.py"
-        nested_file.write_text(
-            """
+        nested_file.write_text("""
 from training.pipeline import Pipeline
-"""
-        )
+""")
 
         yield repo_path
 
@@ -192,9 +184,7 @@ from training.pipeline import Pipeline
         orchestrator.assess_imports(temp_repo)
 
         # module3.py should not contribute any migrations
-        module3_migrations = [
-            m for m in orchestrator.migrations if "module3.py" in m.file_path
-        ]
+        module3_migrations = [m for m in orchestrator.migrations if "module3.py" in m.file_path]
         assert len(module3_migrations) == 0
 
     def test_assess_imports_handles_nested_directories(self, orchestrator, temp_repo):
@@ -202,9 +192,7 @@ from training.pipeline import Pipeline
         orchestrator.assess_imports(temp_repo)
 
         # Should find nested.py
-        nested_migrations = [
-            m for m in orchestrator.migrations if "nested.py" in m.file_path
-        ]
+        nested_migrations = [m for m in orchestrator.migrations if "nested.py" in m.file_path]
         assert len(nested_migrations) > 0
 
     def test_deliberate_migrations(self, orchestrator, temp_repo):
@@ -330,8 +318,7 @@ class TestImportMigrationWorkflow:
         repo_path = Path(temp_dir)
 
         # Create multiple files with various patterns
-        (repo_path / "app.py").write_text(
-            """
+        (repo_path / "app.py").write_text("""
 from training.model import Model
 from models.classifier import Classifier
 import training.trainer as trainer
@@ -339,18 +326,15 @@ import training.trainer as trainer
 def main():
     model = Model()
     classifier = Classifier()
-"""
-        )
+""")
 
-        (repo_path / "utils.py").write_text(
-            """
+        (repo_path / "utils.py").write_text("""
 import models.preprocessing
 from training.data import load_data
 
 def preprocess():
     return models.preprocessing.clean()
-"""
-        )
+""")
 
         # Create src directory structure (migration target)
         src_dir = repo_path / "src"
@@ -401,15 +385,13 @@ def preprocess():
         repo_path = Path(temp_dir)
 
         # Create file with only modern imports
-        (repo_path / "modern.py").write_text(
-            """
+        (repo_path / "modern.py").write_text("""
 from src.training.model import Model
 from src.models.classifier import Classifier
 
 def test():
     pass
-"""
-        )
+""")
 
         orchestrator = ImportMigrationOrchestrator()
 

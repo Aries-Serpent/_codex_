@@ -1,4 +1,5 @@
 """Tests for AST signature similarity analysis."""
+
 # Import from the script
 import sys
 import tempfile
@@ -6,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'scripts' / 'analysis'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "analysis"))
 
 try:
     from ast_signature_similarity import (

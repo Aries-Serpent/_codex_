@@ -1,4 +1,5 @@
 """Tests for RAG post-processing module"""
+
 from codex.rag.postprocess import OutputProcessor, postprocess_output
 
 
@@ -50,7 +51,7 @@ class TestOutputProcessor:
             {
                 "content": "The quick brown fox jumps.",
                 "score": 0.95,
-                "metadata": {"source_id": "doc1", "chunk_id": "c1"}
+                "metadata": {"source_id": "doc1", "chunk_id": "c1"},
             }
         ]
         evidence = processor.extract_evidence_tags(output, docs)
@@ -63,11 +64,7 @@ class TestOutputProcessor:
         processor = OutputProcessor()
         output = "Completely different content"
         docs = [
-            {
-                "content": "The quick brown fox.",
-                "score": 0.95,
-                "metadata": {"source_id": "doc1"}
-            }
+            {"content": "The quick brown fox.", "score": 0.95, "metadata": {"source_id": "doc1"}}
         ]
         evidence = processor.extract_evidence_tags(output, docs)
         assert len(evidence) == 0
@@ -86,7 +83,7 @@ class TestOutputProcessor:
             {
                 "content": "Short",  # Less than 20 chars
                 "score": 0.9,
-                "metadata": {"source_id": "doc1"}
+                "metadata": {"source_id": "doc1"},
             }
         ]
         evidence = processor.extract_evidence_tags(output, docs)
@@ -100,7 +97,7 @@ class TestOutputProcessor:
             {
                 "content": "The quick brown fox runs fast. This is a test document with content.",
                 "score": 0.92,
-                "metadata": {"source_id": "doc1"}
+                "metadata": {"source_id": "doc1"},
             }
         ]
         evidence = processor.extract_evidence_tags(output, docs)
@@ -113,10 +110,7 @@ class TestOutputProcessor:
         """Test inline citation style"""
         processor = OutputProcessor()
         output = "This is the output"
-        evidence = [
-            {"source_id": "doc1", "score": 0.9},
-            {"source_id": "doc2", "score": 0.8}
-        ]
+        evidence = [{"source_id": "doc1", "score": 0.9}, {"source_id": "doc2", "score": 0.8}]
         result = processor.add_citations(output, evidence, "inline")
         assert "[Sources: doc1, doc2]" in result
 
@@ -135,7 +129,7 @@ class TestOutputProcessor:
         evidence = [
             {"source_id": "doc1", "score": 0.9},
             {"source_id": "doc1", "score": 0.85},
-            {"source_id": "doc2", "score": 0.8}
+            {"source_id": "doc2", "score": 0.8},
         ]
         result = processor.add_citations(output, evidence, "inline")
         # Should have unique sources in order
@@ -145,10 +139,7 @@ class TestOutputProcessor:
         """Test footnote citation style"""
         processor = OutputProcessor()
         output = "This is the output"
-        evidence = [
-            {"source_id": "doc1", "score": 0.9},
-            {"source_id": "doc2", "score": 0.8}
-        ]
+        evidence = [{"source_id": "doc1", "score": 0.9}, {"source_id": "doc2", "score": 0.8}]
         result = processor.add_citations(output, evidence, "footnote")
         assert "References:" in result
         assert "[1] doc1" in result
@@ -193,15 +184,12 @@ def test_postprocess_output_full_pipeline():
         {
             "content": "Response text from document.",
             "score": 0.95,
-            "metadata": {"source_id": "doc1"}
+            "metadata": {"source_id": "doc1"},
         }
     ]
 
     processed, evidence = postprocess_output(
-        output=output,
-        retrieved_docs=docs,
-        include_citations=True,
-        citation_style="inline"
+        output=output, retrieved_docs=docs, include_citations=True, citation_style="inline"
     )
 
     assert "USER QUERY START" not in processed
@@ -215,9 +203,7 @@ def test_postprocess_output_with_redaction():
     rules = [{"pattern": r"\S+@\S+\.\S+", "replacement": "[EMAIL]"}]
 
     processed, _evidence = postprocess_output(
-        output=output,
-        redaction_rules=rules,
-        include_citations=False
+        output=output, redaction_rules=rules, include_citations=False
     )
 
     assert "[EMAIL]" in processed
@@ -230,9 +216,7 @@ def test_postprocess_output_no_citations():
     docs = [{"content": "Context", "score": 0.9, "metadata": {"source_id": "doc1"}}]
 
     processed, _evidence = postprocess_output(
-        output=output,
-        retrieved_docs=docs,
-        include_citations=False
+        output=output, retrieved_docs=docs, include_citations=False
     )
 
     assert "[Sources:" not in processed
@@ -243,9 +227,7 @@ def test_postprocess_output_no_docs():
     output = "Response text"
 
     processed, evidence = postprocess_output(
-        output=output,
-        retrieved_docs=None,
-        include_citations=True
+        output=output, retrieved_docs=None, include_citations=True
     )
 
     assert processed == "Response text"
@@ -259,15 +241,12 @@ def test_postprocess_output_with_citations_and_evidence():
         {
             "content": "The machine learning model performs well on classification tasks and achieves 95% accuracy.",
             "score": 0.98,
-            "metadata": {"source_id": "paper123"}
+            "metadata": {"source_id": "paper123"},
         }
     ]
 
     processed, evidence = postprocess_output(
-        output=output,
-        retrieved_docs=docs,
-        include_citations=True,
-        citation_style="inline"
+        output=output, retrieved_docs=docs, include_citations=True, citation_style="inline"
     )
 
     # Evidence extraction is heuristic-based and may not always find matches
@@ -285,15 +264,12 @@ def test_postprocess_output_footnote_style():
         {
             "content": "This is important information from the source document.",
             "score": 0.95,
-            "metadata": {"source_id": "doc_alpha"}
+            "metadata": {"source_id": "doc_alpha"},
         }
     ]
 
     processed, evidence = postprocess_output(
-        output=output,
-        retrieved_docs=docs,
-        include_citations=True,
-        citation_style="footnote"
+        output=output, retrieved_docs=docs, include_citations=True, citation_style="footnote"
     )
 
     if evidence:
@@ -307,13 +283,11 @@ def test_postprocess_output_multiple_redaction_rules():
     rules = [
         {"pattern": r"\S+@\S+\.\S+", "replacement": "[EMAIL]"},
         {"pattern": r"\d{3}-\d{4}", "replacement": "[PHONE]"},
-        {"pattern": r"\d{3}-\d{2}-\d{4}", "replacement": "[SSN]"}
+        {"pattern": r"\d{3}-\d{2}-\d{4}", "replacement": "[SSN]"},
     ]
 
     processed, _evidence = postprocess_output(
-        output=output,
-        redaction_rules=rules,
-        include_citations=False
+        output=output, redaction_rules=rules, include_citations=False
     )
 
     assert "[EMAIL]" in processed
@@ -328,9 +302,6 @@ def test_postprocess_output_preserves_content():
     """Test that post-processing preserves non-redacted content"""
     output = "The quick brown fox jumps over the lazy dog."
 
-    processed, _evidence = postprocess_output(
-        output=output,
-        include_citations=False
-    )
+    processed, _evidence = postprocess_output(output=output, include_citations=False)
 
     assert processed == output.strip()

@@ -12,6 +12,7 @@ class TestAPIPerformance:
 
     def test_endpoint_response_time(self):
         """Test endpoint response time"""
+
         def endpoint():
             return {"status": "ok"}
 
@@ -24,6 +25,7 @@ class TestAPIPerformance:
 
     def test_bulk_request_handling(self):
         """Test bulk request handling"""
+
         def process_requests(count):
             return [{"id": i} for i in range(count)]
 
@@ -38,6 +40,7 @@ class TestAPIPerformance:
     def test_concurrent_request_handling(self):
         """Test concurrent request handling"""
         import threading
+
         results = []
 
         def process():
@@ -53,6 +56,7 @@ class TestAPIPerformance:
 
     def test_memory_efficient_streaming(self):
         """Test memory efficient streaming"""
+
         def stream_data():
             for i in range(100):
                 yield i
@@ -84,6 +88,7 @@ class TestAPIPerformance:
 
     def test_query_optimization(self):
         """Test query optimization"""
+
         def get_user_posts(user_id, limit=10):
             # Simulate query
             return [{"id": i, "user_id": user_id} for i in range(min(limit, 10))]
@@ -93,6 +98,7 @@ class TestAPIPerformance:
 
     def test_connection_reuse(self):
         """Test connection reuse"""
+
         class ConnectionPool:
             def __init__(self):
                 self.connections = []
@@ -116,10 +122,11 @@ class TestAPIPerformance:
 
     def test_batch_processing(self):
         """Test batch processing"""
+
         def batch_process(items, batch_size=10):
             batches = []
             for i in range(0, len(items), batch_size):
-                batches.append(items[i:i+batch_size])
+                batches.append(items[i : i + batch_size])
             return batches
 
         items = list(range(100))
@@ -128,6 +135,7 @@ class TestAPIPerformance:
 
     def test_lazy_loading(self):
         """Test lazy loading"""
+
         class LazyResource:
             def __init__(self):
                 self._data = None
@@ -143,6 +151,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_0(self):
         """Test performance variant 0"""
+
         def compute():
             return 0
 
@@ -151,6 +160,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_1(self):
         """Test performance variant 1"""
+
         def compute():
             return 100
 
@@ -159,6 +169,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_2(self):
         """Test performance variant 2"""
+
         def compute():
             return 200
 
@@ -167,6 +178,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_3(self):
         """Test performance variant 3"""
+
         def compute():
             return 300
 
@@ -175,6 +187,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_4(self):
         """Test performance variant 4"""
+
         def compute():
             return 400
 
@@ -183,6 +196,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_5(self):
         """Test performance variant 5"""
+
         def compute():
             return 500
 
@@ -191,6 +205,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_6(self):
         """Test performance variant 6"""
+
         def compute():
             return 600
 
@@ -199,6 +214,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_7(self):
         """Test performance variant 7"""
+
         def compute():
             return 700
 
@@ -207,6 +223,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_8(self):
         """Test performance variant 8"""
+
         def compute():
             return 800
 
@@ -215,6 +232,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_9(self):
         """Test performance variant 9"""
+
         def compute():
             return 900
 
@@ -223,6 +241,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_10(self):
         """Test performance variant 10"""
+
         def compute():
             return 1000
 
@@ -231,6 +250,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_11(self):
         """Test performance variant 11"""
+
         def compute():
             return 1100
 
@@ -239,6 +259,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_12(self):
         """Test performance variant 12"""
+
         def compute():
             return 1200
 
@@ -247,6 +268,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_13(self):
         """Test performance variant 13"""
+
         def compute():
             return 1300
 
@@ -255,6 +277,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_14(self):
         """Test performance variant 14"""
+
         def compute():
             return 1400
 
@@ -263,6 +286,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_15(self):
         """Test performance variant 15"""
+
         def compute():
             return 1500
 
@@ -271,6 +295,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_16(self):
         """Test performance variant 16"""
+
         def compute():
             return 1600
 
@@ -279,6 +304,7 @@ class TestAPIPerformance:
 
     def test_performance_variant_17(self):
         """Test performance variant 17"""
+
         def compute():
             return 1700
 

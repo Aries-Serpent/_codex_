@@ -6,6 +6,7 @@ Covers:
 - Decision loop dry-run mode
 - Session persistence helpers
 """
+
 from __future__ import annotations
 
 import json
@@ -60,7 +61,7 @@ class TestBudgetCap:
         max_attempts = 2
         exception_raised = False
         last_exception = None
-        
+
         for attempt in range(max_attempts):
             try:
                 with pytest.raises(Exception):
@@ -71,8 +72,8 @@ class TestBudgetCap:
                 # pytest.raises failed (timeout was not raised)
                 last_exception = e
                 if attempt < max_attempts - 1:
-                    time.sleep(0.05 * (2 ** attempt))  # Exponential backoff
-        
+                    time.sleep(0.05 * (2**attempt))  # Exponential backoff
+
         if not exception_raised and last_exception:
             raise last_exception
 
@@ -115,14 +116,17 @@ class TestDecisionLoop:
 
         # STABILIZATION V2: Add explicit resource cleanup and isolation
         import gc
+
         gc.collect()  # Force garbage collection before test
-        
+
         # Patch SESSION_DIR to tmp_path so we don't pollute repo
-        with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
-             patch.object(mod, "DRY_RUN", True), \
-             patch.object(mod, "MAX_ITERATIONS", 1), \
-             patch.object(mod, "BUDGET_SECONDS", 30), \
-             patch.object(mod, "sense_test_health", return_value=_healthy):
+        with (
+            patch.object(mod, "SESSION_DIR", tmp_path / "sessions"),
+            patch.object(mod, "DRY_RUN", True),
+            patch.object(mod, "MAX_ITERATIONS", 1),
+            patch.object(mod, "BUDGET_SECONDS", 30),
+            patch.object(mod, "sense_test_health", return_value=_healthy),
+        ):
             try:
                 mod.run_autonomy_loop()
             finally:

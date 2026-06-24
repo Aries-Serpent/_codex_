@@ -21,6 +21,7 @@ import check_workflow_yaml as cwv  # noqa: E402
 # validate_syntax tests
 # ---------------------------------------------------------------------------
 
+
 class TestValidateSyntax:
     def test_valid_yaml_returns_no_errors(self, tmp_path: Path) -> None:
         f = tmp_path / "ok.yml"
@@ -65,6 +66,7 @@ class TestValidateSyntax:
 # validate_schema tests
 # ---------------------------------------------------------------------------
 
+
 class TestValidateSchema:
     def test_check_jsonschema_available_returns_bool(self) -> None:
         result = cwv._check_jsonschema_available()
@@ -99,6 +101,7 @@ class TestValidateSchema:
 # main() tests
 # ---------------------------------------------------------------------------
 
+
 class TestMain:
     def test_main_exits_zero_when_no_paths(self) -> None:
         with patch.object(sys, "argv", ["check_workflow_yaml.py"]):
@@ -114,9 +117,7 @@ class TestMain:
                 cwv.main()
         assert exc_info.value.code == 1
 
-    def test_main_exits_zero_on_valid_yaml_without_jsonschema(
-        self, tmp_path: Path
-    ) -> None:
+    def test_main_exits_zero_on_valid_yaml_without_jsonschema(self, tmp_path: Path) -> None:
         f = tmp_path / "ok.yml"
         f.write_text("name: CI\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n")
         with patch.object(sys, "argv", ["check_workflow_yaml.py", str(f)]):

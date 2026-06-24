@@ -12,6 +12,7 @@ where codex.github hasn't been imported yet.
 Root cause documented: same pattern as tests/archive/conftest.py — see that
 file for a full explanation of the shard isolation problem.
 """
+
 from __future__ import annotations
 
 import importlib

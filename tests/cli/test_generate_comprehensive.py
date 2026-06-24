@@ -17,6 +17,7 @@ class TestGenerateModuleImport:
         """Test that generate module can be imported."""
         try:
             from codex_ml.cli import generate
+
             assert generate is not None
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
@@ -31,7 +32,7 @@ class TestGenerateCLI:
             [sys.executable, "-m", "codex_ml.cli.generate", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -41,7 +42,7 @@ class TestGenerateCLI:
             [sys.executable, "-m", "codex_ml.cli.generate", "text", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -55,7 +56,7 @@ class TestGenerateFunctionality:
             [sys.executable, "-m", "codex_ml.cli.generate"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # Should fail or show help without model
         assert result.returncode in (0, 1, 2)

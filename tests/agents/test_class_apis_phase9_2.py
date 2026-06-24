@@ -87,8 +87,17 @@ class TestWorkflowDataclass:
             frequency=WorkflowFrequency.HIGH,
         )
         d = wf.to_dict()
-        for key in ("workflow_id", "name", "description", "frequency",
-                    "deterministic", "steps", "aliases", "entry_points", "category"):
+        for key in (
+            "workflow_id",
+            "name",
+            "description",
+            "frequency",
+            "deterministic",
+            "steps",
+            "aliases",
+            "entry_points",
+            "category",
+        ):
             assert key in d, f"Missing key in Workflow.to_dict(): {key}"
 
     def test_workflow_to_dict_frequency_is_string(self) -> None:
@@ -424,15 +433,11 @@ class TestRemediationActionPostInit:
     """RemediationAction.__post_init__ contracts."""
 
     def test_command_alias_populates_commands(self) -> None:
-        action = RemediationAction(
-            action_type="fix", description="d", command="echo hello"
-        )
+        action = RemediationAction(action_type="fix", description="d", command="echo hello")
         assert "echo hello" in action.commands
 
     def test_auto_apply_false_sets_requires_approval(self) -> None:
-        action = RemediationAction(
-            action_type="fix", description="d", auto_apply=False
-        )
+        action = RemediationAction(action_type="fix", description="d", auto_apply=False)
         assert action.requires_approval is True
 
     def test_action_id_auto_generated(self) -> None:
@@ -523,8 +528,14 @@ class TestActionPath:
 
     def test_extract_mlp_features_length(self) -> None:
         path = ActionPath(
-            potential_energy=20.0, kinetic_energy=10.0, friction=1.0, momentum=3.0,
-            confidence=0.7, risk=0.2, impact=0.6, urgency=0.4,
+            potential_energy=20.0,
+            kinetic_energy=10.0,
+            friction=1.0,
+            momentum=3.0,
+            confidence=0.7,
+            risk=0.2,
+            impact=0.6,
+            urgency=0.4,
         )
         features = path._extract_mlp_features()
         assert len(features) == 8
@@ -540,6 +551,7 @@ class TestForceVector:
 
     def test_magnitude_computed_from_xyz(self) -> None:
         import math
+
         fv = ForceVector(x=3.0, y=4.0, z=0.0)
         expected = math.hypot(3.0, 4.0)
         assert abs(fv.magnitude - expected) < 1e-9

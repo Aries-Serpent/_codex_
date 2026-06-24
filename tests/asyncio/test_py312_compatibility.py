@@ -32,6 +32,7 @@ class TestAsyncioCompatibility:
 
     async def test_asyncio_run_compatibility(self):
         """Test that asyncio.run() works correctly in Python 3.12."""
+
         async def simple_coro():
             await asyncio.sleep(0.001)
             return "success"
@@ -43,6 +44,7 @@ class TestAsyncioCompatibility:
 
     async def test_gather_with_exceptions(self):
         """Test asyncio.gather with exceptions in Python 3.12."""
+
         async def success_coro():
             await asyncio.sleep(0.001)
             return "ok"
@@ -52,17 +54,14 @@ class TestAsyncioCompatibility:
             raise ValueError("expected error")
 
         # Test gather with return_exceptions=True
-        results = await asyncio.gather(
-            success_coro(),
-            failing_coro(),
-            return_exceptions=True
-        )
+        results = await asyncio.gather(success_coro(), failing_coro(), return_exceptions=True)
 
         assert results[0] == "ok"
         assert isinstance(results[1], ValueError)
 
     async def test_task_creation(self):
         """Test task creation works in Python 3.12."""
+
         async def sample_task():
             await asyncio.sleep(0.001)
             return 42
@@ -74,6 +73,7 @@ class TestAsyncioCompatibility:
     async def test_timeout_context_manager(self):
         """Test asyncio.timeout() context manager (Python 3.11+)."""
         if sys.version_info >= (3, 11):
+
             async def quick_operation():
                 await asyncio.sleep(0.001)
                 return "done"
@@ -92,11 +92,7 @@ class TestAsyncioCompatibility:
             await asyncio.sleep(0.001)
             results.append(n)
 
-        await asyncio.gather(
-            append_number(1),
-            append_number(2),
-            append_number(3)
-        )
+        await asyncio.gather(append_number(1), append_number(2), append_number(3))
 
         assert len(results) == 3
         assert set(results) == {1, 2, 3}
@@ -111,6 +107,7 @@ class TestRequestBatcherAsyncContext:
         """Test that RequestBatcher can be imported."""
         try:
             from codex_ml.serving.optimizations import RequestBatcher
+
             assert RequestBatcher is not None
         except ImportError:
             pytest.skip("RequestBatcher not available in this environment")
@@ -141,6 +138,7 @@ class TestAsyncDataLoaders:
         """Test that async data loaders can be imported."""
         try:
             from codex_ml.data import loaders
+
             assert loaders is not None
         except ImportError:
             pytest.skip("Data loaders not available")
@@ -153,6 +151,7 @@ class TestAsyncDataLoaders:
         Python 3.12 warns about using asyncio.get_event_loop() outside
         of async contexts. This test ensures our code doesn't trigger that.
         """
+
         # Run a simple async operation
         async def test_op():
             await asyncio.sleep(0.001)
@@ -167,13 +166,15 @@ class TestAsyncDataLoaders:
 
         # Check no deprecation warnings about event loop
         event_loop_warnings = [
-            w for w in warning_list
+            w
+            for w in warning_list
             if issubclass(w.category, (DeprecationWarning, RuntimeWarning))
-            and 'event loop' in str(w.message).lower()
+            and "event loop" in str(w.message).lower()
         ]
 
-        assert len(event_loop_warnings) == 0, \
-            f"Unexpected event loop warnings: {event_loop_warnings}"
+        assert (
+            len(event_loop_warnings) == 0
+        ), f"Unexpected event loop warnings: {event_loop_warnings}"
 
 
 @pytest.mark.asyncio
@@ -182,6 +183,7 @@ class TestAsyncioModernPatterns:
 
     async def test_async_with_context_manager(self):
         """Test async context managers work correctly."""
+
         class AsyncContextManager:
             async def __aenter__(self):
                 await asyncio.sleep(0.001)
@@ -196,6 +198,7 @@ class TestAsyncioModernPatterns:
 
     async def test_async_iterator(self):
         """Test async iterators work correctly."""
+
         class AsyncIterator:
             def __init__(self):
                 self.count = 0
@@ -263,10 +266,7 @@ class TestAsyncioIntegration:
 
         queue = asyncio.Queue()
 
-        await asyncio.gather(
-            producer(queue, 5),
-            consumer(queue, results)
-        )
+        await asyncio.gather(producer(queue, 5), consumer(queue, results))
 
         assert len(results) == 5
         assert results[0] == "item_0"

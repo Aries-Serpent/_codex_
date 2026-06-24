@@ -279,9 +279,7 @@ class TestScriptExecution:
         script = tmp_path / "env.py"
         script.write_text("import os\nprint(os.environ.get('TEST_VAR', 'not set'))")
 
-        stdout, _stderr, _code = _run_script(
-            script, env_overrides={"TEST_VAR": "test_value"}
-        )
+        stdout, _stderr, _code = _run_script(script, env_overrides={"TEST_VAR": "test_value"})
 
         assert "test_value" in stdout
 
@@ -439,15 +437,11 @@ class TestFullComparison:
         """Test comparison respects timeout."""
         baseline_dir = tmp_path / "baseline"
         baseline_dir.mkdir()
-        (baseline_dir / "main.py").write_text(
-            "import time\ntime.sleep(10)\nprint('done')"
-        )
+        (baseline_dir / "main.py").write_text("import time\ntime.sleep(10)\nprint('done')")
 
         patched_dir = tmp_path / "patched"
         patched_dir.mkdir()
-        (patched_dir / "main.py").write_text(
-            "import time\ntime.sleep(10)\nprint('done')"
-        )
+        (patched_dir / "main.py").write_text("import time\ntime.sleep(10)\nprint('done')")
 
         result = compare(baseline_dir, patched_dir, timeout=2)
 
@@ -482,9 +476,7 @@ class TestFlakinessDetection:
         patched_dir.mkdir()
         (patched_dir / "main.py").write_text("print('stable output')")
 
-        result = compare(
-            baseline_dir, patched_dir, flakiness_runs=DEFAULT_FLAKINESS_RUNS
-        )
+        result = compare(baseline_dir, patched_dir, flakiness_runs=DEFAULT_FLAKINESS_RUNS)
 
         # Should complete successfully
         assert result.result in ["pass", "fail", "warn"]

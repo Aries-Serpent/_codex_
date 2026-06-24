@@ -225,6 +225,7 @@ class TestDataMigrationRollback:
 
         # Perform rollback from AssignmentMappingMigration
         from codex_ml.data.migration import AssignmentMappingMigration
+
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
 
         # Verify v2 structure after rollback
@@ -254,6 +255,7 @@ class TestDataMigrationRollback:
         v2_file.write_text(json.dumps(v2_data), encoding="utf-8")
 
         from codex_ml.data.migration import AssignmentMappingMigration
+
         v1_data = AssignmentMappingMigration.rollback_v2_to_v1(v2_file)
 
         # Verify v1 structure after rollback
@@ -271,14 +273,33 @@ class TestDataMigrationRollback:
             "version": "3.0",
             "schema": "assignment_mapping_v3",
             "items": [
-                {"uuid": "1", "label": "Keep", "category": "keep", "timestamp": "2025-01-01T00:00:00Z", "attributes": {}},
-                {"uuid": "2", "label": "Rollback", "category": "rollback", "timestamp": "2025-01-02T00:00:00Z", "attributes": {}},
-                {"uuid": "3", "label": "Keep2", "category": "keep", "timestamp": "2025-01-03T00:00:00Z", "attributes": {}},
+                {
+                    "uuid": "1",
+                    "label": "Keep",
+                    "category": "keep",
+                    "timestamp": "2025-01-01T00:00:00Z",
+                    "attributes": {},
+                },
+                {
+                    "uuid": "2",
+                    "label": "Rollback",
+                    "category": "rollback",
+                    "timestamp": "2025-01-02T00:00:00Z",
+                    "attributes": {},
+                },
+                {
+                    "uuid": "3",
+                    "label": "Keep2",
+                    "category": "keep",
+                    "timestamp": "2025-01-03T00:00:00Z",
+                    "attributes": {},
+                },
             ],
         }
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
         from codex_ml.data.migration import AssignmentMappingMigration
+
         # Rollback only item with uuid "2"
         rolled_data = AssignmentMappingMigration.selective_rollback(v3_file, item_ids=["2"])
 
@@ -316,6 +337,7 @@ class TestDataMigrationRollback:
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
         from codex_ml.data.migration import AssignmentMappingMigration
+
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
 
         # Verify data integrity: all important fields preserved
@@ -332,6 +354,7 @@ class TestDataMigrationRollback:
         corrupt_file.write_text("{invalid json content", encoding="utf-8")
 
         from codex_ml.data.migration import AssignmentMappingMigration
+
         with pytest.raises(json.JSONDecodeError):
             AssignmentMappingMigration.rollback_v3_to_v2(corrupt_file)
 
@@ -341,7 +364,15 @@ class TestDataMigrationRollback:
         v3_data = {
             "version": "3.0",
             "schema": "assignment_mapping_v3",
-            "items": [{"uuid": "test", "label": "Test", "category": "test", "timestamp": "2025-01-01T00:00:00Z", "attributes": {}}],
+            "items": [
+                {
+                    "uuid": "test",
+                    "label": "Test",
+                    "category": "test",
+                    "timestamp": "2025-01-01T00:00:00Z",
+                    "attributes": {},
+                }
+            ],
         }
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
         backup_file = tmp_path / "mappings_backup_v3.json"
@@ -403,6 +434,7 @@ class TestDataMigrationRollback:
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
         from codex_ml.data.migration import AssignmentMappingMigration
+
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
 
         assert v2_data["version"] == "2.0"
@@ -432,6 +464,7 @@ class TestDataMigrationRollback:
         import time
 
         from codex_ml.data.migration import AssignmentMappingMigration
+
         start = time.time()
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
         elapsed = time.time() - start

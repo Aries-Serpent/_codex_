@@ -24,6 +24,7 @@ try:
         DenylistViolation,
         load_denylist,
     )
+
     DENYLIST_AVAILABLE = True
 except ImportError:
     DENYLIST_AVAILABLE = False
@@ -31,8 +32,7 @@ except ImportError:
 
 # Skip all tests if module not available
 pytestmark = pytest.mark.skipif(
-    not DENYLIST_AVAILABLE,
-    reason="codex_ml.security.denylist not available"
+    not DENYLIST_AVAILABLE, reason="codex_ml.security.denylist not available"
 )
 
 
@@ -72,9 +72,7 @@ redaction_patterns:
 @pytest.fixture
 def denylist_file(sample_denylist_yaml: str) -> str:
     """Create a temporary denylist YAML file."""
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".yaml", delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
         f.write(sample_denylist_yaml)
         f.flush()
         return f.name
@@ -146,9 +144,7 @@ class TestLoadDenylist:
 
     def test_load_empty_yaml(self):
         """Test loading an empty YAML file."""
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".yaml", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write("")
             f.flush()
             rules = load_denylist(f.name)
@@ -162,9 +158,7 @@ class TestLoadDenylist:
 sensitive_terms:
   - secret
 """
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".yaml", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             rules = load_denylist(f.name)
@@ -332,9 +326,7 @@ redaction_patterns:
   - pattern: "(\\\\d{3})-(\\\\d{2})-(\\\\d{4})"
     replacement: "XXX-XX-XXXX"
 """
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".yaml", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             enforcer = DenylistEnforcer.from_yaml(f.name)
@@ -349,9 +341,7 @@ sensitive_terms:
   - ""
   - password
 """
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".yaml", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             rules = load_denylist(f.name)

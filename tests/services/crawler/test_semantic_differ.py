@@ -622,13 +622,12 @@ class TestSemanticDiffer:
 
         for similarity, expected_sig in test_cases:
             with patch.object(
-                differ_with_embeddings,
-                "compute_semantic_similarity",
-                return_value=similarity
+                differ_with_embeddings, "compute_semantic_similarity", return_value=similarity
             ):
                 result = differ_with_embeddings.compute_semantic_diff("old", "new")
-                assert result["significance"] == expected_sig, \
-                    f"Similarity {similarity} should be '{expected_sig}'"
+                assert (
+                    result["significance"] == expected_sig
+                ), f"Similarity {similarity} should be '{expected_sig}'"
 
     def test_should_resync_identical(self, differ_with_embeddings):
         """Test should_resync with identical content."""
@@ -651,28 +650,16 @@ class TestSemanticDiffer:
     def test_should_resync_above_threshold(self, differ_with_embeddings):
         """Test should_resync when similarity above threshold."""
         # Mock high similarity
-        with patch.object(
-            differ_with_embeddings,
-            "compute_semantic_similarity",
-            return_value=0.99
-        ):
-            should_resync, _diff_result = differ_with_embeddings.should_resync(
-                "old", "new"
-            )
+        with patch.object(differ_with_embeddings, "compute_semantic_similarity", return_value=0.99):
+            should_resync, _diff_result = differ_with_embeddings.should_resync("old", "new")
 
             assert should_resync is False  # Above threshold = no resync needed
 
     def test_should_resync_below_threshold(self, differ_with_embeddings):
         """Test should_resync when similarity below threshold."""
         # Mock low similarity
-        with patch.object(
-            differ_with_embeddings,
-            "compute_semantic_similarity",
-            return_value=0.70
-        ):
-            should_resync, _diff_result = differ_with_embeddings.should_resync(
-                "old", "new"
-            )
+        with patch.object(differ_with_embeddings, "compute_semantic_similarity", return_value=0.70):
+            should_resync, _diff_result = differ_with_embeddings.should_resync("old", "new")
 
             assert should_resync is True  # Below threshold = resync needed
 
@@ -725,7 +712,10 @@ class TestSemanticDifferIntegration:
         content_differ = ContentDiffer(ignore_whitespace=False)
         content_diff_result = content_differ.diff(old, new, normalize=False)
         # Content-based diff detects formatting change
-        assert content_diff_result.change_type != ChangeType.NO_CHANGE or content_diff_result.semantic_similarity < 1.0
+        assert (
+            content_diff_result.change_type != ChangeType.NO_CHANGE
+            or content_diff_result.semantic_similarity < 1.0
+        )
 
         # Semantic differ should recognize semantic equivalence
         semantic_differ = SemanticDiffer()
@@ -828,10 +818,7 @@ class TestEdgeCases:
 
     def test_content_diff_result_many_segments(self):
         """Test result serialization with many segments."""
-        segments = [
-            DiffSegment("insert", "", f"line{i}", i, i)
-            for i in range(20)
-        ]
+        segments = [DiffSegment("insert", "", f"line{i}", i, i) for i in range(20)]
 
         result = ContentDiffResult(
             change_type=ChangeType.MAJOR,

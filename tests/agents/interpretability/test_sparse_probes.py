@@ -38,13 +38,9 @@ class TestSparseLinearProbe:
         """Test probe initialization is deterministic with same seed."""
         from agents.interpretability.sparse_probes import SparseLinearProbe
 
-        probe1 = SparseLinearProbe.from_dimensions(
-            num_concepts=3, input_dim=4, seed=123
-        )
+        probe1 = SparseLinearProbe.from_dimensions(num_concepts=3, input_dim=4, seed=123)
 
-        probe2 = SparseLinearProbe.from_dimensions(
-            num_concepts=3, input_dim=4, seed=123
-        )
+        probe2 = SparseLinearProbe.from_dimensions(num_concepts=3, input_dim=4, seed=123)
 
         assert probe1.weights == probe2.weights
         assert probe1.bias == probe2.bias
@@ -125,9 +121,7 @@ class TestEdgeCases:
         """Test probe with larger dimensions."""
         from agents.interpretability.sparse_probes import SparseLinearProbe
 
-        probe = SparseLinearProbe.from_dimensions(
-            num_concepts=100, input_dim=50, seed=42
-        )
+        probe = SparseLinearProbe.from_dimensions(num_concepts=100, input_dim=50, seed=42)
 
         assert len(probe.weights) == 100
         assert len(probe.weights[0]) == 50

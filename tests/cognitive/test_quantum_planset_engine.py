@@ -34,6 +34,7 @@ from codex.cognitive.quantum_planset_engine import (
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_step(
     step_id: str = "S-01",
     agent: str = "test-agent",
@@ -71,11 +72,13 @@ def _make_step(
 # PhysicsParams
 # ---------------------------------------------------------------------------
 
+
 class TestPhysicsParams:
 
     def test_score_standard(self):
-        p = PhysicsParams(impact=0.9, confidence=0.9, momentum=9.0,
-                          energy=5.0, risk=0.1, friction=0.1)
+        p = PhysicsParams(
+            impact=0.9, confidence=0.9, momentum=9.0, energy=5.0, risk=0.1, friction=0.1
+        )
         expected = (0.9 * 0.9 * 9.0) / (5.0 * 1.1 * 1.1)
         assert math.isclose(p.score(), expected, rel_tol=1e-9)
 
@@ -88,8 +91,9 @@ class TestPhysicsParams:
         assert p.score() == 0.0
 
     def test_amplitude_is_sqrt_of_score(self):
-        p = PhysicsParams(impact=1.0, confidence=1.0, momentum=4.0,
-                          energy=4.0, risk=0.0, friction=0.0)
+        p = PhysicsParams(
+            impact=1.0, confidence=1.0, momentum=4.0, energy=4.0, risk=0.0, friction=0.0
+        )
         assert math.isclose(p.amplitude(), math.sqrt(p.score()), rel_tol=1e-9)
 
     def test_amplitude_non_negative(self):
@@ -100,6 +104,7 @@ class TestPhysicsParams:
 # ---------------------------------------------------------------------------
 # PlanStep
 # ---------------------------------------------------------------------------
+
 
 class TestPlanStep:
 
@@ -136,9 +141,7 @@ class TestPlanStep:
         assert restored.step_id == step.step_id
         assert restored.agent == step.agent
         assert restored.status == step.status
-        assert math.isclose(
-            restored.physics.impact, step.physics.impact, rel_tol=1e-9
-        )
+        assert math.isclose(restored.physics.impact, step.physics.impact, rel_tol=1e-9)
         assert restored.entangled_with == ["ROUND-02"]
 
     def test_to_dict_contains_amplitude_and_score(self):
@@ -158,6 +161,7 @@ class TestPlanStep:
 # QuantumPlanset
 # ---------------------------------------------------------------------------
 
+
 class TestQuantumPlanset:
 
     def _planset_with_steps(self, *steps: PlanStep) -> QuantumPlanset:
@@ -174,10 +178,12 @@ class TestQuantumPlanset:
         assert ps.viable_steps() == [live]
 
     def test_total_amplitude(self):
-        s1 = _make_step("A", momentum=4.0, energy=4.0, risk=0.0, friction=0.0,
-                         impact=1.0, confidence=1.0)
-        s2 = _make_step("B", momentum=4.0, energy=4.0, risk=0.0, friction=0.0,
-                         impact=1.0, confidence=1.0)
+        s1 = _make_step(
+            "A", momentum=4.0, energy=4.0, risk=0.0, friction=0.0, impact=1.0, confidence=1.0
+        )
+        s2 = _make_step(
+            "B", momentum=4.0, energy=4.0, risk=0.0, friction=0.0, impact=1.0, confidence=1.0
+        )
         ps = self._planset_with_steps(s1, s2)
         assert math.isclose(
             ps.total_amplitude(),
@@ -216,6 +222,7 @@ class TestQuantumPlanset:
 # QuantumPlansetEngine — generate
 # ---------------------------------------------------------------------------
 
+
 class TestGenerate:
 
     @pytest.fixture
@@ -246,12 +253,8 @@ class TestGenerate:
         assert any("SEC-01" in pair and "SEC-02" in pair for pair in bond_pairs)
 
     def test_context_momentum_boost_security(self, engine):
-        ps_low = engine.generate(
-            ImprovementArea.SECURITY_REMEDIATION, context={"open_alerts": 10}
-        )
-        ps_high = engine.generate(
-            ImprovementArea.SECURITY_REMEDIATION, context={"open_alerts": 60}
-        )
+        ps_low = engine.generate(ImprovementArea.SECURITY_REMEDIATION, context={"open_alerts": 10})
+        ps_high = engine.generate(ImprovementArea.SECURITY_REMEDIATION, context={"open_alerts": 60})
         sec01_low = next(s for s in ps_low.steps if s.step_id == "SEC-01")
         sec01_high = next(s for s in ps_high.steps if s.step_id == "SEC-01")
         assert sec01_high.physics.momentum > sec01_low.physics.momentum
@@ -277,6 +280,7 @@ class TestGenerate:
 # ---------------------------------------------------------------------------
 # QuantumPlansetEngine — collapse
 # ---------------------------------------------------------------------------
+
 
 class TestCollapse:
 
@@ -333,8 +337,7 @@ class TestCollapse:
         assert path[0].step_id == "SEC-01"  # highest amplitude
 
     def test_collapse_no_duplicates(self, engine):
-        steps = [_make_step(f"S{i}", entangled_with=[f"S{i-1}"] if i > 0 else [])
-                 for i in range(5)]
+        steps = [_make_step(f"S{i}", entangled_with=[f"S{i-1}"] if i > 0 else []) for i in range(5)]
         ps = QuantumPlanset("TEST", "CUSTOM", steps=steps)
         path = engine.collapse(ps)
         ids = [s.step_id for s in path]
@@ -344,6 +347,7 @@ class TestCollapse:
 # ---------------------------------------------------------------------------
 # QuantumPlansetEngine — apply_decoherence
 # ---------------------------------------------------------------------------
+
 
 class TestDecoherence:
 
@@ -373,6 +377,7 @@ class TestDecoherence:
 # ---------------------------------------------------------------------------
 # QuantumPlansetEngine — interference
 # ---------------------------------------------------------------------------
+
 
 class TestInterference:
 
@@ -412,6 +417,7 @@ class TestInterference:
 # QuantumPlansetEngine — persistence
 # ---------------------------------------------------------------------------
 
+
 class TestPersistence:
 
     def test_save_and_load_round_trip(self, tmp_path):
@@ -447,6 +453,7 @@ class TestPersistence:
 # QuantumPlansetEngine — summary
 # ---------------------------------------------------------------------------
 
+
 class TestSummary:
 
     def test_summary_contains_planset_id(self):
@@ -465,6 +472,7 @@ class TestSummary:
 # ---------------------------------------------------------------------------
 # Integration: full generate → collapse → save → load cycle
 # ---------------------------------------------------------------------------
+
 
 class TestIntegration:
 
@@ -504,6 +512,7 @@ class TestIntegration:
 # QI_TESTING: Quantum-Inspired Testing via quantum-compliance-tuning-agent
 # ---------------------------------------------------------------------------
 
+
 class TestQITesting:
     """
     Tests for the QI_TESTING improvement area that drives the
@@ -541,10 +550,12 @@ class TestQITesting:
         assert qi06_high.physics.momentum > qi06_low.physics.momentum
 
     def test_qi_06_extra_boost_when_k1_near_limit(self, engine):
-        ps_safe = engine.generate(ImprovementArea.QI_TESTING,
-                                   context={"failing_patterns": 2, "k1": 0.20})
-        ps_risky = engine.generate(ImprovementArea.QI_TESTING,
-                                    context={"failing_patterns": 2, "k1": 0.34})
+        ps_safe = engine.generate(
+            ImprovementArea.QI_TESTING, context={"failing_patterns": 2, "k1": 0.20}
+        )
+        ps_risky = engine.generate(
+            ImprovementArea.QI_TESTING, context={"failing_patterns": 2, "k1": 0.34}
+        )
         qi06_safe = next(s for s in ps_safe.steps if s.step_id == "QI-06")
         qi06_risky = next(s for s in ps_risky.steps if s.step_id == "QI-06")
         assert qi06_risky.physics.momentum >= qi06_safe.physics.momentum
@@ -553,12 +564,19 @@ class TestQITesting:
         """Each QI step (02-07) must be entangled with its predecessor."""
         ps = engine.generate(ImprovementArea.QI_TESTING)
         step_by_id = {s.step_id: s for s in ps.steps}
-        pairs = [("QI-02", "QI-01"), ("QI-03", "QI-02"), ("QI-04", "QI-03"),
-                 ("QI-05", "QI-04"), ("QI-06", "QI-05"), ("QI-07", "QI-06")]
+        pairs = [
+            ("QI-02", "QI-01"),
+            ("QI-03", "QI-02"),
+            ("QI-04", "QI-03"),
+            ("QI-05", "QI-04"),
+            ("QI-06", "QI-05"),
+            ("QI-07", "QI-06"),
+        ]
         for child_id, parent_id in pairs:
             child = step_by_id[child_id]
-            assert parent_id in child.entangled_with, \
-                f"{child_id} should be entangled with {parent_id}"
+            assert (
+                parent_id in child.entangled_with
+            ), f"{child_id} should be entangled with {parent_id}"
 
     def test_collapse_starts_with_highest_amplitude_step(self, engine):
         """Without context, QI-02 leads (energy=5 < QI-01 energy=8 → higher score).
@@ -578,12 +596,14 @@ class TestQITesting:
         path = engine.collapse(ps)
         ids = [s.step_id for s in path]
         qi02_idx = ids.index("QI-02")
-        assert ids[qi02_idx + 1] == "QI-01", (
-            f"Expected QI-01 after QI-02 (entanglement promotion), got {ids[qi02_idx + 1]}"
-        )
+        assert (
+            ids[qi02_idx + 1] == "QI-01"
+        ), f"Expected QI-01 after QI-02 (entanglement promotion), got {ids[qi02_idx + 1]}"
 
     def test_qi_planset_serialise_round_trip(self, tmp_path, engine):
-        ps = engine.generate(ImprovementArea.QI_TESTING, context={"failing_patterns": 1, "k1": 0.33})
+        ps = engine.generate(
+            ImprovementArea.QI_TESTING, context={"failing_patterns": 1, "k1": 0.33}
+        )
         saved = engine.save(ps, path=tmp_path / "qi_planset.json")
         restored = engine.load(saved)
         assert restored.area == ImprovementArea.QI_TESTING

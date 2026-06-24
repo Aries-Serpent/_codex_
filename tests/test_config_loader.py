@@ -124,9 +124,7 @@ class TestConfigLoader:
         """Test config loading with overrides."""
         loader = ConfigLoader(repo_root=temp_config_dir)
         cfg = loader.load_config(
-            "test",
-            config_dir="conf",
-            overrides=["app.debug=true", "database.port=3306"]
+            "test", config_dir="conf", overrides=["app.debug=true", "database.port=3306"]
         )
 
         assert cfg is not None
@@ -197,23 +195,29 @@ class TestGlobalFunctions:
         assert loader1 is loader2
         assert isinstance(loader1, ConfigLoader)
 
-    def test_load_config_global(self, temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_load_config_global(
+        self, temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test global load_config function."""
         # Create a new loader with temp directory
         test_loader = ConfigLoader(repo_root=temp_config_dir)
 
         # Monkeypatch get_loader to return our test loader
         import codex.utils.config_loader as config_loader_module
+
         monkeypatch.setattr(config_loader_module, "_global_loader", test_loader)
 
         cfg = load_config("test", config_dir="conf")
         assert cfg is not None
 
-    def test_load_error_config_global(self, temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_load_error_config_global(
+        self, temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test global load_error_config function."""
         test_loader = ConfigLoader(repo_root=temp_config_dir)
 
         import codex.utils.config_loader as config_loader_module
+
         monkeypatch.setattr(config_loader_module, "_global_loader", test_loader)
 
         errors = load_error_config()
@@ -227,10 +231,7 @@ class TestErrorConfig:
     def test_error_config_creation(self) -> None:
         """Test ErrorConfig instantiation."""
         error = ErrorConfig(
-            code="TEST_001",
-            message="Test error",
-            severity="error",
-            resolution="Fix the test"
+            code="TEST_001", message="Test error", severity="error", resolution="Fix the test"
         )
 
         assert error.code == "TEST_001"
@@ -241,10 +242,7 @@ class TestErrorConfig:
     def test_error_config_format_simple(self) -> None:
         """Test error formatting without placeholders."""
         error = ErrorConfig(
-            code="TEST_001",
-            message="Simple error",
-            severity="error",
-            resolution="Fix it"
+            code="TEST_001", message="Simple error", severity="error", resolution="Fix it"
         )
 
         formatted = error.format()
@@ -256,7 +254,7 @@ class TestErrorConfig:
             code="TEST_002",
             message="Error with {param}: {value}",
             severity="error",
-            resolution="Check parameters"
+            resolution="Check parameters",
         )
 
         formatted = error.format(param="test_param", value=42)
@@ -266,10 +264,13 @@ class TestErrorConfig:
 class TestEdgeCases:
     """Test suite for edge cases and error conditions."""
 
-    def test_missing_yaml_library(self, temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_missing_yaml_library(
+        self, temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test behavior when PyYAML is not available."""
         # Simulate missing yaml by making import fail
         import builtins
+
         original_import = builtins.__import__
 
         def mock_import(name: str, *args: Any, **kwargs: Any) -> Any:
@@ -298,11 +299,7 @@ class TestEdgeCases:
     def test_config_dir_not_exists(self, temp_config_dir: Path) -> None:
         """Test loading from non-existent directory."""
         loader = ConfigLoader(repo_root=temp_config_dir)
-        cfg = loader.load_config(
-            "test",
-            config_dir="nonexistent",
-            allow_fallback=True
-        )
+        cfg = loader.load_config("test", config_dir="nonexistent", allow_fallback=True)
 
         # Should return empty fallback
         assert cfg is not None
@@ -349,10 +346,7 @@ class TestIntegration:
         """Test MissingConfigException has required attributes."""
         # When using custom exception (no Hydra)
         try:
-            exc = MissingConfigException(
-                missing_cfg_file="test.yaml",
-                message="Test message"
-            )
+            exc = MissingConfigException(missing_cfg_file="test.yaml", message="Test message")
             assert hasattr(exc, "missing_cfg_file")
             assert exc.missing_cfg_file == "test.yaml"
         except TypeError:
@@ -432,8 +426,8 @@ class TestConfigLoaderAdvanced:
                 "float_val=45.67",
                 "bool_val=true",
                 "list_val=[1,2,3]",
-                "string_val=hello"
-            ]
+                "string_val=hello",
+            ],
         )
 
         assert cfg is not None

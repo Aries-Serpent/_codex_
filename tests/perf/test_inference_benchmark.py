@@ -25,6 +25,7 @@ import pytest
 @dataclass
 class InferenceBenchmarkResult:
     """Result of an inference benchmark run."""
+
     name: str
     duration_ms: float
     iterations: int
@@ -48,6 +49,7 @@ def get_memory_mb() -> float:
     """Get current memory usage in MB."""
     try:
         import psutil
+
         return psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024
     except ImportError:
         return 0.0
@@ -63,6 +65,7 @@ class TestInferenceThroughputBenchmarks:
 
     def test_single_token_generation_throughput(self) -> None:
         """Benchmark single token generation throughput."""
+
         def generate_token() -> int:
             # Simulate token generation
             logits = [0.01 * i for i in range(100)]  # Simplified
@@ -123,8 +126,9 @@ class TestInferenceThroughputBenchmarks:
         vocab_size = 50000
         embedding_dim = 768
         # Simulated embedding table
-        embeddings = [[0.01 * (i + j) for j in range(embedding_dim)]
-                      for i in range(min(vocab_size, 1000))]
+        embeddings = [
+            [0.01 * (i + j) for j in range(embedding_dim)] for i in range(min(vocab_size, 1000))
+        ]
 
         def lookup_embeddings() -> list[list[float]]:
             token_ids = [i % len(embeddings) for i in range(512)]
@@ -152,8 +156,7 @@ class TestInferenceThroughputBenchmarks:
             scores = [q * k for q, k in zip(query, key)]
             max_score = max(scores)
             exp_scores = [s - max_score for s in scores]  # Numerical stability
-            return [e / sum(exp_scores) if sum(exp_scores) > 0 else 1/seq_len
-                        for e in exp_scores]
+            return [e / sum(exp_scores) if sum(exp_scores) > 0 else 1 / seq_len for e in exp_scores]
 
         iterations = 500
         start = time.perf_counter()
@@ -175,11 +178,12 @@ class TestInferenceLatencyBenchmarks:
 
     def test_first_token_latency(self) -> None:
         """Benchmark time to first token."""
+
         def first_token() -> int:
             # Simulate initial processing
             prompt = list(range(100))
             processed = [p * 0.1 for p in prompt]
-            logits = [sum(processed[i:i+10]) for i in range(0, 100, 10)]
+            logits = [sum(processed[i : i + 10]) for i in range(0, 100, 10)]
             return logits.index(max(logits))
 
         latencies = []
@@ -196,6 +200,7 @@ class TestInferenceLatencyBenchmarks:
 
     def test_per_token_latency(self) -> None:
         """Benchmark per-token generation latency."""
+
         def generate_next_token(context_length: int) -> int:
             # Simulate context-dependent generation
             context = list(range(context_length))
@@ -212,9 +217,9 @@ class TestInferenceLatencyBenchmarks:
 
     def test_batch_latency(self) -> None:
         """Benchmark batch inference latency."""
+
         def batch_forward(batch_size: int) -> list[list[float]]:
-            return [[0.1 * i * b for i in range(100)]
-                    for b in range(batch_size)]
+            return [[0.1 * i * b for i in range(100)] for b in range(batch_size)]
 
         for batch_size in [1, 4, 8, 16]:
             start = time.perf_counter()
@@ -256,7 +261,7 @@ class TestInferenceLatencyBenchmarks:
             max_logit = max(logits)
             exp_logits = [(val - max_logit) / temperature for val in logits]
             sum_exp = sum(e for e in exp_logits)
-            probs = [e / sum_exp if sum_exp > 0 else 1/len(logits) for e in exp_logits]
+            probs = [e / sum_exp if sum_exp > 0 else 1 / len(logits) for e in exp_logits]
 
             # Sample
             r = random.random()
@@ -391,6 +396,7 @@ class TestInferenceScalabilityBenchmarks:
     @pytest.mark.parametrize("batch_size", [1, 2, 4, 8, 16])
     def test_batch_size_scaling(self, batch_size: int) -> None:
         """Benchmark scaling with batch size."""
+
         def inference_batch() -> list[int]:
             return [i % 50000 for i in range(batch_size)]
 
@@ -406,6 +412,7 @@ class TestInferenceScalabilityBenchmarks:
     @pytest.mark.parametrize("seq_length", [64, 128, 256, 512])
     def test_sequence_length_scaling(self, seq_length: int) -> None:
         """Benchmark scaling with sequence length."""
+
         def process_sequence() -> list[float]:
             return [0.1 * i for i in range(seq_length)]
 
@@ -421,6 +428,7 @@ class TestInferenceScalabilityBenchmarks:
     @pytest.mark.parametrize("max_new_tokens", [10, 50, 100, 200])
     def test_generation_length_scaling(self, max_new_tokens: int) -> None:
         """Benchmark scaling with generation length."""
+
         def generate_tokens() -> list[int]:
             return [(i * 7 + 13) % 50000 for i in range(max_new_tokens)]
 

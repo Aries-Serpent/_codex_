@@ -28,7 +28,7 @@ from typing import Any  # noqa: E402
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
-    from datasets import (  # type: ignore[attr-defined]
+    from datasets import (  # type: ignore[attr-defined]  # type: ignore[attr-defined]
         DatasetDict,
         load_from_disk,
     )

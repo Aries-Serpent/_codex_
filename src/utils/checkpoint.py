@@ -54,10 +54,10 @@ except Exception:  # pragma: no cover - fallback to canonical
 try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (  # type: ignore[no-redef]  # noqa: I001
         capture_rng_state as _capture_rng_state,
-        load_checkpoint as _canonical_load_checkpoint,
-        restore_rng_state as _restore_rng_state,
-        save_checkpoint as _canonical_save_checkpoint,
     )
+    from codex_ml.utils.checkpoint_core import load_checkpoint as _canonical_load_checkpoint
+    from codex_ml.utils.checkpoint_core import restore_rng_state as _restore_rng_state
+    from codex_ml.utils.checkpoint_core import save_checkpoint as _canonical_save_checkpoint
 except Exception as exc:  # pragma: no cover - canonical helpers unavailable
     LOGGER.debug("Canonical checkpoint helpers unavailable: %s", exc)
 

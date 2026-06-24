@@ -53,6 +53,7 @@ class TestCLIToCoreIntegration:
 
     def test_cli_error_propagation(self):
         """Test errors from core modules propagate to CLI correctly."""
+
         class MockCoreError(Exception):
             pass
 
@@ -280,7 +281,11 @@ class TestLoggingIntegration:
         logger.setLevel(logging.DEBUG)
 
         # Capture logs
-        handler = logging.handlers.MemoryHandler(capacity=100) if hasattr(logging.handlers, 'MemoryHandler') else None
+        handler = (
+            logging.handlers.MemoryHandler(capacity=100)
+            if hasattr(logging.handlers, "MemoryHandler")
+            else None
+        )
         if handler:
             logger.addHandler(handler)
 
@@ -319,6 +324,7 @@ class TestErrorHandlingIntegration:
 
     def test_error_context_preservation(self):
         """Test error context is preserved through call chain."""
+
         class ContextualError(Exception):
             def __init__(self, message, context=None):
                 super().__init__(message)
@@ -355,6 +361,7 @@ class TestErrorHandlingIntegration:
 
     def test_graceful_degradation(self):
         """Test graceful degradation when optional components fail."""
+
         def optional_component():
             raise ImportError("Optional dependency not available")
 

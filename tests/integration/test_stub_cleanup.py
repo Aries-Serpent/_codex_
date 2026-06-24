@@ -104,6 +104,7 @@ class Invalid:
     assert "P0" in report_content
     assert "NotImplementedError" in report_content
 
+
 def test_stub_cleanup_default_dirs(monkeypatch, tmp_path):
     # Change cwd so that default dirs "src" and "training" don't analyze the real codebase
     monkeypatch.chdir(tmp_path)
@@ -174,4 +175,3 @@ def standalone():
     stubs = analyzer.analyze()
     # these are abstract, so stubs should be 0
     assert len(stubs) == 0
-

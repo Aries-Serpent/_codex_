@@ -3,6 +3,7 @@ Unit tests for codex.config module.
 
 Tests environment variable management, validation, and configuration handling.
 """
+
 import os
 from unittest.mock import patch
 
@@ -36,10 +37,7 @@ class TestEnvVarConfig:
         """Test EnvVarConfig with description."""
         from codex.config.env_vars import EnvVarConfig
 
-        config = EnvVarConfig(
-            name="TEST_VAR",
-            description="Test variable for testing"
-        )
+        config = EnvVarConfig(name="TEST_VAR", description="Test variable for testing")
         assert config.description == "Test variable for testing"
 
     def test_env_var_config_required_flag(self):
@@ -111,9 +109,11 @@ class TestEnvironmentManager:
 
         env_mgr = EnvironmentManager()
         # Check if common methods exist
-        assert callable(getattr(env_mgr, "get_session_id", None)) or \
-               callable(getattr(env_mgr, "get_log_dir", None)) or \
-               hasattr(env_mgr, "ENV_VARS")
+        assert (
+            callable(getattr(env_mgr, "get_session_id", None))
+            or callable(getattr(env_mgr, "get_log_dir", None))
+            or hasattr(env_mgr, "ENV_VARS")
+        )
 
     def test_module_has_dataclass_decorator(self):
         """Test EnvVarConfig uses dataclass."""

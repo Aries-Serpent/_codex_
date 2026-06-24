@@ -13,6 +13,7 @@ try:
     import numpy as np
 
     import torch
+
     HAS_DEPS = True
 except ImportError:
     HAS_DEPS = False
@@ -33,6 +34,7 @@ else:
 
 # Conditional class definition - only define if torch is available
 if HAS_DEPS and torch is not None:
+
     class MockTransformerModel(torch.nn.Module):
         """Mock transformer model for testing."""
 
@@ -45,11 +47,15 @@ if HAS_DEPS and torch is not None:
             # Pre-generate attention weights to avoid exhaustion
             self._attention_weights = self._generate_mock_attention()
             # Configure model attributes
-            self.config = type('Config', (), {
-                'num_hidden_layers': num_layers,
-                'num_attention_heads': num_heads,
-                'hidden_size': hidden_dim
-            })()
+            self.config = type(
+                "Config",
+                (),
+                {
+                    "num_hidden_layers": num_layers,
+                    "num_attention_heads": num_heads,
+                    "hidden_size": hidden_dim,
+                },
+            )()
 
         def _generate_mock_attention(self):
             """Generate realistic attention weight tensors."""
@@ -57,8 +63,7 @@ if HAS_DEPS and torch is not None:
             weights = []
             for _ in range(self.num_layers):
                 layer_weights = torch.softmax(
-                    torch.randn(1, self.num_heads, self.seq_len, self.seq_len),
-                    dim=-1
+                    torch.randn(1, self.num_heads, self.seq_len, self.seq_len), dim=-1
                 )
                 weights.append(layer_weights)
             return weights
@@ -78,8 +83,7 @@ if HAS_DEPS and torch is not None:
             for _ in range(self.num_layers):
                 # Shape: (batch_size, num_heads, seq_len, seq_len)
                 attn = torch.softmax(
-                    torch.randn(batch_size, self.num_heads, seq_len, seq_len),
-                    dim=-1
+                    torch.randn(batch_size, self.num_heads, seq_len, seq_len), dim=-1
                 )
                 attentions.append(attn)
 
@@ -89,6 +93,7 @@ if HAS_DEPS and torch is not None:
             mock_output.last_hidden_state = torch.randn(batch_size, seq_len, self.hidden_dim)
 
             return mock_output
+
 else:
     # Dummy class when torch is not available
     class MockTransformerModel:
@@ -111,7 +116,7 @@ class TestAttentionScorer:
     @pytest.fixture
     def scorer(self, mock_model):
         """Create an AttentionScorer instance."""
-        return AttentionScorer(mock_model, device='cpu')
+        return AttentionScorer(mock_model, device="cpu")
 
     @pytest.fixture
     def sample_input(self):
@@ -131,16 +136,14 @@ class TestAttentionScorer:
 
     def test_initialization_custom_device(self, mock_model):
         """Test initialization with custom device."""
-        scorer = AttentionScorer(mock_model, device='cpu')
-        assert scorer.device == torch.device('cpu')
+        scorer = AttentionScorer(mock_model, device="cpu")
+        assert scorer.device == torch.device("cpu")
 
     def test_extract_attention_weights(self, scorer, sample_input):
         """Test extraction of attention weights."""
         input_ids, attention_mask = sample_input
 
-        attn_weights, layer_names = scorer.extract_attention_weights(
-            input_ids, attention_mask
-        )
+        attn_weights, layer_names = scorer.extract_attention_weights(input_ids, attention_mask)
 
         assert isinstance(attn_weights, list)
         assert isinstance(layer_names, list)
@@ -148,7 +151,9 @@ class TestAttentionScorer:
         assert len(attn_weights) > 0, "Should extract non-empty attention weights"
         assert len(layer_names) == len(attn_weights)
         # Verify we got the expected number of layers
-        assert len(attn_weights) == scorer.model.num_layers, f"Expected {scorer.model.num_layers} layers"
+        assert (
+            len(attn_weights) == scorer.model.num_layers
+        ), f"Expected {scorer.model.num_layers} layers"
 
         # Check shape of attention weights
         for attn in attn_weights:
@@ -202,9 +207,7 @@ class TestAttentionScorer:
         tokens = [f"token_{i}" for i in range(input_ids.size(1))]
 
         analysis = scorer.analyze_attention(
-            input_ids=input_ids,
-            attention_mask=attention_mask,
-            tokens=tokens
+            input_ids=input_ids, attention_mask=attention_mask, tokens=tokens
         )
 
         assert isinstance(analysis, AttentionAnalysis)
@@ -223,9 +226,9 @@ class TestAttentionScorer:
             attention_weights=np.random.rand(2, 4, seq_len, seq_len),
             token_importance=np.random.rand(seq_len),
             attention_flow=np.random.rand(seq_len, seq_len),
-            layer_names=['layer_0', 'layer_1'],
+            layer_names=["layer_0", "layer_1"],
             token_ids=list(range(seq_len)),
-            tokens=[f"token_{i}" for i in range(seq_len)]
+            tokens=[f"token_{i}" for i in range(seq_len)],
         )
 
         top_tokens = scorer.get_top_attended_tokens(analysis, top_k=5)

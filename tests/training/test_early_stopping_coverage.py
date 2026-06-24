@@ -59,12 +59,7 @@ def test_early_stopping_config_default():
 
 def test_early_stopping_config_custom():
     """Test EarlyStoppingConfig with custom values."""
-    config = EarlyStoppingConfig(
-        patience=5,
-        threshold=0.001,
-        metric="eval_accuracy",
-        mode="max"
-    )
+    config = EarlyStoppingConfig(patience=5, threshold=0.001, metric="eval_accuracy", mode="max")
     assert config.patience == 5
     assert config.threshold == 0.001
     assert config.metric == "eval_accuracy"
@@ -248,9 +243,7 @@ def test_auto_inject_with_eval_dataset(mock_eval_dataset):
     """Test auto_inject_early_stopping_for_trainer with eval dataset."""
     callbacks = []
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer",
-        eval_dataset=mock_eval_dataset,
-        callbacks=callbacks
+        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=callbacks
     )
 
     assert len(result) == 1
@@ -261,9 +254,7 @@ def test_auto_inject_without_eval_dataset():
     """Test auto_inject_early_stopping_for_trainer without eval dataset."""
     callbacks = []
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer",
-        eval_dataset=None,
-        callbacks=callbacks
+        trainer_class="Trainer", eval_dataset=None, callbacks=callbacks
     )
 
     # Should not inject if no eval dataset
@@ -273,9 +264,7 @@ def test_auto_inject_without_eval_dataset():
 def test_auto_inject_with_none_callbacks(mock_eval_dataset):
     """Test auto_inject_early_stopping_for_trainer with None callbacks."""
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer",
-        eval_dataset=mock_eval_dataset,
-        callbacks=None
+        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=None
     )
 
     assert len(result) == 1
@@ -285,10 +274,7 @@ def test_auto_inject_with_custom_config(mock_eval_dataset):
     """Test auto_inject_early_stopping_for_trainer with custom config."""
     config = EarlyStoppingConfig(patience=20, metric="eval_accuracy")
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer",
-        eval_dataset=mock_eval_dataset,
-        callbacks=[],
-        config=config
+        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=[], config=config
     )
 
     assert result[0].config.patience == 20
@@ -301,9 +287,7 @@ def test_auto_inject_preserves_existing_callbacks(mock_eval_dataset):
     callbacks = [existing]
 
     result = auto_inject_early_stopping_for_trainer(
-        trainer_class="Trainer",
-        eval_dataset=mock_eval_dataset,
-        callbacks=callbacks
+        trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=callbacks
     )
 
     assert existing in result
@@ -338,7 +322,7 @@ def test_callback_chain_integration(mock_eval_dataset):
         trainer_class="Trainer",
         eval_dataset=mock_eval_dataset,
         callbacks=callbacks,
-        config=EarlyStoppingConfig(patience=5)
+        config=EarlyStoppingConfig(patience=5),
     )
 
     assert len(callbacks) == 1
@@ -364,12 +348,7 @@ def test_multiple_injection_attempts():
 
 def test_early_stopping_config_serialization_round_trip():
     """Test EarlyStoppingConfig serialization round-trip."""
-    original = EarlyStoppingConfig(
-        patience=12,
-        threshold=0.002,
-        metric="eval_bleu",
-        mode="max"
-    )
+    original = EarlyStoppingConfig(patience=12, threshold=0.002, metric="eval_bleu", mode="max")
 
     config_dict = original.to_dict()
     restored = EarlyStoppingConfig(**config_dict)

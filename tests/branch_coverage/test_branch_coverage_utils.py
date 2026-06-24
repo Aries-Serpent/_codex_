@@ -330,9 +330,7 @@ class TestPathOperationBranches:
             (".bin", "binary"),
         ],
     )
-    def test_path_extension_branches(
-        self, extension: str, expected_type: str
-    ) -> None:
+    def test_path_extension_branches(self, extension: str, expected_type: str) -> None:
         """Test path extension detection branches."""
         ext_map = {
             ".txt": "text",

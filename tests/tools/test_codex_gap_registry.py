@@ -13,16 +13,14 @@ import tools.codex_gap_registry as cgr
 def test_build_registry_from_minimal_audit(tmp_path: Path):
     audit = tmp_path / "audit.md"
     audit.write_text(
-        textwrap.dedent(
-            """
+        textwrap.dedent("""
             # _codex_: Status Update (2025-11-27)
 
             ## High-Signal Findings
 
             - Fast tokenizer backend missing, parity tests absent
             - Training loop does not expose gradient accumulation settings
-            """
-        ),
+            """),
         encoding="utf-8",
     )
 

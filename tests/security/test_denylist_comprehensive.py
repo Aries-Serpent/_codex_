@@ -23,14 +23,14 @@ try:
         DenylistViolation,
         load_denylist,
     )
+
     DENYLIST_AVAILABLE = True
 except ImportError:
     DENYLIST_AVAILABLE = False
 
 
 pytestmark = pytest.mark.skipif(
-    not DENYLIST_AVAILABLE,
-    reason="codex_ml.security.denylist not available"
+    not DENYLIST_AVAILABLE, reason="codex_ml.security.denylist not available"
 )
 
 
@@ -374,7 +374,7 @@ redaction_patterns:
     replacement: "[EMAIL]"
 """
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
@@ -401,7 +401,7 @@ blocked_actions:
   - delete  # Dangerous actions
 """
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
@@ -421,7 +421,7 @@ sensitive_terms:
 # No other sections
 """
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
@@ -448,7 +448,9 @@ blocked_actions:
   - удалить
 """
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False, encoding='utf-8') as f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".yaml", delete=False, encoding="utf-8"
+        ) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
@@ -470,7 +472,7 @@ sensitive_terms:
   - password
 """
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
@@ -635,10 +637,7 @@ class TestPerformance:
 
     def test_many_redaction_patterns(self):
         """Test performance with many redaction patterns."""
-        patterns = [
-            (re.compile(rf"PATTERN{i}-\d+"), "[REDACTED]")
-            for i in range(100)
-        ]
+        patterns = [(re.compile(rf"PATTERN{i}-\d+"), "[REDACTED]") for i in range(100)]
 
         rules = DenylistRules(
             sensitive_terms=[],
@@ -698,7 +697,7 @@ redaction_patterns:
     replacement: "[CARD]"
 """
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name
@@ -750,7 +749,7 @@ blocked_prompt_patterns:
   - bypass
 """
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(yaml_content)
             f.flush()
             temp_path = f.name

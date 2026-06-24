@@ -12,12 +12,7 @@ class TestConversionFidelity:
         """Test ConversionFidelity instantiation."""
         from codex_crm.convert.rules import ConversionFidelity
 
-        fidelity = ConversionFidelity(
-            logic=0.8,
-            data=0.9,
-            sla=1.0,
-            score=0.87
-        )
+        fidelity = ConversionFidelity(logic=0.8, data=0.9, sla=1.0, score=0.87)
         assert fidelity.logic == 0.8
         assert fidelity.data == 0.9
         assert fidelity.sla == 1.0
@@ -42,7 +37,7 @@ class TestTriggerToD365:
         rule = {
             "if": {"field": "status", "value": "open"},
             "then": [{"action": "notify"}],
-            "sla": "standard"
+            "sla": "standard",
         }
         result = trigger_to_d365(rule)
 
@@ -69,11 +64,7 @@ class TestAutomationToD365:
         """Test basic automation conversion."""
         from codex_crm.convert.rules import automation_to_d365
 
-        rule = {
-            "schedule": "daily",
-            "then": [{"action": "cleanup"}],
-            "sla": "background"
-        }
+        rule = {"schedule": "daily", "then": [{"action": "cleanup"}], "sla": "background"}
         result = automation_to_d365(rule)
 
         assert result["type"] == "background_workflow"
@@ -202,12 +193,7 @@ class TestFidelityScore:
         """Test fidelity score with custom weights."""
         from codex_crm.convert.rules import fidelity_score
 
-        score = fidelity_score(
-            1.0, 1.0, 1.0,
-            weight_logic=1.0,
-            weight_data=1.0,
-            weight_sla=1.0
-        )
+        score = fidelity_score(1.0, 1.0, 1.0, weight_logic=1.0, weight_data=1.0, weight_sla=1.0)
         assert score == 1.0
 
     def test_fidelity_score_invalid_inputs(self):

@@ -1,4 +1,5 @@
 """Tests for AI-Driven Autonomous Codebase Management System."""
+
 import sys
 from pathlib import Path
 
@@ -94,7 +95,7 @@ def test_health_metric_creation():
         value=0.5,
         threshold=0.8,
         status=HealthStatus.WARNING,
-        timestamp="2025-12-21T00:00:00"
+        timestamp="2025-12-21T00:00:00",
     )
 
     assert metric.name == "test_metric"
@@ -115,7 +116,7 @@ def test_proposed_action_creation():
         risk_level="low",
         reversibility=True,
         estimated_duration="5 minutes",
-        proposed_at="2025-12-21T00:00:00"
+        proposed_at="2025-12-21T00:00:00",
     )
 
     assert action.id == "test123"
@@ -203,7 +204,7 @@ def test_propose_actions_for_complexity(temp_repo):
         value=25.0,
         threshold=15.0,
         status=HealthStatus.WARNING,
-        timestamp="2025-12-21T00:00:00"
+        timestamp="2025-12-21T00:00:00",
     )
 
     health = CodebaseHealth(
@@ -211,7 +212,7 @@ def test_propose_actions_for_complexity(temp_repo):
         overall_status=HealthStatus.WARNING,
         metrics=[metric],
         proposed_actions=[],
-        alerts=[]
+        alerts=[],
     )
 
     proposer = ActionProposer(temp_repo)
@@ -231,7 +232,7 @@ def test_propose_actions_for_duplication(temp_repo):
         value=0.15,
         threshold=0.10,
         status=HealthStatus.WARNING,
-        timestamp="2025-12-21T00:00:00"
+        timestamp="2025-12-21T00:00:00",
     )
 
     health = CodebaseHealth(
@@ -239,7 +240,7 @@ def test_propose_actions_for_duplication(temp_repo):
         overall_status=HealthStatus.WARNING,
         metrics=[metric],
         proposed_actions=[],
-        alerts=[]
+        alerts=[],
     )
 
     proposer = ActionProposer(temp_repo)
@@ -288,13 +289,15 @@ def test_propose_improvements(temp_repo):
     health = agent.assess_health()
 
     # Add a warning metric
-    health.metrics.append(HealthMetric(
-        name="test_coverage",
-        value=0.5,
-        threshold=0.8,
-        status=HealthStatus.WARNING,
-        timestamp="2025-12-21T00:00:00"
-    ))
+    health.metrics.append(
+        HealthMetric(
+            name="test_coverage",
+            value=0.5,
+            threshold=0.8,
+            status=HealthStatus.WARNING,
+            timestamp="2025-12-21T00:00:00",
+        )
+    )
     health.overall_status = HealthStatus.WARNING
 
     actions = agent.propose_improvements(health)
@@ -318,7 +321,7 @@ def test_execute_autonomous_actions(temp_repo):
         risk_level="low",
         reversibility=True,
         estimated_duration="10 minutes",
-        proposed_at="2025-12-21T00:00:00"
+        proposed_at="2025-12-21T00:00:00",
     )
 
     executed = agent.execute_autonomous_actions([action])
@@ -343,7 +346,7 @@ def test_action_filtering_by_level(temp_repo):
             risk_level="low",
             reversibility=True,
             estimated_duration="5 min",
-            proposed_at="2025-12-21T00:00:00"
+            proposed_at="2025-12-21T00:00:00",
         ),
         ProposedAction(
             id="approval1",
@@ -355,8 +358,8 @@ def test_action_filtering_by_level(temp_repo):
             risk_level="medium",
             reversibility=True,
             estimated_duration="1 hour",
-            proposed_at="2025-12-21T00:00:00"
-        )
+            proposed_at="2025-12-21T00:00:00",
+        ),
     ]
 
     executed = agent.execute_autonomous_actions(actions)
@@ -377,7 +380,7 @@ def test_save_state(temp_repo):
         overall_status=HealthStatus.HEALTHY,
         metrics=[],
         proposed_actions=[],
-        alerts=[]
+        alerts=[],
     )
 
     agent.save_state(health, [])
@@ -426,6 +429,7 @@ def test_complexity_calculation(temp_repo):
 
     # Create a simple function
     import ast
+
     code = """
 def simple():
     return True

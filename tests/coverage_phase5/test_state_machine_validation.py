@@ -1,4 +1,5 @@
 """Test state machine validation across components."""
+
 from __future__ import annotations
 
 from enum import Enum

@@ -16,7 +16,6 @@ import pytest
 pytest.importorskip("numpy")
 
 
-
 import numpy as np
 
 
@@ -228,9 +227,7 @@ class TestPhase3_Transactional_Semantics:
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
         if hasattr(orchestrator, "propagate_feature_flag"):
-            result = orchestrator.propagate_feature_flag(
-                flag_name="new_feature", enabled=True
-            )
+            result = orchestrator.propagate_feature_flag(flag_name="new_feature", enabled=True)
             assert result is not None
         else:
             assert orchestrator is not None

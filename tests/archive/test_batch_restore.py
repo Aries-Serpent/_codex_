@@ -45,9 +45,7 @@ def test_manifest_json_and_csv(tmp_path: Path) -> None:
     csv_manifest = manifest_dir / "batch.csv"
     csv_manifest.write_text("tombstone,output\na,fileA.txt\n")
 
-    json_items = batch.BatchManifest.from_path(
-        json_manifest, default_actor="actor"
-    ).items
+    json_items = batch.BatchManifest.from_path(json_manifest, default_actor="actor").items
     csv_items = batch.BatchManifest.from_path(csv_manifest, default_actor="actor").items
 
     assert len(json_items) == 2

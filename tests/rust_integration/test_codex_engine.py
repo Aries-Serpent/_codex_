@@ -10,10 +10,12 @@ import pytest
 # Note: These tests will work once maturin build completes
 # For now, they serve as documentation of expected API
 
+
 def test_swarm_state_creation():
     """Test creating a SwarmState instance."""
     try:
         from codex_engine import SwarmState
+
         state = SwarmState()
         assert state.get_agent_count() == 0
     except ImportError:
@@ -24,6 +26,7 @@ def test_agent_registration():
     """Test registering agents with SwarmState."""
     try:
         from codex_engine import SwarmState
+
         state = SwarmState()
 
         state.register_agent("agent_1")
@@ -43,6 +46,7 @@ def test_agent_status_management():
     """Test updating and querying agent status."""
     try:
         from codex_engine import SwarmState
+
         state = SwarmState()
 
         state.register_agent("agent_1")
@@ -65,6 +69,7 @@ def test_orchestrator_lifecycle():
     """Test starting and stopping the orchestrator."""
     try:
         from codex_engine import Orchestrator, SwarmState
+
         state = SwarmState()
         orch = Orchestrator(state)
 
@@ -83,6 +88,7 @@ def test_task_queue_operations():
     """Test task submission and retrieval."""
     try:
         from codex_engine import Task, TaskQueue
+
         queue = TaskQueue()
 
         # Submit a task
@@ -116,10 +122,7 @@ def test_concurrent_agent_registration():
 
         # Register 100 agents concurrently
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(register_agents, i * 10, 10)
-                for i in range(10)
-            ]
+            futures = [executor.submit(register_agents, i * 10, 10) for i in range(10)]
             concurrent.futures.wait(futures)
 
         assert state.get_agent_count() == 100

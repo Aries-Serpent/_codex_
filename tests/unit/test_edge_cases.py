@@ -3,6 +3,7 @@ Unit tests for edge cases across all modules.
 
 Tests boundary conditions, invalid inputs, and error handling.
 """
+
 import importlib.util
 import tempfile
 from pathlib import Path
@@ -47,9 +48,9 @@ class TestPathUtilsEdgeCases:
         result = sanitize_filename('<>:"/\\|?*')
 
         # All should be replaced
-        assert '<' not in result
-        assert '>' not in result
-        assert ':' not in result
+        assert "<" not in result
+        assert ">" not in result
+        assert ":" not in result
 
     def test_sanitize_filename_unicode(self):
         """Test sanitize_filename with unicode characters."""
@@ -174,7 +175,7 @@ class TestCheckpointEdgeCases:
 class TestDistributedEdgeCases:
     """Test distributed training edge cases."""
 
-    @patch.dict('os.environ', {"TEST_FLAG": ""}, clear=False)
+    @patch.dict("os.environ", {"TEST_FLAG": ""}, clear=False)
     def test_parse_env_int_empty_string(self):
         """Test _parse_env_int with empty string."""
         from codex_ml.distributed.minimal import _parse_env_int
@@ -183,7 +184,7 @@ class TestDistributedEdgeCases:
             result = _parse_env_int("TEST_FLAG")
             assert result is None
 
-    @patch.dict('os.environ', {"TEST_FLAG": "abc123"}, clear=False)
+    @patch.dict("os.environ", {"TEST_FLAG": "abc123"}, clear=False)
     def test_parse_env_int_mixed_string(self):
         """Test _parse_env_int with mixed alphanumeric."""
         from codex_ml.distributed.minimal import _parse_env_int
@@ -192,7 +193,7 @@ class TestDistributedEdgeCases:
             result = _parse_env_int("TEST_FLAG")
             assert result is None
 
-    @patch.dict('os.environ', {"TEST_FLAG": "99999999999"}, clear=False)
+    @patch.dict("os.environ", {"TEST_FLAG": "99999999999"}, clear=False)
     def test_parse_env_int_large_number(self):
         """Test _parse_env_int with very large number."""
         from codex_ml.distributed.minimal import _parse_env_int
@@ -263,4 +264,4 @@ class TestConfigEdgeCases:
 # Helper
 def _torch_available():
     """Check if PyTorch is available."""
-    return importlib.util.find_spec('torch') is not None
+    return importlib.util.find_spec("torch") is not None

@@ -10,6 +10,7 @@ class TestApiModelsImports:
         """Test that the module can be imported."""
         try:
             from src.codex.api import models
+
             assert models is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -18,7 +19,8 @@ class TestApiModelsImports:
         """Test module has expected attributes."""
         try:
             from src.codex.api import models
-            assert hasattr(models, '__name__')
+
+            assert hasattr(models, "__name__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -30,7 +32,8 @@ class TestApiRequestModels:
         """Test base request model."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'BaseRequest'):
+
+            if hasattr(models, "BaseRequest"):
                 request = models.BaseRequest()
                 assert request is not None
         except (ImportError, AttributeError):
@@ -40,7 +43,8 @@ class TestApiRequestModels:
         """Test request model with data."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'RequestModel'):
+
+            if hasattr(models, "RequestModel"):
                 request = models.RequestModel(data={"key": "value"})
                 assert request.data == {"key": "value"}
         except (ImportError, AttributeError):
@@ -54,7 +58,8 @@ class TestApiResponseModels:
         """Test base response model."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'BaseResponse'):
+
+            if hasattr(models, "BaseResponse"):
                 response = models.BaseResponse()
                 assert response is not None
         except (ImportError, AttributeError):
@@ -64,7 +69,8 @@ class TestApiResponseModels:
         """Test success response model."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'SuccessResponse'):
+
+            if hasattr(models, "SuccessResponse"):
                 response = models.SuccessResponse(data={"result": "ok"})
                 assert response.data["result"] == "ok"
         except (ImportError, AttributeError):
@@ -74,11 +80,9 @@ class TestApiResponseModels:
         """Test error response model."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'ErrorResponse'):
-                response = models.ErrorResponse(
-                    error="Test error",
-                    code=400
-                )
+
+            if hasattr(models, "ErrorResponse"):
+                response = models.ErrorResponse(error="Test error", code=400)
                 assert response.error == "Test error"
         except (ImportError, AttributeError):
             pytest.skip("ErrorResponse not available")
@@ -91,9 +95,10 @@ class TestApiModelSerialization:
         """Test model to dictionary conversion."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'BaseModel'):
+
+            if hasattr(models, "BaseModel"):
                 model = models.BaseModel()
-                if hasattr(model, 'to_dict'):
+                if hasattr(model, "to_dict"):
                     result = model.to_dict()
                     assert isinstance(result, dict)
         except (ImportError, AttributeError):
@@ -103,9 +108,10 @@ class TestApiModelSerialization:
         """Test model to JSON conversion."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'BaseModel'):
+
+            if hasattr(models, "BaseModel"):
                 model = models.BaseModel()
-                if hasattr(model, 'to_json'):
+                if hasattr(model, "to_json"):
                     result = model.to_json()
                     assert isinstance(result, str)
         except (ImportError, AttributeError):
@@ -119,7 +125,8 @@ class TestApiModelValidation:
         """Test validation of required fields."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'RequestModel'):
+
+            if hasattr(models, "RequestModel"):
                 with pytest.raises((TypeError, ValueError)):
                     models.RequestModel()
         except (ImportError, AttributeError):
@@ -129,7 +136,8 @@ class TestApiModelValidation:
         """Test validation of field types."""
         try:
             from src.codex.api import models
-            if hasattr(models, 'RequestModel'):
+
+            if hasattr(models, "RequestModel"):
                 with pytest.raises((TypeError, ValueError)):
                     models.RequestModel(data="not_a_dict")
         except (ImportError, AttributeError):

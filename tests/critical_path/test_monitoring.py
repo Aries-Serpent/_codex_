@@ -49,11 +49,7 @@ class TestHealthCheckEndpoints:
     def test_basic_health_check_returns_ok(self):
         """Test basic health check returns OK status."""
         # Simulate health check
-        health_status = {
-            "status": "ok",
-            "timestamp": time.time(),
-            "version": "1.0.0"
-        }
+        health_status = {"status": "ok", "timestamp": time.time(), "version": "1.0.0"}
 
         assert health_status["status"] == "ok"
         assert "timestamp" in health_status
@@ -72,7 +68,7 @@ class TestHealthCheckEndpoints:
                 "database": "ok" if db_healthy else "degraded",
                 "cache": "ok" if cache_healthy else "degraded",
                 "external_api": "ok" if api_healthy else "degraded",
-            }
+            },
         }
 
         assert health_status["status"] == "ok"
@@ -87,7 +83,7 @@ class TestHealthCheckEndpoints:
             "dependencies": {
                 "database": "ok",
                 "cache": "degraded",
-            }
+            },
         }
 
         assert health_status["status"] == "degraded"
@@ -98,9 +94,7 @@ class TestHealthCheckEndpoints:
         health_status = {
             "status": "error",
             "error": "Database connection failed",
-            "dependencies": {
-                "database": "error"
-            }
+            "dependencies": {"database": "error"},
         }
 
         assert health_status["status"] == "error"
@@ -115,7 +109,7 @@ class TestHealthCheckEndpoints:
         readiness_status = {
             "ready": is_ready and is_initialized,
             "initialized": is_initialized,
-            "accepting_traffic": is_ready
+            "accepting_traffic": is_ready,
         }
 
         assert readiness_status["ready"] is True
@@ -130,7 +124,7 @@ class TestHealthCheckEndpoints:
         liveness_status = {
             "alive": is_alive,
             "last_heartbeat": last_heartbeat,
-            "uptime_seconds": 100.0
+            "uptime_seconds": 100.0,
         }
 
         assert liveness_status["alive"] is True
@@ -143,7 +137,7 @@ class TestHealthCheckEndpoints:
 
         health_status = {
             "status": "degraded" if timeout_occurred else "ok",
-            "error": "Health check timeout" if timeout_occurred else None
+            "error": "Health check timeout" if timeout_occurred else None,
         }
 
         assert health_status["status"] == "degraded"
@@ -180,7 +174,7 @@ class TestMetricsCollection:
         """Test histogram metric records distribution."""
         histogram = {
             "request_duration_ms": [],
-            "buckets": {"<10ms": 0, "10-50ms": 0, "50-100ms": 0, ">100ms": 0}
+            "buckets": {"<10ms": 0, "10-50ms": 0, "50-100ms": 0, ">100ms": 0},
         }
 
         # Record values
@@ -243,11 +237,7 @@ class TestMetricsCollection:
 
     def test_metrics_export_format(self):
         """Test metrics export in standard format."""
-        metrics = {
-            "requests_total": 150,
-            "errors_total": 5,
-            "response_time_ms": 45.2
-        }
+        metrics = {"requests_total": 150, "errors_total": 5, "response_time_ms": 45.2}
 
         # Export as Prometheus format
         prometheus_format = []
@@ -264,7 +254,7 @@ class TestMetricsCollection:
         time_series = [
             (current_time - 60, 100),  # 1 min ago
             (current_time - 30, 150),  # 30 sec ago
-            (current_time, 200),       # now
+            (current_time, 200),  # now
         ]
 
         # Aggregate over last minute
@@ -292,7 +282,7 @@ class TestAlertTriggering:
     def test_threshold_alert(self):
         """Test alert triggers when threshold exceeded."""
         error_rate = 0.15  # 15%
-        threshold = 0.10   # 10%
+        threshold = 0.10  # 10%
 
         should_alert = error_rate > threshold
 
@@ -301,7 +291,7 @@ class TestAlertTriggering:
     def test_alert_not_triggered_below_threshold(self):
         """Test alert doesn't trigger below threshold."""
         error_rate = 0.05  # 5%
-        threshold = 0.10   # 10%
+        threshold = 0.10  # 10%
 
         should_alert = error_rate > threshold
 
@@ -401,10 +391,7 @@ class TestLoggingIntegration:
             "timestamp": time.time(),
             "level": "INFO",
             "message": "Test log message",
-            "context": {
-                "user_id": "user123",
-                "request_id": "req-456"
-            }
+            "context": {"user_id": "user123", "request_id": "req-456"},
         }
 
         assert "timestamp" in log_entry
@@ -422,7 +409,7 @@ class TestLoggingIntegration:
             "level": "ERROR",
             "message": "Database connection failed",
             "error": "Connection timeout",
-            "retry_count": 3
+            "retry_count": 3,
         }
 
         log_file.write_text(json.dumps(log_entry) + "\n")
@@ -447,8 +434,7 @@ class TestLoggingIntegration:
         level_priority = {"DEBUG": 0, "INFO": 1, "WARNING": 2, "ERROR": 3}
 
         filtered = [
-            log for log in logs
-            if level_priority.get(log["level"], 0) >= level_priority[min_level]
+            log for log in logs if level_priority.get(log["level"], 0) >= level_priority[min_level]
         ]
 
         assert len(filtered) == 2
@@ -562,8 +548,7 @@ class TestErrorTracking:
         }
 
         classified = [
-            {**error, "severity": severity_map.get(error["type"], "medium")}
-            for error in errors
+            {**error, "severity": severity_map.get(error["type"], "medium")} for error in errors
         ]
 
         assert classified[0]["severity"] == "low"
@@ -596,6 +581,7 @@ class TestErrorTracking:
 
         stack_trace = ""
         try:
+
             def inner_function():
                 raise RuntimeError("Inner error")
 
@@ -615,7 +601,7 @@ class TestErrorTracking:
         error = {
             "type": "DatabaseError",
             "severity": "critical",
-            "message": "Database connection lost"
+            "message": "Database connection lost",
         }
 
         # Determine if notification needed

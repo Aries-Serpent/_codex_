@@ -1,7 +1,6 @@
 """Tests for optimization functionality in codex_ml."""
 
 
-
 class TestOptimization:
     """Tests for optimization operations."""
 
@@ -146,10 +145,7 @@ class TestOptimization:
     def test_parameter_groups(self):
         """Test parameter groups configuration."""
         # Arrange
-        param_groups = [
-            {"params": [], "lr": 1e-4},
-            {"params": [], "lr": 1e-5}
-        ]
+        param_groups = [{"params": [], "lr": 1e-4}, {"params": [], "lr": 1e-5}]
 
         # Assert
         assert len(param_groups) == 2

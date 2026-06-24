@@ -12,15 +12,13 @@ def test_function_extraction():
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create test file
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text(
-            """
+        test_file.write_text("""
 def hello(name):
     return f"Hello, {name}"
 
 def goodbye(name):
     return f"Goodbye, {name}"
-"""
-        )
+""")
 
         parser = PythonASTParser()
         signatures = parser.parse_file(test_file)
@@ -35,16 +33,14 @@ def test_class_extraction():
     """Test extracting classes and methods."""
     with tempfile.TemporaryDirectory() as tmpdir:
         test_file = Path(tmpdir) / "test.py"
-        test_file.write_text(
-            """
+        test_file.write_text("""
 class MyClass:
     def method1(self, x):
         return x * 2
 
     def method2(self, x):
         return x + 1
-"""
-        )
+""")
 
         parser = PythonASTParser()
         signatures = parser.parse_file(test_file)
@@ -102,19 +98,15 @@ def test_ast_hash_difference():
         file1 = Path(tmpdir) / "file1.py"
         file2 = Path(tmpdir) / "file2.py"
 
-        file1.write_text(
-            """
+        file1.write_text("""
 def func1(x):
     return x * 2
-"""
-        )
+""")
 
-        file2.write_text(
-            """
+        file2.write_text("""
 def func1(x):
     return x + 2
-"""
-        )
+""")
 
         parser = PythonASTParser()
         sigs1 = parser.parse_file(file1)
@@ -129,19 +121,15 @@ def test_identical_function_detection():
         tmppath = Path(tmpdir)
 
         # Create files with duplicate functions
-        (tmppath / "file1.py").write_text(
-            """
+        (tmppath / "file1.py").write_text("""
 def calculate(x, y):
     return x + y
-"""
-        )
+""")
 
-        (tmppath / "file2.py").write_text(
-            """
+        (tmppath / "file2.py").write_text("""
 def calculate(x, y):
     return x + y
-"""
-        )
+""")
 
         detector = ASTDetector(tmppath)
         groups = detector.scan()
@@ -165,19 +153,15 @@ def test_cross_file_detection():
         subdir = tmppath / "subdir"
         subdir.mkdir()
 
-        (tmppath / "file1.py").write_text(
-            """
+        (tmppath / "file1.py").write_text("""
 def helper(data):
     return sorted(data)
-"""
-        )
+""")
 
-        (subdir / "file2.py").write_text(
-            """
+        (subdir / "file2.py").write_text("""
 def helper(data):
     return sorted(data)
-"""
-        )
+""")
 
         detector = ASTDetector(tmppath)
         groups = detector.scan()
@@ -200,12 +184,10 @@ def test_threshold_filtering():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmppath = Path(tmpdir)
 
-        (tmppath / "file1.py").write_text(
-            """
+        (tmppath / "file1.py").write_text("""
 def func(x):
     return x
-"""
-        )
+""")
 
         detector = ASTDetector(tmppath, similarity_threshold=0.95)
         groups = detector.scan()

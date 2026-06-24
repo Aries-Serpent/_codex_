@@ -85,7 +85,11 @@ def test_rate_limit_hook_placeholder(monkeypatch) -> None:
     from mcp.server import http as http_module
 
     with monkeypatch.context() as mpatch:
-        mpatch.setattr(http_module, "_enforce_rate_limit", lambda enabled=False: (_ for _ in ()).throw(http_module.HTTPException(status_code=429)))
+        mpatch.setattr(
+            http_module,
+            "_enforce_rate_limit",
+            lambda enabled=False: (_ for _ in ()).throw(http_module.HTTPException(status_code=429)),
+        )
         client = TestClient(http_module.create_app())
         response = client.post(
             "/mcp/v1/query",

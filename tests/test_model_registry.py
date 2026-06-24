@@ -17,6 +17,7 @@ transformers = import_optional_dependency("transformers")
 
 try:
     import torch as _torch
+
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch.__version__.startswith("2.")
 except ImportError:
     _TORCH_312_BUG = False

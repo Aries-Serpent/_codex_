@@ -47,8 +47,7 @@ class TestCRUDOperations:
                 "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)"
             )
             cursor.execute(
-                "INSERT INTO users (name, email) VALUES (?, ?)",
-                ("Alice", "alice@example.com")
+                "INSERT INTO users (name, email) VALUES (?, ?)", ("Alice", "alice@example.com")
             )
             conn.commit()
 
@@ -67,9 +66,7 @@ class TestCRUDOperations:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)")
             cursor.execute("INSERT INTO users (name) VALUES (?)", ("Bob",))
             conn.commit()
 
@@ -90,15 +87,13 @@ class TestCRUDOperations:
                 "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)"
             )
             cursor.execute(
-                "INSERT INTO users (name, email) VALUES (?, ?)",
-                ("Charlie", "charlie@old.com")
+                "INSERT INTO users (name, email) VALUES (?, ?)", ("Charlie", "charlie@old.com")
             )
             conn.commit()
 
             # Update record
             cursor.execute(
-                "UPDATE users SET email = ? WHERE name = ?",
-                ("charlie@new.com", "Charlie")
+                "UPDATE users SET email = ? WHERE name = ?", ("charlie@new.com", "Charlie")
             )
             conn.commit()
 
@@ -115,9 +110,7 @@ class TestCRUDOperations:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)")
             cursor.execute("INSERT INTO users (name) VALUES (?)", ("David",))
             conn.commit()
 
@@ -138,9 +131,7 @@ class TestCRUDOperations:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)")
 
             # Bulk insert
             users = [("User1",), ("User2",), ("User3",), ("User4",), ("User5",)]
@@ -167,7 +158,7 @@ class TestCRUDOperations:
             # Insert records
             cursor.executemany(
                 "INSERT INTO users (name, active) VALUES (?, ?)",
-                [("User1", 0), ("User2", 0), ("User3", 0)]
+                [("User1", 0), ("User2", 0), ("User3", 0)],
             )
             conn.commit()
 
@@ -248,9 +239,7 @@ class TestTransactionHandling:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY, message TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY, message TEXT)")
 
             # Outer transaction
             cursor.execute("INSERT INTO logs (message) VALUES (?)", ("Outer",))
@@ -338,9 +327,7 @@ class TestRollbackScenarios:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)")
 
             # Insert and rollback
             cursor.execute("INSERT INTO users (name) VALUES (?)", ("Rollback User",))
@@ -370,7 +357,9 @@ class TestRollbackScenarios:
             with manager.connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute("INSERT INTO users (email) VALUES (?)", ("valid@example.com",))
-                cursor.execute("INSERT INTO users (email) VALUES (?)", ("test@example.com",))  # Duplicate
+                cursor.execute(
+                    "INSERT INTO users (email) VALUES (?)", ("test@example.com",)
+                )  # Duplicate
                 conn.commit()
         except sqlite3.IntegrityError:
             _ = None  # Expected
@@ -394,9 +383,7 @@ class TestRollbackScenarios:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS audit (id INTEGER PRIMARY KEY, action TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS audit (id INTEGER PRIMARY KEY, action TEXT)")
 
             # Create savepoint
             cursor.execute("INSERT INTO audit (action) VALUES (?)", ("Before savepoint",))
@@ -430,13 +417,19 @@ class TestRollbackScenarios:
             )
 
             # Insert valid records
-            cursor.execute("INSERT INTO products (sku, name) VALUES (?, ?)", ("SKU001", "Product 1"))
+            cursor.execute(
+                "INSERT INTO products (sku, name) VALUES (?, ?)", ("SKU001", "Product 1")
+            )
             conn.commit()
 
             # Try batch insert with one invalid
             try:
-                cursor.execute("INSERT INTO products (sku, name) VALUES (?, ?)", ("SKU002", "Product 2"))
-                cursor.execute("INSERT INTO products (sku, name) VALUES (?, ?)", ("SKU001", "Duplicate"))  # Violates unique
+                cursor.execute(
+                    "INSERT INTO products (sku, name) VALUES (?, ?)", ("SKU002", "Product 2")
+                )
+                cursor.execute(
+                    "INSERT INTO products (sku, name) VALUES (?, ?)", ("SKU001", "Duplicate")
+                )  # Violates unique
                 conn.commit()
             except sqlite3.IntegrityError:
                 conn.rollback()
@@ -454,9 +447,7 @@ class TestRollbackScenarios:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY, total REAL)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY, total REAL)")
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS order_items (id INTEGER PRIMARY KEY, order_id INTEGER, amount REAL)"
             )
@@ -464,8 +455,12 @@ class TestRollbackScenarios:
             # Complex operation
             cursor.execute("INSERT INTO orders (total) VALUES (?)", (100.0,))
             order_id = cursor.lastrowid
-            cursor.execute("INSERT INTO order_items (order_id, amount) VALUES (?, ?)", (order_id, 50.0))
-            cursor.execute("INSERT INTO order_items (order_id, amount) VALUES (?, ?)", (order_id, 50.0))
+            cursor.execute(
+                "INSERT INTO order_items (order_id, amount) VALUES (?, ?)", (order_id, 50.0)
+            )
+            cursor.execute(
+                "INSERT INTO order_items (order_id, amount) VALUES (?, ?)", (order_id, 50.0)
+            )
 
             # Rollback entire operation
             conn.rollback()
@@ -488,9 +483,7 @@ class TestDataIntegrityConstraints:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT)")
             cursor.execute("INSERT INTO items (id, name) VALUES (?, ?)", (1, "Item 1"))
             conn.commit()
 
@@ -529,9 +522,7 @@ class TestDataIntegrityConstraints:
             conn.execute("PRAGMA foreign_keys = ON")
 
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS authors (id INTEGER PRIMARY KEY, name TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS authors (id INTEGER PRIMARY KEY, name TEXT)")
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS books (id INTEGER PRIMARY KEY, title TEXT, author_id INTEGER, "
                 "FOREIGN KEY(author_id) REFERENCES authors(id))"
@@ -542,12 +533,16 @@ class TestDataIntegrityConstraints:
             author_id = cursor.lastrowid
 
             # Insert book with valid foreign key
-            cursor.execute("INSERT INTO books (title, author_id) VALUES (?, ?)", ("Book 1", author_id))
+            cursor.execute(
+                "INSERT INTO books (title, author_id) VALUES (?, ?)", ("Book 1", author_id)
+            )
             conn.commit()
 
             # Try invalid foreign key
             with pytest.raises(sqlite3.IntegrityError):
-                cursor.execute("INSERT INTO books (title, author_id) VALUES (?, ?)", ("Book 2", 9999))
+                cursor.execute(
+                    "INSERT INTO books (title, author_id) VALUES (?, ?)", ("Book 2", 9999)
+                )
                 conn.commit()
 
     def test_not_null_constraint(self, tmp_path):
@@ -603,9 +598,7 @@ class TestBackupRestoreWorkflows:
         # Create some data
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY, value TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY, value TEXT)")
             cursor.execute("INSERT INTO data (value) VALUES (?)", ("Test Data",))
             conn.commit()
 
@@ -634,9 +627,7 @@ class TestBackupRestoreWorkflows:
 
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY, value TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY, value TEXT)")
             cursor.execute("INSERT INTO data (value) VALUES (?)", ("Original",))
             conn.commit()
 
@@ -670,7 +661,9 @@ class TestBackupRestoreWorkflows:
             cursor.execute(
                 "CREATE TABLE IF NOT EXISTS changes (id INTEGER PRIMARY KEY, timestamp REAL, change TEXT)"
             )
-            cursor.execute("INSERT INTO changes (timestamp, change) VALUES (?, ?)", (time.time(), "Change 1"))
+            cursor.execute(
+                "INSERT INTO changes (timestamp, change) VALUES (?, ?)", (time.time(), "Change 1")
+            )
             conn.commit()
 
         # Backup 1
@@ -681,7 +674,9 @@ class TestBackupRestoreWorkflows:
         # More changes
         with manager.connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO changes (timestamp, change) VALUES (?, ?)", (time.time(), "Change 2"))
+            cursor.execute(
+                "INSERT INTO changes (timestamp, change) VALUES (?, ?)", (time.time(), "Change 2")
+            )
             conn.commit()
 
         # Backup 2
@@ -715,9 +710,7 @@ class TestBackupRestoreWorkflows:
         with manager.connection() as conn:
             conn.execute("PRAGMA journal_mode=WAL")
             cursor = conn.cursor()
-            cursor.execute(
-                "CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY, value TEXT)"
-            )
+            cursor.execute("CREATE TABLE IF NOT EXISTS data (id INTEGER PRIMARY KEY, value TEXT)")
             cursor.execute("INSERT INTO data (value) VALUES (?)", ("WAL Data",))
             conn.commit()
 
@@ -750,7 +743,10 @@ class TestBackupRestoreWorkflows:
 
             for i in range(3):
                 timestamp = time.time()
-                cursor.execute("INSERT INTO timeline (timestamp, event) VALUES (?, ?)", (timestamp, f"Event {i}"))
+                cursor.execute(
+                    "INSERT INTO timeline (timestamp, event) VALUES (?, ?)",
+                    (timestamp, f"Event {i}"),
+                )
                 conn.commit()
 
                 # Take snapshot

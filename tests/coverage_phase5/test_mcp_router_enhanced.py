@@ -79,6 +79,7 @@ class JSONRPCRouter:
 # TEST SUITE 1: Router Creation and Initialization
 # ============================================================================
 
+
 class TestRouterInitialization:
     """Test router creation with semantic assertions."""
 
@@ -135,6 +136,7 @@ class TestRouterInitialization:
 # TEST SUITE 2: Request Handling with Semantic Assertions
 # ============================================================================
 
+
 class TestRequestHandling:
     """Test request handling with full mutation defense."""
 
@@ -142,12 +144,7 @@ class TestRequestHandling:
         """✅ PATTERN: Multi-level assertion depth."""
         # Arrange
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "2.0",
-            "method": "test.method",
-            "params": {"key": "value"},
-            "id": 1
-        }
+        request = {"jsonrpc": "2.0", "method": "test.method", "params": {"key": "value"}, "id": 1}
 
         # Act
         response = router.handle_request(request)
@@ -165,11 +162,7 @@ class TestRequestHandling:
     def test_handle_valid_request_no_params(self):
         """✅ PATTERN: Edge case - request without params."""
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "2.0",
-            "method": "test.simple",
-            "id": 2
-        }
+        request = {"jsonrpc": "2.0", "method": "test.simple", "id": 2}
 
         response = router.handle_request(request)
         assert response["jsonrpc"] == "2.0"
@@ -180,10 +173,7 @@ class TestRequestHandling:
     def test_handle_request_notification(self):
         """✅ PATTERN: Edge case - notification (no ID)."""
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "2.0",
-            "method": "notify.event"
-        }
+        request = {"jsonrpc": "2.0", "method": "notify.event"}
 
         response = router.handle_request(request)
         assert response["jsonrpc"] == "2.0"
@@ -193,11 +183,7 @@ class TestRequestHandling:
     def test_handle_request_large_id(self):
         """✅ PATTERN: Boundary value - large ID."""
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "2.0",
-            "method": "test",
-            "id": 999999999
-        }
+        request = {"jsonrpc": "2.0", "method": "test", "id": 999999999}
 
         response = router.handle_request(request)
         assert response["id"] == 999999999, "Large ID must be preserved exactly"
@@ -206,11 +192,7 @@ class TestRequestHandling:
     def test_handle_request_zero_id(self):
         """✅ PATTERN: Boundary value - zero ID."""
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "2.0",
-            "method": "test",
-            "id": 0
-        }
+        request = {"jsonrpc": "2.0", "method": "test", "id": 0}
 
         response = router.handle_request(request)
         assert response["id"] == 0, "Zero ID must be preserved"
@@ -220,6 +202,7 @@ class TestRequestHandling:
 # ============================================================================
 # TEST SUITE 3: Error Handling with Message Validation
 # ============================================================================
+
 
 class TestErrorHandling:
     """Test error conditions with specific assertions."""
@@ -239,26 +222,21 @@ class TestErrorHandling:
     def test_reject_invalid_version(self):
         """✅ PATTERN: Edge case - unsupported version."""
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "1.0",
-            "method": "test",
-            "id": 1
-        }
+        request = {"jsonrpc": "1.0", "method": "test", "id": 1}
 
         with pytest.raises(ValueError) as exc_info:
             router.handle_request(request)
 
         error_msg = str(exc_info.value).lower()
         assert "2.0" in str(exc_info.value), "Error must mention required version"
-        assert "jsonrpc" in error_msg or "rpc" in error_msg or "version" in error_msg, "Error must specify version issue"
+        assert (
+            "jsonrpc" in error_msg or "rpc" in error_msg or "version" in error_msg
+        ), "Error must specify version issue"
 
     def test_reject_missing_method(self):
         """✅ PATTERN: Edge case - missing required method."""
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "2.0",
-            "id": 1
-        }
+        request = {"jsonrpc": "2.0", "id": 1}
 
         with pytest.raises(ValueError) as exc_info:
             router.handle_request(request)
@@ -268,11 +246,7 @@ class TestErrorHandling:
     def test_reject_empty_method(self):
         """✅ PATTERN: Edge case - empty method string."""
         router = JSONRPCRouter()
-        request = {
-            "jsonrpc": "2.0",
-            "method": "",
-            "id": 1
-        }
+        request = {"jsonrpc": "2.0", "method": "", "id": 1}
 
         # Empty method may be treated as missing or invalid
         # This test documents the behavior
@@ -289,12 +263,14 @@ class TestErrorHandling:
 # TEST SUITE 4: Route Registration with Mutation Defense
 # ============================================================================
 
+
 class TestRouteRegistration:
     """Test route registration with comprehensive assertions."""
 
     def test_register_valid_route(self):
         """✅ PATTERN: Registration with property assertions."""
         router = JSONRPCRouter()
+
         def handler(_x):
             return "result"
 
@@ -324,6 +300,7 @@ class TestRouteRegistration:
     def test_register_empty_method_rejected(self):
         """✅ PATTERN: Edge case - empty method name."""
         router = JSONRPCRouter()
+
         def handler(_x):
             return "result"
 
@@ -357,17 +334,14 @@ class TestRouteRegistration:
 # TEST SUITE 5: Batch Processing with Boundary Testing
 # ============================================================================
 
+
 class TestBatchProcessing:
     """Test batch request processing with mutation defense."""
 
     def test_batch_single_request(self):
         """✅ PATTERN: Single item batch."""
         router = JSONRPCRouter()
-        requests = [{
-            "jsonrpc": "2.0",
-            "method": "test",
-            "id": 1
-        }]
+        requests = [{"jsonrpc": "2.0", "method": "test", "id": 1}]
 
         results = router.batch_process(requests)
 
@@ -455,6 +429,7 @@ class TestBatchProcessing:
 # TEST SUITE 6: Request Count Tracking (State Mutation)
 # ============================================================================
 
+
 class TestRequestCounting:
     """Test request counting with state mutation verification."""
 
@@ -486,6 +461,7 @@ class TestRequestCounting:
 # ============================================================================
 # TEST SUITE 7: Operator Verification (Mutation Defense)
 # ============================================================================
+
 
 class TestOperatorMutationDefense:
     """Test operators to defend against mutation testing."""

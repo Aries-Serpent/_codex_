@@ -16,19 +16,23 @@ def fresh_registry():
     reset_registry()
 
 
-def _register_skill(reg: SkillRegistry, skill_id: str, tags: list[str], risk_tier: str = "low", aais: float = 0.9) -> None:
-    reg.register(SkillManifest(
-        id=skill_id,
-        version="1.0.0",
-        name=skill_id.replace(".", " ").title(),
-        entrypoint=f"codex.skills.stubs:{skill_id.replace('.', '_')}",
-        capability_tags=tags,
-        policy=PolicyConfig(
-            risk_tier=risk_tier,  # type: ignore[arg-type]
-            budgets=BudgetConfig(calls=100, tokens=50_000, wallclock_ms=30_000),
-        ),
-        doc=DocMeta(doc_id=f"doc_{skill_id}", aais_score=aais),
-    ))
+def _register_skill(
+    reg: SkillRegistry, skill_id: str, tags: list[str], risk_tier: str = "low", aais: float = 0.9
+) -> None:
+    reg.register(
+        SkillManifest(
+            id=skill_id,
+            version="1.0.0",
+            name=skill_id.replace(".", " ").title(),
+            entrypoint=f"codex.skills.stubs:{skill_id.replace('.', '_')}",
+            capability_tags=tags,
+            policy=PolicyConfig(
+                risk_tier=risk_tier,  # type: ignore[arg-type]
+                budgets=BudgetConfig(calls=100, tokens=50_000, wallclock_ms=30_000),
+            ),
+            doc=DocMeta(doc_id=f"doc_{skill_id}", aais_score=aais),
+        )
+    )
 
 
 class TestStratifiedRouterBasic:
@@ -85,14 +89,16 @@ class TestStratifiedRouterConstraints:
 
     def test_allowlist_blocks_caller(self):
         reg = SkillRegistry()
-        reg.register(SkillManifest(
-            id="restricted.skill",
-            version="1.0.0",
-            name="Restricted",
-            entrypoint="stub:fn",
-            capability_tags=["task"],
-            policy=PolicyConfig(allowlist=["admin"], budgets=BudgetConfig()),
-        ))
+        reg.register(
+            SkillManifest(
+                id="restricted.skill",
+                version="1.0.0",
+                name="Restricted",
+                entrypoint="stub:fn",
+                capability_tags=["task"],
+                policy=PolicyConfig(allowlist=["admin"], budgets=BudgetConfig()),
+            )
+        )
         router = StratifiedRouter(reg)
         decision = router.route("do task", tags=["task"], caller_id="normal-user")
         assert decision.selected_skill_id is None
@@ -125,7 +131,9 @@ class TestStratifiedRouterScoring:
         reg = SkillRegistry()
         _register_skill(reg, "doc.skill", ["docs"], aais=0.9)
         # Maximise AAIS weight
-        router = StratifiedRouter(reg, weights={"match": 0.1, "fresh": 0.1, "aais": 0.6, "cost": 0.1, "risk": 0.1})
+        router = StratifiedRouter(
+            reg, weights={"match": 0.1, "fresh": 0.1, "aais": 0.6, "cost": 0.1, "risk": 0.1}
+        )
         score = router.score_skill("doc.skill", "docs", ["docs"])
         assert score is not None
         # AAIS contribution should dominate

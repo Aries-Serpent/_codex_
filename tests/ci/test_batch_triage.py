@@ -26,7 +26,7 @@ def test_failure_record_creation():
         issue_number=2905,
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2905",
         workflow_run_id="21145572518",
-        analysis_run_id="21145604149"
+        analysis_run_id="21145604149",
     )
 
     assert failure.issue_number == 2905
@@ -34,8 +34,8 @@ def test_failure_record_creation():
 
     # Test serialization
     data = failure.to_dict()
-    assert data['issue_number'] == 2905
-    assert data['workflow_run_id'] == "21145572518"
+    assert data["issue_number"] == 2905
+    assert data["workflow_run_id"] == "21145572518"
 
 
 def test_triage_group_creation():
@@ -44,13 +44,13 @@ def test_triage_group_creation():
         FailureRecord(
             issue_number=2905,
             issue_url="https://github.com/Aries-Serpent/_codex_/issues/2905",
-            workflow_run_id="21145572518"
+            workflow_run_id="21145572518",
         ),
         FailureRecord(
             issue_number=2906,
             issue_url="https://github.com/Aries-Serpent/_codex_/issues/2906",
-            workflow_run_id="21145592938"
-        )
+            workflow_run_id="21145592938",
+        ),
     ]
 
     group = TriageGroup(
@@ -60,7 +60,7 @@ def test_triage_group_creation():
         failure_count=2,
         failures=failures,
         common_patterns=["pattern1", "pattern2"],
-        remediation_suggestions=["suggestion1", "suggestion2"]
+        remediation_suggestions=["suggestion1", "suggestion2"],
     )
 
     assert group.failure_count == 2
@@ -69,8 +69,8 @@ def test_triage_group_creation():
 
     # Test serialization
     data = group.to_dict()
-    assert data['failure_count'] == 2
-    assert len(data['failures']) == 2
+    assert data["failure_count"] == 2
+    assert len(data["failures"]) == 2
 
 
 def test_batch_triage_engine_initialization():
@@ -152,27 +152,27 @@ def test_grouping_by_root_cause():
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2905",
         workflow_run_id="21145572518",
         root_cause="Missing module: pytest",
-        severity="high"
+        severity="high",
     )
     failure2 = FailureRecord(
         issue_number=2906,
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2906",
         workflow_run_id="21145592938",
         root_cause="Missing module: pytest",
-        severity="high"
+        severity="high",
     )
     failure3 = FailureRecord(
         issue_number=2907,
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2907",
         workflow_run_id="21145583258",
         root_cause="Test failure: test_example",
-        severity="medium"
+        severity="medium",
     )
 
     engine.failures = [failure1, failure2, failure3]
 
     # Group by root cause
-    engine.group_failures(strategy='root_cause')
+    engine.group_failures(strategy="root_cause")
 
     assert len(engine.groups) == 2
 
@@ -196,25 +196,25 @@ def test_grouping_by_severity():
         issue_number=2905,
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2905",
         workflow_run_id="21145572518",
-        severity="high"
+        severity="high",
     )
     failure2 = FailureRecord(
         issue_number=2906,
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2906",
         workflow_run_id="21145592938",
-        severity="high"
+        severity="high",
     )
     failure3 = FailureRecord(
         issue_number=2907,
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2907",
         workflow_run_id="21145583258",
-        severity="medium"
+        severity="medium",
     )
 
     engine.failures = [failure1, failure2, failure3]
 
     # Group by severity
-    engine.group_failures(strategy='severity')
+    engine.group_failures(strategy="severity")
 
     assert len(engine.groups) == 2
 
@@ -237,12 +237,12 @@ def test_markdown_report_generation():
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2905",
         workflow_run_id="21145572518",
         root_cause="Test failure",
-        severity="high"
+        severity="high",
     )
     engine.failures = [failure]
 
     # Group failures
-    engine.group_failures(strategy='root_cause')
+    engine.group_failures(strategy="root_cause")
 
     # Generate report
     report = engine.generate_markdown_report()
@@ -264,22 +264,22 @@ def test_json_report_generation():
         issue_url="https://github.com/Aries-Serpent/_codex_/issues/2905",
         workflow_run_id="21145572518",
         root_cause="Test failure",
-        severity="high"
+        severity="high",
     )
     engine.failures = [failure]
 
     # Group failures
-    engine.group_failures(strategy='root_cause')
+    engine.group_failures(strategy="root_cause")
 
     # Generate report
     report_json = engine.generate_json_report()
     report = json.loads(report_json)
 
-    assert report['total_failures'] == 1
-    assert report['total_groups'] == 1
-    assert len(report['failures']) == 1
-    assert len(report['groups']) == 1
-    assert report['failures'][0]['issue_number'] == 2905
+    assert report["total_failures"] == 1
+    assert report["total_groups"] == 1
+    assert len(report["failures"]) == 1
+    assert len(report["groups"]) == 1
+    assert report["failures"][0]["issue_number"] == 2905
 
 
 def test_csv_loading(tmp_path):

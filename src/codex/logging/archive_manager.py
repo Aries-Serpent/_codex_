@@ -12,13 +12,11 @@ This module provides:
 import json
 import logging
 import sqlite3
+import time
+from dataclasses import dataclass
 from datetime import datetime, timedelta
-from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from dataclasses import dataclass, asdict
-import time
-import hashlib
 
 try:
     import pandas as pd
@@ -110,9 +108,7 @@ class ArchiveManager:
             file_size = archive_path.stat().st_size
 
             # Update SQLite metadata
-            self._update_archive_metadata(
-                session_id, str(archive_path), datetime.now().isoformat()
-            )
+            self._update_archive_metadata(session_id, str(archive_path), datetime.now().isoformat())
 
             # Create record
             archive_record = ArchivedSession(
@@ -151,9 +147,7 @@ class ArchiveManager:
         if session_id in self._cache:
             session_data, cache_time = self._cache[session_id]
             elapsed_ms = (time.time() - start_time) * 1000
-            logger.debug(
-                f"Retrieved {session_id} from cache in {elapsed_ms:.1f}ms"
-            )
+            logger.debug(f"Retrieved {session_id} from cache in {elapsed_ms:.1f}ms")
             return session_data
 
         try:
@@ -188,7 +182,7 @@ class ArchiveManager:
                 return None
 
             df = pd.read_parquet(archive_path)
-            
+
             # Convert to dict, handling numpy types and arrays
             session_row = df.iloc[0]
             session_data = {}
@@ -198,8 +192,8 @@ class ArchiveManager:
                     session_data[col] = None
                 elif isinstance(val, (list, tuple)):
                     # If it's a list/tuple, convert items
-                    session_data[col] = [v.item() if hasattr(v, 'item') else v for v in val]
-                elif hasattr(val, 'item'):  # numpy scalar
+                    session_data[col] = [v.item() if hasattr(v, "item") else v for v in val]
+                elif hasattr(val, "item"):  # numpy scalar
                     try:
                         session_data[col] = val.item()
                     except (TypeError, ValueError):
@@ -250,9 +244,7 @@ class ArchiveManager:
             candidates = [row["session_id"] for row in cursor.fetchall()]
             conn.close()
 
-            logger.info(
-                f"Found {len(candidates)} archive candidates (>= {days} days old)"
-            )
+            logger.info(f"Found {len(candidates)} archive candidates (>= {days} days old)")
             return candidates
 
         except Exception as e:
@@ -355,10 +347,7 @@ class ArchiveManager:
                             "session_id": session_id,
                             "archive_location": str(parquet_file),
                             "file_size_bytes": file_size,
-                            "timestamp": datetime.fromtimestamp(
-                                created_at
-                            ).isoformat()
-                            + "Z",
+                            "timestamp": datetime.fromtimestamp(created_at).isoformat() + "Z",
                             "created_at": str(created_at),
                         }
                     )
@@ -413,21 +402,15 @@ class ArchiveManager:
             session_data = dict(session_row)
 
             # Also fetch related metadata, events, outcomes
-            cursor.execute(
-                "SELECT * FROM session_metadata WHERE session_id = ?", (session_id,)
-            )
+            cursor.execute("SELECT * FROM session_metadata WHERE session_id = ?", (session_id,))
             metadata_rows = cursor.fetchall()
             session_data["metadata"] = [dict(row) for row in metadata_rows]
 
-            cursor.execute(
-                "SELECT * FROM session_events WHERE session_id = ?", (session_id,)
-            )
+            cursor.execute("SELECT * FROM session_events WHERE session_id = ?", (session_id,))
             event_rows = cursor.fetchall()
             session_data["events"] = [dict(row) for row in event_rows]
 
-            cursor.execute(
-                "SELECT * FROM session_outcomes WHERE session_id = ?", (session_id,)
-            )
+            cursor.execute("SELECT * FROM session_outcomes WHERE session_id = ?", (session_id,))
             outcome_row = cursor.fetchone()
             if outcome_row:
                 session_data["outcomes"] = dict(outcome_row)
@@ -503,9 +486,7 @@ class ArchiveManager:
         if self._cache_size_bytes + data_size > self.cache_size_mb * 1024 * 1024:
             # Remove oldest entry
             if self._cache:
-                oldest_id = min(
-                    self._cache.keys(), key=lambda k: self._cache[k][1]
-                )
+                oldest_id = min(self._cache.keys(), key=lambda k: self._cache[k][1])
                 old_size = len(json.dumps(self._cache[oldest_id][0]))
                 del self._cache[oldest_id]
                 self._cache_size_bytes -= old_size

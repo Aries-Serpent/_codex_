@@ -16,6 +16,7 @@ class TestRAGInputSanitization:
 
     def test_query_sanitization_removes_special_chars(self):
         """Query sanitization removes dangerous characters."""
+
         def sanitize_query(query):
             # Remove potential injection patterns
             dangerous = ["<", ">", ";", "|", "&", "$", "`"]
@@ -41,6 +42,7 @@ class TestRAGInputSanitization:
 
     def test_embedding_input_validation(self):
         """Embedding input is validated."""
+
         def validate_embedding_input(text):
             if not isinstance(text, str):
                 raise TypeError("Input must be string")
@@ -85,6 +87,7 @@ class TestRAGCacheEntanglement:
 
     def test_cache_consistency_on_update(self):
         """Cache stays consistent when documents are updated."""
+
         class MockRAGCache:
             def __init__(self):
                 self.cache = {}
@@ -144,11 +147,11 @@ class TestRAGAccessControl:
 
         def redact_pii(text):
             # Redact email addresses
-            text = re.sub(r'\b[\w.-]+@[\w.-]+\.\w+\b', '[EMAIL REDACTED]', text)
+            text = re.sub(r"\b[\w.-]+@[\w.-]+\.\w+\b", "[EMAIL REDACTED]", text)
             # Redact phone numbers
-            text = re.sub(r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', '[PHONE REDACTED]', text)
+            text = re.sub(r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b", "[PHONE REDACTED]", text)
             # Redact SSN
-            return re.sub(r'\b\d{3}-\d{2}-\d{4}\b', '[SSN REDACTED]', text)
+            return re.sub(r"\b\d{3}-\d{2}-\d{4}\b", "[SSN REDACTED]", text)
 
         text = "Contact john@example.com or 555-123-4567. SSN: 123-45-6789"
         redacted = redact_pii(text)
@@ -164,6 +167,7 @@ class TestEmbeddingSecurity:
 
     def test_embedding_provider_fallback(self):
         """Embedding provider falls back safely on error."""
+
         class MockEmbeddingProvider:
             def __init__(self, should_fail=False):
                 self.should_fail = should_fail
@@ -201,6 +205,7 @@ class TestIndexSecurity:
 
     def test_index_path_validation(self):
         """Index path is validated to prevent traversal."""
+
         def validate_index_path(path):
             if ".." in path:
                 raise ValueError("Path traversal not allowed")
@@ -218,6 +223,7 @@ class TestIndexSecurity:
 
     def test_index_metadata_sanitization(self):
         """Index metadata is sanitized."""
+
         def sanitize_metadata(metadata):
             safe_keys = {"name", "description", "created_at", "doc_count"}
             return {k: v for k, v in metadata.items() if k in safe_keys}
@@ -243,6 +249,7 @@ class TestPromptInjection:
 
     def test_user_input_escaping(self):
         """User input is properly escaped in prompts."""
+
         def build_safe_prompt(system_prompt, user_query):
             # Escape special markers in user input
             safe_query = user_query.replace("###", "")

@@ -39,31 +39,26 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 # Prefer provenance utilities when available
 try:
-    from codex_ml.utils.provenance import (
-        environment_summary as _prov_env_summary,
-    )
+    from codex_ml.utils.provenance import environment_summary as _prov_env_summary
 except Exception:  # pragma: no cover - provenance optional
     _prov_env_summary = None
 
-# ruff: noqa: E402, I001
-from codex_ml.utils.seeding import (
-    set_reproducible,  # after optional imports
-)
-
-from .safe_pickle import safe_pickle_dump, safe_pickle_load
-from .checkpoint_event import maybe_emit_checkpoint_saved_event
-from .storage import StorageProvider
+from codex_ml.utils import seed_registry as _seed_registry
 from codex_ml.utils.seed_registry import (  # DR-001: breaks seeding↔checkpointing cycle
     register_seed_snapshot,
 )
-from codex_ml.utils import seed_registry as _seed_registry
+
+# ruff: noqa: E402, I001
+from codex_ml.utils.seeding import set_reproducible  # after optional imports
+
+from .checkpoint_event import maybe_emit_checkpoint_saved_event
+from .safe_pickle import safe_pickle_dump, safe_pickle_load
+from .storage import StorageProvider
 
 logger = logging.getLogger(__name__)
 
 try:
-    from codex_ml.utils.provenance import (
-        _git_commit as _prov_git_commit,
-    )
+    from codex_ml.utils.provenance import _git_commit as _prov_git_commit
 except Exception:  # pragma: no cover - provenance optional
     _prov_git_commit = None
 
@@ -377,7 +372,9 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
                 kwargs["map_location"] = map_location
             if "weights_only" in inspect.signature(torch.load).parameters:
                 kwargs["weights_only"] = False
-            return torch.load(path, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
+            return torch.load(
+                path, **kwargs
+            )  # nosec B614 - weights_only=False required for optimizer/RNG state
         except Exception as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":

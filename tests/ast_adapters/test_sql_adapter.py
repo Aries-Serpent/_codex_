@@ -165,7 +165,7 @@ class TestSQLASTAdapter:
 
         columns = adapter.get_columns()
         # Should find at least some columns
-        assert isinstance(columns, (list, tuple, set, dict))# sqlparse may or may not extract all
+        assert isinstance(columns, (list, tuple, set, dict))  # sqlparse may or may not extract all
 
     def test_extract_metadata_document(self, adapter):
         """Test extracting document-level metadata."""

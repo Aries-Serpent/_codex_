@@ -18,6 +18,7 @@ import pytest
 # Import module under test
 try:
     from codex_ml.security.cve_monitor import CVEDatabase, CVEEntry
+
     CVE_MONITOR_AVAILABLE = True
 except ImportError:
     CVE_MONITOR_AVAILABLE = False
@@ -25,8 +26,7 @@ except ImportError:
 
 # Skip all tests if module not available
 pytestmark = pytest.mark.skipif(
-    not CVE_MONITOR_AVAILABLE,
-    reason="codex_ml.security.cve_monitor not available"
+    not CVE_MONITOR_AVAILABLE, reason="codex_ml.security.cve_monitor not available"
 )
 
 
@@ -277,8 +277,8 @@ class TestCVEDatabase:
 
         dependencies = {
             "requests": "2.25.0",  # Vulnerable
-            "flask": "2.0.0",      # Not vulnerable
-            "django": "4.0.0",     # Unknown
+            "flask": "2.0.0",  # Not vulnerable
+            "django": "4.0.0",  # Unknown
         }
 
         results = db.check_all(dependencies)
@@ -390,9 +390,9 @@ class TestCVEDatabaseIntegration:
 
         # Check project dependencies
         project_deps = {
-            "requests": "2.28.1",     # Vulnerable
-            "urllib3": "1.26.5",      # Fixed version
-            "certifi": "2023.1.1",    # Not affected
+            "requests": "2.28.1",  # Vulnerable
+            "urllib3": "1.26.5",  # Fixed version
+            "certifi": "2023.1.1",  # Not affected
         }
 
         vulns = db.check_all(project_deps)

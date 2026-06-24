@@ -340,9 +340,7 @@ class TestPhysicsIntegration:
         """Test physics-guided architecture generation."""
         mock_instance = Mock()
         mock_instance.fractal = Mock()
-        mock_instance.fractal.analyze_code_tree.return_value = (
-            None  # Avoid format string issues
-        )
+        mock_instance.fractal.analyze_code_tree.return_value = None  # Avoid format string issues
         mock_instance.em_field = Mock()
         mock_physics.return_value = mock_instance
 
@@ -408,8 +406,7 @@ class TestMultiOrchestratorScenarios:
     def test_parallel_orchestrators(self):
         """Test multiple orchestrators working in parallel."""
         orchestrators = [
-            PhysicsGuidedDeveloperOrchestrator(session_id=f"parallel_{i}")
-            for i in range(3)
+            PhysicsGuidedDeveloperOrchestrator(session_id=f"parallel_{i}") for i in range(3)
         ]
 
         requirements = {
@@ -418,9 +415,7 @@ class TestMultiOrchestratorScenarios:
             "description": "Test parallel processing",
         }
 
-        results = [
-            orch.analyze_user_requirements(requirements) for orch in orchestrators
-        ]
+        results = [orch.analyze_user_requirements(requirements) for orch in orchestrators]
 
         # All should succeed
         assert all(r is not None for r in results)
@@ -485,8 +480,7 @@ class TestConcurrency:
     def test_concurrent_requirement_analysis(self):
         """Test concurrent requirement analysis."""
         orchestrators = [
-            PhysicsGuidedDeveloperOrchestrator(session_id=f"concurrent_{i}")
-            for i in range(5)
+            PhysicsGuidedDeveloperOrchestrator(session_id=f"concurrent_{i}") for i in range(5)
         ]
 
         requirements = [
@@ -499,8 +493,7 @@ class TestConcurrency:
         ]
 
         results = [
-            orch.analyze_user_requirements(req)
-            for orch, req in zip(orchestrators, requirements)
+            orch.analyze_user_requirements(req) for orch, req in zip(orchestrators, requirements)
         ]
 
         # All should succeed

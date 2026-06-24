@@ -53,17 +53,12 @@ class TestTestFailureMatcher:
 
     def test_max_failures_cap(self):
         # Generate 20 ruff errors
-        lines = "\n".join(
-            f"src/codex/x.py:{i}:1: F401 unused import" for i in range(1, 21)
-        )
+        lines = "\n".join(f"src/codex/x.py:{i}:1: F401 unused import" for i in range(1, 21))
         result = tfm_run({"test_output": lines, "max_failures": 5})
         assert len(result["failures"]) <= 5
 
     def test_summary_categories(self):
-        log = (
-            "ModuleNotFoundError: No module named 'foo'\n"
-            "AssertionError: wrong value\n"
-        )
+        log = "ModuleNotFoundError: No module named 'foo'\n" "AssertionError: wrong value\n"
         result = tfm_run({"test_output": log})
         assert "categories" in result["summary"]
         assert isinstance(result["summary"]["categories"], dict)
@@ -116,10 +111,7 @@ class TestCIHealthAnalyzer:
 
     def test_all_matches_list(self):
         # Both actionlint and ruff patterns
-        logs = (
-            "actionlint .github/workflows/ci.yml:10: syntax error\n"
-            "src/x.py:5:1: F401 unused"
-        )
+        logs = "actionlint .github/workflows/ci.yml:10: syntax error\n" "src/x.py:5:1: F401 unused"
         result = ci_health_run({"run_logs": logs})
         assert len(result["all_matches"]) >= 1
 
@@ -201,18 +193,14 @@ class TestAAISBatchAsync:
     def test_max_concurrency_throttle(self):
         """max_concurrency=1 forces sequential execution — result must still be complete."""
         items = [{"id": f"doc-{i}", "text": f"text {i}"} for i in range(6)]
-        result = asyncio.run(
-            aais_batch_run_async({"items": items, "max_concurrency": 1})
-        )
+        result = asyncio.run(aais_batch_run_async({"items": items, "max_concurrency": 1}))
         assert len(result["scores"]) == 6
         assert result["summary"]["total"] == 6
 
     def test_max_workers_alias(self):
         """max_workers is accepted as a backwards-compat alias for max_concurrency."""
         items = [{"id": "x", "text": "text"}]
-        result = asyncio.run(
-            aais_batch_run_async({"items": items, "max_workers": 1})
-        )
+        result = asyncio.run(aais_batch_run_async({"items": items, "max_workers": 1}))
         assert len(result["scores"]) == 1
 
     def test_async_matches_sync(self):

@@ -54,6 +54,7 @@ class TestModuleImport:
         """Verify metrics_cli module can be imported."""
         try:
             from codex_ml.cli import metrics_cli
+
             assert metrics_cli is not None
         except ImportError as e:
             pytest.skip(f"metrics_cli module not available: {e}")
@@ -79,10 +80,7 @@ class TestMetricsCommandHelp:
         output = result.stdout + result.stderr
         # Should show help or indicate command exists
         if result.returncode == 0:
-            assert any(
-                term in output.lower()
-                for term in ["usage", "options", "help", "metrics"]
-            )
+            assert any(term in output.lower() for term in ["usage", "options", "help", "metrics"])
 
 
 # =============================================================================
@@ -106,8 +104,7 @@ class TestMetricsCommands:
         # Check for list or show subcommands
         if result.returncode == 0:
             has_subcommands = any(
-                cmd in output.lower()
-                for cmd in ["list", "show", "plot", "export"]
+                cmd in output.lower() for cmd in ["list", "show", "plot", "export"]
             )
             assert has_subcommands or "metrics" in output.lower()
 

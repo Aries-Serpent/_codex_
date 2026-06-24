@@ -7,10 +7,12 @@ from data import datasets
 
 def _make_tokenizer(torch):
     """Create mock tokenizer for testing."""
+
     class Tokenizer:
         def batch_encode_plus(self, texts, **kwargs):
             batch = len(texts)
             return {"input_ids": torch.zeros((batch, 4), dtype=torch.long)}
+
     return Tokenizer()
 
 

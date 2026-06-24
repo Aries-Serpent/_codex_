@@ -24,9 +24,7 @@ pytestmark = pytest.mark.skipif(
 
 
 def test_referent_insert_and_lookup(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv(
-        "CODEX_EVIDENCE_DIR", (tmp_path / ".codex" / "evidence").as_posix()
-    )
+    monkeypatch.setenv("CODEX_EVIDENCE_DIR", (tmp_path / ".codex" / "evidence").as_posix())
     (tmp_path / ".codex" / "evidence").mkdir(parents=True, exist_ok=True)
     dal = ArchiveDAL.from_env()
     a = store(
@@ -49,7 +47,5 @@ def test_referent_insert_and_lookup(tmp_path: Path, monkeypatch):
         mime="text/x-python",
         lang="python",
     )
-    refer_dup_to_canonical(
-        duplicate_tombstone=b["tombstone"], canonical_tombstone=a["tombstone"]
-    )
+    refer_dup_to_canonical(duplicate_tombstone=b["tombstone"], canonical_tombstone=a["tombstone"])
     assert dal is not None

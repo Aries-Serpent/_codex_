@@ -23,6 +23,7 @@ from codex.auth.user_model import PasswordHasher, User
 # InMemoryUserRepository Tests
 # ============================================================================
 
+
 class TestInMemoryUserRepository:
     """In-memory user repository."""
 
@@ -179,6 +180,7 @@ class TestInMemoryUserRepository:
 # SQLiteUserRepository Tests
 # ============================================================================
 
+
 class TestSQLiteUserRepository:
     """SQLite user repository."""
 
@@ -244,10 +246,7 @@ class TestSQLiteUserRepository:
             repo.create_user(user)
             repo.close()
 
-        threads = [
-            threading.Thread(target=create_user, args=(f"user{i}",))
-            for i in range(5)
-        ]
+        threads = [threading.Thread(target=create_user, args=(f"user{i}",)) for i in range(5)]
 
         for t in threads:
             t.start()
@@ -360,9 +359,7 @@ class TestSQLiteUserRepository:
     def test_database_schema(self, repo):
         # Verify schema is properly initialized
         cursor = repo._get_connection().cursor()
-        cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
-        )
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
         assert cursor.fetchone() is not None
 
     def test_user_count(self, repo):
@@ -389,6 +386,7 @@ class TestSQLiteUserRepository:
 # ============================================================================
 # Repository Comparison Tests
 # ============================================================================
+
 
 class TestRepositoryBehaviorConsistency:
     """Ensure both repositories have consistent behavior."""
@@ -459,6 +457,7 @@ class TestRepositoryBehaviorConsistency:
 # ============================================================================
 # Edge Cases Tests
 # ============================================================================
+
 
 class TestRepositoryEdgeCases:
     """Edge cases and boundary conditions."""

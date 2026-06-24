@@ -120,9 +120,7 @@ class TestSimilarityComputation:
         from codex.rag.utils import compute_similarity
 
         similarities = compute_similarity(
-            sample_query_embedding,
-            sample_embeddings,
-            metric="cosine"
+            sample_query_embedding, sample_embeddings, metric="cosine"
         )
         assert similarities.shape == (5,)
         assert all(-1 <= s <= 1 for s in similarities)
@@ -179,6 +177,7 @@ class TestEmbeddings:
         """Test embedding model initializes."""
         try:
             from codex.rag.embeddings import EmbeddingModel
+
             model = EmbeddingModel()
             assert model is not None
         except (ImportError, RuntimeError):
@@ -188,6 +187,7 @@ class TestEmbeddings:
         """Test embedding produces correct dimension."""
         try:
             from codex.rag.embeddings import embed_text
+
             embeddings = embed_text(sample_texts)
             assert embeddings.shape[0] == len(sample_texts)
             assert embeddings.shape[1] > 0  # Has features
@@ -198,6 +198,7 @@ class TestEmbeddings:
         """Test embeddings are deterministic."""
         try:
             from codex.rag.embeddings import embed_text
+
             emb1 = embed_text(sample_texts)
             emb2 = embed_text(sample_texts)
             assert np.allclose(emb1, emb2)
@@ -208,6 +209,7 @@ class TestEmbeddings:
         """Test embedding single text."""
         try:
             from codex.rag.embeddings import embed_text
+
             text = "Single text sample"
             embedding = embed_text(text)
             assert len(embedding.shape) == 1
@@ -228,6 +230,7 @@ class TestIndexing:
         """Test indexer initializes."""
         try:
             from codex.rag.indexer import RagIndex
+
             indexer = RagIndex()
             assert indexer is not None
         except (ImportError, RuntimeError, TypeError):
@@ -237,6 +240,7 @@ class TestIndexing:
         """Test adding documents to index."""
         try:
             from codex.rag.indexer import RagIndex
+
             indexer = RagIndex()
             for i, text in enumerate(sample_texts):
                 indexer.add_document(f"doc_{i}", text)
@@ -247,6 +251,7 @@ class TestIndexing:
         """Test retrieving similar documents."""
         try:
             from codex.rag.indexer import RagIndex
+
             indexer = RagIndex()
             for i, text in enumerate(sample_texts):
                 indexer.add_document(f"doc_{i}", text)
@@ -260,6 +265,7 @@ class TestIndexing:
         """Test saving and loading index."""
         try:
             from codex.rag.indexer import RagIndex
+
             indexer = RagIndex()
             for i, text in enumerate(sample_texts):
                 indexer.add_document(f"doc_{i}", text)
@@ -284,6 +290,7 @@ class TestRetrieval:
         """Test retriever initializes."""
         try:
             from codex.rag.retriever import Retriever
+
             retriever = Retriever()
             assert retriever is not None
         except (ImportError, RuntimeError, TypeError):
@@ -293,6 +300,7 @@ class TestRetrieval:
         """Test retrieving top-k documents."""
         try:
             from codex.rag.retriever import Retriever
+
             retriever = Retriever()
             results = retriever.retrieve(sample_query, k=3)
             assert len(results) <= 3
@@ -303,6 +311,7 @@ class TestRetrieval:
         """Test retrieval returns scores."""
         try:
             from codex.rag.retriever import Retriever
+
             retriever = Retriever()
             results = retriever.retrieve(sample_query, k=3)
             for result in results:
@@ -324,6 +333,7 @@ class TestPostprocessing:
         """Test postprocessing of retrieval results."""
         try:
             from codex.rag.postprocess import postprocess_results
+
             results = [
                 {"text": "Result 1", "score": 0.9},
                 {"text": "Result 2", "score": 0.7},
@@ -347,10 +357,8 @@ class TestPromptGeneration:
         """Test prompt generation."""
         try:
             from codex.rag.prompt import generate_prompt
-            prompt = generate_prompt(
-                query="What is AI?",
-                context=["AI is artificial intelligence"]
-            )
+
+            prompt = generate_prompt(query="What is AI?", context=["AI is artificial intelligence"])
             assert isinstance(prompt, str)
             assert len(prompt) > 0
         except (ImportError, RuntimeError, AttributeError):
@@ -360,11 +368,9 @@ class TestPromptGeneration:
         """Test prompt includes retrieved context."""
         try:
             from codex.rag.prompt import generate_prompt
+
             context_text = "Important context here"
-            prompt = generate_prompt(
-                query="Test query",
-                context=[context_text]
-            )
+            prompt = generate_prompt(query="Test query", context=[context_text])
             assert context_text in prompt or len(prompt) > 0
         except (ImportError, RuntimeError, AttributeError):
             pytest.skip("Prompt generation not available")
@@ -383,6 +389,7 @@ class TestMonitoring:
         """Test monitoring retrieval statistics."""
         try:
             from codex.rag.monitoring import track_retrieval
+
             with track_retrieval():
                 # Simulate retrieval
                 pass
@@ -417,7 +424,7 @@ class TestMLUtils:
         data = list(range(100))
         batch_size = 32
 
-        batches = [data[i:i+batch_size] for i in range(0, len(data), batch_size)]
+        batches = [data[i : i + batch_size] for i in range(0, len(data), batch_size)]
         assert len(batches) == 4  # 100 items / 32 batch size
         assert len(batches[-1]) == 4  # Last batch has remainder
 
@@ -574,7 +581,7 @@ class TestRAGIntegration:
         # Verify whitespace normalization
         assert norm2 == norm3
         # Explicitly verify no excessive whitespace remains
-        assert '  ' not in norm3
+        assert "  " not in norm3
 
 
 if __name__ == "__main__":

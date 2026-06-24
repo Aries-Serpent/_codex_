@@ -10,7 +10,6 @@ Tests cover:
 - Checkpoint integration
 """
 
-
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, Mock

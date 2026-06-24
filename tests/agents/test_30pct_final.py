@@ -223,9 +223,7 @@ class TestPhysicsIntegrationSimpleMethods:
         orch = HybridPhysicsOrchestrator()
 
         try:
-            decision = orch.make_decision(
-                context="test context", options=["option1", "option2"]
-            )
+            decision = orch.make_decision(context="test context", options=["option1", "option2"])
 
             assert decision is not None
         except (TypeError, AttributeError):

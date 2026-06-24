@@ -25,12 +25,11 @@ from cognitive_brain.quantum.adaptive_scoring import (
 # ScoringWeights
 # ---------------------------------------------------------------------------
 
+
 class TestScoringWeights:
     def test_default_weights_sum(self):
         w = ScoringWeights()
-        total = (
-            w.compliance_score_weight + w.risk_weight + w.cost_weight + w.impact_weight
-        )
+        total = w.compliance_score_weight + w.risk_weight + w.cost_weight + w.impact_weight
         assert total == pytest.approx(1.0)
 
     def test_normalize(self):
@@ -41,9 +40,7 @@ class TestScoringWeights:
             impact_weight=1.0,
         )
         n = w.normalize()
-        total = (
-            n.compliance_score_weight + n.risk_weight + n.cost_weight + n.impact_weight
-        )
+        total = n.compliance_score_weight + n.risk_weight + n.cost_weight + n.impact_weight
         assert total == pytest.approx(1.0)
 
     def test_normalize_zero(self):
@@ -67,6 +64,7 @@ class TestScoringWeights:
 # ---------------------------------------------------------------------------
 # AdaptiveScoringOptimizer — k₁ lifecycle
 # ---------------------------------------------------------------------------
+
 
 class TestAdaptiveScoringOptimizer:
     @pytest.fixture()
@@ -121,33 +119,37 @@ class TestAdaptiveScoringOptimizer:
     def test_update_weights_needs_minimum(self, optimizer):
         """Weight update requires ≥ 5 feedback records."""
         for i in range(3):
-            optimizer.add_feedback(FeedbackRecord(
-                audit_id=f"A{i}",
-                predicted_decision="approve",
-                actual_decision="approve",
-                is_correct=True,
-                audit_features={"compliance_score": 0.8},
-                timestamp=time.time(),
-            ))
+            optimizer.add_feedback(
+                FeedbackRecord(
+                    audit_id=f"A{i}",
+                    predicted_decision="approve",
+                    actual_decision="approve",
+                    is_correct=True,
+                    audit_features={"compliance_score": 0.8},
+                    timestamp=time.time(),
+                )
+            )
         changes = optimizer.update_weights()
         assert changes == {}  # Not enough data
 
     def test_k1_converges_with_correct_feedback(self, optimizer):
         """With high accuracy feedback, k₁ should decrease toward target."""
         for i in range(10):
-            optimizer.add_feedback(FeedbackRecord(
-                audit_id=f"A{i}",
-                predicted_decision="approve",
-                actual_decision="approve",
-                is_correct=True,
-                audit_features={
-                    "compliance_score": 0.9,
-                    "risk_score": 0.1,
-                    "cost_score": 0.2,
-                    "impact_score": 0.8,
-                },
-                timestamp=time.time(),
-            ))
+            optimizer.add_feedback(
+                FeedbackRecord(
+                    audit_id=f"A{i}",
+                    predicted_decision="approve",
+                    actual_decision="approve",
+                    is_correct=True,
+                    audit_features={
+                        "compliance_score": 0.9,
+                        "risk_score": 0.1,
+                        "cost_score": 0.2,
+                        "impact_score": 0.8,
+                    },
+                    timestamp=time.time(),
+                )
+            )
         optimizer.update_weights()
         # k₁ should have been updated
         assert len(optimizer.k1_history) > 1
@@ -158,19 +160,21 @@ class TestAdaptiveScoringOptimizer:
     def test_k1_with_mixed_feedback(self, optimizer):
         """With mixed accuracy, k₁ stays closer to 0.40."""
         for i in range(10):
-            optimizer.add_feedback(FeedbackRecord(
-                audit_id=f"A{i}",
-                predicted_decision="approve",
-                actual_decision="reject" if i % 2 == 0 else "approve",
-                is_correct=i % 2 != 0,
-                audit_features={
-                    "compliance_score": 0.5,
-                    "risk_score": 0.5,
-                    "cost_score": 0.5,
-                    "impact_score": 0.5,
-                },
-                timestamp=time.time(),
-            ))
+            optimizer.add_feedback(
+                FeedbackRecord(
+                    audit_id=f"A{i}",
+                    predicted_decision="approve",
+                    actual_decision="reject" if i % 2 == 0 else "approve",
+                    is_correct=i % 2 != 0,
+                    audit_features={
+                        "compliance_score": 0.5,
+                        "risk_score": 0.5,
+                        "cost_score": 0.5,
+                        "impact_score": 0.5,
+                    },
+                    timestamp=time.time(),
+                )
+            )
         optimizer.update_weights()
         k1 = optimizer.get_current_k1()
         # 50% accuracy: k₁ = 0.40 * (1 - (0.5 - 0.5) * 0.2) = 0.40
@@ -181,14 +185,16 @@ class TestAdaptiveScoringOptimizer:
 
     def test_get_accuracy_computed(self, optimizer):
         for i in range(4):
-            optimizer.add_feedback(FeedbackRecord(
-                audit_id=f"A{i}",
-                predicted_decision="approve",
-                actual_decision="approve",
-                is_correct=i < 3,  # 3/4 correct
-                audit_features={},
-                timestamp=time.time(),
-            ))
+            optimizer.add_feedback(
+                FeedbackRecord(
+                    audit_id=f"A{i}",
+                    predicted_decision="approve",
+                    actual_decision="approve",
+                    is_correct=i < 3,  # 3/4 correct
+                    audit_features={},
+                    timestamp=time.time(),
+                )
+            )
         assert optimizer.get_accuracy() == pytest.approx(0.75)
 
     def test_reset_weights(self, optimizer):
@@ -204,6 +210,7 @@ class TestAdaptiveScoringOptimizer:
 # ---------------------------------------------------------------------------
 # create_scoring_function
 # ---------------------------------------------------------------------------
+
 
 class TestCreateScoringFunction:
     def test_returns_callable(self):
@@ -221,6 +228,7 @@ class TestCreateScoringFunction:
 # ---------------------------------------------------------------------------
 # Gradient computation
 # ---------------------------------------------------------------------------
+
 
 class TestGradients:
     def test_gradients_all_correct(self):

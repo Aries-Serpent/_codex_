@@ -77,11 +77,13 @@ class TestKeyringBackend:
 
     def test_load_from_keyring(self, cli_mod):
         """_load_cached_credentials reads from keyring when present."""
-        stored = json.dumps({
-            "username": "bob",
-            "access_token": "a",
-            "refresh_token": "r",
-        })
+        stored = json.dumps(
+            {
+                "username": "bob",
+                "access_token": "a",
+                "refresh_token": "r",
+            }
+        )
         mock_keyring = MagicMock()
         mock_keyring.get_password.return_value = stored
 
@@ -134,6 +136,7 @@ class TestJSONFileFallback:
 
         # Make keyring import raise ImportError
         import builtins
+
         original_import = builtins.__import__
 
         def fail_import(name, *args, **kwargs):

@@ -13,7 +13,6 @@ Systematically applies advanced physics patterns:
 Target: +4-5% coverage gain (47% → 52%)
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -464,9 +463,7 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
 
         orchestrator = AdvancedPhysicsOrchestrator()
         if hasattr(orchestrator, "explore_with_chaos"):
-            result = orchestrator.explore_with_chaos(
-                search_space=[(0.0, 1.0)], num_samples=10
-            )
+            result = orchestrator.explore_with_chaos(search_space=[(0.0, 1.0)], num_samples=10)
             assert result is not None
 
     def test_fractal_decomposition(self):

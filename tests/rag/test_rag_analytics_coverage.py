@@ -210,9 +210,7 @@ class TestMetricsDatabase:
 
         # 2 hits, 2 misses → 50%
         for hit in [True, True, False, False]:
-            db.log_query(
-                QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, 10.0, hit, 3, 0.8)
-            )
+            db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, 10.0, hit, 3, 0.8))
         stats = db.get_stats(hours=999999)
         assert stats["total_queries"] == 4
         assert stats["cache_hit_rate"] == 50.0
@@ -259,9 +257,7 @@ class TestMetricsDatabase:
 
         latencies = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0]
         for lat in latencies:
-            db.log_query(
-                QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, lat, False, 3, 0.8)
-            )
+            db.log_query(QueryMetric("2026-01-01T00:00:00", "q", "i", "u", 3, lat, False, 3, 0.8))
         pcts = db.get_percentiles(hours=999999)
         # p50 = latencies[5], p95 = latencies[9], p99 = latencies[9]
         assert pcts["p50"] == latencies[5]

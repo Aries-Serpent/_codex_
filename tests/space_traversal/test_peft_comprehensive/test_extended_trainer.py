@@ -8,18 +8,17 @@ Test module for extended trainer.
 
 from __future__ import annotations
 import pytest
-pytest.importorskip('torch')
+
+pytest.importorskip("torch")
 
 import math
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
-
 
 
 try:
@@ -93,7 +92,9 @@ def test_extended_trainer_runs_and_checkpoints(tmp_path: Path) -> None:
 
     checkpoint_files = sorted(tmp_path.glob("*.pt"))
     assert len(checkpoint_files) == 1
-    state = torch.load(checkpoint_files[0], map_location="cpu", weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
+    state = torch.load(
+        checkpoint_files[0], map_location="cpu", weights_only=False
+    )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
     assert state["epoch"] in {1, 2}
     assert "model_state" in state
     steps_per_epoch = len(train_loader)

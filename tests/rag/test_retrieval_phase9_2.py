@@ -81,10 +81,7 @@ class TestRetrievalConfig:
         # Arrange
         config = RetrievalConfig(include_metadata=False)
         pipeline = RetrievalPipeline(config=config)
-        pipeline.add_documents(
-            ["Test doc"],
-            metadatas=[{"source": "test", "author": "bot"}]
-        )
+        pipeline.add_documents(["Test doc"], metadatas=[{"source": "test", "author": "bot"}])
 
         # Act
         response = pipeline.retrieve("Test")
@@ -111,10 +108,7 @@ class TestRetrievalConfig:
         """Test all custom values."""
         # Arrange & Act
         config = RetrievalConfig(
-            top_k=5,
-            similarity_threshold=0.8,
-            include_metadata=False,
-            rerank=True
+            top_k=5, similarity_threshold=0.8, include_metadata=False, rerank=True
         )
 
         # Assert
@@ -130,11 +124,7 @@ class TestRetrievalResult:
     def test_result_creation(self) -> None:
         """Test creating a retrieval result."""
         # Arrange & Act
-        result = RetrievalResult(
-            id="doc1",
-            content="Test content",
-            score=0.95
-        )
+        result = RetrievalResult(id="doc1", content="Test content", score=0.95)
 
         # Assert
         assert result.id == "doc1"
@@ -146,12 +136,7 @@ class TestRetrievalResult:
         """Test result with metadata."""
         # Arrange & Act
         metadata = {"source": "test", "author": "bot"}
-        result = RetrievalResult(
-            id="doc1",
-            content="Test",
-            score=0.8,
-            metadata=metadata
-        )
+        result = RetrievalResult(id="doc1", content="Test", score=0.8, metadata=metadata)
 
         # Assert
         assert result.metadata == metadata
@@ -179,11 +164,7 @@ class TestRetrievalResponse:
         results = [RetrievalResult(id="1", content="test", score=0.9)]
 
         # Act
-        response = RetrievalResponse(
-            query="test query",
-            results=results,
-            total_found=5
-        )
+        response = RetrievalResponse(query="test query", results=results, total_found=5)
 
         # Assert
         assert response.query == "test query"
@@ -194,12 +175,7 @@ class TestRetrievalResponse:
     def test_response_with_search_time(self) -> None:
         """Test response with search time."""
         # Arrange & Act
-        response = RetrievalResponse(
-            query="query",
-            results=[],
-            total_found=0,
-            search_time_ms=42.5
-        )
+        response = RetrievalResponse(query="query", results=[], total_found=0, search_time_ms=42.5)
 
         # Assert
         assert response.search_time_ms == 42.5
@@ -207,11 +183,7 @@ class TestRetrievalResponse:
     def test_response_empty_results(self) -> None:
         """Test response with no results."""
         # Arrange & Act
-        response = RetrievalResponse(
-            query="no match",
-            results=[],
-            total_found=0
-        )
+        response = RetrievalResponse(query="no match", results=[], total_found=0)
 
         # Assert
         assert len(response.results) == 0
@@ -413,10 +385,7 @@ class TestRetrieveFilters:
         """Test filtering by metadata."""
         # Arrange
         pipeline = RetrievalPipeline()
-        pipeline.add_documents(
-            ["Doc 1", "Doc 2"],
-            metadatas=[{"category": "A"}, {"category": "B"}]
-        )
+        pipeline.add_documents(["Doc 1", "Doc 2"], metadatas=[{"category": "A"}, {"category": "B"}])
 
         # Act
         response = pipeline.retrieve("Doc", filters={"category": "A"})
@@ -429,10 +398,7 @@ class TestRetrieveFilters:
         """Test filter with no matches."""
         # Arrange
         pipeline = RetrievalPipeline()
-        pipeline.add_documents(
-            ["Doc 1"],
-            metadatas=[{"category": "A"}]
-        )
+        pipeline.add_documents(["Doc 1"], metadatas=[{"category": "A"}])
 
         # Act
         response = pipeline.retrieve("Doc", filters={"category": "Z"})

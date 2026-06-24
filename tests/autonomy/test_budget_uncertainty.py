@@ -3,6 +3,7 @@
 Covers DirichletBeliefs, budget_cap decorator, BudgetExceeded,
 scenario functions, persist_result, and main entry point.
 """
+
 from __future__ import annotations
 
 import json
@@ -15,6 +16,7 @@ import pytest
 
 # ── Import helper ────────────────────────────────────────────────────────────
 
+
 def _import():
     """Import budget_uncertainty, skipping if unavailable."""
     repo_root = Path(__file__).parent.parent.parent
@@ -25,6 +27,7 @@ def _import():
 
 
 # ── DirichletBeliefs ─────────────────────────────────────────────────────────
+
 
 class TestDirichletBeliefs:
     def test_default_uniform_alphas(self):
@@ -115,6 +118,7 @@ class TestDirichletBeliefs:
 
 # ── budget_cap decorator ─────────────────────────────────────────────────────
 
+
 class TestBudgetCap:
     def test_does_not_raise_within_budget(self):
         mod = _import()
@@ -169,6 +173,7 @@ class TestBudgetCap:
 
 # ── scenario functions ───────────────────────────────────────────────────────
 
+
 class TestScenarios:
     def test_scenario_ci_health_returns_dict(self, tmp_path, monkeypatch):
         mod = _import()
@@ -210,6 +215,7 @@ class TestScenarios:
 
 # ── persist_result ───────────────────────────────────────────────────────────
 
+
 class TestPersistResult:
     def test_writes_json_file(self, tmp_path, monkeypatch):
         mod = _import()
@@ -230,6 +236,7 @@ class TestPersistResult:
 
 # ── main entry point ─────────────────────────────────────────────────────────
 
+
 class TestMain:
     def test_main_ci_health_scenario(self, tmp_path, monkeypatch):
         mod = _import()
@@ -243,9 +250,15 @@ class TestMain:
         mod = _import()
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         monkeypatch.setattr(mod, "BUDGET_DIR", tmp_path / "budget")
-        with patch("sys.argv", [
-            "budget_uncertainty.py", "--scenario", "decision",
-            "--options", "pass fail skip",
-        ]):
+        with patch(
+            "sys.argv",
+            [
+                "budget_uncertainty.py",
+                "--scenario",
+                "decision",
+                "--options",
+                "pass fail skip",
+            ],
+        ):
             rc = mod.main()
         assert rc == 0

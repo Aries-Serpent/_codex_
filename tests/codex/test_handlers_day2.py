@@ -4,7 +4,6 @@ Target: 12 tests for codex handlers
 Focus: Coverage gap closure from 20% → 22%+
 """
 
-
 import pytest
 
 
@@ -44,5 +43,5 @@ class TestHandlersPerformance:
         pass
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

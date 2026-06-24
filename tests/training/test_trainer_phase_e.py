@@ -18,8 +18,10 @@ if str(SRC_PATH) not in sys.path:
 # Import guard helpers
 # ---------------------------------------------------------------------------
 
+
 def _import_trainer():
     import importlib
+
     module = None
     # Use src.training.trainer to avoid the root-level training/ shadow package
     for mod_name in ("src.training.trainer", "training.trainer"):
@@ -36,6 +38,7 @@ def _import_trainer():
 # ---------------------------------------------------------------------------
 # CheckpointConfig tests (no torch required)
 # ---------------------------------------------------------------------------
+
 
 class TestCheckpointConfig:
     def setup_method(self):
@@ -100,6 +103,7 @@ class TestCheckpointConfig:
 # TrainerConfig tests (no torch required)
 # ---------------------------------------------------------------------------
 
+
 class TestTrainerConfig:
     def setup_method(self):
         self.mod = _import_trainer()
@@ -133,6 +137,7 @@ class TestTrainerConfig:
 # TrainingState tests (no torch required)
 # ---------------------------------------------------------------------------
 
+
 class TestTrainingState:
     def setup_method(self):
         self.mod = _import_trainer()
@@ -154,6 +159,7 @@ class TestTrainingState:
 # ---------------------------------------------------------------------------
 # _load_checkpoint_payload tests (no real torch)
 # ---------------------------------------------------------------------------
+
 
 class TestLoadCheckpointPayload:
     def setup_method(self):
@@ -209,6 +215,7 @@ class TestLoadCheckpointPayload:
 # Trainer instantiation guard (CODEX_ALLOW_TORCH_STUB)
 # ---------------------------------------------------------------------------
 
+
 class TestTrainerInstantiationGuard:
     def setup_method(self):
         self.mod = _import_trainer()
@@ -227,6 +234,7 @@ class TestTrainerInstantiationGuard:
         monkeypatch.setenv("CODEX_ALLOW_TORCH_STUB", "1")
         # Re-import to pick up patched env
         import importlib
+
         fresh = importlib.reload(self.mod)
         dummy = MagicMock()
         # Should NOT raise the "requires real torch" error; may raise other errors
@@ -234,9 +242,9 @@ class TestTrainerInstantiationGuard:
             fresh.Trainer(dummy, dummy, dummy)
         except RuntimeError as exc:
             # Only allow errors unrelated to the torch guard
-            assert "requires a real torch" not in str(exc), (
-                "Trainer should not raise torch-guard error with CODEX_ALLOW_TORCH_STUB=1"
-            )
+            assert "requires a real torch" not in str(
+                exc
+            ), "Trainer should not raise torch-guard error with CODEX_ALLOW_TORCH_STUB=1"
         except Exception as _err:
             pass  # Other errors from incomplete mock setup are acceptable
 
@@ -244,6 +252,7 @@ class TestTrainerInstantiationGuard:
 # ---------------------------------------------------------------------------
 # Trainer._should_replace logic
 # ---------------------------------------------------------------------------
+
 
 class TestShouldReplace:
     """Test the _should_replace method indirectly via patching."""

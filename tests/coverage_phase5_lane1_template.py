@@ -18,6 +18,7 @@ import pytest
 # ENHANCEMENT PATTERN 1: JSON-RPC Request Routing
 # ============================================================================
 
+
 class TestJSONRPCRouter:
     """Test JSON-RPC request routing with semantic assertions."""
 
@@ -39,17 +40,12 @@ class TestJSONRPCRouter:
         assert router.version == "2.0"
         assert router.timeout == 30
         assert router.max_connections == 1000  # Default
-        assert hasattr(router, 'route')
+        assert hasattr(router, "route")
 
     def test_router_handles_valid_request(self):
         """✅ PATTERN: Multi-assertion depth for method behavior."""
         router = create_router({})
-        request = {
-            "jsonrpc": "2.0",
-            "method": "test.method",
-            "params": {"key": "value"},
-            "id": 1
-        }
+        request = {"jsonrpc": "2.0", "method": "test.method", "params": {"key": "value"}, "id": 1}
 
         # Act
         response = router.handle_request(request)
@@ -65,11 +61,7 @@ class TestJSONRPCRouter:
     def test_router_rejects_invalid_version(self):
         """✅ PATTERN: Edge case - Invalid JSON-RPC version."""
         router = create_router({})
-        request = {
-            "jsonrpc": "1.0",  # Invalid version
-            "method": "test",
-            "id": 1
-        }
+        request = {"jsonrpc": "1.0", "method": "test", "id": 1}  # Invalid version
 
         with pytest.raises(ValueError, match="JSON-RPC 2.0 required"):
             router.handle_request(request)
@@ -79,7 +71,7 @@ class TestJSONRPCRouter:
         router = create_router({})
         request = {
             "jsonrpc": "2.0",
-            "id": 1
+            "id": 1,
             # Missing 'method'
         }
 
@@ -92,7 +84,7 @@ class TestJSONRPCRouter:
         request = {
             "jsonrpc": "2.0",
             "method": "notify.event",
-            "params": {"event": "test"}
+            "params": {"event": "test"},
             # No 'id' - this is a notification
         }
 
@@ -129,12 +121,7 @@ class TestJSONRPCRouter:
         """✅ PATTERN: Edge case - Large payload."""
         router = create_router({})
         large_payload = "x" * 1000000  # 1MB string
-        request = {
-            "jsonrpc": "2.0",
-            "method": "test",
-            "params": {"data": large_payload},
-            "id": 1
-        }
+        request = {"jsonrpc": "2.0", "method": "test", "params": {"data": large_payload}, "id": 1}
 
         result = router.handle_request(request)
         assert result is not None
@@ -145,6 +132,7 @@ class TestJSONRPCRouter:
 # ENHANCEMENT PATTERN 2: Adapter Interface Validation
 # ============================================================================
 
+
 class TestAdapterInterface:
     """Test adapter interface with semantic assertions."""
 
@@ -154,7 +142,7 @@ class TestAdapterInterface:
         # ✅ AFTER: Validate all interface methods
         adapter = create_adapter()
 
-        required_methods = ['process', 'handle_error', 'validate', 'close']
+        required_methods = ["process", "handle_error", "validate", "close"]
 
         for method_name in required_methods:
             assert hasattr(adapter, method_name), f"Missing {method_name}"
@@ -167,10 +155,14 @@ class TestAdapterInterface:
 
         # Validate method signature
         import inspect
+
         sig = inspect.signature(adapter.process)
 
-        assert 'payload' in sig.parameters
-        assert 'timeout' in sig.parameters or sig.parameters['payload'].default != inspect.Parameter.empty
+        assert "payload" in sig.parameters
+        assert (
+            "timeout" in sig.parameters
+            or sig.parameters["payload"].default != inspect.Parameter.empty
+        )
         assert sig.return_annotation != inspect.Parameter.empty or True  # Has return type
 
     def test_adapter_process_valid_payload(self):
@@ -245,6 +237,7 @@ class TestAdapterInterface:
 # ============================================================================
 # ENHANCEMENT PATTERN 3: Worker Lifecycle
 # ============================================================================
+
 
 class TestWorkerLifecycle:
     """Test worker lifecycle with semantic assertions."""
@@ -337,17 +330,13 @@ class TestWorkerLifecycle:
 # ENHANCEMENT PATTERN 4: Checkpoint Payloads
 # ============================================================================
 
+
 class TestCheckpointPayloads:
     """Test checkpoint payload handling with semantic assertions."""
 
     def test_checkpoint_serialization_valid(self):
         """✅ PATTERN: Serialization with value validation."""
-        data = {
-            "state": "running",
-            "iteration": 100,
-            "loss": 0.5,
-            "metadata": {"version": "1.0"}
-        }
+        data = {"state": "running", "iteration": 100, "loss": 0.5, "metadata": {"version": "1.0"}}
 
         checkpoint = create_checkpoint(data)
         serialized = checkpoint.serialize()
@@ -411,17 +400,14 @@ class TestCheckpointPayloads:
 # ENHANCEMENT PATTERN 5: Protocol Round-Trip
 # ============================================================================
 
+
 class TestProtocolRoundTrip:
     """Test protocol round-trip with semantic assertions."""
 
     def test_request_response_round_trip(self):
         """✅ PATTERN: Complete round-trip validation."""
         # Original request
-        original_request = {
-            "method": "compute",
-            "params": {"x": 10, "y": 20},
-            "id": 42
-        }
+        original_request = {"method": "compute", "params": {"x": 10, "y": 20}, "id": 42}
 
         # Send through protocol
         encoded = encode_protocol(original_request)
@@ -445,11 +431,7 @@ class TestProtocolRoundTrip:
 
     def test_protocol_handles_unicode_characters(self):
         """✅ PATTERN: Edge case - Unicode in payloads."""
-        request = {
-            "method": "test",
-            "params": {"text": "Hello 世界 🚀"},
-            "id": 1
-        }
+        request = {"method": "test", "params": {"text": "Hello 世界 🚀"}, "id": 1}
 
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
@@ -458,11 +440,7 @@ class TestProtocolRoundTrip:
 
     def test_protocol_handles_null_values_edge_case(self):
         """✅ PATTERN: Edge case - Null/None values."""
-        request = {
-            "method": "test",
-            "params": {"value": None, "other": "data"},
-            "id": 1
-        }
+        request = {"method": "test", "params": {"value": None, "other": "data"}, "id": 1}
 
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
@@ -475,16 +453,9 @@ class TestProtocolRoundTrip:
         request = {
             "method": "test",
             "params": {
-                "level1": {
-                    "level2": {
-                        "level3": {
-                            "data": [1, 2, 3],
-                            "nested": {"key": "value"}
-                        }
-                    }
-                }
+                "level1": {"level2": {"level3": {"data": [1, 2, 3], "nested": {"key": "value"}}}}
             },
-            "id": 1
+            "id": 1,
         }
 
         encoded = encode_protocol(request)
@@ -505,9 +476,9 @@ class TestProtocolRoundTrip:
                 "str_val": "text",
                 "null_val": None,
                 "list_val": [1, 2, 3],
-                "dict_val": {"nested": "value"}
+                "dict_val": {"nested": "value"},
             },
-            "id": 1
+            "id": 1,
         }
 
         encoded = encode_protocol(request)
@@ -527,8 +498,10 @@ class TestProtocolRoundTrip:
 # Helper Functions (Mock Implementation)
 # ============================================================================
 
+
 def create_router(config=None):
     """Imaginary router factory."""
+
     class Router:
         def __init__(self, config):
             self.config = config or {}
@@ -537,7 +510,12 @@ def create_router(config=None):
             self.max_connections = 1000
 
         def handle_request(self, request):
-            return {"jsonrpc": "2.0", "result": None, "id": request.get("id"), "status": "processed"}
+            return {
+                "jsonrpc": "2.0",
+                "result": None,
+                "id": request.get("id"),
+                "status": "processed",
+            }
 
         def handle_batch(self, batch):
             return [self.handle_request(r) for r in batch]
@@ -547,12 +525,17 @@ def create_router(config=None):
 
 def create_adapter():
     """Imaginary adapter factory."""
+
     class Adapter:
         def process(self, payload):
             return {"status": "success", "processed_at": "2026-02-04", "record_count": 1}
 
         def handle_error(self, error):
-            return {"error_type": type(error).__name__, "error_message": str(error), "recovered": True}
+            return {
+                "error_type": type(error).__name__,
+                "error_message": str(error),
+                "recovered": True,
+            }
 
         def validate(self, data):
             return "type" in data and data.get("type") == "valid"
@@ -565,6 +548,7 @@ def create_adapter():
 
 def create_worker(config=None):
     """Imaginary worker factory."""
+
     class Worker:
         def __init__(self, config=None):
             config = config or {}
@@ -608,6 +592,7 @@ def create_worker(config=None):
 
 def create_checkpoint(data):
     """Imaginary checkpoint factory."""
+
     class Checkpoint:
         def __init__(self, data):
             if not data:
@@ -616,11 +601,11 @@ def create_checkpoint(data):
 
         def serialize(self):
             pass  # removed redundant `import json` (top-level import used)
-            return json.dumps(self.data).encode('utf-8')
+            return json.dumps(self.data).encode("utf-8")
 
         def deserialize(self, data):
             pass  # removed redundant `import json` (top-level import used)
-            return json.loads(data.decode('utf-8'))
+            return json.loads(data.decode("utf-8"))
 
     return Checkpoint(data)
 
@@ -628,13 +613,13 @@ def create_checkpoint(data):
 def encode_protocol(data):
     """Imaginary protocol encoder."""
     pass  # removed redundant `import json` (top-level import used)
-    return json.dumps(data).encode('utf-8')
+    return json.dumps(data).encode("utf-8")
 
 
 def decode_protocol(data):
     """Imaginary protocol decoder."""
     pass  # removed redundant `import json` (top-level import used)
-    return json.loads(data.decode('utf-8'))
+    return json.loads(data.decode("utf-8"))
 
 
 def process_request(request):
@@ -642,15 +627,16 @@ def process_request(request):
     return {
         "jsonrpc": "2.0",
         "result": request["params"]["x"] + request["params"]["y"],
-        "id": request["id"]
+        "id": request["id"],
     }
 
 
 class OldCheckpointReader:
     """Imaginary old checkpoint reader for version mismatch."""
+
     def deserialize(self, data):
         # Simulate version check
-        content = json.loads(data.decode('utf-8'))
+        content = json.loads(data.decode("utf-8"))
         if content.get("version") != "1.0":
             raise ValueError("version incompatible")
         return content

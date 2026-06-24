@@ -4,6 +4,7 @@ The top-level `services` package is found in `src/services` (because pytest adds
 `src` first). We extend its `__path__` to include the repo-root `services/`
 directory so that `services.msp_gateway` resolves correctly.
 """
+
 from __future__ import annotations
 
 import sys
@@ -20,6 +21,7 @@ if str(_REPO_ROOT) not in sys.path:
 # src/services/ and services/ are discoverable under the `services` namespace.
 try:
     import services as _svc_pkg
+
     if hasattr(_svc_pkg, "__path__") and _ROOT_SERVICES not in _svc_pkg.__path__:
         _svc_pkg.__path__.append(_ROOT_SERVICES)
 except ImportError:

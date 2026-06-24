@@ -51,17 +51,19 @@ class TestCapability1RAGToAgentBridge:
 
         if scenario == "happy_path":
             # Normal operation: load RAG then agent
-            registry.register(QuantumPlugin(
-                name="rag",
-                import_path="src.rag.pipelines.retrieval",
-                energy_cost=1.0
-            ))
-            registry.register(QuantumPlugin(
-                name="agent",
-                import_path="src.agent.core",
-                energy_cost=1.5,
-                dependencies=["rag"]
-            ))
+            registry.register(
+                QuantumPlugin(
+                    name="rag", import_path="src.rag.pipelines.retrieval", energy_cost=1.0
+                )
+            )
+            registry.register(
+                QuantumPlugin(
+                    name="agent",
+                    import_path="src.agent.core",
+                    energy_cost=1.5,
+                    dependencies=["rag"],
+                )
+            )
 
             module = registry.load_with_dependencies("agent")
             assert module is not None
@@ -69,12 +71,11 @@ class TestCapability1RAGToAgentBridge:
 
         elif scenario == "edge_case_1":
             # Edge: Empty dependency list
-            registry.register(QuantumPlugin(
-                name="standalone",
-                import_path="sys",
-                energy_cost=0.5,
-                dependencies=[]
-            ))
+            registry.register(
+                QuantumPlugin(
+                    name="standalone", import_path="sys", energy_cost=0.5, dependencies=[]
+                )
+            )
 
             module = registry.load_with_dependencies("standalone")
             assert module is not None
@@ -83,12 +84,14 @@ class TestCapability1RAGToAgentBridge:
             # Edge: Multiple dependencies
             registry.register(QuantumPlugin(name="dep1", import_path="os", energy_cost=0.5))
             registry.register(QuantumPlugin(name="dep2", import_path="sys", energy_cost=0.5))
-            registry.register(QuantumPlugin(
-                name="multi_dep",
-                import_path="math",
-                energy_cost=1.0,
-                dependencies=["dep1", "dep2"]
-            ))
+            registry.register(
+                QuantumPlugin(
+                    name="multi_dep",
+                    import_path="math",
+                    energy_cost=1.0,
+                    dependencies=["dep1", "dep2"],
+                )
+            )
 
             module = registry.load_with_dependencies("multi_dep")
             assert module is not None
@@ -101,11 +104,7 @@ class TestCapability1RAGToAgentBridge:
 
         # Register plugin with non-existent dependency
         registry.register(QuantumPlugin(name="bad_dep", import_path="nonexistent.module"))
-        registry.register(QuantumPlugin(
-            name="agent",
-            import_path="sys",
-            dependencies=["bad_dep"]
-        ))
+        registry.register(QuantumPlugin(name="agent", import_path="sys", dependencies=["bad_dep"]))
 
         # Should handle gracefully
         try:
@@ -137,16 +136,12 @@ class TestCapability2PhysicsToTestingPipeline:
 
         if scenario == "happy_path":
             # Born Rule: Higher amplitude = higher priority
-            suite.add_test(QuantumTest(
-                name="high_priority",
-                test_func=lambda: True,
-                amplitude=0.9  # P = 0.81
-            ))
-            suite.add_test(QuantumTest(
-                name="low_priority",
-                test_func=lambda: True,
-                amplitude=0.3  # P = 0.09
-            ))
+            suite.add_test(
+                QuantumTest(name="high_priority", test_func=lambda: True, amplitude=0.9)  # P = 0.81
+            )
+            suite.add_test(
+                QuantumTest(name="low_priority", test_func=lambda: True, amplitude=0.3)  # P = 0.09
+            )
 
             results = suite.execute_with_thermodynamic_scheduling()
 
@@ -156,22 +151,16 @@ class TestCapability2PhysicsToTestingPipeline:
 
         elif scenario == "edge_case_1":
             # Edge: Zero amplitude (should still work)
-            suite.add_test(QuantumTest(
-                name="zero_amp",
-                test_func=lambda: True,
-                amplitude=0.0
-            ))
+            suite.add_test(QuantumTest(name="zero_amp", test_func=lambda: True, amplitude=0.0))
 
             results = suite.execute_with_thermodynamic_scheduling()
             assert results["total"] == 1
 
         elif scenario == "edge_case_2":
             # Edge: Maximum amplitude
-            suite.add_test(QuantumTest(
-                name="max_amp",
-                test_func=lambda: True,
-                amplitude=1.0  # P = 1.0
-            ))
+            suite.add_test(
+                QuantumTest(name="max_amp", test_func=lambda: True, amplitude=1.0)  # P = 1.0
+            )
 
             results = suite.execute_with_thermodynamic_scheduling()
             assert results["tests"][0]["probability"] == pytest.approx(1.0)
@@ -181,11 +170,7 @@ class TestCapability2PhysicsToTestingPipeline:
         suite = QuantumTestSuite()
 
         # Add test that will fail
-        suite.add_test(QuantumTest(
-            name="failing_test",
-            test_func=lambda: False,
-            amplitude=0.8
-        ))
+        suite.add_test(QuantumTest(name="failing_test", test_func=lambda: False, amplitude=0.8))
 
         results = suite.execute_with_thermodynamic_scheduling()
 
@@ -199,11 +184,7 @@ class TestCapability2PhysicsToTestingPipeline:
 
         Physics: E = ℏω where ω = 1/execution_time
         """
-        test = QuantumTest(
-            name="energy_test",
-            test_func=lambda: True,
-            amplitude=0.8
-        )
+        test = QuantumTest(name="energy_test", test_func=lambda: True, amplitude=0.8)
 
         # Execute to get timing
         test.execute()
@@ -315,27 +296,24 @@ class TestCapability4DependencyAwareOrchestration:
         def make_func(name):
             def func():
                 execution_order.append(name)
+
             return func
 
         if scenario == "happy_path":
             # Linear dependency chain: A -> B -> C
-            orch.register_task(ThermodynamicTask(
-                name="task_c",
-                task_func=make_func("c"),
-                energy=1.0
-            ))
-            orch.register_task(ThermodynamicTask(
-                name="task_b",
-                task_func=make_func("b"),
-                energy=1.0,
-                dependencies=["task_c"]
-            ))
-            orch.register_task(ThermodynamicTask(
-                name="task_a",
-                task_func=make_func("a"),
-                energy=1.0,
-                dependencies=["task_b"]
-            ))
+            orch.register_task(
+                ThermodynamicTask(name="task_c", task_func=make_func("c"), energy=1.0)
+            )
+            orch.register_task(
+                ThermodynamicTask(
+                    name="task_b", task_func=make_func("b"), energy=1.0, dependencies=["task_c"]
+                )
+            )
+            orch.register_task(
+                ThermodynamicTask(
+                    name="task_a", task_func=make_func("a"), energy=1.0, dependencies=["task_b"]
+                )
+            )
 
             orch.execute_thermodynamic_cycle()
 
@@ -346,11 +324,11 @@ class TestCapability4DependencyAwareOrchestration:
         elif scenario == "edge_case_1":
             # No dependencies (any order valid)
             for i in range(3):
-                orch.register_task(ThermodynamicTask(
-                    name=f"independent_{i}",
-                    task_func=make_func(f"ind{i}"),
-                    energy=1.0
-                ))
+                orch.register_task(
+                    ThermodynamicTask(
+                        name=f"independent_{i}", task_func=make_func(f"ind{i}"), energy=1.0
+                    )
+                )
 
             orch.execute_thermodynamic_cycle()
             assert len(execution_order) == 3
@@ -358,24 +336,21 @@ class TestCapability4DependencyAwareOrchestration:
         elif scenario == "edge_case_2":
             # Diamond dependency: A->B, A->C, B->D, C->D
             orch.register_task(ThermodynamicTask(name="d", task_func=make_func("d"), energy=1.0))
-            orch.register_task(ThermodynamicTask(
-                name="b",
-                task_func=make_func("b"),
-                energy=1.0,
-                dependencies=["d"]
-            ))
-            orch.register_task(ThermodynamicTask(
-                name="c",
-                task_func=make_func("c"),
-                energy=1.0,
-                dependencies=["d"]
-            ))
-            orch.register_task(ThermodynamicTask(
-                name="a",
-                task_func=make_func("a"),
-                energy=1.0,
-                dependencies=["b", "c"]
-            ))
+            orch.register_task(
+                ThermodynamicTask(
+                    name="b", task_func=make_func("b"), energy=1.0, dependencies=["d"]
+                )
+            )
+            orch.register_task(
+                ThermodynamicTask(
+                    name="c", task_func=make_func("c"), energy=1.0, dependencies=["d"]
+                )
+            )
+            orch.register_task(
+                ThermodynamicTask(
+                    name="a", task_func=make_func("a"), energy=1.0, dependencies=["b", "c"]
+                )
+            )
 
             orch.execute_thermodynamic_cycle()
 
@@ -390,17 +365,12 @@ class TestCapability4DependencyAwareOrchestration:
         def failing_func():
             raise RuntimeError("Task failed")
 
-        orch.register_task(ThermodynamicTask(
-            name="failing",
-            task_func=failing_func,
-            energy=1.0
-        ))
-        orch.register_task(ThermodynamicTask(
-            name="dependent",
-            task_func=lambda: None,
-            energy=1.0,
-            dependencies=["failing"]
-        ))
+        orch.register_task(ThermodynamicTask(name="failing", task_func=failing_func, energy=1.0))
+        orch.register_task(
+            ThermodynamicTask(
+                name="dependent", task_func=lambda: None, energy=1.0, dependencies=["failing"]
+            )
+        )
 
         results = orch.execute_thermodynamic_cycle()
 

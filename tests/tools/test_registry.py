@@ -10,6 +10,7 @@ import pytest
 
 # ==================== Import Tests ====================
 
+
 class TestModuleImports:
     """Tests for module imports."""
 
@@ -17,6 +18,7 @@ class TestModuleImports:
         """Test that registry module can be imported."""
         try:
             from src.tools import registry
+
             assert registry is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -25,6 +27,7 @@ class TestModuleImports:
         """Test ToolDefinition class import."""
         try:
             from src.tools.registry import ToolDefinition
+
             assert ToolDefinition is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -33,6 +36,7 @@ class TestModuleImports:
         """Test ToolResult class import."""
         try:
             from src.tools.registry import ToolResult
+
             assert ToolResult is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -41,6 +45,7 @@ class TestModuleImports:
         """Test ToolRegistry class import."""
         try:
             from src.tools.registry import ToolRegistry
+
             assert ToolRegistry is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -49,6 +54,7 @@ class TestModuleImports:
         """Test constants are defined."""
         try:
             from src.tools.registry import MAX_TOOL_NAME_LENGTH, MAX_TOOLS
+
             assert MAX_TOOLS == 1000
             assert MAX_TOOL_NAME_LENGTH == 100
         except ImportError:
@@ -56,6 +62,7 @@ class TestModuleImports:
 
 
 # ==================== ToolDefinition Tests ====================
+
 
 class TestToolDefinition:
     """Tests for ToolDefinition dataclass."""
@@ -68,11 +75,7 @@ class TestToolDefinition:
             def handler():
                 pass
 
-            tool = ToolDefinition(
-                name="test_tool",
-                description="A test tool",
-                handler=handler
-            )
+            tool = ToolDefinition(name="test_tool", description="A test tool", handler=handler)
             assert tool.name == "test_tool"
             assert tool.description == "A test tool"
             assert tool.handler == handler
@@ -84,11 +87,7 @@ class TestToolDefinition:
         try:
             from src.tools.registry import ToolDefinition
 
-            tool = ToolDefinition(
-                name="test",
-                description="desc",
-                handler=lambda: None
-            )
+            tool = ToolDefinition(name="test", description="desc", handler=lambda: None)
             assert tool.parameters == {}
             assert tool.requires_confirmation is False
             assert tool.timeout_seconds == 30
@@ -108,7 +107,7 @@ class TestToolDefinition:
                 parameters={"arg1": "string"},
                 requires_confirmation=True,
                 timeout_seconds=60,
-                enabled=False
+                enabled=False,
             )
             assert tool.parameters == {"arg1": "string"}
             assert tool.requires_confirmation is True
@@ -119,6 +118,7 @@ class TestToolDefinition:
 
 
 # ==================== ToolResult Tests ====================
+
 
 class TestToolResult:
     """Tests for ToolResult dataclass."""
@@ -161,6 +161,7 @@ class TestToolResult:
 
 # ==================== ToolRegistry Tests ====================
 
+
 class TestToolRegistry:
     """Tests for ToolRegistry class - State Machine Pattern."""
 
@@ -185,9 +186,7 @@ class TestToolRegistry:
                 return "Hello"
 
             result = registry.register(
-                name="my_tool",
-                handler=my_handler,
-                description="My test tool"
+                name="my_tool", handler=my_handler, description="My test tool"
             )
             assert result is True
         except ImportError:
@@ -199,11 +198,7 @@ class TestToolRegistry:
             from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
-            result = registry.register(
-                name="",
-                handler=lambda: None,
-                description="Empty name tool"
-            )
+            result = registry.register(name="", handler=lambda: None, description="Empty name tool")
             assert result is False
         except ImportError:
             pytest.skip("Module not available")
@@ -215,9 +210,7 @@ class TestToolRegistry:
 
             registry = ToolRegistry()
             result = registry.register(
-                name=None,
-                handler=lambda: None,
-                description="None name tool"
+                name=None, handler=lambda: None, description="None name tool"
             )
             assert result is False
         except ImportError:
@@ -233,7 +226,7 @@ class TestToolRegistry:
                 name="param_tool",
                 handler=lambda x: x,
                 description="Tool with params",
-                parameters={"x": "string"}
+                parameters={"x": "string"},
             )
             assert result is True
         except ImportError:
@@ -249,7 +242,7 @@ class TestToolRegistry:
                 name="confirm_tool",
                 handler=lambda: None,
                 description="Needs confirmation",
-                requires_confirmation=True
+                requires_confirmation=True,
             )
             assert result is True
         except ImportError:
@@ -265,7 +258,7 @@ class TestToolRegistry:
                 name="timeout_tool",
                 handler=lambda: None,
                 description="Custom timeout",
-                timeout_seconds=120
+                timeout_seconds=120,
             )
             assert result is True
         except ImportError:
@@ -274,6 +267,7 @@ class TestToolRegistry:
 
 # ==================== Safeguard Tests ====================
 
+
 class TestSafeguards:
     """Tests for registry safeguards - Decoherence Pattern."""
 
@@ -281,6 +275,7 @@ class TestSafeguards:
         """Test MAX_TOOL_NAME_LENGTH is defined."""
         try:
             from src.tools.registry import MAX_TOOL_NAME_LENGTH
+
             assert MAX_TOOL_NAME_LENGTH > 0
             assert MAX_TOOL_NAME_LENGTH == 100
         except ImportError:
@@ -290,6 +285,7 @@ class TestSafeguards:
         """Test MAX_TOOLS is defined."""
         try:
             from src.tools.registry import MAX_TOOLS
+
             assert MAX_TOOLS > 0
             assert MAX_TOOLS == 1000
         except ImportError:
@@ -299,6 +295,7 @@ class TestSafeguards:
         """Test that logger is configured."""
         try:
             from src.tools.registry import logger
+
             assert logger is not None
         except ImportError:
             pytest.skip("Module not available")

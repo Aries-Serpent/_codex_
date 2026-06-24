@@ -3,6 +3,7 @@ Stress tests for concurrent operations and resource limits.
 
 Tests parallel execution, thread safety, and resource management.
 """
+
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -76,11 +77,12 @@ class TestConcurrentTraining:
                 # Relaxed assertion: check we got at least the expected number of records
                 # since concurrent writes may produce more/fewer lines depending on interleaving
                 assert log_file.exists()
-                lines = log_file.read_text().strip().split('\n')
+                lines = log_file.read_text().strip().split("\n")
                 assert len(lines) >= 15  # At least 3 threads * 5 steps
                 assert len(lines) <= 20  # Upper bound to catch unexpected logging bugs
                 # Validate each line is valid JSON
                 import json
+
                 for line in lines:
                     if line:  # Skip empty lines
                         json.loads(line)  # Should not raise
@@ -152,7 +154,7 @@ class TestThreadSafety:
         assert len(timestamps) == 20
         assert len(sanitized) == 20
         assert all(isinstance(t, str) for t in timestamps)
-        assert all('<' not in s and '>' not in s for s in sanitized)
+        assert all("<" not in s and ">" not in s for s in sanitized)
 
     def test_concurrent_checkpoint_operations(self):
         """Test concurrent checkpoint directory operations."""

@@ -30,10 +30,8 @@ class TestDeviceStrategyFallback:
             config = DeviceConfig.auto_detect(prefer_mps=False)
 
             # Assert
-            assert config.device == "cpu", \
-                "Should fall back to CPU when CUDA unavailable"
-            assert str(config.dtype) == "torch.float32", \
-                "CPU should use float32 by default"
+            assert config.device == "cpu", "Should fall back to CPU when CUDA unavailable"
+            assert str(config.dtype) == "torch.float32", "CPU should use float32 by default"
 
     def test_device_config_cuda_detected_when_available(self):
         """Verify CUDA is selected when available."""
@@ -53,8 +51,7 @@ class TestDeviceStrategyFallback:
         config = DeviceConfig.auto_detect()
 
         # Assert
-        assert "cuda" in config.device, \
-            "Should detect and use CUDA when available"
+        assert "cuda" in config.device, "Should detect and use CUDA when available"
 
     def test_device_config_mps_preference(self):
         """Verify MPS is preferred over CPU when available and preferred."""
@@ -78,8 +75,10 @@ class TestDeviceStrategyFallback:
             config = DeviceConfig.auto_detect(prefer_mps=True)
 
             # Assert: Should either use MPS or fall back to CPU
-            assert config.device in ("mps", "cpu"), \
-                f"Device should be mps or cpu, got {config.device}"
+            assert config.device in (
+                "mps",
+                "cpu",
+            ), f"Device should be mps or cpu, got {config.device}"
 
     def test_device_config_bfloat16_support_detection(self):
         """Verify bfloat16 support is correctly detected."""
@@ -95,8 +94,7 @@ class TestDeviceStrategyFallback:
         supports_bf16 = _supports_bfloat16()
 
         # Assert: Should return boolean without crashing
-        assert isinstance(supports_bf16, bool), \
-            "Should return boolean for bfloat16 support"
+        assert isinstance(supports_bf16, bool), "Should return boolean for bfloat16 support"
 
     def test_device_config_dtype_selection(self):
         """Verify dtype is selected appropriately for device."""
@@ -112,12 +110,9 @@ class TestDeviceStrategyFallback:
         config = DeviceConfig.auto_detect()
 
         # Assert
-        assert config.dtype is not None, \
-            "Dtype should be selected"
-        assert hasattr(config, "mixed_precision"), \
-            "Config should have mixed_precision attribute"
-        assert isinstance(config.mixed_precision, bool), \
-            "mixed_precision should be boolean"
+        assert config.dtype is not None, "Dtype should be selected"
+        assert hasattr(config, "mixed_precision"), "Config should have mixed_precision attribute"
+        assert isinstance(config.mixed_precision, bool), "mixed_precision should be boolean"
 
 
 class TestDeviceStrategyValidation:
@@ -141,12 +136,9 @@ class TestDeviceStrategyValidation:
         )
 
         # Assert
-        assert config.device == "cpu", \
-            "Device should be set to cpu"
-        assert config.dtype == torch.float32, \
-            "Dtype should be float32"
-        assert config.mixed_precision is False, \
-            "Mixed precision should be False"
+        assert config.device == "cpu", "Device should be set to cpu"
+        assert config.dtype == torch.float32, "Dtype should be float32"
+        assert config.mixed_precision is False, "Mixed precision should be False"
 
     def test_device_available_cpu_always_available(self):
         """Verify CPU is always reported as available."""
@@ -162,8 +154,7 @@ class TestDeviceStrategyValidation:
         cpu_available = _device_available("cpu")
 
         # Assert
-        assert cpu_available is True, \
-            "CPU should always be available"
+        assert cpu_available is True, "CPU should always be available"
 
     def test_device_available_cuda_reflects_actual_status(self):
         """Verify CUDA availability check matches torch.cuda.is_available()."""
@@ -180,8 +171,9 @@ class TestDeviceStrategyValidation:
         expected_cuda = torch.cuda.is_available()
 
         # Assert
-        assert cuda_available == expected_cuda, \
-            "CUDA availability should match torch.cuda.is_available()"
+        assert (
+            cuda_available == expected_cuda
+        ), "CUDA availability should match torch.cuda.is_available()"
 
 
 class TestDeviceStrategyIntegration:
@@ -205,8 +197,7 @@ class TestDeviceStrategyIntegration:
         )
 
         # Assert
-        assert config.device == "cpu", \
-            "Should respect manual device specification"
+        assert config.device == "cpu", "Should respect manual device specification"
 
     def test_device_strategy_multiple_invocations_consistent(self):
         """Verify repeated auto-detect calls return consistent results."""
@@ -223,10 +214,8 @@ class TestDeviceStrategyIntegration:
         config2 = DeviceConfig.auto_detect()
 
         # Assert
-        assert config1.device == config2.device, \
-            "Device should be consistent across calls"
-        assert config1.dtype == config2.dtype, \
-            "Dtype should be consistent across calls"
+        assert config1.device == config2.device, "Device should be consistent across calls"
+        assert config1.dtype == config2.dtype, "Dtype should be consistent across calls"
 
     def test_device_strategy_no_crash_on_torch_unavailable(self):
         """Verify graceful handling when PyTorch is unavailable."""
@@ -237,8 +226,7 @@ class TestDeviceStrategyIntegration:
         # (May return False, but shouldn't raise exception)
         try:
             result = _device_available("cuda")
-            assert isinstance(result, bool), \
-                "Should return boolean"
+            assert isinstance(result, bool), "Should return boolean"
         except RuntimeError:
             # Also acceptable if torch is truly unavailable
             pass
@@ -263,8 +251,7 @@ class TestDeviceStrategyErrorHandling:
             with pytest.raises(RuntimeError) as exc_info:
                 _torch_required()
 
-            assert "torch" in str(exc_info.value).lower(), \
-                "Error should mention torch"
+            assert "torch" in str(exc_info.value).lower(), "Error should mention torch"
 
     def test_device_strategy_bfloat16_check_handles_exceptions(self):
         """Verify bfloat16 check handles errors gracefully."""
@@ -282,10 +269,8 @@ class TestDeviceStrategyErrorHandling:
             result = _supports_bfloat16()
 
             # Assert
-            assert isinstance(result, bool), \
-                "Should return boolean even with CUDA error"
-            assert result is False, \
-                "Should return False when check fails"
+            assert isinstance(result, bool), "Should return boolean even with CUDA error"
+            assert result is False, "Should return False when check fails"
 
 
 if __name__ == "__main__":

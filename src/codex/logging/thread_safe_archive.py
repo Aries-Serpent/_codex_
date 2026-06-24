@@ -13,12 +13,11 @@ Provides mutually exclusive archive operations:
 from __future__ import annotations
 
 import logging
-import threading
 import time
 from contextlib import contextmanager
 from typing import Any, Callable, Dict, Optional
 
-from .concurrency import ArchiveOperationLock, LockMetrics, log_error, save_metrics
+from .concurrency import ArchiveOperationLock, log_error, save_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -199,9 +198,7 @@ class ArchiveSessionGuard:
                 return sid, False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {
-                executor.submit(_archive_one, sid): sid for sid in session_ids
-            }
+            futures = {executor.submit(_archive_one, sid): sid for sid in session_ids}
 
             for future in concurrent.futures.as_completed(futures):
                 try:

@@ -61,7 +61,9 @@ except Exception:
     _shared_DB_LOCK = None  # type: ignore[assignment]
     _shared_init_db = None  # type: ignore[assignment]
     try:  # Fallback: rely on monkeypatch adapters
-        from codex.monkeypatch.log_adapters import log_event as _shared_log_event  # type: ignore[no-redef]  # noqa: I001
+        from codex.monkeypatch.log_adapters import (  # type: ignore[no-redef]  # noqa: I001
+            log_event as _shared_log_event,
+        )
     except Exception:  # pragma: no cover - nothing available
         _shared_log_event = None  # type: ignore[assignment]
 # Local, minimal fallbacks (if needed)
@@ -139,16 +141,14 @@ def init_db(db_path: Optional[Path] = None):
         except Exception as e:
             logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
         try:
-            conn.execute(
-                """CREATE TABLE IF NOT EXISTS session_events(
+            conn.execute("""CREATE TABLE IF NOT EXISTS session_events(
                         ts REAL NOT NULL,
                         session_id TEXT NOT NULL,
                         role TEXT NOT NULL,
                         message TEXT NOT NULL,
                         seq INTEGER,
                         meta TEXT
-                    )"""
-            )
+                    )""")
             cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
             if "seq" not in cols:
                 conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")

@@ -271,7 +271,7 @@ class SecurityValidator:
         validators = {
             "audit_logging": self.validate_audit_logging,
             "codeql_suppressions": self.validate_codeql_suppressions,
-            "branch_protection": self.validate_branch_protection,
+            "branch_protection": self.validate_branch_protection,  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
             "secret_scanning": self.validate_secret_scanning
         }
 

@@ -180,9 +180,7 @@ class TestTrainingLoop:
     """Test training loop functionality."""
 
     @requires_torch
-    def test_training_step_reduces_loss(
-        self, mock_model, mock_optimizer, sample_dataset
-    ) -> None:
+    def test_training_step_reduces_loss(self, mock_model, mock_optimizer, sample_dataset) -> None:
         """Test that training step reduces loss."""
         mock_model.return_value = MagicMock(loss=MagicMock(item=lambda: 0.5))
         result = mock_model(sample_dataset[0])
@@ -212,9 +210,7 @@ class TestTrainingLoop:
         assert result.epochs_trained == sample_training_config["max_epochs"]
 
     @requires_torch
-    def test_training_logs_metrics(
-        self, sample_training_config, sample_dataset
-    ) -> None:
+    def test_training_logs_metrics(self, sample_training_config, sample_dataset) -> None:
         """Test that training logs metrics."""
         trainer = MagicMock()
         trainer.train(sample_training_config, sample_dataset)
@@ -376,9 +372,7 @@ class TestMemory:
 
     @requires_torch
     @pytest.mark.slow
-    def test_training_does_not_leak_memory(
-        self, sample_training_config, sample_dataset
-    ) -> None:
+    def test_training_does_not_leak_memory(self, sample_training_config, sample_dataset) -> None:
         """Test that training does not leak memory."""
         import gc
 

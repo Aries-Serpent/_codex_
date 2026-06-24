@@ -3,6 +3,7 @@ Integration tests for CLI entrypoints.
 
 Tests that CLI commands execute without errors.
 """
+
 import subprocess
 import sys
 
@@ -16,7 +17,7 @@ class TestCodexCLI:
             [sys.executable, "-m", "codex.cli", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         assert result.returncode == 0
@@ -28,7 +29,7 @@ class TestCodexCLI:
             [sys.executable, "-m", "codex.cli", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should show some commands
@@ -41,7 +42,7 @@ class TestCodexCLI:
             [sys.executable, "-m", "codex.cli", "archive", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         assert result.returncode == 0
@@ -56,7 +57,7 @@ class TestCodexMLCLI:
             [sys.executable, "-m", "codex_ml.cli", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should succeed or indicate missing config (acceptable)
@@ -76,7 +77,7 @@ class TestLoggingCLI:
             [sys.executable, "-m", "codex.logging.session_logger", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should succeed or gracefully fail
@@ -88,7 +89,7 @@ class TestLoggingCLI:
             [sys.executable, "-m", "codex.logging.query_logs", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         # Should succeed or gracefully fail

@@ -15,7 +15,6 @@ Physics Reference Tables Applied:
 - Table 1, Eq #49: J = Coverage/Runtime optimization
 """
 
-
 import pytest
 
 pytest.importorskip("numpy")
@@ -330,16 +329,10 @@ class TestPhase2_QuantumGameTheory_Corrected:
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_quantum_game_state_creation(self):
         """Table 4, Eq #1: Game state initialization"""
-        blue_strategy_state = StrategyState(
-            team=TeamType.BLUE, strategies=["defend", "monitor"]
-        )
-        red_strategy_state = StrategyState(
-            team=TeamType.RED, strategies=["attack", "probe"]
-        )
+        blue_strategy_state = StrategyState(team=TeamType.BLUE, strategies=["defend", "monitor"])
+        red_strategy_state = StrategyState(team=TeamType.RED, strategies=["attack", "probe"])
 
-        state = QuantumGameState(
-            blue_state=blue_strategy_state, red_state=red_strategy_state
-        )
+        state = QuantumGameState(blue_state=blue_strategy_state, red_state=red_strategy_state)
         assert state is not None
         assert state.dimension == 4  # 2x2 strategies
 

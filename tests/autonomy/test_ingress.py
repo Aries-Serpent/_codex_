@@ -93,8 +93,8 @@ class TestIngressGateway:
     def test_replay_nonce_denied(self):
         gw = _gw()
         evt = _event(nonce="replay-nonce-abc")
-        gw.evaluate(evt)          # first pass — registers nonce
-        d = gw.evaluate(evt)      # second pass — should be denied
+        gw.evaluate(evt)  # first pass — registers nonce
+        d = gw.evaluate(evt)  # second pass — should be denied
         assert not d.allowed
         assert "replay" in d.reason
 

@@ -301,12 +301,16 @@ class TestArchiveDALFactory:
 
         with patch.dict(
             "os.environ",
-            {"CODEX_ARCHIVE_BACKEND": "postgres", "CODEX_ARCHIVE_URL": "postgresql://localhost/test"},
+            {
+                "CODEX_ARCHIVE_BACKEND": "postgres",
+                "CODEX_ARCHIVE_URL": "postgresql://localhost/test",
+            },
             clear=True,
         ):
             try:
                 dal = ArchiveDAL.from_env()
                 from codex.archive.dal import PostgresDAL
+
                 assert isinstance(dal, PostgresDAL)
             except RuntimeError as e:
                 # psycopg not installed - expected
@@ -325,6 +329,7 @@ class TestArchiveDALFactory:
             try:
                 dal = ArchiveDAL.from_env()
                 from codex.archive.dal import MariaDbDAL
+
                 assert isinstance(dal, MariaDbDAL)
             except RuntimeError as e:
                 # pymysql not installed - expected
@@ -335,9 +340,7 @@ class TestArchiveDALFactory:
         """Test ArchiveDAL.from_env with unsupported backend."""
         from codex.archive.dal import ArchiveDAL
 
-        with patch.dict(
-            "os.environ", {"CODEX_ARCHIVE_BACKEND": "mongodb"}, clear=True
-        ):
+        with patch.dict("os.environ", {"CODEX_ARCHIVE_BACKEND": "mongodb"}, clear=True):
             with pytest.raises(ValueError, match="Unsupported"):
                 ArchiveDAL.from_env()
 
@@ -345,9 +348,7 @@ class TestArchiveDALFactory:
         """Test ArchiveDAL.from_env is case insensitive."""
         from codex.archive.dal import ArchiveDAL
 
-        with patch.dict(
-            "os.environ", {"CODEX_ARCHIVE_BACKEND": "SQLITE"}, clear=True
-        ):
+        with patch.dict("os.environ", {"CODEX_ARCHIVE_BACKEND": "SQLITE"}, clear=True):
             dal = ArchiveDAL.from_env()
             from codex.archive.dal import SqliteDAL
 
@@ -431,9 +432,7 @@ class TestSqliteDALBasics:
             dal.ensure_schema()
 
             # Check that tables were created
-            cur = dal.conn.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            )
+            cur = dal.conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
             tables = [row[0] for row in cur.fetchall()]
 
             assert "artifact" in tables

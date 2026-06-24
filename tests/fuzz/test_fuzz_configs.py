@@ -51,7 +51,7 @@ def _pydantic_validation_error():
 _any_scalar = st.one_of(
     st.none(),
     st.booleans(),
-    st.integers(min_value=-10**6, max_value=10**6),
+    st.integers(min_value=-(10**6), max_value=10**6),
     st.floats(allow_nan=False, allow_infinity=False, min_value=-1e6, max_value=1e6),
     st.text(max_size=64),
 )
@@ -236,8 +236,11 @@ def test_fuzz_lora_config_construction(enable, r, lora_alpha, lora_dropout, task
     ValidationError = _pydantic_validation_error()
     try:
         cfg = LoraConfig(
-            enable=enable, r=r, lora_alpha=lora_alpha, lora_dropout=lora_dropout,
-            task_type=task_type
+            enable=enable,
+            r=r,
+            lora_alpha=lora_alpha,
+            lora_dropout=lora_dropout,
+            task_type=task_type,
         )
         assert cfg.r >= 1
         assert cfg.lora_alpha >= 1

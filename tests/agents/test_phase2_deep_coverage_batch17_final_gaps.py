@@ -8,7 +8,6 @@ Author: Copilot AI Agent
 Version: 1.0.0
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -31,9 +30,7 @@ class TestUncoveredPaths_PhysicsOrchestrator:
         ]
 
         for action_type in action_types:
-            path = ActionPath(
-                action_type=action_type, description=f"test_{action_type.value}"
-            )
+            path = ActionPath(action_type=action_type, description=f"test_{action_type.value}")
             assert path.action_type == action_type
 
     def test_force_vector_all_directions(self):
@@ -205,9 +202,7 @@ class TestUncoveredPaths_SelfHealing:
         )
 
         # With auto_apply
-        action3 = RemediationAction(
-            action_type="auto", description="Auto fix", auto_apply=True
-        )
+        action3 = RemediationAction(action_type="auto", description="Auto fix", auto_apply=True)
 
         assert all([action1, action2, action3])
 

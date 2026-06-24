@@ -47,6 +47,7 @@ from codex_ml.continuous_learning import (
 @dataclass
 class _FakeDriftResult:
     """Minimal object mirroring DataDriftDetector's DriftResult interface."""
+
     score: float
     drifted: bool
     method: str = "psi"
@@ -164,9 +165,7 @@ class TestEvalGate:
     # Test 9 — all thresholds met → passes
     def test_all_thresholds_met_passes(self):
         gate = EvalGate(min_accuracy=0.80, max_loss=0.5, min_improvement_pct=1.0)
-        result = gate.evaluate(
-            {"accuracy": 0.85, "loss": 0.40, "baseline_accuracy": 0.83}
-        )
+        result = gate.evaluate({"accuracy": 0.85, "loss": 0.40, "baseline_accuracy": 0.83})
         assert result.passed is True
         assert result.reasons == []
 

@@ -43,6 +43,7 @@ import pytest
 # PLATFORM MOCK FIXTURES
 # ============================================================================
 
+
 @pytest.fixture
 def mock_windows_platform() -> Iterator[mock.MagicMock]:
     """Mock Windows platform (win32/nt)."""
@@ -80,6 +81,7 @@ def temp_dir() -> Iterator[Path]:
 # ============================================================================
 # WINDOWS PATH NORMALIZATION TESTS (10+ tests)
 # ============================================================================
+
 
 class TestWindowsPathNormalization:
     """Test Windows path handling and normalization."""
@@ -170,6 +172,7 @@ class TestWindowsPathNormalization:
 # UNIX PATH HANDLING TESTS (5+ tests)
 # ============================================================================
 
+
 class TestUnixPathHandling:
     """Test POSIX/Unix path handling."""
 
@@ -217,6 +220,7 @@ class TestUnixPathHandling:
 # ============================================================================
 # ENVIRONMENT VARIABLE PLATFORM-SPECIFIC TESTS (5+ tests)
 # ============================================================================
+
 
 class TestPlatformEnvironmentVariables:
     """Test platform-specific environment variable handling."""
@@ -272,6 +276,7 @@ class TestPlatformEnvironmentVariables:
 # SHELL COMPATIBILITY VALIDATION TESTS (5+ tests)
 # ============================================================================
 
+
 class TestShellCompatibility:
     """Test shell compatibility across platforms."""
 
@@ -319,6 +324,7 @@ class TestShellCompatibility:
 # ============================================================================
 # FILE I/O CROSS-PLATFORM TESTS (5+ tests)
 # ============================================================================
+
 
 class TestFileIOCrossPlatform:
     """Test file I/O operations across platforms."""
@@ -426,6 +432,7 @@ class TestFileIOCrossPlatform:
 # CASE SENSITIVITY TESTS (5+ tests)
 # ============================================================================
 
+
 class TestCaseSensitivity:
     """Test platform-specific case sensitivity."""
 
@@ -495,6 +502,7 @@ class TestCaseSensitivity:
 # SYMLINK & JUNCTION HANDLING TESTS (4+ tests)
 # ============================================================================
 
+
 class TestSymlinksAndJunctions:
     """Test symlink and junction handling across platforms."""
 
@@ -562,6 +570,7 @@ class TestSymlinksAndJunctions:
 # EXECUTABLE PATH RESOLUTION TESTS (4+ tests)
 # ============================================================================
 
+
 class TestExecutablePathResolution:
     """Test executable path resolution across platforms."""
 
@@ -611,6 +620,7 @@ class TestExecutablePathResolution:
 # ============================================================================
 # TEMPORARY DIRECTORY HANDLING TESTS (3+ tests)
 # ============================================================================
+
 
 class TestTemporaryDirectoryHandling:
     """Test platform-specific temporary directory handling."""
@@ -670,6 +680,7 @@ class TestTemporaryDirectoryHandling:
 # FILE ENCODING TESTS (3+ tests)
 # ============================================================================
 
+
 class TestFileEncoding:
     """Test file encoding handling across platforms."""
 
@@ -716,6 +727,7 @@ class TestFileEncoding:
 # ============================================================================
 # PLATFORM DETECTION UTILITY TESTS (3+ tests)
 # ============================================================================
+
 
 class TestPlatformDetection:
     """Test platform detection utilities."""

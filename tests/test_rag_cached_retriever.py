@@ -14,6 +14,7 @@ import pytest
 try:
     from codex.rag.indexer import build_index_from_files
     from codex.rag.retriever import CachedRetriever, LRUCache
+
     RAG_RETRIEVER_AVAILABLE = True
 except ImportError:
     RAG_RETRIEVER_AVAILABLE = False
@@ -24,12 +25,13 @@ if RAG_RETRIEVER_AVAILABLE:
 
 pytestmark = pytest.mark.skipif(
     not RAG_RETRIEVER_AVAILABLE,
-    reason="RAG retriever dependencies (sentence_transformers, faiss) not installed"
+    reason="RAG retriever dependencies (sentence_transformers, faiss) not installed",
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
     import torch as _torch
+
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
     _cuda_available = False

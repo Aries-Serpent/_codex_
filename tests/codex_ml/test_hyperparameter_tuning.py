@@ -1,7 +1,6 @@
 """Tests for hyperparameter tuning in codex_ml."""
 
 
-
 class TestHyperparameterTuning:
     """Tests for hyperparameter tuning operations."""
 

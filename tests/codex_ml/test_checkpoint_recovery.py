@@ -1,7 +1,6 @@
 """Tests for checkpoint recovery functionality in codex_ml."""
 
 
-
 class TestCheckpointRecovery:
     """Tests for checkpoint recovery operations."""
 
@@ -24,11 +23,7 @@ class TestCheckpointRecovery:
     def test_checkpoint_metadata(self):
         """Test checkpoint metadata."""
         # Arrange
-        metadata = {
-            "epoch": 10,
-            "global_step": 1000,
-            "loss": 0.5
-        }
+        metadata = {"epoch": 10, "global_step": 1000, "loss": 0.5}
 
         # Assert
         assert "epoch" in metadata
@@ -37,9 +32,7 @@ class TestCheckpointRecovery:
     def test_checkpoint_optimizer_state(self):
         """Test checkpoint with optimizer state."""
         # Arrange
-        checkpoint = {
-            "optimizer_state_dict": {"param_groups": []}
-        }
+        checkpoint = {"optimizer_state_dict": {"param_groups": []}}
 
         # Assert
         assert "optimizer_state_dict" in checkpoint
@@ -47,9 +40,7 @@ class TestCheckpointRecovery:
     def test_checkpoint_scheduler_state(self):
         """Test checkpoint with scheduler state."""
         # Arrange
-        checkpoint = {
-            "scheduler_state_dict": {"last_epoch": 10}
-        }
+        checkpoint = {"scheduler_state_dict": {"last_epoch": 10}}
 
         # Assert
         assert "scheduler_state_dict" in checkpoint
@@ -57,9 +48,7 @@ class TestCheckpointRecovery:
     def test_checkpoint_random_state(self):
         """Test checkpoint with random state."""
         # Arrange
-        checkpoint = {
-            "random_state": {"torch": None, "numpy": None, "python": None}
-        }
+        checkpoint = {"random_state": {"torch": None, "numpy": None, "python": None}}
 
         # Assert
         assert "random_state" in checkpoint

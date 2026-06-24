@@ -28,7 +28,9 @@ def test_configure_mlflow_blocks_remote_uri(monkeypatch):
     assert os.environ.get("CODEX_MLFLOW_URI", "").startswith("file:")
 
 
-@pytest.mark.skipif(not _HAS_SITECUSTOMIZE, reason="sitecustomize not installed in this environment")
+@pytest.mark.skipif(
+    not _HAS_SITECUSTOMIZE, reason="sitecustomize not installed in this environment"
+)
 def test_sitecustomize_enforces_local_backend(monkeypatch):
     monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://example.invalid")
     monkeypatch.delenv("CODEX_MLFLOW_ALLOW_REMOTE", raising=False)

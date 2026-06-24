@@ -16,39 +16,50 @@ import pytest
 try:
     from hypothesis import given
     from hypothesis import strategies as st
+
     HAS_HYPOTHESIS = True
 except ImportError:
     HAS_HYPOTHESIS = False
+
     def given(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return pytest.mark.skip(reason="hypothesis not installed")(f)
+
         return decorator
 
     class st:  # type: ignore
         @staticmethod
         def text(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def integers(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def floats(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def lists(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def dictionaries(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def booleans(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def one_of(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def sampled_from(*args: Any, **kwargs: Any) -> Any:
             return None
+
         @staticmethod
         def fixed_dictionaries(*args: Any, **kwargs: Any) -> Any:
             return None
@@ -59,6 +70,7 @@ except ImportError:
     def settings(*args: Any, **kwargs: Any) -> Any:
         def decorator(f: Any) -> Any:
             return f
+
         return decorator
 
 
@@ -70,9 +82,12 @@ except ImportError:
 class TestConfigKeyProperties:
     """Property-based tests for configuration key handling."""
 
-    @given(st.text(min_size=1, max_size=50, alphabet="abcdefghijklmnopqrstuvwxyz_"))  # pragma: allowlist secret
+    @given(
+        st.text(min_size=1, max_size=50, alphabet="abcdefghijklmnopqrstuvwxyz_")
+    )  # pragma: allowlist secret
     def test_key_normalization_idempotent(self, key: str) -> None:
         """Key normalization is idempotent."""
+
         def normalize_key(k: str) -> str:
             return k.lower().strip().replace("-", "_")
 
@@ -83,6 +98,7 @@ class TestConfigKeyProperties:
     @given(st.text(min_size=1, max_size=50))
     def test_key_validation_consistent(self, key: str) -> None:
         """Key validation is consistent across calls."""
+
         def is_valid_key(k: str) -> bool:
             return bool(k) and k[0].isalpha() and all(c.isalnum() or c == "_" for c in k)
 
@@ -90,8 +106,10 @@ class TestConfigKeyProperties:
         result2 = is_valid_key(key)
         assert result1 == result2
 
-    @given(st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
-           st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"))
+    @given(
+        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
+        st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
+    )
     def test_nested_key_construction(self, parent: str, child: str) -> None:
         """Nested key construction is reversible."""
         separator = "."
@@ -168,9 +186,13 @@ class TestConfigMergeProperties:
         merged = {**config, **config}
         assert merged == config
 
-    @given(st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), max_size=5),
-           st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), max_size=5))
-    def test_merge_contains_all_keys(self, config1: dict[str, int], config2: dict[str, int]) -> None:
+    @given(
+        st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), max_size=5),
+        st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), max_size=5),
+    )
+    def test_merge_contains_all_keys(
+        self, config1: dict[str, int], config2: dict[str, int]
+    ) -> None:
         """Merged config contains all keys from both configs."""
         merged = {**config1, **config2}
         all_keys = set(config1.keys()) | set(config2.keys())
@@ -188,6 +210,7 @@ class TestConfigValidationProperties:
     @given(st.integers(min_value=1))
     def test_positive_integer_validation(self, value: int) -> None:
         """Positive integer validation is correct."""
+
         def validate_positive(v: int) -> bool:
             return v > 0
 
@@ -196,6 +219,7 @@ class TestConfigValidationProperties:
     @given(st.integers(max_value=0))
     def test_non_positive_integer_validation(self, value: int) -> None:
         """Non-positive integer validation is correct."""
+
         def validate_positive(v: int) -> bool:
             return v > 0
 
@@ -204,6 +228,7 @@ class TestConfigValidationProperties:
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
     def test_probability_validation(self, value: float) -> None:
         """Probability validation is correct."""
+
         def validate_probability(v: float) -> bool:
             return 0.0 <= v <= 1.0
 
@@ -212,6 +237,7 @@ class TestConfigValidationProperties:
     @given(st.text(min_size=1, max_size=100))
     def test_non_empty_string_validation(self, value: str) -> None:
         """Non-empty string validation is correct."""
+
         def validate_non_empty(v: str) -> bool:
             return len(v.strip()) > 0
 
@@ -227,9 +253,11 @@ class TestConfigValidationProperties:
 class TestDefaultValueProperties:
     """Property-based tests for default value handling."""
 
-    @given(st.dictionaries(st.text(min_size=1, max_size=20), st.integers(), max_size=10),
-           st.text(min_size=1, max_size=20),
-           st.integers())
+    @given(
+        st.dictionaries(st.text(min_size=1, max_size=20), st.integers(), max_size=10),
+        st.text(min_size=1, max_size=20),
+        st.integers(),
+    )
     def test_get_with_default(self, config: dict[str, int], key: str, default: int) -> None:
         """Get with default returns default for missing keys."""
         result = config.get(key, default)
@@ -238,7 +266,9 @@ class TestDefaultValueProperties:
         else:
             assert result == default
 
-    @given(st.dictionaries(st.text(min_size=1, max_size=20), st.integers(), min_size=1, max_size=10))
+    @given(
+        st.dictionaries(st.text(min_size=1, max_size=20), st.integers(), min_size=1, max_size=10)
+    )
     def test_get_existing_key(self, config: dict[str, int]) -> None:
         """Get returns value for existing keys."""
         key = next(iter(config.keys()))
@@ -254,8 +284,13 @@ class TestDefaultValueProperties:
 class TestPathResolutionProperties:
     """Property-based tests for path resolution."""
 
-    @given(st.lists(st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
-                    min_size=1, max_size=5))
+    @given(
+        st.lists(
+            st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
+            min_size=1,
+            max_size=5,
+        )
+    )
     def test_path_join_split_roundtrip(self, parts: list[str]) -> None:
         """Path join then split is identity."""
         separator = "."
@@ -266,6 +301,7 @@ class TestPathResolutionProperties:
     @given(st.text(min_size=1, max_size=100, alphabet="abcdefghijklmnopqrstuvwxyz."))
     def test_path_normalization_consistent(self, path: str) -> None:
         """Path normalization is consistent."""
+
         def normalize_path(p: str) -> str:
             # Remove duplicate separators
             while ".." in p:
@@ -305,7 +341,9 @@ class TestTypeCoercionProperties:
         coerced = str(value)
         assert isinstance(coerced, str)
 
-    @given(st.one_of(st.integers(), st.floats(allow_nan=False, allow_infinity=False), st.booleans()))
+    @given(
+        st.one_of(st.integers(), st.floats(allow_nan=False, allow_infinity=False), st.booleans())
+    )
     def test_primitive_string_coercion_reversible(self, value: Any) -> None:
         """Primitive types can be converted to string and back (approximately)."""
         string_form = str(value)

@@ -3,6 +3,7 @@
 Covers apply, list_feature_views, list_entities, get_online_features,
 materialize, get_feature_view, Entity, FeatureView, and FeatureServiceResult.
 """
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -12,6 +13,7 @@ import pytest
 
 # ── Import helpers ──────────────────────────────────────────────────────────
 
+
 def _import():
     return pytest.importorskip(
         "codex_ml.features.feast_compat",
@@ -20,6 +22,7 @@ def _import():
 
 
 # ── Entity ──────────────────────────────────────────────────────────────────
+
 
 class TestEntity:
     def test_basic_creation(self):
@@ -40,6 +43,7 @@ class TestEntity:
 
 
 # ── FeatureView ─────────────────────────────────────────────────────────────
+
 
 class TestFeatureView:
     def test_basic_creation(self):
@@ -66,6 +70,7 @@ class TestFeatureView:
 
 # ── FeatureServiceResult ─────────────────────────────────────────────────────
 
+
 class TestFeatureServiceResult:
     def _make_result(self, mod, fresh=True):
         now = datetime.now(timezone.utc).isoformat()
@@ -90,13 +95,16 @@ class TestFeatureServiceResult:
 
 # ── FeastCompatibleStore ─────────────────────────────────────────────────────
 
+
 class TestFeastCompatibleStore:
     """Tests for the Parquet-backed FeastCompatibleStore shim."""
 
     def test_apply_registers_feature_view(self, tmp_path):
         mod = _import()
-        with patch("codex_ml.features.feast_compat.FeastCompatibleStore.__init__",
-                   lambda self, **kw: _init_store(self)):
+        with patch(
+            "codex_ml.features.feast_compat.FeastCompatibleStore.__init__",
+            lambda self, **kw: _init_store(self),
+        ):
             store = mod.FeastCompatibleStore.__new__(mod.FeastCompatibleStore)
             _init_store(store)
             fv = mod.FeatureView(name="profile", entities=["user"], features=["age"])
@@ -181,9 +189,7 @@ class TestFeastCompatibleStore:
         store.apply([fv])
         # Native store returns None → features should be None
         store._native.get_feature_group.return_value = None
-        result = store.get_online_features(
-            features=["v:age"], entity_rows=[{"user_id": "u1"}]
-        )
+        result = store.get_online_features(features=["v:age"], entity_rows=[{"user_id": "u1"}])
         assert result.feature_values["v__age"] is None
 
     def test_get_online_features_native_store_hit(self):
@@ -193,9 +199,7 @@ class TestFeastCompatibleStore:
         fv = mod.FeatureView(name="v", entities=["e"], features=["age"])
         store.apply([fv])
         store._native.get_feature_group.return_value = {"age": 42}
-        result = store.get_online_features(
-            features=["v:age"], entity_rows=[{"user_id": "u1"}]
-        )
+        result = store.get_online_features(features=["v:age"], entity_rows=[{"user_id": "u1"}])
         assert result.feature_values["v__age"] == 42
 
     def test_get_online_features_native_store_exception(self):
@@ -246,9 +250,11 @@ class TestFeastCompatibleStore:
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
+
 def _init_store(store) -> None:
     """Manually initialize a FeastCompatibleStore with a mocked native store."""
     from pathlib import Path
+
     store._repo_path = Path(".feature_store")
     store._native = MagicMock()
     store._views = {}

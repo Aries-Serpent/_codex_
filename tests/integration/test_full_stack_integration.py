@@ -21,6 +21,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def system_config() -> dict[str, Any]:
     """Full system configuration fixture."""
@@ -56,6 +57,7 @@ def mock_services() -> dict[str, Any]:
 # ============================================================================
 # End-to-End Workflow Tests
 # ============================================================================
+
 
 class TestEndToEndWorkflows:
     """Tests for complete end-to-end workflows."""
@@ -191,6 +193,7 @@ class TestEndToEndWorkflows:
 # Multi-Service Integration Tests
 # ============================================================================
 
+
 class TestMultiServiceIntegration:
     """Tests for multi-service integration scenarios."""
 
@@ -244,8 +247,7 @@ class TestMultiServiceIntegration:
         }
 
         all_features_enabled = all(
-            v == "enabled" or v == "exponential"
-            for v in mesh_config.values()
+            v == "enabled" or v == "exponential" for v in mesh_config.values()
         )
         assert all_features_enabled is True
 
@@ -279,9 +281,7 @@ class TestMultiServiceIntegration:
             "traces": {"jaeger": True},
         }
 
-        stack_complete = all(
-            list(v.values())[0] for v in monitoring.values()
-        )
+        stack_complete = all(list(v.values())[0] for v in monitoring.values())
         assert stack_complete is True
 
     def test_security_scanning_pipeline(self):
@@ -318,6 +318,7 @@ class TestMultiServiceIntegration:
 # ============================================================================
 # System-Level Validation Tests
 # ============================================================================
+
 
 class TestSystemLevelValidation:
     """Tests for system-level validation."""

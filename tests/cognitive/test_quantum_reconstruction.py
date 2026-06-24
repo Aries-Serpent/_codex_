@@ -68,7 +68,9 @@ def test_reconstruction_emits_continuation_trigger(failing_injector):
     injector, _, tmp_path = failing_injector
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
         payload = injector.inject({"session_number": 108, "pr_title": "huggingface fix"})
     assert payload.continuation_trigger == "continue with next phase task"
@@ -78,7 +80,9 @@ def test_reconstruction_stores_lesson_in_memory(failing_injector):
     injector, mock_api, tmp_path = failing_injector
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
         injector.inject({"session_number": 108, "pr_title": "training pipeline"})
     mock_api.store_memory.assert_called_once()
@@ -91,13 +95,17 @@ def test_keyword_wave_collapse_surfaces_hf_pattern(failing_injector):
     injector, _, tmp_path = failing_injector
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
-        payload = injector.inject({
-            "session_number": 108,
-            "pr_title": "huggingface training",
-            "pr_body": "fix hf mock",
-        })
+        payload = injector.inject(
+            {
+                "session_number": 108,
+                "pr_title": "huggingface training",
+                "pr_body": "fix hf mock",
+            }
+        )
     assert "P-043" in payload.injected_patterns
 
 
@@ -105,7 +113,9 @@ def test_reconstruction_flag_set_correctly(failing_injector):
     injector, _, tmp_path = failing_injector
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
         payload = injector.inject({"session_number": 108, "pr_title": "misc"})
     assert payload.reconstructed is True
@@ -116,7 +126,9 @@ def test_status_file_entropy_minimization(failing_injector):
     injector, _, tmp_path = failing_injector
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
         payload = injector.inject({"session_number": 108, "pr_title": "misc"})
     assert any("HF_REVISION" in f or "S107" in f for f in payload.store_memory_facts)
@@ -127,7 +139,9 @@ def test_reconstruction_session_id_is_hashed(failing_injector):
     injector, _, tmp_path = failing_injector
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
         payload = injector.inject({"session_number": 108, "pr_title": "misc"})
     assert payload.session_id.startswith("reconstructed-")
@@ -153,11 +167,15 @@ def test_sharded_pr_surfaces_p038_pattern(failing_injector):
     injector, _, tmp_path = failing_injector
     with patch(
         "codex.cognitive.session_hook.Path",
-        side_effect=lambda p: tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p),
+        side_effect=lambda p: (
+            tmp_path / p if isinstance(p, str) and not p.startswith("/") else Path(p)
+        ),
     ):
-        payload = injector.inject({
-            "session_number": 108,
-            "pr_title": "sharded runs pytest rerunfailures crash",
-            "pr_body": "fix sharded server thread",
-        })
+        payload = injector.inject(
+            {
+                "session_number": 108,
+                "pr_title": "sharded runs pytest rerunfailures crash",
+                "pr_body": "fix sharded server thread",
+            }
+        )
     assert "P-038" in payload.injected_patterns

@@ -21,6 +21,7 @@ from codex_ml.utils.seed import deterministic_shuffle, set_seed
 # (kills: x_enable_determinism__mutmut_3/4/5 – key name mutations)
 # ---------------------------------------------------------------------------
 
+
 class TestEnableDeterminismReturnShape:
     """Verify the returned state dict has the exact expected keys and types."""
 
@@ -75,6 +76,7 @@ class TestEnableDeterminismReturnShape:
 #  x_set_deterministic__mutmut_1 – default seed 42→43)
 # ---------------------------------------------------------------------------
 
+
 class TestSetDeterministic:
     """Verify set_deterministic mutates environment and random state correctly."""
 
@@ -128,6 +130,7 @@ class TestSetDeterministic:
 # (kills: x_set_global_determinism__mutmut_* – default seed and delegation)
 # ---------------------------------------------------------------------------
 
+
 class TestSetGlobalDeterminism:
     """Verify set_global_determinism correctly seeds random state."""
 
@@ -139,7 +142,9 @@ class TestSetGlobalDeterminism:
         set_deterministic(seed=1337, deterministic=True)
         b = random.random()
 
-        assert a == b, "set_global_determinism(1337) must produce same state as set_deterministic(1337)"
+        assert (
+            a == b
+        ), "set_global_determinism(1337) must produce same state as set_deterministic(1337)"
 
     def test_default_call_seeds_random(self):
         """Calling set_global_determinism() with no args should seed random."""
@@ -170,6 +175,7 @@ class TestSetGlobalDeterminism:
 # enable_determinism – no-seed branch (set_cudnn path)
 # ---------------------------------------------------------------------------
 
+
 class TestEnableDeterminismNoSeed:
     """Exercises the seed=None branch to avoid 'no tests' for that path."""
 
@@ -180,6 +186,7 @@ class TestEnableDeterminismNoSeed:
     def test_no_seed_deterministic_false(self):
         state = enable_determinism(deterministic=False)
         assert state["deterministic"] is False
+
 
 class TestSeedUtils:
     def test_deterministic_shuffle_preserves_elements(self):

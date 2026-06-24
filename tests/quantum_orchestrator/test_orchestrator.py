@@ -11,7 +11,6 @@ Test coverage:
 7. Integration tests
 """
 
-
 import pytest
 
 np = pytest.importorskip("numpy")

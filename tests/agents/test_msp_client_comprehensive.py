@@ -70,24 +70,27 @@ class TestMSPClientMocked:
     @pytest.fixture
     def mock_client(self):
         """Create mocked MSP client."""
-        return MSPClient(base_url="https://test.msp/api", api_key="test_key")  # pragma: allowlist secret
+        return MSPClient(
+            base_url="https://test.msp/api", api_key="test_key"
+        )  # pragma: allowlist secret
 
     def test_client_request_structure(self, mock_client):
         """Test basic request structure."""
         # Mock the request method if it exists
         if hasattr(mock_client, "request"):
-            with patch.object(
-                mock_client, "request", return_value={"status": "success"}
-            ):
+            with patch.object(mock_client, "request", return_value={"status": "success"}):
                 result = mock_client.request("GET", "/test")
                 assert result == {"status": "success"}
 
     def test_client_handles_connection_error(self, mock_client):
         """Test handling of connection errors."""
         if hasattr(mock_client, "request"):
-            with patch.object(
-                mock_client, "request", side_effect=ConnectionError("Connection failed")
-            ), pytest.raises(ConnectionError):
+            with (
+                patch.object(
+                    mock_client, "request", side_effect=ConnectionError("Connection failed")
+                ),
+                pytest.raises(ConnectionError),
+            ):
                 mock_client.request("GET", "/test")
 
     def test_client_handles_timeout(self, mock_client):
@@ -95,9 +98,12 @@ class TestMSPClientMocked:
         import socket
 
         if hasattr(mock_client, "request"):
-            with patch.object(
-                mock_client, "request", side_effect=socket.timeout("Request timed out")
-            ), pytest.raises((socket.timeout, TimeoutError)):
+            with (
+                patch.object(
+                    mock_client, "request", side_effect=socket.timeout("Request timed out")
+                ),
+                pytest.raises((socket.timeout, TimeoutError)),
+            ):
                 mock_client.request("GET", "/test")
 
     def test_client_retry_logic(self, mock_client):
@@ -114,9 +120,7 @@ class TestMSPClientMocked:
 
             with patch.object(mock_client, "request", side_effect=mock_request):
                 if hasattr(mock_client, "request_with_retry"):
-                    result = mock_client.request_with_retry(
-                        "GET", "/test", max_retries=3
-                    )
+                    result = mock_client.request_with_retry("GET", "/test", max_retries=3)
                     assert result["status"] == "success"
                     assert call_count == 3
 
@@ -221,8 +225,7 @@ class TestMSPClientAuthentication:
             headers = client._build_headers()
             # Check for API key in various possible header names
             has_auth = any(
-                key.lower() in ["authorization", "x-api-key", "api-key"]
-                for key in headers
+                key.lower() in ["authorization", "x-api-key", "api-key"] for key in headers
             )
             assert has_auth or "secret_key_123" in str(headers.values())
 

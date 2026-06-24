@@ -24,6 +24,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def deployment_config() -> dict[str, Any]:
     """Fixture for deployment configuration."""
@@ -106,6 +107,7 @@ def infrastructure_config() -> dict[str, Any]:
 # Deployment Strategy Tests
 # ============================================================================
 
+
 class TestDeploymentStrategies:
     """Tests for deployment strategies."""
 
@@ -151,6 +153,7 @@ class TestDeploymentStrategies:
 # Rollback Tests
 # ============================================================================
 
+
 class TestRollback:
     """Tests for rollback procedures."""
 
@@ -183,6 +186,7 @@ class TestRollback:
 # ============================================================================
 # Health Check Tests
 # ============================================================================
+
 
 class TestDeploymentHealthChecks:
     """Tests for health checks during deployment."""
@@ -222,6 +226,7 @@ class TestDeploymentHealthChecks:
 # Deployment Validation Tests
 # ============================================================================
 
+
 class TestDeploymentValidation:
     """Tests for deployment validation."""
 
@@ -256,6 +261,7 @@ class TestDeploymentValidation:
 # ============================================================================
 # Infrastructure Provisioning Tests
 # ============================================================================
+
 
 class TestInfrastructureProvisioning:
     """Tests for infrastructure provisioning."""
@@ -298,6 +304,7 @@ class TestInfrastructureProvisioning:
 # Post-Deployment Verification Tests
 # ============================================================================
 
+
 class TestPostDeploymentVerification:
     """Tests for post-deployment verification."""
 
@@ -316,7 +323,10 @@ class TestPostDeploymentVerification:
         """Test metrics are compared to baseline."""
         baseline = {"latency_p50_ms": 50, "error_rate": 0.001}
         # Use values within 10% tolerance
-        current = {"latency_p50_ms": 55, "error_rate": 0.0011}  # Changed from 0.0012 to stay within 10%
+        current = {
+            "latency_p50_ms": 55,
+            "error_rate": 0.0011,
+        }  # Changed from 0.0012 to stay within 10%
 
         # Check if within acceptable range (10% degradation)
         latency_ok = current["latency_p50_ms"] <= baseline["latency_p50_ms"] * 1.1

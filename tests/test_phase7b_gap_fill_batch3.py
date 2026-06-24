@@ -443,7 +443,7 @@ class TestManifest:
         try:
             manifest = Manifest()
             for i in range(10):
-                manifest.add_file(f"file_{i}.txt", size=i*100)
+                manifest.add_file(f"file_{i}.txt", size=i * 100)
             assert True
         except (AttributeError, OSError, RuntimeError):
             pass
@@ -824,7 +824,11 @@ class TestCoverageCompletionCases:
 
         try:
             manifest = Manifest()
-            filenames = ["file with spaces.txt", "file-with-dashes.txt", "file_with_underscores.txt"]
+            filenames = [
+                "file with spaces.txt",
+                "file-with-dashes.txt",
+                "file_with_underscores.txt",
+            ]
             for fname in filenames:
                 manifest.add_file(fname, size=100)
             assert True

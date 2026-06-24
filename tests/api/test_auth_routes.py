@@ -278,14 +278,10 @@ class TestLogoutEndpoint:
         )
         session_token = login_resp.json()["session_token"]
 
-        first = registered_client.post(
-            "/auth/logout", json={"session_token": session_token}
-        )
+        first = registered_client.post("/auth/logout", json={"session_token": session_token})
         assert first.json()["revoked"] is True
 
-        second = registered_client.post(
-            "/auth/logout", json={"session_token": session_token}
-        )
+        second = registered_client.post("/auth/logout", json={"session_token": session_token})
         # Second call should succeed without error (idempotent)
         assert second.status_code == 200
 

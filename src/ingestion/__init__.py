@@ -27,9 +27,7 @@ from typing import Optional, Union
 # Local utility imports (optional modules handled gracefully)
 try:
     # Prefer a dedicated encoding detector if present in repo
-    from .encoding_detect import (
-        detect_encoding as _repo_detect_encoding,
-    )
+    from .encoding_detect import detect_encoding as _repo_detect_encoding
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore[assignment]
@@ -46,9 +44,7 @@ except Exception:
 
 try:
     # Some callers expect _detect_encoding from io_text
-    from .io_text import (
-        _fallback_detect_encoding as _io_text__detect_encoding,
-    )
+    from .io_text import _fallback_detect_encoding as _io_text__detect_encoding
 except Exception:
     logger.warning("Exception occurred", exc_info=True)
     _io_text__detect_encoding = None  # type: ignore[assignment]

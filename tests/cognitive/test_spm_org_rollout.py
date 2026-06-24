@@ -3,6 +3,7 @@
 Tests that COGNITIVE_BRAIN_ALLOWED_ACTORS env var correctly elevates actors
 to ORG_OWNER tier without code changes (GitHub repo variable pattern).
 """
+
 from __future__ import annotations
 
 from codex.cognitive.structural_policy_manager import PermissionTier, StructuralPolicyManager
@@ -130,8 +131,10 @@ def test_injection_enabled_flag_true(monkeypatch):
 
     from codex.cognitive.mcp_session_bridge import register_mcp_session_hook
 
-    with patch("codex.cognitive.mcp_session_bridge.AgentBrainAPI"), \
-         patch("codex.cognitive.mcp_session_bridge.SessionContextInjector") as MockInj:
+    with (
+        patch("codex.cognitive.mcp_session_bridge.AgentBrainAPI"),
+        patch("codex.cognitive.mcp_session_bridge.SessionContextInjector") as MockInj,
+    ):
         mock_payload = MagicMock()
         mock_payload.to_prompt_block.return_value = "## Brain Block"
         mock_payload.session_id = "s109"

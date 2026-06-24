@@ -425,15 +425,13 @@ class TestYamlLoading:
     def test_load_valid_yaml(self):
         """Load valid YAML config file."""
         with tempfile.NamedTemporaryFile(suffix=".yaml", mode="w", delete=False) as f:
-            f.write(
-                """
+            f.write("""
 model_name: test_model
 learning_rate: 0.0001
 batch_size: 16
 epochs: 5
 seed: 123
-"""
-            )
+""")
             f.flush()
             cfg = validate_config(f.name)
             assert cfg.model_name == "test_model"
@@ -444,14 +442,12 @@ seed: 123
     def test_load_nested_training_yaml(self):
         """Load YAML with nested training section."""
         with tempfile.NamedTemporaryFile(suffix=".yaml", mode="w", delete=False) as f:
-            f.write(
-                """
+            f.write("""
 training:
   model_name: nested_model
   learning_rate: 0.00005
   batch_size: 32
-"""
-            )
+""")
             f.flush()
             cfg = validate_config(f.name)
             assert cfg.model_name == "nested_model"

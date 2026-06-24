@@ -7,6 +7,7 @@ Targets the lines not covered by Phase 7 unit/integration tests:
 - main() CLI entry points in all three modules
 - SelfHealingValidator._save_to_history exception path
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -186,6 +187,7 @@ class TestActionProposerMain:
         """Ensure the inner `from scripts.cognitive.sensors.monitoring_sensor import ...` resolves."""
         # Build a minimal fake package chain in sys.modules
         import types
+
         for pkg in ("scripts", "scripts.cognitive", "scripts.cognitive.sensors"):
             if pkg not in sys.modules:
                 sys.modules[pkg] = types.ModuleType(pkg)
@@ -200,7 +202,9 @@ class TestActionProposerMain:
             captured = StringIO()
             with patch("sys.stdout", captured):
                 try:
-                    with patch.object(_sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True):
+                    with patch.object(
+                        _sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True
+                    ):
                         _actions_mod.main()
                 except (SystemExit, ImportError, AttributeError, ModuleNotFoundError):
                     # Coverage test: these branches may exit or fail imports under patched module wiring.
@@ -216,7 +220,12 @@ class TestActionProposerMain:
             (),
             {
                 "get_active_failures": lambda self: [
-                    {"workflow": "wf_a", "severity": 0.9, "consecutive_failures": 8, "failure_rate": 0.9}
+                    {
+                        "workflow": "wf_a",
+                        "severity": 0.9,
+                        "consecutive_failures": 8,
+                        "failure_rate": 0.9,
+                    }
                 ]
             },
         )()
@@ -224,7 +233,9 @@ class TestActionProposerMain:
             captured = StringIO()
             with patch("sys.stdout", captured):
                 try:
-                    with patch.object(_sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True):
+                    with patch.object(
+                        _sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True
+                    ):
                         _actions_mod.main()
                 except (SystemExit, ImportError, AttributeError, ModuleNotFoundError):
                     # Coverage test: allow CLI/import-path exceptions while exercising propose branch.
@@ -240,7 +251,12 @@ class TestActionProposerMain:
             (),
             {
                 "get_active_failures": lambda self: [
-                    {"workflow": "wf_b", "severity": 0.9, "consecutive_failures": 8, "failure_rate": 0.9}
+                    {
+                        "workflow": "wf_b",
+                        "severity": 0.9,
+                        "consecutive_failures": 8,
+                        "failure_rate": 0.9,
+                    }
                 ]
             },
         )()
@@ -248,7 +264,9 @@ class TestActionProposerMain:
             captured = StringIO()
             with patch("sys.stdout", captured):
                 try:
-                    with patch.object(_sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True):
+                    with patch.object(
+                        _sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True
+                    ):
                         _actions_mod.main()
                 except (SystemExit, ImportError, AttributeError, ModuleNotFoundError):
                     # Coverage test: allow CLI/import-path exceptions while exercising execute branch.
@@ -263,7 +281,12 @@ class TestActionProposerMain:
             (),
             {
                 "get_active_failures": lambda self: [
-                    {"workflow": "wf_c", "severity": 0.9, "consecutive_failures": 8, "failure_rate": 0.9}
+                    {
+                        "workflow": "wf_c",
+                        "severity": 0.9,
+                        "consecutive_failures": 8,
+                        "failure_rate": 0.9,
+                    }
                 ]
             },
         )()
@@ -271,7 +294,9 @@ class TestActionProposerMain:
             captured = StringIO()
             with patch("sys.stdout", captured):
                 try:
-                    with patch.object(_sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True):
+                    with patch.object(
+                        _sensor_mod, "MonitoringSensor", return_value=mock_sensor, create=True
+                    ):
                         _actions_mod.main()
                 except (SystemExit, ImportError, AttributeError, ModuleNotFoundError):
                     # Coverage test: allow CLI/import-path exceptions while exercising default summary branch.
@@ -352,7 +377,8 @@ class TestSelfHealingValidatorGapFill:
                     with patch.object(
                         _shv_mod.SelfHealingValidator,
                         "__init__",
-                        lambda self, **kw: setattr(self, "history_file", tmp_path / "h.json") or None,
+                        lambda self, **kw: setattr(self, "history_file", tmp_path / "h.json")
+                        or None,
                     ):
                         _shv_mod.main()
                 except (SystemExit, AttributeError):

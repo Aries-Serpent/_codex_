@@ -21,12 +21,15 @@ torch = pytest.importorskip("torch")
 def fresh_torch_state():
     """Ensure fresh torch state for each test to prevent iterator exhaustion."""
     import gc
+
     gc.collect()
     yield
     gc.collect()
 
 
-def test_minimal_loop_honours_gradient_accumulation(monkeypatch, tmp_path: Path, fresh_torch_state) -> None:
+def test_minimal_loop_honours_gradient_accumulation(
+    monkeypatch, tmp_path: Path, fresh_torch_state
+) -> None:
     """Test that gradient accumulation is properly honored in the training loop."""
     real_import = builtins.__import__
 

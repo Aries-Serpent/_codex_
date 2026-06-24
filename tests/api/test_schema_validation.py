@@ -60,9 +60,7 @@ class TestJSONSchemaStructure:
 
         # Allow some without explicit type
         max_missing = max(1, len(list(SCHEMAS_DIR.rglob("*.schema.json"))[:10]) // 3)
-        assert len(missing_type) <= max_missing, (
-            f"Schemas missing type: {missing_type}"
-        )
+        assert len(missing_type) <= max_missing, f"Schemas missing type: {missing_type}"
 
 
 class TestYAMLSchemaValidation:

@@ -15,6 +15,7 @@ from codex.security.sanitization import sanitize_html, sanitize_integer
 
 # SQL Injection Prevention Tests
 
+
 def test_sql_injection_basic_quotes(tmp_path):
     """Test that basic SQL injection with quotes is prevented."""
     db_path = tmp_path / "test.db"
@@ -100,6 +101,7 @@ def test_sql_injection_comment_bypass(tmp_path):
 
 # XSS Prevention Tests
 
+
 def test_xss_basic_script_tag():
     """Test that basic script tag injection is sanitized."""
     malicious_input = "<script>alert('XSS')</script>"
@@ -143,12 +145,13 @@ def test_xss_attribute_injection():
     malicious_input = '" onload="alert(1)'
     sanitized = sanitize_html(malicious_input)
 
-    assert 'onload=' not in sanitized
+    assert "onload=" not in sanitized
     # After sanitization, should only have the quote character
-    assert 'alert' not in sanitized
+    assert "alert" not in sanitized
 
 
 # CSRF Protection Tests
+
 
 def test_csrf_token_generation():
     """Test that CSRF tokens are generated correctly."""
@@ -211,21 +214,22 @@ def test_csrf_double_submit_cookie():
 
 # Input Sanitization Tests
 
+
 def test_input_sanitization_email():
     """Test email input validation and sanitization."""
 
     # More strict email pattern that disallows consecutive dots
-    email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+    email_pattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
     # Additional check for consecutive dots
     def is_valid_email(email):
         if not email_pattern.match(email):
             return False
         # Check for consecutive dots
-        return '..' not in email
+        return ".." not in email
 
-    valid_emails = ['test@example.com', 'user.name+tag@example.co.uk']
-    invalid_emails = ['<script>@test.com', 'test@', '@example.com', 'test..test@example.com']
+    valid_emails = ["test@example.com", "user.name+tag@example.co.uk"]
+    invalid_emails = ["<script>@test.com", "test@", "@example.com", "test..test@example.com"]
 
     for email in valid_emails:
         assert is_valid_email(email), f"Valid email {email} was rejected"
@@ -236,37 +240,39 @@ def test_input_sanitization_email():
 
 def test_input_sanitization_filename():
     """Test filename sanitization to prevent path traversal."""
+
     def sanitize_filename(filename):
         # Remove path separators and null bytes
-        sanitized = filename.replace('/', '').replace('\\', '').replace('\0', '')
+        sanitized = filename.replace("/", "").replace("\\", "").replace("\0", "")
         # Remove parent directory references
-        return sanitized.replace('..', '')
+        return sanitized.replace("..", "")
 
     dangerous_filenames = [
-        '../../../etc/passwd',
-        '..\\..\\windows\\system32',
-        'file\0.txt',
-        'normal/../../../etc/passwd'
+        "../../../etc/passwd",
+        "..\\..\\windows\\system32",
+        "file\0.txt",
+        "normal/../../../etc/passwd",
     ]
 
     for filename in dangerous_filenames:
         sanitized = sanitize_filename(filename)
-        assert '../' not in sanitized
-        assert '..\\' not in sanitized
-        assert '\0' not in sanitized
+        assert "../" not in sanitized
+        assert "..\\" not in sanitized
+        assert "\0" not in sanitized
 
 
 def test_input_sanitization_username():
     """Test username sanitization for allowed characters."""
+
     def sanitize_username(username):
         # Only allow alphanumeric, underscore, hyphen
-        return re.sub(r'[^a-zA-Z0-9_-]', '', username)
+        return re.sub(r"[^a-zA-Z0-9_-]", "", username)
 
     test_cases = [
-        ('user123', 'user123'),
-        ('user_name-123', 'user_name-123'),
-        ('user@#$%', 'user'),
-        ('<script>alert(1)</script>', 'scriptalert1script'),
+        ("user123", "user123"),
+        ("user_name-123", "user_name-123"),
+        ("user@#$%", "user"),
+        ("<script>alert(1)</script>", "scriptalert1script"),
     ]
 
     for input_val, expected in test_cases:
@@ -275,11 +281,11 @@ def test_input_sanitization_username():
 
 def test_input_sanitization_integer():
     """Test integer input validation and bounds checking."""
-    assert sanitize_integer('42', min_value=0, max_value=1000) == 42
-    assert sanitize_integer('-10', min_value=0, max_value=1000) == 0  # Clamped to min
-    assert sanitize_integer('9999', min_value=0, max_value=1000) == 1000  # Clamped to max
-    assert sanitize_integer('not_a_number', default=0) == 0
-    assert sanitize_integer('42.7', min_value=0, max_value=1000) == 42
+    assert sanitize_integer("42", min_value=0, max_value=1000) == 42
+    assert sanitize_integer("-10", min_value=0, max_value=1000) == 0  # Clamped to min
+    assert sanitize_integer("9999", min_value=0, max_value=1000) == 1000  # Clamped to max
+    assert sanitize_integer("not_a_number", default=0) == 0
+    assert sanitize_integer("42.7", min_value=0, max_value=1000) == 42
 
 
 def test_input_sanitization_path_traversal():
@@ -296,15 +302,15 @@ def test_input_sanitization_path_traversal():
         except ValueError:
             return str(base)
 
-    base_dir = '/var/www/uploads'
+    base_dir = "/var/www/uploads"
 
     # Safe paths
-    assert safe_join(base_dir, 'file.txt').startswith(base_dir)
-    assert safe_join(base_dir, 'subdir/file.txt').startswith(base_dir)
+    assert safe_join(base_dir, "file.txt").startswith(base_dir)
+    assert safe_join(base_dir, "subdir/file.txt").startswith(base_dir)
 
     # Dangerous paths should be blocked
-    dangerous = safe_join(base_dir, '../../../etc/passwd')
-    assert dangerous == base_dir or not dangerous.startswith('/etc')
+    dangerous = safe_join(base_dir, "../../../etc/passwd")
+    assert dangerous == base_dir or not dangerous.startswith("/etc")
 
 
 def test_input_sanitization_command_injection():
@@ -316,17 +322,17 @@ def test_input_sanitization_command_injection():
         return shlex.quote(str(arg))
 
     dangerous_inputs = [
-        '; rm -rf /',
-        '| cat /etc/passwd',
-        '`whoami`',
-        '$(cat /etc/shadow)',
-        '&& echo hacked'
+        "; rm -rf /",
+        "| cat /etc/passwd",
+        "`whoami`",
+        "$(cat /etc/shadow)",
+        "&& echo hacked",
     ]
 
     for dangerous in dangerous_inputs:
         sanitized = sanitize_shell_arg(dangerous)
         # Should be quoted and escaped
-        assert "'" in sanitized or '"' in sanitized or '\\' in sanitized
+        assert "'" in sanitized or '"' in sanitized or "\\" in sanitized
 
 
 def test_input_sanitization_json_injection():
@@ -354,14 +360,15 @@ def test_input_sanitization_json_injection():
 
 def test_input_sanitization_ldap_injection():
     """Test prevention of LDAP injection attacks."""
+
     def sanitize_ldap(value):
         # Escape LDAP special characters
         replacements = {
-            '\\': '\\5c',
-            '*': '\\2a',
-            '(': '\\28',
-            ')': '\\29',
-            '\x00': '\\00',
+            "\\": "\\5c",
+            "*": "\\2a",
+            "(": "\\28",
+            ")": "\\29",
+            "\x00": "\\00",
         }
         sanitized = str(value)
         for char, escape in replacements.items():
@@ -369,13 +376,13 @@ def test_input_sanitization_ldap_injection():
         return sanitized
 
     dangerous_inputs = [
-        'admin*',
-        'user)(|(userPassword=*))',
-        'test\\',
+        "admin*",
+        "user)(|(userPassword=*))",
+        "test\\",
     ]
 
     for dangerous in dangerous_inputs:
         sanitized = sanitize_ldap(dangerous)
-        assert '*' not in sanitized or '\\2a' in sanitized
-        assert '(' not in sanitized or '\\28' in sanitized
-        assert ')' not in sanitized or '\\29' in sanitized
+        assert "*" not in sanitized or "\\2a" in sanitized
+        assert "(" not in sanitized or "\\28" in sanitized
+        assert ")" not in sanitized or "\\29" in sanitized

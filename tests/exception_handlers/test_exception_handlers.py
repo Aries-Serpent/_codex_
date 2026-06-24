@@ -104,6 +104,7 @@ class TestJSONExceptions:
 
     def test_json_type_error_handler(self) -> None:
         """Test TypeError in JSON serialization."""
+
         class NonSerializable:
             pass
 
@@ -139,6 +140,7 @@ class TestNetworkExceptions:
         """Test ConnectionError handling."""
         with patch("urllib.request.urlopen", side_effect=ConnectionError("No network")):
             import urllib.request
+
             result = None
             try:
                 urllib.request.urlopen("http://example.com")
@@ -234,7 +236,7 @@ class TestImportExceptions:
         """Test ImportError handling."""
         result = None
         try:
-            importlib.import_module('nonexistent_module_xyz')
+            importlib.import_module("nonexistent_module_xyz")
         except ImportError:
             result = "import_failed"
         assert result == "import_failed"
@@ -243,7 +245,7 @@ class TestImportExceptions:
         """Test ModuleNotFoundError handling."""
         result = None
         try:
-            importlib.import_module('another_nonexistent_module')
+            importlib.import_module("another_nonexistent_module")
         except ModuleNotFoundError:
             result = "module_not_found"
         assert result == "module_not_found"
@@ -251,7 +253,7 @@ class TestImportExceptions:
     def test_optional_dependency_handler(self) -> None:
         """Test optional dependency handling pattern."""
         try:
-            importlib.import_module('nonexistent_optional')
+            importlib.import_module("nonexistent_optional")
             has_optional = True
         except ImportError:
             has_optional = False
@@ -328,6 +330,7 @@ class TestResourceExceptions:
 
     def test_context_manager_exception(self) -> None:
         """Test exception in context manager."""
+
         class MockResource:
             def __init__(self) -> None:
                 self.closed = False
@@ -368,6 +371,7 @@ class TestAsyncExceptions:
     def test_cancelled_error_handler(self) -> None:
         """Test task cancellation handling."""
         import asyncio
+
         result = None
         try:
             raise asyncio.CancelledError("Task cancelled")
@@ -403,6 +407,7 @@ class TestDataProcessingExceptions:
         result = None
         try:
             import math
+
             math.exp(1000)  # Will overflow
         except OverflowError:
             result = "overflow"

@@ -196,9 +196,7 @@ class TestReadTextSafeFallback:
             path.write_text(content, encoding="latin-1")
 
             # UTF-8 will fail, should fallback to latin-1
-            result, encoding = read_text_safe_fallback(
-                path, encodings=["latin-1", "utf-8"]
-            )
+            result, encoding = read_text_safe_fallback(path, encodings=["latin-1", "utf-8"])
             assert result == content
             assert encoding == "latin-1"
 
@@ -209,9 +207,7 @@ class TestReadTextSafeFallback:
             content = "Test"
             path.write_text(content, encoding="utf-8")
 
-            result, encoding = read_text_safe_fallback(
-                path, encodings=["ascii", "utf-8"]
-            )
+            result, encoding = read_text_safe_fallback(path, encodings=["ascii", "utf-8"])
             assert result == content
             assert encoding in ["ascii", "utf-8"]
 
@@ -410,7 +406,7 @@ class TestFileUtilsIntegration:
         """Test functions with large unicode file."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "unicode_large.txt"
-            content = ("Héllo Wørld 世界 🌍\n" * 100)
+            content = "Héllo Wørld 世界 🌍\n" * 100
             path.write_text(content, encoding="utf-8")
 
             result1 = read_text_safe(path)

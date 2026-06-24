@@ -78,9 +78,7 @@ class TestWorkflowStep:
 
     def test_step_execute_optional_failure(self):
         """Test optional step doesn't fail workflow"""
-        step = WorkflowStep(
-            id="step1", action="maybe fail", command="false", optional=True
-        )
+        step = WorkflowStep(id="step1", action="maybe fail", command="false", optional=True)
         step.execute({})  # Return value not needed; only side effects are tested
 
         # Optional steps succeed even if command fails
@@ -153,9 +151,7 @@ class TestWorkflowNavigator:
 
     def test_get_workflow_exists(self, navigator):
         """Test retrieving an existing workflow"""
-        if not hasattr(navigator, "create_workflow") or not hasattr(
-            navigator, "get_workflow"
-        ):
+        if not hasattr(navigator, "create_workflow") or not hasattr(navigator, "get_workflow"):
             pytest.skip("Workflow methods not implemented")
 
         navigator.create_workflow("test-wf", ["step1"])

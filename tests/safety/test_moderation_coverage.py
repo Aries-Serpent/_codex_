@@ -23,6 +23,7 @@ try:
         ModerationRejection,
         ModerationSettings,
     )
+
     MODERATION_AVAILABLE = True
 except ImportError:
     MODERATION_AVAILABLE = False
@@ -30,8 +31,7 @@ except ImportError:
 
 # Skip all tests if module not available
 pytestmark = pytest.mark.skipif(
-    not MODERATION_AVAILABLE,
-    reason="codex_ml.safety.moderation not available"
+    not MODERATION_AVAILABLE, reason="codex_ml.safety.moderation not available"
 )
 
 
@@ -297,7 +297,7 @@ class TestModerationAdapter:
 
         assert adapter._default_policy == "strict"
 
-    @patch.object(ModerationAdapter, '_resolve_provider')
+    @patch.object(ModerationAdapter, "_resolve_provider")
     def test_provider_resolution(self, mock_resolve):
         """Test provider resolution during initialization."""
         mock_resolve.return_value = None

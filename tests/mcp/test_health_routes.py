@@ -48,7 +48,9 @@ def test_load_adapter_falls_back_to_mock_adapter_when_all_imports_fail(
     assert cls_path == adapter_loader.DEFAULT_ADAPTER
 
 
-def test_load_adapter_uses_fallback_when_primary_is_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_load_adapter_uses_fallback_when_primary_is_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class FallbackAdapter:
         pass
 
@@ -122,7 +124,9 @@ def test_health_route_reports_adapter_status() -> None:
             return {"status": "ok", "backend": "fake"}
 
     app = FastAPI()
-    routes_health.register_health_routes(app, adapter_loader_fn=lambda: (HealthyAdapter(), "fake.adapter"))
+    routes_health.register_health_routes(
+        app, adapter_loader_fn=lambda: (HealthyAdapter(), "fake.adapter")
+    )
     client = TestClient(app)
 
     response = client.get("/health")
@@ -142,7 +146,9 @@ def test_health_endpoints_degrade_when_health_check_raises() -> None:
             raise RuntimeError("unhealthy")
 
     app = FastAPI()
-    routes_health.register_health_routes(app, adapter_loader_fn=lambda: (BrokenAdapter(), "broken.adapter"))
+    routes_health.register_health_routes(
+        app, adapter_loader_fn=lambda: (BrokenAdapter(), "broken.adapter")
+    )
     client = TestClient(app)
 
     root_response = client.get("/health")

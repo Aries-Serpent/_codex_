@@ -151,8 +151,16 @@ class TestDataValidation:
         validation_rules = {"score": {"min": 0.0, "max": 1.0}}
         valid_record = {"score": 0.5}
         invalid_record = {"score": 1.5}
-        assert validation_rules["score"]["min"] <= valid_record["score"] <= validation_rules["score"]["max"]
-        assert not (validation_rules["score"]["min"] <= invalid_record["score"] <= validation_rules["score"]["max"])
+        assert (
+            validation_rules["score"]["min"]
+            <= valid_record["score"]
+            <= validation_rules["score"]["max"]
+        )
+        assert not (
+            validation_rules["score"]["min"]
+            <= invalid_record["score"]
+            <= validation_rules["score"]["max"]
+        )
 
     def test_detects_duplicate_ids(self, sample_dataset: list) -> None:
         """Test detection of duplicate IDs."""
@@ -301,9 +309,7 @@ class TestDataIntegrity:
         ("json", ".json"),
     ],
 )
-def test_loader_detects_format(
-    tmp_path: Path, file_format: str, extension: str
-) -> None:
+def test_loader_detects_format(tmp_path: Path, file_format: str, extension: str) -> None:
     """Test loader detects file format from extension."""
     data_file = tmp_path / f"data{extension}"
     data_file.write_text("{}" if extension == ".json" else "")
@@ -323,7 +329,9 @@ class TestDataEdgeCases:
         """Test handling of Unicode characters."""
         unicode_file = tmp_path / "unicode.jsonl"
         unicode_file.write_text('{"text": "日本語テスト"}\n', encoding="utf-8")
-        records = [json.loads(ln) for ln in unicode_file.read_text(encoding="utf-8").splitlines() if ln]
+        records = [
+            json.loads(ln) for ln in unicode_file.read_text(encoding="utf-8").splitlines() if ln
+        ]
         assert records[0]["text"] == "日本語テスト"
 
     def test_handles_special_characters(self, tmp_path: Path) -> None:

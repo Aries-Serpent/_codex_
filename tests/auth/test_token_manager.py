@@ -57,22 +57,22 @@ class TestTokenClaims:
 
         data = claims.to_dict()
 
-        assert data['sub'] == "user123"
-        assert data['type'] == "access"
-        assert data['iat'] == now
+        assert data["sub"] == "user123"
+        assert data["type"] == "access"
+        assert data["iat"] == now
 
     def test_claims_from_dict(self):
         """Test creating claims from dictionary."""
         now = time.time()
         data = {
-            'sub': "user123",
-            'iat': now,
-            'exp': now + 900,
-            'type': "access",
-            'scope': "repo",
-            'jti': "token123",
-            'iss': "codex",
-            'aud': "codex-api",
+            "sub": "user123",
+            "iat": now,
+            "exp": now + 900,
+            "type": "access",
+            "scope": "repo",
+            "jti": "token123",
+            "iss": "codex",
+            "aud": "codex-api",
         }
 
         claims = TokenClaims.from_dict(data)
@@ -169,7 +169,7 @@ class TestTokenManager:
 
         assert token is not None
         assert len(token) > 0
-        assert token.count('.') == 2  # JWT format: header.payload.signature
+        assert token.count(".") == 2  # JWT format: header.payload.signature
 
     def test_generate_refresh_token(self):
         """Test refresh token generation."""
@@ -183,10 +183,7 @@ class TestTokenManager:
         """Test session token generation."""
         manager = TokenManager()
         token, session_id = manager.generate_session_token(
-            "user123",
-            mfa_verified=True,
-            ip_address="192.168.1.1",
-            user_agent="Mozilla/5.0"
+            "user123", mfa_verified=True, ip_address="192.168.1.1", user_agent="Mozilla/5.0"
         )
 
         assert token is not None
@@ -419,9 +416,7 @@ class TestTokenManagerIntegration:
 
         # Create session with MFA
         session_token, session_id = manager.generate_session_token(
-            user_id,
-            mfa_verified=True,
-            ip_address="192.168.1.1"
+            user_id, mfa_verified=True, ip_address="192.168.1.1"
         )
 
         # Verify session exists

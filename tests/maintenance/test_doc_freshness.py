@@ -146,8 +146,12 @@ class TestDocumentationQuality:
                     if line.startswith("```"):
                         in_code_block = not in_code_block
                     elif not in_code_block and line.startswith("    ") and i > 0:
-                        prev_line = lines[i-1].strip()
-                        if prev_line and not prev_line.startswith("-") and not prev_line.startswith("*"):
+                        prev_line = lines[i - 1].strip()
+                        if (
+                            prev_line
+                            and not prev_line.startswith("-")
+                            and not prev_line.startswith("*")
+                        ):
                             # Possible unfenced code
                             pass
             except (UnicodeDecodeError, OSError):

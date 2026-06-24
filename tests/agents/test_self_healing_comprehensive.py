@@ -122,9 +122,7 @@ class TestDetectedIssue:
         """Test that title is auto-generated from description."""
         from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
-        long_desc = (
-            "This is a very long description that should be truncated for the title"
-        )
+        long_desc = "This is a very long description that should be truncated for the title"
         issue = DetectedIssue(
             issue_type=IssueType.LINT_ERROR,
             severity=IssueSeverity.LOW,
@@ -267,8 +265,7 @@ class TestSelfHealingEngineCore:
         if len(issues) > 0:
             # Check if import error was detected
             assert any(
-                "import" in str(issue).lower() or "numpy" in str(issue).lower()
-                for issue in issues
+                "import" in str(issue).lower() or "numpy" in str(issue).lower() for issue in issues
             )
 
     def test_detect_dependency_conflict(self):

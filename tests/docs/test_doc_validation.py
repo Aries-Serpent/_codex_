@@ -42,9 +42,9 @@ class TestDocumentationStructure:
             doc_path = DOCS_DIR / doc_file
             # Check both in docs/ and root
             root_path = REPO_ROOT / doc_file
-            assert doc_path.exists() or root_path.exists(), (
-                f"Essential doc {doc_file} should exist in docs/ or root"
-            )
+            assert (
+                doc_path.exists() or root_path.exists()
+            ), f"Essential doc {doc_file} should exist in docs/ or root"
 
     def test_readme_exists(self):
         """Verify README.md exists at repository root."""
@@ -95,9 +95,7 @@ class TestMarkdownQuality:
         """Spot-check for broken internal links in key docs."""
         key_docs = [
             REPO_ROOT / "README.md",
-            DOCS_DIR / "NEWCOMER_GUIDE.md"
-            if (DOCS_DIR / "NEWCOMER_GUIDE.md").exists()
-            else None,
+            DOCS_DIR / "NEWCOMER_GUIDE.md" if (DOCS_DIR / "NEWCOMER_GUIDE.md").exists() else None,
         ]
         internal_link_pattern = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 
@@ -129,9 +127,7 @@ class TestCodeExamplesInDocs:
         # Sample key documentation files
         key_docs = [
             REPO_ROOT / "README.md",
-            DOCS_DIR / "QUICKSTART.md"
-            if (DOCS_DIR / "QUICKSTART.md").exists()
-            else None,
+            DOCS_DIR / "QUICKSTART.md" if (DOCS_DIR / "QUICKSTART.md").exists() else None,
         ]
 
         errors = []
@@ -212,9 +208,9 @@ class TestDocstringCoverage:
 
         # Allow up to 30% missing (phase 16 target is 100%)
         max_missing = int(len(py_files) * 0.3)
-        assert len(missing_docstrings) <= max_missing, (
-            f"Too many modules missing docstrings: {missing_docstrings[:5]}..."
-        )
+        assert (
+            len(missing_docstrings) <= max_missing
+        ), f"Too many modules missing docstrings: {missing_docstrings[:5]}..."
 
     def test_public_functions_have_docstrings(self):
         """Spot-check that public functions have docstrings."""
@@ -243,9 +239,7 @@ class TestDocstringCoverage:
         if functions_checked > 0:
             coverage = functions_with_docs / functions_checked
             # Target: at least 30% docstring coverage (baseline)
-            assert coverage >= 0.3, (
-                f"Public function docstring coverage {coverage:.0%} < 30%"
-            )
+            assert coverage >= 0.3, f"Public function docstring coverage {coverage:.0%} < 30%"
 
 
 class TestAPIDocumentation:
@@ -262,16 +256,16 @@ class TestAPIDocumentation:
             DOCS_DIR / "api" / "index.md",
             DOCS_DIR / "api" / "README.md",
         ]
-        assert any(p.exists() for p in api_index_paths), (
-            "API docs should have index.md or README.md"
-        )
+        assert any(
+            p.exists() for p in api_index_paths
+        ), "API docs should have index.md or README.md"
 
     def test_api_reference_file_exists(self):
         """Verify API_REFERENCE.md exists."""
         api_ref = DOCS_DIR / "API_REFERENCE.md"
-        assert api_ref.exists() or (DOCS_DIR / "api").exists(), (
-            "API reference documentation should exist"
-        )
+        assert (
+            api_ref.exists() or (DOCS_DIR / "api").exists()
+        ), "API reference documentation should exist"
 
 
 class TestSecurityDocumentation:
@@ -296,9 +290,7 @@ class TestSecurityDocumentation:
                 content = sec_path.read_text(encoding="utf-8").lower()
                 keywords = ["vulnerability", "report", "security"]
                 matches = sum(1 for kw in keywords if kw in content)
-                assert matches >= 2, (
-                    "SECURITY.md should discuss vulnerability reporting"
-                )
+                assert matches >= 2, "SECURITY.md should discuss vulnerability reporting"
                 return
         pytest.skip("No SECURITY.md found")
 

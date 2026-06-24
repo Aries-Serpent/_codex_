@@ -140,8 +140,9 @@ def test_fuzz_build_index_request_valid(files, index_name, chunk_size, overlap):
     _, BuildIndexRequest, *_ = _import_models()
     ValidationError = _validation_error()
     try:
-        req = BuildIndexRequest(files=files, index_name=index_name,
-                                chunk_size=chunk_size, overlap=overlap)
+        req = BuildIndexRequest(
+            files=files, index_name=index_name, chunk_size=chunk_size, overlap=overlap
+        )
         assert isinstance(req.files, list)
         assert 100 <= req.chunk_size <= 10000
     except ValidationError:
@@ -152,7 +153,7 @@ def test_fuzz_build_index_request_valid(files, index_name, chunk_size, overlap):
 
 @given(
     chunk_size=st.one_of(
-        st.integers(min_value=-1000, max_value=99),   # below min
+        st.integers(min_value=-1000, max_value=99),  # below min
         st.integers(min_value=10001, max_value=100000),  # above max
     ),
     overlap=st.integers(min_value=-1000, max_value=-1),  # negative

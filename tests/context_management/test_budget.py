@@ -109,9 +109,7 @@ class TestContentBlock:
     def test_content_block_custom_priority(self):
         """Test ContentBlock with custom priority."""
         block = ContentBlock(
-            content="critical error",
-            token_count=5,
-            priority=ContentPriority.CRITICAL
+            content="critical error", token_count=5, priority=ContentPriority.CRITICAL
         )
         assert block.priority == ContentPriority.CRITICAL
 
@@ -125,7 +123,7 @@ class TestContentBlock:
         block = ContentBlock(
             content="This is a very long original content that needs summarization",
             token_count=50,
-            summary="Short summary"
+            summary="Short summary",
         )
         assert block.get_effective_content() == "Short summary"
 
@@ -134,7 +132,7 @@ class TestContentBlock:
         block = ContentBlock(
             content="Short",
             token_count=5,
-            summary="This is a very long summary that is longer than original"
+            summary="This is a very long summary that is longer than original",
         )
         assert block.get_effective_content() == "Short"
 
@@ -232,6 +230,7 @@ class TestTokenBudgetEnforcer:
 
     def test_custom_token_counter(self):
         """Test enforcer with custom token counting function."""
+
         def custom_counter(text: str) -> int:
             return len(text)  # Count characters
 
@@ -242,6 +241,7 @@ class TestTokenBudgetEnforcer:
 
     def test_custom_summarizer(self):
         """Test enforcer with custom summarizer."""
+
         def custom_summarizer(text: str) -> str:
             return text[:20] + "..." if len(text) > 20 else text
 

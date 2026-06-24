@@ -157,9 +157,7 @@ class TestAlertTriggering:
 
     def test_no_alert_on_healthy_metrics(self, monitor):
         """Test no alerts trigger for healthy metrics."""
-        monitor.record_metric(
-            feature="superposition", metric_name="coherence", metric_value=0.95
-        )
+        monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.95)
 
         alerts = monitor.get_active_alerts()
         assert len(alerts) == 0
@@ -191,9 +189,7 @@ class TestAutomaticRollback:
     def test_reset_rollback_flag(self, monitor):
         """Test resetting rollback flag."""
         # Trigger rollback
-        monitor.record_metric(
-            feature="superposition", metric_name="coherence", metric_value=0.1
-        )
+        monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.1)
         assert monitor.is_rollback_triggered
 
         # Reset
@@ -220,18 +216,14 @@ class TestHealthMonitoring:
 
     def test_healthy_status(self, monitor):
         """Test healthy status assessment."""
-        monitor.record_metric(
-            feature="superposition", metric_name="coherence", metric_value=0.95
-        )
+        monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.95)
 
         health = monitor.get_feature_health("superposition")
         assert health["health_status"] == "healthy"
 
     def test_critical_status(self, monitor):
         """Test critical status assessment."""
-        monitor.record_metric(
-            feature="superposition", metric_name="coherence", metric_value=0.2
-        )
+        monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.2)
 
         health = monitor.get_feature_health("superposition")
         assert health["health_status"] == "critical"
@@ -270,9 +262,7 @@ class TestCoherenceMonitorBatching:
         # Record 5 metrics (below batch_size)
         for i in range(5):
             monitor.record_metric(
-                feature="superposition",
-                metric_name="coherence",
-                metric_value=0.9 + i * 0.01
+                feature="superposition", metric_name="coherence", metric_value=0.9 + i * 0.01
             )
 
         # Check buffer has 5 pending metrics
@@ -289,9 +279,7 @@ class TestCoherenceMonitorBatching:
         # Record exactly batch_size metrics
         for i in range(10):
             monitor.record_metric(
-                feature="superposition",
-                metric_name="coherence",
-                metric_value=0.9
+                feature="superposition", metric_name="coherence", metric_value=0.9
             )
 
         # Buffer should be empty (auto-flushed)
@@ -308,9 +296,7 @@ class TestCoherenceMonitorBatching:
         # Record 20 metrics (below batch_size, won't auto-flush)
         for i in range(20):
             monitor.record_metric(
-                feature="entanglement",
-                metric_name="error_rate",
-                metric_value=0.01
+                feature="entanglement", metric_name="error_rate", metric_value=0.01
             )
 
         # Metrics should be pending
@@ -336,7 +322,7 @@ class TestCoherenceMonitorBatching:
                 feature="uncertainty",
                 metric_name="latency_p99",
                 metric_value=100.0 + i,
-                agent_id=f"agent-{i}"
+                agent_id=f"agent-{i}",
             )
 
         # Flush
@@ -358,9 +344,7 @@ class TestCoherenceMonitorBatching:
         # Existing code pattern: record metrics until auto-flush
         for i in range(15):
             monitor.record_metric(
-                feature="superposition",
-                metric_name="coherence",
-                metric_value=0.9
+                feature="superposition", metric_name="coherence", metric_value=0.9
             )
 
         # Should have auto-flushed three times (at 5, 10, and 15), with 0 pending
@@ -404,9 +388,7 @@ class TestCoherenceMonitorBatching:
 
         # Record critical metric (should trigger alert before DB persist)
         monitor.record_metric(
-            feature="superposition",
-            metric_name="coherence",
-            metric_value=0.1  # Critical threshold
+            feature="superposition", metric_name="coherence", metric_value=0.1  # Critical threshold
         )
 
         # Alert should be triggered even though not flushed to DB

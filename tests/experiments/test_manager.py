@@ -23,7 +23,8 @@ class TestInitExperiment:
         """Test that experiments manager module can be imported."""
         try:
             from experiments import manager
-            assert hasattr(manager, 'init_experiment')
+
+            assert hasattr(manager, "init_experiment")
         except ImportError:
             pytest.skip("experiments.manager not importable")
 
@@ -52,7 +53,9 @@ class TestInitExperiment:
                 # Expected when mlflow not actually installed
                 _ = None  # suppressed: no action needed
 
-    @patch.dict(os.environ, {"EXPERIMENT_BACKEND": "remote", "MLFLOW_TRACKING_URI": ""}, clear=False)
+    @patch.dict(
+        os.environ, {"EXPERIMENT_BACKEND": "remote", "MLFLOW_TRACKING_URI": ""}, clear=False
+    )
     def test_init_experiment_remote_no_uri_raises(self):
         """Test init_experiment raises when remote backend has no URI."""
         mock_mlflow = MagicMock()
@@ -60,12 +63,17 @@ class TestInitExperiment:
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
             try:
                 from experiments.manager import init_experiment
+
                 with pytest.raises(RuntimeError, match="MLFLOW_TRACKING_URI must be set"):
                     init_experiment("test_experiment")
             except ImportError:
                 pytest.skip("mlflow not available")
 
-    @patch.dict(os.environ, {"EXPERIMENT_BACKEND": "remote", "MLFLOW_TRACKING_URI": "http://localhost:5000"}, clear=False)
+    @patch.dict(
+        os.environ,
+        {"EXPERIMENT_BACKEND": "remote", "MLFLOW_TRACKING_URI": "http://localhost:5000"},
+        clear=False,
+    )
     def test_init_experiment_remote_with_uri(self):
         """Test init_experiment with remote backend and valid URI."""
         mock_mlflow = MagicMock()
@@ -73,6 +81,7 @@ class TestInitExperiment:
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
             try:
                 from experiments.manager import init_experiment
+
                 init_experiment("test_experiment")
                 # Should set tracking URI and experiment
             except ImportError:
@@ -86,6 +95,7 @@ class TestModuleImports:
         """Test experiments package can be imported."""
         try:
             import experiments
+
             assert experiments is not None
         except ImportError:
             pytest.skip("experiments package not importable")
@@ -94,6 +104,7 @@ class TestModuleImports:
         """Test manager module exists."""
         try:
             from experiments import manager
+
             assert manager is not None
         except ImportError:
             pytest.skip("experiments.manager not importable")
@@ -106,6 +117,7 @@ class TestOptionalDependencyError:
         """Test that optional_dependency_error is properly raised."""
         try:
             from codex_ml.utils.optional import optional_dependency_error
+
             error = optional_dependency_error("test_pkg", purpose="testing")
             assert "test_pkg" in str(error) or error is not None
         except ImportError:

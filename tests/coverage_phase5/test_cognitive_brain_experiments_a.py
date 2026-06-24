@@ -1,4 +1,5 @@
 """Test cognitive brain experiment validation 0."""
+
 from __future__ import annotations
 
 from typing import Any, Dict
@@ -18,11 +19,13 @@ class ExperimentHarness:
     async def run(self) -> Dict[str, Any]:
         return {"status": "success", "exp_id": self.exp_id}
 
+
 @pytest.mark.asyncio
 async def test_experiment_0_initialization():
     """Test experiment 0 initialization."""
     harness = ExperimentHarness("exp0")
     assert harness.exp_id == "exp0"
+
 
 @pytest.mark.asyncio
 async def test_experiment_0_config():
@@ -33,6 +36,7 @@ async def test_experiment_0_config():
     assert harness.config["learning_rate"] == 0.001
     assert harness.config["epochs"] == 10
 
+
 @pytest.mark.asyncio
 async def test_experiment_0_run():
     """Test experiment 0 execution."""
@@ -41,6 +45,7 @@ async def test_experiment_0_run():
 
     assert result["status"] == "success"
     assert result["exp_id"] == "exp0"
+
 
 def test_experiment_0_validation():
     """Test experiment 0 validation."""

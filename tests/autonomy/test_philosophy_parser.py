@@ -3,6 +3,7 @@
 Covers _extract_headings, _count_words, parse_document, cmd_parse,
 cmd_write, cmd_status, and main entry point.
 """
+
 from __future__ import annotations
 
 import json
@@ -14,6 +15,7 @@ import pytest
 
 # ── Import helper ────────────────────────────────────────────────────────────
 
+
 def _import():
     """Import philosophy_parser, skipping if unavailable."""
     repo_root = Path(__file__).parent.parent.parent
@@ -24,6 +26,7 @@ def _import():
 
 
 # ── _extract_headings ────────────────────────────────────────────────────────
+
 
 class TestExtractHeadings:
     def test_empty_text(self):
@@ -60,6 +63,7 @@ class TestExtractHeadings:
 
 # ── _count_words ─────────────────────────────────────────────────────────────
 
+
 class TestCountWords:
     def test_empty_string(self):
         mod = _import()
@@ -79,6 +83,7 @@ class TestCountWords:
 
 
 # ── parse_document ───────────────────────────────────────────────────────────
+
 
 class TestParseDocument:
     def test_basic_document(self, tmp_path):
@@ -106,8 +111,15 @@ class TestParseDocument:
             result = mod.parse_document(doc)
         finally:
             mod.REPO_ROOT = original
-        for key in ["path", "word_count", "line_count", "heading_count", "headings",
-                    "concepts", "action_items"]:
+        for key in [
+            "path",
+            "word_count",
+            "line_count",
+            "heading_count",
+            "headings",
+            "concepts",
+            "action_items",
+        ]:
             assert key in result
 
     def test_extracts_action_items(self, tmp_path):
@@ -125,7 +137,9 @@ class TestParseDocument:
     def test_extracts_concepts(self, tmp_path):
         mod = _import()
         doc = tmp_path / "concepts.md"
-        doc.write_text("# Machine Learning\n\nDeep Learning is great.\nNeural Networks work well.\n")
+        doc.write_text(
+            "# Machine Learning\n\nDeep Learning is great.\nNeural Networks work well.\n"
+        )
         original = mod.REPO_ROOT
         mod.REPO_ROOT = tmp_path
         try:
@@ -136,6 +150,7 @@ class TestParseDocument:
 
 
 # ── cmd_parse ────────────────────────────────────────────────────────────────
+
 
 class TestCmdParse:
     def test_parse_specific_file(self, tmp_path, monkeypatch):
@@ -175,6 +190,7 @@ class TestCmdParse:
 
 # ── cmd_write ────────────────────────────────────────────────────────────────
 
+
 class TestCmdWrite:
     def test_creates_philosophy_doc(self, tmp_path, monkeypatch):
         mod = _import()
@@ -209,10 +225,15 @@ class TestCmdWrite:
         sessions_dir = tmp_path / "memory" / "sessions"
         sessions_dir.mkdir(parents=True)
         sess = sessions_dir / "sess_001.json"
-        sess.write_text(json.dumps({
-            "observations": ["item one", "item two"],
-            "summary": "A test session",
-        }), encoding="utf-8")
+        sess.write_text(
+            json.dumps(
+                {
+                    "observations": ["item one", "item two"],
+                    "summary": "A test session",
+                }
+            ),
+            encoding="utf-8",
+        )
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", phil_dir)
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         rc = mod.cmd_write(topic="Session Synthesis")
@@ -220,6 +241,7 @@ class TestCmdWrite:
 
 
 # ── cmd_status ───────────────────────────────────────────────────────────────
+
 
 class TestCmdStatus:
     def test_status_no_docs(self, tmp_path, monkeypatch):
@@ -240,6 +262,7 @@ class TestCmdStatus:
 
 
 # ── main ─────────────────────────────────────────────────────────────────────
+
 
 class TestMain:
     def test_main_write(self, tmp_path, monkeypatch):

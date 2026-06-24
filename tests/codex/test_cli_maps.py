@@ -11,7 +11,8 @@ import pytest
 # Skip if typer is not properly installed
 try:
     import typer
-    if not hasattr(typer, 'Typer'):
+
+    if not hasattr(typer, "Typer"):
         pytest.skip("typer package not properly installed", allow_module_level=True)
     from typer.testing import CliRunner
 except (ImportError, AttributeError):

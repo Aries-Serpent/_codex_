@@ -23,6 +23,7 @@ class TestValidateModuleImport:
         """Test that validate module can be imported."""
         try:
             from codex_ml.cli import validate
+
             assert validate is not None
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
@@ -35,6 +36,7 @@ class TestValidateModuleImport:
                 init_json_logging,
                 log_event,
             )
+
             assert callable(capture_exceptions)
             assert callable(init_json_logging)
             assert callable(log_event)
@@ -49,11 +51,12 @@ class TestValidationErrorFormatting:
         """Test that _format_validation_error function exists."""
         try:
             from codex_ml.cli.validate import _format_validation_error
+
             assert callable(_format_validation_error)
         except ImportError as e:
             pytest.skip(f"Function import failed: {e}")
 
-    @patch('codex_ml.cli.validate.ValidationError')
+    @patch("codex_ml.cli.validate.ValidationError")
     def test_format_validation_error_with_mock(self, mock_validation_error):
         """Test validation error formatting with mock."""
         try:
@@ -63,7 +66,7 @@ class TestValidationErrorFormatting:
             mock_error = MagicMock()
             mock_error.errors.return_value = [
                 {"loc": ("field1",), "msg": "required field"},
-                {"loc": ("field2", "subfield"), "msg": "invalid value"}
+                {"loc": ("field2", "subfield"), "msg": "invalid value"},
             ]
 
             # May raise or return formatted string
@@ -84,6 +87,7 @@ class TestYAMLSupport:
         """Test that safe_load is importable."""
         try:
             from codex_ml.utils.yaml_support import safe_load
+
             assert callable(safe_load)
         except ImportError as e:
             pytest.skip(f"safe_load import failed: {e}")
@@ -92,6 +96,7 @@ class TestYAMLSupport:
         """Test that MissingPyYAMLError is importable."""
         try:
             from codex_ml.utils.yaml_support import MissingPyYAMLError
+
             assert issubclass(MissingPyYAMLError, Exception)
         except ImportError as e:
             pytest.skip(f"MissingPyYAMLError import failed: {e}")
@@ -106,7 +111,7 @@ class TestValidateCLI:
             [sys.executable, "-m", "codex_ml.cli.validate", "--help"],
             capture_output=True,
             text=True,
-            timeout=CLI_HELP_TIMEOUT_SECONDS
+            timeout=CLI_HELP_TIMEOUT_SECONDS,
         )
         # May or may not have CLI entry point
         assert result.returncode in (0, 1, 2)
@@ -117,7 +122,7 @@ class TestValidateCLI:
             [sys.executable, "-m", "codex_ml.cli.validate", "config", "--help"],
             capture_output=True,
             text=True,
-            timeout=CLI_HELP_TIMEOUT_SECONDS
+            timeout=CLI_HELP_TIMEOUT_SECONDS,
         )
         # May or may not have config subcommand
         assert result.returncode in (0, 1, 2)
@@ -130,15 +135,8 @@ class TestConfigValidation:
         """Test validation of a valid YAML configuration."""
         # Create a valid config
         config = {
-            "training": {
-                "epochs": 10,
-                "batch_size": 32,
-                "learning_rate": 0.001
-            },
-            "model": {
-                "name": "test-model",
-                "hidden_size": 768
-            }
+            "training": {"epochs": 10, "batch_size": 32, "learning_rate": 0.001},
+            "model": {"name": "test-model", "hidden_size": 768},
         }
 
         # Basic validation - should be valid YAML
@@ -150,9 +148,7 @@ class TestConfigValidation:
         """Test handling of invalid YAML syntax."""
         invalid_yaml = "key: value\n  bad_indent: error"
 
-        with tempfile.NamedTemporaryFile(
-            mode='w', suffix='.yaml', delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write(invalid_yaml)
             temp_path = Path(f.name)
 
@@ -169,9 +165,7 @@ class TestConfigValidation:
 
     def test_validate_missing_required_fields(self):
         """Test validation of config missing required fields."""
-        incomplete_config = {
-            "training": {}  # Missing required fields
-        }
+        incomplete_config = {"training": {}}  # Missing required fields
 
         # This should be flagged as incomplete
         assert "epochs" not in incomplete_config["training"]
@@ -185,11 +179,13 @@ class TestDiffValidation:
         """Test that difflib is properly imported."""
         try:
             from codex_ml.cli.validate import difflib
+
             # Should be the standard library difflib or equivalent
-            assert hasattr(difflib, 'unified_diff') or difflib is not None
+            assert hasattr(difflib, "unified_diff") or difflib is not None
         except ImportError:
             import difflib
-            assert hasattr(difflib, 'unified_diff')
+
+            assert hasattr(difflib, "unified_diff")
 
     def test_config_diff_detection(self):
         """Test detection of config differences."""
@@ -198,16 +194,18 @@ class TestDiffValidation:
         config1 = "epochs: 10\nbatch_size: 32"
         config2 = "epochs: 20\nbatch_size: 32"
 
-        diff = list(difflib.unified_diff(
-            config1.splitlines(keepends=True),
-            config2.splitlines(keepends=True),
-            fromfile='config1.yaml',
-            tofile='config2.yaml'
-        ))
+        diff = list(
+            difflib.unified_diff(
+                config1.splitlines(keepends=True),
+                config2.splitlines(keepends=True),
+                fromfile="config1.yaml",
+                tofile="config2.yaml",
+            )
+        )
 
         # Should detect difference in epochs
         assert len(diff) > 0
-        assert any('epochs' in line for line in diff)
+        assert any("epochs" in line for line in diff)
 
 
 class TestOptionalDependencies:
@@ -217,6 +215,7 @@ class TestOptionalDependencies:
         """Test that pydantic is handled as optional."""
         try:
             from codex_ml.cli.validate import ValidationError
+
             # ValidationError may be None if pydantic not installed
             if ValidationError is not None:
                 assert issubclass(ValidationError, Exception)
@@ -228,9 +227,10 @@ class TestOptionalDependencies:
         """Test that typer is handled as optional."""
         try:
             from codex_ml.cli.validate import typer
+
             # typer may be None if not installed
             if typer is not None:
-                assert hasattr(typer, 'Typer')
+                assert hasattr(typer, "Typer")
         except ImportError:
             # Expected if typer not available
             _ = None  # suppressed: no action needed
@@ -239,6 +239,7 @@ class TestOptionalDependencies:
         """Test that config_schema is handled as optional."""
         try:
             from codex_ml.cli.validate import validate_config_file
+
             # May be None if not available
             if validate_config_file is not None:
                 assert callable(validate_config_file)

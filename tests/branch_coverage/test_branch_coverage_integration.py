@@ -325,12 +325,12 @@ class TestRealModuleImportBranches:
 
     def test_import_success_branch(self) -> None:
         """Test successful import branch."""
-        import_success = importlib.util.find_spec('json') is not None
+        import_success = importlib.util.find_spec("json") is not None
         assert import_success is True
 
     def test_import_optional_module_branch(self) -> None:
         """Test optional module import."""
-        available = importlib.util.find_spec('nonexistent_module_xyz') is not None
+        available = importlib.util.find_spec("nonexistent_module_xyz") is not None
         assert available is False
 
 

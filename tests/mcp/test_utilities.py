@@ -240,7 +240,9 @@ class PerformanceTimer:
         return 0.0
 
 
-def benchmark_operation(operation: Callable, iterations: int = 100, *args, **kwargs) -> dict[str, float]:
+def benchmark_operation(
+    operation: Callable, iterations: int = 100, *args, **kwargs
+) -> dict[str, float]:
     """
     Benchmark an operation over multiple iterations.
 

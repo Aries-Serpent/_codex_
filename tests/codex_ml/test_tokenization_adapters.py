@@ -14,7 +14,7 @@ import pytest
 transformers = pytest.importorskip("transformers", reason="transformers not installed")
 
 # Try to import tokenizers package - skip tests if not available
-HAS_TOKENIZERS = importlib.util.find_spec('tokenizers') is not None
+HAS_TOKENIZERS = importlib.util.find_spec("tokenizers") is not None
 
 # Try to import sentencepiece - skip tests if not available.
 # Also verify the module has real functionality (not a stub/type-hint-only package).

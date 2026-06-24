@@ -12,7 +12,6 @@ Systematically applies operator and performance patterns:
 Target: +4-5% coverage gain (38% → 43%)
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -173,9 +172,7 @@ class TestPhase2_EnergyOperators:
         """Test free energy F = U - TS calculation"""
         from agents.physics_orchestrator import EnergyState
 
-        state = EnergyState(
-            state_id="test", configuration={}, internal_energy=100.0, entropy=10.0
-        )
+        state = EnergyState(state_id="test", configuration={}, internal_energy=100.0, entropy=10.0)
         free_energy = state.free_energy()
         assert isinstance(free_energy, (int, float))
         # F = U - TS, at T=1.0 (default): F = 100 - 10 = 90
@@ -185,9 +182,7 @@ class TestPhase2_EnergyOperators:
         """Test Boltzmann probability e^{-ΔE/kT}"""
         from agents.physics_orchestrator import EnergyState
 
-        state = EnergyState(
-            state_id="test", configuration={}, internal_energy=10.0, entropy=1.0
-        )
+        state = EnergyState(state_id="test", configuration={}, internal_energy=10.0, entropy=1.0)
         prob = state.boltzmann_probability(reference_energy=5.0)
         assert isinstance(prob, (int, float))
         assert 0.0 <= prob <= 1.0
@@ -205,9 +200,7 @@ class TestPhase2_EnergyOperators:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape()
-        state = EnergyState(
-            state_id="s1", configuration={}, internal_energy=5.0, entropy=1.0
-        )
+        state = EnergyState(state_id="s1", configuration={}, internal_energy=5.0, entropy=1.0)
         landscape.add_state(state)
         assert len(landscape.states) == 1
 
@@ -216,9 +209,7 @@ class TestPhase2_EnergyOperators:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
 
         landscape = EnergyLandscape(temperature=1.0)
-        state = EnergyState(
-            state_id="s1", configuration={}, internal_energy=10.0, entropy=2.0
-        )
+        state = EnergyState(state_id="s1", configuration={}, internal_energy=10.0, entropy=2.0)
         landscape.add_state(state)
         prob = landscape.gibbs_probability(state)
         assert isinstance(prob, (int, float))

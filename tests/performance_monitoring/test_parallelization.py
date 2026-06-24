@@ -336,7 +336,11 @@ class TestPerformanceReporting:
 
         comparison = {
             "duration_change": current_run["total_duration"] - previous_run["total_duration"],
-            "duration_change_percent": ((current_run["total_duration"] - previous_run["total_duration"]) / previous_run["total_duration"]) * 100,
+            "duration_change_percent": (
+                (current_run["total_duration"] - previous_run["total_duration"])
+                / previous_run["total_duration"]
+            )
+            * 100,
         }
 
         assert comparison["duration_change"] == -10.0

@@ -11,17 +11,15 @@ Tests cover:
 - Pattern and event tracking
 """
 
-import sqlite3
 import tempfile
-import threading # pragma: allowlist secret # pragma: allowlist secret
+import threading  # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List
 
 import pytest
 
-from codex.logging.session_db import SessionDB, CacheEntry
+from codex.logging.session_db import CacheEntry, SessionDB
 
 
 class TestSessionDBInitialization:
@@ -264,9 +262,7 @@ class TestSessionQuerying:
 
     def test_query_by_agent_name(self, db_with_data):
         """Test filtering by agent name."""
-        results = db_with_data.query_sessions(
-            filters={"agent_name": "agent-a"}, limit=100
-        )
+        results = db_with_data.query_sessions(filters={"agent_name": "agent-a"}, limit=100)
         assert len(results) > 0
         assert all(r["agent_name"] == "agent-a" for r in results)
 
@@ -355,16 +351,12 @@ class TestCaching:
         """Test that identical queries use cache."""
         # First query
         start_time = time.time()
-        result1 = db_with_data.query_sessions(
-            filters={"agent_name": "test-agent"}, limit=100
-        )
+        result1 = db_with_data.query_sessions(filters={"agent_name": "test-agent"}, limit=100)
         time1 = time.time() - start_time
 
         # Second query (should be cached)
         start_time = time.time()
-        result2 = db_with_data.query_sessions(
-            filters={"agent_name": "test-agent"}, limit=100
-        )
+        result2 = db_with_data.query_sessions(filters={"agent_name": "test-agent"}, limit=100)
         time2 = time.time() - start_time
 
         # Results should be identical
@@ -519,9 +511,7 @@ class TestEventTracking:
 
     def test_add_event_to_session(self, db):
         """Test adding event to session."""
-        result = db.add_event_to_session(
-            "event-test", "start", event_details="Session started"
-        )
+        result = db.add_event_to_session("event-test", "start", event_details="Session started")
         assert result is True
 
     def test_all_event_types(self, db):
@@ -642,10 +632,7 @@ class TestThreadSafety:
                     db.insert_session(session)
 
             # Create threads
-            threads = [
-                threading.Thread(target=insert_sessions, args=(i, 10))
-                for i in range(5)
-            ]
+            threads = [threading.Thread(target=insert_sessions, args=(i, 10)) for i in range(5)]
 
             # Run threads
             for thread in threads:
@@ -707,9 +694,7 @@ class TestSessionDeletion:
                 "session_id": "delete-test",
                 "timestamp": timestamp,
                 "status": "complete",
-                "patterns": [
-                    {"pattern_id": "p1", "pattern_name": "Pattern 1", "success": True}
-                ],
+                "patterns": [{"pattern_id": "p1", "pattern_name": "Pattern 1", "success": True}],
             }
             db_instance.insert_session(session)
             yield db_instance

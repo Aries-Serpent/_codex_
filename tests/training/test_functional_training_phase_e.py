@@ -15,6 +15,7 @@ if str(SRC_PATH) not in sys.path:
 
 def _import_ft():
     import importlib
+
     module = None
     # Use src.training.functional_training to avoid the root-level training/ shadow package
     for mod_name in ("src.training.functional_training", "training.functional_training"):
@@ -31,6 +32,7 @@ def _import_ft():
 # ---------------------------------------------------------------------------
 # _normalize_identifier
 # ---------------------------------------------------------------------------
+
 
 class TestNormalizeIdentifier:
     def setup_method(self):
@@ -50,6 +52,7 @@ class TestNormalizeIdentifier:
         class FakePath:
             def __fspath__(self):
                 return "/custom/path"
+
         result = self.ft._normalize_identifier(FakePath())
         assert result == "/custom/path"
 
@@ -57,6 +60,7 @@ class TestNormalizeIdentifier:
 # ---------------------------------------------------------------------------
 # _looks_like_local_source
 # ---------------------------------------------------------------------------
+
 
 class TestLooksLikeLocalSource:
     def setup_method(self):
@@ -88,6 +92,7 @@ class TestLooksLikeLocalSource:
     def test_oserror_returns_false(self, monkeypatch):
         def raise_oserror(*_, **__):
             raise OSError("boom")
+
         monkeypatch.setattr(Path, "exists", raise_oserror)
         assert self.ft._looks_like_local_source("some/relative/path") is False
 
@@ -95,6 +100,7 @@ class TestLooksLikeLocalSource:
 # ---------------------------------------------------------------------------
 # _maybe_collect_system_metrics
 # ---------------------------------------------------------------------------
+
 
 class TestMaybeCollectSystemMetrics:
     def setup_method(self):
@@ -128,6 +134,7 @@ class TestMaybeCollectSystemMetrics:
     def test_collector_raises_returns_none(self, monkeypatch):
         def boom():
             raise RuntimeError("hardware error")
+
         monkeypatch.setattr(self.ft, "collect_system_metrics", boom)
         result = self.ft._maybe_collect_system_metrics(True)
         assert result is None
@@ -152,6 +159,7 @@ class TestMaybeCollectSystemMetrics:
 # ---------------------------------------------------------------------------
 # ImportMigration helpers
 # ---------------------------------------------------------------------------
+
 
 def test_import_migration_class_exists():
     ft = _import_ft()

@@ -31,15 +31,13 @@ def test_detect_confirm_keyword():
     """Test detection of confirmation prompts."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "cli.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 def delete_resource(resource_id, confirm=False):
     if not confirm:
         print("Please confirm deletion")
         return
     # Delete logic here
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 
@@ -53,15 +51,13 @@ def test_detect_dry_run_keyword():
     """Test detection of dry-run mode."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "deploy.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 def deploy(config, dry_run=False):
     if dry_run:
         print("DRY RUN: Would deploy...")
         return
     # Actual deployment
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 
@@ -75,14 +71,12 @@ def test_detect_sanitize_keyword():
     """Test detection of sanitization."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "input.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 def process_input(data):
     # Sanitize user input
     sanitized = sanitize(data)
     return sanitized
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 
@@ -96,14 +90,12 @@ def test_detect_validation_keyword():
     """Test detection of validation."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "validator.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 def validate_config(config):
     # Perform validation
     if not is_valid(config):
         raise ValueError("Invalid config")
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 
@@ -117,15 +109,13 @@ def test_detect_bounds_keyword():
     """Test detection of bounds checking."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "array.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 def get_item(array, index):
     # Check bounds before access
     if index < 0 or index >= len(array):
         raise IndexError("Out of bounds")
     return array[index]
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 
@@ -139,8 +129,7 @@ def test_detect_rollback_keyword():
     """Test detection of rollback capability."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "transaction.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 def update_database(conn, data):
     try:
         conn.execute(data)
@@ -148,8 +137,7 @@ def update_database(conn, data):
     except Exception:  # noqa: BLE001
         conn.rollback()
         raise
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 
@@ -163,15 +151,13 @@ def test_detect_in_markdown():
     """Test detection of safeguards in markdown documentation."""
     with tempfile.TemporaryDirectory() as tmpdir:
         md_file = Path(tmpdir) / "security.md"
-        md_file.write_text(
-            """
+        md_file.write_text("""
 # Security Safeguards
 
 Always use the `--confirm` flag for destructive operations.
 Enable `--dry-run` mode to preview changes.
 All inputs are sanitized before processing.
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(md_file)}]}
 
@@ -187,8 +173,7 @@ def test_detect_multiple_safeguards():
     """Test detection of multiple safeguards in single file."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "secure_api.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 def secure_operation(data, confirm=False, dry_run=False):
     # Sanitize input
     data = sanitize(data)
@@ -213,8 +198,7 @@ def secure_operation(data, confirm=False, dry_run=False):
         execute(data)
     except Exception:  # noqa: BLE001
         rollback()
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 
@@ -233,13 +217,11 @@ def test_evidence_deduplication():
     """Test that evidence files are deduplicated."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "app.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 confirm = True
 dry_run = False
 sanitize(data)
-"""
-        )
+""")
 
         file_index = {"files": [{"path": str(py_file)}]}
 

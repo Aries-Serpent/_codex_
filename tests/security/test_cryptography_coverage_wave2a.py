@@ -18,6 +18,7 @@ try:
     from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import padding, rsa
     from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
     HAS_CRYPTOGRAPHY = True
 except ImportError:
     HAS_CRYPTOGRAPHY = False
@@ -48,22 +49,28 @@ class TestCryptographyEncryption:
         private_key, public_key = rsa_key_pair
 
         # Encrypt with public key
-        ciphertext = public_key.encrypt(sample_data, padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None,
-        ))
+        ciphertext = public_key.encrypt(
+            sample_data,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None,
+            ),
+        )
 
         # Verify ciphertext is different from plaintext
         assert ciphertext != sample_data
         assert len(ciphertext) > 0
 
         # Decrypt with private key
-        plaintext = private_key.decrypt(ciphertext, padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None,
-        ))
+        plaintext = private_key.decrypt(
+            ciphertext,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None,
+            ),
+        )
 
         assert plaintext == sample_data
 
@@ -73,18 +80,24 @@ class TestCryptographyEncryption:
         label = b"test-label"
 
         # Encrypt with label
-        ciphertext = public_key.encrypt(sample_data, padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=label,
-        ))
+        ciphertext = public_key.encrypt(
+            sample_data,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=label,
+            ),
+        )
 
         # Decrypt with same label
-        plaintext = private_key.decrypt(ciphertext, padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=label,
-        ))
+        plaintext = private_key.decrypt(
+            ciphertext,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=label,
+            ),
+        )
 
         assert plaintext == sample_data
 
@@ -95,19 +108,25 @@ class TestCryptographyEncryption:
         wrong_label = b"wrong-label"
 
         # Encrypt with correct label
-        ciphertext = public_key.encrypt(sample_data, padding.OAEP(
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=label,
-        ))
+        ciphertext = public_key.encrypt(
+            sample_data,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=label,
+            ),
+        )
 
         # Try to decrypt with wrong label - should fail
         with pytest.raises(ValueError):
-            private_key.decrypt(ciphertext, padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=wrong_label,
-            ))
+            private_key.decrypt(
+                ciphertext,
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=wrong_label,
+                ),
+            )
 
     def test_rsa_signature_creation_verification(self, rsa_key_pair, sample_data):
         """Test RSA signature creation and verification."""
@@ -166,7 +185,7 @@ class TestCryptographyEncryption:
         """Test AES encryption in CBC mode."""
         pass  # removed redundant `import os` (top-level import used)
         key = os.urandom(32)  # 256-bit key
-        iv = os.urandom(16)   # 128-bit IV
+        iv = os.urandom(16)  # 128-bit IV
 
         cipher = Cipher(
             algorithms.AES(key),
@@ -178,6 +197,7 @@ class TestCryptographyEncryption:
         encryptor = cipher.encryptor()
         # Add padding for CBC mode
         from cryptography.hazmat.primitives import padding as crypto_padding
+
         padder = crypto_padding.PKCS7(128).padder()
         padded_data = padder.update(sample_data) + padder.finalize()
 
@@ -200,7 +220,7 @@ class TestCryptographyEncryption:
     def test_aes_encryption_decryption_gcm(self, sample_data):
         """Test AES encryption in GCM mode (authenticated)."""
         key = os.urandom(32)  # 256-bit key
-        iv = os.urandom(12)   # 96-bit IV for GCM
+        iv = os.urandom(12)  # 96-bit IV for GCM
 
         cipher = Cipher(
             algorithms.AES(key),
@@ -267,6 +287,7 @@ class TestCryptographyEncryption:
 
         # Deserialize
         from cryptography.hazmat.primitives.serialization import load_pem_private_key
+
         restored_key = load_pem_private_key(private_pem, backend=default_backend())
 
         # Verify the key works
@@ -322,6 +343,7 @@ class TestCryptographyEncryption:
     def test_hmac_generation_verification(self, sample_data):
         """Test HMAC generation and verification."""
         from cryptography.hazmat.primitives import hmac
+
         key = os.urandom(32)
 
         # Generate HMAC
@@ -337,6 +359,7 @@ class TestCryptographyEncryption:
     def test_hmac_verification_fails_on_tampering(self, sample_data):
         """Test that HMAC verification fails on tampering."""
         from cryptography.hazmat.primitives import hmac
+
         key = os.urandom(32)
 
         # Generate HMAC
@@ -354,6 +377,7 @@ class TestCryptographyEncryption:
     def test_hmac_verification_fails_with_wrong_key(self, sample_data):
         """Test that HMAC verification fails with wrong key."""
         from cryptography.hazmat.primitives import hmac
+
         key1 = os.urandom(32)
         key2 = os.urandom(32)
 

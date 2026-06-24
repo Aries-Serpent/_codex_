@@ -43,13 +43,13 @@ class TestReasoningStepMutationKillers:
     @pytest.mark.parametrize(
         "confidence,is_valid",
         [
-            (0.0, True),     # Lower boundary
-            (0.01, True),    # Just above lower
-            (0.49, True),    # Below typical threshold
-            (0.5, True),     # At typical threshold
-            (0.51, True),    # Above typical threshold
-            (0.99, True),    # Just below upper
-            (1.0, True),     # Upper boundary
+            (0.0, True),  # Lower boundary
+            (0.01, True),  # Just above lower
+            (0.49, True),  # Below typical threshold
+            (0.5, True),  # At typical threshold
+            (0.51, True),  # Above typical threshold
+            (0.99, True),  # Just below upper
+            (1.0, True),  # Upper boundary
         ],
     )
     def test_reasoning_step_confidence_boundary_values(
@@ -66,7 +66,7 @@ class TestReasoningStepMutationKillers:
             assert 0.0 <= step.confidence <= 1.0
 
     def test_reasoning_step_default_reasoning_type_is_deductive(self) -> None:
-        """Catch mutation: reasoning_type: str = "deductive" → "inductive"  """
+        """Catch mutation: reasoning_type: str = "deductive" → "inductive" """
         step = ReasoningStep(step_id="s1", thought="test")
         assert step.reasoning_type == "deductive"
         assert step.reasoning_type != "inductive"

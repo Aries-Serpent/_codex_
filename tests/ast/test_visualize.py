@@ -23,18 +23,13 @@ class TestHTMLVisualizer:
         visualizer = HTMLVisualizer()
         output = tmp_path / "report.html"
 
-        visualizer.render_html(
-            [node],
-            graph,
-            {'complexity': 1},
-            str(output)
-        )
+        visualizer.render_html([node], graph, {"complexity": 1}, str(output))
 
         assert output.exists()
         content = output.read_text()
-        assert '<html>' in content
-        assert 'AST Analysis Report' in content
-        assert 'd3.js' in content
+        assert "<html>" in content
+        assert "AST Analysis Report" in content
+        assert "d3.js" in content
 
     def test_node_to_dict(self, tmp_path):
         """Test node conversion to dictionary."""
@@ -44,9 +39,9 @@ class TestHTMLVisualizer:
         visualizer = HTMLVisualizer()
         node_dict = visualizer._node_to_dict(node)
 
-        assert 'id' in node_dict
-        assert 'type' in node_dict
-        assert 'children' in node_dict
+        assert "id" in node_dict
+        assert "type" in node_dict
+        assert "children" in node_dict
 
     # ------------------------------------------------------------------
     # CB-005: additional unit tests — node rendering, tree depth, CSS
@@ -77,7 +72,9 @@ class TestHTMLVisualizer:
         """CB-005: _node_to_dict reports child count matching actual children."""
         from codex.ast.node import SourceLocation
 
-        loc = SourceLocation(file_path="x.py", line_start=1, line_end=5, column_start=0, column_end=0)
+        loc = SourceLocation(
+            file_path="x.py", line_start=1, line_end=5, column_start=0, column_end=0
+        )
         parent = StandardizedASTNode(
             node_id="parent-1",
             type=NodeType.CLASS,
@@ -96,9 +93,7 @@ class TestHTMLVisualizer:
         visualizer = HTMLVisualizer()
         d = visualizer._node_to_dict(parent)
 
-        assert d["children"] == 3, (
-            f"Expected 3 children in dict, got {d['children']}"
-        )
+        assert d["children"] == 3, f"Expected 3 children in dict, got {d['children']}"
         assert d["type"] == "class"
         assert d["name"] == "MyClass"
 

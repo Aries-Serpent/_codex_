@@ -10,10 +10,8 @@ Tests cover:
 """
 
 import json
-import sys
-import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, call, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 import typer

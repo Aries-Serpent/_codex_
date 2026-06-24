@@ -30,16 +30,9 @@ class TestConfigToTrainingFlow:
         # Create mock config
         config_path = tmp_path / "config.json"
         config = {
-            "model": {
-                "name": "test-model",
-                "hidden_size": 256
-            },
-            "training": {
-                "batch_size": 16,
-                "learning_rate": 0.001,
-                "epochs": 5
-            },
-            "seed": 42
+            "model": {"name": "test-model", "hidden_size": 256},
+            "training": {"batch_size": 16, "learning_rate": 0.001, "epochs": 5},
+            "seed": 42,
         }
 
         config_path.write_text(json.dumps(config))
@@ -58,14 +51,14 @@ class TestConfigToTrainingFlow:
             "optimizer": "adam",
             "learning_rate": 0.001,
             "weight_decay": 0.01,
-            "betas": [0.9, 0.999]
+            "betas": [0.9, 0.999],
         }
 
         # Simulate optimizer creation
         optimizer_config = {
             "lr": config["learning_rate"],
             "weight_decay": config["weight_decay"],
-            "betas": tuple(config["betas"])
+            "betas": tuple(config["betas"]),
         }
 
         assert optimizer_config["lr"] == 0.001
@@ -83,7 +76,7 @@ class TestConfigToTrainingFlow:
             "model_state": {"layer1": "mock_weights"},
             "optimizer_state": {"step": 100},
             "loss": 0.456,
-            "config": {"model": "test"}
+            "config": {"model": "test"},
         }
 
         checkpoint_path = checkpoint_dir / "checkpoint_epoch_3.json"
@@ -105,7 +98,7 @@ class TestConfigToTrainingFlow:
             "global_step": 1000,
             "model_state": {"weights": "mock"},
             "optimizer_state": {"momentum": [0.1, 0.2]},
-            "rng_state": {"seed": 42}
+            "rng_state": {"seed": 42},
         }
 
         checkpoint_path.write_text(json.dumps(checkpoint))
@@ -122,14 +115,14 @@ class TestConfigToTrainingFlow:
         training_metrics = {
             "train_loss": [1.2, 0.8, 0.5, 0.3],
             "train_accuracy": [0.6, 0.7, 0.8, 0.85],
-            "learning_rate": [0.001, 0.0009, 0.0008, 0.0007]
+            "learning_rate": [0.001, 0.0009, 0.0008, 0.0007],
         }
 
         # Simulate evaluation using training context
         eval_context = {
             "final_train_loss": training_metrics["train_loss"][-1],
             "epochs_trained": len(training_metrics["train_loss"]),
-            "best_train_accuracy": max(training_metrics["train_accuracy"])
+            "best_train_accuracy": max(training_metrics["train_accuracy"]),
         }
 
         assert eval_context["final_train_loss"] == 0.3
@@ -149,11 +142,7 @@ class TestConfigToTrainingFlow:
         eval_path = results_dir / "eval_results.json"
         # Run evaluation when training complete
         if training_complete and model_path.exists():
-            eval_results = {
-                "test_loss": 0.42,
-                "test_accuracy": 0.82,
-                "predictions_count": 1000
-            }
+            eval_results = {"test_loss": 0.42, "test_accuracy": 0.82, "predictions_count": 1000}
 
             eval_path.write_text(json.dumps(eval_results))
 
@@ -163,11 +152,7 @@ class TestConfigToTrainingFlow:
 
     def test_config_validation_before_training(self):
         """Test configuration is validated before training starts."""
-        config = {
-            "model": "test-model",
-            "batch_size": 16,
-            "learning_rate": 0.001
-        }
+        config = {"model": "test-model", "batch_size": 16, "learning_rate": 0.001}
 
         # Validation checks
         validation_errors = []
@@ -184,11 +169,7 @@ class TestConfigToTrainingFlow:
 
     def test_training_state_consistency(self):
         """Test training state remains consistent across steps."""
-        state = {
-            "epoch": 0,
-            "global_step": 0,
-            "best_loss": float('inf')
-        }
+        state = {"epoch": 0, "global_step": 0, "best_loss": float("inf")}
 
         # Simulate training steps
         for epoch in range(3):
@@ -206,6 +187,7 @@ class TestConfigToTrainingFlow:
 
     def test_training_error_propagation(self):
         """Test errors during training are properly propagated."""
+
         class TrainingError(Exception):
             pass
 
@@ -224,14 +206,9 @@ class TestConfigToTrainingFlow:
 
     def test_config_overrides_cascade_correctly(self):
         """Test configuration overrides apply in correct order."""
-        base_config = {
-            "learning_rate": 0.001,
-            "batch_size": 32
-        }
+        base_config = {"learning_rate": 0.001, "batch_size": 32}
 
-        cli_overrides = {
-            "learning_rate": 0.0001
-        }
+        cli_overrides = {"learning_rate": 0.0001}
 
         # Apply overrides
         final_config = {**base_config, **cli_overrides}
@@ -244,7 +221,7 @@ class TestConfigToTrainingFlow:
         batch_results = [
             {"loss": 0.5, "correct": 8, "total": 10},
             {"loss": 0.4, "correct": 9, "total": 10},
-            {"loss": 0.6, "correct": 7, "total": 10}
+            {"loss": 0.6, "correct": 7, "total": 10},
         ]
 
         # Aggregate metrics
@@ -260,14 +237,11 @@ class TestConfigToTrainingFlow:
 
     def test_training_stops_on_early_stopping(self):
         """Test training stops early when criteria met."""
-        config = {
-            "early_stopping_patience": 3,
-            "early_stopping_delta": 0.001
-        }
+        config = {"early_stopping_patience": 3, "early_stopping_delta": 0.001}
 
         # Losses with clear plateau - no improvement for 3+ epochs
         val_losses = [0.5, 0.48, 0.47, 0.47, 0.47, 0.47, 0.47]
-        best_loss = float('inf')
+        best_loss = float("inf")
         patience_counter = 0
         should_stop = False
         stopped_epoch = None
@@ -303,7 +277,7 @@ class TestRAGToAgentFlow:
         documents = [
             {"id": "doc1", "text": "Machine learning basics"},
             {"id": "doc2", "text": "Deep learning with neural networks"},
-            {"id": "doc3", "text": "Natural language processing"}
+            {"id": "doc3", "text": "Natural language processing"},
         ]
 
         # Simulate embedding generation
@@ -311,10 +285,7 @@ class TestRAGToAgentFlow:
         for doc in documents:
             # Mock embedding (in reality would call model)
             embedding = [0.1] * 384  # Simulated 384-dim embedding
-            embeddings[doc["id"]] = {
-                "text": doc["text"],
-                "embedding": embedding
-            }
+            embeddings[doc["id"]] = {"text": doc["text"], "embedding": embedding}
 
         assert len(embeddings) == 3
         assert "doc1" in embeddings
@@ -326,7 +297,7 @@ class TestRAGToAgentFlow:
 
         embeddings = {
             "doc1": {"text": "test", "embedding": [0.1, 0.2]},
-            "doc2": {"text": "test2", "embedding": [0.3, 0.4]}
+            "doc2": {"text": "test2", "embedding": [0.3, 0.4]},
         }
 
         # Build index
@@ -334,7 +305,7 @@ class TestRAGToAgentFlow:
             "documents": embeddings,
             "index_type": "flat",
             "dimension": 2,
-            "num_documents": len(embeddings)
+            "num_documents": len(embeddings),
         }
 
         index_path.write_text(json.dumps(index))
@@ -350,17 +321,13 @@ class TestRAGToAgentFlow:
         index = {
             "doc1": {"text": "Python programming", "score": 0.95},
             "doc2": {"text": "Java development", "score": 0.60},
-            "doc3": {"text": "Python data science", "score": 0.88}
+            "doc3": {"text": "Python data science", "score": 0.88},
         }
 
         top_k = 2
 
         # Retrieve top-k documents
-        results = sorted(
-            index.items(),
-            key=lambda x: x[1]["score"],
-            reverse=True
-        )[:top_k]
+        results = sorted(index.items(), key=lambda x: x[1]["score"], reverse=True)[:top_k]
 
         assert len(results) == 2
         assert results[0][0] == "doc1"  # Highest score
@@ -370,14 +337,14 @@ class TestRAGToAgentFlow:
         """Test RAG results are correctly passed to agent."""
         rag_results = [
             {"doc_id": "doc1", "text": "Result 1", "score": 0.9},
-            {"doc_id": "doc2", "text": "Result 2", "score": 0.8}
+            {"doc_id": "doc2", "text": "Result 2", "score": 0.8},
         ]
 
         # Agent receives RAG context
         agent_context = {
             "query": "user query",
             "retrieved_docs": rag_results,
-            "num_docs": len(rag_results)
+            "num_docs": len(rag_results),
         }
 
         assert agent_context["num_docs"] == 2
@@ -385,19 +352,12 @@ class TestRAGToAgentFlow:
 
     def test_agent_processes_rag_context(self):
         """Test agent processes RAG context to generate response."""
-        rag_context = [
-            "Document 1: Machine learning overview",
-            "Document 2: Neural network basics"
-        ]
+        rag_context = ["Document 1: Machine learning overview", "Document 2: Neural network basics"]
 
         user_query = "What is machine learning?"
 
         # Agent processes context
-        agent_input = {
-            "query": user_query,
-            "context": " | ".join(rag_context),
-            "max_tokens": 100
-        }
+        agent_input = {"query": user_query, "context": " | ".join(rag_context), "max_tokens": 100}
 
         # Simulate response generation
         response = f"Based on the context: {agent_input['query']}"
@@ -409,16 +369,13 @@ class TestRAGToAgentFlow:
         """Test agent response includes source citations."""
         rag_results = [
             {"doc_id": "doc1", "title": "ML Guide", "score": 0.9},
-            {"doc_id": "doc2", "title": "DL Tutorial", "score": 0.8}
+            {"doc_id": "doc2", "title": "DL Tutorial", "score": 0.8},
         ]
 
         # Generate response with citations
         response = {
             "text": "Machine learning is...",
-            "citations": [
-                {"doc_id": r["doc_id"], "title": r["title"]}
-                for r in rag_results
-            ]
+            "citations": [{"doc_id": r["doc_id"], "title": r["title"]} for r in rag_results],
         }
 
         assert len(response["citations"]) == 2
@@ -462,15 +419,9 @@ class TestRAGToAgentFlow:
         rag_results = []
 
         if not rag_results:
-            response = {
-                "text": "I don't have information about that topic.",
-                "has_context": False
-            }
+            response = {"text": "I don't have information about that topic.", "has_context": False}
         else:
-            response = {
-                "text": "Based on context...",
-                "has_context": True
-            }
+            response = {"text": "Based on context...", "has_context": True}
 
         assert response["has_context"] is False
         assert "don't have information" in response["text"]
@@ -480,15 +431,11 @@ class TestRAGToAgentFlow:
         initial_results = [
             {"doc": "doc1", "initial_score": 0.7},
             {"doc": "doc2", "initial_score": 0.9},
-            {"doc": "doc3", "initial_score": 0.8}
+            {"doc": "doc3", "initial_score": 0.8},
         ]
 
         # Rerank based on additional criteria
-        reranked = sorted(
-            initial_results,
-            key=lambda x: x["initial_score"],
-            reverse=True
-        )
+        reranked = sorted(initial_results, key=lambda x: x["initial_score"], reverse=True)
 
         # Add rerank scores
         for i, doc in enumerate(reranked):
@@ -502,15 +449,12 @@ class TestRAGToAgentFlow:
         results = [
             {"doc": "doc1", "score": 0.9},
             {"doc": "doc2", "score": 0.4},
-            {"doc": "doc3", "score": 0.7}
+            {"doc": "doc3", "score": 0.7},
         ]
 
         confidence_threshold = 0.6
 
-        filtered_results = [
-            r for r in results
-            if r["score"] >= confidence_threshold
-        ]
+        filtered_results = [r for r in results if r["score"] >= confidence_threshold]
 
         assert len(filtered_results) == 2
         assert all(r["score"] >= 0.6 for r in filtered_results)
@@ -519,12 +463,7 @@ class TestRAGToAgentFlow:
         """Test agent can stream responses with RAG context."""
 
         # Simulate streaming
-        response_chunks = [
-            "Based on ",
-            "the provided ",
-            "context, ",
-            "the answer is..."
-        ]
+        response_chunks = ["Based on ", "the provided ", "context, ", "the answer is..."]
 
         full_response = ""
         for chunk in response_chunks:
@@ -535,6 +474,7 @@ class TestRAGToAgentFlow:
 
     def test_rag_agent_error_recovery(self):
         """Test error recovery in RAG-Agent pipeline."""
+
         class RAGError(Exception):
             pass
 
@@ -565,12 +505,7 @@ class TestCLIToCoreFlow:
 
     def test_cli_parses_train_command(self):
         """Test CLI parses training command correctly."""
-        args = [
-            "train",
-            "--model", "test-model",
-            "--epochs", "10",
-            "--batch-size", "16"
-        ]
+        args = ["train", "--model", "test-model", "--epochs", "10", "--batch-size", "16"]
 
         # Parse command
         command = args[0]
@@ -591,13 +526,10 @@ class TestCLIToCoreFlow:
             "model": "default-model",
             "epochs": 5,
             "batch_size": 32,
-            "learning_rate": 0.001
+            "learning_rate": 0.001,
         }
 
-        cli_config = {
-            "epochs": 10,
-            "batch_size": 16
-        }
+        cli_config = {"epochs": 10, "batch_size": 16}
 
         # Merge configs (CLI overrides defaults)
         final_config = {**default_config, **cli_config}
@@ -609,11 +541,7 @@ class TestCLIToCoreFlow:
 
     def test_cli_validates_arguments(self):
         """Test CLI validates arguments before execution."""
-        args = {
-            "model": "test-model",
-            "epochs": -5,  # Invalid
-            "batch_size": 16
-        }
+        args = {"model": "test-model", "epochs": -5, "batch_size": 16}  # Invalid
 
         validation_errors = []
 
@@ -628,11 +556,7 @@ class TestCLIToCoreFlow:
 
     def test_core_executes_cli_command(self, tmp_path):
         """Test core module executes CLI command."""
-        command = {
-            "action": "train",
-            "config": {"model": "test"},
-            "output_dir": str(tmp_path)
-        }
+        command = {"action": "train", "config": {"model": "test"}, "output_dir": str(tmp_path)}
 
         # Simulate execution
         execution_log = []
@@ -649,12 +573,7 @@ class TestCLIToCoreFlow:
 
     def test_output_formatted_for_cli_display(self):
         """Test output is formatted for CLI display."""
-        results = {
-            "train_loss": 0.45,
-            "val_loss": 0.52,
-            "accuracy": 0.87,
-            "epoch": 10
-        }
+        results = {"train_loss": 0.45, "val_loss": 0.52, "accuracy": 0.87, "epoch": 10}
 
         # Format for display
         output_lines = []
@@ -685,6 +604,7 @@ class TestCLIToCoreFlow:
 
     def test_cli_handles_core_exceptions(self):
         """Test CLI handles exceptions from core."""
+
         class CoreError(Exception):
             pass
 
@@ -711,7 +631,7 @@ class TestCLIToCoreFlow:
             "2026-01-18 12:00:00 - Starting training",
             "2026-01-18 12:05:00 - Epoch 1 complete",
             "2026-01-18 12:10:00 - Epoch 2 complete",
-            "2026-01-18 12:15:00 - Training complete"
+            "2026-01-18 12:15:00 - Training complete",
         ]
 
         log_path.write_text("\n".join(log_entries))
@@ -725,11 +645,8 @@ class TestCLIToCoreFlow:
         """Test CLI can output results in JSON format."""
         results = {
             "status": "success",
-            "metrics": {
-                "loss": 0.45,
-                "accuracy": 0.87
-            },
-            "timestamp": "2026-01-18T12:00:00Z"
+            "metrics": {"loss": 0.45, "accuracy": 0.87},
+            "timestamp": "2026-01-18T12:00:00Z",
         }
 
         json_output = json.dumps(results, indent=2)
@@ -740,17 +657,14 @@ class TestCLIToCoreFlow:
 
     def test_cli_dry_run_mode(self):
         """Test CLI dry-run mode doesn't execute operations."""
-        command = {
-            "action": "train",
-            "dry_run": True
-        }
+        command = {"action": "train", "dry_run": True}
 
         if command.get("dry_run"):
             # Show what would be executed
             execution_plan = [
                 f"Would execute: {command['action']}",
                 "Would create output files",
-                "Would save checkpoints"
+                "Would save checkpoints",
             ]
             executed = False
         else:

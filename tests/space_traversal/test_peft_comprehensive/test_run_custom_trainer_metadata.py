@@ -49,7 +49,9 @@ class _TinyModel(torch.nn.Module):
         return types.SimpleNamespace(loss=loss, logits=preds)
 
 
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug on Python 3.12 (fixed in 2.2.0 — DR-003)")
+@pytest.mark.skipif(
+    _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug on Python 3.12 (fixed in 2.2.0 — DR-003)"
+)
 def test_run_custom_trainer_logs_metadata(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
         "codex_ml.logging.run_metadata.current_commit", lambda: "cafebabe", raising=False

@@ -362,8 +362,7 @@ class SqliteDAL(BaseDAL):
 
     def _ensure_release_tables(self) -> None:
         with self.txn():
-            self.conn.execute(
-                """
+            self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS release_meta (
                   id TEXT PRIMARY KEY,
                   release_id TEXT NOT NULL UNIQUE,
@@ -372,10 +371,8 @@ class SqliteDAL(BaseDAL):
                   actor TEXT NOT NULL,
                   metadata TEXT NOT NULL DEFAULT '{}'
                 )
-                """
-            )
-            self.conn.execute(
-                """
+                """)
+            self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS release_component (
                   id TEXT PRIMARY KEY,
                   release_id TEXT NOT NULL,
@@ -386,8 +383,7 @@ class SqliteDAL(BaseDAL):
                   template_vars TEXT NOT NULL DEFAULT '{}',
                   FOREIGN KEY(release_id) REFERENCES release_meta(id)
                 )
-                """
-            )
+                """)
             self.conn.execute(
                 "CREATE INDEX IF NOT EXISTS "
                 "idx_release_component_release_id ON release_component(release_id)"
@@ -437,13 +433,11 @@ class SqliteDAL(BaseDAL):
         return rows
 
     def summary(self) -> dict[str, int]:
-        cur = self.conn.execute(
-            """
+        cur = self.conn.execute("""
             SELECT COUNT(*) AS cnt, COALESCE(SUM(artifact.size_bytes), 0) AS total_bytes
             FROM item
             JOIN artifact ON item.artifact_id = artifact.id
-            """
-        )
+            """)
         row = cur.fetchone()
         if row is None:
             return {"count": 0, "total_bytes": 0}

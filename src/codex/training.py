@@ -5,6 +5,7 @@
 # ruff: noqa: I001
 
 from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,10 +16,10 @@ import json  # noqa: E402
 import os  # noqa: E402
 import sys  # noqa: E402
 import time  # noqa: E402
-from datetime import datetime, UTC  # noqa: E402
+from collections.abc import Sequence  # noqa: E402
+from datetime import UTC, datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
-from collections.abc import Sequence  # noqa: E402
 
 try:
     import torch
@@ -57,7 +58,10 @@ from codex_ml.symbolic_pipeline import (  # noqa: E402
     run_codex_symbolic_pipeline,
 )
 from codex_ml.tokenization import TokenizerAdapter, load_tokenizer  # noqa: E402
-from codex_ml.utils.checkpointing import CheckpointManager, set_seed  # type: ignore[attr-defined]  # noqa: E402
+from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]  # noqa: E402
+    CheckpointManager,
+    set_seed,
+)
 from codex_ml.utils.error_log import log_error  # noqa: E402
 from codex_ml.utils.provenance import export_environment  # noqa: E402
 from codex_ml.utils.repro import record_dataset_checksums  # noqa: E402

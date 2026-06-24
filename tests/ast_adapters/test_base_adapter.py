@@ -9,9 +9,7 @@ class MockAdapter(BaseASTAdapter):
     def parse(self, source_code: str) -> StandardizedASTNode:
         """Mock parse implementation."""
         self.root_node = StandardizedASTNode(
-            node_id=self._generate_node_id(),
-            node_type="root",
-            name="mock_root"
+            node_id=self._generate_node_id(), node_type="root", name="mock_root"
         )
         return self.root_node
 
@@ -22,11 +20,7 @@ class MockAdapter(BaseASTAdapter):
 
 def test_standardized_ast_node_creation():
     """Test creating a StandardizedASTNode."""
-    node = StandardizedASTNode(
-        node_id="test_1",
-        node_type="function",
-        name="test_function"
-    )
+    node = StandardizedASTNode(node_id="test_1", node_type="function", name="test_function")
 
     assert node.node_id == "test_1"
     assert node.node_type == "function"
@@ -37,17 +31,10 @@ def test_standardized_ast_node_creation():
 
 def test_standardized_ast_node_with_parent():
     """Test node with parent relationship."""
-    parent = StandardizedASTNode(
-        node_id="parent_1",
-        node_type="class",
-        name="TestClass"
-    )
+    parent = StandardizedASTNode(node_id="parent_1", node_type="class", name="TestClass")
 
     child = StandardizedASTNode(
-        node_id="child_1",
-        node_type="function",
-        name="test_method",
-        parent=parent
+        node_id="child_1", node_type="function", name="test_method", parent=parent
     )
 
     parent.children.append(child)
@@ -59,17 +46,10 @@ def test_standardized_ast_node_with_parent():
 
 def test_standardized_ast_node_full_name():
     """Test full name generation."""
-    parent = StandardizedASTNode(
-        node_id="parent_1",
-        node_type="class",
-        name="TestClass"
-    )
+    parent = StandardizedASTNode(node_id="parent_1", node_type="class", name="TestClass")
 
     child = StandardizedASTNode(
-        node_id="child_1",
-        node_type="function",
-        name="test_method",
-        parent=parent
+        node_id="child_1", node_type="function", name="test_method", parent=parent
     )
 
     assert child.full_name == "TestClass.test_method"
@@ -84,7 +64,7 @@ def test_standardized_ast_node_to_dict():
         name="test_func",
         line_start=10,
         line_end=20,
-        metadata={"decorator": "@pytest.fixture"}
+        metadata={"decorator": "@pytest.fixture"},
     )
 
     node_dict = node.to_dict()
@@ -133,31 +113,14 @@ def test_base_adapter_traverse():
     adapter = MockAdapter()
 
     # Create a simple tree
-    root = StandardizedASTNode(
-        node_id="root",
-        node_type="root",
-        name="root"
-    )
+    root = StandardizedASTNode(node_id="root", node_type="root", name="root")
 
-    child1 = StandardizedASTNode(
-        node_id="child1",
-        node_type="child",
-        name="child1",
-        parent=root
-    )
+    child1 = StandardizedASTNode(node_id="child1", node_type="child", name="child1", parent=root)
 
-    child2 = StandardizedASTNode(
-        node_id="child2",
-        node_type="child",
-        name="child2",
-        parent=root
-    )
+    child2 = StandardizedASTNode(node_id="child2", node_type="child", name="child2", parent=root)
 
     grandchild = StandardizedASTNode(
-        node_id="grandchild",
-        node_type="grandchild",
-        name="grandchild",
-        parent=child1
+        node_id="grandchild", node_type="grandchild", name="grandchild", parent=child1
     )
 
     root.children = [child1, child2]
@@ -176,32 +139,13 @@ def test_base_adapter_find_nodes_by_type():
     """Test finding nodes by type."""
     adapter = MockAdapter()
 
-    root = StandardizedASTNode(
-        node_id="root",
-        node_type="module",
-        name="root"
-    )
+    root = StandardizedASTNode(node_id="root", node_type="module", name="root")
 
-    func1 = StandardizedASTNode(
-        node_id="func1",
-        node_type="function",
-        name="func1",
-        parent=root
-    )
+    func1 = StandardizedASTNode(node_id="func1", node_type="function", name="func1", parent=root)
 
-    func2 = StandardizedASTNode(
-        node_id="func2",
-        node_type="function",
-        name="func2",
-        parent=root
-    )
+    func2 = StandardizedASTNode(node_id="func2", node_type="function", name="func2", parent=root)
 
-    cls = StandardizedASTNode(
-        node_id="cls",
-        node_type="class",
-        name="TestClass",
-        parent=root
-    )
+    cls = StandardizedASTNode(node_id="cls", node_type="class", name="TestClass", parent=root)
 
     root.children = [func1, func2, cls]
     adapter.root_node = root
@@ -217,25 +161,11 @@ def test_base_adapter_get_stats():
     """Test AST statistics."""
     adapter = MockAdapter()
 
-    root = StandardizedASTNode(
-        node_id="root",
-        node_type="module",
-        name="root"
-    )
+    root = StandardizedASTNode(node_id="root", node_type="module", name="root")
 
-    func = StandardizedASTNode(
-        node_id="func",
-        node_type="function",
-        name="func",
-        parent=root
-    )
+    func = StandardizedASTNode(node_id="func", node_type="function", name="func", parent=root)
 
-    cls = StandardizedASTNode(
-        node_id="cls",
-        node_type="class",
-        name="cls",
-        parent=root
-    )
+    cls = StandardizedASTNode(node_id="cls", node_type="class", name="cls", parent=root)
 
     root.children = [func, cls]
     adapter.root_node = root

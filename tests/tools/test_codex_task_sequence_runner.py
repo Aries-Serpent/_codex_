@@ -13,8 +13,7 @@ import tools.codex_task_sequence_runner as runner
 def _write_minimal_sequence(tmp_path: Path) -> Path:
     yaml_path = tmp_path / "codex_task_sequence.yaml"
     yaml_path.write_text(
-        textwrap.dedent(
-            """
+        textwrap.dedent("""
             codex_task_sequence:
               metadata:
                 name: "test sequence"
@@ -28,8 +27,7 @@ def _write_minimal_sequence(tmp_path: Path) -> Path:
                         - "python -c \\\"print('hello')\\\""
                       on_error:
                         strategy: record_and_continue
-            """
-        ),
+            """),
         encoding="utf-8",
     )
     return yaml_path
@@ -56,8 +54,7 @@ def test_runner_dry_run_records_without_executing(tmp_path: Path, monkeypatch):
 def test_runner_records_error_on_failure(tmp_path: Path):
     yaml_path = tmp_path / "codex_task_sequence.yaml"
     yaml_path.write_text(
-        textwrap.dedent(
-            """
+        textwrap.dedent("""
             codex_task_sequence:
               metadata:
                 name: "error sequence"
@@ -71,8 +68,7 @@ def test_runner_records_error_on_failure(tmp_path: Path):
                         - "python -c \\\"import sys; sys.exit(3)\\\""
                       on_error:
                         strategy: record_and_continue
-            """
-        ),
+            """),
         encoding="utf-8",
     )
     change_log = tmp_path / "codex_change_log.md"

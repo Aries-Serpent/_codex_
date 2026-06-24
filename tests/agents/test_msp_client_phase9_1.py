@@ -12,6 +12,7 @@ from agents.msp_client import EnhancedMSPClient, MSPClient
 
 # pragma: allowlist test secret # pragma: allowlist secret
 
+
 class _FakeResponse:
     def __init__(
         self,
@@ -71,9 +72,7 @@ class _FakeHttpxClient:
     def set_response(self, method: str, path: str, response: _FakeResponse) -> None:
         self.responses[(method.upper(), path)] = response
 
-    def set_sequence(
-        self, method: str, path: str, responses: list[_FakeResponse]
-    ) -> None:
+    def set_sequence(self, method: str, path: str, responses: list[_FakeResponse]) -> None:
         self.responses[(method.upper(), path)] = list(responses)
 
     def _resolve(self, method: str, path: str) -> _FakeResponse:
@@ -234,9 +233,7 @@ def test_create_tenant_defaults(fake_client_factory):
 def test_create_tenant_custom_values(fake_client_factory):
     client = MSPClient()
     fake = fake_client_factory[0]
-    client.create_tenant(
-        "tid", "Name", "k", quota={"r": 1}, policies=["p"], metadata={"m": 1}
-    )
+    client.create_tenant("tid", "Name", "k", quota={"r": 1}, policies=["p"], metadata={"m": 1})
     payload = fake.calls[-1][2]["json"]
     assert payload["quota"] == {"r": 1}
     assert payload["policies"] == ["p"]
@@ -342,9 +339,7 @@ def test_request_with_retry_exhausts_and_reraises(monkeypatch, fake_client_facto
     client = EnhancedMSPClient()
     fake = fake_client_factory[0]
     err = httpx.TimeoutException("slow")
-    fake.set_sequence(
-        "GET", "/x", [_FakeResponse(raise_exc=err) for _ in range(3)]
-    )
+    fake.set_sequence("GET", "/x", [_FakeResponse(raise_exc=err) for _ in range(3)])
     monkeypatch.setattr(msp_module.time, "sleep", lambda s: None)
     with pytest.raises(httpx.TimeoutException):
         client.request_with_retry("GET", "/x", max_retries=3)

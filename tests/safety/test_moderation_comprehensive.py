@@ -21,14 +21,14 @@ try:
         ModerationRejection,
         ModerationSettings,
     )
+
     MODERATION_AVAILABLE = True
 except ImportError:
     MODERATION_AVAILABLE = False
 
 
 pytestmark = pytest.mark.skipif(
-    not MODERATION_AVAILABLE,
-    reason="codex_ml.safety.moderation not available"
+    not MODERATION_AVAILABLE, reason="codex_ml.safety.moderation not available"
 )
 
 
@@ -330,7 +330,7 @@ class TestModerationAdapterCore:
 
         assert adapter._default_policy == "/path/to/default/policy.yaml"
 
-    @patch('codex_ml.safety.moderation.importlib.import_module')
+    @patch("codex_ml.safety.moderation.importlib.import_module")
     def test_adapter_resolve_provider_success(self, mock_import):
         """Test successful provider resolution."""
         mock_module = MagicMock()
@@ -379,7 +379,7 @@ class TestReviewAndEnforce:
         assert decision.approved is True
         assert decision.provider == "disabled"
 
-    @patch('codex_ml.safety.filters.SafetyFilters')
+    @patch("codex_ml.safety.filters.SafetyFilters")
     def test_review_offline_mode(self, mock_filters):
         """Test review in offline mode."""
         # Mock offline review
@@ -400,7 +400,7 @@ class TestReviewAndEnforce:
         assert decision.approved is True
         assert decision.provider == "offline"
 
-    @patch('codex_ml.safety.moderation.SafetyFilters')
+    @patch("codex_ml.safety.moderation.SafetyFilters")
     def test_enforce_with_approval(self, mock_filters):
         """Test enforce when content is approved."""
         mock_filter_instance = MagicMock()
@@ -419,7 +419,7 @@ class TestReviewAndEnforce:
         decision = adapter.enforce("safe content", stage="preflight")
         assert decision.approved is True
 
-    @patch('codex_ml.safety.moderation.SafetyFilters')
+    @patch("codex_ml.safety.moderation.SafetyFilters")
     def test_enforce_with_rejection(self, mock_filters):
         """Test enforce when content is rejected."""
         mock_match = MagicMock()
@@ -443,7 +443,7 @@ class TestReviewAndEnforce:
         with pytest.raises(ModerationRejection):
             adapter.enforce("toxic content", stage="preflight")
 
-    @patch('codex_ml.safety.moderation.SafetyFilters')
+    @patch("codex_ml.safety.moderation.SafetyFilters")
     def test_enforce_with_fail_open(self, mock_filters):
         """Test enforce with fail_open enabled."""
         mock_match = MagicMock()

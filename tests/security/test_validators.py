@@ -18,7 +18,8 @@ class TestInputValidation:
     def test_email_validation_basic(self):
         """Email validation with standard format."""
         import re
-        email_pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+
+        email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 
         valid_emails = [
             "user@example.com",
@@ -42,7 +43,8 @@ class TestInputValidation:
     def test_url_validation(self):
         """URL validation patterns."""
         import re
-        url_pattern = r'^https?://[\w\.-]+(?:\:\d+)?(?:/[\w\.\-/]*)?$'
+
+        url_pattern = r"^https?://[\w\.-]+(?:\:\d+)?(?:/[\w\.\-/]*)?$"
 
         valid_urls = [
             "http://example.com",
@@ -131,6 +133,7 @@ class TestAuthenticationValidation:
 
     def test_password_complexity(self):
         """Password complexity requirements."""
+
         def check_password_strength(password):
             checks = {
                 "length": len(password) >= 8,
@@ -150,7 +153,7 @@ class TestAuthenticationValidation:
         import re
 
         # JWT-like format: xxx.xxx.xxx
-        jwt_pattern = r'^[\w-]+\.[\w-]+\.[\w-]+$'
+        jwt_pattern = r"^[\w-]+\.[\w-]+\.[\w-]+$"
 
         valid_token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIn0.signature"
         invalid_token = "not-a-valid-token"
@@ -164,6 +167,7 @@ class TestRateLimiting:
 
     def test_rate_limit_counter(self):
         """Rate limit counter logic."""
+
         class RateLimiter:
             def __init__(self, max_requests, window_seconds):
                 self.max_requests = max_requests

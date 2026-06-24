@@ -23,9 +23,7 @@ class Checkpoint:
     def from_json(cls, json_str: str) -> "Checkpoint":
         data = json.loads(json_str)
         return cls(
-            checkpoint_id=data["checkpoint_id"],
-            state=data["state"],
-            metadata=data["metadata"]
+            checkpoint_id=data["checkpoint_id"], state=data["state"], metadata=data["metadata"]
         )
 
 
@@ -34,7 +32,7 @@ def test_checkpoint_serialization():
     checkpoint = Checkpoint(
         checkpoint_id="ckpt_001",
         state={"model": "weights", "epoch": 10},
-        metadata={"timestamp": "2024-01-01", "version": "1.0"}
+        metadata={"timestamp": "2024-01-01", "version": "1.0"},
     )
 
     json_str = checkpoint.to_json()
@@ -46,7 +44,7 @@ def test_checkpoint_serialization():
 
 def test_checkpoint_deserialization():
     """Test checkpoint from JSON."""
-    json_str = '''{"checkpoint_id": "ckpt_001", "state": {"model": "weights"}, "metadata": {"version": "1.0"}}'''
+    json_str = """{"checkpoint_id": "ckpt_001", "state": {"model": "weights"}, "metadata": {"version": "1.0"}}"""
 
     checkpoint = Checkpoint.from_json(json_str)
 
@@ -57,9 +55,7 @@ def test_checkpoint_deserialization():
 def test_checkpoint_roundtrip():
     """Test checkpoint serialization roundtrip."""
     original = Checkpoint(
-        checkpoint_id="ckpt_002",
-        state={"data": [1, 2, 3]},
-        metadata={"type": "training"}
+        checkpoint_id="ckpt_002", state={"data": [1, 2, 3]}, metadata={"type": "training"}
     )
 
     json_str = original.to_json()
@@ -76,9 +72,9 @@ def test_checkpoint_with_nested_state():
         checkpoint_id="ckpt_003",
         state={
             "model": {"layers": [{"weights": [0.1, 0.2]}, {"bias": [0.05]}]},
-            "optimizer": {"lr": 0.001}
+            "optimizer": {"lr": 0.001},
         },
-        metadata={}
+        metadata={},
     )
 
     json_str = checkpoint.to_json()

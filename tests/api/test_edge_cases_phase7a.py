@@ -66,8 +66,8 @@ class TestLargePayloads:
             json={
                 "username": "a" * 10000,
                 "email": "large@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should reject or handle gracefully
         assert response.status_code in [400, 413, 422]
@@ -79,8 +79,8 @@ class TestLargePayloads:
             json={
                 "username": "largepass",
                 "email": "largepass@example.com",
-                "password": "P" + "a" * 10000 + "1!"
-            }
+                "password": "P" + "a" * 10000 + "1!",
+            },
         )
         assert response.status_code in [201, 400, 413, 422]
 
@@ -91,8 +91,8 @@ class TestLargePayloads:
             json={
                 "username": "longemail",
                 "email": "a" * 1000 + "@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [400, 413, 422]
 
@@ -105,8 +105,8 @@ class TestLargePayloads:
                 "username": "manyrolesuser",
                 "email": "roles@example.com",
                 "password": "SecurePass123!",
-                "roles": roles
-            }
+                "roles": roles,
+            },
         )
         assert response.status_code in [201, 400, 413, 422]
 
@@ -121,8 +121,8 @@ class TestLargePayloads:
                 "username": "deepnest",
                 "email": "nested@example.com",
                 "password": "SecurePass123!",
-                "metadata": nested
-            }
+                "metadata": nested,
+            },
         )
         assert response.status_code in [201, 400, 413, 422]
 
@@ -131,15 +131,12 @@ class TestLargePayloads:
         payload = {
             "username": "manyfields",
             "email": "manyfields@example.com",
-            "password": "SecurePass123!"
+            "password": "SecurePass123!",
         }
         # Add 1000 extra fields
         for i in range(1000):
             payload[f"extra_{i}"] = f"value_{i}"
-        response = test_client.post(
-            "/auth/register",
-            json=payload
-        )
+        response = test_client.post("/auth/register", json=payload)
         assert response.status_code in [201, 400, 413, 422]
 
 
@@ -159,12 +156,7 @@ class TestEmptyAndNullRequests:
     def test_all_null_fields(self, test_client):
         """All null fields should fail."""
         response = test_client.post(
-            "/auth/register",
-            json={
-                "username": None,
-                "email": None,
-                "password": None
-            }
+            "/auth/register", json={"username": None, "email": None, "password": None}
         )
         assert response.status_code == 422
 
@@ -176,8 +168,8 @@ class TestEmptyAndNullRequests:
                 "username": "test",
                 "email": "test@example.com",
                 "password": "SecurePass123!",
-                "roles": None
-            }
+                "roles": None,
+            },
         )
         # Should accept or reject gracefully
         assert response.status_code in [201, 400, 422]
@@ -190,8 +182,8 @@ class TestEmptyAndNullRequests:
                 "username": "emptyroles",
                 "email": "empty@example.com",
                 "password": "SecurePass123!",
-                "roles": []
-            }
+                "roles": [],
+            },
         )
         # Should accept or reject
         assert response.status_code in [201, 400, 422]
@@ -199,12 +191,7 @@ class TestEmptyAndNullRequests:
     def test_empty_string_fields(self, test_client):
         """Empty string fields."""
         response = test_client.post(
-            "/auth/register",
-            json={
-                "username": "",
-                "email": "",
-                "password": ""
-            }
+            "/auth/register", json={"username": "", "email": "", "password": ""}
         )
         assert response.status_code in [400, 422]
 
@@ -224,8 +211,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "user😀😀😀",
                 "email": "emoji@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -236,8 +223,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "пользователь",
                 "email": "cyrillic@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -248,8 +235,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "用户名",
                 "email": "chinese@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -260,8 +247,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "المستخدم",
                 "email": "arabic@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -272,8 +259,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "user用户пользователь",
                 "email": "mixed@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -284,8 +271,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "emojipass",
                 "email": "emojipass@example.com",
-                "password": "Pass😀123!"
-            }
+                "password": "Pass😀123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -296,8 +283,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "unicodeemail",
                 "email": "user@例え.jp",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Most systems don't support unicode in email
         assert response.status_code in [201, 400, 422]
@@ -309,8 +296,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "e\u0301\u0302\u0303",  # e with multiple combining marks
                 "email": "combining@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -321,8 +308,8 @@ class TestUnicodeAndSpecialCharacters:
             json={
                 "username": "user\u200b\u200c\u200d",  # Zero-width space, joiner, non-joiner
                 "email": "zerowidth@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -337,14 +324,15 @@ class TestConcurrentRequests:
 
     def test_concurrent_registrations_same_user(self, test_client):
         """Concurrent registration attempts for same user."""
+
         def register_user():
             return test_client.post(
                 "/auth/register",
                 json={
                     "username": "concurrent",
                     "email": f"concurrent{hash(id())}@example.com",
-                    "password": "SecurePass123!"
-                }
+                    "password": "SecurePass123!",
+                },
             )
 
         # Make multiple concurrent requests
@@ -366,17 +354,13 @@ class TestConcurrentRequests:
             json={
                 "username": "conclogin",
                 "email": "conclogin@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
 
         def login_user():
             return test_client.post(
-                "/auth/login",
-                json={
-                    "username": "conclogin",
-                    "password": "SecurePass123!"
-                }
+                "/auth/login", json={"username": "conclogin", "password": "SecurePass123!"}
             )
 
         # Make multiple concurrent login requests
@@ -390,6 +374,7 @@ class TestConcurrentRequests:
 
     def test_concurrent_mixed_operations(self, test_client):
         """Concurrent mixed operations (register, login, etc)."""
+
         def operation(op_type):
             if op_type == "register":
                 return test_client.post(
@@ -397,16 +382,12 @@ class TestConcurrentRequests:
                     json={
                         "username": f"mixed{op_type}",
                         "email": f"mixed{op_type}{hash(id())}@example.com",
-                        "password": "SecurePass123!"
-                    }
+                        "password": "SecurePass123!",
+                    },
                 )
             else:  # login
                 return test_client.post(
-                    "/auth/login",
-                    json={
-                        "username": "nonexistent",
-                        "password": "wrong"
-                    }
+                    "/auth/login", json={"username": "nonexistent", "password": "wrong"}
                 )
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -441,8 +422,8 @@ class TestRapidSequentialRequests:
                 json={
                     "username": f"rapid{i}",
                     "email": f"rapid{i}@example.com",
-                    "password": "SecurePass123!"
-                }
+                    "password": "SecurePass123!",
+                },
             )
             responses.append(response)
 
@@ -458,19 +439,15 @@ class TestRapidSequentialRequests:
             json={
                 "username": "rapidlogin",
                 "email": "rapidlogin@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
 
         # Make many rapid logins
         responses = []
         for _ in range(20):
             response = test_client.post(
-                "/auth/login",
-                json={
-                    "username": "rapidlogin",
-                    "password": "SecurePass123!"
-                }
+                "/auth/login", json={"username": "rapidlogin", "password": "SecurePass123!"}
             )
             responses.append(response)
 
@@ -483,11 +460,7 @@ class TestRapidSequentialRequests:
         responses = []
         for i in range(20):
             response = test_client.post(
-                "/auth/login",
-                json={
-                    "username": f"invalid{i}",
-                    "password": "wrong"
-                }
+                "/auth/login", json={"username": f"invalid{i}", "password": "wrong"}
             )
             responses.append(response)
 
@@ -511,8 +484,8 @@ class TestResourceExhaustion:
                 json={
                     "username": f"bulk{i}",
                     "email": f"bulk{i}@example.com",
-                    "password": "SecurePass123!"
-                }
+                    "password": "SecurePass123!",
+                },
             )
             assert response.status_code in [201, 400]
 
@@ -525,8 +498,8 @@ class TestResourceExhaustion:
                 "username": "largearray",
                 "email": "largearray@example.com",
                 "password": "SecurePass123!",
-                "items": large_array
-            }
+                "items": large_array,
+            },
         )
         assert response.status_code in [201, 400, 413, 422]
 
@@ -541,8 +514,8 @@ class TestResourceExhaustion:
                 "username": "nestedobj",
                 "email": "nested@example.com",
                 "password": "SecurePass123!",
-                "data": nested
-            }
+                "data": nested,
+            },
         )
         assert response.status_code in [201, 400, 413, 422]
 
@@ -562,8 +535,8 @@ class TestBoundaryConditions:
             json={
                 "username": "a" * 255,
                 "email": "maxlen@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -574,8 +547,8 @@ class TestBoundaryConditions:
             json={
                 "username": "a" * 256,
                 "email": "overmax@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [400, 422]
 
@@ -583,11 +556,7 @@ class TestBoundaryConditions:
         """Single character username."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "a",
-                "email": "single@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "a", "email": "single@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [201, 400, 422]
 
@@ -598,8 +567,8 @@ class TestBoundaryConditions:
             json={
                 "username": "123456789",
                 "email": "numeric@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400]
 
@@ -619,8 +588,8 @@ class TestStatePersistence:
             json={
                 "username": "persist",
                 "email": "persist@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response1.status_code == 201
 
@@ -630,8 +599,8 @@ class TestStatePersistence:
             json={
                 "username": "persist",
                 "email": "persist2@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should fail - user exists
         assert response2.status_code == 400
@@ -643,16 +612,12 @@ class TestStatePersistence:
             json={
                 "username": "loginafter",
                 "email": "loginafter@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
 
         response = test_client.post(
-            "/auth/login",
-            json={
-                "username": "loginafter",
-                "password": "SecurePass123!"
-            }
+            "/auth/login", json={"username": "loginafter", "password": "SecurePass123!"}
         )
         assert response.status_code == 200
 
@@ -663,15 +628,11 @@ class TestStatePersistence:
             json={
                 "username": "wrongpass",
                 "email": "wrongpass@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
 
         response = test_client.post(
-            "/auth/login",
-            json={
-                "username": "wrongpass",
-                "password": "WrongPassword123!"
-            }
+            "/auth/login", json={"username": "wrongpass", "password": "WrongPassword123!"}
         )
         assert response.status_code == 400

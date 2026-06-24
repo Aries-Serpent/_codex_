@@ -293,10 +293,7 @@ class TestIntegrateCoreAgents:
 
             assert agent_map["ci-testing-agent"].category == AgentCategory.CI_CD
             assert agent_map["coverage-roadmap-agent"].category == AgentCategory.TESTING
-            assert (
-                agent_map["security-alert-verification-agent"].category
-                == AgentCategory.SECURITY
-            )
+            assert agent_map["security-alert-verification-agent"].category == AgentCategory.SECURITY
 
     def test_core_agents_have_category_capabilities(self) -> None:
         """Test that core agents have category-specific capabilities."""
@@ -615,9 +612,7 @@ class TestExtendedAgentAdapters:
 
     def test_rag_ml_adapter(self) -> None:
         """Test RAGMLAdapter for RAG/ML agents."""
-        section = get_brain_integration_section(
-            "rag-index-manager", AgentCategory.RAG_ML
-        )
+        section = get_brain_integration_section("rag-index-manager", AgentCategory.RAG_ML)
         assert "RAGMLAdapter" in section
 
     def test_repo_adapter(self) -> None:

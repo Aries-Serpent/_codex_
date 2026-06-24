@@ -10,6 +10,7 @@ class TestServerState:
         """Test that ServerState can be imported."""
         try:
             from src.mcp.lifecycle import ServerState
+
             assert ServerState is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -18,6 +19,7 @@ class TestServerState:
         """Test all ServerState enum values."""
         try:
             from src.mcp.lifecycle import ServerState
+
             assert ServerState.UNINITIALIZED.value == "uninitialized"
             assert ServerState.INITIALIZING.value == "initializing"
             assert ServerState.READY.value == "ready"
@@ -33,6 +35,7 @@ class TestServerState:
         """Test that VALID_TRANSITIONS dict is defined."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert isinstance(VALID_TRANSITIONS, dict)
             assert ServerState.UNINITIALIZED in VALID_TRANSITIONS
         except ImportError:
@@ -46,6 +49,7 @@ class TestInvalidStateTransition:
         """Test creating InvalidStateTransition exception."""
         try:
             from src.mcp.lifecycle import InvalidStateTransition, ServerState
+
             exc = InvalidStateTransition(ServerState.STOPPED, ServerState.RUNNING)
             assert exc.current == ServerState.STOPPED
             assert exc.target == ServerState.RUNNING
@@ -56,6 +60,7 @@ class TestInvalidStateTransition:
         """Test exception message format."""
         try:
             from src.mcp.lifecycle import InvalidStateTransition, ServerState
+
             exc = InvalidStateTransition(ServerState.STOPPED, ServerState.RUNNING)
             assert "stopped" in str(exc)
             assert "running" in str(exc)
@@ -70,6 +75,7 @@ class TestHealthStatus:
         """Test creating HealthStatus."""
         try:
             from src.mcp.lifecycle import HealthStatus
+
             status = HealthStatus(healthy=True, message="OK")
             assert status.healthy is True
             assert status.message == "OK"
@@ -80,6 +86,7 @@ class TestHealthStatus:
         """Test HealthStatus default values."""
         try:
             from src.mcp.lifecycle import HealthStatus
+
             status = HealthStatus(healthy=False)
             assert status.message == ""
             assert isinstance(status.details, dict)
@@ -91,6 +98,7 @@ class TestHealthStatus:
         """Test HealthStatus with details."""
         try:
             from src.mcp.lifecycle import HealthStatus
+
             details = {"cpu": 50, "memory": 75}
             status = HealthStatus(healthy=True, details=details)
             assert status.details == details
@@ -105,6 +113,7 @@ class TestLifecycleConfig:
         """Test creating LifecycleConfig."""
         try:
             from src.mcp.lifecycle import LifecycleConfig
+
             config = LifecycleConfig()
             assert config is not None
         except ImportError:
@@ -114,6 +123,7 @@ class TestLifecycleConfig:
         """Test LifecycleConfig default values."""
         try:
             from src.mcp.lifecycle import LifecycleConfig
+
             config = LifecycleConfig()
             assert config.shutdown_timeout_seconds == 30.0
             assert config.health_check_interval_seconds == 10.0
@@ -126,10 +136,8 @@ class TestLifecycleConfig:
         """Test LifecycleConfig with custom values."""
         try:
             from src.mcp.lifecycle import LifecycleConfig
-            config = LifecycleConfig(
-                shutdown_timeout_seconds=60.0,
-                max_concurrent_requests=200
-            )
+
+            config = LifecycleConfig(shutdown_timeout_seconds=60.0, max_concurrent_requests=200)
             assert config.shutdown_timeout_seconds == 60.0
             assert config.max_concurrent_requests == 200
         except ImportError:
@@ -143,6 +151,7 @@ class TestLifecycleManager:
         """Test creating LifecycleManager."""
         try:
             from src.mcp.lifecycle import LifecycleManager
+
             manager = LifecycleManager()
             assert manager is not None
         except ImportError:
@@ -152,6 +161,7 @@ class TestLifecycleManager:
         """Test creating LifecycleManager with config."""
         try:
             from src.mcp.lifecycle import LifecycleConfig, LifecycleManager
+
             config = LifecycleConfig(shutdown_timeout_seconds=45.0)
             manager = LifecycleManager(config=config)
             assert manager is not None
@@ -162,6 +172,7 @@ class TestLifecycleManager:
         """Test LifecycleManager initial state."""
         try:
             from src.mcp.lifecycle import LifecycleManager, ServerState
+
             manager = LifecycleManager()
             # Access internal state (for testing)
             assert manager._state == ServerState.UNINITIALIZED
@@ -172,6 +183,7 @@ class TestLifecycleManager:
         """Test LifecycleManager has health checks list."""
         try:
             from src.mcp.lifecycle import LifecycleManager
+
             manager = LifecycleManager()
             assert isinstance(manager._health_checks, list)
         except ImportError:
@@ -181,6 +193,7 @@ class TestLifecycleManager:
         """Test LifecycleManager has startup hooks list."""
         try:
             from src.mcp.lifecycle import LifecycleManager
+
             manager = LifecycleManager()
             assert isinstance(manager._startup_hooks, list)
         except ImportError:
@@ -194,6 +207,7 @@ class TestStateTransitions:
         """Test UNINITIALIZED can transition to INITIALIZING."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.UNINITIALIZED]
         except ImportError:
             pytest.skip("Module not available")
@@ -202,6 +216,7 @@ class TestStateTransitions:
         """Test INITIALIZING can transition to READY."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.READY in VALID_TRANSITIONS[ServerState.INITIALIZING]
         except ImportError:
             pytest.skip("Module not available")
@@ -210,6 +225,7 @@ class TestStateTransitions:
         """Test READY can transition to RUNNING."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.RUNNING in VALID_TRANSITIONS[ServerState.READY]
         except ImportError:
             pytest.skip("Module not available")
@@ -218,6 +234,7 @@ class TestStateTransitions:
         """Test RUNNING can transition to DRAINING."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.DRAINING in VALID_TRANSITIONS[ServerState.RUNNING]
         except ImportError:
             pytest.skip("Module not available")
@@ -226,6 +243,7 @@ class TestStateTransitions:
         """Test DRAINING can transition to STOPPING."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.DRAINING]
         except ImportError:
             pytest.skip("Module not available")
@@ -234,6 +252,7 @@ class TestStateTransitions:
         """Test STOPPING can transition to STOPPED."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.STOPPED in VALID_TRANSITIONS[ServerState.STOPPING]
         except ImportError:
             pytest.skip("Module not available")
@@ -242,6 +261,7 @@ class TestStateTransitions:
         """Test STOPPED can transition to INITIALIZING."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.STOPPED]
         except ImportError:
             pytest.skip("Module not available")
@@ -250,6 +270,7 @@ class TestStateTransitions:
         """Test ERROR can transition to STOPPING or INITIALIZING."""
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+
             assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.ERROR]
             assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.ERROR]
         except ImportError:

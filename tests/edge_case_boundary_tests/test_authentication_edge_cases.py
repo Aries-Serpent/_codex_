@@ -376,10 +376,7 @@ class TestOAuthFlow:
     def test_oauth_redirect_uri_validation(self):
         """Test OAuth redirect URI validation."""
         # Arrange
-        registered_uris = [
-            "https://example.com/callback",
-            "https://example.com/oauth/callback"
-        ]
+        registered_uris = ["https://example.com/callback", "https://example.com/oauth/callback"]
         provided_uri = "https://example.com/callback"
 
         # Act

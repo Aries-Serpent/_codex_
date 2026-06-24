@@ -3,15 +3,16 @@
 Tests for src/cli/pipeline.py to improve CLI module coverage.
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
 import tempfile
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+import pytest
 
 from src.cli.pipeline import (
     PipelineValidationError,
-    validate_pipeline_config,
     run_pipeline,
+    validate_pipeline_config,
 )
 
 
@@ -68,29 +69,20 @@ class TestValidatePipelineConfig:
         with tempfile.TemporaryDirectory() as tmpdir:
             checkpoint_path = Path(tmpdir) / "checkpoint.pt"
             checkpoint_path.write_text("checkpoint")
-            
-            config = {
-                "data": {},
-                "trainer": {"checkpoint": str(checkpoint_path)}
-            }
+
+            config = {"data": {}, "trainer": {"checkpoint": str(checkpoint_path)}}
             validate_pipeline_config(config)  # Should not raise
 
     def test_validate_config_with_missing_checkpoint_path(self):
         """Test validation fails with missing checkpoint path."""
-        config = {
-            "data": {},
-            "trainer": {"checkpoint": "/nonexistent/checkpoint.pt"}
-        }
+        config = {"data": {}, "trainer": {"checkpoint": "/nonexistent/checkpoint.pt"}}
         with pytest.raises(ValueError) as exc_info:
             validate_pipeline_config(config)
         assert "checkpoint file not found" in str(exc_info.value)
 
     def test_validate_config_with_invalid_checkpoint_type(self):
         """Test validation fails with invalid checkpoint type."""
-        config = {
-            "data": {},
-            "trainer": {"checkpoint": 12345}  # Invalid type
-        }
+        config = {"data": {}, "trainer": {"checkpoint": 12345}}  # Invalid type
         with pytest.raises(ValueError) as exc_info:
             validate_pipeline_config(config)
         assert "checkpoint must be a dict or path string" in str(exc_info.value)
@@ -128,14 +120,14 @@ class TestRunPipeline:
     def test_run_pipeline_with_valid_config(self):
         """Test run_pipeline with valid minimal config."""
         config = {"data": {}}
-        with patch('src.cli.pipeline.TrainConfig') as mock_train_config:
-            with patch('src.cli.pipeline.train') as mock_train:
+        with patch("src.cli.pipeline.TrainConfig") as mock_train_config:
+            with patch("src.cli.pipeline.train") as mock_train:
                 mock_train.return_value = {"loss": 0.5}
                 mock_instance = Mock()
                 mock_train_config.return_value = mock_instance
-                
+
                 result = run_pipeline(None, None, [], None, config)
-                
+
                 # Should attempt to import and call train
                 assert result is not None
 
@@ -143,46 +135,46 @@ class TestRunPipeline:
         """Test run_pipeline with list training dataset."""
         config = {"data": {}}
         train_ds = ["text1", "text2", "text3"]
-        
-        with patch('src.cli.pipeline.TrainConfig') as mock_train_config:
-            with patch('src.cli.pipeline.train') as mock_train:
+
+        with patch("src.cli.pipeline.TrainConfig") as mock_train_config:
+            with patch("src.cli.pipeline.train") as mock_train:
                 mock_train.return_value = {}
                 mock_instance = Mock()
                 mock_train_config.return_value = mock_instance
-                
+
                 result = run_pipeline(None, None, train_ds, None, config)
                 assert result is not None
 
     def test_run_pipeline_with_texts_attribute(self):
         """Test run_pipeline with dataset having texts attribute."""
         config = {"data": {}}
-        
+
         # Create mock dataset with texts attribute
         mock_dataset = Mock()
         mock_dataset.texts = ["text1", "text2"]
-        
-        with patch('src.cli.pipeline.TrainConfig') as mock_train_config:
-            with patch('src.cli.pipeline.train') as mock_train:
+
+        with patch("src.cli.pipeline.TrainConfig") as mock_train_config:
+            with patch("src.cli.pipeline.train") as mock_train:
                 mock_train.return_value = {}
                 mock_instance = Mock()
                 mock_train_config.return_value = mock_instance
-                
+
                 result = run_pipeline(None, None, mock_dataset, None, config)
                 assert result is not None
 
     def test_run_pipeline_with_iterable_train_dataset(self):
         """Test run_pipeline with iterable training dataset."""
         config = {"data": {}}
-        
+
         # Create mock iterable dataset
         mock_dataset = iter(["text1", "text2"])
-        
-        with patch('src.cli.pipeline.TrainConfig') as mock_train_config:
-            with patch('src.cli.pipeline.train') as mock_train:
+
+        with patch("src.cli.pipeline.TrainConfig") as mock_train_config:
+            with patch("src.cli.pipeline.train") as mock_train:
                 mock_train.return_value = {}
                 mock_instance = Mock()
                 mock_train_config.return_value = mock_instance
-                
+
                 result = run_pipeline(None, None, mock_dataset, None, config)
                 assert result is not None
 
@@ -190,7 +182,7 @@ class TestRunPipeline:
         """Test run_pipeline raises with non-iterable training dataset."""
         config = {"data": {}}
         mock_dataset = Mock(spec=[])  # No iterable methods
-        
+
         with pytest.raises(ValueError) as exc_info:
             run_pipeline(None, None, mock_dataset, None, config)
         assert "must be a list" in str(exc_info.value) or "iterable" in str(exc_info.value)
@@ -200,13 +192,13 @@ class TestRunPipeline:
         config = {"data": {}}
         train_ds = ["text1", "text2"]
         val_ds = ["val1", "val2"]
-        
-        with patch('src.cli.pipeline.TrainConfig') as mock_train_config:
-            with patch('src.cli.pipeline.train') as mock_train:
+
+        with patch("src.cli.pipeline.TrainConfig") as mock_train_config:
+            with patch("src.cli.pipeline.train") as mock_train:
                 mock_train.return_value = {}
                 mock_instance = Mock()
                 mock_train_config.return_value = mock_instance
-                
+
                 result = run_pipeline(None, None, train_ds, val_ds, config)
                 assert result is not None
 
@@ -214,16 +206,16 @@ class TestRunPipeline:
         """Test run_pipeline with validation dataset having texts attribute."""
         config = {"data": {}}
         train_ds = ["text1"]
-        
+
         mock_val_ds = Mock()
         mock_val_ds.texts = ["val1", "val2"]
-        
-        with patch('src.cli.pipeline.TrainConfig') as mock_train_config:
-            with patch('src.cli.pipeline.train') as mock_train:
+
+        with patch("src.cli.pipeline.TrainConfig") as mock_train_config:
+            with patch("src.cli.pipeline.train") as mock_train:
                 mock_train.return_value = {}
                 mock_instance = Mock()
                 mock_train_config.return_value = mock_instance
-                
+
                 result = run_pipeline(None, None, train_ds, mock_val_ds, config)
                 assert result is not None
 
@@ -238,16 +230,16 @@ class TestRunPipeline:
                 "seed": 42,
                 "gradient_accumulation_steps": 2,
                 "checkpoint_dir": "/tmp",
-            }
+            },
         }
         train_ds = ["text1"]
-        
-        with patch('src.cli.pipeline.TrainConfig') as mock_train_config:
-            with patch('src.cli.pipeline.train') as mock_train:
+
+        with patch("src.cli.pipeline.TrainConfig") as mock_train_config:
+            with patch("src.cli.pipeline.train") as mock_train:
                 mock_train.return_value = {}
                 mock_instance = Mock()
                 mock_train_config.return_value = mock_instance
-                
+
                 result = run_pipeline(None, None, train_ds, None, config)
                 assert result is not None
 
@@ -263,9 +255,6 @@ class TestCLIPipelineErrorHandling:
 
     def test_invalid_checkpoint_path_raises_value_error(self):
         """Test that invalid checkpoint path raises ValueError."""
-        config = {
-            "data": {},
-            "trainer": {"checkpoint": "/nonexistent/path.pt"}
-        }
+        config = {"data": {}, "trainer": {"checkpoint": "/nonexistent/path.pt"}}
         with pytest.raises(ValueError):
             validate_pipeline_config(config)

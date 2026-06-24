@@ -142,10 +142,14 @@ class TestMainEdgeCases:
         output = tmp_path / "out.txt"
         argv = [
             "select_components.py",
-            "--overrides", "nonexistent_dir/**/*.xyz",
-            "--output", str(output),
-            "--topics-file", str(topics_file),
-            "--base-dir", str(tmp_path),
+            "--overrides",
+            "nonexistent_dir/**/*.xyz",
+            "--output",
+            str(output),
+            "--topics-file",
+            str(topics_file),
+            "--base-dir",
+            str(tmp_path),
         ]
         with patch("sys.argv", argv):
             result = main()
@@ -160,10 +164,14 @@ class TestMainEdgeCases:
         output = tmp_path / "out.txt"
         argv = [
             "select_components.py",
-            "--overrides", "*.py",
-            "--output", str(output),
-            "--topics-file", str(topics_file),
-            "--base-dir", str(tmp_path),
+            "--overrides",
+            "*.py",
+            "--output",
+            str(output),
+            "--topics-file",
+            str(topics_file),
+            "--base-dir",
+            str(tmp_path),
         ]
         with patch("sys.argv", argv):
             result = main()
@@ -179,11 +187,16 @@ class TestMainEdgeCases:
         output = tmp_path / "out.txt"
         argv = [
             "select_components.py",
-            "--overrides", "*.py",
-            "--output", str(output),
-            "--topics-file", str(topics_file),
-            "--base-dir", str(tmp_path),
-            "--exclude", "skip.py",
+            "--overrides",
+            "*.py",
+            "--output",
+            str(output),
+            "--topics-file",
+            str(topics_file),
+            "--base-dir",
+            str(tmp_path),
+            "--exclude",
+            "skip.py",
         ]
         with patch("sys.argv", argv):
             result = main()

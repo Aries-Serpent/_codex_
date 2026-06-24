@@ -250,11 +250,13 @@ class TestMetricsUtilities:
         try:
             # Try the expected name first
             from codex_ml.metrics import CodexMetricsRegistry
+
             assert CodexMetricsRegistry is not None
         except ImportError:
             # Fall back to actual name if different
             try:
                 from codex_ml.metrics import MetricRegistry
+
                 assert MetricRegistry is not None
             except ImportError:
                 pytest.skip("metrics registry not available")

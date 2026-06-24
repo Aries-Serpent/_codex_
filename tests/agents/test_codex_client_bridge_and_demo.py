@@ -38,13 +38,16 @@ class _FakeHttpClient:
 @dataclass
 class _MockUUID:
     """Mock UUID object for testing."""
+
     hex: str = "rid-123"
 
 
 def test_bridge_request_builds_url_headers_and_closes(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_http = _FakeHttpClient(timeout=12.5)
 
-    monkeypatch.setattr("agents.codex_client.codex_client.bridge.httpx.Client", lambda timeout: fake_http)
+    monkeypatch.setattr(
+        "agents.codex_client.codex_client.bridge.httpx.Client", lambda timeout: fake_http
+    )
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.uuid.uuid4",
         _MockUUID,
@@ -53,7 +56,9 @@ def test_bridge_request_builds_url_headers_and_closes(monkeypatch: pytest.Monkey
     config = ClientConfig(ita_url="https://ita.example", api_key="secret", request_timeout=12.5)
     with CodexBridgeClient(config) as client:
         assert client.base_headers == {"X-API-Key": "secret"}
-        response = client._request("POST", "/kb/search", json_body={"query": "q"}, params={"top_k": 3})
+        response = client._request(
+            "POST", "/kb/search", json_body={"query": "q"}, params={"top_k": 3}
+        )
 
     assert response.json() == {"ok": True}
     assert fake_http.closed is True
@@ -129,7 +134,9 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     )
 
 
-def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.httpx.Client",
         lambda timeout: _FakeHttpClient(timeout=timeout),
@@ -148,15 +155,18 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(monkeypatc
     monkeypatch.setattr(client, "_request", fake_request)
 
     assert client.repo_hygiene("diff", checks=[]).issues == []
-    assert client.git_create_pr(
-        repo="owner/repo",
-        title="title",
-        body="body",
-        base="main",
-        head="feature",
-        dry_run=False,
-        confirm=True,
-    ).simulated is True
+    assert (
+        client.git_create_pr(
+            repo="owner/repo",
+            title="title",
+            body="body",
+            base="main",
+            head="feature",
+            dry_run=False,
+            confirm=True,
+        ).simulated
+        is True
+    )
 
     assert calls[0] == ("/repo/hygiene", {"diff": "diff"}, None)
     assert calls[1] == (
@@ -215,8 +225,14 @@ def test_demo_parse_args_and_format_section() -> None:
     assert demo._format_section("X") == "\n=\nX\n="
 
 
-def test_demo_main_outputs_all_sections(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
-    monkeypatch.setattr(demo.ClientConfig, "from_environment", classmethod(lambda cls: ClientConfig("http://ita", "k")))
+def test_demo_main_outputs_all_sections(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(
+        demo.ClientConfig,
+        "from_environment",
+        classmethod(lambda cls: ClientConfig("http://ita", "k")),
+    )
 
     created: list[_FakeDemoClient] = []
 
@@ -246,7 +262,11 @@ def test_demo_main_skips_tests_section_without_targets(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    monkeypatch.setattr(demo.ClientConfig, "from_environment", classmethod(lambda cls: ClientConfig("http://ita", "k")))
+    monkeypatch.setattr(
+        demo.ClientConfig,
+        "from_environment",
+        classmethod(lambda cls: ClientConfig("http://ita", "k")),
+    )
     monkeypatch.setattr(demo, "CodexBridgeClient", _FakeDemoClient)
 
     rc = demo.main(["--query", "needle"])

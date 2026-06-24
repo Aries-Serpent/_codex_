@@ -152,6 +152,7 @@ class TestAgentMemoryPathTraversal:
         """Test valid path in current directory."""
         # Change to temp directory
         import os
+
         old_cwd = os.getcwd()
         try:
             os.chdir(tmp_path)

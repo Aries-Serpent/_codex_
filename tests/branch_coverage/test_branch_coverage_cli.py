@@ -108,9 +108,7 @@ class TestCliArgumentBranches:
             ("", False),
         ],
     )
-    def test_boolean_arg_parsing_branches(
-        self, arg_value: str, expected: bool
-    ) -> None:
+    def test_boolean_arg_parsing_branches(self, arg_value: str, expected: bool) -> None:
         """Test all branches of boolean argument parsing."""
         truthy = {"true", "1", "yes", "on"}
         result = arg_value.lower() in truthy
@@ -236,9 +234,7 @@ class TestCliConfigBranches:
         with patch.dict(os.environ, {}, clear=True):
             env = {k: v for k, v in os.environ.items() if k != "CODEX_CONFIG_PATH"}
             with patch.dict(os.environ, env, clear=True):
-                config_source = (
-                    "env" if "CODEX_CONFIG_PATH" in os.environ else "default"
-                )
+                config_source = "env" if "CODEX_CONFIG_PATH" in os.environ else "default"
                 assert config_source == "default"
 
     def test_config_merge_override_branch(self) -> None:
@@ -342,9 +338,7 @@ class TestCliSubcommandBranches:
             ("validate", "handle_validate"),
         ],
     )
-    def test_subcommand_dispatch_branches(
-        self, subcommand: str, expected_handler: str
-    ) -> None:
+    def test_subcommand_dispatch_branches(self, subcommand: str, expected_handler: str) -> None:
         """Test all subcommand dispatch branches."""
         handlers = {
             "train": "handle_train",

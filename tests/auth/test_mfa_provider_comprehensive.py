@@ -24,6 +24,7 @@ from codex.auth.mfa_provider import (
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def mfa_provider():
     """Create MFA provider."""
@@ -39,6 +40,7 @@ def mfa_secret(mfa_provider):
 # ============================================================================
 # MFA Secret Tests
 # ============================================================================
+
 
 class TestMFASecret:
     """MFA secret management."""
@@ -134,6 +136,7 @@ class TestProvisioningURI:
 # TOTP Generation and Validation
 # ============================================================================
 
+
 class TestTOTPGeneration:
     """TOTP code generation."""
 
@@ -171,7 +174,7 @@ class TestTOTPGeneration:
     def test_totp_code_changes_over_time(self, mfa_provider, mfa_secret):
         code1 = mfa_provider.generate_totp_code(mfa_secret)
         # Wait for time window to change (TOTP has 30-second window)
-        with patch('time.time') as mock_time:
+        with patch("time.time") as mock_time:
             mock_time.return_value = time.time() + 31
             code2 = mfa_provider.generate_totp_code(mfa_secret)
         # Codes should be different in different time windows
@@ -218,7 +221,7 @@ class TestTOTPValidation:
             user_id="user123",
         )
         # Codes starting with zeros
-        with patch.object(mfa_provider, 'generate_totp_code') as mock_gen:
+        with patch.object(mfa_provider, "generate_totp_code") as mock_gen:
             mock_gen.return_value = "000123"
             # Should handle codes with leading zeros
             code = mock_gen()
@@ -267,6 +270,7 @@ class TestTOTPAlgorithms:
 # ============================================================================
 # Backup Codes Tests
 # ============================================================================
+
 
 class TestBackupCodes:
     """Backup code generation and validation."""
@@ -329,6 +333,7 @@ class TestBackupCodes:
 # MFA Registration Tests
 # ============================================================================
 
+
 class TestMFARegistration:
     """MFA registration workflow."""
 
@@ -362,6 +367,7 @@ class TestMFARegistration:
 # ============================================================================
 # Complete MFA Flow Tests
 # ============================================================================
+
 
 class TestCompleteMFAFlow:
     """Complete MFA enrollment and usage."""
@@ -428,6 +434,7 @@ class TestCompleteMFAFlow:
 # Time-Window Tests
 # ============================================================================
 
+
 class TestTimeWindow:
     """TOTP time window considerations."""
 
@@ -436,7 +443,7 @@ class TestTimeWindow:
         code1 = mfa_provider.generate_totp_code(mfa_secret)
 
         # Time window tolerance (usually ±1 window)
-        with patch('time.time') as mock_time:
+        with patch("time.time") as mock_time:
             # Within grace period
             mock_time.return_value = time.time() + 15
             code_mid = mfa_provider.generate_totp_code(mfa_secret)
@@ -445,7 +452,7 @@ class TestTimeWindow:
     def test_expired_totp_window(self, mfa_provider, mfa_secret):
         code = mfa_provider.generate_totp_code(mfa_secret)
 
-        with patch('time.time') as mock_time:
+        with patch("time.time") as mock_time:
             # Far in future (multiple windows)
             mock_time.return_value = time.time() + 300  # 5 minutes
             is_valid = mfa_provider.verify_totp_code(mfa_secret, code)
@@ -456,6 +463,7 @@ class TestTimeWindow:
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
 
 class TestErrorHandling:
     """Error handling and edge cases."""
@@ -489,6 +497,7 @@ class TestErrorHandling:
 # ============================================================================
 # Security Tests
 # ============================================================================
+
 
 class TestMFASecurity:
     """MFA security considerations."""

@@ -60,9 +60,17 @@ def test_main_endpoints_with_valid_headers(main_module) -> None:
     assert pr_guard.status_code == 412
 
 
-def test_main_middleware_returns_500_for_unhandled_exception(main_module, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(main_module, "_authenticate_request", lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
+def test_main_middleware_returns_500_for_unhandled_exception(
+    main_module, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        main_module,
+        "_authenticate_request",
+        lambda *args, **kwargs: (_ for _ in ()).throw(RuntimeError("boom")),
+    )
     with TestClient(main_module.app) as client:
-        response = client.get("/healthz", headers={"X-API-Key": "ita-test-key", "X-Request-Id": "req-1"})
+        response = client.get(
+            "/healthz", headers={"X-API-Key": "ita-test-key", "X-Request-Id": "req-1"}
+        )
     assert response.status_code == 500
     assert response.json()["detail"] == "Internal server error"

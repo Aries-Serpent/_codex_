@@ -12,6 +12,7 @@ class TestRetrievalVectorImports:
         """Test that the module can be imported."""
         try:
             from src.codex.retrieval import vector
+
             assert vector is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -24,7 +25,8 @@ class TestRetrievalVectorOperations:
         """Test vector store creation."""
         try:
             from src.codex.retrieval import vector
-            if hasattr(vector, 'VectorStore'):
+
+            if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()
                 assert store is not None
         except (ImportError, AttributeError):
@@ -34,8 +36,9 @@ class TestRetrievalVectorOperations:
         """Test adding vectors."""
         try:
             from src.codex.retrieval import vector
-            if hasattr(vector, 'add_vectors'):
-                with patch.object(vector, 'add_vectors') as mock_add:
+
+            if hasattr(vector, "add_vectors"):
+                with patch.object(vector, "add_vectors") as mock_add:
                     mock_add.return_value = {"added": 10}
                     result = vector.add_vectors([[0.1, 0.2], [0.3, 0.4]])
                     assert result["added"] == 10
@@ -46,8 +49,9 @@ class TestRetrievalVectorOperations:
         """Test searching vectors."""
         try:
             from src.codex.retrieval import vector
-            if hasattr(vector, 'search'):
-                with patch.object(vector, 'search') as mock_search:
+
+            if hasattr(vector, "search"):
+                with patch.object(vector, "search") as mock_search:
                     mock_search.return_value = [{"id": 1, "score": 0.95}]
                     results = vector.search([0.1, 0.2], k=5)
                     assert len(results) == 1
@@ -62,10 +66,11 @@ class TestRetrievalVectorIndexing:
         """Test building index."""
         try:
             from src.codex.retrieval import vector
-            if hasattr(vector, 'VectorStore'):
+
+            if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()
-                if hasattr(store, 'build_index'):
-                    with patch.object(store, 'build_index') as mock_build:
+                if hasattr(store, "build_index"):
+                    with patch.object(store, "build_index") as mock_build:
                         mock_build.return_value = True
                         result = store.build_index()
                         assert result is True
@@ -76,10 +81,11 @@ class TestRetrievalVectorIndexing:
         """Test saving index."""
         try:
             from src.codex.retrieval import vector
-            if hasattr(vector, 'VectorStore'):
+
+            if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()
-                if hasattr(store, 'save'):
-                    with patch.object(store, 'save') as mock_save:
+                if hasattr(store, "save"):
+                    with patch.object(store, "save") as mock_save:
                         mock_save.return_value = True
                         result = store.save("/tmp/index.bin")
                         assert result is True

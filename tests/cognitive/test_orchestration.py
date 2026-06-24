@@ -243,9 +243,7 @@ class TestOrchestratingAgents:
         """Test all agents have delegates_to list."""
         for agent_id, config in ORCHESTRATING_AGENTS.items():
             assert "delegates_to" in config, f"{agent_id} missing delegates_to"
-            assert isinstance(
-                config["delegates_to"], list
-            ), f"{agent_id} delegates_to is not list"
+            assert isinstance(config["delegates_to"], list), f"{agent_id} delegates_to is not list"
 
     def test_expected_agents_present(self):
         """Test expected orchestrating agents are present."""
@@ -602,12 +600,15 @@ class TestModuleFunctions:
 
     def test_create_orchestrator(self, setup_test_files):
         """Test create_orchestrator helper."""
-        with patch(
-            "codex.cognitive.orchestration.DEFAULT_PATTERN_STORE",
-            setup_test_files[0],
-        ), patch(
-            "codex.cognitive.orchestration.DEFAULT_MANIFEST",
-            setup_test_files[1],
+        with (
+            patch(
+                "codex.cognitive.orchestration.DEFAULT_PATTERN_STORE",
+                setup_test_files[0],
+            ),
+            patch(
+                "codex.cognitive.orchestration.DEFAULT_MANIFEST",
+                setup_test_files[1],
+            ),
         ):
             orchestrator = create_orchestrator("artifact-monitor-agent")
             assert orchestrator.orchestrator_id == "artifact-monitor-agent"

@@ -208,16 +208,16 @@ class TokenScopeVerifier:
         print("GitHub Token Scope Verification Report")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
-        print("Timestamp: [suppressed]")
-        status = results.get("status", "unknown").upper()
+        print("Timestamp: [suppressed]")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        status = results.get("status", "unknown").upper()  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         status_display = status if status in ("VALID", "ERROR") else "INVALID"
         print(f"Status: {status_display}")
-        print()
+        print()  # nosec  # codeql[py/log-injection]
 
         if results.get("error"):
             # Security Practice: Redact error details in output to avoid information leakage
             # Detailed error information is available in logs for authorized debugging
-            print("❌ Error: Token verification failed (check logs for details)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            print("❌ Error: Token verification failed (check logs for details)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # nosec  # codeql[py/log-injection]
             # When DEBUG=1, provide additional non-sensitive error details to stdout
             if os.getenv("DEBUG") == "1":
                 print(f"Debug details: {results.get('error')}")

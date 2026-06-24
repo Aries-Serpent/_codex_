@@ -3,6 +3,7 @@ Unit tests for codex.logging.config module.
 
 Tests logging configuration defaults and environment variable handling.
 """
+
 import os
 from pathlib import Path
 from unittest.mock import patch

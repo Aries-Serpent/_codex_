@@ -5,7 +5,6 @@ This module contains tests for file detection utilities.
 """
 
 
-
 class TestFileMeta:
     """Tests for FileMeta dataclass."""
 
@@ -19,7 +18,7 @@ class TestFileMeta:
             mtime_epoch=1640000000.0,
             mime="text/x-python",
             lang="python",
-            sloc=50
+            sloc=50,
         )
 
         assert meta.path == "/path/to/file.py"

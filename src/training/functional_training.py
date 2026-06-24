@@ -22,10 +22,10 @@ import contextlib
 import json
 import logging
 import os
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Optional
-from collections.abc import Callable, Mapping, Sequence
 
 import numpy as np
 
@@ -290,7 +290,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
         from datasets import Dataset  # type: ignore[attr-defined]
-
         from transformers import AutoTokenizer
 
         model_cfg = training_cfg.get(

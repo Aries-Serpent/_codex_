@@ -15,10 +15,7 @@ from omegaconf import OmegaConf
 def test_hydra_sweep_config_loads() -> None:
     # Register 'now' resolver for OmegaConf interpolation
     if not OmegaConf.has_resolver("now"):
-        OmegaConf.register_new_resolver(
-            "now",
-            lambda fmt: datetime.now().strftime(fmt)
-        )
+        OmegaConf.register_new_resolver("now", lambda fmt: datetime.now().strftime(fmt))
 
     cfg = OmegaConf.load(Path("configs/base/hydra_sweep.yaml"))
     assert cfg.hydra.sweep.dir.startswith("outputs/")

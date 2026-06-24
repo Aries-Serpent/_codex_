@@ -52,7 +52,7 @@ class TestModelRegistry:
             "type": "transformer",
             "parameters": 340000000,
             "vocab_size": 30522,
-            "max_sequence_length": 512
+            "max_sequence_length": 512,
         }
         assert metadata["parameters"] > 100000000
         assert metadata["vocab_size"] > 10000
@@ -65,7 +65,7 @@ class TestModelRegistry:
             "testing": ["staging", "development"],
             "staging": ["production", "testing"],
             "production": ["deprecated"],
-            "deprecated": []
+            "deprecated": [],
         }
         for status in statuses:
             assert status in transitions
@@ -75,7 +75,7 @@ class TestModelRegistry:
         registry = {
             "bert-base": {"status": "active"},
             "gpt2": {"status": "active"},
-            "roberta": {"status": "deprecated"}
+            "roberta": {"status": "deprecated"},
         }
         active_models = [k for k, v in registry.items() if v["status"] == "active"]
         assert len(active_models) == 2
@@ -95,11 +95,7 @@ class TestModelRegistry:
 
     def test_model_memory_efficiency(self):
         """Test model memory tracking."""
-        models = {
-            "small": 100_000_000,
-            "medium": 500_000_000,
-            "large": 1_000_000_000
-        }
+        models = {"small": 100_000_000, "medium": 500_000_000, "large": 1_000_000_000}
         total = sum(models.values())
         assert total > 1_500_000_000
 
@@ -108,7 +104,7 @@ class TestModelRegistry:
         dependencies = {
             "inference_model": ["tokenizer", "config", "weights"],
             "tokenizer": ["vocabulary"],
-            "config": ["schema"]
+            "config": ["schema"],
         }
         assert len(dependencies["inference_model"]) == 3
         assert "tokenizer" in dependencies["inference_model"]
@@ -131,7 +127,7 @@ class TestModelServing:
         batch = {
             "inputs": [["text1"], ["text2"], ["text3"]],
             "batch_size": 3,
-            "max_sequence_length": 512
+            "max_sequence_length": 512,
         }
         assert len(batch["inputs"]) == batch["batch_size"]
         assert batch["max_sequence_length"] > 0
@@ -141,7 +137,7 @@ class TestModelServing:
         timeout_config = {
             "max_wait_seconds": 30,
             "warn_at_seconds": 20,
-            "timeout_policy": "graceful_failure"
+            "timeout_policy": "graceful_failure",
         }
         assert timeout_config["max_wait_seconds"] > timeout_config["warn_at_seconds"]
         assert timeout_config["timeout_policy"] in ["graceful_failure", "hard_timeout"]
@@ -153,7 +149,7 @@ class TestModelServing:
             "strategy": "dynamic_batch",
             "min_batch_size": 1,
             "max_batch_size": 64,
-            "timeout_ms": 100
+            "timeout_ms": 100,
         }
         assert config["strategy"] in strategies
         assert config["max_batch_size"] >= config["min_batch_size"]
@@ -164,9 +160,12 @@ class TestModelServing:
             "int8": {"bits": 8, "size_reduction": 0.25},
             "int4": {"bits": 4, "size_reduction": 0.125},
             "float16": {"bits": 16, "size_reduction": 0.5},
-            "float32": {"bits": 32, "size_reduction": 1.0}
+            "float32": {"bits": 32, "size_reduction": 1.0},
         }
-        assert quantization_modes["int8"]["size_reduction"] < quantization_modes["float32"]["size_reduction"]
+        assert (
+            quantization_modes["int8"]["size_reduction"]
+            < quantization_modes["float32"]["size_reduction"]
+        )
 
     def test_model_serving_metrics(self):
         """Test serving metrics collection."""
@@ -175,18 +174,14 @@ class TestModelServing:
             "avg_latency_ms": 45,
             "p99_latency_ms": 120,
             "throughput_qps": 100,
-            "error_rate": 0.001
+            "error_rate": 0.001,
         }
         assert metrics["p99_latency_ms"] > metrics["avg_latency_ms"]
         assert metrics["error_rate"] < 0.01
 
     def test_model_serving_load_balancing(self):
         """Test load balancing across model replicas."""
-        replicas = {
-            "replica_1": {"load": 45},
-            "replica_2": {"load": 52},
-            "replica_3": {"load": 48}
-        }
+        replicas = {"replica_1": {"load": 45}, "replica_2": {"load": 52}, "replica_3": {"load": 48}}
         total_load = sum(r["load"] for r in replicas.values())
         avg_load = total_load / len(replicas)
         assert avg_load > 40
@@ -198,7 +193,7 @@ class TestModelServing:
             "max_replicas": 20,
             "target_cpu_percent": 70,
             "scale_up_threshold": 80,
-            "scale_down_threshold": 30
+            "scale_down_threshold": 30,
         }
         assert autoscale["max_replicas"] > autoscale["min_replicas"]
 
@@ -208,7 +203,7 @@ class TestModelServing:
             "status": "healthy",
             "last_check": datetime.now(),
             "consecutive_failures": 0,
-            "failure_threshold": 3
+            "failure_threshold": 3,
         }
         assert health["status"] in ["healthy", "degraded", "unhealthy"]
 
@@ -222,8 +217,8 @@ class TestTrainingStateManagement:
             "epoch": 0,
             "step": 0,
             "loss": None,
-            "best_loss": float('inf'),
-            "status": "initialized"
+            "best_loss": float("inf"),
+            "status": "initialized",
         }
         assert state["epoch"] == 0
         assert state["status"] == "initialized"
@@ -235,22 +230,15 @@ class TestTrainingStateManagement:
             "step": 1000,
             "model_state": {"weights": []},
             "optimizer_state": {"lr": 0.001},
-            "timestamp": datetime.now()
+            "timestamp": datetime.now(),
         }
         assert checkpoint["epoch"] > 0
         assert "model_state" in checkpoint
 
     def test_training_checkpoint_loading(self):
         """Test checkpoint loading and restoration."""
-        saved_checkpoint = {
-            "epoch": 5,
-            "step": 1000,
-            "model_state": {"weights": [0.1, 0.2, 0.3]}
-        }
-        loaded_state = {
-            "epoch": saved_checkpoint["epoch"],
-            "step": saved_checkpoint["step"]
-        }
+        saved_checkpoint = {"epoch": 5, "step": 1000, "model_state": {"weights": [0.1, 0.2, 0.3]}}
+        loaded_state = {"epoch": saved_checkpoint["epoch"], "step": saved_checkpoint["step"]}
         assert loaded_state["epoch"] == saved_checkpoint["epoch"]
 
     def test_learning_rate_scheduling(self):
@@ -259,18 +247,14 @@ class TestTrainingStateManagement:
             "type": "exponential_decay",
             "initial_lr": 0.001,
             "decay_rate": 0.96,
-            "decay_steps": 1000
+            "decay_steps": 1000,
         }
         assert schedule["initial_lr"] > 0
         assert schedule["decay_rate"] < 1.0
 
     def test_gradient_accumulation(self):
         """Test gradient accumulation configuration."""
-        accumulation = {
-            "enabled": True,
-            "steps": 4,
-            "max_accumulated_gradients": 100
-        }
+        accumulation = {"enabled": True, "steps": 4, "max_accumulated_gradients": 100}
         assert accumulation["steps"] > 0
 
     def test_mixed_precision_training(self):
@@ -279,7 +263,7 @@ class TestTrainingStateManagement:
             "enabled": True,
             "dtype": "float16",
             "loss_scale": 1024,
-            "loss_scale_window": 1000
+            "loss_scale_window": 1000,
         }
         assert mixed_precision["enabled"]
         assert mixed_precision["loss_scale"] > 0
@@ -290,7 +274,7 @@ class TestTrainingStateManagement:
             "enabled": True,
             "patience": 5,
             "min_delta": 0.001,
-            "metric": "validation_loss"
+            "metric": "validation_loss",
         }
         assert early_stop["patience"] > 0
         assert early_stop["min_delta"] >= 0
@@ -301,7 +285,7 @@ class TestTrainingStateManagement:
             "dropout_rate": 0.2,
             "weight_decay": 0.0001,
             "label_smoothing": 0.1,
-            "mixup_alpha": 0.2
+            "mixup_alpha": 0.2,
         }
         assert regularization["dropout_rate"] >= 0
         assert regularization["weight_decay"] >= 0
@@ -312,7 +296,7 @@ class TestTrainingStateManagement:
             "train_loss": [2.5, 2.3, 2.1, 1.9, 1.8],
             "val_loss": [2.6, 2.4, 2.2, 2.0, 1.95],
             "train_accuracy": [0.5, 0.6, 0.7, 0.75, 0.78],
-            "val_accuracy": [0.48, 0.58, 0.68, 0.72, 0.75]
+            "val_accuracy": [0.48, 0.58, 0.68, 0.72, 0.75],
         }
         assert len(metrics["train_loss"]) == 5
         assert metrics["train_loss"][-1] < metrics["train_loss"][0]
@@ -323,7 +307,7 @@ class TestTrainingStateManagement:
         resume_config = {
             "resume_from_checkpoint": True,
             "checkpoint_epoch": checkpoint["epoch"],
-            "checkpoint_step": checkpoint["step"]
+            "checkpoint_step": checkpoint["step"],
         }
         assert resume_config["checkpoint_epoch"] == checkpoint["epoch"]
 
@@ -333,11 +317,7 @@ class TestModelValidation:
 
     def test_model_input_validation(self):
         """Test input validation."""
-        validator = {
-            "expected_shape": (None, 512),
-            "dtype": "int64",
-            "valid_range": (0, 30522)
-        }
+        validator = {"expected_shape": (None, 512), "dtype": "int64", "valid_range": (0, 30522)}
         assert validator["expected_shape"] is not None
         assert validator["valid_range"][1] > validator["valid_range"][0]
 
@@ -346,7 +326,7 @@ class TestModelValidation:
         outputs = {
             "logits": {"shape": (32, 1000), "dtype": "float32"},
             "embeddings": {"shape": (32, 768), "dtype": "float32"},
-            "attention": {"shape": (32, 12, 512, 512), "dtype": "float32"}
+            "attention": {"shape": (32, 12, 512, 512), "dtype": "float32"},
         }
         assert len(outputs) == 3
         assert "logits" in outputs
@@ -357,18 +337,13 @@ class TestModelValidation:
             "check_nans": True,
             "check_infs": True,
             "check_grad_overflow": True,
-            "max_grad_norm": 1.0
+            "max_grad_norm": 1.0,
         }
         assert stability_checks["max_grad_norm"] > 0
 
     def test_model_inference_consistency(self):
         """Test inference consistency."""
-        consistency = {
-            "num_runs": 3,
-            "max_variance": 0.001,
-            "deterministic": True,
-            "seed": 42
-        }
+        consistency = {"num_runs": 3, "max_variance": 0.001, "deterministic": True, "seed": 42}
         assert consistency["num_runs"] > 1
         assert consistency["max_variance"] >= 0
 
@@ -377,7 +352,7 @@ class TestModelValidation:
         benchmark = {
             "batch_sizes": [1, 8, 16, 32],
             "sequence_lengths": [128, 256, 512],
-            "metrics": ["latency", "throughput", "memory"]
+            "metrics": ["latency", "throughput", "memory"],
         }
         assert len(benchmark["batch_sizes"]) == 4
         assert len(benchmark["sequence_lengths"]) == 3
@@ -388,7 +363,7 @@ class TestModelValidation:
             "perturbation_epsilon": 0.01,
             "num_iterations": 10,
             "attack_methods": ["fgsm", "pgd", "carlini"],
-            "success_rate_threshold": 0.95
+            "success_rate_threshold": 0.95,
         }
         assert robustness["perturbation_epsilon"] > 0
         assert len(robustness["attack_methods"]) == 3
@@ -398,7 +373,7 @@ class TestModelValidation:
         fairness = {
             "protected_attributes": ["gender", "age", "race"],
             "metrics": ["disparate_impact", "equal_opportunity", "demographic_parity"],
-            "threshold": 0.8
+            "threshold": 0.8,
         }
         assert len(fairness["protected_attributes"]) == 3
         assert fairness["threshold"] > 0
@@ -409,7 +384,7 @@ class TestModelValidation:
             "method": "temperature_scaling",
             "temperature": 1.0,
             "ece": 0.05,
-            "mce": 0.12
+            "mce": 0.12,
         }
         assert calibration["temperature"] > 0
         assert calibration["ece"] < 0.2
@@ -420,7 +395,7 @@ class TestModelValidation:
             "monitor_metrics": ["accuracy", "f1_score", "auc"],
             "degradation_threshold": 0.05,
             "lookback_window": 1000,
-            "alert_on_degradation": True
+            "alert_on_degradation": True,
         }
         assert degradation["degradation_threshold"] > 0
 
@@ -433,7 +408,7 @@ class TestCheckpointHandling:
         checkpoint = {
             "model": {"weights": [0.1, 0.2], "biases": [0.01, 0.02]},
             "optimizer": {"lr": 0.001, "momentum": 0.9},
-            "metadata": {"epoch": 5, "step": 1000}
+            "metadata": {"epoch": 5, "step": 1000},
         }
         serialized = json.dumps(checkpoint, default=str)
         assert len(serialized) > 0
@@ -450,7 +425,7 @@ class TestCheckpointHandling:
         checkpoints = {
             "ckpt_001": {"epoch": 1, "step": 100},
             "ckpt_002": {"epoch": 2, "step": 200},
-            "ckpt_latest": {"epoch": 5, "step": 500}
+            "ckpt_latest": {"epoch": 5, "step": 500},
         }
         assert len(checkpoints) == 3
         assert "ckpt_latest" in checkpoints
@@ -461,7 +436,7 @@ class TestCheckpointHandling:
             "keep_last_n": 3,
             "keep_best_n": 1,
             "keep_every_n_epochs": 10,
-            "max_age_days": 30
+            "max_age_days": 30,
         }
         assert cleanup["keep_last_n"] > 0
 
@@ -471,7 +446,7 @@ class TestCheckpointHandling:
             "check_file_integrity": True,
             "verify_epoch": True,
             "verify_step": True,
-            "validate_shapes": True
+            "validate_shapes": True,
         }
         assert validation["check_file_integrity"]
 
@@ -481,7 +456,7 @@ class TestCheckpointHandling:
             "enabled": True,
             "method": "gzip",
             "compression_level": 6,
-            "size_reduction_percent": 70
+            "size_reduction_percent": 70,
         }
         assert compression["compression_level"] > 0
         assert compression["size_reduction_percent"] > 0
@@ -492,7 +467,7 @@ class TestCheckpointHandling:
             "auto_recover": True,
             "recovery_from_backup": True,
             "num_backups": 2,
-            "backup_interval_epochs": 5
+            "backup_interval_epochs": 5,
         }
         assert recovery["num_backups"] > 0
 
@@ -502,7 +477,7 @@ class TestCheckpointHandling:
             "sync_workers": True,
             "workers": 4,
             "sharded": True,
-            "all_gather_before_save": False
+            "all_gather_before_save": False,
         }
         assert dist_save["workers"] > 0
         assert dist_save["sync_workers"]
@@ -513,44 +488,23 @@ class TestModelEvaluation:
 
     def test_evaluation_metrics_calculation(self):
         """Test evaluation metrics calculation."""
-        metrics = {
-            "accuracy": 0.92,
-            "precision": 0.89,
-            "recall": 0.91,
-            "f1": 0.90,
-            "auc_roc": 0.95
-        }
+        metrics = {"accuracy": 0.92, "precision": 0.89, "recall": 0.91, "f1": 0.90, "auc_roc": 0.95}
         assert metrics["accuracy"] > 0.8
         assert metrics["f1"] > 0
 
     def test_cross_validation_setup(self):
         """Test cross-validation configuration."""
-        cv = {
-            "method": "k_fold",
-            "k_folds": 5,
-            "shuffle": True,
-            "random_state": 42
-        }
+        cv = {"method": "k_fold", "k_folds": 5, "shuffle": True, "random_state": 42}
         assert cv["k_folds"] > 1
 
     def test_eval_dataset_splitting(self):
         """Test evaluation dataset splitting."""
-        split = {
-            "train_ratio": 0.7,
-            "val_ratio": 0.15,
-            "test_ratio": 0.15,
-            "stratified": True
-        }
+        split = {"train_ratio": 0.7, "val_ratio": 0.15, "test_ratio": 0.15, "stratified": True}
         assert split["train_ratio"] + split["val_ratio"] + split["test_ratio"] == 1.0
 
     def test_eval_dataloader_configuration(self):
         """Test evaluation dataloader config."""
-        dataloader = {
-            "batch_size": 32,
-            "shuffle": False,
-            "num_workers": 4,
-            "pin_memory": True
-        }
+        dataloader = {"batch_size": 32, "shuffle": False, "num_workers": 4, "pin_memory": True}
         assert dataloader["batch_size"] > 0
 
     def test_model_uncertainty_estimation(self):
@@ -558,7 +512,7 @@ class TestModelEvaluation:
         uncertainty = {
             "method": "monte_carlo_dropout",
             "num_samples": 50,
-            "calibration_samples": 1000
+            "calibration_samples": 1000,
         }
         assert uncertainty["num_samples"] > 0
 
@@ -572,7 +526,7 @@ class TestModelOptimization:
             "enabled": True,
             "method": "magnitude",
             "target_sparsity": 0.9,
-            "pruning_schedule": "gradual"
+            "pruning_schedule": "gradual",
         }
         assert pruning["target_sparsity"] > 0
         assert pruning["target_sparsity"] < 1.0
@@ -584,7 +538,7 @@ class TestModelOptimization:
             "teacher_model": "bert-large",
             "student_model": "bert-small",
             "temperature": 4.0,
-            "alpha": 0.5
+            "alpha": 0.5,
         }
         assert distillation["temperature"] > 1.0
 
@@ -594,18 +548,13 @@ class TestModelOptimization:
             "enabled": True,
             "bit_width": 8,
             "observer": "moving_average",
-            "calibration_method": "entropy"
+            "calibration_method": "entropy",
         }
         assert qat["bit_width"] > 0
 
     def test_low_rank_adaptation(self):
         """Test low-rank adaptation (LoRA)."""
-        lora = {
-            "enabled": True,
-            "rank": 8,
-            "alpha": 16,
-            "target_modules": ["q_proj", "v_proj"]
-        }
+        lora = {"enabled": True, "rank": 8, "alpha": 16, "target_modules": ["q_proj", "v_proj"]}
         assert lora["rank"] > 0
         assert len(lora["target_modules"]) > 0
 
@@ -619,18 +568,13 @@ class TestModelDeploy:
             "device": "gpu",
             "batch_size": 32,
             "use_mixed_precision": True,
-            "enable_graph_optimization": True
+            "enable_graph_optimization": True,
         }
         assert env["batch_size"] > 0
 
     def test_containerization_config(self):
         """Test containerization configuration."""
-        docker = {
-            "image": "ml-serving:latest",
-            "memory_limit": "8g",
-            "cpu_limit": "4",
-            "gpus": 1
-        }
+        docker = {"image": "ml-serving:latest", "memory_limit": "8g", "cpu_limit": "4", "gpus": 1}
         assert docker["memory_limit"] is not None
 
     def test_model_export_formats(self):
@@ -638,6 +582,6 @@ class TestModelDeploy:
         formats = {
             "onnx": {"supported": True, "opset_version": 14},
             "torchscript": {"supported": True, "optimize": True},
-            "savedmodel": {"supported": True, "version": 2}
+            "savedmodel": {"supported": True, "version": 2},
         }
         assert formats["onnx"]["supported"]

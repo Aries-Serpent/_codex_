@@ -10,7 +10,9 @@ import pytest
 
 # Skip if PyTorch-dependent modules cannot be imported
 try:
-    importlib.import_module("codex.training")  # availability check only; functions imported locally in each test
+    importlib.import_module(
+        "codex.training"
+    )  # availability check only; functions imported locally in each test
 
     TRAINING_AVAILABLE = True
 except (ImportError, AttributeError):

@@ -16,12 +16,12 @@ Key Features:
 
 import sqlite3
 import threading
+import time
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-import time
 
 
 @dataclass
@@ -312,9 +312,7 @@ class SessionDB:
 
             except sqlite3.IntegrityError as e:
                 if "UNIQUE constraint failed" in str(e):
-                    raise ValueError(
-                        f"Session ID {session['session_id']} already exists"
-                    ) from e
+                    raise ValueError(f"Session ID {session['session_id']} already exists") from e
                 raise
             except Exception as e:
                 raise sqlite3.Error(f"Failed to insert session: {e}") from e
@@ -647,9 +645,7 @@ class SessionDB:
                         (start_str,),
                     )
                 else:
-                    cursor.execute(
-                        "SELECT agent_name, COUNT(*) FROM sessions GROUP BY agent_name"
-                    )
+                    cursor.execute("SELECT agent_name, COUNT(*) FROM sessions GROUP BY agent_name")
                 by_agent = {row[0]: row[1] for row in cursor.fetchall() if row[0]}
 
                 # By branch
@@ -726,7 +722,14 @@ class SessionDB:
         Raises:
             ValueError: If event_type invalid.
         """
-        valid_types = {"start", "pattern_applied", "check_passed", "check_failed", "error", "complete"}
+        valid_types = {
+            "start",
+            "pattern_applied",
+            "check_passed",
+            "check_failed",
+            "error",
+            "complete",
+        }
         if event_type not in valid_types:
             raise ValueError(f"Invalid event_type: {event_type}")
 

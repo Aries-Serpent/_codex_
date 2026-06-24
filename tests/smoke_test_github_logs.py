@@ -8,7 +8,8 @@ import os
 import sys
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+
 
 def test_imports():
     """Test that all modules can be imported."""
@@ -59,21 +60,21 @@ def test_cli_help():
         runner = CliRunner()
 
         # Test main github-logs command
-        result = runner.invoke(main_cli, ['github-logs', '--help'])
+        result = runner.invoke(main_cli, ["github-logs", "--help"])
         if result.exit_code != 0:
             print(f"✗ github-logs --help failed: {result.output}")
             return False
         print("✓ github-logs --help works")
 
         # Test check-run subcommand help
-        result = runner.invoke(main_cli, ['github-logs', 'check-run', '--help'])
+        result = runner.invoke(main_cli, ["github-logs", "check-run", "--help"])
         if result.exit_code != 0:
             print(f"✗ github-logs check-run --help failed: {result.output}")
             return False
         print("✓ github-logs check-run --help works")
 
         # Test list-check-runs subcommand help
-        result = runner.invoke(main_cli, ['github-logs', 'list-check-runs', '--help'])
+        result = runner.invoke(main_cli, ["github-logs", "list-check-runs", "--help"])
         if result.exit_code != 0:
             print(f"✗ github-logs list-check-runs --help failed: {result.output}")
             return False
@@ -82,6 +83,7 @@ def test_cli_help():
     except Exception as e:
         print(f"✗ CLI test failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
@@ -101,7 +103,7 @@ def test_type_creation():
             head_sha="abc123",
             status=CheckRunStatus.COMPLETED,
             conclusion=CheckRunConclusion.SUCCESS,
-            html_url="https://github.com/test"
+            html_url="https://github.com/test",
         )
 
         assert check_run.id == 12345
@@ -114,6 +116,7 @@ def test_type_creation():
     except Exception as e:
         print(f"✗ Type creation failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 

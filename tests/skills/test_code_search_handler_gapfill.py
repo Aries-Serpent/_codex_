@@ -36,11 +36,13 @@ class TestCodeSearchRun:
             test_file = tmpdir_path / "test.py"
             test_file.write_text("def hello():\n    return 'world'\n")
 
-            result = run({
-                "query": "def",
-                "root": str(tmpdir_path),
-                "glob": "*.py",
-            })
+            result = run(
+                {
+                    "query": "def",
+                    "root": str(tmpdir_path),
+                    "glob": "*.py",
+                }
+            )
 
             assert "matches" in result
             assert len(result["matches"]) > 0
@@ -56,21 +58,25 @@ class TestCodeSearchRun:
             test_file.write_text("def hello():\n    return 'WORLD'\n")
 
             # Case-insensitive (default)
-            result_insensitive = run({
-                "query": "world",
-                "root": str(tmpdir_path),
-                "glob": "*.py",
-                "case_sensitive": False,
-            })
+            result_insensitive = run(
+                {
+                    "query": "world",
+                    "root": str(tmpdir_path),
+                    "glob": "*.py",
+                    "case_sensitive": False,
+                }
+            )
             assert len(result_insensitive["matches"]) > 0
 
             # Case-sensitive
-            result_sensitive = run({
-                "query": "world",
-                "root": str(tmpdir_path),
-                "glob": "*.py",
-                "case_sensitive": True,
-            })
+            result_sensitive = run(
+                {
+                    "query": "world",
+                    "root": str(tmpdir_path),
+                    "glob": "*.py",
+                    "case_sensitive": True,
+                }
+            )
             assert len(result_sensitive["matches"]) == 0
 
     def test_top_k_limit(self):
@@ -83,12 +89,14 @@ class TestCodeSearchRun:
                 test_file = tmpdir_path / f"test{i}.py"
                 test_file.write_text("# test comment\n")
 
-            result = run({
-                "query": "test",
-                "root": str(tmpdir_path),
-                "glob": "*.py",
-                "top_k": 2,
-            })
+            result = run(
+                {
+                    "query": "test",
+                    "root": str(tmpdir_path),
+                    "glob": "*.py",
+                    "top_k": 2,
+                }
+            )
 
             assert len(result["matches"]) <= 2
 
@@ -107,11 +115,13 @@ class TestCodeSearchRun:
             regular_file = tmpdir_path / "test.py"
             regular_file.write_text("# test\n")
 
-            result = run({
-                "query": "test",
-                "root": str(tmpdir_path),
-                "glob": "**/*.py",
-            })
+            result = run(
+                {
+                    "query": "test",
+                    "root": str(tmpdir_path),
+                    "glob": "**/*.py",
+                }
+            )
 
             # Should find the regular file but not cache file
             assert len(result["matches"]) == 1
@@ -125,11 +135,13 @@ class TestCodeSearchRun:
             content = "line1\nline2\nline3\nline4\nline5\n"
             test_file.write_text(content)
 
-            result = run({
-                "query": "line3",
-                "root": str(tmpdir_path),
-                "glob": "*.py",
-            })
+            result = run(
+                {
+                    "query": "line3",
+                    "root": str(tmpdir_path),
+                    "glob": "*.py",
+                }
+            )
 
             assert len(result["matches"]) > 0
             snippet = result["matches"][0]["snippet"]

@@ -71,11 +71,13 @@ def sample_csv_data(temp_data_dir):
     with csv_file.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["id", "text", "category"])
         writer.writeheader()
-        writer.writerows([
-            {"id": "1", "text": "First entry", "category": "A"},
-            {"id": "2", "text": "Second entry", "category": "B"},
-            {"id": "3", "text": "Third entry", "category": "A"},
-        ])
+        writer.writerows(
+            [
+                {"id": "1", "text": "First entry", "category": "A"},
+                {"id": "2", "text": "Second entry", "category": "B"},
+                {"id": "3", "text": "Third entry", "category": "A"},
+            ]
+        )
     return csv_file
 
 
@@ -261,7 +263,7 @@ class TestBatchProcessing:
                 data.append(json.loads(line))
 
         batch_size = 2
-        batches = [data[i:i+batch_size] for i in range(0, len(data), batch_size)]
+        batches = [data[i : i + batch_size] for i in range(0, len(data), batch_size)]
 
         with ThreadPoolExecutor(max_workers=2) as executor:
             results = list(executor.map(process_batch, batches))

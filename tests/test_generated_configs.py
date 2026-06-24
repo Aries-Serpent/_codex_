@@ -5,6 +5,7 @@ These tests ensure that:
 2. The chaos marker is properly registered
 3. Configuration generators can run without errors
 """
+
 import subprocess
 import sys
 from pathlib import Path
@@ -31,10 +32,7 @@ def test_pytest_config_generator_runs():
     assert script.exists(), f"Generator script not found at {script}"
 
     result = subprocess.run(
-        [sys.executable, str(script)],
-        cwd=repo_root,
-        capture_output=True,
-        text=True
+        [sys.executable, str(script)], cwd=repo_root, capture_output=True, text=True
     )
 
     # Should exit with 0 (no changes) or 1 (changes made)
@@ -49,10 +47,7 @@ def test_codex_init_generator_runs():
     assert script.exists(), f"Generator script not found at {script}"
 
     result = subprocess.run(
-        [sys.executable, str(script)],
-        cwd=repo_root,
-        capture_output=True,
-        text=True
+        [sys.executable, str(script)], cwd=repo_root, capture_output=True, text=True
     )
 
     # Should exit with 0 (no changes) or 1 (changes made)

@@ -100,15 +100,7 @@ class TestToTemplate:
 
         package = {
             "manifest": {"name": "Test"},
-            "flows": {
-                "flow1": {
-                    "definition": {
-                        "resources": {
-                            "connection1": {"type": "sql"}
-                        }
-                    }
-                }
-            }
+            "flows": {"flow1": {"definition": {"resources": {"connection1": {"type": "sql"}}}}},
         }
 
         template = to_template(package)
@@ -136,13 +128,7 @@ class TestToTemplate:
         """Test template conversion with flow missing resources."""
         from codex_crm.pa_legacy.reader import to_template
 
-        package = {
-            "flows": {
-                "flow1": {
-                    "definition": {}
-                }
-            }
-        }
+        package = {"flows": {"flow1": {"definition": {}}}}
 
         template = to_template(package)
         assert template["connections"] == []
@@ -151,17 +137,7 @@ class TestToTemplate:
         """Test template conversion with missing type defaults to unknown."""
         from codex_crm.pa_legacy.reader import to_template
 
-        package = {
-            "flows": {
-                "flow1": {
-                    "definition": {
-                        "resources": {
-                            "conn": {}
-                        }
-                    }
-                }
-            }
-        }
+        package = {"flows": {"flow1": {"definition": {"resources": {"conn": {}}}}}}
 
         template = to_template(package)
         assert template["connections"][0]["type"] == "unknown"

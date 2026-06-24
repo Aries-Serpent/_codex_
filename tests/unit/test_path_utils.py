@@ -3,6 +3,7 @@ Unit tests for codex.utils.path_utils module.
 
 Tests Windows-safe timestamp generation and filename sanitization.
 """
+
 import re
 from datetime import datetime, timezone
 
@@ -28,7 +29,7 @@ class TestWindowsSafeTimestamp:
         result = windows_safe_timestamp(dt, fmt="compact")
 
         assert result == "20260121_143045"
-        assert re.match(r'^\d{8}_\d{6}$', result)
+        assert re.match(r"^\d{8}_\d{6}$", result)
 
     def test_readable_format(self):
         """Test readable format is human-friendly."""
@@ -43,7 +44,7 @@ class TestWindowsSafeTimestamp:
         result = windows_safe_timestamp(fmt="compact")
 
         # Should be 8 digits, underscore, 6 digits
-        assert re.match(r'^\d{8}_\d{6}$', result)
+        assert re.match(r"^\d{8}_\d{6}$", result)
 
     def test_invalid_format_raises(self):
         """Test invalid format raises ValueError."""
@@ -105,4 +106,4 @@ class TestSanitizeFilename:
 
         # Verify no illegal chars
         assert ":" not in clean
-        assert re.match(r'^[a-zA-Z0-9._-]+$', clean)
+        assert re.match(r"^[a-zA-Z0-9._-]+$", clean)

@@ -133,12 +133,7 @@ class TestTrainingLargeDatasets:
         for rank in range(world_size):
             start_idx = rank * shard_size
             end_idx = start_idx + shard_size
-            shards.append({
-                "rank": rank,
-                "start": start_idx,
-                "end": end_idx,
-                "size": shard_size
-            })
+            shards.append({"rank": rank, "start": start_idx, "end": end_idx, "size": shard_size})
 
         # Verify sharding
         assert len(shards) == world_size
@@ -224,6 +219,7 @@ class TestRAGLargeCorpus:
 
         # IVF index: O(n log n) time but faster search
         import math
+
         ivf_index_time = num_vectors * math.log(num_vectors) * 0.00001
 
         # Verify both index times are reasonable
@@ -347,11 +343,7 @@ class TestAgentOrchestrationLoad:
         agents = []
 
         for i in range(num_agents):
-            agent = {
-                "id": i,
-                "status": "active",
-                "tasks_completed": 0
-            }
+            agent = {"id": i, "status": "active", "tasks_completed": 0}
             agents.append(agent)
 
         # Simulate concurrent execution
@@ -389,7 +381,7 @@ class TestAgentOrchestrationLoad:
         agents = [
             {"id": 1, "priority": "high", "allocated": 0},
             {"id": 2, "priority": "medium", "allocated": 0},
-            {"id": 3, "priority": "low", "allocated": 0}
+            {"id": 3, "priority": "low", "allocated": 0},
         ]
 
         # Allocate based on priority
@@ -406,11 +398,7 @@ class TestAgentOrchestrationLoad:
 
     def test_agent_throughput_measurement(self):
         """Test agent throughput under load."""
-        agent_stats = {
-            "tasks_completed": 0,
-            "start_time": time.time(),
-            "end_time": None
-        }
+        agent_stats = {"tasks_completed": 0, "start_time": time.time(), "end_time": None}
 
         # Simulate task processing
         num_tasks = 1000
@@ -515,11 +503,7 @@ class TestConcurrentCLIOperations:
         sessions = []
 
         for session_id in range(num_sessions):
-            session = {
-                "id": session_id,
-                "commands_executed": 0,
-                "active": True
-            }
+            session = {"id": session_id, "commands_executed": 0, "active": True}
             sessions.append(session)
 
         # Execute commands in each session
@@ -564,7 +548,7 @@ class TestConcurrentCLIOperations:
 
             if len(output_buffer) >= max_buffer_size:
                 # Flush oldest lines first, then add new
-                output_buffer = output_buffer[-(max_buffer_size-1):]
+                output_buffer = output_buffer[-(max_buffer_size - 1) :]
 
             output_buffer.append(output_line)
 
@@ -576,7 +560,7 @@ class TestConcurrentCLIOperations:
         commands = [
             {"cmd": "status", "time": 0.1},
             {"cmd": "list", "time": 0.2},
-            {"cmd": "info", "time": 0.15}
+            {"cmd": "info", "time": 0.15},
         ]
 
         # Sequential execution

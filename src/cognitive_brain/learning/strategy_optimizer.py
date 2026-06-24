@@ -397,9 +397,9 @@ class StrategyOptimizer:
             "algorithm": self.algorithm_type.value,
             "episodes_trained": self.episode_count,
             "baseline_performance": self.baseline_performance,
-            "final_performance": np.mean(self.training_history[-100:])
-            if self.training_history
-            else 0.0,
+            "final_performance": (
+                np.mean(self.training_history[-100:]) if self.training_history else 0.0
+            ),
             "improvement_percentage": self._calculate_improvement(),
             "converged": self.metrics.is_converged if self.metrics else False,
             "convergence_episode": self.metrics.convergence_episode if self.metrics else None,

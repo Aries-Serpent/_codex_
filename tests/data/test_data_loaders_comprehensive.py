@@ -47,7 +47,7 @@ def sample_jsonl_file(temp_data_dir: Path):
     lines = [
         {"prompt": "What is AI?", "completion": "Artificial Intelligence"},
         {"prompt": "Define ML", "completion": "Machine Learning"},
-        {"prompt": "What is DL?", "completion": "Deep Learning"}
+        {"prompt": "What is DL?", "completion": "Deep Learning"},
     ]
     with jsonl_file.open("w") as f:
         for line in lines:
@@ -202,9 +202,9 @@ class TestLoadJsonl:
         malformed_file = temp_data_dir / "malformed.jsonl"
         with malformed_file.open("w") as f:
             f.write('{"valid": "line1"}\n')
-            f.write('not valid json\n')
+            f.write("not valid json\n")
             f.write('{"valid": "line2"}\n')
-            f.write('also not json\n')
+            f.write("also not json\n")
 
         data, metadata = load_jsonl(malformed_file)
 
@@ -425,8 +425,8 @@ class TestEdgeCases:
         whitespace_file = temp_data_dir / "whitespace.jsonl"
         with whitespace_file.open("w") as f:
             f.write('{"valid": "line1"}\n')
-            f.write('   \n')
-            f.write('\t\t\n')
+            f.write("   \n")
+            f.write("\t\t\n")
             f.write('{"valid": "line2"}\n')
 
         # UPDATED: Unpack tuple return (records, metadata)

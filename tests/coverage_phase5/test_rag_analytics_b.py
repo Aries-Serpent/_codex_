@@ -1,4 +1,5 @@
 """Test RAG analytics module 1."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,6 +11,7 @@ class AnalyticsEvent:
     event_type: str
     timestamp: float
     metadata: dict
+
 
 class AnalyticsCollector:
     def __init__(self):
@@ -24,10 +26,12 @@ class AnalyticsCollector:
             return [e for e in self.events if e.event_type == event_type]
         return self.events
 
+
 def test_analytics_collector_1_init():
     """Test analytics collector initialization."""
     collector = AnalyticsCollector()
     assert len(collector.events) == 0
+
 
 def test_analytics_collector_1_record():
     """Test recording analytics events."""
@@ -36,6 +40,7 @@ def test_analytics_collector_1_record():
 
     assert len(collector.events) == 1
     assert collector.events[0].event_type == "query"
+
 
 def test_analytics_collector_1_filter():
     """Test filtering analytics events."""
@@ -46,6 +51,7 @@ def test_analytics_collector_1_filter():
 
     queries = collector.get_events("query")
     assert len(queries) == 2
+
 
 def test_analytics_collector_1_metadata():
     """Test analytics event metadata."""

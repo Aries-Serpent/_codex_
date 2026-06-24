@@ -24,6 +24,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def health_check_config() -> dict[str, Any]:
     """Configuration for health checks."""
@@ -86,6 +87,7 @@ def mock_service_dependencies() -> dict[str, dict[str, Any]]:
 # ============================================================================
 # Liveness Probe Tests
 # ============================================================================
+
 
 class TestLivenessProbes:
     """Tests for liveness probe functionality."""
@@ -157,6 +159,7 @@ class TestLivenessProbes:
 # Readiness Probe Tests
 # ============================================================================
 
+
 class TestReadinessProbes:
     """Tests for readiness probe functionality."""
 
@@ -176,10 +179,7 @@ class TestReadinessProbes:
         dependencies = mock_service_dependencies
         dependencies["database"]["healthy"] = False
 
-        ready = all(
-            dep["healthy"] or not dep["required"]
-            for dep in dependencies.values()
-        )
+        ready = all(dep["healthy"] or not dep["required"] for dep in dependencies.values())
 
         assert ready is False
         # Should not be ready when required dependency fails
@@ -189,10 +189,7 @@ class TestReadinessProbes:
         dependencies = mock_service_dependencies
         dependencies["external_api"]["healthy"] = False
 
-        ready = all(
-            dep["healthy"] or not dep["required"]
-            for dep in dependencies.values()
-        )
+        ready = all(dep["healthy"] or not dep["required"] for dep in dependencies.values())
 
         assert ready is True
         # Should still be ready when optional dependency fails
@@ -222,6 +219,7 @@ class TestReadinessProbes:
 # ============================================================================
 # Startup Probe Tests
 # ============================================================================
+
 
 class TestStartupProbes:
     """Tests for startup probe functionality."""
@@ -275,6 +273,7 @@ class TestStartupProbes:
 # Health Check Dependencies Tests
 # ============================================================================
 
+
 class TestHealthCheckDependencies:
     """Tests for health check dependency management."""
 
@@ -283,9 +282,7 @@ class TestHealthCheckDependencies:
         dependencies = mock_service_dependencies
 
         all_healthy = all(dep["healthy"] for dep in dependencies.values())
-        required_healthy = all(
-            dep["healthy"] for dep in dependencies.values() if dep["required"]
-        )
+        required_healthy = all(dep["healthy"] for dep in dependencies.values() if dep["required"])
 
         assert all_healthy is True
         assert required_healthy is True
@@ -324,12 +321,8 @@ class TestHealthCheckDependencies:
         dependencies["service_b"]["healthy"] = False
 
         # service_c health depends on service_b
-        service_c_healthy = (
-            dependencies["service_c"]["healthy"]
-            and all(
-                dependencies[dep]["healthy"]
-                for dep in dependencies["service_c"]["depends_on"]
-            )
+        service_c_healthy = dependencies["service_c"]["healthy"] and all(
+            dependencies[dep]["healthy"] for dep in dependencies["service_c"]["depends_on"]
         )
 
         assert service_c_healthy is False
@@ -338,6 +331,7 @@ class TestHealthCheckDependencies:
 # ============================================================================
 # Composite Health Check Tests
 # ============================================================================
+
 
 class TestCompositeHealthChecks:
     """Tests for composite health check scenarios."""
@@ -363,9 +357,7 @@ class TestCompositeHealthChecks:
         }
 
         # Overall health depends on critical components only
-        critical_health = all(
-            c["healthy"] for c in components.values() if c.get("critical", False)
-        )
+        critical_health = all(c["healthy"] for c in components.values() if c.get("critical", False))
 
         assert critical_health is True
 
@@ -377,9 +369,7 @@ class TestCompositeHealthChecks:
             "api": {"healthy": False, "weight": 0.3},
         }
 
-        health_score = sum(
-            c["weight"] for c in components.values() if c["healthy"]
-        )
+        health_score = sum(c["weight"] for c in components.values() if c["healthy"])
 
         assert health_score == 0.7
         # 70% health score (db + cache)
@@ -388,6 +378,7 @@ class TestCompositeHealthChecks:
 # ============================================================================
 # Graceful Degradation Tests
 # ============================================================================
+
 
 class TestGracefulDegradation:
     """Tests for graceful degradation mechanisms."""
@@ -427,6 +418,7 @@ class TestGracefulDegradation:
 # Health Metrics Collection Tests
 # ============================================================================
 
+
 class TestHealthMetricsCollection:
     """Tests for health metrics collection."""
 
@@ -450,10 +442,12 @@ class TestHealthMetricsCollection:
 
         # Add historical checks
         for i in range(10):
-            history.append({
-                "timestamp": datetime.utcnow() - timedelta(minutes=i * 5),
-                "status": "healthy",
-            })
+            history.append(
+                {
+                    "timestamp": datetime.utcnow() - timedelta(minutes=i * 5),
+                    "status": "healthy",
+                }
+            )
 
         # Filter to retention period
         cutoff = datetime.utcnow() - timedelta(minutes=retention_period_minutes)
@@ -479,6 +473,7 @@ class TestHealthMetricsCollection:
 # Timeout and Retry Tests
 # ============================================================================
 
+
 class TestTimeoutAndRetry:
     """Tests for timeout and retry mechanisms."""
 
@@ -496,7 +491,7 @@ class TestTimeoutAndRetry:
         base_delay = 1
         max_retries = 4
 
-        delays = [base_delay * (2 ** i) for i in range(max_retries)]
+        delays = [base_delay * (2**i) for i in range(max_retries)]
 
         assert delays == [1, 2, 4, 8]
         # Exponential backoff pattern

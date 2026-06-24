@@ -3,6 +3,7 @@ Unit tests for codex_ml.training module components.
 
 Tests training loop functionality, loss computation, and metric logging.
 """
+
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
@@ -236,9 +237,7 @@ class TestRunMinimalEvaluation:
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"eval": {"base_score": 0.5}}
 
-            result = run_minimal_evaluation(
-                config, checkpoint="model.pt", run_dir=tmpdir
-            )
+            result = run_minimal_evaluation(config, checkpoint="model.pt", run_dir=tmpdir)
 
             # With checkpoint, should add 0.1 to base_score
             assert result["score"] == pytest.approx(0.6, rel=0.01)
@@ -250,9 +249,7 @@ class TestRunMinimalEvaluation:
         with tempfile.TemporaryDirectory() as tmpdir:
             config = {"eval": {"base_score": 0.95}}
 
-            result = run_minimal_evaluation(
-                config, checkpoint="model.pt", run_dir=tmpdir
-            )
+            result = run_minimal_evaluation(config, checkpoint="model.pt", run_dir=tmpdir)
 
             # Even with +0.1, should not exceed 1.0
             assert result["score"] <= 1.0

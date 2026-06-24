@@ -22,6 +22,7 @@ from cognitive_brain.monitoring.agent_dashboard import (
 # TestAgentDashboardRecord
 # ---------------------------------------------------------------------------
 
+
 class TestAgentDashboardRecord:
     def test_record_decision_appends(self):
         d = AgentDashboard()
@@ -57,6 +58,7 @@ class TestAgentDashboardRecord:
 # ---------------------------------------------------------------------------
 # TestAgentDashboardHealth
 # ---------------------------------------------------------------------------
+
 
 class TestAgentDashboardHealth:
     def test_empty_dashboard_healthy(self):
@@ -131,6 +133,7 @@ class TestAgentDashboardHealth:
 # TestAgentDashboardSelfCorrection
 # ---------------------------------------------------------------------------
 
+
 class TestAgentDashboardSelfCorrection:
     def test_self_correction_on_critical(self):
         d = AgentDashboard()
@@ -178,6 +181,7 @@ class TestAgentDashboardSelfCorrection:
 # TestAgentDashboardReset
 # ---------------------------------------------------------------------------
 
+
 class TestAgentDashboardReset:
     def test_reset_clears_records(self):
         d = AgentDashboard()
@@ -209,6 +213,7 @@ class TestAgentDashboardReset:
 # TestTrendComputation
 # ---------------------------------------------------------------------------
 
+
 class TestTrendComputation:
     def test_trend_stable(self):
         values = [0.8, 0.8, 0.8, 0.8]
@@ -232,6 +237,7 @@ class TestTrendComputation:
 # ---------------------------------------------------------------------------
 # TestPrometheusNoOp
 # ---------------------------------------------------------------------------
+
 
 class TestPrometheusNoOp:
     def test_prometheus_available_is_bool(self):

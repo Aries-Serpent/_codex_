@@ -13,6 +13,7 @@ Covers:
 Thread [7] (pullrequestreview-4033687302): the PR added generate_coverage_map.py
 with non-trivial behaviours but no unit tests.  These tests prevent regressions.
 """
+
 from __future__ import annotations
 
 import sys
@@ -41,6 +42,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _write_coverage_xml(tmp_path: Path, content: str) -> Path:
     """Write coverage XML to a temp file and return the path."""
@@ -87,6 +89,7 @@ def _minimal_xml(
 # _file_to_module
 # ---------------------------------------------------------------------------
 
+
 class TestFileToModule:
     def test_src_prefix_stripped(self):
         assert _file_to_module("src/codex/rag/embeddings.py") == "codex.rag.embeddings"
@@ -109,6 +112,7 @@ class TestFileToModule:
 # ---------------------------------------------------------------------------
 # parse_coverage_xml — basic parsing
 # ---------------------------------------------------------------------------
+
 
 class TestParseCoverageXml:
     def test_returns_module_entry(self, tmp_path):
@@ -174,14 +178,15 @@ class TestParseCoverageXml:
         assert 2 in entry.covered_lines  # covered in second entry
         assert 3 in entry.covered_lines
         # No line should appear in both covered and uncovered
-        assert not set(entry.covered_lines) & set(entry.uncovered_lines), (
-            "A line must not appear in both covered and uncovered"
-        )
+        assert not set(entry.covered_lines) & set(
+            entry.uncovered_lines
+        ), "A line must not appear in both covered and uncovered"
 
 
 # ---------------------------------------------------------------------------
 # build_coverage_map — multi-suite merge
 # ---------------------------------------------------------------------------
+
 
 class TestBuildCoverageMap:
     def test_single_suite(self, tmp_path):
@@ -198,12 +203,8 @@ class TestBuildCoverageMap:
         """Lines covered by ANY suite appear in the merged covered set."""
         xml1 = tmp_path / "cov1.xml"
         xml2 = tmp_path / "cov2.xml"
-        xml1.write_text(
-            _minimal_xml("src/codex/cli.py", 0.5, [1, 2], [3, 4])
-        )
-        xml2.write_text(
-            _minimal_xml("src/codex/cli.py", 0.75, [1, 3], [2, 4])
-        )
+        xml1.write_text(_minimal_xml("src/codex/cli.py", 0.5, [1, 2], [3, 4]))
+        xml2.write_text(_minimal_xml("src/codex/cli.py", 0.75, [1, 3], [2, 4]))
         result = build_coverage_map([xml1, xml2], suite_names=["unit", "integration"])
         mod = result["modules"]["codex.cli"]
         covered = set(mod["covered_lines"])
@@ -256,6 +257,7 @@ class TestBuildCoverageMap:
 # FunctionEntry.sufficient_coverage semantics
 # ---------------------------------------------------------------------------
 
+
 class TestFunctionEntrySufficientCoverage:
     def test_sufficient_coverage_true_when_majority_hit(self):
         fn = FunctionEntry(
@@ -278,20 +280,23 @@ class TestFunctionEntrySufficientCoverage:
     def test_field_is_not_named_is_covered(self):
         """Thread [2] — field was renamed from is_covered to sufficient_coverage
         to avoid confusion with standard 'any line executed' definition."""
-        assert not hasattr(FunctionEntry(
-            name="f", start_line=1, end_line=5, sufficient_coverage=False
-        ), "is_covered"), "Old field name 'is_covered' must not exist"
+        assert not hasattr(
+            FunctionEntry(name="f", start_line=1, end_line=5, sufficient_coverage=False),
+            "is_covered",
+        ), "Old field name 'is_covered' must not exist"
 
 
 # ---------------------------------------------------------------------------
 # pr_delta regression detection
 # ---------------------------------------------------------------------------
 
+
 class TestPrDelta:
     """Thread [4] + general regression: pr_delta must flag covered→uncovered transitions."""
 
     def test_pr_delta_import(self):
         from generate_coverage_map import pr_delta
+
         assert callable(pr_delta)
 
     def _make_map_json(self, tmp_path: Path, subdir: str, xml_content: str) -> Path:
@@ -335,6 +340,6 @@ class TestPrDelta:
             result = pr_delta(base_map, head_map)
         # Non-zero return code signals regression, OR output mentions regression
         output = buf.getvalue()
-        assert result != 0 or "regress" in output.lower() or "dropped" in output.lower(), (
-            f"pr_delta should detect coverage regression. exit={result}, output={output[:200]}"
-        )
+        assert (
+            result != 0 or "regress" in output.lower() or "dropped" in output.lower()
+        ), f"pr_delta should detect coverage regression. exit={result}, output={output[:200]}"

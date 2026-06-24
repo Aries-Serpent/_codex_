@@ -18,6 +18,7 @@ import pytest
 
 class JobStatus(Enum):
     """Job processing status."""
+
     PENDING = auto()
     RUNNING = auto()
     COMPLETED = auto()
@@ -28,6 +29,7 @@ class JobStatus(Enum):
 @dataclass
 class Job:
     """Job for queue processing."""
+
     job_id: str
     payload: dict[str, Any]
     status: JobStatus = JobStatus.PENDING
@@ -85,6 +87,7 @@ class TestQueueOperations:
 
     def test_queue_size_limit(self):
         """Queue respects size limits."""
+
         class BoundedQueue:
             def __init__(self, max_size):
                 self.max_size = max_size
@@ -113,6 +116,7 @@ class TestJobProcessing:
 
     def test_job_execution(self):
         """Jobs are executed correctly."""
+
         def execute_job(job, processor):
             job.status = JobStatus.RUNNING
             try:
@@ -135,6 +139,7 @@ class TestJobProcessing:
 
     def test_job_failure_handling(self):
         """Job failures are handled gracefully."""
+
         def execute_job(job, processor):
             job.status = JobStatus.RUNNING
             try:
@@ -157,6 +162,7 @@ class TestJobProcessing:
 
     def test_job_retry_logic(self):
         """Failed jobs are retried."""
+
         class RetryableJob:
             def __init__(self, job, max_retries=3):
                 self.job = job
@@ -180,6 +186,7 @@ class TestJobProcessing:
         retryable = RetryableJob(job, max_retries=3)
 
         call_count = [0]
+
         def flaky_processor(payload):
             call_count[0] += 1
             if call_count[0] < 3:
@@ -197,6 +204,7 @@ class TestWorkerPool:
 
     def test_worker_pool_creation(self):
         """Worker pool creates specified workers."""
+
         class WorkerPool:
             def __init__(self, num_workers):
                 self.num_workers = num_workers
@@ -226,6 +234,7 @@ class TestWorkerPool:
 
     def test_worker_load_balancing(self):
         """Work is distributed across workers."""
+
         class LoadBalancer:
             def __init__(self, workers):
                 self.workers = workers
@@ -258,16 +267,13 @@ class TestDeadLetterQueue:
 
     def test_dlq_routing(self):
         """Failed jobs are routed to DLQ."""
+
         class DeadLetterQueue:
             def __init__(self):
                 self.items = []
 
             def add(self, job, error):
-                self.items.append({
-                    "job": job,
-                    "error": error,
-                    "timestamp": time.time()
-                })
+                self.items.append({"job": job, "error": error, "timestamp": time.time()})
 
         dlq = DeadLetterQueue()
 
@@ -281,6 +287,7 @@ class TestDeadLetterQueue:
 
     def test_dlq_replay(self):
         """DLQ jobs can be replayed."""
+
         class DeadLetterQueue:
             def __init__(self):
                 self.items = []
@@ -313,6 +320,7 @@ class TestRateLimiting:
 
     def test_token_bucket_rate_limiter(self):
         """Token bucket rate limiter works correctly."""
+
         class TokenBucket:
             def __init__(self, tokens_per_second, bucket_size):
                 self.rate = tokens_per_second
@@ -344,6 +352,7 @@ class TestRateLimiting:
 
     def test_sliding_window_rate_limiter(self):
         """Sliding window rate limiter works correctly."""
+
         class SlidingWindowRateLimiter:
             def __init__(self, max_requests, window_seconds):
                 self.max_requests = max_requests

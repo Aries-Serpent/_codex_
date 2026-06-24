@@ -20,9 +20,7 @@ from __future__ import annotations
 import warnings  # noqa: E402
 from typing import Any  # noqa: E402
 
-from codex_ml.tokenization.hf_adapter import (  # noqa: E402
-    HFTokenizerAdapter as _HFTokenizerAdapter,
-)
+from codex_ml.tokenization.hf_adapter import HFTokenizerAdapter as _HFTokenizerAdapter  # noqa: E402
 
 try:  # pragma: no cover - optional torch dependency
     import torch

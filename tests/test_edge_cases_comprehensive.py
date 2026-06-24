@@ -13,160 +13,202 @@ import pytest
 class TestNumericBoundaryConditions:
     """Test suite for numeric boundary conditions and extreme values."""
 
-    @pytest.mark.parametrize("value,expected_zero", [
-        (0, True),
-        (-0, True),
-        (0.0, True),
-        (-0.0, True),
-        (1, False),
-        (-1, False),
-        (0.1, False),
-        (-0.1, False),
-    ])
+    @pytest.mark.parametrize(
+        "value,expected_zero",
+        [
+            (0, True),
+            (-0, True),
+            (0.0, True),
+            (-0.0, True),
+            (1, False),
+            (-1, False),
+            (0.1, False),
+            (-0.1, False),
+        ],
+    )
     def test_zero_boundary(self, value, expected_zero):
         """Test zero vs non-zero boundary conditions."""
         assert (value == 0) == expected_zero
 
-    @pytest.mark.parametrize("value", [
-        sys.maxsize,
-        sys.maxsize - 1,
-        sys.maxsize - 1000,
-        -sys.maxsize - 1,
-        -sys.maxsize,
-        -sys.maxsize + 1,
-    ])
+    @pytest.mark.parametrize(
+        "value",
+        [
+            sys.maxsize,
+            sys.maxsize - 1,
+            sys.maxsize - 1000,
+            -sys.maxsize - 1,
+            -sys.maxsize,
+            -sys.maxsize + 1,
+        ],
+    )
     def test_integer_extremes(self, value):
         """Test maximum and minimum integer values."""
         assert isinstance(value, int)
         assert value == value + 0
 
-    @pytest.mark.parametrize("op,a,b,expected", [
-        (lambda x, y: x + y, sys.maxsize - 1, 0, sys.maxsize - 1),
-        (lambda x, y: x - y, sys.maxsize, 0, sys.maxsize),
-        (lambda x, y: x + y, -sys.maxsize, 1, -sys.maxsize + 1),
-        (lambda x, y: x * y, 0, sys.maxsize, 0),
-        (lambda x, y: x * y, 1, sys.maxsize, sys.maxsize),
-        (lambda x, y: x * y, -1, sys.maxsize, -sys.maxsize),
-    ])
+    @pytest.mark.parametrize(
+        "op,a,b,expected",
+        [
+            (lambda x, y: x + y, sys.maxsize - 1, 0, sys.maxsize - 1),
+            (lambda x, y: x - y, sys.maxsize, 0, sys.maxsize),
+            (lambda x, y: x + y, -sys.maxsize, 1, -sys.maxsize + 1),
+            (lambda x, y: x * y, 0, sys.maxsize, 0),
+            (lambda x, y: x * y, 1, sys.maxsize, sys.maxsize),
+            (lambda x, y: x * y, -1, sys.maxsize, -sys.maxsize),
+        ],
+    )
     def test_integer_arithmetic_boundaries(self, op, a, b, expected):
         """Test arithmetic operations near integer boundaries."""
         result = op(a, b)
         assert result == expected
 
-    @pytest.mark.parametrize("value,is_positive", [
-        (1, True),
-        (-1, False),
-        (0, True),
-        (0.1, True),
-        (-0.1, False),
-        (float('inf'), True),
-        (float('-inf'), False),
-    ])
+    @pytest.mark.parametrize(
+        "value,is_positive",
+        [
+            (1, True),
+            (-1, False),
+            (0, True),
+            (0.1, True),
+            (-0.1, False),
+            (float("inf"), True),
+            (float("-inf"), False),
+        ],
+    )
     def test_positive_negative_classification(self, value, is_positive):
         """Test classification of positive vs negative numbers."""
         assert (value >= 0) == is_positive
 
-    @pytest.mark.parametrize("value", [
-        float('inf'),
-        float('-inf'),
-        -float('inf'),
-    ])
+    @pytest.mark.parametrize(
+        "value",
+        [
+            float("inf"),
+            float("-inf"),
+            -float("inf"),
+        ],
+    )
     def test_infinity_values(self, value):
         """Test infinity boundary conditions."""
         assert math.isinf(value)
 
-    @pytest.mark.parametrize("value", [
-        float('nan'),
-    ])
+    @pytest.mark.parametrize(
+        "value",
+        [
+            float("nan"),
+        ],
+    )
     def test_nan_value(self, value):
         """Test NaN special value."""
         assert math.isnan(value)
         # NaN is not equal to itself
         assert not (value == value)
 
-    @pytest.mark.parametrize("value,expected_finite", [
-        (0.0, True),
-        (1e-300, True),
-        (1e300, True),
-        (float('inf'), False),
-        (float('-inf'), False),
-        (float('nan'), False),
-    ])
+    @pytest.mark.parametrize(
+        "value,expected_finite",
+        [
+            (0.0, True),
+            (1e-300, True),
+            (1e300, True),
+            (float("inf"), False),
+            (float("-inf"), False),
+            (float("nan"), False),
+        ],
+    )
     def test_float_finiteness(self, value, expected_finite):
         """Test finite vs infinite float values."""
         assert math.isfinite(value) == expected_finite
 
-    @pytest.mark.parametrize("a,b", [
-        (1e-300, 1e-300),
-        (1e-308, 1e-308),
-        (1e300, 1e300),
-        (1e308, 1e308),
-        (0.1 + 0.2, 0.3),
-    ])
+    @pytest.mark.parametrize(
+        "a,b",
+        [
+            (1e-300, 1e-300),
+            (1e-308, 1e-308),
+            (1e300, 1e300),
+            (1e308, 1e308),
+            (0.1 + 0.2, 0.3),
+        ],
+    )
     def test_float_precision_limits(self, a, b):
         """Test floating-point precision at extreme scales."""
         # These may not be exactly equal due to precision
         assert isinstance(a, float)
         assert isinstance(b, float)
 
-    @pytest.mark.parametrize("value,as_int", [
-        (1.0, 1),
-        (-1.0, -1),
-        (0.0, 0),
-        (1.9, 1),
-        (2.1, 2),
-    ])
+    @pytest.mark.parametrize(
+        "value,as_int",
+        [
+            (1.0, 1),
+            (-1.0, -1),
+            (0.0, 0),
+            (1.9, 1),
+            (2.1, 2),
+        ],
+    )
     def test_float_to_int_conversion(self, value, as_int):
         """Test float to int conversion at boundaries."""
         assert int(value) == as_int
 
-    @pytest.mark.parametrize("value", [
-        1e-100,
-        1e-1000,
-        1e100,
-        1e1000,
-        -1e-100,
-        -1e100,
-    ])
+    @pytest.mark.parametrize(
+        "value",
+        [
+            1e-100,
+            1e-1000,
+            1e100,
+            1e1000,
+            -1e-100,
+            -1e100,
+        ],
+    )
     def test_extreme_float_scales(self, value):
         """Test float values at extreme scales."""
         assert isinstance(value, float)
         assert (value > 0) or (value < 0) or (value == 0)
 
-    @pytest.mark.parametrize("a,b", [
-        (1, 1.0),
-        (0, 0.0),
-        (-1, -1.0),
-    ])
+    @pytest.mark.parametrize(
+        "a,b",
+        [
+            (1, 1.0),
+            (0, 0.0),
+            (-1, -1.0),
+        ],
+    )
     def test_int_float_equality(self, a, b):
         """Test int and float equality comparisons."""
         assert a == b
         assert b == a
 
-    @pytest.mark.parametrize("value", [
-        1.0000000000000001,
-        0.9999999999999999,
-        1e-16,
-    ])
+    @pytest.mark.parametrize(
+        "value",
+        [
+            1.0000000000000001,
+            0.9999999999999999,
+            1e-16,
+        ],
+    )
     def test_float_precision_edge_cases(self, value):
         """Test floating-point precision edge cases."""
         assert isinstance(value, float)
 
-    @pytest.mark.parametrize("a,b", [
-        (0, 0.0),
-        (sys.maxsize, float(sys.maxsize)),
-        (-sys.maxsize - 1, float(-sys.maxsize - 1)),
-    ])
+    @pytest.mark.parametrize(
+        "a,b",
+        [
+            (0, 0.0),
+            (sys.maxsize, float(sys.maxsize)),
+            (-sys.maxsize - 1, float(-sys.maxsize - 1)),
+        ],
+    )
     def test_type_coercion_numeric(self, a, b):
         """Test numeric type coercion."""
         assert a == b or abs(a - b) < 1e-10
 
-    @pytest.mark.parametrize("operation,expected_zero", [
-        (lambda: 1 - 1, True),
-        (lambda: float('inf') - float('inf'), False),  # NaN
-        (lambda: 0 * 1000, True),
-        (lambda: 0 / 1, True),
-    ])
+    @pytest.mark.parametrize(
+        "operation,expected_zero",
+        [
+            (lambda: 1 - 1, True),
+            (lambda: float("inf") - float("inf"), False),  # NaN
+            (lambda: 0 * 1000, True),
+            (lambda: 0 / 1, True),
+        ],
+    )
     def test_arithmetic_to_zero(self, operation, expected_zero):
         """Test operations that result in zero."""
         result = operation()
@@ -175,35 +217,44 @@ class TestNumericBoundaryConditions:
         else:
             assert math.isnan(result)
 
-    @pytest.mark.parametrize("numerator,denominator", [
-        (1, 1),
-        (0, 1),
-        (1e100, 1e100),
-        (-1, 1),
-    ])
+    @pytest.mark.parametrize(
+        "numerator,denominator",
+        [
+            (1, 1),
+            (0, 1),
+            (1e100, 1e100),
+            (-1, 1),
+        ],
+    )
     def test_division_boundaries(self, numerator, denominator):
         """Test division at boundaries."""
         if denominator != 0:
             result = numerator / denominator
             assert isinstance(result, float)
 
-    @pytest.mark.parametrize("base,exponent,expected_type", [
-        (2, 0, int),
-        (2, 10, int),
-        (2.0, 10, float),
-        (2, -1, float),
-    ])
+    @pytest.mark.parametrize(
+        "base,exponent,expected_type",
+        [
+            (2, 0, int),
+            (2, 10, int),
+            (2.0, 10, float),
+            (2, -1, float),
+        ],
+    )
     def test_exponentiation_boundaries(self, base, exponent, expected_type):
         """Test exponentiation at boundaries."""
-        result = base ** exponent
+        result = base**exponent
         assert isinstance(result, expected_type)
 
-    @pytest.mark.parametrize("value", [
-        abs(sys.maxsize),
-        abs(-sys.maxsize - 1),
-        abs(0),
-        abs(-0),
-    ])
+    @pytest.mark.parametrize(
+        "value",
+        [
+            abs(sys.maxsize),
+            abs(-sys.maxsize - 1),
+            abs(0),
+            abs(-0),
+        ],
+    )
     def test_absolute_value(self, value):
         """Test absolute value of boundary integers."""
         assert value >= 0
@@ -217,36 +268,45 @@ class TestNumericBoundaryConditions:
 class TestCollectionEdgeCases:
     """Test suite for collection boundary conditions."""
 
-    @pytest.mark.parametrize("collection,is_empty", [
-        ([], True),
-        ({}, True),
-        (set(), True),
-        ("", True),
-        ([1], False),
-        ({1}, False),
-        ({"a": 1}, False),
-        ("a", False),
-    ])
+    @pytest.mark.parametrize(
+        "collection,is_empty",
+        [
+            ([], True),
+            ({}, True),
+            (set(), True),
+            ("", True),
+            ([1], False),
+            ({1}, False),
+            ({"a": 1}, False),
+            ("a", False),
+        ],
+    )
     def test_empty_collections(self, collection, is_empty):
         """Test empty collection identification."""
         assert len(collection) == 0 if is_empty else len(collection) > 0
 
-    @pytest.mark.parametrize("collection", [
-        [1],
-        {1},
-        {"a": 1},
-        ["single"],
-    ])
+    @pytest.mark.parametrize(
+        "collection",
+        [
+            [1],
+            {1},
+            {"a": 1},
+            ["single"],
+        ],
+    )
     def test_single_element_collections(self, collection):
         """Test single-element collections."""
         assert len(collection) == 1
 
-    @pytest.mark.parametrize("size", [
-        10,
-        100,
-        1000,
-        10000,
-    ])
+    @pytest.mark.parametrize(
+        "size",
+        [
+            10,
+            100,
+            1000,
+            10000,
+        ],
+    )
     def test_large_list_creation(self, size):
         """Test creation and properties of large lists."""
         large_list = list(range(size))
@@ -254,11 +314,14 @@ class TestCollectionEdgeCases:
         assert large_list[0] == 0
         assert large_list[-1] == size - 1
 
-    @pytest.mark.parametrize("size", [
-        10,
-        100,
-        1000,
-    ])
+    @pytest.mark.parametrize(
+        "size",
+        [
+            10,
+            100,
+            1000,
+        ],
+    )
     def test_large_dict_creation(self, size):
         """Test creation and properties of large dicts."""
         large_dict = {i: i * 2 for i in range(size)}
@@ -276,38 +339,50 @@ class TestCollectionEdgeCases:
         nested = {"a": {"b": {"c": {"d": 1}}}}
         assert nested["a"]["b"]["c"]["d"] == 1
 
-    @pytest.mark.parametrize("items", [
-        [1, 1, 1],
-        ["a", "a", "a"],
-        [None, None, None],
-    ])
+    @pytest.mark.parametrize(
+        "items",
+        [
+            [1, 1, 1],
+            ["a", "a", "a"],
+            [None, None, None],
+        ],
+    )
     def test_duplicate_items(self, items):
         """Test lists with duplicate items."""
         assert len(items) == 3
         assert len(set(items)) == 1
 
-    @pytest.mark.parametrize("items", [
-        [1, 2, 3],
-        ["a", "b", "c"],
-    ])
+    @pytest.mark.parametrize(
+        "items",
+        [
+            [1, 2, 3],
+            ["a", "b", "c"],
+        ],
+    )
     def test_unique_items(self, items):
         """Test lists with unique items."""
         assert len(items) == len(set(items))
 
-    @pytest.mark.parametrize("mixed_list", [
-        [1, "a", 1.5, None],
-        [[], {}, set(), ""],
-        [True, False, 0, 1],
-    ])
+    @pytest.mark.parametrize(
+        "mixed_list",
+        [
+            [1, "a", 1.5, None],
+            [[], {}, set(), ""],
+            [True, False, 0, 1],
+        ],
+    )
     def test_mixed_type_collections(self, mixed_list):
         """Test collections with mixed types."""
         assert len(mixed_list) == 4
 
-    @pytest.mark.parametrize("collection", [
-        [],
-        {},
-        set(),
-    ])
+    @pytest.mark.parametrize(
+        "collection",
+        [
+            [],
+            {},
+            set(),
+        ],
+    )
     def test_empty_iteration(self, collection):
         """Test iteration over empty collections."""
         count = 0
@@ -315,11 +390,14 @@ class TestCollectionEdgeCases:
             count += 1
         assert count == 0
 
-    @pytest.mark.parametrize("collection", [
-        [1, 2, 3],
-        {1, 2, 3},
-        {"a": 1, "b": 2, "c": 3},
-    ])
+    @pytest.mark.parametrize(
+        "collection",
+        [
+            [1, 2, 3],
+            {1, 2, 3},
+            {"a": 1, "b": 2, "c": 3},
+        ],
+    )
     def test_non_empty_iteration(self, collection):
         """Test iteration over non-empty collections."""
         count = 0
@@ -337,10 +415,13 @@ class TestCollectionEdgeCases:
         d = {"key": None}
         assert d["key"] is None
 
-    @pytest.mark.parametrize("collection", [
-        [None],
-        {None},
-    ])
+    @pytest.mark.parametrize(
+        "collection",
+        [
+            [None],
+            {None},
+        ],
+    )
     def test_none_in_collections(self, collection):
         """Test None values in collections."""
         assert None in collection
@@ -356,11 +437,14 @@ class TestCollectionEdgeCases:
         d = {"empty_list": [], "empty_dict": {}, "empty_set": set()}
         assert all(len(v) == 0 for v in d.values())
 
-    @pytest.mark.parametrize("lst,expected_index", [
-        ([1, 2, 3], -1),
-        ([1], -1),
-        (["a", "b", "c"], -1),
-    ])
+    @pytest.mark.parametrize(
+        "lst,expected_index",
+        [
+            ([1, 2, 3], -1),
+            ([1], -1),
+            (["a", "b", "c"], -1),
+        ],
+    )
     def test_negative_indexing(self, lst, expected_index):
         """Test negative indexing in lists."""
         assert lst[expected_index] == lst[len(lst) + expected_index]
@@ -397,14 +481,17 @@ class TestCollectionEdgeCases:
         converted = list(set(original))
         assert set(converted) == set(original)
 
-    @pytest.mark.parametrize("collection,item,expected", [
-        ([1, 2, 3], 2, True),
-        ([1, 2, 3], 4, False),
-        ({1, 2, 3}, 2, True),
-        ({"a": 1, "b": 2}, "a", True),
-        ("abc", "b", True),
-        ("abc", "d", False),
-    ])
+    @pytest.mark.parametrize(
+        "collection,item,expected",
+        [
+            ([1, 2, 3], 2, True),
+            ([1, 2, 3], 4, False),
+            ({1, 2, 3}, 2, True),
+            ({"a": 1, "b": 2}, "a", True),
+            ("abc", "b", True),
+            ("abc", "d", False),
+        ],
+    )
     def test_membership_testing(self, collection, item, expected):
         """Test membership checking in collections."""
         assert (item in collection) == expected
@@ -472,13 +559,16 @@ class TestStringEdgeCases:
         assert "" == ""
         assert len("") == 0
 
-    @pytest.mark.parametrize("s", [
-        "a",
-        "1",
-        " ",
-        "\n",
-        "\t",
-    ])
+    @pytest.mark.parametrize(
+        "s",
+        [
+            "a",
+            "1",
+            " ",
+            "\n",
+            "\t",
+        ],
+    )
     def test_single_character_strings(self, s):
         """Test single-character strings."""
         assert len(s) == 1
@@ -496,12 +586,15 @@ class TestStringEdgeCases:
         assert "x" in long_str
         assert long_str.count("x") == 5000
 
-    @pytest.mark.parametrize("s", [
-        "   ",
-        "\n",
-        "\t",
-        "\n\t ",
-    ])
+    @pytest.mark.parametrize(
+        "s",
+        [
+            "   ",
+            "\n",
+            "\t",
+            "\n\t ",
+        ],
+    )
     def test_whitespace_only_strings(self, s):
         """Test whitespace-only strings."""
         assert len(s) > 0
@@ -542,7 +635,7 @@ class TestStringEdgeCases:
 
     def test_string_escapes(self):
         """Test string with escape sequences."""
-        s = "quote: \" backslash: \\ newline: \n"
+        s = 'quote: " backslash: \\ newline: \n'
         assert '"' in s
         assert "\\" in s
         assert "\n" in s
@@ -634,35 +727,44 @@ class TestStringEdgeCases:
 class TestTypeCoercion:
     """Test suite for type coercion edge cases."""
 
-    @pytest.mark.parametrize("value,expected_int", [
-        ("0", 0),
-        ("1", 1),
-        ("-1", -1),
-        ("123", 123),
-    ])
+    @pytest.mark.parametrize(
+        "value,expected_int",
+        [
+            ("0", 0),
+            ("1", 1),
+            ("-1", -1),
+            ("123", 123),
+        ],
+    )
     def test_string_to_int_valid(self, value, expected_int):
         """Test valid string to int conversion."""
         assert int(value) == expected_int
 
-    @pytest.mark.parametrize("invalid_str", [
-        "abc",
-        "1.5",
-        "",
-        "1a",
-        "a1",
-    ])
+    @pytest.mark.parametrize(
+        "invalid_str",
+        [
+            "abc",
+            "1.5",
+            "",
+            "1a",
+            "a1",
+        ],
+    )
     def test_string_to_int_invalid(self, invalid_str):
         """Test invalid string to int conversion raises error."""
         with pytest.raises(ValueError):
             int(invalid_str)
 
-    @pytest.mark.parametrize("value,expected_float", [
-        ("0.0", 0.0),
-        ("1.5", 1.5),
-        ("-1.5", -1.5),
-        ("inf", float('inf')),
-        ("-inf", float('-inf')),
-    ])
+    @pytest.mark.parametrize(
+        "value,expected_float",
+        [
+            ("0.0", 0.0),
+            ("1.5", 1.5),
+            ("-1.5", -1.5),
+            ("inf", float("inf")),
+            ("-inf", float("-inf")),
+        ],
+    )
     def test_string_to_float_valid(self, value, expected_float):
         """Test valid string to float conversion."""
         result = float(value)
@@ -671,25 +773,31 @@ class TestTypeCoercion:
         else:
             assert math.isinf(result) and (result > 0) == (expected_float > 0)
 
-    @pytest.mark.parametrize("invalid_str", [
-        "abc",
-        "1.2.3",
-        "",
-    ])
+    @pytest.mark.parametrize(
+        "invalid_str",
+        [
+            "abc",
+            "1.2.3",
+            "",
+        ],
+    )
     def test_string_to_float_invalid(self, invalid_str):
         """Test invalid string to float conversion raises error."""
         with pytest.raises(ValueError):
             float(invalid_str)
 
-    @pytest.mark.parametrize("value,is_truthy", [
-        (0, False),
-        (1, True),
-        ("", False),
-        ("a", True),
-        ([], False),
-        ([1], True),
-        (None, False),
-    ])
+    @pytest.mark.parametrize(
+        "value,is_truthy",
+        [
+            (0, False),
+            (1, True),
+            ("", False),
+            ("a", True),
+            ([], False),
+            ([1], True),
+            (None, False),
+        ],
+    )
     def test_type_bool_conversion(self, value, is_truthy):
         """Test conversion to boolean."""
         # Test truthiness: empty/zero/None are falsy
@@ -729,6 +837,7 @@ class TestTypeCoercion:
 
     def test_none_propagation_through_chain(self):
         """Test None behavior through function chains."""
+
         def process(value):
             if value is None:
                 return None

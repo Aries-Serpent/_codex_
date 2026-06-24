@@ -37,6 +37,7 @@ find_dirs_without_index = _mod.find_dirs_without_index
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _patch_roots(monkeypatch: pytest.MonkeyPatch, docs_root: Path) -> None:
     """Point the module's DOCS_ROOT and REPO_ROOT at a temp tree."""
     monkeypatch.setattr(_mod, "DOCS_ROOT", docs_root)
@@ -46,6 +47,7 @@ def _patch_roots(monkeypatch: pytest.MonkeyPatch, docs_root: Path) -> None:
 # ---------------------------------------------------------------------------
 # generate_index tests
 # ---------------------------------------------------------------------------
+
 
 class TestGenerateIndexSubdirOnly:
     """generate_index handles directories whose .md files live only in subdirs."""

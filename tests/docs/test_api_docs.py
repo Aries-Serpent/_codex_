@@ -68,9 +68,7 @@ class TestOpenAPISchema:
         for pattern in patterns:
             files.extend(DOCS_DIR.rglob(pattern))
             files.extend(
-                (REPO_ROOT / "schemas").rglob(pattern)
-                if (REPO_ROOT / "schemas").exists()
-                else []
+                (REPO_ROOT / "schemas").rglob(pattern) if (REPO_ROOT / "schemas").exists() else []
             )
         return files
 
@@ -124,15 +122,13 @@ class TestEndpointDocumentation:
         for router in routers:
             content = router.read_text(encoding="utf-8", errors="ignore")
             # Check for module-level docstring
-            if not content.strip().startswith('"""') and not content.strip().startswith(
-                "'''"
-            ):
+            if not content.strip().startswith('"""') and not content.strip().startswith("'''"):
                 missing_docs.append(router.name)
 
         # Allow some without docstrings
-        assert len(missing_docs) < len(routers), (
-            f"Most router files should have docstrings: missing in {missing_docs}"
-        )
+        assert len(missing_docs) < len(
+            routers
+        ), f"Most router files should have docstrings: missing in {missing_docs}"
 
     def test_endpoints_have_response_models(self):
         """Spot-check that endpoints define response models."""
@@ -269,6 +265,4 @@ class TestConfigDocumentation:
         for hydra_path in hydra_paths:
             if hydra_path.exists():
                 content = hydra_path.read_text(encoding="utf-8")
-                assert "hydra" in content.lower(), (
-                    f"{hydra_path.name} should mention Hydra"
-                )
+                assert "hydra" in content.lower(), f"{hydra_path.name} should mention Hydra"

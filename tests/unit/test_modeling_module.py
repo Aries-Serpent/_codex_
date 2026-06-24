@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 import pytest
 
-pytest.importorskip('torch')
+pytest.importorskip("torch")
 
 from src import modeling
 

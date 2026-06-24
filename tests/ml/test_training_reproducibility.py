@@ -329,6 +329,7 @@ class TestEnvironmentReproducibility:
     def test_platform_info_logged(self):
         """Test platform information is logged."""
         import platform
+
         info = {
             "system": platform.system(),
             "release": platform.release(),

@@ -14,23 +14,19 @@ from codex_ml.cli import config
     [
         (
             "last",
-            dedent(
-                """
+            dedent("""
                 defaults:
                   - experiment: debug
                   - _self_
-                """
-            ),
+                """),
         ),
         (
             "first",
-            dedent(
-                """
+            dedent("""
                 defaults:
                   - _self_
                   - trainer: base
-                """
-            ),
+                """),
         ),
     ],
 )
@@ -42,12 +38,10 @@ def test_audit_defaults_passes_when_self_position_matches(mode: str, text: str) 
 
 
 def test_audit_defaults_flags_missing_self_entry() -> None:
-    text = dedent(
-        """
+    text = dedent("""
         defaults:
           - trainer: base
-        """
-    )
+        """)
     code, payload = config._audit_defaults(text, mode="first")
     assert code == 3
     assert payload == {
@@ -59,13 +53,11 @@ def test_audit_defaults_flags_missing_self_entry() -> None:
 
 
 def test_audit_defaults_detects_out_of_order_self_marker() -> None:
-    text = dedent(
-        """
+    text = dedent("""
         defaults:
           - experiment: debug
           - _self_
-        """
-    )
+        """)
     code, payload = config._audit_defaults(text, mode="first")
     assert code == 4
     assert payload["_self_"] is True
@@ -74,14 +66,12 @@ def test_audit_defaults_detects_out_of_order_self_marker() -> None:
 
 
 def test_extract_defaults_from_text_handles_plain_yaml_block() -> None:
-    text = dedent(
-        """
+    text = dedent("""
         defaults:
           - group: foo
           - _self_
         other: value
-        """
-    )
+        """)
     entries = config._extract_defaults_from_text(text)
     assert entries == ["group", "_self_"]
 

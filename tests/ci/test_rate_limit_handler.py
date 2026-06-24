@@ -15,6 +15,7 @@ import rate_limit_handler as rlh
 
 # ── rate_limit_handler tests ────────────────────────────────────────────────────
 
+
 class TestIsRateLimitError:
     def test_detects_user_weekly_rate_limited_code(self):
         assert rlh.is_rate_limit_error({"code": "user_weekly_rate_limited"})
@@ -171,6 +172,7 @@ class TestPostPrComment:
 
 
 # ── push_conflict_resolver tests ────────────────────────────────────────────────
+
 
 class TestResolveKnownConflicts:
     def test_prefer_theirs_for_manifest(self, tmp_path, monkeypatch):

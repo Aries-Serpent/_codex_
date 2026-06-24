@@ -44,10 +44,7 @@ def _install_minimal_hf_stubs(
                 result = {"input_ids": [0], "attention_mask": [1]}
             else:
                 # Return lists of results for each text in the batch
-                result = {
-                    "input_ids": [[0] for _ in text],
-                    "attention_mask": [[1] for _ in text]
-                }
+                result = {"input_ids": [[0] for _ in text], "attention_mask": [[1] for _ in text]}
 
             # Convert to tensors if requested (needed for HF Trainer data collator)
             if return_tensors == "pt":
@@ -90,9 +87,7 @@ def _install_minimal_hf_stubs(
             self.compute_metrics = compute_metrics
             self.callbacks = list(callbacks or [])
             self.state = types.SimpleNamespace(
-                global_step=0,
-                last_model_checkpoint=None,
-                best_model_checkpoint=None
+                global_step=0, last_model_checkpoint=None, best_model_checkpoint=None
             )
 
         def train(self, resume_from_checkpoint=None):  # pragma: no cover - stub
@@ -123,6 +118,7 @@ def _install_minimal_hf_stubs(
 
     class DummyDataCollator:
         """Mock data collator that converts lists to tensors for HF Trainer compatibility."""
+
         def __init__(self, *args, **kwargs):
             pass
 
@@ -148,7 +144,8 @@ def _install_minimal_hf_stubs(
             return batch
 
     monkeypatch.setattr(
-        "src.training.engine_hf_trainer.AutoTokenizer.from_pretrained", lambda *a, **k: DummyTokenizer()
+        "src.training.engine_hf_trainer.AutoTokenizer.from_pretrained",
+        lambda *a, **k: DummyTokenizer(),
     )
     monkeypatch.setattr(
         "src.training.engine_hf_trainer.AutoModelForCausalLM.from_pretrained",

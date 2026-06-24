@@ -238,7 +238,8 @@ def test_sample_system_metrics_with_psutil(monkeypatch):
 
     monkeypatch.setattr(_real_psutil, "cpu_percent", lambda interval=None: 42.0, raising=False)
     monkeypatch.setattr(
-        _real_psutil, "virtual_memory",
+        _real_psutil,
+        "virtual_memory",
         lambda: types.SimpleNamespace(percent=33.0, used=2 * 1024**3),
         raising=False,
     )

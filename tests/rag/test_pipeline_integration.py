@@ -17,6 +17,7 @@ import pytest
 @dataclass
 class Document:
     """Document for RAG indexing."""
+
     id: str
     content: str
     metadata: dict[str, Any]
@@ -25,6 +26,7 @@ class Document:
 @dataclass
 class RetrievalResult:
     """Result from retrieval."""
+
     document_id: str
     content: str
     score: float
@@ -36,6 +38,7 @@ class TestDocumentIngestion:
 
     def test_document_chunking(self):
         """Documents are chunked correctly."""
+
         def chunk_document(content, chunk_size=500, overlap=50):
             chunks = []
             start = 0
@@ -53,6 +56,7 @@ class TestDocumentIngestion:
 
     def test_metadata_extraction(self):
         """Metadata is extracted from documents."""
+
         def extract_metadata(content, filename):
             return {
                 "filename": filename,
@@ -133,10 +137,11 @@ class TestEmbeddingGeneration:
 
     def test_batch_embedding(self):
         """Batch embedding is more efficient."""
+
         def batch_embed(texts, batch_size=32):
             results = []
             for i in range(0, len(texts), batch_size):
-                batch = texts[i:i+batch_size]
+                batch = texts[i : i + batch_size]
                 # Mock batch processing
                 results.extend([[0.1] * 384 for _ in batch])
             return results
@@ -173,6 +178,7 @@ class TestVectorSearch:
 
     def test_top_k_retrieval(self):
         """Top-K results are returned."""
+
         def retrieve_top_k(query_embedding, index, k=5):
             import math
 
@@ -205,6 +211,7 @@ class TestVectorSearch:
 
     def test_score_threshold_filtering(self):
         """Results below score threshold are filtered."""
+
         def filter_by_threshold(results, threshold=0.5):
             return [(doc_id, score) for doc_id, score in results if score >= threshold]
 
@@ -226,6 +233,7 @@ class TestContextAssembly:
 
     def test_context_ordering(self):
         """Context documents are ordered by relevance."""
+
         def assemble_context(results, max_tokens=2000):
             # Sort by score descending
             sorted_results = sorted(results, key=lambda x: x.score, reverse=True)
@@ -256,6 +264,7 @@ class TestContextAssembly:
 
     def test_context_deduplication(self):
         """Duplicate content is removed from context."""
+
         def deduplicate_context(results):
             seen_content = set()
             unique = []
@@ -282,6 +291,7 @@ class TestRAGPipelineIntegration:
 
     def test_full_pipeline_flow(self):
         """Full RAG pipeline executes correctly."""
+
         class MockRAGPipeline:
             def __init__(self):
                 self.index = {}
@@ -296,12 +306,7 @@ class TestRAGPipelineIntegration:
             def query(self, query_text, k=5):
                 # Mock retrieval
                 return [
-                    RetrievalResult(
-                        doc_id,
-                        data["content"],
-                        0.9 - i * 0.1,
-                        {}
-                    )
+                    RetrievalResult(doc_id, data["content"], 0.9 - i * 0.1, {})
                     for i, (doc_id, data) in enumerate(list(self.index.items())[:k])
                 ]
 
@@ -326,6 +331,7 @@ class TestRAGPipelineIntegration:
 
     def test_pipeline_error_handling(self):
         """Pipeline handles errors gracefully."""
+
         class MockPipeline:
             def __init__(self, should_fail=False):
                 self.should_fail = should_fail
@@ -342,6 +348,7 @@ class TestRAGPipelineIntegration:
 
     def test_pipeline_caching(self):
         """Pipeline caches results appropriately."""
+
         class CachedPipeline:
             def __init__(self):
                 self.cache = {}

@@ -48,16 +48,14 @@ def mock_typer():
 def temp_config_yaml(tmp_path: Path) -> Path:
     """Create a temporary training config YAML file."""
     config = tmp_path / "train_config.yaml"
-    config.write_text(
-        """
+    config.write_text("""
 model_name: test-model
 epochs: 1
 batch_size: 4
 learning_rate: 0.001
 seed: 42
 output_dir: /tmp/test_output
-"""
-    )
+""")
     return config
 
 
@@ -91,12 +89,11 @@ class TestCLIHelpVersion:
         output = result.stdout + result.stderr
         # CLI should display help or usage info
         has_help = any(
-            term in output.lower()
-            for term in ["usage", "options", "commands", "help", "train"]
+            term in output.lower() for term in ["usage", "options", "commands", "help", "train"]
         )
-        assert result.returncode == 0 or has_help, (
-            f"Help command failed: exit={result.returncode}, output={output[:500]}"
-        )
+        assert (
+            result.returncode == 0 or has_help
+        ), f"Help command failed: exit={result.returncode}, output={output[:500]}"
 
     @pytest.mark.smoke
     def test_cli_version_displays_version(self) -> None:
@@ -110,8 +107,10 @@ class TestCLIHelpVersion:
         )
         # Version should be importable or have version info
         output = result.stdout + result.stderr
-        assert result.returncode == 0 or "version" in output.lower() or any(
-            c.isdigit() for c in output
+        assert (
+            result.returncode == 0
+            or "version" in output.lower()
+            or any(c.isdigit() for c in output)
         ), f"Version check failed: {output}"
 
     def test_cli_module_importable(self) -> None:
@@ -123,9 +122,7 @@ class TestCLIHelpVersion:
             check=False,
             timeout=30,
         )
-        assert result.returncode == 0, (
-            f"CLI module import failed: {result.stderr[:500]}"
-        )
+        assert result.returncode == 0, f"CLI module import failed: {result.stderr[:500]}"
 
 
 # =============================================================================
@@ -148,9 +145,7 @@ class TestTrainCommand:
         )
         output = result.stdout + result.stderr
         # Train command should be listed in help
-        assert "train" in output.lower(), (
-            f"Train command not found in help output: {output[:500]}"
-        )
+        assert "train" in output.lower(), f"Train command not found in help output: {output[:500]}"
 
     def test_train_help_shows_options(self) -> None:
         """Verify train --help shows available options."""
@@ -193,9 +188,9 @@ class TestTrainCommand:
         if "No such command" in output or "Error" in output:
             pytest.skip("Train command not available")
         # Option should be documented
-        assert option in output or expected in output.lower(), (
-            f"Option {option} not documented in train help"
-        )
+        assert (
+            option in output or expected in output.lower()
+        ), f"Option {option} not documented in train help"
 
 
 # =============================================================================
@@ -210,6 +205,7 @@ class TestConfigurationLoading:
         """Verify _load_training_config function is importable."""
         try:
             from codex_ml.cli import _load_training_config
+
             assert callable(_load_training_config)
         except ImportError:
             pytest.skip("_load_training_config not available")
@@ -218,6 +214,7 @@ class TestConfigurationLoading:
         """Test configuration loading from valid YAML file."""
         try:
             from codex_ml.cli import _load_training_config
+
             config = _load_training_config(str(temp_config_yaml))
             assert config is not None
         except ImportError:
@@ -232,6 +229,7 @@ class TestConfigurationLoading:
         """Test configuration loading with non-existent file."""
         try:
             from codex_ml.cli import _load_training_config
+
             missing_file = tmp_path / "nonexistent.yaml"
             result = _load_training_config(str(missing_file))
             # Should return empty config or raise FileNotFoundError
@@ -243,6 +241,7 @@ class TestConfigurationLoading:
         """Test configuration loading with empty file."""
         try:
             from codex_ml.cli import _load_training_config
+
             empty_file = tmp_path / "empty.yaml"
             empty_file.write_text("")
             result = _load_training_config(str(empty_file))
@@ -266,6 +265,7 @@ class TestValueFromConfig:
         try:
             # Access the function through module inspection
             import codex_ml.cli.main as cli_main
+
             if hasattr(cli_main, "_value_from_config"):
                 result = cli_main._value_from_config(
                     "cli_value",  # cli_value
@@ -281,6 +281,7 @@ class TestValueFromConfig:
         """Should fall back to config value when CLI matches default."""
         try:
             import codex_ml.cli.main as cli_main
+
             if hasattr(cli_main, "_value_from_config"):
                 result = cli_main._value_from_config(
                     "default",  # cli_value
@@ -305,6 +306,7 @@ class TestTyperAppRegistration:
         """Verify Typer app is created when typer is available."""
         try:
             import codex_ml.cli.main as cli_main
+
             if hasattr(cli_main, "app"):
                 assert cli_main.app is not None
         except ImportError:
@@ -317,6 +319,7 @@ class TestTyperAppRegistration:
         try:
             os.environ["CODEX_ENABLE_TOKENIZER_CLI"] = "1"
             import codex_ml.cli.main as cli_main
+
             # Verify app exists
             assert hasattr(cli_main, "app") or hasattr(cli_main, "typer")
         except ImportError:
@@ -384,7 +387,12 @@ class TestErrorHandling:
         )
         # Should exit with non-zero or show error
         output = result.stdout + result.stderr
-        assert result.returncode != 0 or "error" in output.lower() or "invalid" in output.lower() or "no such" in output.lower()
+        assert (
+            result.returncode != 0
+            or "error" in output.lower()
+            or "invalid" in output.lower()
+            or "no such" in output.lower()
+        )
 
     def test_missing_required_args_shows_error(self) -> None:
         """Missing required arguments should show helpful error."""
@@ -509,7 +517,9 @@ class TestResumeCheckpoint:
         )
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
-            assert "--resume" in output or "resume" in output.lower() or "checkpoint" in output.lower()
+            assert (
+                "--resume" in output or "resume" in output.lower() or "checkpoint" in output.lower()
+            )
 
 
 # =============================================================================

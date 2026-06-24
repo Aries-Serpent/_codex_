@@ -129,7 +129,10 @@ class TestValidation:
         assert errors == []
 
     def test_validate_all_catches_bad_risk_class(self, tmp_path):
-        yaml = _VALID_YAML + "\n  - prompt_id: bad\n    path: x\n    type: task\n    risk_class: INVALID\n"
+        yaml = (
+            _VALID_YAML
+            + "\n  - prompt_id: bad\n    path: x\n    type: task\n    risk_class: INVALID\n"
+        )
         path = _write_registry(tmp_path, yaml)
         reg = PromptRegistry.load(path=path)
         errors = reg.validate_all()
@@ -137,8 +140,7 @@ class TestValidation:
 
     def test_validate_all_catches_bad_mode(self, tmp_path):
         yaml = (
-            _VALID_YAML
-            + "\n  - prompt_id: badmode\n    path: x\n    type: task\n"
+            _VALID_YAML + "\n  - prompt_id: badmode\n    path: x\n    type: task\n"
             "    risk_class: READ_ONLY\n    approved_for_modes:\n      - BANANA\n"
         )
         path = _write_registry(tmp_path, yaml)

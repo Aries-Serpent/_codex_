@@ -370,9 +370,7 @@ class TestStatisticalAnalysis:
         # Create minimal dataset
         for i in range(10):
             user_id = f"user-{i}"
-            _ = framework.assign_variant(
-                "EXP-TEST", user_id
-            )  # Assignment needed for test setup
+            _ = framework.assign_variant("EXP-TEST", user_id)  # Assignment needed for test setup
             framework.record_metric("EXP-TEST", user_id, 0.85 + i * 0.01)
 
         result = framework.analyze_experiment("EXP-TEST")

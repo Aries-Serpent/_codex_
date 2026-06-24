@@ -25,7 +25,8 @@ class TestDefaultPreprocess:
         """Test embedding_worker module can be imported."""
         try:
             from workers import embedding_worker
-            assert hasattr(embedding_worker, 'default_preprocess')
+
+            assert hasattr(embedding_worker, "default_preprocess")
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 
@@ -33,6 +34,7 @@ class TestDefaultPreprocess:
         """Test default_preprocess returns text unchanged."""
         try:
             from workers.embedding_worker import default_preprocess
+
             text = "Hello, world!"
             result = default_preprocess(text)
             assert result == text
@@ -43,6 +45,7 @@ class TestDefaultPreprocess:
         """Test default_preprocess with empty string."""
         try:
             from workers.embedding_worker import default_preprocess
+
             result = default_preprocess("")
             assert result == ""
         except ImportError:
@@ -56,6 +59,7 @@ class TestLoadEmbedderClass:
         """Test loading default MockEmbedder when path is empty."""
         try:
             from workers.embedding_worker import _load_embedder_class
+
             # Empty path should return MockEmbedder
             cls = _load_embedder_class("")
             assert cls is not None
@@ -66,6 +70,7 @@ class TestLoadEmbedderClass:
         """Test loading embedder from custom path."""
         try:
             from workers.embedding_worker import _load_embedder_class
+
             # Should be able to load the mock embedder explicitly
             path = "src.mcp.embeddings.mock_embedder.MockEmbedder"
             try:
@@ -81,6 +86,7 @@ class TestLoadEmbedderClass:
         """Test loading embedder from invalid path raises."""
         try:
             from workers.embedding_worker import _load_embedder_class
+
             with pytest.raises((ImportError, ModuleNotFoundError, AttributeError, ValueError)):
                 _load_embedder_class("nonexistent.module.Class")
         except ImportError:
@@ -113,6 +119,7 @@ class TestRunWorker:
         """Test run_worker can be imported."""
         try:
             from workers.embedding_worker import run_worker
+
             assert callable(run_worker)
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
@@ -125,6 +132,7 @@ class TestMain:
         """Test main can be imported."""
         try:
             from workers.embedding_worker import main
+
             assert callable(main)
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
@@ -137,6 +145,7 @@ class TestModuleImports:
         """Test workers package can be imported."""
         try:
             import workers
+
             assert workers is not None
         except ImportError:
             pytest.skip("workers package not importable")
@@ -145,6 +154,7 @@ class TestModuleImports:
         """Test embedding_worker module exists."""
         try:
             from workers import embedding_worker
+
             assert embedding_worker is not None
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")

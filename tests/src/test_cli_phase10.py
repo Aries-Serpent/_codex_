@@ -31,6 +31,7 @@ from codex.cli import (
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture()
 def runner():
     if "mix_stderr" in inspect.signature(CliRunner).parameters:
@@ -41,6 +42,7 @@ def runner():
 # ---------------------------------------------------------------------------
 # 1. Top-level CLI group
 # ---------------------------------------------------------------------------
+
 
 class TestCLIGroup:
     """Tests for the ``cli`` Click group entry point."""
@@ -65,6 +67,7 @@ class TestCLIGroup:
 # 2. ``tasks`` / ``run`` commands
 # ---------------------------------------------------------------------------
 
+
 class TestTaskCommands:
     """Tests for ``codex tasks`` and ``codex run``."""
 
@@ -82,7 +85,9 @@ class TestTaskCommands:
     def test_run_unknown_task_fails(self, runner):
         result = runner.invoke(cli, ["run", "does-not-exist"])
         assert result.exit_code != 0
-        assert "not allowed" in result.output.lower() or "not allowed" in (result.stderr or "").lower()
+        assert (
+            "not allowed" in result.output.lower() or "not allowed" in (result.stderr or "").lower()
+        )
 
     def test_run_valid_task_executes(self, runner):
         """Pick the first ALLOWED_TASK and patch its callable."""
@@ -97,6 +102,7 @@ class TestTaskCommands:
 # ---------------------------------------------------------------------------
 # 3. ``logs`` subgroup
 # ---------------------------------------------------------------------------
+
 
 class TestLogsGroup:
     """Tests for ``codex logs`` subcommands."""
@@ -138,6 +144,7 @@ class TestLogsGroup:
 # 4. Tokenizer subgroup
 # ---------------------------------------------------------------------------
 
+
 class TestTokenizerGroup:
     """Tests for ``codex tokenizer`` commands."""
 
@@ -161,6 +168,7 @@ class TestTokenizerGroup:
 # 5. Reproducibility subgroup
 # ---------------------------------------------------------------------------
 
+
 class TestReproGroup:
     """Tests for ``codex repro`` commands."""
 
@@ -172,7 +180,9 @@ class TestReproGroup:
         with patch("codex.cli.importlib.import_module") as mock_import:
             mock_mod = MagicMock()
             mock_import.return_value = mock_mod
-            result = runner.invoke(cli, ["repro", "seed", "--seed", "42", "--out-dir", str(tmp_path)])
+            result = runner.invoke(
+                cli, ["repro", "seed", "--seed", "42", "--out-dir", str(tmp_path)]
+            )
         # Check it ran without crashing
         assert result.exit_code in (0, 1, 2)
 
@@ -180,6 +190,7 @@ class TestReproGroup:
 # ---------------------------------------------------------------------------
 # 6. Helper functions
 # ---------------------------------------------------------------------------
+
 
 class TestHelpers:
     """Tests for internal helper functions."""
@@ -221,6 +232,7 @@ class TestHelpers:
 # ---------------------------------------------------------------------------
 # 7. Auth subgroup
 # ---------------------------------------------------------------------------
+
 
 class TestAuthGroup:
     """Tests for ``codex auth`` commands."""

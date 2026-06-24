@@ -98,9 +98,9 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
                 "conclusion": check_run.conclusion,
                 "html_url": check_run.html_url,
                 "started_at": check_run.started_at.isoformat() if check_run.started_at else None,
-                "completed_at": check_run.completed_at.isoformat()
-                if check_run.completed_at
-                else None,
+                "completed_at": (
+                    check_run.completed_at.isoformat() if check_run.completed_at else None
+                ),
             },
             "logs": logs,
         }

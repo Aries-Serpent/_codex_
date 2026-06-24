@@ -12,6 +12,7 @@ class TestZendeskClientImports:
         """Test that the module can be imported."""
         try:
             from src.codex.zendesk import client
+
             assert client is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -24,7 +25,8 @@ class TestZendeskClientOperations:
         """Test client creation."""
         try:
             from src.codex.zendesk import client
-            if hasattr(client, 'ZendeskClient'):
+
+            if hasattr(client, "ZendeskClient"):
                 zd = client.ZendeskClient()
                 assert zd is not None
         except (ImportError, AttributeError):
@@ -34,8 +36,9 @@ class TestZendeskClientOperations:
         """Test getting tickets."""
         try:
             from src.codex.zendesk import client
-            if hasattr(client, 'get_tickets'):
-                with patch.object(client, 'get_tickets') as mock_get:
+
+            if hasattr(client, "get_tickets"):
+                with patch.object(client, "get_tickets") as mock_get:
                     mock_get.return_value = [{"id": 1}, {"id": 2}]
                     tickets = client.get_tickets()
                     assert len(tickets) == 2
@@ -46,8 +49,9 @@ class TestZendeskClientOperations:
         """Test creating ticket."""
         try:
             from src.codex.zendesk import client
-            if hasattr(client, 'create_ticket'):
-                with patch.object(client, 'create_ticket') as mock_create:
+
+            if hasattr(client, "create_ticket"):
+                with patch.object(client, "create_ticket") as mock_create:
                     mock_create.return_value = {"id": 123}
                     ticket = client.create_ticket({"subject": "Test"})
                     assert ticket["id"] == 123
@@ -62,11 +66,9 @@ class TestZendeskClientConfiguration:
         """Test configuring client."""
         try:
             from src.codex.zendesk import client
-            if hasattr(client, 'ZendeskClient'):
-                zd = client.ZendeskClient(
-                    subdomain="test",
-                    api_token="token123"
-                )
+
+            if hasattr(client, "ZendeskClient"):
+                zd = client.ZendeskClient(subdomain="test", api_token="token123")
                 assert zd is not None
         except (ImportError, AttributeError):
             pytest.skip("ZendeskClient not available")
@@ -75,8 +77,9 @@ class TestZendeskClientConfiguration:
         """Test credential validation."""
         try:
             from src.codex.zendesk import client
-            if hasattr(client, 'validate_credentials'):
-                with patch.object(client, 'validate_credentials') as mock_validate:
+
+            if hasattr(client, "validate_credentials"):
+                with patch.object(client, "validate_credentials") as mock_validate:
                     mock_validate.return_value = True
                     result = client.validate_credentials("token123")
                     assert result is True

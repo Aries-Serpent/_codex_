@@ -1,4 +1,5 @@
 """Tests for dataset management and compression system."""
+
 import json
 import sys
 from pathlib import Path
@@ -42,7 +43,7 @@ def test_function():
     (src_dir / "module_copy.py").write_text(python_code)
 
     # Create documentation
-    doc_content = '''# Documentation
+    doc_content = """# Documentation
 
 ## Section 1
 
@@ -55,7 +56,7 @@ code_example()
 ## Section 2
 
 More text.
-'''
+"""
     (docs_dir / "README.md").write_text(doc_content)
 
     # Create config file
@@ -309,7 +310,7 @@ def test_compression_effectiveness(temp_dataset):
 
     for pf in manager.processed_files:
         # Text files should compress well, but only if large enough to overcome gzip header overhead
-        if pf.category in ('source_code', 'documentation', 'config') and pf.size_original >= 1024:
+        if pf.category in ("source_code", "documentation", "config") and pf.size_original >= 1024:
             assert pf.compression_ratio < 0.8  # At least 20% compression
 
 

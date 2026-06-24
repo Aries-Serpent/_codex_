@@ -108,9 +108,7 @@ class TestEvaluationIntegration:
         with patch("codex_ml.training.Evaluator") as mock_eval_cls:
             mock_evaluator = Mock()
             mock_eval_cls.return_value = mock_evaluator
-            mock_evaluator.evaluate_checkpoint = Mock(
-                return_value={"accuracy": 0.85}
-            )
+            mock_evaluator.evaluate_checkpoint = Mock(return_value={"accuracy": 0.85})
 
             # Evaluate checkpoint
             evaluator = mock_eval_cls()
@@ -270,7 +268,9 @@ class TestMetricsCollectionIntegration:
             assert result is True
 
 
-@pytest.mark.skipif(not (EVALUATOR_AVAILABLE and METRICS_AVAILABLE), reason="Requirements not available")
+@pytest.mark.skipif(
+    not (EVALUATOR_AVAILABLE and METRICS_AVAILABLE), reason="Requirements not available"
+)
 class TestEvaluationMetricsIntegration:
     """Integration between evaluation and metrics collection."""
 
@@ -282,9 +282,7 @@ class TestEvaluationMetricsIntegration:
                 # Setup evaluator
                 mock_evaluator = Mock()
                 mock_eval_cls.return_value = mock_evaluator
-                mock_evaluator.evaluate = Mock(
-                    return_value={"accuracy": 0.85, "f1": 0.82}
-                )
+                mock_evaluator.evaluate = Mock(return_value={"accuracy": 0.85, "f1": 0.82})
 
                 # Setup metrics collector
                 mock_collector = Mock()
@@ -312,9 +310,7 @@ class TestEvaluationMetricsIntegration:
                 # Setup evaluator with per-batch metrics
                 mock_evaluator = Mock()
                 mock_eval_cls.return_value = mock_evaluator
-                mock_evaluator.evaluate_batch = Mock(
-                    return_value={"accuracy": 0.85}
-                )
+                mock_evaluator.evaluate_batch = Mock(return_value={"accuracy": 0.85})
 
                 # Setup collector
                 mock_collector = Mock()
@@ -352,9 +348,7 @@ class TestEvaluationErrorHandling:
         with patch("codex_ml.training.Evaluator") as mock_eval_cls:
             mock_evaluator = Mock()
             mock_eval_cls.return_value = mock_evaluator
-            mock_evaluator.evaluate = Mock(
-                side_effect=RuntimeError("Model forward pass failed")
-            )
+            mock_evaluator.evaluate = Mock(side_effect=RuntimeError("Model forward pass failed"))
 
             with pytest.raises(RuntimeError):
                 evaluator = mock_eval_cls()
@@ -375,7 +369,9 @@ class TestEvaluationErrorHandling:
                 evaluator.evaluate_checkpoint("checkpoint.pt")
 
 
-@pytest.mark.skipif(not (EVALUATOR_AVAILABLE and METRICS_AVAILABLE), reason="Requirements not available")
+@pytest.mark.skipif(
+    not (EVALUATOR_AVAILABLE and METRICS_AVAILABLE), reason="Requirements not available"
+)
 class TestEvaluationMetricsEndToEnd:
     """End-to-end evaluation and metrics workflows."""
 
@@ -434,9 +430,7 @@ class TestEvaluationMetricsEndToEnd:
                 # Setup evaluator
                 mock_evaluator = Mock()
                 mock_eval_cls.return_value = mock_evaluator
-                mock_evaluator.evaluate = Mock(
-                    side_effect=epoch_metrics
-                )
+                mock_evaluator.evaluate = Mock(side_effect=epoch_metrics)
 
                 # Setup collector
                 mock_collector = Mock()

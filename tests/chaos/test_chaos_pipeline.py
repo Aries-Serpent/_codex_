@@ -20,6 +20,7 @@ from codex_ml.feedback.events import FeedbackEvent
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_drift_result(drifted: bool, score: float) -> dict[str, Any]:
     return {"score": score, "drifted": drifted, "method": "psi"}
 
@@ -50,12 +51,12 @@ class TestContinuousLearningUnderRepeatedDrift:
         no_trigger_count = 0
 
         signals = [
-            _make_drift_result(True, 0.5),   # drift
-            _make_drift_result(False, 0.05), # no drift
-            _make_drift_result(True, 0.6),   # drift
+            _make_drift_result(True, 0.5),  # drift
+            _make_drift_result(False, 0.05),  # no drift
+            _make_drift_result(True, 0.6),  # drift
             _make_drift_result(False, 0.1),  # no drift
-            _make_drift_result(True, 0.9),   # drift
-            _make_drift_result(False, 0.01), # no drift
+            _make_drift_result(True, 0.9),  # drift
+            _make_drift_result(False, 0.01),  # no drift
         ]
 
         for sig in signals:
@@ -208,6 +209,7 @@ class TestABTestingWithDegenerateInputs:
     def test_large_equal_groups_produces_valid_shape(self) -> None:
         """Large (1000-element) equal-value groups: result shape is valid."""
         import random as _rnd
+
         rng = _rnd.Random(0)
         ctrl = [rng.gauss(0, 1) for _ in range(1000)]
         trt = [rng.gauss(0, 1) for _ in range(1000)]

@@ -347,15 +347,13 @@ def test_load_tokenizer_prefers_file_over_model():
         with patch("src.tokenization.loader._load_from_model_name") as mock_load_model:
             # Create a temporary file
             import tempfile
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
                 f.write('{"version": "1.0"}')
                 temp_file = f.name
 
             try:
-                config = {
-                    "tokenizer_file": temp_file,
-                    "model_name": "gpt2"
-                }
+                config = {"tokenizer_file": temp_file, "model_name": "gpt2"}
 
                 mock_tokenizer = MagicMock()
                 mock_load_file.return_value = mock_tokenizer
@@ -368,4 +366,5 @@ def test_load_tokenizer_prefers_file_over_model():
             finally:
                 # Cleanup temp file
                 import os
+
                 os.unlink(temp_file)

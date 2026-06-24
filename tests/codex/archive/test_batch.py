@@ -16,11 +16,7 @@ class TestBatchItem:
         """Test BatchItem basic creation."""
         from codex.archive.batch import BatchItem
 
-        item = BatchItem(
-            tombstone="ts_123",
-            output=Path("/tmp/output"),
-            actor="user@example.com"
-        )
+        item = BatchItem(tombstone="ts_123", output=Path("/tmp/output"), actor="user@example.com")
 
         assert item.tombstone == "ts_123"
         assert item.output == Path("/tmp/output")
@@ -30,17 +26,9 @@ class TestBatchItem:
         """Test BatchItem.from_dict with valid data."""
         from codex.archive.batch import BatchItem
 
-        payload = {
-            "tombstone": "ts_001",
-            "output": "output/path",
-            "actor": "test_user"
-        }
+        payload = {"tombstone": "ts_001", "output": "output/path", "actor": "test_user"}
 
-        item = BatchItem.from_dict(
-            payload,
-            manifest_dir=tmp_path,
-            default_actor="default"
-        )
+        item = BatchItem.from_dict(payload, manifest_dir=tmp_path, default_actor="default")
 
         assert item.tombstone == "ts_001"
         assert item.actor == "test_user"
@@ -51,15 +39,11 @@ class TestBatchItem:
 
         payload = {
             "tombstone": "ts_001",
-            "output": "output/path"
+            "output": "output/path",
             # No actor provided
         }
 
-        item = BatchItem.from_dict(
-            payload,
-            manifest_dir=tmp_path,
-            default_actor="default_user"
-        )
+        item = BatchItem.from_dict(payload, manifest_dir=tmp_path, default_actor="default_user")
 
         assert item.actor == "default_user"
 
@@ -67,60 +51,36 @@ class TestBatchItem:
         """Test BatchItem.from_dict raises on missing tombstone."""
         from codex.archive.batch import BatchItem
 
-        payload = {
-            "output": "output/path",
-            "actor": "user"
-        }
+        payload = {"output": "output/path", "actor": "user"}
 
         with pytest.raises(ValueError, match="tombstone"):
-            BatchItem.from_dict(
-                payload,
-                manifest_dir=tmp_path,
-                default_actor="default"
-            )
+            BatchItem.from_dict(payload, manifest_dir=tmp_path, default_actor="default")
 
     def test_from_dict_missing_output(self, tmp_path):
         """Test BatchItem.from_dict raises on missing output."""
         from codex.archive.batch import BatchItem
 
-        payload = {
-            "tombstone": "ts_001",
-            "actor": "user"
-        }
+        payload = {"tombstone": "ts_001", "actor": "user"}
 
         with pytest.raises(ValueError, match="output"):
-            BatchItem.from_dict(
-                payload,
-                manifest_dir=tmp_path,
-                default_actor="default"
-            )
+            BatchItem.from_dict(payload, manifest_dir=tmp_path, default_actor="default")
 
     def test_from_dict_empty_actor(self, tmp_path):
         """Test BatchItem.from_dict raises on empty actor."""
         from codex.archive.batch import BatchItem
 
-        payload = {
-            "tombstone": "ts_001",
-            "output": "output/path",
-            "actor": ""
-        }
+        payload = {"tombstone": "ts_001", "output": "output/path", "actor": ""}
 
         with pytest.raises(ValueError, match=r"Actor must be provided"):
             BatchItem.from_dict(
-                payload,
-                manifest_dir=tmp_path,
-                default_actor=""  # Empty default too
+                payload, manifest_dir=tmp_path, default_actor=""  # Empty default too
             )
 
     def test_frozen(self):
         """Test BatchItem is frozen (immutable)."""
         from codex.archive.batch import BatchItem
 
-        item = BatchItem(
-            tombstone="ts",
-            output=Path("/tmp"),
-            actor="user"
-        )
+        item = BatchItem(tombstone="ts", output=Path("/tmp"), actor="user")
 
         with pytest.raises(AttributeError):
             item.tombstone = "new_ts"
@@ -134,11 +94,7 @@ class TestBatchResult:
         from codex.archive.batch import BatchResult
 
         result = BatchResult(
-            total=10,
-            succeeded=8,
-            failed=2,
-            results=[{"id": 1}, {"id": 2}],
-            metrics=None
+            total=10, succeeded=8, failed=2, results=[{"id": 1}, {"id": 2}], metrics=None
         )
 
         assert result.total == 10
@@ -151,13 +107,7 @@ class TestBatchResult:
         """Test BatchResult.to_dict method."""
         from codex.archive.batch import BatchResult
 
-        result = BatchResult(
-            total=5,
-            succeeded=3,
-            failed=2,
-            results=[],
-            metrics=None
-        )
+        result = BatchResult(total=5, succeeded=3, failed=2, results=[], metrics=None)
 
         d = result.to_dict()
 

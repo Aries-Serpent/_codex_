@@ -59,7 +59,7 @@ def install_mock_module(module: ModuleType) -> None:
     # Install module and all parent packages
     parts = module.__name__.split(".")
     for i in range(len(parts)):
-        partial_name = ".".join(parts[:i+1])
+        partial_name = ".".join(parts[: i + 1])
         if partial_name not in sys.modules:
             if i < len(parts) - 1:
                 # Create parent package

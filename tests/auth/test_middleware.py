@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
+sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
 
 from codex.auth.middleware import (
     APIKeyValidator,
@@ -69,11 +69,7 @@ class TestAuthResult:
 
     def test_unauthenticated_result(self):
         """Test unauthenticated result."""
-        result = AuthResult(
-            authenticated=False,
-            method=AuthMethod.NONE,
-            error="No credentials"
-        )
+        result = AuthResult(authenticated=False, method=AuthMethod.NONE, error="No credentials")
         assert result.authenticated is False
         assert result.error == "No credentials"
 
@@ -90,10 +86,7 @@ class TestAPIKeyValidator:
         key_hash = validator.hash_api_key(api_key)
 
         validator.register_key(
-            key_hash=key_hash,
-            user_id="user123",
-            scopes=["read", "write"],
-            name="Test Key"
+            key_hash=key_hash, user_id="user123", scopes=["read", "write"], name="Test Key"
         )
 
         # Validate the key
@@ -214,9 +207,7 @@ class TestAuthMiddleware:
         # Generate a valid token
         token = token_manager.generate_access_token("user123", "read write")
 
-        headers = {
-            b"authorization": f"Bearer {token}".encode()
-        }
+        headers = {b"authorization": f"Bearer {token}".encode()}
 
         result = middleware._authenticate(headers)
 
@@ -226,9 +217,7 @@ class TestAuthMiddleware:
 
     def test_authenticate_jwt_invalid(self, middleware):
         """Test JWT authentication with invalid token."""
-        headers = {
-            b"authorization": b"Bearer invalid-token"
-        }
+        headers = {b"authorization": b"Bearer invalid-token"}
 
         result = middleware._authenticate(headers)
 
@@ -242,14 +231,10 @@ class TestAuthMiddleware:
         key_hash = middleware.api_key_validator.hash_api_key(api_key)
 
         middleware.api_key_validator.register_key(
-            key_hash=key_hash,
-            user_id="user456",
-            scopes=["read"]
+            key_hash=key_hash, user_id="user456", scopes=["read"]
         )
 
-        headers = {
-            b"x-api-key": api_key.encode()
-        }
+        headers = {b"x-api-key": api_key.encode()}
 
         result = middleware._authenticate(headers)
 
@@ -273,11 +258,7 @@ class TestAuthDecorators:
         """Test getting current user when authenticated."""
         request = MagicMock()
         request.scope = {
-            "auth": AuthResult(
-                authenticated=True,
-                method=AuthMethod.JWT,
-                user_id="user123"
-            )
+            "auth": AuthResult(authenticated=True, method=AuthMethod.JWT, user_id="user123")
         }
 
         user_id = get_current_user(request)
@@ -295,11 +276,7 @@ class TestAuthDecorators:
         """Test getting current scopes."""
         request = MagicMock()
         request.scope = {
-            "auth": AuthResult(
-                authenticated=True,
-                method=AuthMethod.JWT,
-                scopes={"read", "write"}
-            )
+            "auth": AuthResult(authenticated=True, method=AuthMethod.JWT, scopes={"read", "write"})
         }
 
         scopes = get_current_scopes(request)

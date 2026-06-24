@@ -11,11 +11,14 @@ from src.codex_ml.cli.config import AppConfig, ExperimentConfig, ModelCfg
 class TestConfigSerialization:
     """Verify all config objects support JSON serialization."""
 
-    @pytest.mark.parametrize("config_class", [
-        AppConfig,
-        ExperimentConfig,
-        ModelCfg,
-    ])
+    @pytest.mark.parametrize(
+        "config_class",
+        [
+            AppConfig,
+            ExperimentConfig,
+            ModelCfg,
+        ],
+    )
     def test_config_to_dict(self, config_class):
         """Test config objects can convert to dict."""
         config = config_class()
@@ -23,11 +26,14 @@ class TestConfigSerialization:
         config_dict = asdict(config)
         assert isinstance(config_dict, dict)
 
-    @pytest.mark.parametrize("config_class", [
-        AppConfig,
-        ExperimentConfig,
-        ModelCfg,
-    ])
+    @pytest.mark.parametrize(
+        "config_class",
+        [
+            AppConfig,
+            ExperimentConfig,
+            ModelCfg,
+        ],
+    )
     def test_config_json_serialization(self, config_class):
         """Test config objects can serialize to JSON."""
         config = config_class()

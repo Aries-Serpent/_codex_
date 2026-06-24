@@ -17,6 +17,7 @@ import pytest
 try:
     import click
     from click.testing import CliRunner
+
     HAS_CLICK = True
 except ImportError:
     HAS_CLICK = False
@@ -31,14 +32,14 @@ try:
         tokenizer,
         train,
     )
+
     HAS_CODEX_CLI = True
 except ImportError:
     HAS_CODEX_CLI = False
 
 
 pytestmark = pytest.mark.skipif(
-    not (HAS_CLICK and HAS_CODEX_CLI),
-    reason="click and codex_cli modules not available"
+    not (HAS_CLICK and HAS_CODEX_CLI), reason="click and codex_cli modules not available"
 )
 
 
@@ -213,8 +214,10 @@ class TestTrainCommand:
                 codex,
                 [
                     "train",
-                    "--config", str(sample_training_config),
-                    "--override", "training.batch_size=64",
+                    "--config",
+                    str(sample_training_config),
+                    "--override",
+                    "training.batch_size=64",
                 ],
             )
             # Should apply overrides
@@ -399,9 +402,12 @@ class TestConfigSweepCommand:
                 codex,
                 [
                     "config-sweep",
-                    "--config", str(sample_training_config),
-                    "--param", "learning_rate=0.001,0.0001",
-                    "--param", "batch_size=32,64",
+                    "--config",
+                    str(sample_training_config),
+                    "--param",
+                    "learning_rate=0.001,0.0001",
+                    "--param",
+                    "batch_size=32,64",
                 ],
             )
             # Should run sweep with multiple parameter combinations
@@ -412,8 +418,10 @@ class TestConfigSweepCommand:
             codex,
             [
                 "config-sweep",
-                "--config", str(sample_training_config),
-                "--param", "invalid_range",
+                "--config",
+                str(sample_training_config),
+                "--param",
+                "invalid_range",
             ],
         )
         assert result.exit_code != 0
@@ -573,9 +581,7 @@ class TestCodexCLIEdgeCases:
     def test_very_large_config_file(self, cli_runner, tmp_path):
         """Test with large config file."""
         large_config = tmp_path / "large_config.yaml"
-        large_config.write_text(
-            "\n".join([f"param_{i}: {i}" for i in range(10000)])
-        )
+        large_config.write_text("\n".join([f"param_{i}: {i}" for i in range(10000)]))
 
         with patch("codex_ml.training.train_pipeline"):
             result = cli_runner.invoke(

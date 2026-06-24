@@ -362,17 +362,13 @@ class TestIndexerModuleBranches:
     def test_indexer_model_name_from_profile_branch(self) -> None:
         """Test model name from profile branch."""
         model_profile = {"model_name": "custom-model"}
-        model_name = model_profile.get(
-            "model_name", "sentence-transformers/all-MiniLM-L6-v2"
-        )
+        model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
         assert model_name == "custom-model"
 
     def test_indexer_model_name_default_branch(self) -> None:
         """Test model name default branch."""
         model_profile: dict[str, Any] = {}
-        model_name = model_profile.get(
-            "model_name", "sentence-transformers/all-MiniLM-L6-v2"
-        )
+        model_name = model_profile.get("model_name", "sentence-transformers/all-MiniLM-L6-v2")
         assert model_name == "sentence-transformers/all-MiniLM-L6-v2"
 
     def test_indexer_cache_dir_from_profile_branch(self) -> None:

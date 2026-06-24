@@ -22,6 +22,7 @@ from codex_ml.utils.safe_pickle import trusted_pickle_dumps
 
 pytestmark = pytest.mark.skipif(not TORCH_AVAILABLE, reason="requires torch")
 
+
 def test_save_and_load_checkpoint(tmp_path: Path) -> None:
     import torch
 
@@ -42,6 +43,7 @@ def test_save_and_load_checkpoint(tmp_path: Path) -> None:
 
     # ADDED: Verify no mock objects in state
     import unittest.mock
+
     model_state = model.state_dict()
     for key, value in model_state.items():
         if isinstance(value, unittest.mock.MagicMock):

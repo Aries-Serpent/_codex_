@@ -1,7 +1,6 @@
 """Tests for model architecture in codex_ml."""
 
 
-
 class TestModelArchitecture:
     """Tests for model architecture operations."""
 

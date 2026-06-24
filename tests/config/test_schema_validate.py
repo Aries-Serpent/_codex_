@@ -16,6 +16,4 @@ def test_schema_validation():
     assert rep.exists()
     data = json.loads(rep.read_text())
     assert "workflow_warnings" in data
-    assert not any(
-        w == "weights_not_normalized" for w in data.get("workflow_warnings", [])
-    )
+    assert not any(w == "weights_not_normalized" for w in data.get("workflow_warnings", []))

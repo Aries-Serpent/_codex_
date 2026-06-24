@@ -65,11 +65,7 @@ def test_append_error_block(tmp_path, monkeypatch):
     monkeypatch.setattr("src.tokenization.cli._ERROR_REPORT_DIR", mock_dir)
 
     # Call the function
-    _append_error_block(
-        step="test_step",
-        message="Test error message",
-        context={"key": "value"}
-    )
+    _append_error_block(step="test_step", message="Test error message", context={"key": "value"})
 
     # Verify the log file was created
     assert mock_dir.exists()
@@ -271,7 +267,7 @@ def test_inspect_command_with_tokenizer_json(tmp_path, capsys):
         "added_tokens": [
             {"content": "[PAD]", "special": True},
             {"content": "[CLS]", "special": True},
-            {"content": "regular", "special": False}
+            {"content": "regular", "special": False},
         ]
     }
     (tokenizer_dir / "tokenizer.json").write_text(json.dumps(tokenizer_config))

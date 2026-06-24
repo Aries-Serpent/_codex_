@@ -26,8 +26,7 @@ class TestSessionHooks(unittest.TestCase):
             logdir = pathlib.Path(td)
             sid = "test-sess-1234"
             runner = logdir / "runner.sh"
-            runner.write_text(
-                f"""#!/usr/bin/env bash
+            runner.write_text(f"""#!/usr/bin/env bash
 set -euo pipefail
 export CODEX_SESSION_LOG_DIR=\"{logdir.as_posix()}\"
 export CODEX_SESSION_ID=\"{sid}\"
@@ -35,8 +34,7 @@ export CODEX_SESSION_ID=\"{sid}\"
 codex_session_start \"unit\"
 trap 'codex_session_end $?' EXIT
 true
-"""
-            )
+""")
             runner.chmod(0o755)
             env = os.environ.copy()
             env["PYTHONPATH"] = str(ROOT / "src")
@@ -54,8 +52,7 @@ true
             logdir = pathlib.Path(td)
             sid = "lost-dir-123"
             runner = logdir / "runner.sh"
-            runner.write_text(
-                f"""#!/usr/bin/env bash
+            runner.write_text(f"""#!/usr/bin/env bash
 set -euo pipefail
 export CODEX_SESSION_LOG_DIR=\"{logdir.as_posix()}\"
 export CODEX_SESSION_ID=\"{sid}\"
@@ -63,8 +60,7 @@ export CODEX_SESSION_ID=\"{sid}\"
 codex_session_start
 rm -rf \"{logdir.as_posix()}\"
 codex_session_end 0
-"""
-            )
+""")
             runner.chmod(0o755)
             env = os.environ.copy()
             env["PYTHONPATH"] = str(ROOT / "src")
@@ -80,8 +76,7 @@ codex_session_end 0
             root = pathlib.Path(td)
             sid = "test-chdir-1234"
             runner = root / "runner.sh"
-            runner.write_text(
-                f"""#!/usr/bin/env bash
+            runner.write_text(f"""#!/usr/bin/env bash
 set -euo pipefail
 export CODEX_SESSION_LOG_DIR=logs
 export CODEX_SESSION_ID=\"{sid}\"
@@ -90,8 +85,7 @@ codex_session_start
 trap 'codex_session_end $?' EXIT
 mkdir sub && cd sub
 true
-"""
-            )
+""")
             runner.chmod(0o755)
             env = os.environ.copy()
             env["PYTHONPATH"] = str(ROOT / "src")

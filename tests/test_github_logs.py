@@ -13,6 +13,7 @@ import pytest
 # GitHub Client Tests
 # =============================================================================
 
+
 class TestGitHubClientCheckRuns:
     """Test GitHub client check run methods."""
 
@@ -85,7 +86,7 @@ class TestGitHubClientCheckRuns:
         assert not check_run.is_successful
         assert check_run.is_failed
 
-    @patch('src.services.github.client.httpx.AsyncClient')
+    @patch("src.services.github.client.httpx.AsyncClient")
     async def test_get_check_run(self, mock_client_class, mock_check_run_data):
         """Test fetching a single check run."""
         from src.services.github.client import GitHubClient
@@ -110,7 +111,7 @@ class TestGitHubClientCheckRuns:
         assert check_run.name == "Test Coverage"
         assert check_run.status == "completed"
 
-    @patch('src.services.github.client.httpx.AsyncClient')
+    @patch("src.services.github.client.httpx.AsyncClient")
     async def test_list_check_runs_for_ref(self, mock_client_class, mock_check_runs_response):
         """Test listing check runs for a git reference."""
         from src.services.github.client import GitHubClient
@@ -141,10 +142,11 @@ class TestGitHubClientCheckRuns:
 # CLI Tests
 # =============================================================================
 
+
 class TestGitHubLogsCLI:
     """Test CLI commands for GitHub logs."""
 
-    @patch('src.codex.cli_github_logs._get_github_client')
+    @patch("src.codex.cli_github_logs._get_github_client")
     def test_fetch_check_run_logs_command(self, mock_get_client):
         """Test check-run CLI command."""
         from click.testing import CliRunner
@@ -172,15 +174,13 @@ class TestGitHubLogsCLI:
 
         # Test
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            'check-run', 'Aries-Serpent', '_codex_', '59990656344'
-        ])
+        result = runner.invoke(cli, ["check-run", "Aries-Serpent", "_codex_", "59990656344"])
 
         assert result.exit_code == 0
         assert "Test logs content" in result.output
         assert "Successfully fetched logs" in result.output
 
-    @patch('src.codex.cli_github_logs._get_github_client')
+    @patch("src.codex.cli_github_logs._get_github_client")
     def test_list_check_runs_command(self, mock_get_client):
         """Test list-check-runs CLI command."""
         from click.testing import CliRunner
@@ -207,9 +207,7 @@ class TestGitHubLogsCLI:
 
         # Test
         runner = CliRunner()
-        result = runner.invoke(cli, [
-            'list-check-runs', 'owner', 'repo', 'ref123'
-        ])
+        result = runner.invoke(cli, ["list-check-runs", "owner", "repo", "ref123"])
 
         assert result.exit_code == 0
         assert "Test Run" in result.output
@@ -220,6 +218,7 @@ class TestGitHubLogsCLI:
 # API Tests
 # =============================================================================
 
+
 class TestGitHubLogsAPI:
     """Test API endpoints for GitHub logs."""
 
@@ -228,7 +227,8 @@ class TestGitHubLogsAPI:
         """Mock GitHub client for API tests."""
         # Import the module first so it can be patched
         from codex.api import github_logs
-        with patch.object(github_logs, '_get_github_client') as mock:
+
+        with patch.object(github_logs, "_get_github_client") as mock:
             client = Mock()
             mock.return_value = client
             yield client
@@ -264,7 +264,7 @@ class TestGitHubLogsAPI:
         # Test
         response = client.get(
             "/github/check-runs/59990656344/logs",
-            params={"owner": "Aries-Serpent", "repo": "_codex_"}
+            params={"owner": "Aries-Serpent", "repo": "_codex_"},
         )
 
         assert response.status_code == 200
@@ -305,11 +305,7 @@ class TestGitHubLogsAPI:
         # Test
         response = client.get(
             "/github/check-runs",
-            params={
-                "owner": "Aries-Serpent",
-                "repo": "_codex_",
-                "ref": "abc123"
-            }
+            params={"owner": "Aries-Serpent", "repo": "_codex_", "ref": "abc123"},
         )
 
         assert response.status_code == 200
@@ -323,10 +319,11 @@ class TestGitHubLogsAPI:
 # MCP Tools Tests
 # =============================================================================
 
+
 class TestGitHubLogsMCPTools:
     """Test MCP tools for GitHub logs."""
 
-    @patch('src.mcp.tools.github_logs._get_github_client')
+    @patch("src.mcp.tools.github_logs._get_github_client")
     def test_fetch_check_run_logs_tool(self, mock_get_client):
         """Test fetch_check_run_logs MCP tool."""
         from src.mcp.tools.github_logs import fetch_check_run_logs
@@ -351,17 +348,15 @@ class TestGitHubLogsMCPTools:
         mock_get_client.return_value = mock_client
 
         # Test
-        result = fetch_check_run_logs({
-            "owner": "Aries-Serpent",
-            "repo": "_codex_",
-            "check_run_id": 59990656344
-        })
+        result = fetch_check_run_logs(
+            {"owner": "Aries-Serpent", "repo": "_codex_", "check_run_id": 59990656344}
+        )
 
         assert result["success"] is True
         assert result["logs"] == "Test logs"
         assert result["check_run"]["id"] == 59990656344
 
-    @patch('src.mcp.tools.github_logs._get_github_client')
+    @patch("src.mcp.tools.github_logs._get_github_client")
     def test_list_check_runs_tool(self, mock_get_client):
         """Test list_check_runs MCP tool."""
         from src.mcp.tools.github_logs import list_check_runs
@@ -385,18 +380,14 @@ class TestGitHubLogsMCPTools:
         mock_get_client.return_value = mock_client
 
         # Test
-        result = list_check_runs({
-            "owner": "Aries-Serpent",
-            "repo": "_codex_",
-            "ref": "abc123"
-        })
+        result = list_check_runs({"owner": "Aries-Serpent", "repo": "_codex_", "ref": "abc123"})
 
         assert result["success"] is True
         assert result["total_count"] == 1
         assert len(result["check_runs"]) == 1
         assert result["check_runs"][0]["id"] == 123
 
-    @patch('src.mcp.tools.github_logs._get_github_client')
+    @patch("src.mcp.tools.github_logs._get_github_client")
     def test_mcp_tool_error_handling(self, mock_get_client):
         """Test MCP tool error handling."""
         from src.mcp.tools.github_logs import fetch_check_run_logs
@@ -407,11 +398,7 @@ class TestGitHubLogsMCPTools:
         mock_get_client.return_value = mock_client
 
         # Test
-        result = fetch_check_run_logs({
-            "owner": "test",
-            "repo": "test",
-            "check_run_id": 123
-        })
+        result = fetch_check_run_logs({"owner": "test", "repo": "test", "check_run_id": 123})
 
         assert result["success"] is False
         assert "error" in result
@@ -421,6 +408,7 @@ class TestGitHubLogsMCPTools:
 # =============================================================================
 # Integration Tests
 # =============================================================================
+
 
 class TestGitHubLogsIntegration:
     """Integration tests requiring actual GitHub API access."""
@@ -442,11 +430,7 @@ class TestGitHubLogsIntegration:
         client = GitHubClientSync()
 
         # Test with actual check run
-        check_run = client.get_check_run(
-            "Aries-Serpent",
-            "_codex_",
-            59990656344
-        )
+        check_run = client.get_check_run("Aries-Serpent", "_codex_", 59990656344)
 
         assert check_run.id == 59990656344
         assert check_run.name is not None

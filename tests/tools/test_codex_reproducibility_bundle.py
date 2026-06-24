@@ -10,9 +10,7 @@ from pathlib import Path
 import tools.codex_reproducibility_bundle as rb
 
 
-def test_reproducibility_bundle_creates_manifest_and_env_snapshot(
-    tmp_path: Path, monkeypatch
-):
+def test_reproducibility_bundle_creates_manifest_and_env_snapshot(tmp_path: Path, monkeypatch):
     audit = tmp_path / "_codex_status_update-2025-11-27.md"
     audit.write_text("# dummy audit\n", encoding="utf-8")
 

@@ -21,6 +21,7 @@ from codex.auth.user_model import PasswordHasher, User
 # User Model Extended Tests
 # ============================================================================
 
+
 class TestUserModelExtended:
     """Extended user model tests."""
 
@@ -109,6 +110,7 @@ class TestUserModelExtended:
 # Password Hasher Extended Tests
 # ============================================================================
 
+
 class TestPasswordHasherExtended:
     """Extended password hasher tests."""
 
@@ -161,6 +163,7 @@ class TestPasswordHasherExtended:
 # ============================================================================
 # Repository Advanced Operations
 # ============================================================================
+
 
 class TestRepositoryAdvanced:
     """Advanced repository operations."""
@@ -292,6 +295,7 @@ class TestRepositoryAdvanced:
 # Concurrent Repository Operations
 # ============================================================================
 
+
 class TestConcurrentRepositoryOperations:
     """Concurrent repository access patterns."""
 
@@ -346,10 +350,7 @@ class TestConcurrentRepositoryOperations:
             retrieved = repo.get_by_user_id(user_id)
             assert retrieved.user_id == user_id
 
-        threads = [
-            threading.Thread(target=mixed_ops, name=f"worker-{i}")
-            for i in range(5)
-        ]
+        threads = [threading.Thread(target=mixed_ops, name=f"worker-{i}") for i in range(5)]
         for t in threads:
             t.start()
         for t in threads:
@@ -359,6 +360,7 @@ class TestConcurrentRepositoryOperations:
 # ============================================================================
 # Data Integrity Tests
 # ============================================================================
+
 
 class TestDataIntegrity:
     """Data integrity and consistency."""
@@ -430,6 +432,7 @@ class TestDataIntegrity:
 # User State Transitions
 # ============================================================================
 
+
 class TestUserStateTransitions:
     """User state and transitions."""
 
@@ -486,6 +489,7 @@ class TestUserStateTransitions:
 # ============================================================================
 # Special Cases
 # ============================================================================
+
 
 class TestSpecialCases:
     """Special and unusual cases."""

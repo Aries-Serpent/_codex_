@@ -321,8 +321,7 @@ class KnowledgeGraphExporter:
         cursor = conn.cursor()
 
         # Create tables
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE nodes (
                 node_id TEXT PRIMARY KEY,
                 type TEXT NOT NULL,
@@ -334,11 +333,9 @@ class KnowledgeGraphExporter:
                 parent_id TEXT,
                 FOREIGN KEY (parent_id) REFERENCES nodes(node_id)
             )
-        """
-        )
+        """)
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE edges (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 source TEXT NOT NULL,
@@ -347,11 +344,9 @@ class KnowledgeGraphExporter:
                 FOREIGN KEY (source) REFERENCES nodes(node_id),
                 FOREIGN KEY (target) REFERENCES nodes(node_id)
             )
-        """
-        )
+        """)
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE metrics (
                 entity_id TEXT PRIMARY KEY,
                 cyclomatic_complexity INTEGER,
@@ -362,26 +357,21 @@ class KnowledgeGraphExporter:
                 quality_tier TEXT,
                 FOREIGN KEY (entity_id) REFERENCES nodes(node_id)
             )
-        """
-        )
+        """)
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE metadata (
                 key TEXT PRIMARY KEY,
                 value TEXT
             )
-        """
-        )
+        """)
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE cycles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 cycle_nodes TEXT NOT NULL
             )
-        """
-        )
+        """)
 
         # Insert metadata
         for key, value in self.metadata.items():

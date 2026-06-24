@@ -5,7 +5,6 @@ This module contains tests for the static analyzer.
 """
 
 
-
 class TestLintIssue:
     """Tests for LintIssue dataclass."""
 
@@ -19,7 +18,7 @@ class TestLintIssue:
             line=10,
             column=80,
             message="Line too long",
-            file_path="test.py"
+            file_path="test.py",
         )
 
         assert issue.rule == "E501"
@@ -43,7 +42,7 @@ class TestSecurityIssue:
             severity="high",
             line=15,
             message="Use of assert detected",
-            file_path="module.py"
+            file_path="module.py",
         )
 
         assert issue.tool == "bandit"
@@ -59,10 +58,7 @@ class TestComplexityMetrics:
         """Test ComplexityMetrics basic creation."""
         from codex.analyze.static.analyzer import ComplexityMetrics
 
-        metrics = ComplexityMetrics(
-            cyclomatic=5.0,
-            cognitive=3.0
-        )
+        metrics = ComplexityMetrics(cyclomatic=5.0, cognitive=3.0)
 
         assert metrics.cyclomatic == 5.0
         assert metrics.cognitive == 3.0
@@ -72,11 +68,7 @@ class TestComplexityMetrics:
         """Test ComplexityMetrics with Halstead difficulty."""
         from codex.analyze.static.analyzer import ComplexityMetrics
 
-        metrics = ComplexityMetrics(
-            cyclomatic=10.0,
-            cognitive=8.0,
-            halstead_difficulty=15.5
-        )
+        metrics = ComplexityMetrics(cyclomatic=10.0, cognitive=8.0, halstead_difficulty=15.5)
 
         assert metrics.halstead_difficulty == 15.5
 
@@ -98,7 +90,7 @@ class TestFileAnalysis:
             imports=["os", "sys"],
             exports=["main"],
             lint_issues=[],
-            security_issues=[]
+            security_issues=[],
         )
 
         assert analysis.path == "src/module.py"

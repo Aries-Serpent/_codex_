@@ -44,10 +44,8 @@ class TestCheckpointCoreBasics:
 
         # Assert
         assert Path(result).exists(), f"Checkpoint directory not created: {result}"
-        assert (Path(result) / "weights.pt").exists(), \
-            "weights.pt file not created"
-        assert (Path(result) / "metadata.json").exists(), \
-            "metadata.json file not created"
+        assert (Path(result) / "weights.pt").exists(), "weights.pt file not created"
+        assert (Path(result) / "metadata.json").exists(), "metadata.json file not created"
 
     def test_checkpoint_metadata_written_correctly(self):
         """Verify metadata JSON contains schema version and timestamp."""
@@ -69,14 +67,10 @@ class TestCheckpointCoreBasics:
         with open(metadata_path, encoding="utf-8") as f:
             metadata = json.load(f)
 
-        assert metadata.get("_schema_version") == "2.0", \
-            "Schema version not set to 2.0"
-        assert "_created_at" in metadata, \
-            "Created timestamp not in metadata"
-        assert metadata.get("epoch") == 2, \
-            "Epoch not preserved in metadata"
-        assert metadata.get("step") == 50, \
-            "Step not preserved in metadata"
+        assert metadata.get("_schema_version") == "2.0", "Schema version not set to 2.0"
+        assert "_created_at" in metadata, "Created timestamp not in metadata"
+        assert metadata.get("epoch") == 2, "Epoch not preserved in metadata"
+        assert metadata.get("step") == 50, "Step not preserved in metadata"
 
     def test_checkpoint_load_missing_file_raises_error(self):
         """Verify FileNotFoundError raised for missing checkpoint."""
@@ -89,8 +83,9 @@ class TestCheckpointCoreBasics:
         with pytest.raises(FileNotFoundError) as exc_info:
             load_checkpoint(str(nonexistent_path))
 
-        assert "weights not found" in str(exc_info.value).lower(), \
-            "Error message should indicate missing weights file"
+        assert (
+            "weights not found" in str(exc_info.value).lower()
+        ), "Error message should indicate missing weights file"
 
     def test_checkpoint_round_trip_preserves_state(self):
         """Verify state is preserved through save and load cycle."""
@@ -117,10 +112,8 @@ class TestCheckpointCoreBasics:
         loaded_state, loaded_meta = load_checkpoint(str(self.checkpoint_dir))
 
         # Assert
-        assert loaded_state == original_state, \
-            "State not preserved after round-trip"
-        assert loaded_meta["epoch"] == 3, \
-            "Epoch not preserved in metadata"
+        assert loaded_state == original_state, "State not preserved after round-trip"
+        assert loaded_meta["epoch"] == 3, "Epoch not preserved in metadata"
 
     def test_checkpoint_load_handles_missing_metadata(self):
         """Verify load succeeds even if metadata.json is missing."""
@@ -148,10 +141,8 @@ class TestCheckpointCoreBasics:
         loaded_state, loaded_meta = load_checkpoint(str(self.checkpoint_dir))
 
         # Assert
-        assert loaded_state == test_state, \
-            "State should load even without metadata"
-        assert loaded_meta == {}, \
-            "Metadata should be empty dict when file missing"
+        assert loaded_state == test_state, "State should load even without metadata"
+        assert loaded_meta == {}, "Metadata should be empty dict when file missing"
 
     def test_checkpoint_schema_version_validation(self):
         """Verify schema version is checked during load."""
@@ -165,6 +156,7 @@ class TestCheckpointCoreBasics:
         # Create weights with mismatched schema version
         try:
             import torch
+
             payload = {
                 "_schema_version": "1.5",  # Mismatch with current 2.0
                 "state": test_state,
@@ -175,16 +167,18 @@ class TestCheckpointCoreBasics:
 
         # Create metadata with mismatched version
         with open(metadata_path, "w", encoding="utf-8") as f:
-            json.dump({
-                "_schema_version": "1.5",
-                "epoch": 1,
-            }, f)
+            json.dump(
+                {
+                    "_schema_version": "1.5",
+                    "epoch": 1,
+                },
+                f,
+            )
 
         # Act & Assert: Should warn but still load
         with pytest.warns(UserWarning, match="schema v1.5"):
             loaded_state, loaded_meta = load_checkpoint(str(self.checkpoint_dir))
-            assert loaded_state == test_state, \
-                "Should still load state despite schema mismatch"
+            assert loaded_state == test_state, "Should still load state despite schema mismatch"
 
 
 class TestCheckpointAtomicIO:
@@ -216,13 +210,11 @@ class TestCheckpointAtomicIO:
 
         # Assert
         metadata_path = Path(result) / "metadata.json"
-        assert metadata_path.exists(), \
-            "Metadata file should exist after save"
+        assert metadata_path.exists(), "Metadata file should exist after save"
 
         with open(metadata_path, encoding="utf-8") as f:
             content = f.read()
-            assert len(content) > 0, \
-                "Metadata file should not be empty"
+            assert len(content) > 0, "Metadata file should not be empty"
 
     def test_checkpoint_keep_last_k_cleanup(self):
         """Verify keep_last_k parameter limits retained checkpoints."""
@@ -244,8 +236,7 @@ class TestCheckpointAtomicIO:
 
         # Assert: Verify the function completes without error
         # (Cleanup is best-effort and may not delete, just verify no exception)
-        assert parent_dir.exists(), \
-            "Parent directory should exist after saves"
+        assert parent_dir.exists(), "Parent directory should exist after saves"
 
 
 class TestCheckpointErrorHandling:
@@ -268,8 +259,9 @@ class TestCheckpointErrorHandling:
         with pytest.raises(RuntimeError) as exc_info:
             _require_torch_attr("nonexistent_torch_function")
 
-        assert "missing required attribute" in str(exc_info.value).lower(), \
-            "Error should indicate missing torch attribute"
+        assert (
+            "missing required attribute" in str(exc_info.value).lower()
+        ), "Error should indicate missing torch attribute"
 
     def test_checkpoint_save_to_nonexistent_parent(self):
         """Verify save creates parent directories as needed."""
@@ -288,10 +280,10 @@ class TestCheckpointErrorHandling:
         )
 
         # Assert
-        assert Path(result).exists(), \
-            "Nested checkpoint directory should be created"
-        assert (Path(result) / "weights.pt").exists(), \
-            "Weights file should exist in nested directory"
+        assert Path(result).exists(), "Nested checkpoint directory should be created"
+        assert (
+            Path(result) / "weights.pt"
+        ).exists(), "Weights file should exist in nested directory"
 
 
 if __name__ == "__main__":

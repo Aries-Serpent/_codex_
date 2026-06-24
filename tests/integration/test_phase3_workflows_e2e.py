@@ -35,7 +35,7 @@ class TestCompleteTrainingWorkflow:
             "data_path": str(tmp_path / "data.json"),
             "output_dir": str(tmp_path / "output"),
             "epochs": 3,
-            "batch_size": 8
+            "batch_size": 8,
         }
 
         # Step 2: Create data
@@ -50,25 +50,16 @@ class TestCompleteTrainingWorkflow:
         training_history = []
         for epoch in range(config["epochs"]):
             epoch_loss = 1.0 / (epoch + 1)
-            training_history.append({
-                "epoch": epoch,
-                "loss": epoch_loss
-            })
+            training_history.append({"epoch": epoch, "loss": epoch_loss})
 
         # Step 5: Save checkpoint
         output_dir = Path(config["output_dir"])
         output_dir.mkdir(parents=True, exist_ok=True)
         checkpoint_path = output_dir / "final_checkpoint.json"
-        checkpoint_path.write_text(json.dumps({
-            "model": model_state,
-            "history": training_history
-        }))
+        checkpoint_path.write_text(json.dumps({"model": model_state, "history": training_history}))
 
         # Step 6: Evaluate
-        eval_results = {
-            "test_loss": 0.25,
-            "test_accuracy": 0.89
-        }
+        eval_results = {"test_loss": 0.25, "test_accuracy": 0.89}
 
         # Verify complete workflow
         assert data_file.exists()
@@ -95,11 +86,7 @@ class TestCompleteTrainingWorkflow:
 
             # Checkpoint at intervals
             if (epoch + 1) % checkpoint_interval == 0:
-                checkpoint = {
-                    "epoch": epoch,
-                    "train_loss": train_loss,
-                    "val_loss": val_loss
-                }
+                checkpoint = {"epoch": epoch, "train_loss": train_loss, "val_loss": val_loss}
                 ckpt_file = checkpoint_dir / f"checkpoint_epoch_{epoch}.json"
                 ckpt_file.write_text(json.dumps(checkpoint))
 
@@ -117,7 +104,7 @@ class TestCompleteTrainingWorkflow:
             "epoch": 3,
             "global_step": 300,
             "model_state": {"weights": "v1"},
-            "optimizer_state": {"lr": 0.001}
+            "optimizer_state": {"lr": 0.001},
         }
 
         checkpoint_file = checkpoint_dir / "checkpoint.json"
@@ -131,10 +118,7 @@ class TestCompleteTrainingWorkflow:
         total_epochs = 5
         resumed_history = []
         for epoch in range(start_epoch, total_epochs):
-            resumed_history.append({
-                "epoch": epoch,
-                "loss": 0.5 / (epoch + 1)
-            })
+            resumed_history.append({"epoch": epoch, "loss": 0.5 / (epoch + 1)})
 
         # Verify resume
         assert start_epoch == 4
@@ -143,7 +127,7 @@ class TestCompleteTrainingWorkflow:
     def test_training_with_early_stopping(self):
         """Test training with early stopping."""
         patience = 3
-        best_val_loss = float('inf')
+        best_val_loss = float("inf")
         patience_counter = 0
 
         # Simulate training epochs with clear plateau
@@ -243,10 +227,7 @@ class TestCompleteTrainingWorkflow:
             if val_accuracy > best_val_accuracy:
                 best_val_accuracy = val_accuracy
                 best_model_path = output_dir / "best_model.json"
-                best_model_path.write_text(json.dumps({
-                    "epoch": epoch,
-                    "accuracy": val_accuracy
-                }))
+                best_model_path.write_text(json.dumps({"epoch": epoch, "accuracy": val_accuracy}))
 
         # Verify best saved
         assert best_model_path.exists()
@@ -255,10 +236,7 @@ class TestCompleteTrainingWorkflow:
 
     def test_training_with_data_augmentation(self):
         """Test training with data augmentation."""
-        original_data = [
-            {"text": "hello", "label": 0},
-            {"text": "world", "label": 1}
-        ]
+        original_data = [{"text": "hello", "label": 0}, {"text": "world", "label": 1}]
 
         # Apply augmentation
         augmented_data = []
@@ -267,10 +245,7 @@ class TestCompleteTrainingWorkflow:
             augmented_data.append(item)
 
             # Augmented version
-            augmented_data.append({
-                "text": item["text"].upper(),
-                "label": item["label"]
-            })
+            augmented_data.append({"text": item["text"].upper(), "label": item["label"]})
 
         # Verify augmentation
         assert len(augmented_data) == len(original_data) * 2
@@ -286,7 +261,7 @@ class TestCompleteTrainingWorkflow:
             "backend": "nccl",
             "world_size": world_size,
             "rank": rank,
-            "local_rank": rank % world_size
+            "local_rank": rank % world_size,
         }
 
         # Verify initialization
@@ -309,17 +284,14 @@ class TestCompleteRAGWorkflow:
         documents = [
             {"id": "doc1", "text": "Machine learning is a subset of AI"},
             {"id": "doc2", "text": "Deep learning uses neural networks"},
-            {"id": "doc3", "text": "NLP processes human language"}
+            {"id": "doc3", "text": "NLP processes human language"},
         ]
 
         # Step 2: Generate embeddings
         embeddings = {}
         for doc in documents:
             # Mock embedding
-            embeddings[doc["id"]] = {
-                "text": doc["text"],
-                "embedding": [0.1] * 128
-            }
+            embeddings[doc["id"]] = {"text": doc["text"], "embedding": [0.1] * 128}
 
         # Step 3: Build index
         index_path = tmp_path / "index.json"
@@ -328,19 +300,13 @@ class TestCompleteRAGWorkflow:
         # Step 4: Query
 
         # Step 5: Retrieve (mock similarity)
-        retrieved = [
-            {"doc_id": "doc1", "score": 0.95},
-            {"doc_id": "doc2", "score": 0.75}
-        ]
+        retrieved = [{"doc_id": "doc1", "score": 0.95}, {"doc_id": "doc2", "score": 0.75}]
 
         # Step 6: Generate response
-        " ".join([
-            embeddings[r["doc_id"]]["text"]
-            for r in retrieved
-        ])
+        " ".join([embeddings[r["doc_id"]]["text"] for r in retrieved])
         response = {
             "answer": "Machine learning is a subset of AI that...",
-            "sources": [r["doc_id"] for r in retrieved]
+            "sources": [r["doc_id"] for r in retrieved],
         }
 
         # Verify complete pipeline
@@ -356,11 +322,8 @@ class TestCompleteRAGWorkflow:
         chunk_size = 500
         chunks = []
         for i in range(0, len(large_document), chunk_size):
-            chunk = large_document[i:i + chunk_size]
-            chunks.append({
-                "doc_id": f"doc1_chunk{len(chunks)}",
-                "text": chunk
-            })
+            chunk = large_document[i : i + chunk_size]
+            chunks.append({"doc_id": f"doc1_chunk{len(chunks)}", "text": chunk})
 
         # Verify chunking
         assert len(chunks) > 1
@@ -371,15 +334,14 @@ class TestCompleteRAGWorkflow:
         documents = [
             {"id": "doc1", "text": "Python tutorial", "language": "en", "category": "programming"},
             {"id": "doc2", "text": "Java guide", "language": "en", "category": "programming"},
-            {"id": "doc3", "text": "Recette de cuisine", "language": "fr", "category": "cooking"}
+            {"id": "doc3", "text": "Recette de cuisine", "language": "fr", "category": "cooking"},
         ]
 
         # Filter by metadata
         filters = {"language": "en", "category": "programming"}
 
         filtered_docs = [
-            doc for doc in documents
-            if all(doc.get(k) == v for k, v in filters.items())
+            doc for doc in documents if all(doc.get(k) == v for k, v in filters.items())
         ]
 
         assert len(filtered_docs) == 2
@@ -390,7 +352,7 @@ class TestCompleteRAGWorkflow:
         initial_results = [
             {"doc_id": "doc1", "retrieval_score": 0.8},
             {"doc_id": "doc2", "retrieval_score": 0.9},
-            {"doc_id": "doc3", "retrieval_score": 0.7}
+            {"doc_id": "doc3", "retrieval_score": 0.7},
         ]
 
         # Rerank with additional model
@@ -399,11 +361,7 @@ class TestCompleteRAGWorkflow:
             result["rerank_score"] = result["retrieval_score"] + 0.05
 
         # Sort by rerank score
-        reranked = sorted(
-            initial_results,
-            key=lambda x: x["rerank_score"],
-            reverse=True
-        )
+        reranked = sorted(initial_results, key=lambda x: x["rerank_score"], reverse=True)
 
         assert reranked[0]["doc_id"] == "doc2"
 
@@ -413,13 +371,13 @@ class TestCompleteRAGWorkflow:
         # Vector search results
         vector_results = [
             {"doc_id": "doc1", "vector_score": 0.9},
-            {"doc_id": "doc2", "vector_score": 0.7}
+            {"doc_id": "doc2", "vector_score": 0.7},
         ]
 
         # Keyword search results
         keyword_results = [
             {"doc_id": "doc2", "keyword_score": 0.8},
-            {"doc_id": "doc3", "keyword_score": 0.6}
+            {"doc_id": "doc3", "keyword_score": 0.6},
         ]
 
         # Combine scores
@@ -445,14 +403,12 @@ class TestCompleteRAGWorkflow:
         # Initial index
         index = {
             "doc1": {"text": "Document 1", "embedding": [0.1]},
-            "doc2": {"text": "Document 2", "embedding": [0.2]}
+            "doc2": {"text": "Document 2", "embedding": [0.2]},
         }
         index_path.write_text(json.dumps(index))
 
         # Add new documents
-        new_docs = {
-            "doc3": {"text": "Document 3", "embedding": [0.3]}
-        }
+        new_docs = {"doc3": {"text": "Document 3", "embedding": [0.3]}}
 
         # Load and merge
         existing_index = json.loads(index_path.read_text())
@@ -469,9 +425,7 @@ class TestCompleteRAGWorkflow:
         original_query = "ML"
 
         # Expand query
-        expansions = {
-            "ML": ["machine learning", "ML", "artificial intelligence"]
-        }
+        expansions = {"ML": ["machine learning", "ML", "artificial intelligence"]}
 
         expanded_queries = expansions.get(original_query, [original_query])
 
@@ -521,8 +475,8 @@ class TestCompleteRAGWorkflow:
             "answer": answer2,
             "reasoning": [
                 {"hop": 1, "query": query1, "answer": answer1},
-                {"hop": 2, "query": query2, "answer": answer2}
-            ]
+                {"hop": 2, "query": query2, "answer": answer2},
+            ],
         }
 
         assert len(final_answer["reasoning"]) == 2
@@ -531,18 +485,13 @@ class TestCompleteRAGWorkflow:
     def test_rag_with_confidence_scores(self):
         """Test RAG with confidence scoring."""
         results = [
-            {
-                "answer": "Machine learning is...",
-                "retrieval_score": 0.9,
-                "generation_score": 0.85
-            }
+            {"answer": "Machine learning is...", "retrieval_score": 0.9, "generation_score": 0.85}
         ]
 
         # Compute overall confidence
         for result in results:
             result["confidence"] = (
-                result["retrieval_score"] * 0.6 +
-                result["generation_score"] * 0.4
+                result["retrieval_score"] * 0.6 + result["generation_score"] * 0.4
             )
 
         assert results[0]["confidence"] == pytest.approx(0.88)
@@ -564,31 +513,29 @@ class TestCompleteAgentWorkflow:
         task = {
             "id": "task_001",
             "description": "Analyze data and generate report",
-            "parameters": {"data_path": str(tmp_path / "data.json")}
+            "parameters": {"data_path": str(tmp_path / "data.json")},
         }
 
         # Step 3: Plan execution
         plan = [
             {"step": 1, "action": "load_data"},
             {"step": 2, "action": "analyze"},
-            {"step": 3, "action": "generate_report"}
+            {"step": 3, "action": "generate_report"},
         ]
 
         # Step 4: Execute plan
         execution_log = []
         for step in plan:
-            execution_log.append({
-                "step": step["step"],
-                "action": step["action"],
-                "status": "completed"
-            })
+            execution_log.append(
+                {"step": step["step"], "action": step["action"], "status": "completed"}
+            )
 
         # Step 5: Generate result
         result = {
             "task_id": task["id"],
             "status": "success",
             "execution_log": execution_log,
-            "output": {"report": "Generated report"}
+            "output": {"report": "Generated report"},
         }
 
         # Verify workflow
@@ -601,7 +548,7 @@ class TestCompleteAgentWorkflow:
         agents = {
             "planner": {"role": "planning", "status": "idle"},
             "executor": {"role": "execution", "status": "idle"},
-            "reviewer": {"role": "review", "status": "idle"}
+            "reviewer": {"role": "review", "status": "idle"},
         }
 
         # Task flow
@@ -629,19 +576,12 @@ class TestCompleteAgentWorkflow:
     def test_agent_with_tool_usage(self):
         """Test agent workflow with tool usage."""
 
-
         # Agent selects tools
         tool_sequence = []
-        tool_sequence.append({
-            "tool": "calculator",
-            "input": "25 * 4",
-            "output": 100
-        })
-        tool_sequence.append({
-            "tool": "web_search",
-            "input": "100",
-            "output": ["search result 1", "search result 2"]
-        })
+        tool_sequence.append({"tool": "calculator", "input": "25 * 4", "output": 100})
+        tool_sequence.append(
+            {"tool": "web_search", "input": "100", "output": ["search result 1", "search result 2"]}
+        )
 
         # Verify tool usage
         assert len(tool_sequence) == 2
@@ -649,17 +589,14 @@ class TestCompleteAgentWorkflow:
 
     def test_agent_learning_from_feedback(self):
         """Test agent learning from feedback."""
-        agent_memory = {
-            "experiences": [],
-            "success_rate": 0.0
-        }
+        agent_memory = {"experiences": [], "success_rate": 0.0}
 
         # Execute tasks with feedback
         tasks = [
             {"id": 1, "success": True},
             {"id": 2, "success": False},
             {"id": 3, "success": True},
-            {"id": 4, "success": True}
+            {"id": 4, "success": True},
         ]
 
         for task in tasks:
@@ -676,7 +613,7 @@ class TestCompleteAgentWorkflow:
         task_steps = [
             {"step": 1, "action": "initialize"},
             {"step": 2, "action": "process"},
-            {"step": 3, "action": "finalize"}
+            {"step": 3, "action": "finalize"},
         ]
 
         execution_attempts = []
@@ -709,7 +646,7 @@ class TestCompleteAgentWorkflow:
         agent_state = {
             "task_count": 5,
             "completed_tasks": ["task1", "task2", "task3"],
-            "memory": {"key": "value"}
+            "memory": {"key": "value"},
         }
 
         # Save state
@@ -732,7 +669,7 @@ class TestCompleteAgentWorkflow:
             {"id": 1, "priority": "high"},
             {"id": 2, "priority": "low"},
             {"id": 3, "priority": "high"},
-            {"id": 4, "priority": "medium"}
+            {"id": 4, "priority": "medium"},
         ]
 
         # Sort by priority
@@ -750,16 +687,10 @@ class TestCompleteAgentWorkflow:
         contexts = {}
 
         # Task A context
-        contexts["task_a"] = {
-            "current_step": 3,
-            "variables": {"x": 10}
-        }
+        contexts["task_a"] = {"current_step": 3, "variables": {"x": 10}}
 
         # Switch to Task B
-        contexts["task_b"] = {
-            "current_step": 1,
-            "variables": {"y": 20}
-        }
+        contexts["task_b"] = {"current_step": 1, "variables": {"y": 20}}
 
         # Switch back to Task A
         task_a_context = contexts["task_a"]
@@ -774,18 +705,11 @@ class TestCompleteAgentWorkflow:
         main_agent = {"name": "main", "sub_agents": []}
 
         # Complex task requires delegation
-        task = {
-            "type": "complex",
-            "subtasks": ["subtask_1", "subtask_2", "subtask_3"]
-        }
+        task = {"type": "complex", "subtasks": ["subtask_1", "subtask_2", "subtask_3"]}
 
         # Delegate to sub-agents
         for subtask in task["subtasks"]:
-            sub_agent = {
-                "name": f"agent_{subtask}",
-                "task": subtask,
-                "status": "assigned"
-            }
+            sub_agent = {"name": f"agent_{subtask}", "task": subtask, "status": "assigned"}
             main_agent["sub_agents"].append(sub_agent)
 
         # Sub-agents complete tasks
@@ -802,7 +726,7 @@ class TestCompleteAgentWorkflow:
             "tasks_completed": 0,
             "tasks_failed": 0,
             "avg_execution_time": 0.0,
-            "execution_times": []
+            "execution_times": [],
         }
 
         # Execute tasks with timing
@@ -810,7 +734,7 @@ class TestCompleteAgentWorkflow:
             {"success": True, "time": 1.5},
             {"success": True, "time": 2.0},
             {"success": False, "time": 0.5},
-            {"success": True, "time": 1.8}
+            {"success": True, "time": 1.8},
         ]
 
         for result in task_results:
@@ -821,8 +745,8 @@ class TestCompleteAgentWorkflow:
             telemetry["execution_times"].append(result["time"])
 
         # Calculate average
-        telemetry["avg_execution_time"] = (
-            sum(telemetry["execution_times"]) / len(telemetry["execution_times"])
+        telemetry["avg_execution_time"] = sum(telemetry["execution_times"]) / len(
+            telemetry["execution_times"]
         )
 
         assert telemetry["tasks_completed"] == 3
@@ -857,11 +781,7 @@ class TestCompleteCLIWorkflow:
         assert "model" in args
 
         # Step 3: Execute
-        execution_result = {
-            "command": command,
-            "status": "success",
-            "output_dir": args["output"]
-        }
+        execution_result = {"command": command, "status": "success", "output_dir": args["output"]}
 
         # Step 4: Generate output
         output_file = Path(args["output"]) / "results.json"
@@ -874,13 +794,7 @@ class TestCompleteCLIWorkflow:
         config_file = tmp_path / "config.yaml"
 
         # Mock YAML config
-        config_content = {
-            "model": "test-model",
-            "training": {
-                "epochs": 10,
-                "batch_size": 16
-            }
-        }
+        config_content = {"model": "test-model", "training": {"epochs": 10, "batch_size": 16}}
 
         config_file.write_text(json.dumps(config_content))
 
@@ -893,10 +807,7 @@ class TestCompleteCLIWorkflow:
 
     def test_cli_interactive_mode(self):
         """Test CLI interactive mode."""
-        session = {
-            "active": True,
-            "history": []
-        }
+        session = {"active": True, "history": []}
 
         # Simulate commands
         commands = ["help", "status", "train", "exit"]
@@ -916,7 +827,7 @@ class TestCompleteCLIWorkflow:
             {"command": "load", "input": "data.json"},
             {"command": "preprocess", "operations": ["normalize", "tokenize"]},
             {"command": "train", "epochs": 5},
-            {"command": "evaluate", "output": str(tmp_path / "results.json")}
+            {"command": "evaluate", "output": str(tmp_path / "results.json")},
         ]
 
         # Execute pipeline
@@ -957,13 +868,7 @@ class TestCompleteCLIWorkflow:
 
     def test_cli_output_formatting(self):
         """Test CLI output formatting."""
-        data = {
-            "metrics": {
-                "accuracy": 0.856,
-                "loss": 0.345,
-                "f1_score": 0.823
-            }
-        }
+        data = {"metrics": {"accuracy": 0.856, "loss": 0.345, "f1_score": 0.823}}
 
         # Format as table
         table_rows = []
@@ -980,6 +885,7 @@ class TestCompleteCLIWorkflow:
 
     def test_cli_error_handling_and_messages(self):
         """Test CLI error handling and messages."""
+
         def execute_command(cmd):
             if cmd == "invalid":
                 return {"status": "error", "message": "Unknown command"}
@@ -999,12 +905,9 @@ class TestCompleteCLIWorkflow:
         commands = {
             "train": {
                 "description": "Train a model",
-                "args": ["--model", "--epochs", "--batch-size"]
+                "args": ["--model", "--epochs", "--batch-size"],
             },
-            "evaluate": {
-                "description": "Evaluate a model",
-                "args": ["--model", "--data"]
-            }
+            "evaluate": {"description": "Evaluate a model", "args": ["--model", "--data"]},
         }
 
         # Generate help text
@@ -1024,17 +927,13 @@ class TestCompleteCLIWorkflow:
     def test_cli_environment_variable_support(self):
         """Test CLI environment variable support."""
         # Mock environment
-        env_vars = {
-            "MODEL_PATH": "/models/gpt2",
-            "BATCH_SIZE": "32",
-            "DEBUG": "true"
-        }
+        env_vars = {"MODEL_PATH": "/models/gpt2", "BATCH_SIZE": "32", "DEBUG": "true"}
 
         # CLI reads from environment
         config = {
             "model_path": env_vars.get("MODEL_PATH", "/default/path"),
             "batch_size": int(env_vars.get("BATCH_SIZE", "16")),
-            "debug": env_vars.get("DEBUG", "false") == "true"
+            "debug": env_vars.get("DEBUG", "false") == "true",
         }
 
         assert config["model_path"] == "/models/gpt2"
@@ -1046,14 +945,14 @@ class TestCompleteCLIWorkflow:
         log_config = {
             "level": "INFO",
             "file": str(tmp_path / "cli.log"),
-            "format": "%(asctime)s - %(levelname)s - %(message)s"
+            "format": "%(asctime)s - %(levelname)s - %(message)s",
         }
 
         # Simulate logging
         log_entries = [
             "2026-01-18 12:00:00 - INFO - CLI started",
             "2026-01-18 12:00:05 - INFO - Command executed",
-            "2026-01-18 12:00:10 - INFO - CLI finished"
+            "2026-01-18 12:00:10 - INFO - CLI finished",
         ]
 
         log_file = Path(log_config["file"])

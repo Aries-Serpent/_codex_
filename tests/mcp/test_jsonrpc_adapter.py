@@ -182,7 +182,9 @@ def test_dispatch_method_handles_unknown_tool_and_method() -> None:
 def test_register_jsonrpc_routes_uses_supplied_loader() -> None:
     adapter = _FakeAdapter()
     app = FastAPI()
-    jsonrpc_adapter.register_jsonrpc_routes(app, adapter_loader_fn=lambda: (adapter, "fake.adapter"))
+    jsonrpc_adapter.register_jsonrpc_routes(
+        app, adapter_loader_fn=lambda: (adapter, "fake.adapter")
+    )
     client = TestClient(app)
 
     response = client.post(

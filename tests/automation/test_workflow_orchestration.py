@@ -24,6 +24,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def workflow_definition() -> dict[str, Any]:
     """Fixture for workflow definition."""
@@ -75,6 +76,7 @@ def execution_context() -> dict[str, Any]:
 # Workflow Definition Tests
 # ============================================================================
 
+
 class TestWorkflowDefinition:
     """Tests for workflow definition and validation."""
 
@@ -109,6 +111,7 @@ class TestWorkflowDefinition:
 # Task Scheduling Tests
 # ============================================================================
 
+
 class TestTaskScheduling:
     """Tests for task scheduling."""
 
@@ -142,6 +145,7 @@ class TestTaskScheduling:
 # ============================================================================
 # Dependency Management Tests
 # ============================================================================
+
 
 class TestDependencyManagement:
     """Tests for task dependency management."""
@@ -190,6 +194,7 @@ class TestDependencyManagement:
 # Parallel Execution Tests
 # ============================================================================
 
+
 class TestParallelExecution:
     """Tests for parallel task execution."""
 
@@ -228,6 +233,7 @@ class TestParallelExecution:
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
 
 class TestErrorHandling:
     """Tests for workflow error handling."""
@@ -271,6 +277,7 @@ class TestErrorHandling:
 # ============================================================================
 # Workflow Monitoring Tests
 # ============================================================================
+
 
 class TestWorkflowMonitoring:
     """Tests for workflow monitoring."""

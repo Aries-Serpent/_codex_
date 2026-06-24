@@ -44,8 +44,10 @@ def test_schema_round_trip(tmp_path: Path):
     assert record["metric"] == "exact_match"
     assert float(record["value"]) == 1.0
     # Accept both "eval" and "evaluation" for phase field (abbreviated and full forms)
-    assert record["tags"]["phase"] in ("eval", "evaluation"), \
-        f"Expected phase to be 'eval' or 'evaluation', got {record['tags']['phase']}"
+    assert record["tags"]["phase"] in (
+        "eval",
+        "evaluation",
+    ), f"Expected phase to be 'eval' or 'evaluation', got {record['tags']['phase']}"
 
     # CSV schema and value agreement
     with csv_path.open(newline="", encoding="utf-8") as fh:
@@ -59,5 +61,7 @@ def test_schema_round_trip(tmp_path: Path):
     assert float(rows[0]["value"]) == float(record["value"])
     assert rows[0]["metric"] == record["metric"]
     # Accept both "eval" and "evaluation" for consistency with NDJSON
-    assert rows[0]["phase"] in ("eval", "evaluation"), \
-        f"Expected phase to be 'eval' or 'evaluation', got {rows[0]['phase']}"
+    assert rows[0]["phase"] in (
+        "eval",
+        "evaluation",
+    ), f"Expected phase to be 'eval' or 'evaluation', got {rows[0]['phase']}"

@@ -37,9 +37,7 @@ class TestREADMEExistence:
         readme = REPO_ROOT / "README.md"
         content = readme.read_text(encoding="utf-8")
         # Check for h1 header
-        assert content.startswith("#") or "# " in content[:100], (
-            "README should have a title"
-        )
+        assert content.startswith("#") or "# " in content[:100], "README should have a title"
 
 
 class TestREADMECodeBlocks:
@@ -87,9 +85,9 @@ class TestREADMECodeBlocks:
 
         # Allow some syntax errors (snippets are often incomplete)
         max_errors = len(python_blocks) // 2
-        assert len(syntax_errors) <= max_errors, (
-            f"Too many Python syntax errors: {syntax_errors[:3]}"
-        )
+        assert (
+            len(syntax_errors) <= max_errors
+        ), f"Too many Python syntax errors: {syntax_errors[:3]}"
 
     def test_bash_examples_exist(self):
         """Verify README has bash/shell examples."""
@@ -114,9 +112,7 @@ class TestREADMESections:
         content = readme.read_text(encoding="utf-8").lower()
         has_quickstart = "quickstart" in content or "quick start" in content
         has_getting_started = "getting started" in content
-        assert has_quickstart or has_getting_started, (
-            "README should have quickstart section"
-        )
+        assert has_quickstart or has_getting_started, "README should have quickstart section"
 
     def test_readme_has_installation(self):
         """Verify README mentions installation."""
@@ -196,6 +192,4 @@ class TestREADMELinks:
             if "localhost" not in url and "127.0.0.1" not in url
         ]
 
-        assert len(external_http) == 0, (
-            f"External links should use HTTPS: {external_http[:3]}"
-        )
+        assert len(external_http) == 0, f"External links should use HTTPS: {external_http[:3]}"

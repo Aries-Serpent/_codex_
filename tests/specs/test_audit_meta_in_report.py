@@ -37,7 +37,7 @@ def test_meta_propagates_and_renders(tmp_path):
         pytest.skip("audit runner missing")
 
     # Optional deps for S6 template
-    if importlib.util.find_spec('jinja2') is None or importlib.util.find_spec('yaml') is None:
+    if importlib.util.find_spec("jinja2") is None or importlib.util.find_spec("yaml") is None:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # Ensure audit_artifacts directory exists

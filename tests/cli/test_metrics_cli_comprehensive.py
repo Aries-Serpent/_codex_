@@ -24,11 +24,13 @@ def mock_metrics_data(tmp_path):
     """Create mock metrics NDJSON file."""
     metrics_file = tmp_path / "metrics.ndjson"
     metrics_file.write_text(
-        '\n'.join([
-            '{"epoch": 0, "loss": 2.5, "accuracy": 0.3}',
-            '{"epoch": 1, "loss": 1.8, "accuracy": 0.5}',
-            '{"epoch": 2, "loss": 1.2, "accuracy": 0.7}',
-        ]),
+        "\n".join(
+            [
+                '{"epoch": 0, "loss": 2.5, "accuracy": 0.3}',
+                '{"epoch": 1, "loss": 1.8, "accuracy": 0.5}',
+                '{"epoch": 2, "loss": 1.2, "accuracy": 0.7}',
+            ]
+        ),
         encoding="utf-8",
     )
     return metrics_file

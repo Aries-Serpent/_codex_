@@ -223,9 +223,11 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                         # Legacy tuple format from JSON: (name, [list_of_ints], pos, has_gauss, cached_gauss)  # noqa: E501
                         state_tuple = (  # type: ignore
                             numpy_state[0],
-                            np.array(numpy_state[1], dtype=np.uint32)
-                            if isinstance(numpy_state[1], list)
-                            else numpy_state[1],
+                            (
+                                np.array(numpy_state[1], dtype=np.uint32)
+                                if isinstance(numpy_state[1], list)
+                                else numpy_state[1]
+                            ),
                             numpy_state[2],
                             numpy_state[3],
                             numpy_state[4],

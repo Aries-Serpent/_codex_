@@ -277,7 +277,7 @@ class TestUnicodeNormalization:
         text = "日本語 テスト"
         result = preprocessor.preprocess(text)
 
-        assert result.is_valid if hasattr(result, 'is_valid') else True
+        assert result.is_valid if hasattr(result, "is_valid") else True
         assert "日本語" in result.text
 
 
@@ -293,18 +293,18 @@ class TestPreprocessorAllFlagsFalse:
         """With all optional flags False, every if-guard False branch is hit."""
         config = PreprocessingConfig(
             normalization_level=NormalizationLevel.STANDARD,
-            normalize_unicode=False,       # 145->149
-            remove_control_chars=False,    # 149->153
-            remove_html_tags=False,        # 153->157
+            normalize_unicode=False,  # 145->149
+            remove_control_chars=False,  # 149->153
+            remove_html_tags=False,  # 153->157
             remove_urls=False,
             remove_emails=False,
-            normalize_whitespace=False,    # 165->169
-            remove_extra_newlines=False,   # 169->173
+            normalize_whitespace=False,  # 165->169
+            remove_extra_newlines=False,  # 169->173
             strip_leading_trailing=False,  # 173->177
             lowercase=False,
-            extract_title=False,           # 182->185
-            extract_headers=False,         # 185->189
-            compute_fingerprint=False,     # 189->192
+            extract_title=False,  # 182->185
+            extract_headers=False,  # 185->189
+            compute_fingerprint=False,  # 189->192
         )
         preprocessor = DocumentPreprocessor(config)
         text = "<p>Hello   world\n\n\nLine2</p>"

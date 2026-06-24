@@ -211,9 +211,6 @@ class TestCodeQualityValidation:
             Path(temp_path).unlink()
 
 
-
-
-
 # ============================================================================
 # MUTATION KILLING TESTS - DAY 2 REFINEMENT
 # ============================================================================
@@ -275,10 +272,12 @@ class TestValidatorsExactValues:
         finally:
             Path(temp_path).unlink()
 
+
 # ============================================================================
 # MUTATION-KILLING TESTS FOR VALIDATORS
 # ============================================================================
 # Tests specifically designed to kill surviving mutations from Day 2
+
 
 class TestValidatorsBoundaryMutations:
     """Kill boundary mutations (!=, ==, etc)."""
@@ -382,7 +381,7 @@ class TestValidatorsReturnValueMutations:
                 "balanced_parens",
                 "balanced_brackets",
                 "no_trailing_whitespace",
-                "valid_syntax"
+                "valid_syntax",
             }
             assert set(result.keys()) == expected_keys, "MUST have exact keys"
 

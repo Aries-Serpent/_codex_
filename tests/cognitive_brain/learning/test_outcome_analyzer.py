@@ -10,7 +10,7 @@ PDA: Active - Test coverage for learning components
 
 import pytest
 
-pytest.importorskip('numpy')
+pytest.importorskip("numpy")
 
 from cognitive_brain.learning.outcome_analyzer import OutcomeAnalyzer
 from cognitive_brain.models.learning_outcome import (
@@ -121,9 +121,7 @@ def test_pattern_identification(analyzer, complex_context):
 
     # Check for specific pattern types
     pattern_str = " ".join(patterns)
-    assert any(
-        cat in pattern_str for cat in ["temporal", "contextual", "sequential", "causal"]
-    )
+    assert any(cat in pattern_str for cat in ["temporal", "contextual", "sequential", "causal"])
 
 
 def test_lessons_extraction(analyzer, complex_context):
@@ -143,8 +141,7 @@ def test_lessons_extraction(analyzer, complex_context):
 
     # High complexity success should be noted
     assert any(
-        "high-complexity" in lesson.lower() or "complex" in lesson.lower()
-        for lesson in lessons
+        "high-complexity" in lesson.lower() or "complex" in lesson.lower() for lesson in lessons
     )
 
 
@@ -200,9 +197,7 @@ def test_pattern_categories(analyzer):
         # Sequential pattern (multi-agent)
         DecisionContext("seq_task", 0.5, {"cpu": 0.8}, 0.3, ["a1", "a2", "a3"]),
         # Causal pattern (low resources)
-        DecisionContext(
-            "causal_task", 0.5, {"cpu": 0.3, "memory": 0.2}, 0.3, ["agent_1"]
-        ),
+        DecisionContext("causal_task", 0.5, {"cpu": 0.3, "memory": 0.2}, 0.3, ["agent_1"]),
     ]
 
     for i, ctx in enumerate(contexts):
@@ -229,9 +224,7 @@ def test_statistics_calculation(analyzer, simple_context):
         analyzer.analyze_outcome(
             decision_id=f"stat_decision_{i:03d}",
             outcome_type=outcome_type,
-            result_metrics={
-                "efficiency": 0.8 if outcome_type == OutcomeType.SUCCESS else 0.3
-            },
+            result_metrics={"efficiency": 0.8 if outcome_type == OutcomeType.SUCCESS else 0.3},
             context=simple_context,
         )
 
@@ -328,9 +321,7 @@ def test_pattern_confidence_calculation(analyzer, simple_context):
     if pattern_set_10.patterns and pattern_set_50.patterns:
         # Find matching patterns
         pattern_id = pattern_set_10.patterns[0].pattern_id
-        pattern_50 = next(
-            (p for p in pattern_set_50.patterns if p.pattern_id == pattern_id), None
-        )
+        pattern_50 = next((p for p in pattern_set_50.patterns if p.pattern_id == pattern_id), None)
 
         if pattern_50:
             # More support should lead to higher confidence
@@ -378,12 +369,8 @@ def test_get_patterns_by_category(analyzer, simple_context):
     """Test 15: Test pattern filtering by category."""
     # Create diverse outcomes
     contexts = [
-        DecisionContext(
-            "task_1", 0.9, {"cpu": 0.8}, 0.3, ["agent_1"]
-        ),  # High complexity
-        DecisionContext(
-            "task_2", 0.5, {"cpu": 0.3}, 0.3, ["a1", "a2", "a3"]
-        ),  # Multi-agent
+        DecisionContext("task_1", 0.9, {"cpu": 0.8}, 0.3, ["agent_1"]),  # High complexity
+        DecisionContext("task_2", 0.5, {"cpu": 0.3}, 0.3, ["a1", "a2", "a3"]),  # Multi-agent
         DecisionContext("task_3", 0.5, {"cpu": 0.8}, 0.3, ["agent_1"]),  # Regular
     ]
 

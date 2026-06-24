@@ -16,6 +16,7 @@ class TestPerplexityCalculation:
         """Test perplexity with zero loss."""
         try:
             from codex_ml.metrics.perplexity import perplexity_from_loss
+
             result = perplexity_from_loss(0.0)
             assert result == pytest.approx(1.0, abs=1e-6)
         except ImportError as exc:
@@ -25,6 +26,7 @@ class TestPerplexityCalculation:
         """Test perplexity with positive loss."""
         try:
             from codex_ml.metrics.perplexity import perplexity_from_loss
+
             result = perplexity_from_loss(1.0)
             assert result == pytest.approx(math.e, abs=1e-6)
         except ImportError as exc:
@@ -34,6 +36,7 @@ class TestPerplexityCalculation:
         """Test perplexity with high loss."""
         try:
             from codex_ml.metrics.perplexity import perplexity_from_loss
+
             result = perplexity_from_loss(5.0)
             expected = math.exp(5.0)
             assert result == pytest.approx(expected, rel=1e-6)
@@ -44,6 +47,7 @@ class TestPerplexityCalculation:
         """Test perplexity with negative loss (edge case)."""
         try:
             from codex_ml.metrics.perplexity import perplexity_from_loss
+
             result = perplexity_from_loss(-1.0)
             expected = math.exp(-1.0)
             assert result == pytest.approx(expected, abs=1e-6)
@@ -54,7 +58,8 @@ class TestPerplexityCalculation:
         """Test perplexity with invalid input returns inf."""
         try:
             from codex_ml.metrics.perplexity import perplexity_from_loss
-            result = perplexity_from_loss(float('inf'))
+
+            result = perplexity_from_loss(float("inf"))
             assert math.isinf(result)
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

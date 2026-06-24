@@ -358,11 +358,7 @@ class TestScopeCombinations:
 
     def test_combine_multiple_scopes(self):
         """Test combining multiple scopes."""
-        scopes = (
-            TokenScope.READ_REPO |
-            TokenScope.WRITE_ISSUES |
-            TokenScope.ADMIN_WORKFLOW
-        )
+        scopes = TokenScope.READ_REPO | TokenScope.WRITE_ISSUES | TokenScope.ADMIN_WORKFLOW
         assert TokenScope.READ_REPO in scopes
         assert TokenScope.WRITE_ISSUES in scopes
         assert TokenScope.ADMIN_WORKFLOW in scopes
@@ -398,26 +394,32 @@ class TestScopeCombinations:
 # ============================================================================
 
 
-@pytest.mark.parametrize("scope,category", [
-    (TokenScope.READ_REPO, "repo"),
-    (TokenScope.WRITE_REPO, "repo"),
-    (TokenScope.READ_WORKFLOW, "workflow"),
-    (TokenScope.READ_ISSUES, "issues"),
-    (TokenScope.READ_PACKAGES, "packages"),
-    (TokenScope.READ_ORG, "org"),
-])
+@pytest.mark.parametrize(
+    "scope,category",
+    [
+        (TokenScope.READ_REPO, "repo"),
+        (TokenScope.WRITE_REPO, "repo"),
+        (TokenScope.READ_WORKFLOW, "workflow"),
+        (TokenScope.READ_ISSUES, "issues"),
+        (TokenScope.READ_PACKAGES, "packages"),
+        (TokenScope.READ_ORG, "org"),
+    ],
+)
 def test_scope_category_parametrized(scope_validator, scope, category):
     """Parametrized test for scope categories."""
     result = scope_validator.get_scope_category(scope)
     assert isinstance(result, str)
 
 
-@pytest.mark.parametrize("token_scope,required,should_pass", [
-    (TokenScope.ADMIN_REPO, TokenScope.READ_REPO, True),
-    (TokenScope.WRITE_REPO, TokenScope.READ_REPO, True),
-    (TokenScope.READ_REPO, TokenScope.WRITE_REPO, False),
-    (TokenScope.ADMIN_WORKFLOW, TokenScope.ADMIN_REPO, False),
-])
+@pytest.mark.parametrize(
+    "token_scope,required,should_pass",
+    [
+        (TokenScope.ADMIN_REPO, TokenScope.READ_REPO, True),
+        (TokenScope.WRITE_REPO, TokenScope.READ_REPO, True),
+        (TokenScope.READ_REPO, TokenScope.WRITE_REPO, False),
+        (TokenScope.ADMIN_WORKFLOW, TokenScope.ADMIN_REPO, False),
+    ],
+)
 def test_scope_validation_parametrized(scope_validator, token_scope, required, should_pass):
     """Parametrized test for scope validation."""
     result = scope_validator.check_scope(token_scope, required)
@@ -475,9 +477,9 @@ class TestEdgeCases:
     def test_scope_hierarchy_deep_nesting(self, scope_validator):
         """Test deeply nested scope hierarchies."""
         deep_scope = (
-            TokenScope.ADMIN_REPO |
-            TokenScope.ADMIN_WORKFLOW |
-            TokenScope.ADMIN_ISSUES |
-            TokenScope.ADMIN_ORG
+            TokenScope.ADMIN_REPO
+            | TokenScope.ADMIN_WORKFLOW
+            | TokenScope.ADMIN_ISSUES
+            | TokenScope.ADMIN_ORG
         )
         assert isinstance(deep_scope, int)

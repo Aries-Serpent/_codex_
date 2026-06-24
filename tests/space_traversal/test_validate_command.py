@@ -31,7 +31,7 @@ def test_validate_command_passes_when_all_above_threshold():
     audit_runner = load_audit_runner()
 
     # ADDED: Verify the function exists
-    if not hasattr(audit_runner, 'command_validate'):
+    if not hasattr(audit_runner, "command_validate"):
         pytest.skip("command_validate not found in audit_runner module")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -70,7 +70,7 @@ def test_validate_command_fails_on_low_maturity():
     audit_runner = load_audit_runner()
 
     # ADDED: Verify the function exists
-    if not hasattr(audit_runner, 'command_validate'):
+    if not hasattr(audit_runner, "command_validate"):
         pytest.skip("command_validate not found in audit_runner module")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -107,7 +107,7 @@ def test_validate_command_respects_fail_on_low_maturity_false():
     audit_runner = load_audit_runner()
 
     # ADDED: Verify the function exists
-    if not hasattr(audit_runner, 'command_validate'):
+    if not hasattr(audit_runner, "command_validate"):
         pytest.skip("command_validate not found in audit_runner module")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -145,7 +145,7 @@ def test_validate_command_fails_when_missing_artifacts():
     audit_runner = load_audit_runner()
 
     # ADDED: Verify the function exists
-    if not hasattr(audit_runner, 'command_validate'):
+    if not hasattr(audit_runner, "command_validate"):
         pytest.skip("command_validate not found in audit_runner module")
 
     with tempfile.TemporaryDirectory() as tmp_dir:

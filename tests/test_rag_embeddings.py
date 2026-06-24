@@ -2,7 +2,6 @@
 Tests for RAG Embeddings Module
 """
 
-
 import importlib.util
 import os
 import tempfile
@@ -21,6 +20,7 @@ try:
         OpenAIEmbeddingProvider,
         create_embedding_provider,
     )
+
     RAG_EMBEDDINGS_AVAILABLE = True
 except ImportError:
     RAG_EMBEDDINGS_AVAILABLE = False
@@ -34,16 +34,17 @@ except ImportError:
     SENTENCE_TRANSFORMERS_AVAILABLE = False
 
 # Check if openai is available
-OPENAI_AVAILABLE = importlib.util.find_spec('openai') is not None
+OPENAI_AVAILABLE = importlib.util.find_spec("openai") is not None
 
 pytestmark = pytest.mark.skipif(
     not RAG_EMBEDDINGS_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
-    reason="RAG embeddings dependencies (sentence_transformers) not installed"
+    reason="RAG embeddings dependencies (sentence_transformers) not installed",
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
     import torch as _torch
+
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
     _cuda_available = False
@@ -126,9 +127,7 @@ class TestLocalSentenceTransformerProvider:
     def test_custom_cache_dir(self):
         """Test with custom cache directory"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            provider = LocalSentenceTransformerProvider(
-                cache_dir=tmpdir
-            )
+            provider = LocalSentenceTransformerProvider(cache_dir=tmpdir)
 
             assert provider.cache_dir == tmpdir
 
@@ -162,19 +161,13 @@ class TestOpenAIEmbeddingProvider:
     def test_get_dimension(self):
         """Test getting embedding dimensions for different models"""
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
-            provider_small = OpenAIEmbeddingProvider(
-                model_name="text-embedding-3-small"
-            )
+            provider_small = OpenAIEmbeddingProvider(model_name="text-embedding-3-small")
             assert provider_small.get_dimension() == 1536
 
-            provider_large = OpenAIEmbeddingProvider(
-                model_name="text-embedding-3-large"
-            )
+            provider_large = OpenAIEmbeddingProvider(model_name="text-embedding-3-large")
             assert provider_large.get_dimension() == 3072
 
-            provider_ada = OpenAIEmbeddingProvider(
-                model_name="text-embedding-ada-002"
-            )
+            provider_ada = OpenAIEmbeddingProvider(model_name="text-embedding-ada-002")
             assert provider_ada.get_dimension() == 1536
 
     @patch("codex.rag.embeddings.OpenAI")
@@ -242,10 +235,7 @@ class TestCachedEmbeddingProvider:
     def test_initialization(self, mock_provider):
         """Test cached provider initialization"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             assert cached is not None
             assert Path(tmpdir).exists()
@@ -253,10 +243,7 @@ class TestCachedEmbeddingProvider:
     def test_cache_miss_and_hit(self, mock_provider):
         """Test cache miss followed by cache hit"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             texts = ["text1", "text2"]
             cache_key = "test_key"
@@ -279,10 +266,7 @@ class TestCachedEmbeddingProvider:
     def test_cache_with_auto_key(self, mock_provider):
         """Test that caching is bypassed when no cache_key is provided"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             texts = ["text1", "text2"]
 
@@ -299,45 +283,27 @@ class TestCachedEmbeddingProvider:
     def test_cache_invalidation_with_metadata(self, mock_provider):
         """Test cache invalidation based on metadata"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             texts = ["text1"]
             cache_key = "meta_test"
 
             # First call with mtime1
-            _ = cached.encode(
-                texts,
-                cache_key=cache_key,
-                metadata={"file_mtime": 1000}
-            )
+            _ = cached.encode(texts, cache_key=cache_key, metadata={"file_mtime": 1000})
             assert cached.cache_misses == 1
 
             # Second call with same mtime: cache hit
-            _ = cached.encode(
-                texts,
-                cache_key=cache_key,
-                metadata={"file_mtime": 1000}
-            )
+            _ = cached.encode(texts, cache_key=cache_key, metadata={"file_mtime": 1000})
             assert cached.cache_hits == 1
 
             # Third call with different mtime: cache miss
-            _ = cached.encode(
-                texts,
-                cache_key=cache_key,
-                metadata={"file_mtime": 2000}
-            )
+            _ = cached.encode(texts, cache_key=cache_key, metadata={"file_mtime": 2000})
             assert cached.cache_misses == 2
 
     def test_get_dimension(self, mock_provider):
         """Test getting dimension from cached provider"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             dim = cached.get_dimension()
             assert dim == 384
@@ -346,10 +312,7 @@ class TestCachedEmbeddingProvider:
     def test_get_stats(self, mock_provider):
         """Test getting cache statistics"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             # Make some calls
             cached.encode(["text1"], cache_key="key1")
@@ -361,16 +324,13 @@ class TestCachedEmbeddingProvider:
             assert stats["cache_hits"] == 1
             assert stats["cache_misses"] == 2
             assert stats["total_requests"] == 3
-            assert stats["hit_rate"] == 1/3
+            assert stats["hit_rate"] == 1 / 3
             assert "cache_dir" in stats
 
     def test_clear_cache(self, mock_provider):
         """Test clearing cache"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             # Create cache entries
             cached.encode(["text1"], cache_key="key1")
@@ -388,10 +348,7 @@ class TestCachedEmbeddingProvider:
     def test_cache_with_corrupted_file(self, mock_provider):
         """Test handling of corrupted cache file"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            cached = CachedEmbeddingProvider(
-                provider=mock_provider,
-                cache_dir=tmpdir
-            )
+            cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             # Create cache
             cached.encode(["text1"], cache_key="test")
@@ -418,10 +375,7 @@ class TestCreateEmbeddingProvider:
 
     def test_create_local_without_cache(self):
         """Test creating local provider without cache"""
-        provider = create_embedding_provider(
-            provider_type="local",
-            use_cache=False
-        )
+        provider = create_embedding_provider(provider_type="local", use_cache=False)
 
         assert isinstance(provider, LocalSentenceTransformerProvider)
 
@@ -430,7 +384,7 @@ class TestCreateEmbeddingProvider:
         provider = create_embedding_provider(
             provider_type="local",
             model_name="sentence-transformers/all-MiniLM-L6-v2",
-            use_cache=False
+            use_cache=False,
         )
 
         assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2"
@@ -438,10 +392,7 @@ class TestCreateEmbeddingProvider:
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})  # pragma: allowlist secret
     def test_create_openai_provider(self):
         """Test creating OpenAI provider"""
-        provider = create_embedding_provider(
-            provider_type="openai",
-            use_cache=False
-        )
+        provider = create_embedding_provider(provider_type="openai", use_cache=False)
 
         assert isinstance(provider, OpenAIEmbeddingProvider)
 
@@ -456,9 +407,7 @@ class TestCreateEmbeddingProvider:
         """Test creating OpenAI provider with cache"""
         with tempfile.TemporaryDirectory() as tmpdir:
             provider = create_embedding_provider(
-                provider_type="openai",
-                use_cache=True,
-                cache_dir=tmpdir
+                provider_type="openai", use_cache=True, cache_dir=tmpdir
             )
 
             assert isinstance(provider, CachedEmbeddingProvider)
@@ -472,9 +421,7 @@ class TestCreateEmbeddingProvider:
         """Test creating provider with custom cache directory"""
         with tempfile.TemporaryDirectory() as tmpdir:
             provider = create_embedding_provider(
-                provider_type="local",
-                use_cache=True,
-                cache_dir=tmpdir
+                provider_type="local", use_cache=True, cache_dir=tmpdir
             )
 
             assert isinstance(provider, CachedEmbeddingProvider)
@@ -489,9 +436,7 @@ class TestEmbeddingsIntegration:
         """Test complete workflow with local provider and caching"""
         with tempfile.TemporaryDirectory() as tmpdir:
             provider = create_embedding_provider(
-                provider_type="local",
-                use_cache=True,
-                cache_dir=tmpdir
+                provider_type="local", use_cache=True, cache_dir=tmpdir
             )
 
             texts = ["Machine learning is fascinating", "Python is versatile"]
@@ -512,10 +457,7 @@ class TestEmbeddingsIntegration:
 
     def test_different_texts_different_embeddings(self):
         """Test that different texts produce different embeddings"""
-        provider = create_embedding_provider(
-            provider_type="local",
-            use_cache=False
-        )
+        provider = create_embedding_provider(provider_type="local", use_cache=False)
 
         emb1 = provider.encode(["Python programming"])
         emb2 = provider.encode(["Cooking recipes"])
@@ -525,18 +467,13 @@ class TestEmbeddingsIntegration:
 
     def test_similar_texts_similar_embeddings(self):
         """Test that similar texts produce similar embeddings"""
-        provider = create_embedding_provider(
-            provider_type="local",
-            use_cache=False
-        )
+        provider = create_embedding_provider(provider_type="local", use_cache=False)
 
         emb1 = provider.encode(["Python is a programming language"])
         emb2 = provider.encode(["Python is a coding language"])
 
         # Calculate cosine similarity
-        similarity = np.dot(emb1[0], emb2[0]) / (
-            np.linalg.norm(emb1[0]) * np.linalg.norm(emb2[0])
-        )
+        similarity = np.dot(emb1[0], emb2[0]) / (np.linalg.norm(emb1[0]) * np.linalg.norm(emb2[0]))
 
         # Should be quite similar
         assert similarity > 0.8

@@ -9,7 +9,6 @@ import pytest
 pytest.importorskip("typer")
 
 
-
 from pathlib import Path
 
 from typer.testing import CliRunner

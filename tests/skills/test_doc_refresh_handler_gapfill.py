@@ -36,10 +36,12 @@ class TestDocRefreshPlanAndApply:
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nThis is a test document.\n")
 
-            result = plan_and_apply({
-                "paths": [str(tmpdir_path)],
-                "actions": ["score"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(tmpdir_path)],
+                    "actions": ["score"],
+                }
+            )
 
             assert "aais_score" in result
             assert result["files_scanned"] == 1
@@ -53,10 +55,12 @@ class TestDocRefreshPlanAndApply:
             # Create a doc with low AAIS score (very short)
             md_file.write_text("x\n")
 
-            result = plan_and_apply({
-                "paths": [str(tmpdir_path)],
-                "actions": ["score", "plan"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(tmpdir_path)],
+                    "actions": ["score", "plan"],
+                }
+            )
 
             assert result["files_scanned"] >= 0
             assert "plan" in result
@@ -69,11 +73,13 @@ class TestDocRefreshPlanAndApply:
             # Create a doc with very low AAIS score
             md_file.write_text("a\n")
 
-            result = plan_and_apply({
-                "paths": [str(tmpdir_path)],
-                "prune_stale": True,
-                "actions": ["score", "plan"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(tmpdir_path)],
+                    "prune_stale": True,
+                    "actions": ["score", "plan"],
+                }
+            )
 
             assert result["files_scanned"] >= 0
             # Plan may contain prune operations
@@ -86,10 +92,12 @@ class TestDocRefreshPlanAndApply:
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Header\n\nContent\n")
 
-            result = plan_and_apply({
-                "paths": [str(tmpdir_path)],
-                "actions": ["score", "plan", "apply"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(tmpdir_path)],
+                    "actions": ["score", "plan", "apply"],
+                }
+            )
 
             assert "patches" in result
 
@@ -100,10 +108,12 @@ class TestDocRefreshPlanAndApply:
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nContent\n")
 
-            result = plan_and_apply({
-                "paths": [str(md_file)],
-                "actions": ["score", "plan"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(md_file)],
+                    "actions": ["score", "plan"],
+                }
+            )
 
             assert result["files_scanned"] >= 0
 
@@ -116,10 +126,12 @@ class TestDocRefreshPlanAndApply:
                 md_file = tmpdir_path / f"test{i}.md"
                 md_file.write_text(f"# Test {i}\n\nContent {i}\n")
 
-            result = plan_and_apply({
-                "paths": [str(tmpdir_path)],
-                "actions": ["score", "plan"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(tmpdir_path)],
+                    "actions": ["score", "plan"],
+                }
+            )
 
             assert result["files_scanned"] == 3
 
@@ -130,10 +142,12 @@ class TestDocRefreshPlanAndApply:
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nThis is a well-structured document with good content.\n")
 
-            result = plan_and_apply({
-                "paths": [str(tmpdir_path)],
-                "actions": ["score"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(tmpdir_path)],
+                    "actions": ["score"],
+                }
+            )
 
             assert isinstance(result["aais_score"], float)
             assert 0.0 <= result["aais_score"] <= 1.0
@@ -145,11 +159,13 @@ class TestDocRefreshPlanAndApply:
             md_file = tmpdir_path / "test.md"
             md_file.write_text("# Test\n\nContent\n")
 
-            result = plan_and_apply({
-                "paths": [str(tmpdir_path)],
-                "style": "aais",
-                "actions": ["score"],
-            })
+            result = plan_and_apply(
+                {
+                    "paths": [str(tmpdir_path)],
+                    "style": "aais",
+                    "actions": ["score"],
+                }
+            )
 
             assert "aais_score" in result
 

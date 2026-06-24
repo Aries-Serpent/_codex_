@@ -1,4 +1,5 @@
 """Property-based tests for JSON-RPC using hypothesis."""
+
 from __future__ import annotations
 
 import json
@@ -19,10 +20,10 @@ except ImportError:
             st.text(min_size=1, max_size=50),
             st.integers() | st.text() | st.booleans() | st.none(),
             min_size=0,
-            max_size=10
+            max_size=10,
         ),
         min_size=1,
-        max_size=20
+        max_size=20,
     )
 )
 def test_json_serialization_preserves_structure(messages: list[Dict[str, Any]]):
@@ -33,17 +34,10 @@ def test_json_serialization_preserves_structure(messages: list[Dict[str, Any]]):
         assert decoded == msg
 
 
-@given(
-    st.integers(min_value=1, max_value=2**31 - 1)
-)
+@given(st.integers(min_value=1, max_value=2**31 - 1))
 def test_message_ids_are_valid(msg_id: int):
     """Property: Valid message IDs survive roundtrip."""
-    message = {
-        "jsonrpc": "2.0",
-        "id": msg_id,
-        "method": "test.method",
-        "params": {}
-    }
+    message = {"jsonrpc": "2.0", "id": msg_id, "method": "test.method", "params": {}}
 
     encoded = json.dumps(message)
     decoded = json.loads(encoded)
@@ -51,18 +45,12 @@ def test_message_ids_are_valid(msg_id: int):
     assert decoded["id"] == msg_id
 
 
-@given(
-    st.text(min_size=1, max_size=255, alphabet=st.characters(blacklist_characters='\\/"'))
-)
+@given(st.text(min_size=1, max_size=255, alphabet=st.characters(blacklist_characters='\\/"')))
 def test_method_names_preserved(method_name: str):
     """Property: Method names are preserved through roundtrip."""
-    assume(not any(c in method_name for c in ['\\', '\'"']))
+    assume(not any(c in method_name for c in ["\\", "'\""]))
 
-    message = {
-        "jsonrpc": "2.0",
-        "method": method_name,
-        "params": {}
-    }
+    message = {"jsonrpc": "2.0", "method": method_name, "params": {}}
 
     try:
         encoded = json.dumps(message)

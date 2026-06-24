@@ -107,12 +107,14 @@ class TestModelWeightValidation:
     def test_no_nan_weights(self):
         """Test no NaN values in weights."""
         import math
+
         mock_weights = [0.01, -0.02, 0.03]
         assert not any(math.isnan(w) for w in mock_weights)
 
     def test_no_inf_weights(self):
         """Test no infinite values in weights."""
         import math
+
         mock_weights = [0.01, -0.02, 0.03]
         assert not any(math.isinf(w) for w in mock_weights)
 
@@ -172,7 +174,7 @@ class TestModelOutputValidation:
     def test_logits_not_all_same(self):
         """Test logits have variance (not collapsed)."""
         logits = [1.5, -0.5, 2.0, 0.3]
-        variance = sum((x - sum(logits)/len(logits))**2 for x in logits) / len(logits)
+        variance = sum((x - sum(logits) / len(logits)) ** 2 for x in logits) / len(logits)
         assert variance > 0.01
 
     def test_output_deterministic_for_same_input(self):
@@ -240,6 +242,7 @@ class TestModelConfigValidation:
     def test_config_serializable(self):
         """Test config can be serialized."""
         import json
+
         config = {"hidden_size": 768, "num_layers": 12}
         serialized = json.dumps(config)
         assert isinstance(serialized, str)
@@ -247,6 +250,7 @@ class TestModelConfigValidation:
     def test_config_loadable(self):
         """Test config can be loaded."""
         import json
+
         config_str = '{"hidden_size": 768}'
         loaded = json.loads(config_str)
         assert "hidden_size" in loaded

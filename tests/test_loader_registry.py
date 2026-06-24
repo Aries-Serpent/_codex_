@@ -57,7 +57,9 @@ def test_get_model_entry_points_can_enable_after_initial_disabled_call(monkeypat
     calls: list[bool] = []
 
     monkeypatch.delenv("CODEX_PLUGINS_ENTRYPOINTS", raising=False)
-    monkeypatch.setattr(models_api, "load_model_entry_points", lambda enabled: calls.append(enabled))
+    monkeypatch.setattr(
+        models_api, "load_model_entry_points", lambda enabled: calls.append(enabled)
+    )
     models_api._load_entry_points_once.cache_clear()
 
     assert models_api.get_model("missing-model") is None

@@ -9,7 +9,7 @@ Covers:
 - Multi-session revoke-all (revoke all user sessions on password change)
 - Concurrent session isolation (logout one session, other remains valid)
 - Token rotation preserves user identity
-""" # pragma: allowlist secret
+"""  # pragma: allowlist secret
 
 from __future__ import annotations
 
@@ -156,9 +156,7 @@ class TestTokenRevocation:
         assert resp.status_code == 200
         assert resp.json()["revoked"] is True
 
-    def test_revoked_session_token_fails_validation(
-        self, logged_in_user, auth_components
-    ):
+    def test_revoked_session_token_fails_validation(self, logged_in_user, auth_components):
         """After logout, the session token fails TokenManager.validate_token."""
         client, data = logged_in_user
         _, tokens, _ = auth_components
@@ -226,11 +224,17 @@ class TestSessionIsolation:
         # Login twice → two sessions
         login1 = client.post(
             "/auth/login",
-            json={"username_or_email": "bob", "password": "Str0ngPass!"},  # pragma: allowlist secret
+            json={
+                "username_or_email": "bob",
+                "password": "Str0ngPass!",
+            },  # pragma: allowlist secret
         )
         login2 = client.post(
             "/auth/login",
-            json={"username_or_email": "bob", "password": "Str0ngPass!"},  # pragma: allowlist secret
+            json={
+                "username_or_email": "bob",
+                "password": "Str0ngPass!",
+            },  # pragma: allowlist secret
         )
         assert login1.status_code == 200
         assert login2.status_code == 200

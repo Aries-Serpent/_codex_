@@ -80,17 +80,12 @@ class TestWorkflowOrchestrator:
     def test_should_run_workflow_small_pr(self, orchestrator_small):
         """Test workflow with size-based trigger on small PR."""
         assert orchestrator_small.should_run_workflow("unit-tests", "small") is True
-        assert (
-            orchestrator_small.should_run_workflow("unit-tests", "small|medium") is True
-        )
+        assert orchestrator_small.should_run_workflow("unit-tests", "small|medium") is True
 
     def test_should_run_workflow_large_pr(self, orchestrator_large):
         """Test workflow with size-based trigger on large PR."""
         assert orchestrator_large.should_run_workflow("unit-tests", "small") is False
-        assert (
-            orchestrator_large.should_run_workflow("unit-tests", "small|medium")
-            is False
-        )
+        assert orchestrator_large.should_run_workflow("unit-tests", "small|medium") is False
 
     def test_should_run_workflow_manual(self, orchestrator_small):
         """Test workflow with manual trigger."""
@@ -217,9 +212,7 @@ class TestWorkflowOrchestrator:
 
     def test_empty_telemetry(self):
         """Test orchestrator with empty telemetry."""
-        orchestrator = WorkflowOrchestrator(
-            pr_size="small", telemetry_data={}, changed_files=[]
-        )
+        orchestrator = WorkflowOrchestrator(pr_size="small", telemetry_data={}, changed_files=[])
 
         plan = orchestrator.generate_plan()
 

@@ -23,7 +23,9 @@ def setup():
         shutil.rmtree(ART)
     ART.mkdir(parents=True)
     # Minimal artifacts for manifest hashing
-    (ART / "context_index.json").write_text(json.dumps({"version": "1.0", "files": []}), encoding="utf-8")
+    (ART / "context_index.json").write_text(
+        json.dumps({"version": "1.0", "files": []}), encoding="utf-8"
+    )
     (ART / "capabilities_scored.json").write_text(
         json.dumps({"capabilities": []}), encoding="utf-8"
     )

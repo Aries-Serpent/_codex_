@@ -5,7 +5,6 @@ This module contains tests for archive scoring functionality.
 """
 
 
-
 class TestScoreInput:
     """Tests for ScoreInput dataclass."""
 
@@ -14,10 +13,7 @@ class TestScoreInput:
         from codex.archive.score import ScoreInput
 
         score_input = ScoreInput(
-            age_days=100,
-            ref_count=5,
-            coverage=0.75,
-            has_deprecation_tag=False
+            age_days=100, ref_count=5, coverage=0.75, has_deprecation_tag=False
         )
 
         assert score_input.age_days == 100
@@ -29,12 +25,7 @@ class TestScoreInput:
         """Test ScoreInput with deprecation tag."""
         from codex.archive.score import ScoreInput
 
-        score_input = ScoreInput(
-            age_days=200,
-            ref_count=0,
-            coverage=0.0,
-            has_deprecation_tag=True
-        )
+        score_input = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=True)
 
         assert score_input.has_deprecation_tag is True
 
@@ -48,9 +39,9 @@ class TestArchiveScore:
 
         inp = ScoreInput(
             age_days=200,  # > 180
-            ref_count=0,   # no references
+            ref_count=0,  # no references
             coverage=0.0,  # no coverage
-            has_deprecation_tag=True
+            has_deprecation_tag=True,
         )
 
         score = archive_score(inp)
@@ -63,10 +54,10 @@ class TestArchiveScore:
         from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(
-            age_days=30,   # < 180
+            age_days=30,  # < 180
             ref_count=10,  # has references
             coverage=0.9,  # has coverage
-            has_deprecation_tag=False
+            has_deprecation_tag=False,
         )
 
         score = archive_score(inp)
@@ -79,9 +70,9 @@ class TestArchiveScore:
 
         inp = ScoreInput(
             age_days=200,  # > 180
-            ref_count=5,   # has references
+            ref_count=5,  # has references
             coverage=0.5,  # has coverage
-            has_deprecation_tag=False
+            has_deprecation_tag=False,
         )
 
         score = archive_score(inp)
@@ -94,10 +85,10 @@ class TestArchiveScore:
         from codex.archive.score import ScoreInput, archive_score
 
         inp = ScoreInput(
-            age_days=30,   # < 180
-            ref_count=0,   # no references
+            age_days=30,  # < 180
+            ref_count=0,  # no references
             coverage=0.5,  # has coverage
-            has_deprecation_tag=False
+            has_deprecation_tag=False,
         )
 
         score = archive_score(inp)
@@ -109,12 +100,7 @@ class TestArchiveScore:
         """Test score with custom weights."""
         from codex.archive.score import ScoreInput, archive_score
 
-        inp = ScoreInput(
-            age_days=200,
-            ref_count=0,
-            coverage=0.0,
-            has_deprecation_tag=True
-        )
+        inp = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=True)
 
         # Custom weights that sum to 1
         score = archive_score(inp, w1=0.25, w2=0.25, w3=0.25, w4=0.25)
@@ -129,7 +115,7 @@ class TestArchiveScore:
             age_days=100,  # Below default 180, above custom 90
             ref_count=5,
             coverage=0.5,
-            has_deprecation_tag=False
+            has_deprecation_tag=False,
         )
 
         # With tau=90, age criteria is met
@@ -144,12 +130,7 @@ class TestArchiveScore:
         """Test that scores are properly rounded."""
         from codex.archive.score import ScoreInput, archive_score
 
-        inp = ScoreInput(
-            age_days=200,
-            ref_count=0,
-            coverage=0.0,
-            has_deprecation_tag=False
-        )
+        inp = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=False)
 
         # 0.4 + 0.3 + 0.2 = 0.9
         score = archive_score(inp)
@@ -162,12 +143,7 @@ class TestArchiveScore:
         """Test that scores are clamped between 0 and 1."""
         from codex.archive.score import ScoreInput, archive_score
 
-        inp = ScoreInput(
-            age_days=200,
-            ref_count=0,
-            coverage=0.0,
-            has_deprecation_tag=True
-        )
+        inp = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=True)
 
         # Even with high weights, should be clamped to 1.0
         score = archive_score(inp, w1=2.0, w2=2.0, w3=2.0, w4=2.0)

@@ -19,18 +19,20 @@ import pytest
 # Advanced Resource Management Tests (15-20 tests)
 # ============================================================================
 
+
 class TestConnectionPooling:
     """Test connection pool management and resource exhaustion"""
 
     def test_pool_create_connections(self):
         """Should create connection pool"""
         from codex.archive.dal import ArchiveDAL
+
         try:
             # Test pool initialization
             connections = []
             for i in range(5):
                 try:
-                    dal = ArchiveDAL(connection_string='dummy')
+                    dal = ArchiveDAL(connection_string="dummy")
                     connections.append(dal)
                 except (ValueError, AttributeError):
                     pass
@@ -42,13 +44,14 @@ class TestConnectionPooling:
     def test_pool_connection_reuse(self):
         """Should reuse connections from pool"""
         from codex.archive.dal import ArchiveDAL
+
         try:
-            dal = ArchiveDAL(connection_string='dummy')
+            dal = ArchiveDAL(connection_string="dummy")
 
             # Execute multiple queries
             for i in range(10):
                 try:
-                    dal.execute('SELECT 1')
+                    dal.execute("SELECT 1")
                 except (AttributeError, Exception):
                     pass
 
@@ -59,12 +62,13 @@ class TestConnectionPooling:
     def test_pool_close_all_connections(self):
         """Should properly close all pool connections"""
         from codex.archive.dal import ArchiveDAL
-        try:
-            dal = ArchiveDAL(connection_string='dummy')
 
-            if hasattr(dal, 'close'):
+        try:
+            dal = ArchiveDAL(connection_string="dummy")
+
+            if hasattr(dal, "close"):
                 dal.close()  # Should close gracefully
-            elif hasattr(dal, '__exit__'):
+            elif hasattr(dal, "__exit__"):
                 with dal as d:
                     pass  # Context manager cleanup
         except (NotImplementedError, AttributeError):
@@ -77,11 +81,12 @@ class TestMemoryManagement:
     def test_large_data_structure_cleanup(self):
         """Should cleanup large data structures"""
         from codex.ingestion.file_ingestor import FileIngestor
+
         try:
             ingestor = FileIngestor()
 
             # Create large in-memory structure
-            large_data = 'x' * 10_000_000  # 10MB
+            large_data = "x" * 10_000_000  # 10MB
 
             # Process and should clean up
             try:
@@ -97,10 +102,11 @@ class TestMemoryManagement:
     def test_recursive_structure_cleanup(self):
         """Should handle cleanup of recursive structures"""
         from codex.archive.util import format_data
+
         try:
             # Create recursive structure
-            recursive = {'a': {}}
-            recursive['a']['b'] = recursive['a']  # Circular reference
+            recursive = {"a": {}}
+            recursive["a"]["b"] = recursive["a"]  # Circular reference
 
             try:
                 result = format_data(recursive)
@@ -115,12 +121,14 @@ class TestMemoryManagement:
 # Advanced Error Recovery Tests (15-20 tests)
 # ============================================================================
 
+
 class TestErrorRecoveryPatterns:
     """Test advanced error recovery patterns"""
 
     def test_exponential_backoff_retry(self):
         """Should implement exponential backoff"""
         from codex.archive.retry import RetryPolicy
+
         try:
             policy = RetryPolicy(max_retries=5, backoff_factor=2.0)
 
@@ -146,22 +154,23 @@ class TestErrorRecoveryPatterns:
     def test_circuit_breaker_state_transitions(self):
         """Should properly transition circuit breaker states"""
         from codex.archive.retry import CircuitBreaker
+
         try:
             breaker = CircuitBreaker(failure_threshold=3, timeout=1)
 
             # Should start in closed state
-            if hasattr(breaker, 'state'):
-                assert breaker.state == 'closed' or breaker.state is None
+            if hasattr(breaker, "state"):
+                assert breaker.state == "closed" or breaker.state is None
 
             # Simulate failures to trip circuit
             for i in range(4):
                 try:
-                    breaker.call(lambda: 1/0)  # Division by zero
+                    breaker.call(lambda: 1 / 0)  # Division by zero
                 except ZeroDivisionError:
                     pass
 
             # Should be open now
-            if hasattr(breaker, 'state'):
+            if hasattr(breaker, "state"):
                 # Next call should fail immediately
                 with pytest.raises((Exception, RuntimeError)):
                     breaker.call(lambda: True)
@@ -175,33 +184,35 @@ class TestDestructorCleanup:
     def test_context_manager_cleanup(self):
         """Should cleanup with context manager"""
         from codex.api.rag_api import RAGAPI
+
         try:
-            cleanup_called = {'value': False}
+            cleanup_called = {"value": False}
 
             class TrackingRAGAPI(RAGAPI):
                 def __exit__(self, *args):
-                    cleanup_called['value'] = True
+                    cleanup_called["value"] = True
                     super().__exit__(*args)
 
             with TrackingRAGAPI() as api:
                 assert api is not None
 
             # Cleanup should have been called
-            if cleanup_called['value']:
-                assert cleanup_called['value']
+            if cleanup_called["value"]:
+                assert cleanup_called["value"]
         except (NotImplementedError, AttributeError, TypeError):
             pass
 
     def test_finalizer_cleanup(self):
         """Should cleanup on garbage collection"""
         from codex.archive.dal import ArchiveDAL
+
         try:
-            cleanup_count = {'value': 0}
+            cleanup_count = {"value": 0}
 
             def create_dal():
-                dal = ArchiveDAL(connection_string='dummy')
+                dal = ArchiveDAL(connection_string="dummy")
                 # Create reference to track cleanup
-                original_del = dal.__del__ if hasattr(dal, '__del__') else None
+                original_del = dal.__del__ if hasattr(dal, "__del__") else None
                 return dal
 
             dal = create_dal()
@@ -215,6 +226,7 @@ class TestDestructorCleanup:
 # ============================================================================
 # Deep Integration Tests (15-20 tests)
 # ============================================================================
+
 
 class TestDeepModuleIntegration:
     """Test deep integration between multiple layers"""
@@ -247,7 +259,7 @@ class TestDeepModuleIntegration:
 
             ingestor = FileIngestor()
             standardizer = Standardizer()
-            dal = ArchiveDAL(connection_string='dummy')
+            dal = ArchiveDAL(connection_string="dummy")
 
             # Pipeline should initialize
             assert ingestor is not None
@@ -281,6 +293,7 @@ class TestCrossLayerErrorPropagation:
     def test_error_bubbles_through_layers(self):
         """Should propagate errors up through layers"""
         try:
+
             def layer3():
                 raise ValueError("Layer 3 error")
 
@@ -308,7 +321,7 @@ class TestCrossLayerErrorPropagation:
             tokenizer = Tokenizer()
             embedder = EmbeddingGenerator()
 
-            texts = ['valid', None, 'text', '', 'more']
+            texts = ["valid", None, "text", "", "more"]
             results = []
 
             for text in texts:
@@ -331,19 +344,20 @@ class TestCrossLayerErrorPropagation:
 # Lock-Free and Lock-Based Synchronization Tests (10-15 tests)
 # ============================================================================
 
+
 class TestSynchronization:
     """Test synchronization and concurrent access patterns"""
 
     def test_atomic_operation_isolation(self):
         """Should handle atomic operations correctly"""
         pass  # removed redundant `import threading` (top-level import used)
-        counter = {'value': 0}
+        counter = {"value": 0}
         lock = threading.Lock()
 
         def atomic_increment():
             for _ in range(1000):
                 with lock:
-                    counter['value'] += 1
+                    counter["value"] += 1
 
         threads = [threading.Thread(target=atomic_increment) for _ in range(10)]
         for t in threads:
@@ -352,14 +366,14 @@ class TestSynchronization:
             t.join()
 
         # All increments should be atomic
-        assert counter['value'] == 10000
+        assert counter["value"] == 10000
 
     def test_deadlock_prevention(self):
         """Should prevent deadlock in lock acquisition"""
         lock1 = threading.Lock()
         lock2 = threading.Lock()
 
-        results = {'thread1': None, 'thread2': None}
+        results = {"thread1": None, "thread2": None}
 
         def thread1_work():
             try:
@@ -367,13 +381,13 @@ class TestSynchronization:
                     time.sleep(0.01)
                     if lock2.acquire(timeout=0.5):
                         try:
-                            results['thread1'] = 'acquired both'
+                            results["thread1"] = "acquired both"
                         finally:
                             lock2.release()
                     else:
-                        results['thread1'] = 'timeout'
+                        results["thread1"] = "timeout"
             except (AttributeError, OSError, RuntimeError, TypeError, ValueError) as e:
-                results['thread1'] = str(e)
+                results["thread1"] = str(e)
 
         def thread2_work():
             try:
@@ -381,13 +395,13 @@ class TestSynchronization:
                     time.sleep(0.01)
                     if lock1.acquire(timeout=0.5):
                         try:
-                            results['thread2'] = 'acquired both'
+                            results["thread2"] = "acquired both"
                         finally:
                             lock1.release()
                     else:
-                        results['thread2'] = 'timeout'
+                        results["thread2"] = "timeout"
             except (AttributeError, OSError, RuntimeError, TypeError, ValueError) as e:
-                results['thread2'] = str(e)
+                results["thread2"] = str(e)
 
         t1 = threading.Thread(target=thread1_work)
         t2 = threading.Thread(target=thread2_work)
@@ -398,7 +412,7 @@ class TestSynchronization:
         t2.join(timeout=2)
 
         # Both should either succeed or timeout, not deadlock
-        assert results['thread1'] is not None or results['thread2'] is not None
+        assert results["thread1"] is not None or results["thread2"] is not None
 
 
 class TestRaceConditionDetection:
@@ -407,7 +421,7 @@ class TestRaceConditionDetection:
     def test_check_then_act_race_condition(self):
         """Should handle check-then-act race condition"""
         pass  # removed redundant `import threading` (top-level import used)
-        shared_state = {'value': None}
+        shared_state = {"value": None}
         lock = threading.Lock()
 
         results = []
@@ -415,11 +429,11 @@ class TestRaceConditionDetection:
         def worker():
             # Without lock, this would be racy
             with lock:
-                if shared_state['value'] is None:
-                    shared_state['value'] = threading.current_thread().ident
-                    results.append('set')
+                if shared_state["value"] is None:
+                    shared_state["value"] = threading.current_thread().ident
+                    results.append("set")
                 else:
-                    results.append('already set')
+                    results.append("already set")
 
         threads = [threading.Thread(target=worker) for _ in range(10)]
         for t in threads:
@@ -428,13 +442,14 @@ class TestRaceConditionDetection:
             t.join()
 
         # Should have exactly one 'set' and nine 'already set'
-        assert results.count('set') == 1
-        assert results.count('already set') == 9
+        assert results.count("set") == 1
+        assert results.count("already set") == 9
 
 
 # ============================================================================
 # Performance and Limits Tests (10-15 tests)
 # ============================================================================
+
 
 class TestPerformanceLimits:
     """Test behavior at performance limits"""
@@ -442,13 +457,14 @@ class TestPerformanceLimits:
     def test_high_throughput_processing(self):
         """Should handle high throughput"""
         from codex.tokenization.api import Tokenizer
+
         try:
             tokenizer = Tokenizer()
 
             # Process 10000 items
             for i in range(10000):
                 try:
-                    tokens = tokenizer.encode(f'text_{i}')
+                    tokens = tokenizer.encode(f"text_{i}")
                 except (AttributeError, Exception):
                     pass
 
@@ -458,10 +474,11 @@ class TestPerformanceLimits:
 
     def test_deep_nesting_limit(self):
         """Should handle deep nesting gracefully"""
+
         def create_nested_dict(depth):
-            result = {'value': depth}
+            result = {"value": depth}
             for i in range(depth):
-                result = {'nested': result}
+                result = {"nested": result}
             return result
 
         try:
@@ -481,13 +498,14 @@ class TestPerformanceLimits:
     def test_string_length_limit(self):
         """Should handle very long strings"""
         from codex.tokenization.api import Tokenizer
+
         try:
             tokenizer = Tokenizer()
 
             # Test with increasing lengths
             for length in [1000, 10000, 100000]:
                 try:
-                    long_text = 'word ' * length
+                    long_text = "word " * length
                     tokens = tokenizer.encode(long_text)
                 except (MemoryError, ValueError):
                     # Acceptable to fail at some length
@@ -500,26 +518,28 @@ class TestPerformanceLimits:
 # State Machine and Workflow Tests (10-15 tests)
 # ============================================================================
 
+
 class TestStateTransitions:
     """Test valid and invalid state transitions"""
 
     def test_valid_state_machine_transitions(self):
         """Should only allow valid state transitions"""
         from codex.archive.dal import ArchiveDAL
+
         try:
-            dal = ArchiveDAL(connection_string='dummy')
+            dal = ArchiveDAL(connection_string="dummy")
 
             # Test state transitions
             # Initialize → Ready → Executing → Ready → Closed
             # Should not allow: Ready → Ready, Closed → Ready, etc.
 
-            if hasattr(dal, 'state'):
+            if hasattr(dal, "state"):
                 states = []
                 states.append(dal.state)  # Record initial state
 
                 # Attempt transitions
                 try:
-                    dal.execute('SELECT 1')
+                    dal.execute("SELECT 1")
                     states.append(dal.state)
                 except (AttributeError, Exception):
                     pass
@@ -529,8 +549,9 @@ class TestStateTransitions:
     def test_invalid_operation_in_state(self):
         """Should reject invalid operations for current state"""
         from codex.archive.dal import ArchiveDAL
+
         try:
-            dal = ArchiveDAL(connection_string='dummy')
+            dal = ArchiveDAL(connection_string="dummy")
 
             # Try operations out of order
             # E.g., commit without transaction
@@ -547,26 +568,23 @@ class TestStateTransitions:
 # Advanced Fixture and Mocking Tests (5-10 tests)
 # ============================================================================
 
+
 class TestAdvancedMocking:
     """Test advanced mocking scenarios"""
 
     def test_mock_chain_calls(self):
         """Should handle chained mock calls"""
         mock_api = MagicMock()
-        mock_api.query.return_value.parse.return_value = {'result': 'data'}
+        mock_api.query.return_value.parse.return_value = {"result": "data"}
 
         # Should work with chaining
-        result = mock_api.query('test').parse()
-        assert result == {'result': 'data'}
+        result = mock_api.query("test").parse()
+        assert result == {"result": "data"}
 
     def test_mock_side_effects_sequence(self):
         """Should handle sequence of side effects"""
         mock = MagicMock()
-        mock.side_effect = [
-            ValueError("First error"),
-            RuntimeError("Second error"),
-            "success"
-        ]
+        mock.side_effect = [ValueError("First error"), RuntimeError("Second error"), "success"]
 
         # First call raises ValueError
         with pytest.raises(ValueError):

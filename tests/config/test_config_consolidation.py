@@ -31,9 +31,9 @@ class TestConfigConsolidation:
         legacy_roots = ["conf", "config"]
         for legacy_root in legacy_roots:
             legacy_path = repo_root / legacy_root
-            assert legacy_path.exists(), (
-                f"Legacy config root '{legacy_root}/' must exist for backward compat"
-            )
+            assert (
+                legacy_path.exists()
+            ), f"Legacy config root '{legacy_root}/' must exist for backward compat"
 
     def test_configuration_structure_documentation_exists(self):
         """Verify CONFIGURATION_STRUCTURE.md exists in configs/"""
@@ -44,13 +44,9 @@ class TestConfigConsolidation:
         assert doc_path.is_file(), "CONFIGURATION_STRUCTURE.md must be a file"
 
         content = doc_path.read_text()
-        assert "canonical configuration root" in content.lower(), (
-            "Must document canonical root"
-        )
+        assert "canonical configuration root" in content.lower(), "Must document canonical root"
         assert "legacy" in content.lower(), "Must document legacy paths"
-        assert "backward compatibility" in content.lower(), (
-            "Must document backward compatibility"
-        )
+        assert "backward compatibility" in content.lower(), "Must document backward compatibility"
 
     def test_canonical_configs_directory_structure(self):
         """Verify configs/ has expected subdirectory structure"""
@@ -96,9 +92,9 @@ class TestConfigConsolidation:
         ]
 
         for section in required_sections:
-            assert section in content, (
-                f"CONFIGURATION_STRUCTURE.md must contain '{section}' section"
-            )
+            assert (
+                section in content
+            ), f"CONFIGURATION_STRUCTURE.md must contain '{section}' section"
 
     def test_migration_guide_completeness(self):
         """Verify migration guide has gradual transition phases"""
@@ -118,9 +114,9 @@ class TestConfigConsolidation:
         ]
 
         for keyword in migration_keywords:
-            assert keyword.lower() in content.lower(), (
-                f"Migration guide must mention '{keyword}' for gradual transition"
-            )
+            assert (
+                keyword.lower() in content.lower()
+            ), f"Migration guide must mention '{keyword}' for gradual transition"
 
     def test_changelog_documents_consolidation(self):
         """Verify changelog documents WP-F config consolidation"""
@@ -154,9 +150,7 @@ class TestHydraConfigAccess:
         repo_root = Path(__file__).parent.parent.parent
         canonical_root = repo_root / "configs"
 
-        yaml_files = list(canonical_root.rglob("*.yaml")) + list(
-            canonical_root.rglob("*.yml")
-        )
+        yaml_files = list(canonical_root.rglob("*.yaml")) + list(canonical_root.rglob("*.yml"))
 
         assert len(yaml_files) > 0, "Should find YAML files in configs/"
 
@@ -165,9 +159,9 @@ class TestHydraConfigAccess:
                 content = yaml_file.read_text()
                 parsed = yaml.safe_load(content)
                 # Basic validation - should parse without error
-                assert parsed is not None or content.strip() == "", (
-                    f"YAML file {yaml_file.name} should parse correctly"
-                )
+                assert (
+                    parsed is not None or content.strip() == ""
+                ), f"YAML file {yaml_file.name} should parse correctly"
             except yaml.YAMLError as e:
                 pytest.fail(f"YAML parsing failed for {yaml_file}: {e}")
 
@@ -188,9 +182,7 @@ class TestBackwardCompatibility:
         repo_root = Path(__file__).parent.parent.parent
         config_root = repo_root / "config"
 
-        assert config_root.exists(), (
-            "Legacy config/ must remain for backward compatibility"
-        )
+        assert config_root.exists(), "Legacy config/ must remain for backward compatibility"
         assert config_root.is_dir(), "config/ must be a directory"
 
     def test_no_configs_were_deleted(self):
@@ -205,9 +197,7 @@ class TestBackwardCompatibility:
                 files = list(root.rglob("*"))
                 files = [f for f in files if f.is_file()]
                 # Should have at least some files
-                assert len(files) > 0, (
-                    f"{root.name}/ should still contain configuration files"
-                )
+                assert len(files) > 0, f"{root.name}/ should still contain configuration files"
 
 
 @pytest.mark.integration
@@ -223,9 +213,7 @@ class TestConfigurationIndexing:
 
         content = noxfile.read_text()
         # Should have config_index or similar session
-        assert "config" in content.lower(), (
-            "noxfile.py should have config-related sessions"
-        )
+        assert "config" in content.lower(), "noxfile.py should have config-related sessions"
 
     def test_config_listing_tool_exists(self):
         """Verify tools exist to list available configurations"""

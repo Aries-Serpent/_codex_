@@ -5,7 +5,6 @@ This module contains tests for similarity utilities.
 """
 
 
-
 class TestTokens:
     """Tests for _tokens function."""
 

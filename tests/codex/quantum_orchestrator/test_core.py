@@ -12,6 +12,7 @@ class TestQuantumOrchestratorImports:
         """Test that the module can be imported."""
         try:
             from src.codex.quantum_orchestrator import core
+
             assert core is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -24,7 +25,8 @@ class TestQuantumOrchestratorOperations:
         """Test quantum orchestrator creation."""
         try:
             from src.codex.quantum_orchestrator import core
-            if hasattr(core, 'QuantumOrchestrator'):
+
+            if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()
                 assert orch is not None
         except (ImportError, AttributeError):
@@ -34,8 +36,9 @@ class TestQuantumOrchestratorOperations:
         """Test workflow execution."""
         try:
             from src.codex.quantum_orchestrator import core
-            if hasattr(core, 'execute_workflow'):
-                with patch.object(core, 'execute_workflow') as mock_exec:
+
+            if hasattr(core, "execute_workflow"):
+                with patch.object(core, "execute_workflow") as mock_exec:
                     mock_exec.return_value = {"status": "success"}
                     result = core.execute_workflow("test_workflow")
                     assert result["status"] == "success"
@@ -50,9 +53,10 @@ class TestQuantumOrchestratorState:
         """Test getting orchestrator state."""
         try:
             from src.codex.quantum_orchestrator import core
-            if hasattr(core, 'QuantumOrchestrator'):
+
+            if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()
-                if hasattr(orch, 'get_state'):
+                if hasattr(orch, "get_state"):
                     state = orch.get_state()
                     assert state is not None
         except (ImportError, AttributeError):
@@ -62,9 +66,10 @@ class TestQuantumOrchestratorState:
         """Test setting orchestrator state."""
         try:
             from src.codex.quantum_orchestrator import core
-            if hasattr(core, 'QuantumOrchestrator'):
+
+            if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()
-                if hasattr(orch, 'set_state'):
+                if hasattr(orch, "set_state"):
                     orch.set_state({"key": "value"})
                     state = orch.get_state()
                     assert state.get("key") == "value"

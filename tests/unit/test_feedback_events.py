@@ -1,4 +1,5 @@
 """Tests for codex_ml.feedback.events — FeedbackEvent dataclass."""
+
 from __future__ import annotations
 
 import re

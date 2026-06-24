@@ -9,7 +9,8 @@ Tests cover:
 - Corruption detection
 - Recovery mechanisms
 """
- # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret
 import json
 from datetime import UTC, datetime
 
@@ -26,7 +27,7 @@ class TestCheckpointCreation:
             "step": 100,
             "model_state": {"layer1": [1, 2, 3]},
             "optimizer_state": {"lr": 0.001},
-            "timestamp": datetime.now(UTC).isoformat()
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
         assert checkpoint["epoch"] == 1
@@ -37,11 +38,7 @@ class TestCheckpointCreation:
         """Test checkpoint tracks epoch information."""
         checkpoints = []
         for epoch in range(1, 6):
-            cp = {
-                "epoch": epoch,
-                "step": epoch * 100,
-                "loss": 0.5 - (epoch * 0.05)
-            }
+            cp = {"epoch": epoch, "step": epoch * 100, "loss": 0.5 - (epoch * 0.05)}
             checkpoints.append(cp)
 
         assert len(checkpoints) == 5
@@ -50,11 +47,7 @@ class TestCheckpointCreation:
 
     def test_checkpoint_step_tracking(self):
         """Test checkpoint tracks training steps."""
-        checkpoint = {
-            "step": 5000,
-            "epoch": 10,
-            "batch_size": 32
-        }
+        checkpoint = {"step": 5000, "epoch": 10, "batch_size": 32}
 
         total_samples = checkpoint["step"] * checkpoint["batch_size"]
         assert total_samples == 160000
@@ -62,10 +55,7 @@ class TestCheckpointCreation:
     def test_checkpoint_timestamp_recording(self):
         """Test checkpoint records timestamp."""
         now = datetime.now(UTC)
-        checkpoint = {
-            "epoch": 1,
-            "timestamp": now.isoformat()
-        }
+        checkpoint = {"epoch": 1, "timestamp": now.isoformat()}
 
         assert checkpoint["timestamp"] == now.isoformat()
 
@@ -79,7 +69,7 @@ class TestCheckpointCreation:
             "scheduler_state": {"last_epoch": 5},
             "rng_state": {"torch": "random_state_data"},
             "metrics": {"accuracy": 0.85, "loss": 0.35},
-            "timestamp": datetime.now(UTC).isoformat()
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
         assert checkpoint["epoch"] == 5
@@ -106,10 +96,7 @@ class TestCheckpointRetention:
 
     def test_keep_last_k_checkpoints(self):
         """Test keeping last K checkpoints."""
-        all_checkpoints = [
-            {"epoch": i, "step": i * 100}
-            for i in range(1, 11)  # 10 checkpoints
-        ]
+        all_checkpoints = [{"epoch": i, "step": i * 100} for i in range(1, 11)]  # 10 checkpoints
 
         k = 3
         kept_checkpoints = all_checkpoints[-k:]
@@ -125,40 +112,24 @@ class TestCheckpointRetention:
 
         for i in range(5):
             from datetime import timedelta
+
             cp_time = base_time - timedelta(days=i)
-            checkpoints.append({
-                "epoch": i,
-                "timestamp": cp_time.isoformat()
-            })
+            checkpoints.append({"epoch": i, "timestamp": cp_time.isoformat()})
 
         # Keep only recent (less than 2 days old)
         cutoff = base_time.timestamp() - (2 * 86400)
-        recent = [cp for cp in checkpoints if
-                  datetime.fromisoformat(cp["timestamp"]).timestamp() > cutoff]
+        recent = [
+            cp for cp in checkpoints if datetime.fromisoformat(cp["timestamp"]).timestamp() > cutoff
+        ]
 
         assert isinstance(recent, list)
 
     def test_retention_with_multiple_metrics(self):
         """Test retention policy with multiple quality metrics."""
         checkpoints = [
-            {
-                "epoch": 1,
-                "accuracy": 0.75,
-                "loss": 0.50,
-                "val_accuracy": 0.72
-            },
-            {
-                "epoch": 2,
-                "accuracy": 0.82,
-                "loss": 0.35,
-                "val_accuracy": 0.80
-            },
-            {
-                "epoch": 3,
-                "accuracy": 0.88,
-                "loss": 0.25,
-                "val_accuracy": 0.85
-            },
+            {"epoch": 1, "accuracy": 0.75, "loss": 0.50, "val_accuracy": 0.72},
+            {"epoch": 2, "accuracy": 0.82, "loss": 0.35, "val_accuracy": 0.80},
+            {"epoch": 3, "accuracy": 0.88, "loss": 0.25, "val_accuracy": 0.85},
         ]
 
         best_by_accuracy = max(checkpoints, key=lambda x: x["accuracy"])
@@ -181,24 +152,9 @@ class TestCheckpointRetention:
     def test_checkpoint_priority_selection(self):
         """Test selecting checkpoints by priority."""
         checkpoints = [
-            {
-                "epoch": 1,
-                "priority": 1,
-                "metric": 0.75,
-                "size": 1000
-            },
-            {
-                "epoch": 2,
-                "priority": 2,
-                "metric": 0.82,
-                "size": 1000
-            },
-            {
-                "epoch": 3,
-                "priority": 3,
-                "metric": 0.88,
-                "size": 1000
-            },
+            {"epoch": 1, "priority": 1, "metric": 0.75, "size": 1000},
+            {"epoch": 2, "priority": 2, "metric": 0.82, "size": 1000},
+            {"epoch": 3, "priority": 3, "metric": 0.88, "size": 1000},
         ]
 
         # Sort by priority
@@ -216,7 +172,7 @@ class TestCheckpointPersistence:
             "epoch": 5,
             "model": {"weight": [1, 2, 3]},
             "optimizer": {"lr": 0.001},
-            "metadata": {"timestamp": datetime.now(UTC).isoformat()}
+            "metadata": {"timestamp": datetime.now(UTC).isoformat()},
         }
 
         # Simulate saving
@@ -238,7 +194,7 @@ class TestCheckpointPersistence:
             "epoch": 10,
             "step": 1000,
             "metrics": {"accuracy": 0.87},
-            "timestamp": datetime.now(UTC).isoformat()
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
         # Save
@@ -250,15 +206,8 @@ class TestCheckpointPersistence:
 
     def test_checkpoint_metadata_preservation(self):
         """Test metadata is preserved during save/load."""
-        metadata = {
-            "author": "training_script",
-            "version": "1.0",
-            "purpose": "model_checkpoint"
-        }
-        checkpoint = {
-            "epoch": 5,
-            "metadata": metadata
-        }
+        metadata = {"author": "training_script", "version": "1.0", "purpose": "model_checkpoint"}
+        checkpoint = {"epoch": 5, "metadata": metadata}
 
         saved = json.dumps(checkpoint)
         loaded = json.loads(saved)
@@ -273,8 +222,8 @@ class TestCheckpointPersistence:
                 "algorithm": "gzip",
                 "ratio": 0.45,
                 "original_size": 1000,
-                "compressed_size": 450
-            }
+                "compressed_size": 450,
+            },
         }
 
         assert checkpoint["compression"]["ratio"] == 0.45
@@ -289,7 +238,7 @@ class TestStateRecovery:
         saved_state = {
             "layer1": [1.0, 2.0, 3.0],
             "layer2": [4.0, 5.0, 6.0],
-            "layer3": [7.0, 8.0, 9.0]
+            "layer3": [7.0, 8.0, 9.0],
         }
 
         # Simulate recovery
@@ -304,7 +253,7 @@ class TestStateRecovery:
             "learning_rate": 0.001,
             "momentum": 0.9,
             "weight_decay": 1e-5,
-            "step": 1000
+            "step": 1000,
         }
 
         recovered = optimizer_state.copy()
@@ -314,12 +263,7 @@ class TestStateRecovery:
 
     def test_recover_scheduler_state(self):
         """Test recovering scheduler state."""
-        scheduler_state = {
-            "last_epoch": 10,
-            "last_lr": 0.0001,
-            "base_lrs": [0.001],
-            "T_max": 50
-        }
+        scheduler_state = {"last_epoch": 10, "last_lr": 0.0001, "base_lrs": [0.001], "T_max": 50}
 
         recovered = scheduler_state.copy()
 
@@ -331,7 +275,7 @@ class TestStateRecovery:
         rng_state = {
             "torch_cpu": "torch_random_state_bytes",
             "torch_cuda": "cuda_random_state_bytes",
-            "numpy": "numpy_random_state_bytes"
+            "numpy": "numpy_random_state_bytes",
         }
 
         recovered = rng_state.copy()
@@ -346,7 +290,7 @@ class TestStateRecovery:
             "model": {"weights": [1, 2, 3]},
             "optimizer": {"lr": 0.001},
             "scheduler": {"last_epoch": 5},
-            "metrics": {"accuracy": 0.85}
+            "metrics": {"accuracy": 0.85},
         }
 
         # Recover only model
@@ -377,11 +321,14 @@ class TestAtomicOperations:
 
         assert final_written
 
-    @pytest.mark.parametrize("primary_exists,backup_exists,expected", [
-        (True, False, "primary_data"),
-        (False, True, "backup_data"),
-        (False, False, None),
-    ])
+    @pytest.mark.parametrize(
+        "primary_exists,backup_exists,expected",
+        [
+            (True, False, "primary_data"),
+            (False, True, "backup_data"),
+            (False, False, None),
+        ],
+    )
     def test_atomic_read_with_fallback(self, primary_exists, backup_exists, expected):
         """Test atomic read tries primary and falls back."""
         if primary_exists:
@@ -443,34 +390,24 @@ class TestMetadataManagement:
     def test_metadata_timestamp(self):
         """Test metadata includes creation timestamp."""
         now = datetime.now(UTC)
-        metadata = {
-            "created": now.isoformat(),
-            "epoch": 5,
-            "step": 500
-        }
+        metadata = {"created": now.isoformat(), "epoch": 5, "step": 500}
 
         assert metadata["created"] == now.isoformat()
 
     def test_metadata_hash(self):
         """Test metadata includes content hash."""
         import hashlib
+
         content = b"checkpoint_content"
         content_hash = hashlib.sha256(content).hexdigest()
 
-        metadata = {
-            "hash": content_hash,
-            "algorithm": "sha256"
-        }
+        metadata = {"hash": content_hash, "algorithm": "sha256"}
 
         assert len(metadata["hash"]) == 64  # SHA256 hex digest length
 
     def test_metadata_version(self):
         """Test metadata includes checkpoint version."""
-        metadata = {
-            "checkpoint_version": "2.0",
-            "schema_version": "1.0",
-            "format": "pytorch"
-        }
+        metadata = {"checkpoint_version": "2.0", "schema_version": "1.0", "format": "pytorch"}
 
         assert metadata["checkpoint_version"] == "2.0"
 
@@ -480,7 +417,7 @@ class TestMetadataManagement:
             "source_script": "train.py",
             "command": "python train.py --epochs 10",
             "git_commit": "abc123def",
-            "timestamp": datetime.now(UTC).isoformat()
+            "timestamp": datetime.now(UTC).isoformat(),
         }
 
         assert metadata["source_script"] == "train.py"
@@ -492,7 +429,7 @@ class TestMetadataManagement:
             "cuda_available": True,
             "num_gpus": 2,
             "pytorch_version": "2.0.0",
-            "python_version": "3.10"
+            "python_version": "3.10",
         }
 
         assert metadata["num_gpus"] == 2
@@ -505,6 +442,7 @@ class TestCorruptionDetection:
     def test_checksum_verification(self):
         """Test checksum verification."""
         import hashlib
+
         content = b"checkpoint_data"
         expected_hash = hashlib.md5(content).hexdigest()
 
@@ -559,7 +497,7 @@ class TestCheckpointMetrics:
         checkpoint = {
             "epoch": 5,
             "model": {"weights": [1, 2, 3] * 1000},
-            "metadata": {"size_bytes": 50000}
+            "metadata": {"size_bytes": 50000},
         }
 
         assert checkpoint["metadata"]["size_bytes"] == 50000
@@ -567,6 +505,7 @@ class TestCheckpointMetrics:
     def test_track_save_duration(self):
         """Test tracking checkpoint save time."""
         import time
+
         start = time.time()
         # Simulate save
         time.sleep(0.01)
@@ -578,6 +517,7 @@ class TestCheckpointMetrics:
     def test_track_load_duration(self):
         """Test tracking checkpoint load time."""
         import time
+
         start = time.time()
         # Simulate load
         data = {"epoch": 5}

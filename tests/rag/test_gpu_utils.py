@@ -165,9 +165,7 @@ class TestGetOptimalBatchSize:
         # 8GB free memory
         mock_get_gpu_memory.return_value = (8_000_000_000, 16_000_000_000)
 
-        batch_size = get_optimal_batch_size(
-            embedding_dim=384, max_memory_gb=2.0, safety_factor=0.8
-        )
+        batch_size = get_optimal_batch_size(embedding_dim=384, max_memory_gb=2.0, safety_factor=0.8)
 
         # Expected calculation:
         # bytes_per_embedding = 384 * 4 = 1536
@@ -183,9 +181,7 @@ class TestGetOptimalBatchSize:
         # 100MB free memory - very small
         mock_get_gpu_memory.return_value = (100_000_000, 2_000_000_000)
 
-        batch_size = get_optimal_batch_size(
-            embedding_dim=384, max_memory_gb=2.0, safety_factor=0.8
-        )
+        batch_size = get_optimal_batch_size(embedding_dim=384, max_memory_gb=2.0, safety_factor=0.8)
 
         # Expected calculation:
         # bytes_per_embedding = 384 * 4 = 1536
@@ -201,9 +197,7 @@ class TestGetOptimalBatchSize:
         # 5MB free memory - extremely small, should give minimum batch size
         mock_get_gpu_memory.return_value = (5_000_000, 2_000_000_000)
 
-        batch_size = get_optimal_batch_size(
-            embedding_dim=384, max_memory_gb=2.0, safety_factor=0.8
-        )
+        batch_size = get_optimal_batch_size(embedding_dim=384, max_memory_gb=2.0, safety_factor=0.8)
 
         # Expected calculation:
         # bytes_per_embedding = 384 * 4 = 1536

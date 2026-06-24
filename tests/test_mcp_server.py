@@ -19,7 +19,7 @@ import pytest
 def find_repo_root() -> Path:
     """Find repository root by searching for marker files."""
     current = Path(__file__).resolve().parent
-    markers = ['pyproject.toml', '.git', 'setup.py']
+    markers = ["pyproject.toml", ".git", "setup.py"]
 
     while current != current.parent:
         for marker in markers:
@@ -39,6 +39,7 @@ sys.path.insert(0, str(repo_root))
 try:
     from mcp.config import MCPConfig
     from mcp.server import MCPJSONRPCServer
+
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False
@@ -47,8 +48,7 @@ except ImportError:
 
 
 pytestmark = pytest.mark.skipif(
-    not MCP_AVAILABLE,
-    reason="MCP modules not available - install with: pip install -e ."
+    not MCP_AVAILABLE, reason="MCP modules not available - install with: pip install -e ."
 )
 
 

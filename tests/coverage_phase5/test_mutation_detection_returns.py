@@ -1,4 +1,5 @@
 """Tests for mutation detection - return value changes."""
+
 from __future__ import annotations
 
 
@@ -9,12 +10,7 @@ def get_status_code(success: bool) -> int:
 
 
 def get_message(code: int) -> str:
-    codes = {
-        200: "OK",
-        400: "Bad Request",
-        404: "Not Found",
-        500: "Internal Server Error"
-    }
+    codes = {200: "OK", 400: "Bad Request", 404: "Not Found", 500: "Internal Server Error"}
     return codes.get(code, "Unknown")
 
 

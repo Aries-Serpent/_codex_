@@ -42,13 +42,14 @@ try:
         safe_model_load,
         safe_model_load_v2,
     )
+
     RAG_UTILS_AVAILABLE = True
 except ImportError:
     RAG_UTILS_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(
     not RAG_UTILS_AVAILABLE,
-    reason="RAG utils dependencies (torch, sentence_transformers) not installed"
+    reason="RAG utils dependencies (torch, sentence_transformers) not installed",
 )
 
 
@@ -68,6 +69,7 @@ class TestCheckForMetaTensors:
         """
         try:
             import torch as _torch  # type: ignore[import-untyped]
+
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
         except (ImportError, AttributeError, ModuleNotFoundError):
@@ -86,6 +88,7 @@ class TestCheckForMetaTensors:
         """
         try:
             import torch as _torch  # type: ignore[import-untyped]
+
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
         except (ImportError, AttributeError, ModuleNotFoundError):
@@ -102,14 +105,12 @@ class TestCheckForMetaTensors:
         model = torch.nn.Linear(10, 5, device="cpu")
         has_meta = check_for_meta_tensors(model)
         param_devices = [(n, p.device) for n, p in model.named_parameters()]
-        assert has_meta is False, (
-            f"Expected False, got {has_meta!r} (params: {param_devices})"
-        )
+        assert has_meta is False, f"Expected False, got {has_meta!r} (params: {param_devices})"
 
     def test_model_with_meta_tensors(self):
         """Test detection on model with meta tensors"""
         # Create a model with meta tensors
-        with torch.device('meta'):
+        with torch.device("meta"):
             model = torch.nn.Linear(10, 5)
         has_meta = check_for_meta_tensors(model)
         assert has_meta is True
@@ -122,11 +123,12 @@ class TestCheckForMetaTensors:
 
     def test_model_with_buffers_on_meta(self):
         """Test detection when buffers (not just parameters) are on meta device"""
+
         class ModelWithBuffer(torch.nn.Module):
             def __init__(self):
                 super().__init__()
-                with torch.device('meta'):
-                    self.register_buffer('my_buffer', torch.zeros(5))
+                with torch.device("meta"):
+                    self.register_buffer("my_buffer", torch.zeros(5))
 
         model = ModelWithBuffer()
         has_meta = check_for_meta_tensors(model)
@@ -154,6 +156,7 @@ class TestSafeModelLoadV2:
         """Clear default device before each test to prevent meta-device leakage."""
         try:
             import torch as _torch  # type: ignore[import-untyped]
+
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
         except (ImportError, AttributeError, ModuleNotFoundError):
@@ -164,6 +167,7 @@ class TestSafeModelLoadV2:
         """Clear default device after each test to prevent meta-device leakage."""
         try:
             import torch as _torch  # type: ignore[import-untyped]
+
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
         except (ImportError, AttributeError, ModuleNotFoundError):
@@ -183,7 +187,7 @@ class TestSafeModelLoadV2:
     def test_model_with_meta_tensors_reinit_strategy(self):
         """Test that models with meta tensors are handled via to_empty()"""
         # Create a model with meta tensors
-        with torch.device('meta'):
+        with torch.device("meta"):
             model = torch.nn.Linear(10, 5)
 
         # The function should use to_empty() for meta tensors
@@ -197,7 +201,7 @@ class TestSafeModelLoadV2:
     def test_model_with_meta_tensors_to_empty_strategy(self):
         """Test Strategy 2: Use to_empty() for meta tensors"""
         # Create a model with meta tensors
-        with torch.device('meta'):
+        with torch.device("meta"):
             model = torch.nn.Linear(10, 5)
 
         # to_empty() should handle meta tensors in PyTorch 2.0+
@@ -213,11 +217,11 @@ class TestSafeModelLoadV2:
         mock_model.named_modules.return_value = []
         mock_model.parameters.return_value = []
         mock_model.buffers.return_value = []
-        mock_model.device = type('Device', (), {'type': 'meta'})()
+        mock_model.device = type("Device", (), {"type": "meta"})()
         del mock_model.to_empty  # Remove to_empty attribute
 
         # Mock has_meta_tensors to return True
-        with patch('codex.rag.utils.has_meta_tensors', return_value=True):
+        with patch("codex.rag.utils.has_meta_tensors", return_value=True):
             with pytest.raises(AttributeError, match="Model does not support to_empty"):
                 safe_model_load_v2(mock_model, device="cpu")
 
@@ -288,7 +292,7 @@ class TestProvenanceMetadata:
             embedding_model="all-MiniLM-L6-v2",
             retrieval_score=0.85,
             char_range=(100, 200),
-            metadata={"key": "value"}
+            metadata={"key": "value"},
         )
 
         result = prov.to_dict()
@@ -311,7 +315,7 @@ class TestProvenanceMetadata:
             "embedding_model": "all-MiniLM-L6-v2",
             "retrieval_score": 0.85,
             "char_range": (100, 200),
-            "metadata": {"key": "value"}
+            "metadata": {"key": "value"},
         }
 
         prov = ProvenanceMetadata.from_dict(data)
@@ -361,9 +365,7 @@ class TestIntegrationMetaTensorHandling:
             try:
                 # Load model
                 model = SentenceTransformer(
-                    model_name,
-                    cache_folder=tmpdir,
-                    trust_remote_code=False
+                    model_name, cache_folder=tmpdir, trust_remote_code=False
                 )
             except HfHubHTTPError as e:
                 if "429" in str(e) or "rate limit" in str(e).lower():
@@ -371,10 +373,7 @@ class TestIntegrationMetaTensorHandling:
                 raise
 
             # Apply safe_model_load_v2 - only accepts model and device parameters
-            model = safe_model_load_v2(
-                model,
-                device="cpu"
-            )
+            model = safe_model_load_v2(model, device="cpu")
 
             # Verify model is properly loaded
             assert model is not None
