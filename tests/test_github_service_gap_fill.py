@@ -25,7 +25,7 @@ class TestGitHubClientInitialization:
         token = "test_token_12345"
         client = GitHubClient(token=token)
         assert client is not None
-        assert hasattr(client, "_token")
+        assert hasattr(client, "token")
 
     def test_client_initialization_with_owner_repo(self):
         """Test client initialization with repository context."""
