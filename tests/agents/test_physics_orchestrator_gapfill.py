@@ -356,7 +356,7 @@ class TestHamiltonianEvolver:
             evolver = HamiltonianEvolver()
             assert evolver is not None
         except TypeError:
-            evolver = HamiltonianEvolver(hamiltonian_type="kinetic")
+            evolver = HamiltonianEvolver("kinetic")
             assert evolver is not None
 
     def test_hamiltonian_evolution(self):
