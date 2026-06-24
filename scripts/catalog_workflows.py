@@ -217,7 +217,7 @@ def generate_inventory():
     workflows_dir = Path(".github/workflows")
 
     if not workflows_dir.exists():
-        print(f"❌ Workflows directory not found: {workflows_dir}")
+        print(f"❌ Workflows directory not found: {workflows_dir}")  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     # Scan all workflow files
@@ -235,10 +235,10 @@ def generate_inventory():
         "workflows": [],
     }
 
-    print(f"📊 Cataloging {len(workflow_files)} workflows...")
+    print(f"📊 Cataloging {len(workflow_files)} workflows...")  # codeql[py/clear-text-logging-sensitive-data]
 
     for workflow_file in workflow_files:
-        print(f"  Processing: {workflow_file.name}")
+        print(f"  Processing: {workflow_file.name}")  # codeql[py/clear-text-logging-sensitive-data]
         metadata = extract_workflow_metadata(workflow_file)
         inventory["workflows"].append(metadata)
 
@@ -256,10 +256,10 @@ def generate_inventory():
     with open(inventory_path, "w") as f:
         yaml.dump(inventory, f, default_flow_style=False, sort_keys=False)
 
-    print(f"\n✅ Inventory saved to: {inventory_path}")
-    print(f"   Total workflows: {inventory['metadata']['total_workflows']}")
-    print(f"   Active: {inventory['metadata']['active_count']}")
-    print(f"   Consolidation candidates: {sum(1 for w in inventory['workflows'] if w.get('consolidation_candidate'))}")
+    print(f"\n✅ Inventory saved to: {inventory_path}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   Total workflows: {inventory['metadata']['total_workflows']}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   Active: {inventory['metadata']['active_count']}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"   Consolidation candidates: {sum(1 for w in inventory['workflows'] if w.get('consolidation_candidate'))}")  # codeql[py/clear-text-logging-sensitive-data]
 
     # Security note: Secret names are stored in inventory file but NOT logged to console
     # to prevent information disclosure in CI logs

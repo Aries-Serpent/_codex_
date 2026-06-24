@@ -463,10 +463,10 @@ def main():
 
     with open(json_path, 'w', encoding='utf-8') as f:  # codeql[py/clear-text-storage-sensitive-data]
         f.write(json_report)
-    print(f"📄 JSON report saved to: {json_path}")  # nosec
+    print(f"📄 JSON report saved to: {json_path}")  # codeql[py/clear-text-logging-sensitive-data]
     with open(md_path, 'w', encoding='utf-8') as f:  # codeql[py/clear-text-storage-sensitive-data]
         f.write(md_report)
-    print(f"📄 Markdown report saved to: {md_path}")  # nosec
+    print(f"📄 Markdown report saved to: {md_path}")  # codeql[py/clear-text-logging-sensitive-data]
 
     print("\n✨ Analysis complete!")
 

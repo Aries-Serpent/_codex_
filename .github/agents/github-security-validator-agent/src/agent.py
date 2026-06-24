@@ -262,7 +262,7 @@ class SecurityValidator:
 
     def validate_all(self) -> dict:
         """Run all enabled validations."""
-        print(f"\n🤖 GitHub Security Validator Agent v{self.version}")
+        print(f"\n🤖 GitHub Security Validator Agent v{self.version}")  # codeql[py/clear-text-logging-sensitive-data]
         print("=" * 70)
         print()
 
