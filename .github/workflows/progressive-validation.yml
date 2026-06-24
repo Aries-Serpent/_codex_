@@ -19,7 +19,6 @@ permissions:
   contents: read
 jobs:
   analyze:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/pr-size-analyzer.yml
     permissions:
       contents: read
@@ -79,11 +78,8 @@ jobs:
     - analyze
     - smoke-tests
     if: 'needs.analyze.outputs.pr_size == ''small'' ||
-
       needs.analyze.outputs.pr_size == ''medium'' ||
-
       github.event.inputs.force_full == ''true''
-
       '
     runs-on: ubuntu-latest
     permissions:
@@ -130,9 +126,7 @@ jobs:
     - analyze
     - unit-tests
     if: 'needs.analyze.outputs.pr_size == ''small'' ||
-
       github.event.inputs.force_full == ''true''
-
       '
     runs-on: ubuntu-latest
     permissions:
@@ -170,9 +164,7 @@ jobs:
     - analyze
     - integration-tests
     if: 'github.event.inputs.force_full == ''true'' &&
-
       needs.analyze.outputs.pr_size == ''small''
-
       '
     runs-on: ubuntu-latest
     permissions:

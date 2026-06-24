@@ -43,7 +43,6 @@ env:
 jobs:
   cost-gate:
     name: "\U0001F4B0 Cost Gate"
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Build & Push Docker (GHCR)
