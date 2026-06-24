@@ -15,7 +15,7 @@ import pytest
 
 sys.path.insert(
     0, str(Path(__file__).parent.parent / ".github" / "agents" / "admin-automation-agent" / "src")
-) # pragma: allowlist secret # pragma: allowlist secret
+) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 try:
     from agent import AdminAutomationAgent
