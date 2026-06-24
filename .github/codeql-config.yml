@@ -1,0 +1,37 @@
+name: CodeQL Configuration
+
+# CodeQL analysis configuration for Aries-Serpent/_codex_
+# This file provides CodeQL with analysis settings and query customization
+
+paths:
+  # Include all source files in the analysis
+  - src
+  - tests
+  - scripts
+
+paths-ignore:
+  # Exclude temporary and build artifacts
+  - '**/.venv'
+  - '**/.eggs'
+  - '**/venv'
+  - '**/build'
+  - '**/dist'
+  - '**/*.egg-info'
+  - '**/__pycache__'
+  - '**/node_modules'
+  - '.codex/archive/**'
+  - '.codex/reports/**'
+  - '.github/workflows/archive/**'
+
+# Query filters for CodeQL analysis
+queries:
+  # Include security and quality queries
+  - uses: security-and-quality
+  - uses: codeql-subrepo/python:AlertSuppression.ql@main
+
+disable-default-queries: false
+
+# Python-specific configuration
+python:
+  # Python version used for analysis
+  version: "3.12"
