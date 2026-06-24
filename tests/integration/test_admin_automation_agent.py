@@ -223,7 +223,7 @@ class TestSecurityCompliance:
         logger = logging.getLogger(__name__)
         logger.info(
             "Secret value: %s", safe_value
-        )  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        )  # codeql[py/clear-text-logging-sensitive-data] safe_value is [REDACTED] placeholder, not actual secret
 
         # Confirm the raw token is absent from captured log output
         assert secret_value not in caplog.text
