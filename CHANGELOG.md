@@ -12,9 +12,9 @@
   - Impact: Resolved markdown secrets false-positive detection
 
 - **⚙️ Workflow Compliance:** Fixed missing `permissions:` blocks and `timeout-minutes` in 2 workflow files
-  - `.github/workflows/session-recovery-continuous-monitoring.yml`: Added top-level `permissions:` and `timeout-minutes: 10` to both jobs
-  - `.github/workflows/session-recovery-handler.yml`: Added top-level `permissions:` and `timeout-minutes: 15` to detect-session-failure job, `timeout-minutes: 10` to notify-recovery job
-  - Impact: Resolved 6 workflow compliance violations (1 missing permissions block + 1 missing timeout per workflow = 6 issues total)
+  - `.github/workflows/session-recovery-continuous-monitoring.yml`: Added top-level `permissions:` block (1 violation) + `timeout-minutes` to 2 jobs (2 violations) = 3 violations fixed
+  - `.github/workflows/session-recovery-handler.yml`: Added top-level `permissions:` block (1 violation) + `timeout-minutes` to 2 jobs (2 violations) = 3 violations fixed
+  - Impact: Resolved 6 workflow compliance violations total across both workflows
 
 - **Governance Compliance (REQ-4 & REQ-5):** Updated both compliance files in this commit
   - File: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — added current session entry (PR #5071 CI failures fix)
