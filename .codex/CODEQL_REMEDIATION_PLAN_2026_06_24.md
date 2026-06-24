@@ -78,8 +78,9 @@
 - Effort: Low (mechanical suppression placement)
 - Example:
   ```python
-  # codeql[py/clear-text-logging-sensitive-data]
-  logger.info(f"Token: {mask_token(token)}")
+  # Security: mask credential before logging
+  masked_token = mask_token(token)  # Mask to first 8 chars + "…"
+  logger.info(f"Token: {masked_token}")  # codeql[py/clear-text-logging-sensitive-data]
   ```
 
 #### HIGH Severity - Clear-Text Storage (8-12 alerts)
