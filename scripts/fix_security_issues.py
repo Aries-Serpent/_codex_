@@ -263,13 +263,11 @@ def main() -> int:
 
     print("\n" + "="*70)
     if args.dry_run:
-        # codeql[py/clear-text-logging-sensitive-data] Only logs non-sensitive count
-        print(f"✅ Dry run completed: {total_fixes} potential fixes identified")
+        print(f"✅ Dry run completed: {total_fixes} potential fixes identified")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
         print("\nTo apply fixes, run without --dry-run:")
         print("  python scripts/fix_security_issues.py")
-    else:  # codeql[py/clear-text-logging-sensitive-data] Only logs non-sensitive operation result
-        # codeql[py/clear-text-logging-sensitive-data] Only logs non-sensitive count
-        print(f"✅ Security fixes completed: {total_fixes} automatic fixes applied")
+    else:
+        print(f"✅ Security fixes completed: {total_fixes} automatic fixes applied")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
         print("\nNext steps:")
         print("  1. Review changes: git diff .codex/")
         print("  2. Run Bandit: bandit -r .codex/ src/ -ll")

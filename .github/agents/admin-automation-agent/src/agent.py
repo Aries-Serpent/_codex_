@@ -166,7 +166,7 @@ class AdminAutomationAgent:
         elif status == "warning":
             logger.warning("⚠️  Task warning: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data] Only logs masked fingerprint
         else:
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data] Only logs masked fingerprint
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)

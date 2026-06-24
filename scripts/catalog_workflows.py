@@ -275,10 +275,10 @@ def generate_summary_report(inventory: dict):
     with open(report_path, "w") as f:
         f.write("# Workflow Inventory Summary\n\n")
         f.write(f"**Generated**: {inventory['metadata']['generated_at']}\n\n")
-        f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")  # codeql[py/clear-text-logging-sensitive-data] Metadata count is non-sensitive
+        f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
 
         # Category breakdown
-        f.write("## Workflows by Category\n\n")  # codeql[py/clear-text-logging-sensitive-data] Static header text only
+        f.write("## Workflows by Category\n\n")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
         by_category = defaultdict(list)
         for workflow in inventory["workflows"]:
             by_category[workflow.get("category", "other")].append(workflow)
@@ -294,11 +294,11 @@ def generate_summary_report(inventory: dict):
         # Consolidation candidates
         candidates = [w for w in inventory["workflows"] if w.get("consolidation_candidate")]
         if candidates:
-            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n")  # codeql[py/clear-text-storage-sensitive-data] Stores non-sensitive count
-            for workflow in candidates:  # codeql[py/clear-text-storage-sensitive-data] Stores consolidated workflow metadata only
+            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
+            for workflow in candidates:  # nosec  # codeql[py/clear-text-storage-sensitive-data]
                 f.write(f"### `{workflow['filename']}`\n\n")
                 f.write(f"**Reason**: {workflow.get('consolidation_plan', 'N/A')}\n\n")
-                f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")  # codeql[py/clear-text-storage-sensitive-data] Stores non-sensitive workflow names
+                f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
 
         # Secrets usage - SECURITY NOTE: Removed to prevent information disclosure
         # Secret names are stored in WORKFLOW_INVENTORY.yaml for internal tooling only

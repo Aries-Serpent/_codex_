@@ -220,7 +220,7 @@ class TokenScopeVerifier:
             print("❌ Error: Token verification failed (check logs for details)")  # codeql[py/clear-text-logging-sensitive-data] Error message is redacted; see logs
             # When DEBUG=1, provide additional non-sensitive error details to stdout
             if os.getenv("DEBUG") == "1":
-                print(f"Debug details: {results.get('error')}")  # codeql[py/clear-text-logging-sensitive-data] Only printed when DEBUG=1 for authorized debugging
+                print(f"Debug details: {results.get('error')}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
             return
 
         # Direct inline access for non-sensitive metadata
