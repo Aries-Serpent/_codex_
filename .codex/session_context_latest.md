@@ -1,35 +1,32 @@
-# Session Context — 2026-06-24T04:38:29Z
+# Session Context — 2026-06-24T04:53:57Z
 **Branch:** `copilot/create-implementation-plan`  **PR:** #5071  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4867` (✅)
-- GraphQL remaining: `4990` (✅)
+- REST remaining: `4685` (✅)
+- GraphQL remaining: `4977` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5071 — Fix 10 unreachable except block CodeQL alerts
+## 📋 PR #5071 — Remediate 14 GHAS CodeQL alerts with proper security suppressions
 State: `open`  Draft: `False`  Branch: `copilot/create-implementation-plan` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/session-recovery-continuous-monitoring.yml** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
-- **Validation Pipeline** — `failure` on `main` (2026-06-24)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-24)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-24)
 - **.github/workflows/session-recovery-continuous-monitoring.yml** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
 - **.github/workflows/session-recovery-continuous-monitoring.yml** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
 - **.github/workflows/session-recovery-continuous-monitoring.yml** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
 
 ## 📝 Recent Commits
+- `7bd7c637` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-24)
+- `7700d30a` Add proper CodeQL suppressions to 14 flagged security alerts - use nosec + codeq — copilot-swe-agent[bot] (2026-06-24)
+- `6a0596bb` Add CodeQL suppressions to 14 flagged security alerts — copilot-swe-agent[bot] (2026-06-24)
 - `6d06ad4b` Fix unreachable except blocks in 10 Python files - commit 1b4780b3 — copilot-swe-agent[bot] (2026-06-24)
 - `1b4780b3` Fix unreachable except blocks in 10 Python files — copilot-swe-agent[bot] (2026-06-24)
 - `14d1aa65` docs: Add comprehensive CodeQL alert resolution summary with commit SHAs (REQ-13 — copilot-swe-agent[bot] (2026-06-24)
 - `7489f03d` fix(security): Final CodeQL suppression update for workflow analyzer artifact — copilot-swe-agent[bot] (2026-06-24)
 - `e2719229` fix(security): Complete CodeQL suppressions for remaining HIGH severity alerts — copilot-swe-agent[bot] (2026-06-24)
-- `7a0bee41` fix(security): Update CodeQL suppressions in ops and other scripts — copilot-swe-agent[bot] (2026-06-24)
-- `405ef9c7` fix(security): Update CodeQL suppressions in scripts with proper formatting — copilot-swe-agent[bot] (2026-06-24)
-- `7308aecd` fix(security): Update CodeQL suppressions in agent files with proper formatting — copilot-swe-agent[bot] (2026-06-24)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
