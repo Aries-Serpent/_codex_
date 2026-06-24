@@ -12,31 +12,31 @@ jobs:
     name: Detect and Recover Failed Sessions
     runs-on: ubuntu-latest
     if: |
-      github.event.workflow_run.status == 'cancelled' || 
+      github.event.workflow_run.status == 'cancelled' ||
       github.event.workflow_run.conclusion == 'cancelled' ||
       github.event.workflow_run.conclusion == 'failure' ||
       (github.event.workflow_run.conclusion == 'timed_out')
-    
+
     permissions:
       contents: read
       actions: read
       checks: read
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      
+
       - name: Extract failed workflow context
         id: extract_context
         run: |
           # ⚠️ SECURITY: Validate all workflow_run inputs to prevent code injection (CodeQL)
           # Only extract immutable numeric IDs; sanitize all string inputs
-           
+
           # Extract numeric ID (immutable, safe for code context)
           WORKFLOW_RUN_ID="${{ github.event.workflow_run.id }}"
-           
+
           # Extract safely: use gh CLI to validate and escape
           WORKFLOW_NAME=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .name 2>/dev/null | sed 's/[^a-zA-Z0-9 _.-]/_/g')
           BRANCH=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .head_branch 2>/dev/null | sed 's/[^a-zA-Z0-9/_.-]/_/g')
@@ -45,7 +45,7 @@ jobs:
           UPDATED_AT=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .updated_at 2>/dev/null)
           STATUS=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .status 2>/dev/null | grep -E '^(queued|in_progress|completed)$' || echo "unknown")
           CONCLUSION=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .conclusion 2>/dev/null | grep -E '^(success|failure|neutral|cancelled|timed_out|action_required|stale|skipped)$' || echo "unknown")
-           
+
           # Calculate duration safely
           if [ -n "$CREATED_AT" ] && [ -n "$UPDATED_AT" ]; then
             CREATED_TS=$(date -d "$CREATED_AT" +%s 2>/dev/null || echo "0")
@@ -55,7 +55,7 @@ jobs:
           else
             DURATION=0
           fi
-           
+
           # Output values (sanitized)
           echo "workflow_run_id=$WORKFLOW_RUN_ID" >> $GITHUB_OUTPUT
           echo "workflow_name=$WORKFLOW_NAME" >> $GITHUB_OUTPUT
@@ -68,15 +68,15 @@ jobs:
           echo "duration_seconds=$DURATION" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Create session recovery log
         id: create_recovery_log
         run: |
           RECOVERY_FILE=".codex/session_recovery_$(date +%Y%m%d_%H%M%S).md"
-          
+
           cat > "$RECOVERY_FILE" << 'EOF'
           # Session Recovery — ${{ steps.extract_context.outputs.updated_at }}
-          
+
           **Failed Workflow Run:** ${{ steps.extract_context.outputs.workflow_run_id }}
           **Workflow Name:** ${{ steps.extract_context.outputs.workflow_name }}
           **Branch:** ${{ steps.extract_context.outputs.branch }}
@@ -84,48 +84,48 @@ jobs:
           **Status:** ${{ steps.extract_context.outputs.status }}
           **Conclusion:** ${{ steps.extract_context.outputs.conclusion }}
           **Duration:** ${{ steps.extract_context.outputs.duration_seconds }} seconds
-          
+
           ---
-          
+
           ## Recovery Actions
-          
+
           - ✅ Session failure detected: `${{ steps.extract_context.outputs.conclusion }}`
           - ✅ Context extracted and logged
           - ⏳ Recovery workflow triggered
           - ⏳ Pending: Session state recovery + continuation
-          
+
           **GitHub Run:** https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           EOF
-          
+
           echo "recovery_file=$RECOVERY_FILE" >> $GITHUB_OUTPUT
-      
+
       - name: Log recovery event to session tracking
         run: |
           # Extract session ID from branch or environment if available
           BRANCH="${{ steps.extract_context.outputs.branch }}"
-          
+
           # Create JSONL entry for session tracking
           cat >> .codex/session_recovery_log.jsonl << 'EOF'
           {"timestamp":"$(date -u +"%Y-%m-%dT%H:%M:%SZ")","type":"session_failure_detected","workflow_run_id":"${{ steps.extract_context.outputs.workflow_run_id }}","branch":"$BRANCH","status":"${{ steps.extract_context.outputs.conclusion }}","recovery_triggered":true}
           EOF
-          
+
           cat .codex/session_recovery_log.jsonl
-      
+
       - name: Check if auto-recovery should be triggered
         id: check_recovery
         run: |
           # Check for recent failures on this branch to prevent infinite loops
           BRANCH="${{ steps.extract_context.outputs.branch }}"
-          
+
           # Count recent failures (last 24 hours) on this branch
           RECENT_FAILURES=$(gh run list \
             -L 100 \
             --json conclusion,createdAt,headBranch \
             --jq "map(select(.headBranch==\"$BRANCH\" and (.createdAt | fromdateiso8601 | . > now - 86400))) | length" \
             2>/dev/null || echo "0")
-          
+
           echo "recent_failures=$RECENT_FAILURES" >> $GITHUB_OUTPUT
-          
+
           # Auto-recovery enabled if less than 2 consecutive failures
           if [ "$RECENT_FAILURES" -lt "2" ]; then
             echo "should_auto_recover=true" >> $GITHUB_OUTPUT
@@ -134,12 +134,12 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Auto-recover failed session (up to 2 attempts)
         if: steps.check_recovery.outputs.should_auto_recover == 'true'
         run: |
           BRANCH="${{ steps.extract_context.outputs.branch }}"
-          
+
           echo "🔄 Attempting automatic session recovery for branch: $BRANCH"
           echo "  - Recovery attempt on branch: $BRANCH"
           echo "  - Failure conclusion: ${{ steps.extract_context.outputs.conclusion }}"
@@ -147,10 +147,10 @@ jobs:
           echo ""
           echo "ℹ️ Note: Manual recovery or re-trigger may be needed if this is a persistent issue."
           echo "   Session logs available at: .codex/session_recovery_$(date +%Y%m%d_%H%M%S).md"
-          
+
           # Log recovery attempt
           echo "✅ Recovery logged to .codex/session_recovery_log.jsonl"
-      
+
       - name: Escalate to human review (2+ consecutive failures)
         if: steps.check_recovery.outputs.should_auto_recover == 'false'
         run: |
@@ -162,24 +162,24 @@ jobs:
           echo ""
           echo "Action Required: Please review the failed session and take manual recovery action."
           echo "Contact: @mbaetiong"
-      
+
       - name: Commit recovery artifacts
         if: always()
         run: |
           cd /home/runner/work/_codex_/_codex_
-          
+
           git config user.name "copilot-swe-agent[bot]"
           git config user.email "198982749+Copilot@users.noreply.github.com"
-          
+
           # Add recovery files
           git add .codex/session_recovery_*.md .codex/session_recovery_log.jsonl 2>/dev/null || true
-          
+
           # Commit if there are changes
           if ! git diff --cached --quiet; then
             git commit -m "chore: log session recovery for workflow run ${{ steps.extract_context.outputs.workflow_run_id }} [skip ci]" || true
           fi
         continue-on-error: true
-      
+
       - name: Push recovery artifacts
         if: always()
         run: |
