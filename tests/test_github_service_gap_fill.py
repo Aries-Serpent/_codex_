@@ -15,7 +15,7 @@ from src.services.github.exceptions import (
     RateLimitError,
     WorkflowTriggerError,
 )
-
+ # pragma: allowlist secret
 
 class TestGitHubClientInitialization:
     """Test GitHub client initialization and configuration."""
