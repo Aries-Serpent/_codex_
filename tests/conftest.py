@@ -2029,12 +2029,13 @@ def _end_active_mlflow_runs():
 
         if mlflow.active_run() is not None:
             mlflow.end_run()
-    except ImportError:
-        _ = None  # MLflow not installed — nothing to clean up
     except (ImportError, AttributeError) as exc:
-        logging.getLogger(__name__).debug(
-            "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
-        )
+        if isinstance(exc, ImportError):
+            _ = None  # MLflow not installed — nothing to clean up
+        else:
+            logging.getLogger(__name__).debug(
+                "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
+            )
 
     yield
 
@@ -2043,12 +2044,13 @@ def _end_active_mlflow_runs():
 
         if mlflow.active_run() is not None:
             mlflow.end_run()
-    except ImportError:
-        _ = None  # MLflow not installed — nothing to clean up
     except (ImportError, AttributeError) as exc:
-        logging.getLogger(__name__).debug(
-            "_end_active_mlflow_runs (post-test): unexpected error: %s", exc
-        )
+        if isinstance(exc, ImportError):
+            _ = None  # MLflow not installed — nothing to clean up
+        else:
+            logging.getLogger(__name__).debug(
+                "_end_active_mlflow_runs (post-test): unexpected error: %s", exc
+            )
 
 
 # List of test files that commonly need the profiler disabled

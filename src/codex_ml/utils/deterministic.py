@@ -44,13 +44,14 @@ def enable_deterministic_mode(warn_only: bool = False) -> None:
             logger.info("Set CuDNN to deterministic mode")
 
         logger.info("PyTorch deterministic algorithms enabled")
-    except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
-        logger.warning("PyTorch not available, skipping torch deterministic setup")
     except (ImportError, AttributeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Failed to enable PyTorch deterministic mode: {e}")
+        if isinstance(e, ImportError):
+            logger.debug(f"ImportError: {e}")
+            logger.warning(f"ImportError: {e}", exc_info=True)
+            logger.warning("PyTorch not available, skipping torch deterministic setup")
+        else:
+            logger.debug(f"Exception: {e}")
+            logger.warning(f"Failed to enable PyTorch deterministic mode: {e}")
 
     # TensorFlow deterministic ops (if available)
     try:

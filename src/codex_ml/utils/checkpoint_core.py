@@ -493,7 +493,7 @@ def _deserialize_payload(
                     buf.seek(0)
             else:
                 buf.seek(0)
-        except (ValueError, TypeError):
+        except ValueError:
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be

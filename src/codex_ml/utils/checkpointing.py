@@ -803,7 +803,7 @@ def load_training_checkpoint(
     except RuntimeError as exc:
         logger.debug(f"RuntimeError: {exc}")
         raise CheckpointLoadError(str(exc)) from exc
-    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - checksum verify is best-effort
+    except (ValueError, TypeError) as exc:  # pragma: no cover - checksum verify is best-effort
         logger.info(
             "load_training_checkpoint: checksum verification skipped for %s: %s",
             p,

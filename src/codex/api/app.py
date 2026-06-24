@@ -52,14 +52,15 @@ try:
     # Pass prefix="" to override the router's own default "/auth" prefix —
     # the include_router prefix="/api/auth" supplies the full mount point.
     app.include_router(create_auth_router(prefix=""), prefix="/api/auth", tags=["auth"])
-except ImportError:  # pragma: no cover – auth module not installed
-    logger.debug("Suppressed exception in handler", exc_info=True)
-except (ImportError, AttributeError) as _auth_exc:  # pragma: no cover – unexpected init error
-    import logging as _logging
+except (ImportError, AttributeError) as _auth_exc:  # pragma: no cover – auth module not installed or unexpected init error
+    if isinstance(_auth_exc, ImportError):
+        logger.debug("Suppressed exception in handler", exc_info=True)
+    else:
+        import logging as _logging
 
-    _logging.getLogger(__name__).warning(
-        "Auth router not mounted — unexpected error during import: %s", _auth_exc
-    )
+        _logging.getLogger(__name__).warning(
+            "Auth router not mounted — unexpected error during import: %s", _auth_exc
+        )
 
 # Include legacy endpoints with RFC 8594 deprecation headers
 try:

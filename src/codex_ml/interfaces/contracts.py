@@ -92,12 +92,10 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         tokens = adapter.encode("contract smoke test")
-    except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
-        raise
-    except (ValueError, TypeError) as exc:  # pragma: no cover - adapter-specific errors
-        raise TokenizationContractError(f"encode failed: {exc}") from exc
+    except (ValueError, TypeError) as e:
+        logger.debug(f"TypeError/ValueError: {e}")
+        logger.warning(f"TypeError/ValueError: {e}", exc_info=True)
+        raise TokenizationContractError(f"encode failed: {e}") from e
 
     if not isinstance(tokens, list) or not all(isinstance(t, int) for t in tokens):
         raise TokenizationContractError("encode must return a list[int]")

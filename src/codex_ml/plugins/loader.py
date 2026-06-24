@@ -37,7 +37,7 @@ def _iter_entry_points(group: str) -> Iterable[Any]:
         if hasattr(eps, "select"):
             return eps.select(group=group)
         return [ep for ep in eps if getattr(ep, "group", None) == group]
-    except (ValueError, TypeError, RuntimeError):
+    except (ValueError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return ()
 
@@ -61,12 +61,10 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
         try:
             target(register)
             return True
-        except TypeError as e:
-            logger.debug(f"TypeError: {e}")
-            logger.warning(f"TypeError: {e}", exc_info=True)
-            return False
-        except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)
+        except (ValueError, TypeError, RuntimeError) as e:
+            if isinstance(e, TypeError):
+                logger.debug(f"TypeError: {e}")
+            logger.warning(f"Exception: {e}", exc_info=True)
             return False
 
     return False
@@ -91,7 +89,7 @@ def _register_direct(register: Optional[RegisterFn], name: str, target: Any) -> 
         except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return False
-    except (ValueError, TypeError, RuntimeError):
+    except (ValueError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 
