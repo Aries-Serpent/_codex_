@@ -219,7 +219,7 @@ class TestConfigurationLoading:
             assert config is not None
         except ImportError:
             pytest.skip("_load_training_config not available")
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             # Config loading may require additional dependencies
             if "yaml" in str(e).lower():
                 pytest.skip("YAML dependency not available")

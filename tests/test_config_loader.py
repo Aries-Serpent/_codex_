@@ -338,7 +338,7 @@ class TestIntegration:
             # Try to load any existing config
             cfg = loader.load_config("config", config_dir="conf", allow_fallback=True)
             assert cfg is not None
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             # If it fails, should still get fallback
             pytest.skip(f"No config.yaml in conf/: {e}")
 

@@ -269,7 +269,7 @@ def evaluate_epoch(
             for name, fn in metrics.items():
                 try:
                     metric_results[name] = _safe_item(fn(preds_payload, targets_payload))
-                except Exception:
+                except (ValueError, TypeError):
                     _log.warning("Exception occurred", exc_info=True)
                     metric_results[name] = float("nan")
         else:

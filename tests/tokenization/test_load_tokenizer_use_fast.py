@@ -64,13 +64,13 @@ def _skip_if_offline(exc: Exception) -> None:
 def test_use_fast_flag():
     try:
         tok_fast = load_tokenizer("gpt2", use_fast=True)
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         _skip_if_offline(exc)
         raise
     assert getattr(tok_fast.tokenizer, "is_fast", False)
     try:
         tok_slow = load_tokenizer("gpt2", use_fast=False)
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         _skip_if_offline(exc)
         raise
     # In transformers >= 4.37 GPT-2's slow Python tokenizer was rewritten using the

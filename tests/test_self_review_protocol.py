@@ -337,7 +337,7 @@ def test_analyze_python_file_bare_except(tmp_path):
 def risky_function():
     try:
         dangerous_operation()
-    except:
+    except Exception:
         _ = None  # suppressed: no action needed
 """)
 

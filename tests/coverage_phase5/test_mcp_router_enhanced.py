@@ -70,7 +70,7 @@ class JSONRPCRouter:
             try:
                 result = self.handle_request(req)
                 results.append(result)
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 results.append({"error": str(e)})
         return results
 

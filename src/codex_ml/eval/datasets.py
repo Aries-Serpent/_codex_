@@ -63,7 +63,7 @@ try:  # pragma: no cover - optional dependency
         return dataset
 
     HAS_DATASETS = True
-except Exception:  # pragma: no cover - handled gracefully
+except (ValueError, TypeError):  # pragma: no cover - handled gracefully
     DatasetDict = load_from_disk = None
 
     def hf_load_dataset(*_args: Any, **_kwargs: Any):
@@ -169,7 +169,7 @@ def load_dataset(
             try:
                 _LAST_HF_REVISION = None
                 hf_ds = hf_load_dataset(ds_name, config, split=hf_split)
-            except Exception:  # fall back to owner/dataset without config
+            except (ValueError, TypeError):  # fall back to owner/dataset without config
                 ds_name = "/".join(parts)
                 config = None
                 _LAST_HF_REVISION = None

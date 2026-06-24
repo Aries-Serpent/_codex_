@@ -465,7 +465,7 @@ class TestCacheConsistency:
                     try:
                         for i in range(10):
                             cache.set(f"thread_{thread_id}_text_{i}", [float(i)])
-                    except Exception as e:
+                    except (IOError, OSError) as e:
                         errors.append(e)
 
                 # Create multiple threads

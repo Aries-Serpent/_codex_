@@ -174,7 +174,7 @@ class Registry:
                 continue
             try:
                 value = ep.load()
-            except Exception as exc:  # pragma: no cover - plugin failure
+            except (ValueError, TypeError) as exc:  # pragma: no cover - plugin failure
                 self._failed_entry_points[key] = exc
                 continue
             try:

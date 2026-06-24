@@ -39,7 +39,7 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
                 model_name="minilm",
                 dataset_cast_policy="to_fp32",
             )
-        except Exception as e:
+        except (ImportError, AttributeError) as e:
             import pytest
 
             # If training fails due to missing dependencies, skip

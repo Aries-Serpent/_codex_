@@ -24,7 +24,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
     EarlyStopping = None
     try:
         from codex_ml.training.callbacks import EarlyStopping
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         # If import fails, skip tests rather than erroring the entire suite.
         pytest.skip(f"EarlyStopping import failed: {e}")
     if EarlyStopping is None:
@@ -48,7 +48,7 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
     # Try to set the mode attribute in a backward-compatible manner.
     try:
         es.mode = mode
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         # If we can't set mode, skip the tests because we can't ensure expected behavior.
         raise pytest.skip.Exception(
             "EarlyStopping does not accept or expose 'mode' parameter/attribute"

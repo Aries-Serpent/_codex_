@@ -146,7 +146,7 @@ class TestFileIngestor:
             try:
                 content.decode("utf-8")
                 return "utf-8"
-            except:
+            except Exception:
                 return "latin-1"
 
         result = detect_encoding(b"hello")
@@ -174,7 +174,7 @@ class TestEncodingDetection:
             try:
                 data.decode("utf-8")
                 return "utf-8"
-            except:
+            except Exception:
                 return None
 
         result = detect_encoding(b"hello")
@@ -187,7 +187,7 @@ class TestEncodingDetection:
             try:
                 data.decode("latin-1")
                 return "latin-1"
-            except:
+            except Exception:
                 return None
 
         result = detect_encoding(b"\xc3\xa9")  # é in UTF-8
@@ -363,7 +363,7 @@ class TestDataValidation:
             try:
                 int(data)
                 return True
-            except:
+            except Exception:
                 return False
 
         assert is_valid_int("123") is True
@@ -397,7 +397,7 @@ class TestErrorHandling:
         def read_safe(path):
             try:
                 return {"data": "content"}
-            except:
+            except (IOError, OSError):
                 return None
 
         result = read_safe("/nonexistent")
@@ -409,7 +409,7 @@ class TestErrorHandling:
         def decode_safe(data, encoding):
             try:
                 return data.decode(encoding)
-            except:
+            except Exception:
                 return None
 
         result = decode_safe(b"\xff\xfe", "utf-8")
@@ -425,7 +425,7 @@ class TestErrorHandling:
 
                     return json.loads(data)
                 return None
-            except:
+            except (ValueError, TypeError):
                 return None
 
         result = parse_safe("invalid json", "json")

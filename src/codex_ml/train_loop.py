@@ -1920,7 +1920,7 @@ def run_training(
                         hidden_states = None
                         try:
                             hidden_states = getattr(model, "hidden_states", None)
-                        except Exception:
+                        except (ImportError, AttributeError):
                             hidden_states = None
                         step_ctx = (
                             {"hidden_states": hidden_states} if hidden_states is not None else None

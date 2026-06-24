@@ -47,7 +47,7 @@ def _supports_bfloat16() -> bool:
         if getattr(torch.backends, "mps", None):  # pragma: no branch - optional backend
             mps = torch.backends.mps
             return bool(getattr(mps, "is_built", lambda: False)())
-    except Exception:  # pragma: no cover - conservative fallback
+    except (ImportError, AttributeError):  # pragma: no cover - conservative fallback
         return False
     return False
 

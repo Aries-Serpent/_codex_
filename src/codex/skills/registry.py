@@ -253,7 +253,7 @@ class SkillRegistry:
         count = 0
         try:
             eps = importlib.metadata.entry_points(group="codex.skills")
-        except Exception:  # pragma: no cover
+        except (ImportError, AttributeError):  # pragma: no cover
             return 0
 
         for ep in eps:

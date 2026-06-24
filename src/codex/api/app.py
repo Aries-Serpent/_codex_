@@ -214,7 +214,7 @@ def health() -> dict:
             "available": True,
             "n_components": getattr(pc, "n_components", None),
         }
-    except Exception:
+    except (ImportError, AttributeError):
         result["pattern_compressor"] = {"available": False}
 
     return result

@@ -198,7 +198,7 @@ class TestTrainCLIIntegration:
             import importlib
 
             importlib.reload(__import__("codex_ml.cli.train"))
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             # Only fail if it's not an expected import error
             if "hydra" not in str(e).lower():
                 pytest.fail(f"Unexpected import error: {e}")

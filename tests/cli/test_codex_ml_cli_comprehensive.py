@@ -456,7 +456,7 @@ class TestMainFunction:
             assert exit_code != 0
         except (ImportError, SystemExit):
             pytest.skip("codex_ml.cli.codex_cli not available or exits")
-        except Exception as exc:
+        except (ImportError, AttributeError) as exc:
             if _click_exc is not None and isinstance(exc, _click_exc.UsageError):
                 pytest.skip("codex_ml.cli.codex_cli not available or exits")
             raise
@@ -531,6 +531,6 @@ class TestGetTokenizerPipeline:
             assert pipeline1 is pipeline2
         except ImportError:
             pytest.skip("tokenizer pipeline not available")
-        except Exception as _err:
+        except (ImportError, AttributeError) as _err:
             # May fail due to missing dependencies
             pytest.skip("tokenizer dependencies not available")

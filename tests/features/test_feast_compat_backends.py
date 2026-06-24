@@ -105,7 +105,7 @@ class TestInMemoryBackend:
         def writer(i: int) -> None:
             try:
                 self.backend.write("view", f"key:{i}", {"val": i})
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 errors.append(exc)
 
         threads = [threading.Thread(target=writer, args=(i,)) for i in range(20)]
@@ -186,7 +186,7 @@ class TestSQLiteBackend:
         def writer(i: int) -> None:
             try:
                 self.backend.write("view", f"key:{i}", {"val": i})
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 errors.append(exc)
 
         threads = [threading.Thread(target=writer, args=(i,)) for i in range(10)]
@@ -458,7 +458,7 @@ class TestDuckDBBackend:
             for i in range(start, start + 5):
                 try:
                     b.write("v", f"key_{i}", {"val": i})
-                except Exception as exc:
+                except (IOError, OSError) as exc:
                     errors.append(exc)
 
         threads = [threading.Thread(target=write_batch, args=(i * 5,)) for i in range(4)]

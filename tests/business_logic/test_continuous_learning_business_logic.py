@@ -442,7 +442,7 @@ class TestErrorHandling:
             if path:
                 try:
                     pipeline.promote(path, registry={})
-                except Exception as _err:
+                except (IOError, OSError) as _err:
                     # Expected for invalid paths
                     pass
 

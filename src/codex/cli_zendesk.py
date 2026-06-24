@@ -142,7 +142,7 @@ def env_check(env: str = ENVIRONMENT_OPTION) -> None:
 
     try:
         zenpy_spec = importlib.util.find_spec("zenpy")
-    except Exception:  # pragma: no cover - defensive guard
+    except (ImportError, AttributeError):  # pragma: no cover - defensive guard
         zenpy_spec = None
     if zenpy_spec is None:
         typer.echo("Zenpy is not installed. `pip install zenpy`", err=True)

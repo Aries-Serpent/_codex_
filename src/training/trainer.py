@@ -22,7 +22,7 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
-except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
+except (ValueError, TypeError):  # pragma: no cover - propagate a consistent runtime error lazily
     _HAS_REAL_TORCH = False
 
     class _NoOpScaler:

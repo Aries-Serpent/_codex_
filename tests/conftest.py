@@ -134,7 +134,7 @@ def pytest_configure(config: pytest.Config) -> None:
             logger.info(
                 f"✓ File descriptor limit increased to {target_limit} (prevents I/O errors)"
             )
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.warning(f"Could not increase file descriptor limit: {e}")
 
     if getattr(config.option, "collectonly", False):
@@ -1868,7 +1868,7 @@ def force_file_cleanup():
             close_method = getattr(obj, "close", None)
             closed_attr = getattr(obj, "closed", None)
             name_attr = getattr(obj, "name", None)
-        except Exception as _err:
+        except (ImportError, AttributeError) as _err:
             continue  # Skip objects with unsafe attribute access
 
         try:
@@ -1882,7 +1882,7 @@ def force_file_cleanup():
                     # It's an open file object (not stdin/stdout/stderr which have int names)
                     try:
                         close_method()
-                    except Exception as _err:
+                    except (IOError, OSError) as _err:
                         _ = None  # Already closed or not closeable
         except (ReferenceError, AttributeError):
             _ = None  # Object was garbage collected during iteration
@@ -2031,7 +2031,7 @@ def _end_active_mlflow_runs():
             mlflow.end_run()
     except ImportError:
         _ = None  # MLflow not installed — nothing to clean up
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (pre-test): unexpected error: %s", exc
         )
@@ -2045,7 +2045,7 @@ def _end_active_mlflow_runs():
             mlflow.end_run()
     except ImportError:
         _ = None  # MLflow not installed — nothing to clean up
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logging.getLogger(__name__).debug(
             "_end_active_mlflow_runs (post-test): unexpected error: %s", exc
         )

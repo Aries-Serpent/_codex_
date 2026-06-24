@@ -247,7 +247,7 @@ class QuantumPluginRegistry:
         # Get load order using topological sort
         try:
             load_order = self.dependency_graph.topological_sort()
-        except Exception:
+        except (ValueError, TypeError):
             # Fallback: just load the plugin
             load_order = [plugin_name]
 

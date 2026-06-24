@@ -159,7 +159,7 @@ def load_from_pretrained(factory: Any, identifier: Any, **kwargs: Any) -> Any:
     # Attempt 2: full network download
     try:
         return method(identifier, **call_kwargs)
-    except Exception as network_exc:
+    except (ValueError, TypeError) as network_exc:
         # Both attempts failed — raise a named error so callers can skip gracefully
         errors = []
         if cache_exc is not None:

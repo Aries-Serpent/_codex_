@@ -12,7 +12,7 @@ import pytest
 
 try:
     import torch
-except Exception as exc:  # pragma: no cover - runtime guard
+except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
 torch_data = getattr(torch, "utils", None)

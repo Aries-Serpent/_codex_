@@ -222,27 +222,27 @@ def _sample_cpu_psutil(ts: float) -> dict[str, Any]:
 
     try:
         payload["cpu_percent"] = psutil.cpu_percent(interval=None)
-    except Exception:  # pragma: no cover - psutil call failure
+    except (ValueError, TypeError):  # pragma: no cover - psutil call failure
         payload["cpu_percent"] = None
 
     try:
         payload["cpu_count"] = psutil.cpu_count(logical=True) or _FALLBACK_CPU_COUNT
-    except Exception:  # pragma: no cover - psutil call failure
+    except (ValueError, TypeError):  # pragma: no cover - psutil call failure
         payload["cpu_count"] = _FALLBACK_CPU_COUNT
 
     try:
         payload["memory"] = dict(psutil.virtual_memory()._asdict())
-    except Exception:  # pragma: no cover - platform specific
+    except (ValueError, TypeError):  # pragma: no cover - platform specific
         payload["memory"] = None
 
     try:
         payload["swap"] = dict(psutil.swap_memory()._asdict())
-    except Exception:  # pragma: no cover - platform specific
+    except (ValueError, TypeError):  # pragma: no cover - platform specific
         payload["swap"] = None
 
     try:
         payload["load_avg"] = list(os.getloadavg())
-    except Exception:  # pragma: no cover - platform specific
+    except (ValueError, TypeError):  # pragma: no cover - platform specific
         payload["load_avg"] = None
 
     try:
@@ -251,7 +251,7 @@ def _sample_cpu_psutil(ts: float) -> dict[str, Any]:
             "cpu_percent": proc.cpu_percent(interval=None),
             "memory_info": dict(proc.memory_info()._asdict()),
         }
-    except Exception:  # pragma: no cover - process metrics optional
+    except (ValueError, TypeError):  # pragma: no cover - process metrics optional
         payload["process"] = _minimal_process_sample(ts)
 
     return payload
@@ -371,13 +371,13 @@ def system_snapshot() -> dict[str, Any]:
             cpu_payload = _sample_cpu_psutil(ts)
         else:
             cpu_payload = _sample_cpu_minimal(ts)
-    except Exception as exc:  # pragma: no cover - defensive fallback
+    except (ValueError, TypeError) as exc:  # pragma: no cover - defensive fallback
         errors.append({"component": "cpu", "error": repr(exc)})
         cpu_payload = {"ts": ts, "cpu_percent": None, "process": None}
 
     try:
         gpu_payload = _sample_gpu_metrics()
-    except Exception as exc:  # pragma: no cover - defensive fallback
+    except (ValueError, TypeError) as exc:  # pragma: no cover - defensive fallback
         errors.append({"component": "gpu", "error": repr(exc)})
         gpu_payload = None
 

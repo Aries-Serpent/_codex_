@@ -121,7 +121,7 @@ class TestFileDescriptorExhaustion:
             for f in files:
                 try:
                     f.close()
-                except:
+                except (IOError, OSError):
                     pass
 
         assert len(files) > 0
@@ -341,7 +341,7 @@ class TestRateLimitingRecovery:
             try:
                 # Simulate rate limited request
                 raise Exception("Rate limited")
-            except Exception as _err:
+            except (ConnectionError, TimeoutError) as _err:
                 attempt += 1
                 if attempt < max_attempts:
                     delay = base_delay * (2**attempt)

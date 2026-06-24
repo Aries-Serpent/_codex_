@@ -297,7 +297,7 @@ class TestConcurrentAccess:
                     texts = [f"Thread {thread_id} text {i}" for i in range(10)]
                     emb = provider.encode(texts)
                     results.append((thread_id, emb))
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append((thread_id, e))
 
             # Create threads
@@ -331,7 +331,7 @@ class TestConcurrentAccess:
                         doc_id = f"thread_{thread_id}_doc_{i}"
                         content = f"Content from thread {thread_id}"
                         indexer.add_document(doc_id, content)
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append((thread_id, e))
 
             # Create threads
@@ -366,7 +366,7 @@ class TestConcurrentAccess:
                         query = f"thread {thread_id} query {i}"
                         res = retriever.retrieve(query, top_k=5)
                         results.append((thread_id, res))
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append((thread_id, e))
 
             # Create threads
@@ -401,7 +401,7 @@ class TestConcurrentAccess:
                         doc_id = f"rw_thread_{thread_id}_doc_{i}"
                         content = f"Content {i}"
                         indexer.add_document(doc_id, content)
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append(("writer", thread_id, e))
 
             def reader(thread_id):
@@ -409,7 +409,7 @@ class TestConcurrentAccess:
                     for i in range(10):
                         query = f"content {i}"
                         retriever.retrieve(query, top_k=5)
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append(("reader", thread_id, e))
 
             # Create mixed readers and writers

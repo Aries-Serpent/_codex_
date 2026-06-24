@@ -146,7 +146,7 @@ class TestResourceExhaustion:
                 try:
                     f.close()
                     os.unlink(f.name)
-                except:
+                except Exception:
                     pass
 
     def test_thread_exhaustion_handling(self):

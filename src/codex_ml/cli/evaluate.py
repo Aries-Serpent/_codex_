@@ -297,7 +297,7 @@ def evaluate(
                 map_location=device or "cpu",
             )
             model_params = sum(p.numel() for p in model.parameters()) if _HAS_TORCH else None
-        except Exception as exc:  # pragma: no cover - defensive
+        except (ValueError, TypeError) as exc:  # pragma: no cover - defensive
             return {"error": f"Failed to load checkpoint: {exc}"}
 
     return {

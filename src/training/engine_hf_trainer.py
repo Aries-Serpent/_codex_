@@ -47,7 +47,7 @@ def _install_accelerate_compat() -> None:
         DataLoaderConfiguration = getattr(
             getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
         )
-    except Exception as e:  # pragma: no cover
+    except (ValueError, TypeError) as e:  # pragma: no cover
         print(f"[codex][accelerate] failed to inspect accelerate: {e}")
         return
 
@@ -1290,7 +1290,7 @@ def run_hf_trainer(
             m = re.search(r"ckpt-(\d+)\.pt", custom_resume.name)
             if m:
                 trainer.state.global_step = int(m.group(1))
-        except Exception as exc:  # pragma: no cover - resume best effort
+        except (ValueError, TypeError) as exc:  # pragma: no cover - resume best effort
             print(f"Failed to load checkpoint {custom_resume}: {exc}")
         resume_ckpt = None
 

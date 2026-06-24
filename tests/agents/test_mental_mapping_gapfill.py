@@ -520,7 +520,7 @@ class TestMentalMappingIntegration:
                         model.spread_activation(decay=0.5, steps=2)
                         # Activation should propagate
                         assert True
-        except Exception as e:
+        except (IOError, OSError) as e:
             pytest.skip(f"Activation spreading failed: {e}")
 
     def test_reasoning_trace(self):

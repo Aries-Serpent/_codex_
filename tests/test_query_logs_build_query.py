@@ -88,7 +88,7 @@ def _metrics_visit(label: str, src: str):
         v.visit(tree)
         file_entry = _AST_METRICS["files"].setdefault(label, {})
         file_entry["nodes_visited"] = v.count
-    except Exception as _err:
+    except (IOError, OSError) as _err:
         # silent best-effort
         _ = None  # suppressed: no action needed
 
@@ -133,7 +133,7 @@ def _discover_candidates() -> list[str]:
             continue
         try:
             txt = p.read_text(encoding="utf-8", errors="ignore")
-        except Exception as _err:
+        except (IOError, OSError) as _err:
             continue
         if re.search(r"\bdef\s+build_query\s*\(", txt):
             try:
@@ -165,7 +165,7 @@ def _load_build_query():
             mod = _load_module_from_path(rel)
             if hasattr(mod, "build_query"):
                 return mod.build_query, mod, rel
-        except Exception as e:
+        except (IOError, OSError) as e:
             last_err = e
             continue
     if last_err:

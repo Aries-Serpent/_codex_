@@ -17,31 +17,31 @@ def test_imports():
 
     try:
         print("✓ GitHub types imported successfully")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         print(f"✗ Failed to import GitHub types: {e}")
         return False
 
     try:
         print("✓ GitHub client imported successfully")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         print(f"✗ Failed to import GitHub client: {e}")
         return False
 
     try:
         print("✓ CLI module imported successfully")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         print(f"✗ Failed to import CLI module: {e}")
         return False
 
     try:
         print("✓ API module imported successfully")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         print(f"✗ Failed to import API module: {e}")
         return False
 
     try:
         print("✓ MCP tools imported successfully")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         print(f"✗ Failed to import MCP tools: {e}")
         return False
 
@@ -80,7 +80,7 @@ def test_cli_help():
             return False
         print("✓ github-logs list-check-runs --help works")
 
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         print(f"✗ CLI test failed: {e}")
         import traceback
 
@@ -113,7 +113,7 @@ def test_type_creation():
 
         print("✓ CheckRun type creation works")
 
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         print(f"✗ Type creation failed: {e}")
         import traceback
 

@@ -356,7 +356,7 @@ class TestPublicAPI:
         try:
             result = load_dataset()
             assert isinstance(result, list)
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             # May fail if no dataset available
             pytest.skip("Dataset not available")
 

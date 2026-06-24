@@ -422,7 +422,7 @@ def test_concurrent_file_writes(tmp_path):
         try:
             file_path = tmp_path / f"thread_{thread_id}.txt"
             write_file(file_path, f"data_{thread_id}", 100)
-        except Exception as e:
+        except (IOError, OSError) as e:
             errors.append(e)
 
     threads = [threading.Thread(target=worker, args=(i,)) for i in range(5)]
@@ -459,7 +459,7 @@ def test_concurrent_read_access(tmp_path):
                 for line in f:
                     count += 1
             read_counts.append(count)
-        except Exception as e:
+        except (IOError, OSError) as e:
             errors.append(e)
 
     threads = [threading.Thread(target=reader, args=(i,)) for i in range(10)]

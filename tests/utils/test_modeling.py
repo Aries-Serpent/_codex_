@@ -48,7 +48,7 @@ def test_lora_missing(monkeypatch):
     )
     try:
         model, _ = mod.load_model_and_tokenizer("m", lora={"r": 4})
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         if _is_hf_unavailable_error(exc):
             pytest.skip(f"HF model unavailable in CI: {exc}")
         raise
@@ -79,7 +79,7 @@ def test_load_success(monkeypatch):
     monkeypatch.setenv("CODEX_HF_REVISION", "1234567890abcdef")
     try:
         model, tok = mod.load_model_and_tokenizer("model", dtype="fp16", device_map="cpu")
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         if _is_hf_unavailable_error(exc):
             pytest.skip(f"HF model unavailable in CI: {exc}")
         raise

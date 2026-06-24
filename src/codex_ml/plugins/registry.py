@@ -222,7 +222,7 @@ def discover(group: str = DEFAULT_GROUP) -> dict[str, object]:
         try:
             _activate_editable_distribution(ep)
             results[ep.name] = ep.load()
-        except Exception:  # pragma: no cover - skip broken entry points  # nosec B112
+        except (ValueError, TypeError):  # pragma: no cover - skip broken entry points  # nosec B112
             continue
     return results
 

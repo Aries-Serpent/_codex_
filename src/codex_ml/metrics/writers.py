@@ -95,7 +95,7 @@ class BaseMetricsWriter:
             raise ValueError(f"metric record missing required fields: {missing}")
         try:
             payload["value"] = float(payload["value"])
-        except Exception as exc:  # pragma: no cover - defensive conversion
+        except (ValueError, TypeError) as exc:  # pragma: no cover - defensive conversion
             raise ValueError("metric value must be numeric") from exc
         payload["step"] = int(payload["step"])
         payload["metric"] = str(payload["metric"])

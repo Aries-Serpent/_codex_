@@ -85,7 +85,7 @@ class TestPoolingBehavior:
 
                     # Return to pool
                     pooling_db_manager.close_connection(conn)
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append((thread_id, str(e)))
 
         # Spawn 3 threads

@@ -403,7 +403,7 @@ def load_model(
             f"Unable to load model '{coerced.model_name}'. "
             "Ensure the weights are available locally."
         ) from exc
-    except Exception as exc:  # pragma: no cover - propagate with context
+    except (ValueError, TypeError) as exc:  # pragma: no cover - propagate with context
         raise RuntimeError(
             f"Unexpected error while loading model '{coerced.model_name}': {exc}"
         ) from exc

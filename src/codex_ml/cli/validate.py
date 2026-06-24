@@ -79,7 +79,7 @@ def _format_validation_error(exc: ValidationError | None) -> str:
         if TrainConfig is not None:
             try:
                 known = set(getattr(TrainConfig, "model_fields", {}).keys())
-            except Exception:  # pragma: no cover - defensive
+            except (ImportError, AttributeError):  # pragma: no cover - defensive
                 known = set()
             hints: list[str] = []
             for key in extra_keys:

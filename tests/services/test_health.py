@@ -220,7 +220,7 @@ class TestDependencyHealth:
             try:
                 connection.execute("SELECT 1")
                 return {"status": HealthStatus.HEALTHY, "latency_ms": 5}
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 return {"status": HealthStatus.UNHEALTHY, "error": str(e)}
 
         mock_conn = MagicMock()

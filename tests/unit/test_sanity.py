@@ -13,5 +13,5 @@ def test_sanity():
 def test_package_import():
     try:
         import importlib  # noqa: F401
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         raise AssertionError(f"Failed to import package: {e}") from e

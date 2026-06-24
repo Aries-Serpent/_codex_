@@ -26,7 +26,7 @@ class TestTokenizationEmptyInputs:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         # Act
@@ -51,7 +51,7 @@ class TestTokenizationEmptyInputs:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         # Act
@@ -77,7 +77,7 @@ class TestTokenizationEmptyInputs:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         # Act
@@ -104,7 +104,7 @@ class TestTokenizationSpecialCharacters:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         text_with_null = "hello\x00world"
@@ -134,7 +134,7 @@ class TestTokenizationSpecialCharacters:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         text_with_bom = "\ufeffhello world"
@@ -159,7 +159,7 @@ class TestTokenizationSpecialCharacters:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         mixed_text = "Hello 世界 🌍 мир"
@@ -188,7 +188,7 @@ class TestTokenizationLengthBoundaries:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         # Create a long sequence (10,000 words)
@@ -217,7 +217,7 @@ class TestTokenizationLengthBoundaries:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         # Very repetitive input
@@ -246,7 +246,7 @@ class TestTokenizationLengthBoundaries:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         text = "word " * 100  # Long sequence
@@ -277,7 +277,7 @@ class TestTokenizationConsistency:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         text = "The quick brown fox jumps over the lazy dog"
@@ -302,7 +302,7 @@ class TestTokenizationConsistency:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         core_text = "hello world"
@@ -334,7 +334,7 @@ class TestTokenizationErrorRecovery:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         # Act & Assert
@@ -355,7 +355,7 @@ class TestTokenizationErrorRecovery:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         # Act & Assert
@@ -376,7 +376,7 @@ class TestTokenizationErrorRecovery:
                 "gpt2",
                 trust_remote_code=False,
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             pytest.skip("Could not load tokenizer")
 
         valid_text = "This is valid text"

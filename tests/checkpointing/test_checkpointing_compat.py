@@ -15,7 +15,7 @@ import pytest
 def test_checkpointing_compat_emits_deprecation_and_forwards_attributes():
     try:
         compat = importlib.import_module("codex_ml.checkpointing.compat")
-    except Exception as exc:  # pragma: no cover - optional deps missing
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - optional deps missing
         pytest.skip(f"compat module unavailable: {exc}")
     else:
         with warnings.catch_warnings(record=True) as rec:

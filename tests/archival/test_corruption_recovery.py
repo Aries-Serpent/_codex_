@@ -246,7 +246,7 @@ class TestCorruptionRecovery:
 
         try:
             safe_extract_tarfile(archive_path, extract_dir)
-        except Exception as _err:
+        except (IOError, OSError) as _err:
             # Some files might still be extracted
             _ = None  # suppressed: no action needed
 

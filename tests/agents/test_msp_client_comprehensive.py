@@ -328,7 +328,7 @@ class TestMSPClientPerformance:
             try:
                 with patch.object(client, "request", return_value={"id": i}):
                     return client.request("GET", f"/test/{i}")
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 errors.append(e)
                 return None
 

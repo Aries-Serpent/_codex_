@@ -316,7 +316,7 @@ def load_tokenizer(
 
     try:
         return load_from_pretrained(AutoTokenizer, tokenizer_name, **kwargs)
-    except Exception as exc:  # pragma: no cover - wrap dependency errors for clarity
+    except (ValueError, TypeError) as exc:  # pragma: no cover - wrap dependency errors for clarity
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
 
@@ -420,7 +420,7 @@ def load_model(
             "Ensure the weights are available locally."
         )
         raise RuntimeError(message) from exc
-    except Exception as exc:  # pragma: no cover - propagate with additional context
+    except (ValueError, TypeError) as exc:  # pragma: no cover - propagate with additional context
         raise RuntimeError(
             f"Unexpected error while loading model '{coerced.model_name}': {exc}"
         ) from exc

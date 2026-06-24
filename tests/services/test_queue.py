@@ -122,7 +122,7 @@ class TestJobProcessing:
             try:
                 job.result = processor(job.payload)
                 job.status = JobStatus.COMPLETED
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 job.error = str(e)
                 job.status = JobStatus.FAILED
             return job
@@ -145,7 +145,7 @@ class TestJobProcessing:
             try:
                 job.result = processor(job.payload)
                 job.status = JobStatus.COMPLETED
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 job.error = str(e)
                 job.status = JobStatus.FAILED
             return job
@@ -176,7 +176,7 @@ class TestJobProcessing:
                         self.job.result = processor(self.job.payload)
                         self.job.status = JobStatus.COMPLETED
                         return True
-                    except Exception as _err:
+                    except (ValueError, TypeError) as _err:
                         if self.attempts >= self.max_retries:
                             self.job.status = JobStatus.FAILED
                             return False

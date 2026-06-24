@@ -146,7 +146,7 @@ class TestPKCEAdvanced:
         # Should only accept S256 or plain
         try:
             oauth.create_code_challenge(code_verifier, "invalid")
-        except:
+        except Exception:
             pass
 
     def test_pkce_missing_verifier(self, oauth):

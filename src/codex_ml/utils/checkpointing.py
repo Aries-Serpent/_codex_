@@ -465,7 +465,7 @@ def load_checkpoint(
                 if map_location is not None:
                     kwargs["map_location"] = map_location
                 return torch.load(p, **kwargs)  # nosec B614
-            except Exception as exc:
+            except (ValueError, TypeError) as exc:
                 raise CheckpointLoadError(f"safe load failed for {p}: {exc}") from exc
 
     try:
@@ -728,7 +728,7 @@ def save_checkpoint(
     save_format = _resolve_format(format)
     try:
         _save_payload(p, state, fmt=save_format)
-    except Exception as exc:  # pragma: no cover - save failures are rare
+    except (ValueError, TypeError) as exc:  # pragma: no cover - save failures are rare
         capture_error(
             step_no="save_checkpoint",
             step_desc="checkpoint save",
@@ -849,7 +849,7 @@ def load_training_checkpoint(
     if model is not None and data.get("model_state_dict") is not None:
         try:
             _load_into_target(model, data["model_state_dict"], strict=strict)
-        except Exception as exc:  # pragma: no cover - strict mismatches
+        except (ValueError, TypeError) as exc:  # pragma: no cover - strict mismatches
             raise CheckpointLoadError(f"failed to load model state: {exc}") from exc
     if optimizer is not None and data.get("optimizer_state_dict") is not None:
         try:

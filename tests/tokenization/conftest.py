@@ -279,7 +279,7 @@ if _SPM_STUB_FLAG:
                     continue
                 try:
                     data = Path(path).read_text(encoding="utf-8")
-                except Exception as _err:
+                except (IOError, OSError) as _err:
                     continue
                 tokens.extend(data.split())
         elif "sentence_iterator" in kwargs:
@@ -314,7 +314,7 @@ if _SPM_STUB_FLAG:
             self.model_file = path
             try:
                 data = json.loads(Path(path).read_text(encoding="utf-8"))
-            except Exception as _err:
+            except (IOError, OSError) as _err:
                 data = {"tokens": []}
             self._tokens = list(data.get("tokens", []))
             self._token_to_id = {

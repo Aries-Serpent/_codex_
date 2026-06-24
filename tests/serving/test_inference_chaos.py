@@ -127,7 +127,7 @@ class TestNetworkFailures:
                     "/infer",
                     json={"model_name": "test-model", "inputs": ["test"], "max_length": 50},
                 )
-            except Exception as _err:
+            except (ValueError, TypeError) as _err:
                 # Should handle connection errors gracefully
                 _ = None  # suppressed: no action needed
 

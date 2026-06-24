@@ -366,7 +366,7 @@ class TestLoadDataset:
             assert dataset is not None
         except ImportError:
             pytest.skip("load_dataset not available")
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             # May require additional dependencies
             if "huggingface" in str(e).lower() or "datasets" in str(e).lower():
                 pytest.skip(f"Datasets library dependency: {e}")

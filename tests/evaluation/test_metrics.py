@@ -27,7 +27,7 @@ def _require_metrics_module():
     torch = None
     try:
         import torch
-    except Exception as exc:  # pragma: no cover - optional dependency guard
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency guard
         pytest.skip(f"torch import failed: {exc!r}")
     if torch is None:  # pragma: no cover - guard for static analysis
         pytest.skip("torch import failed")

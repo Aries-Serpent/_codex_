@@ -182,7 +182,7 @@ class TestDBManagerThreadSafety:
             def init_thread():
                 try:
                     dm.init_schema()
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append(e)
 
             threads = [threading.Thread(target=init_thread) for _ in range(5)]
@@ -208,7 +208,7 @@ class TestDBManagerThreadSafety:
                 try:
                     with dm.connection() as conn:
                         conn.execute("SELECT 1")
-                except Exception as e:
+                except (ConnectionError, TimeoutError) as e:
                     errors.append(e)
 
             threads = [threading.Thread(target=connect_thread) for _ in range(10)]

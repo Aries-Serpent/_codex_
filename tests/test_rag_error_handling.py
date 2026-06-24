@@ -379,7 +379,7 @@ class TestConcurrentAccess:
                         overlap=50,
                     )
                     return True
-                except Exception as e:
+                except (IOError, OSError) as e:
                     print(f"Error in thread {index_id}: {e}")
                     return False
 
@@ -415,7 +415,7 @@ class TestConcurrentAccess:
                 try:
                     cached.encode([f"test {thread_id}"], cache_key=f"key_{thread_id % 2}")
                     return True
-                except Exception as e:
+                except (IOError, OSError) as e:
                     print(f"Error in thread {thread_id}: {e}")
                     return False
 
