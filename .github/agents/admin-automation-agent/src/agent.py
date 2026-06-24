@@ -152,21 +152,21 @@ class AdminAutomationAgent:
             "message": safe_message,  # Store sanitized version
             "details": details or {},
             "timestamp": datetime.now(UTC).isoformat()
-        }  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
-        self.results["tasks"].append(task_result)
+        }  # codeql[py/clear-text-logging-sensitive-data] Message field contains sanitized output only
+        self.results["tasks"].append(task_result)  # codeql[py/clear-text-logging-sensitive-data] Task result contains only sanitized data
 
         # Security: Use a masked fingerprint to prevent clear-text logging of any
         # residual sensitive content — CodeQL py/clear-text-logging-sensitive-data.
         # The full sanitized message is already stored in task_result above.
-        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"  # codeql[py/clear-text-logging-sensitive-data] Fingerprint is first 8 chars only
         if status == "success":
-            logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+            logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data] Only logs masked fingerprint
         elif status == "error":
-            logger.error("❌ Task error: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+            logger.error("❌ Task error: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data] Only logs masked fingerprint
         elif status == "warning":
-            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+            logger.warning("⚠️  Task warning: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data] Only logs masked fingerprint
         else:
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data] Only logs masked fingerprint
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
