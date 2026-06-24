@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed - GitHub Actions Workflow Compliance — 2026-06-24T06:22:10Z
+- **Actionlint Compliance:** Fixed duplicate "jobs" key in `session-recovery-continuous-monitoring.yml` 
+  - Root cause: Second job definition placed outside jobs section causing YAML parse error
+  - Impact: Resolved actionlint "key jobs is duplicated" workflow compliance failure
+  - File: `.github/workflows/session-recovery-continuous-monitoring.yml`
+  - Commit: d3a758dd
+
 ### Added - STAGE 3: Production Finalization Campaign — 2026-06-24T02:55:10Z (COMPLETE)
 - **Phase 1 Complete:** All 3 CRITICAL security vulnerabilities fixed (XXE + command injection + RCE)
   - defusedxml 0.7.1: XXE protection active; all XXE attacks blocked
