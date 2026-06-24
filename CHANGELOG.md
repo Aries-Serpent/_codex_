@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #unknown)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #unknown (SHA `48f16ace`) at 2026-06-24T10:08Z [auto-generated]
+
 ### Fixed - PR #5071 CI Failures & Governance Compliance — 2026-06-24T08:40Z
 - **🔐 Secrets Baseline Enforcer:** Added `# pragma: allowlist secret` to `tools/codex_secret_scan_stub.py:15`
   - Suppresses false positive on AWS_SECRET_ACCESS_KEY pattern used for scan logic
