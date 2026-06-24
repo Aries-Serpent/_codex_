@@ -47,6 +47,19 @@
   - Workflow Compliance: All validations ready for final checks
 
 ### Fixed (Commit: CodeQL config + Governance compliance + mypy baseline)
+### Fixed (Code Quality & CI - Commit: f54d4ae0)
+- **10 Unreachable Except Block Issues Resolved** (github-code-quality[bot] findings)
+  - Consolidated duplicate exception handlers across 8 files
+  - src/codex/api/app.py: Merged ImportError handlers
+  - src/codex_ml/codex_script.py: Merged ImportError/AttributeError pairs
+  - src/codex_ml/interfaces/contracts.py: Consolidated ValueError/TypeError
+  - src/codex_ml/utils/deterministic.py: Merged ImportError/AttributeError
+  - src/codex_ml/utils/checkpoint_core.py: Removed duplicate TypeError
+  - src/codex_ml/utils/checkpointing.py: Removed duplicate RuntimeError
+  - src/codex_ml/plugins/loader.py: Fixed 2 unreachable TypeError handlers
+  - tests/conftest.py: Fixed 2 unreachable ImportError handler pairs
+  - All fixes maintain error handling semantics while improving code clarity
+
 - Create .github/codeql-config.yml: CodeQL analysis configuration with security-and-quality queries
 - Update .mypy_baseline: 0 → 1070 (reflect Phase 3 code changes)
 - Update AGENT_ACCOUNTABILITY_REPORT.md: Document Phase 1-5 completion
