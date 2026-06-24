@@ -193,7 +193,7 @@ class StdioTransport:
             self._writer.close()
             try:
                 await self._writer.wait_closed()
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.debug(f"Exception: {exc}")
                 # Ignore errors during writer closure - the stream may already be closed
                 # or in an invalid state. This is a cleanup operation and errors are non-critical.

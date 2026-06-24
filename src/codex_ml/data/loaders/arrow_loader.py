@@ -75,7 +75,7 @@ class ArrowLoader:
                 with ipc.open_file(source) as reader:
                     self.schema = reader.schema
                     self.num_batches = reader.num_record_batches
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             raise ValueError(f"Invalid Arrow IPC file: {e}") from e
 

@@ -160,7 +160,7 @@ class CodexErrorHandler:
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             try:
                 return func(*args, **kwargs)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 self.logger.debug(f"Exception: {e}")
                 self.log_error(
                     e,

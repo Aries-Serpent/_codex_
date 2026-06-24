@@ -13,7 +13,7 @@ try:  # pragma: no cover - optional dependency
     from jsonschema import ValidationError, validate
 
     _HAS_JSONSCHEMA = True
-except Exception:  # pragma: no cover
+except (ValueError, TypeError):  # pragma: no cover
     _HAS_JSONSCHEMA = False
 
     class ValidationError(Exception):  # type: ignore[no-redef]
@@ -75,7 +75,7 @@ class DatasetValidator:
                 error_msg = f"{error_msg} (fallback validator)"
             LOGGER.error("✗ Manifest invalid (%s): %s", manifest_path, error_msg)
             return False
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             LOGGER.error("✗ Manifest validation failed: %s", exc)
             return False
 

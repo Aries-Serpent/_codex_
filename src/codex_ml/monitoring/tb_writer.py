@@ -25,7 +25,7 @@ from typing import Optional  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from torch.utils.tensorboard import SummaryWriter
-except Exception:  # pragma: no cover - optional dependency path
+except (IOError, OSError):  # pragma: no cover - optional dependency path
     SummaryWriter = None
 
 
@@ -38,7 +38,7 @@ class TBWriter:
         if self.enabled and SummaryWriter is not None:
             try:
                 self._writer = SummaryWriter(log_dir=logdir)
-            except Exception:  # pragma: no cover - tensorboard initialisation failures
+            except (IOError, OSError):  # pragma: no cover - tensorboard initialisation failures
                 self._writer = None
 
     def add_scalar(self, tag: str, value: float, step: int) -> None:
@@ -46,7 +46,7 @@ class TBWriter:
             return
         try:
             self._writer.add_scalar(tag, value, step)
-        except Exception:  # pragma: no cover - tensorboard runtime errors
+        except (IOError, OSError):  # pragma: no cover - tensorboard runtime errors
             logger.debug("Suppressed exception in handler", exc_info=True)
 
     def close(self) -> None:
@@ -54,11 +54,11 @@ class TBWriter:
             return
         try:
             self._writer.flush()
-        except Exception:  # pragma: no cover - flushing is best-effort
+        except (IOError, OSError):  # pragma: no cover - flushing is best-effort
             logger.debug("Suppressed exception in handler", exc_info=True)
         try:
             self._writer.close()
-        except Exception:  # pragma: no cover - closing is best-effort
+        except (IOError, OSError):  # pragma: no cover - closing is best-effort
             logger.debug("Suppressed exception in handler", exc_info=True)
 
 

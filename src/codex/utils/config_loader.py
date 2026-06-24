@@ -134,7 +134,7 @@ class ConfigLoader:
         except ImportError:
             logger.warning("PyYAML not available, using default error config")
             self.error_config = self._get_default_error_config()
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.warning(f"Failed to load error config: {e}")
             self.error_config = self._get_default_error_config()
 
@@ -276,7 +276,7 @@ class ConfigLoader:
                         return OmegaConf.create(container)
                     return cfg
                 return cfg
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.warning(f"Hydra compose failed: {e}")
                 if not allow_fallback:
                     raise
@@ -300,7 +300,7 @@ class ConfigLoader:
                 logger.error("PyYAML required for config loading")
                 if not allow_fallback:
                     raise
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error(f"Failed to load config: {e}")
                 if not allow_fallback:
                     raise
@@ -340,7 +340,7 @@ class ConfigLoader:
                 import yaml
 
                 value = yaml.safe_load(value_str)
-            except Exception:
+            except (ValueError, TypeError):
                 value = value_str
 
             # Navigate and set value

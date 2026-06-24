@@ -271,7 +271,7 @@ def emit_solution_xml(config: SolutionManifestConfig) -> str:
     # XXE Protection: Validate with defusedxml parser (prevents XXE, billion laughs, etc.)
     try:
         safe_xml_fromstring(xml)
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         logger.error(f"XML validation failed: {exc}")
         raise ValueError(f"Generated XML failed validation: {exc}") from exc
 

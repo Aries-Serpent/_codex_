@@ -382,7 +382,7 @@ def transform(
                         }
                     )
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             result.errors.append(f"Error processing {file_path}: {e}")
             logger.error("Transform error for %s: %s", file_path, e)

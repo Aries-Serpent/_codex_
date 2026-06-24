@@ -115,7 +115,7 @@ class FunctionalStrategy:
         for cb in callbacks:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.warning(f"Exception: {e}", exc_info=True)
 
         functional_overrides: dict[str, Any] = {}
@@ -187,13 +187,13 @@ class FunctionalStrategy:
                 extra_payload["trained"] = True
             else:
                 extra_payload["trained"] = False
-        except Exception as exc:  # pragma: no cover - defensive
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
             status = "error"
             extra_payload["exception"] = repr(exc)
             for cb in callbacks:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.warning(f"Exception: {e}", exc_info=True)
         else:
             for cb in callbacks:
@@ -203,7 +203,7 @@ class FunctionalStrategy:
                         {"status": 1.0},
                         {"metrics": metrics or {}, "trained": bool(train_texts)},
                     )
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.warning(f"Exception: {e}", exc_info=True)
 
         if functional_overrides:
@@ -239,7 +239,7 @@ class LegacyStrategy:
         for cb in callbacks:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.warning(f"Exception: {e}", exc_info=True)
         try:
             _legacy(
@@ -250,12 +250,12 @@ class LegacyStrategy:
                 model_name=config.model_name,
             )
             status = "ok"
-        except Exception as exc:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
             status = "error"
             for cb in callbacks:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.warning(f"Exception: {e}", exc_info=True)
         return TrainingResult(
             status=status,

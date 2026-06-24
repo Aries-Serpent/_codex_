@@ -23,7 +23,7 @@ try:
         TokenizerAdapter,
         WhitespaceTokenizer,
     )
-except Exception:  # pragma: no cover - optional dependency guard
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
     HFTokenizer = None  # type: ignore[assignment, misc]
     HFTokenizerAdapter = None
     TokenizerAdapter = None  # type: ignore[assignment, misc]
@@ -31,13 +31,13 @@ except Exception:  # pragma: no cover - optional dependency guard
 
 try:
     from .reward_model import HeuristicRewardModel, RewardModel
-except Exception:  # pragma: no cover - optional dependency guard
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
     RewardModel = None  # type: ignore[assignment, misc]
     HeuristicRewardModel = None  # type: ignore[assignment, misc]
 
 try:
     from .rl import BanditRLAgent, RLAgent
-except Exception:  # pragma: no cover - optional dependency guard
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
     RLAgent = None  # type: ignore[assignment, misc]
     BanditRLAgent = None  # type: ignore[assignment, misc]
 
@@ -45,7 +45,7 @@ from .registry import apply_config, get, get_component, load_component, register
 
 try:
     from .peft_hooks import build_peft_config, enable_peft, load_adapter_for_inference
-except Exception:  # pragma: no cover - optional dependency guard
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
     build_peft_config = None  # type: ignore[assignment]
     enable_peft = None  # type: ignore[assignment]
     load_adapter_for_inference = None  # type: ignore[assignment]

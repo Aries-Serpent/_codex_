@@ -33,7 +33,7 @@ def register_health_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> None
         adapter, adapter_path = adapter_loader_fn()
         try:
             adapter_status = adapter.health_check()
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             adapter_status = {"status": "degraded"}
         payload = {
@@ -49,7 +49,7 @@ def register_health_routes(app: FastAPI, adapter_loader_fn=load_adapter) -> None
         adapter, adapter_path = adapter_loader_fn()
         try:
             adapter_status = adapter.health_check()
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             adapter_status = {"status": "degraded"}
         return JSONResponse(

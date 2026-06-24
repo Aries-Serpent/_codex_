@@ -50,7 +50,7 @@ def apply_lora_if_available(
 
     try:  # pragma: no cover - optional dependency
         from peft import LoraConfig, TaskType, get_peft_model
-    except Exception:  # pragma: no cover - dependency missing
+    except (ImportError, AttributeError):  # pragma: no cover - dependency missing
         return model
 
     selected_task_type: TaskType | str = task_type or DEFAULT_TASK_TYPE

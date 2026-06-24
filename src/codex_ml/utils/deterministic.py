@@ -48,7 +48,7 @@ def enable_deterministic_mode(warn_only: bool = False) -> None:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         logger.warning("PyTorch not available, skipping torch deterministic setup")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Failed to enable PyTorch deterministic mode: {e}")
 
@@ -63,7 +63,7 @@ def enable_deterministic_mode(warn_only: bool = False) -> None:
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)  # TensorFlow not installed
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Failed to enable TensorFlow deterministic mode: {e}")
 
@@ -95,7 +95,7 @@ def disable_deterministic_mode() -> None:
     except ImportError as e:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Failed to disable PyTorch deterministic mode: {e}")
 
@@ -120,7 +120,7 @@ def is_deterministic_mode_enabled() -> bool:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         return False
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 

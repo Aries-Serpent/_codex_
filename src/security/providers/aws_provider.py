@@ -143,7 +143,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 old_secret_id=secret_id,
                 error_message=f"{error_code}: {error_msg}",
             )
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"AWS rotation failed: {e}")
             return RotationResult(success=False, old_secret_id=secret_id, error_message=str(e))
 
@@ -345,7 +345,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                     try:
                         metadata = self.get_secret_metadata(secret["Name"])
                         secrets.append(metadata)
-                    except Exception as e:
+                    except (ValueError, TypeError, RuntimeError) as e:
                         logger.warning(
                             "Failed to get secure-store metadata: %s",
                             type(e).__name__,

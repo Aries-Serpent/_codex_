@@ -527,7 +527,7 @@ class FeatureHealthMonitor:
                                     name,
                                     e,
                                 )
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Could not load features from store: {e}")
                 feature_names = list(self.feature_updates.keys())

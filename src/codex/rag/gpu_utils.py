@@ -26,7 +26,7 @@ def check_cuda_available() -> bool:
     except ImportError:
         logger.debug("PyTorch not installed")
         return False
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"CUDA check failed: {e}")
         return False
 
@@ -45,7 +45,7 @@ def get_gpu_memory() -> tuple[int, int]:
             free, total = torch.cuda.mem_get_info()
             logger.debug(f"GPU memory: {free / 1e9:.2f}GB free / {total / 1e9:.2f}GB total")
             return free, total
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Could not get GPU memory: {e}")
     return 0, 0
 
@@ -137,7 +137,7 @@ def try_gpu_index(index, data, device: str = "cuda"):
         logger.info("✓ Index moved to GPU")
         return gpu_index
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.warning(f"Failed to move index to GPU: {e}")
         logger.info("Continuing with CPU index")
         return index

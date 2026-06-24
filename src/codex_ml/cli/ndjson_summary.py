@@ -252,7 +252,7 @@ def _write_csv(dest: Path, rows: Sequence[dict[str, Any]]) -> Path:
 def _write_parquet(dest: Path, rows: Sequence[dict[str, Any]]) -> Path:
     try:
         import pandas as pd
-    except Exception as exc:  # pragma: no cover - optional dependency
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency
         raise SystemExit("pandas with parquet support is required for Parquet output") from exc
 
     dest.parent.mkdir(parents=True, exist_ok=True)

@@ -49,7 +49,7 @@ class AWSEventPublisher(EventPublisher):
         try:
             self.client = boto3.client("events", region_name=self.region_name)
             logger.info(f"AWS EventBridge client initialized (region={self.region_name})")
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to initialize AWS EventBridge client: {e}")
             self.client = None
@@ -87,7 +87,7 @@ class AWSEventPublisher(EventPublisher):
             logger.info(f"Published event to AWS EventBridge: {event.event_id}")
             return True
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish to AWS EventBridge: {e}")
             return False
@@ -133,7 +133,7 @@ class AWSEventPublisher(EventPublisher):
                 else:
                     logger.info(f"Published {len(batch)} events to AWS EventBridge")
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed to publish batch to AWS EventBridge: {e}")
                 all_success = False

@@ -155,7 +155,7 @@ class EmbeddingWorker:
                 ):
                     await self._save_checkpoint()
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error("Processing error: %s", e)
                 self._error_count += 1
                 batch = []  # Clear batch on error
@@ -177,7 +177,7 @@ class EmbeddingWorker:
 
                 self._processed_count += 1
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error("Task failed: %s - %s", task.id, e)
                 self._error_count += 1
 

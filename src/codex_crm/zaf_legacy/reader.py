@@ -91,7 +91,7 @@ def read_zaf(source: str | os.PathLike[str]) -> dict[str, Any]:
             for name in archive.namelist():
                 if name != "manifest.json":
                     files[name] = archive.read(name)
-    except Exception as exc:  # pragma: no cover - defensive guard
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive guard
         raise ZendeskAppPackageError(str(exc)) from exc
     return {"archive_path": path, "manifest": manifest, "files": files}
 

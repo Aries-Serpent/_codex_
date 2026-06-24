@@ -31,17 +31,17 @@ try:  # pragma: no cover - optional
     import torch.utils.tensorboard as _tb
 
     SummaryWriter = _tb.SummaryWriter
-except Exception:  # pragma: no cover - tensorboard not installed
+except (IOError, OSError):  # pragma: no cover - tensorboard not installed
     SummaryWriter = None
 
 try:  # pragma: no cover - optional
     import wandb
-except Exception:  # pragma: no cover - wandb not installed
+except (IOError, OSError):  # pragma: no cover - wandb not installed
     wandb = None
 
 try:  # pragma: no cover - optional
     import mlflow
-except Exception:  # pragma: no cover - mlflow not installed
+except (IOError, OSError):  # pragma: no cover - mlflow not installed
     mlflow = None
 
 
@@ -53,7 +53,7 @@ def _ensure_local_mlflow_tracking_uri_default() -> None:
 
 try:  # pragma: no cover - optional
     import psutil
-except Exception:  # pragma: no cover - psutil not installed
+except (ConnectionError, TimeoutError):  # pragma: no cover - psutil not installed
     psutil = None
 
 if os.getenv("CODEX_DISABLE_NVML") == "1":  # pragma: no cover - env guard
@@ -61,19 +61,19 @@ if os.getenv("CODEX_DISABLE_NVML") == "1":  # pragma: no cover - env guard
 else:
     try:  # pragma: no cover - optional
         import pynvml  # type: ignore
-    except Exception:  # pragma: no cover - nvml not installed
+    except (ImportError, AttributeError):  # pragma: no cover - nvml not installed
         pynvml = None
 
 try:  # pragma: no cover - optional
     import torch
-except Exception:  # pragma: no cover - torch not installed
+except (IOError, OSError):  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
 
 SummaryWriter = None
 try:  # pragma: no cover - optional
     if torch is not None:
         SummaryWriter = torch.utils.tensorboard.SummaryWriter
-except Exception:  # pragma: no cover - tensorboard not installed
+except (IOError, OSError):  # pragma: no cover - tensorboard not installed
     logger.debug("Suppressed exception in handler", exc_info=True)
 _ensure_local_mlflow_tracking_uri_default()
 
@@ -98,11 +98,11 @@ def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
         return
     try:
         uri = _resolve_mlflow_tracking_uri(tracking_uri)
-    except Exception:  # pragma: no cover - defensive guard
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive guard
         return
     try:  # pragma: no cover - optional dependency
         mlflow.set_tracking_uri(uri)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
 
@@ -149,7 +149,7 @@ def _start_mlflow_offline(
         mlflow.set_experiment(exp_name)
         mlflow.start_run()
         return True, None
-    except Exception as exc:  # pragma: no cover - optional
+    except (ValueError, TypeError) as exc:  # pragma: no cover - optional
         return False, f"error:{exc.__class__.__name__}"
 
 
@@ -235,7 +235,7 @@ def _try_git_commit() -> str | None:
             [git, "-C", str(root), "rev-parse", "HEAD"],
             text=True,
         ).strip()
-    except Exception as exc:  # pragma: no cover - diagnostic only
+    except (IOError, OSError) as exc:  # pragma: no cover - diagnostic only
         logger.debug("git commit detection failed", exc_info=exc)
         return None
 
@@ -300,7 +300,7 @@ def _get_safety_cfg():
             from codex_ml.safety import SafetyConfig
 
             _LOG_SAFETY_CFG = SafetyConfig()
-        except Exception:  # pragma: no cover - safety module optional
+        except (ImportError, AttributeError):  # pragma: no cover - safety module optional
             _LOG_SAFETY_CFG = None
     return _LOG_SAFETY_CFG
 
@@ -314,7 +314,7 @@ def _get_safety_filters():
             from codex_ml.safety import SafetyFilters
 
             _LOG_SAFETY_FILTERS = SafetyFilters.from_defaults()
-        except Exception:  # pragma: no cover - optional dependency
+        except (IOError, OSError):  # pragma: no cover - optional dependency
             _LOG_SAFETY_FILTERS = None
     return _LOG_SAFETY_FILTERS
 
@@ -422,7 +422,7 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
             _nv.nvmlInit()
             # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
             _nv.nvmlShutdown()
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             gpu = False
 
@@ -530,7 +530,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 try:  # pragma: no cover - depends on tensorboard install
                     os.makedirs(logdir, exist_ok=True)
                     tb_handle = SummaryWriter(logdir)
-                except Exception as exc:  # pragma: no cover - optional
+                except (IOError, OSError) as exc:  # pragma: no cover - optional
                     tb_detail = f"error:{exc.__class__.__name__}"
             component_statuses.append(
                 TelemetryComponentStatus("tensorboard", tb_handle is not None, tb_detail)
@@ -563,7 +563,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             mlflow_active, mlflow_detail = _start_mlflow_offline(
@@ -573,7 +573,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             if mlflow_active and tracking_uri and mlflow is not None:
                 try:
                     mlflow.set_tracking_uri(tracking_uri)
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
@@ -600,7 +600,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
             tb_handle = SummaryWriter(logdir)
-        except Exception as exc:  # pragma: no cover - optional
+        except (IOError, OSError) as exc:  # pragma: no cover - optional
             tb_detail = f"error:{exc.__class__.__name__}"
             tb_handle = None
     component_statuses.append(
@@ -639,7 +639,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
             os.environ["MLFLOW_TRACKING_URI"] = tracking_uri
             try:
                 mlflow.set_tracking_uri(tracking_uri)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         mlflow_active, mlflow_detail = _start_mlflow_offline(
@@ -649,7 +649,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         if mlflow_active and getattr(args, "mlflow_tracking_uri", None) and mlflow is not None:
             try:
                 mlflow.set_tracking_uri(getattr(args, "mlflow_tracking_uri", ""))
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
@@ -697,7 +697,7 @@ def _codex_sample_system() -> dict[str, Any]:
         try:
             metrics["cpu_percent"] = float(psutil.cpu_percent(interval=0.0))
             metrics["ram_percent"] = float(psutil.virtual_memory().percent)
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             logger.debug("psutil metrics unavailable", exc_info=exc)
     elif _PSUTIL_WARN_KEY not in _LOGGER_WARNING_CONTEXTS:
@@ -733,7 +733,7 @@ def _codex_sample_system() -> dict[str, Any]:
             metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
             pynvml.nvmlShutdown()
             gpu_done = True
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             logger.debug("NVML sampling failed", exc_info=exc)
             gpu_done = False
@@ -750,7 +750,7 @@ def _codex_sample_system() -> dict[str, Any]:
                 if hasattr(torch.cuda, "utilization"):
                     try:
                         util = float(torch.cuda.utilization(i))
-                    except Exception as exc:
+                    except (ValueError, TypeError, RuntimeError) as exc:
                         logger.debug(f"Exception: {exc}")
                         logger.debug("torch CUDA utilization unavailable", exc_info=exc)
                         util = None
@@ -767,7 +767,7 @@ def _codex_sample_system() -> dict[str, Any]:
             if gpus:
                 metrics["gpus"] = gpus
                 metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             logger.debug("torch CUDA sampling failed", exc_info=exc)
 
@@ -783,7 +783,7 @@ def _filter_scalars(values: dict[str, Any]) -> dict[str, float]:
     for k, v in values.items():
         try:
             out[k] = float(v)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             continue
     return out
@@ -798,21 +798,21 @@ def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) ->
         try:  # pragma: no cover - tensorboard optional
             for k, v in values.items():
                 loggers.tb.add_scalar(k, v, step)
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             logger.debug("tensorboard add_scalar failed", exc_info=exc)
 
     if loggers.wb is not None:
         try:  # pragma: no cover - wandb optional
             loggers.wb.log({**values, "step": step})
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             logger.debug("wandb log failed", exc_info=exc)
 
     if loggers.mlflow_active and mlflow is not None:
         try:  # pragma: no cover - mlflow optional
             mlflow.log_metrics(values, step=step)
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             logger.debug("mlflow log_metrics failed", exc_info=exc)
 

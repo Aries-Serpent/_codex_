@@ -47,5 +47,5 @@ def init_wandb_offline(project: str = "offline", **kwargs: Any) -> Optional[Any]
         import wandb
 
         return wandb.init(project=project, **kwargs)
-    except Exception:  # pragma: no cover - best effort in minimal env
+    except (ImportError, AttributeError):  # pragma: no cover - best effort in minimal env
         return None

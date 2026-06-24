@@ -89,7 +89,7 @@ def _register_example(plugin_cls: type[BasePlugin] | None) -> None:
 def _bootstrap_examples() -> None:
     try:
         from examples.plugins.hello_plugin import HelloPlugin
-    except Exception:  # pragma: no cover - optional example absent
+    except (ImportError, AttributeError):  # pragma: no cover - optional example absent
 
         class HelloPlugin(BasePlugin):  # type: ignore[no-redef]
             def version(self) -> str:
@@ -103,7 +103,7 @@ def _bootstrap_examples() -> None:
         from examples.plugins.metrics_token_accuracy_plugin import (
             TokenAccuracyPlugin,
         )
-    except Exception:  # pragma: no cover - optional example absent
+    except (ImportError, AttributeError):  # pragma: no cover - optional example absent
 
         class TokenAccuracyPlugin(BasePlugin):  # type: ignore[no-redef]
             def version(self) -> str:

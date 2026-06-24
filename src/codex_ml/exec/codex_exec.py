@@ -60,7 +60,7 @@ class CodexExecutor:
             if config_name:
                 cfg.extra.setdefault("config_name", config_name)
             run_unified_training(cfg)
-        except Exception as exc:  # pragma: no cover - defensive fallback
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive fallback
             LOGGER.error("Training failed: %s", exc)
             return False
         return True

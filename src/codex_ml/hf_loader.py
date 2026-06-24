@@ -75,7 +75,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch
-except Exception:  # pragma: no cover - torch is optional at import time
+except (ImportError, AttributeError):  # pragma: no cover - torch is optional at import time
     torch = None  # type: ignore[assignment]
 
 
@@ -215,7 +215,7 @@ def load_model(
         else:
             try:
                 from peft import PeftModel
-            except Exception as exc:  # pragma: no cover - optional dependency
+            except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency
                 logger.info(
                     "load_model: PEFT adapter not applied (dependency missing): %s",
                     exc,
@@ -224,7 +224,7 @@ def load_model(
                 try:
                     model = PeftModel.from_pretrained(model, str(resolved))
                     logger.info("load_model: PEFT adapter loaded from %s", resolved)
-                except Exception as exc:  # pragma: no cover - runtime failure
+                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - runtime failure
                     logger.info("load_model: PEFT adapter not applied (runtime error): %s", exc)
     return model
 
@@ -280,18 +280,18 @@ def load_causal_lm(
     if device:
         try:
             model = model.to(device)
-        except Exception as exc:  # pragma: no cover - device mapping best-effort
+        except (ImportError, AttributeError) as exc:  # pragma: no cover - device mapping best-effort
             logger.info("load_causal_lm: unable to move model to %s: %s", device, exc)
 
     if peft_cfg:
         try:
             from peft import LoraConfig, get_peft_model
-        except Exception as exc:  # pragma: no cover - optional dependency
+        except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency
             logger.info("load_causal_lm: LoRA not applied (dependency missing): %s", exc)
         else:
             try:
                 lora = LoraConfig(**peft_cfg)
-            except Exception as exc:  # pragma: no cover - invalid config values
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - invalid config values
                 logger.info("load_causal_lm: LoRA config rejected: %s", exc)
             else:
                 try:
@@ -301,14 +301,14 @@ def load_causal_lm(
                         getattr(lora, "r", "?"),
                         getattr(lora, "lora_alpha", "?"),
                     )
-                except Exception as exc:  # pragma: no cover - PEFT runtime failure
+                except (IOError, OSError) as exc:  # pragma: no cover - PEFT runtime failure
                     logger.info("load_causal_lm: LoRA not applied (runtime error): %s", exc)
 
     adapter_path = peft_path or os.getenv("PEFT_ADAPTER_PATH")
     if adapter_path:
         try:
             from peft import PeftModel
-        except Exception as exc:  # pragma: no cover - optional dependency
+        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency
             logger.info(
                 "load_causal_lm: PEFT adapter not applied (dependency missing): %s",
                 exc,
@@ -320,7 +320,7 @@ def load_causal_lm(
                     "load_causal_lm: PEFT adapter loaded from %s",
                     adapter_path,
                 )
-            except Exception as exc:  # pragma: no cover - runtime failure
+            except (IOError, OSError) as exc:  # pragma: no cover - runtime failure
                 logger.info("load_causal_lm: PEFT adapter not applied (runtime error): %s", exc)
 
     return model

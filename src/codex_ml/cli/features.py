@@ -50,7 +50,7 @@ def list_features(
         for name in sorted(features):
             console.print(f"  • {name}")
         console.print()
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1) from e
@@ -110,7 +110,7 @@ def check_health(
             )
 
         console.print(table)
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1) from e
@@ -135,7 +135,7 @@ def export_metadata(
             json.dump(metadata, f, indent=2)
 
         console.print(f"✅ Exported metadata for {len(metadata)} features to {output}")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1) from e
@@ -150,7 +150,7 @@ def clear_cache(
         store = FeatureStore(store_path)
         store.clear_cache()
         console.print("✅ Feature cache cleared")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]Error: {e}[/red]")
         raise typer.Exit(1) from e

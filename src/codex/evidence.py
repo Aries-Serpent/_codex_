@@ -81,6 +81,6 @@ def _git_commit_sha() -> str:
             .decode("utf-8")
             .strip()
         )
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return "unknown"

@@ -26,7 +26,7 @@ from collections.abc import Callable  # noqa: E402
 
 try:
     import torch.nn as nn
-except Exception:
+except (ImportError, AttributeError):
     logger.warning("Exception occurred", exc_info=True)
     nn = None  # type: ignore[assignment]
 _REGISTRY: dict[str, Callable] = {}

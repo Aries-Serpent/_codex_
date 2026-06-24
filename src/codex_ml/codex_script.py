@@ -73,7 +73,7 @@ def _init_determinism_from_env() -> dict[str, Any]:
                 cudnn.benchmark = False
     except (ImportError, ModuleNotFoundError, OSError) as e:
         logger.debug("PyTorch determinism setup skipped: %s", e, exc_info=True)
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.warning(
             "PyTorch determinism setup failed with unexpected error: %s", e, exc_info=True
         )

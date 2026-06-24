@@ -99,7 +99,7 @@ def split_dataset(
     manifest_path = source.parent / DEFAULT_CHECKSUMS_NAME
     try:
         record_dataset_checksums([train_path, val_path, test_path], manifest_path)
-    except Exception as exc:  # pragma: no cover - manifest is best-effort
+    except (IOError, OSError) as exc:  # pragma: no cover - manifest is best-effort
         LOGGER.warning("Failed to record dataset checksums at %s: %s", manifest_path, exc)
 
     return SplitPaths(train=train_path, val=val_path, test=test_path)

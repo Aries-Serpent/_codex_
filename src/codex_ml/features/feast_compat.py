@@ -209,7 +209,7 @@ class FeastCompatibleStore:
                 else:
                     for fname in fnames:
                         retrieved[f"{vname}__{fname}"] = None
-            except Exception as exc:
+            except (ValueError, TypeError, RuntimeError) as exc:
                 logger.debug("get_online_features: native store miss for %s: %s", vname, exc)
                 for fname in fnames:
                     retrieved[f"{vname}__{fname}"] = None
@@ -270,7 +270,7 @@ class FeastCompatibleStore:
                 )
                 written[vname] = path
                 logger.info("Materialized %s → %s", vname, path)
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.warning("materialize: failed for %s: %s", vname, exc)
 
         return written

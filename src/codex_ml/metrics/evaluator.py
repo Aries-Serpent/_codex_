@@ -11,7 +11,7 @@ from collections.abc import Iterable, Mapping  # noqa: E402
 
 try:  # pragma: no cover - torch optional in tests
     import torch
-except Exception:  # pragma: no cover - torch optional in tests
+except (ImportError, AttributeError):  # pragma: no cover - torch optional in tests
     torch = None  # type: ignore[assignment]
 
 
@@ -20,7 +20,7 @@ def _safe_float(value: object) -> float:
         if hasattr(value, "item"):
             return float(value.item())
         return float(value)  # type: ignore[arg-type]
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return 0.0
 
@@ -30,7 +30,7 @@ def _perplexity(avg_loss: float) -> float:
         import math
 
         return float(math.exp(avg_loss))
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return float("inf")
 
@@ -137,7 +137,7 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
                     record["token_accuracy"] = float(accuracy_tensor.mean().item())
                 else:
                     record["token_accuracy"] = 0.0
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 

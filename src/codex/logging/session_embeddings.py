@@ -96,7 +96,7 @@ class SessionEmbeddings:
             try:
                 self._model = SentenceTransformer(self.MODEL_NAME)
                 logger.info(f"Loaded model: {self.MODEL_NAME}")
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.warning(f"Failed to load model: {e}; using mock embeddings")
                 self._model = None
         else:
@@ -140,7 +140,7 @@ class SessionEmbeddings:
             # Real embedding
             try:
                 embedding = self._model.encode(text, convert_to_numpy=True)
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 logger.error(f"Embedding failed for '{text[:50]}': {e}")
                 raise
 
@@ -166,7 +166,7 @@ class SessionEmbeddings:
             if self.embeddings_path.exists() and self.metadata_path.exists():
                 try:
                     self._load_from_disk()
-                except Exception as e:
+                except (IOError, OSError) as e:
                     logger.warning(f"Failed to load index: {e}; creating new index")
                     self._create_index()
                     self._metadata = {}
@@ -200,7 +200,7 @@ class SessionEmbeddings:
                 try:
                     with open(self.embeddings_path, "rb") as f:
                         self._embeddings = pickle.load(f)  # nosec B301 - trusted data only
-                except Exception:
+                except (IOError, OSError):
                     self._embeddings = []  # type: ignore[assignment]
 
     def save_index(self) -> None:
@@ -295,7 +295,7 @@ class SessionEmbeddings:
                 logger.debug(f"Added session {session_id} (index {index})")
                 return True
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error(f"Failed to add session {session_id}: {e}")
                 return False
 
@@ -339,7 +339,7 @@ class SessionEmbeddings:
             try:
                 embedding = self._generate_embedding(query_text)
                 return self._search(embedding, k)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error(f"Failed to search: {e}")
                 return []
 
@@ -443,7 +443,7 @@ class SessionEmbeddings:
                 logger.info(f"Rebuilt index with {len(self._metadata)} sessions")
                 return True
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error(f"Rebuild failed: {e}")
                 self._metadata = old_metadata
                 return False

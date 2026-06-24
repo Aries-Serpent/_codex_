@@ -293,7 +293,7 @@ class ExecutionEnvelope:
                         data={"result": raw},
                         trace_id=trace_id,
                     )
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 exc_holder[0] = exc
 
         thread = threading.Thread(target=_target, daemon=True)

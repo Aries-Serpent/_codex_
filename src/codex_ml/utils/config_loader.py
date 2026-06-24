@@ -48,13 +48,13 @@ try:  # pragma: no cover - optional dependency
         from config_legacy.errors import MissingConfigException
 
     _HYDRA_AVAILABLE = True
-except Exception:  # pragma: no cover - import guard
+except (ImportError, AttributeError):  # pragma: no cover - import guard
     try:
         from hydra_core import compose, initialize_config_dir
         from hydra_core.errors import MissingConfigException
 
         _HYDRA_AVAILABLE = True
-    except Exception:  # pragma: no cover - import guard
+    except (IOError, OSError):  # pragma: no cover - import guard
         compose = None
         initialize_config_dir = None
 
@@ -134,14 +134,14 @@ def _normalize_training_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
 try:  # pragma: no cover - runtime capability detection
     _TEST_CFG = OmegaConf.create({"training": {}})
     _ = _TEST_CFG.training
-except Exception:  # AttributeError when attribute access unsupported
+except (IOError, OSError):  # AttributeError when attribute access unsupported
     _DICTCONFIG_SUPPORTS_ATTR = False
 else:
     _DICTCONFIG_SUPPORTS_ATTR = True
 finally:  # pragma: no cover - cleanup guard
     try:
         del _TEST_CFG
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 

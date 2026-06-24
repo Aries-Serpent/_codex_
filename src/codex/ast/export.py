@@ -156,7 +156,7 @@ class KnowledgeGraphExporter:
                 success=True,
             )
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
             return ExportResult(

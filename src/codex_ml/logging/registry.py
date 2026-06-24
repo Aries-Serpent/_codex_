@@ -68,7 +68,7 @@ class _NDJSONMetricsLogger:
             if hasattr(psutil, "cpu_percent"):
                 metrics["cpu_percent"] = psutil.cpu_percent(interval=None)
             return metrics
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.debug("System metrics unavailable")
             return {}
 

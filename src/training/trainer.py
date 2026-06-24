@@ -343,7 +343,7 @@ class Trainer:
             if latest is not None:
                 try:
                     self._load_checkpoint(*latest)
-                except Exception as exc:  # pragma: no cover - resume is best-effort
+                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - resume is best-effort
                     LOGGER.warning("Auto-resume skipped due to error: %s", exc)
                 else:
                     resumed = True
@@ -398,7 +398,7 @@ class Trainer:
                 key=lambda p: p.stat().st_mtime,
                 reverse=True,
             )
-        except Exception:  # pragma: no cover - directory read failure
+        except (IOError, OSError):  # pragma: no cover - directory read failure
             return None
         return candidates[0] if candidates else None
 
@@ -408,7 +408,7 @@ class Trainer:
             return
         try:
             epoch, metric = load_checkpoint(latest, self.simple.model, self.simple.optimizer)
-        except Exception as exc:  # pragma: no cover - robustness guard
+        except (IOError, OSError) as exc:  # pragma: no cover - robustness guard
             LOGGER.warning("Failed to auto-resume from %s: %s", latest, exc)
             return
         self.state.epoch = int(epoch)
@@ -438,7 +438,7 @@ class Trainer:
         if self.metric_fn is not None:
             try:
                 metrics["val_metric"] = float(self.metric_fn(outputs, labels))
-            except Exception as exc:  # pragma: no cover - metric robustness guard
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - metric robustness guard
                 LOGGER.debug("Metric function failed: %s", exc)
         return metrics
 
@@ -468,7 +468,7 @@ class Trainer:
         for meta_path in sorted(directory.glob("epoch_*.json")):
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.debug(f"Exception: {exc}")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue
@@ -496,7 +496,7 @@ class Trainer:
         if pointer.exists():
             try:
                 payload = json.loads(pointer.read_text(encoding="utf-8"))
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 payload = {}
             path_hint = payload.get("path")
@@ -508,7 +508,7 @@ class Trainer:
         for meta_path in sorted(directory.glob("epoch_*.json")):
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.debug(f"Exception: {exc}")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue
@@ -573,7 +573,7 @@ class Trainer:
             for path in (ckpt_path, meta_path):
                 try:
                     path.unlink(missing_ok=True)
-                except Exception as exc:  # pragma: no cover - retention guard
+                except (IOError, OSError) as exc:  # pragma: no cover - retention guard
                     LOGGER.debug("Failed to remove checkpoint '%s': %s", path, exc)
 
     def _save_checkpoint(self, epoch: int, metrics: Mapping[str, float]) -> None:
@@ -618,7 +618,7 @@ class Trainer:
             }
             pointer_path = checkpoint_path.parent / "latest.json"
             pointer_path.write_text(json.dumps(pointer_payload, indent=2), encoding="utf-8")
-        except Exception as exc:  # pragma: no cover - persistence guard
+        except (IOError, OSError) as exc:  # pragma: no cover - persistence guard
             LOGGER.warning("Failed to persist checkpoint '%s': %s", checkpoint_path, exc)
 
     def evaluate(self) -> Mapping[str, float]:
@@ -716,7 +716,7 @@ class Trainer:
                 try:
                     eval_metrics = self.evaluate()
                     epoch_metrics.update(eval_metrics)
-                except Exception as exc:  # pragma: no cover - evaluation robustness
+                except (IOError, OSError) as exc:  # pragma: no cover - evaluation robustness
                     LOGGER.warning("Validation failed at epoch %s: %s", epoch, exc)
 
             self.history.append(dict(epoch_metrics))
@@ -726,7 +726,7 @@ class Trainer:
                     record = {"epoch": epoch, "global_step": self.state.global_step}
                     record.update({k: float(v) for k, v in epoch_metrics.items()})  # type: ignore[misc]
                     append_ndjson(record, self._metrics_path)
-                except Exception as exc:  # pragma: no cover - diagnostics only
+                except (IOError, OSError) as exc:  # pragma: no cover - diagnostics only
                     LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
             self._save_checkpoint(epoch, epoch_metrics)
 

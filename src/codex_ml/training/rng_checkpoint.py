@@ -14,12 +14,12 @@ from typing import Any
 
 try:  # pragma: no cover - optional dependency
     import numpy as np
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     np = None
 
 try:  # pragma: no cover - optional dependency
     import torch
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
 from codex_ml.utils.checkpoint_core import capture_rng_state as _capture_core
@@ -64,14 +64,14 @@ def set_seed(seed: int) -> None:
     if np is not None:
         try:
             np.random.seed(seed)
-        except Exception:  # pragma: no cover
+        except (IOError, OSError):  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
     if torch is not None:
         try:
             torch.manual_seed(seed)
             if hasattr(torch.cuda, "manual_seed_all"):
                 torch.cuda.manual_seed_all(seed)  # pragma: no cover - GPU path
-        except Exception:  # pragma: no cover
+        except (IOError, OSError):  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
 
 

@@ -316,19 +316,19 @@ def get_model(
         validated_lora = _validate_lora_config(lora_cfg)
         try:
             model = adapter(model, validated_lora)
-        except Exception:  # pragma: no cover - adapter failure should not crash load
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - adapter failure should not crash load
             logger.debug("Suppressed exception in handler", exc_info=True)
     dtype_value = _resolve_torch_dtype(config.get("dtype"))
     if dtype_value is not None and hasattr(model, "to"):
         try:
             model = model.to(dtype_value)
-        except Exception:  # pragma: no cover - invalid dtype/device combination
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - invalid dtype/device combination
             logger.debug("Suppressed exception in handler", exc_info=True)
     device_value = _normalise_device(config.get("device"))
     if device_value is not None:
         try:
             model = model.to(device_value)
-        except Exception:  # pragma: no cover - invalid device
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - invalid device
             logger.debug("Suppressed exception in handler", exc_info=True)
     return model
 

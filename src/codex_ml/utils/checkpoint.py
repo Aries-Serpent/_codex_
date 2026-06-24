@@ -17,14 +17,14 @@ logger = logging.getLogger(__name__)
 
 try:  # Keep schema alignment with checkpoint_core when available
     from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
-except Exception:  # pragma: no cover - checkpoint_core optional in minimal installs
+except (ImportError, AttributeError):  # pragma: no cover - checkpoint_core optional in minimal installs
     _CORE_SCHEMA_VERSION = "1.0"
 
 CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 
 try:  # pragma: no cover - optional torch dependency in lightweight environments
     import torch
-except Exception:  # pragma: no cover - allow checkpoint utilities without torch
+except (ImportError, AttributeError):  # pragma: no cover - allow checkpoint utilities without torch
     torch = None  # type: ignore[assignment]
 
 
@@ -97,7 +97,7 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
 
 try:  # pragma: no cover - numpy is optional for deployments
     import numpy as _np
-except Exception:  # pragma: no cover - gracefully handle absence
+except (IOError, OSError):  # pragma: no cover - gracefully handle absence
     _np = None
 
 __all__ = ["load_checkpoint", "prune_best_k", "restore_into", "save_checkpoint"]
@@ -329,7 +329,7 @@ def _update_best_k(
         existing = json.loads(index_path.read_text(encoding="utf-8"))
         if not isinstance(existing, list):
             existing = []
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         existing = []
     filtered: list[dict[str, Any]] = [rec for rec in existing if rec.get("path") != out_dir.name]

@@ -27,7 +27,7 @@ __all__ = ["register_features_csv", "register_mean_value", "register_tiny_model"
 
 try:  # pragma: no cover - optional dependency
     import pandas as pd
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     pd = None
 
 

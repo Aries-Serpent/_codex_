@@ -98,7 +98,7 @@ def _sanitize_prompt_sequence(values: list[Any]) -> tuple[list[Any], bool]:
 
     try:
         from codex_ml.safety import SafetyConfig, sanitize_prompt
-    except Exception:  # pragma: no cover - safety module optional
+    except (ImportError, AttributeError):  # pragma: no cover - safety module optional
         return list(values), False
 
     cfg = SafetyConfig()
@@ -145,7 +145,7 @@ def _apply_prompt_sanitization(
     for key in keys:
         try:
             raw = config_obj.get(key) if hasattr(config_obj, "get") else getattr(config_obj, key)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             raw = None
         sequence = _coerce_sequence(raw)
@@ -160,7 +160,7 @@ def _apply_prompt_sanitization(
         try:
             if isinstance(config_obj, (DictConfig, dict)):
                 config_obj[key] = sanitised
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     return total
@@ -301,7 +301,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
     try:
         if sample_rate is not None:
             os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -332,13 +332,13 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
         seed = 0
     try:
         repro.set_seed(seed)
-    except Exception as exc:  # pragma: no cover - defensive log path
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive log path
         LOGGER.warning("Failed to set reproducibility seed %s: %s", seed, exc)
     if isinstance(cfg, DictConfig):
         cfg.seed = seed
         try:
             cfg.reproducibility["seed"] = seed
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     reproducibility_cfg.setdefault("seed", seed)

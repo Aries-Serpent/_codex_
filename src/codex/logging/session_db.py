@@ -314,7 +314,7 @@ class SessionDB:
                 if "UNIQUE constraint failed" in str(e):
                     raise ValueError(f"Session ID {session['session_id']} already exists") from e
                 raise
-            except Exception as e:
+            except (IOError, OSError) as e:
                 raise sqlite3.Error(f"Failed to insert session: {e}") from e
 
     def query_sessions(

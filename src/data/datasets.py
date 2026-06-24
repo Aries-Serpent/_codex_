@@ -40,7 +40,7 @@ class BatchTokenizer(Protocol):
 torch: Any
 try:  # pragma: no cover - optional dependency guard
     import torch as _torch_mod
-except Exception:  # pragma: no cover - allow repository usage without torch
+except (ImportError, AttributeError):  # pragma: no cover - allow repository usage without torch
     torch = None
 else:
     torch = _torch_mod
@@ -50,7 +50,7 @@ try:  # pragma: no cover - guard for environments without torch data utilities
     from torch.utils.data import Dataset as TorchDataset
     from torch.utils.data import TensorDataset as TorchTensorDataset
     from torch.utils.data import random_split as torch_random_split
-except Exception:  # pragma: no cover - provide graceful degradation
+except (ImportError, AttributeError):  # pragma: no cover - provide graceful degradation
     TorchDataLoader = cast(Any, None)  # type: ignore[misc]
     TorchDataset = cast(Any, None)  # type: ignore[misc]
     TorchTensorDataset = cast(Any, None)  # type: ignore[misc]
@@ -132,7 +132,7 @@ class TextClassificationDataset(BaseDataset):
                     try:
                         text, label = line.split("\t", maxsplit=1)
                         self.samples.append((text, int(label)))
-                    except Exception as exc:
+                    except (IOError, OSError) as exc:
                         logger.debug(f"Exception: {exc}")
                         append_error(
                             "3.5",
@@ -140,7 +140,7 @@ class TextClassificationDataset(BaseDataset):
                             str(exc),
                             f"path={self.file_path} line={line_number}",
                         )
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             append_error("3.5", "dataset load", str(exc), str(self.file_path))
             raise
@@ -171,7 +171,7 @@ def _collate_text_batch(
             max_length=max_length,
             return_tensors="pt",
         )
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         append_error("3.5", "tokenize batch", str(exc), f"texts={len(texts)}")
         raise

@@ -433,7 +433,7 @@ class IngestionPipeline:
                 },
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             duration = time.time() - start_time
             errors.append(str(e))
@@ -569,7 +569,7 @@ def ingest_directory(
         if file_path.is_file():
             try:
                 yield from pipeline.stream(file_path)
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning("Error processing %s: %s", file_path, e)
 

@@ -308,7 +308,7 @@ class ArchiveOperationLock:
                     self.metrics.add_wait_time(wait_ms)
                 break
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error(f"Archive lock error for {session_id}: {e}")
                 raise
 
@@ -360,7 +360,7 @@ def save_metrics(
         with open(output_file, "w") as f:
             json.dump(metrics_dict, f, indent=2, default=str)
         logger.info(f"Metrics saved to {output_path}")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.error(f"Failed to save metrics: {e}")
 
 
@@ -377,5 +377,5 @@ def log_error(
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         with open(error_file, "a") as f:
             f.write(f"[{timestamp}] {context}: {error}\n")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.error(f"Failed to log error: {e}")

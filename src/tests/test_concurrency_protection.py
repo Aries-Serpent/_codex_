@@ -176,7 +176,7 @@ class TestSQLiteConnectionPool:
                 result = cursor.fetchone()[0]
                 results.append(result)
                 return True
-            except Exception:
+            except (IOError, OSError):
                 results.append(None)
                 return False
 
@@ -243,7 +243,7 @@ class TestThreadSafeSessionDB:
                         errors.append(f"Reader {thread_id}: No sessions found")
                     time.sleep(0.001)
                 return True
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(f"Reader {thread_id}: {e}")
                 return False
 
@@ -259,7 +259,7 @@ class TestThreadSafeSessionDB:
                     )
                     time.sleep(0.001)
                 return True
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(f"Writer {thread_id}: {e}")
                 return False
 
@@ -335,7 +335,7 @@ class TestThreadSafeArchive:
                         operation_times[op_id]["end"] = time.time()
                         operation_order.append(op_id)
                 return True
-            except Exception:
+            except (IOError, OSError):
                 return False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -371,7 +371,7 @@ class TestThreadSafeArchive:
                 if not acquired:
                     success_count[0] += 1
                 return True
-            except Exception:
+            except (IOError, OSError):
                 return False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
@@ -431,7 +431,7 @@ class TestStressScenarios:
 
                 return True
 
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(str(e))
                 return False
 

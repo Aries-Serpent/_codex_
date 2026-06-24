@@ -201,7 +201,7 @@ def build(
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         console.print("[yellow]Install with: pip install sentence-transformers faiss-cpu[/yellow]")
         raise typer.Exit(1) from e
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         console.print(f"[red]❌ Failed to build index: {e}[/red]")
         logger.exception("Error building index")
         raise typer.Exit(1) from e
@@ -329,7 +329,7 @@ def query(
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         console.print(f"[red]❌ Query failed: {e}[/red]")
         logger.exception("Error querying index")
         raise typer.Exit(1) from e
@@ -386,7 +386,7 @@ def list_indices(
                                 "path": index_path,
                             }
                         )
-                    except Exception as e:
+                    except (IOError, OSError) as e:
                         logger.warning(f"Failed to read metadata for {index_path}: {e}")
 
         if not indices:
@@ -412,7 +412,7 @@ def list_indices(
         console.print(table)
         console.print(f"\n[dim]Total: {len(indices)} indices[/dim]")
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         console.print(f"[red]❌ Failed to list indices: {e}[/red]")
         logger.exception("Error listing indices")
         raise typer.Exit(1) from e
@@ -478,7 +478,7 @@ def delete(
         shutil.rmtree(index_path)
         console.print(f"[green]✅ Deleted index '{index_name}' for tenant '{tenant_id}'[/green]")
 
-    except Exception as e:
+    except (IOError, OSError) as e:
         console.print(f"[red]❌ Failed to delete index: {e}[/red]")
         logger.exception("Error deleting index")
         raise typer.Exit(1) from e
@@ -556,7 +556,7 @@ def merge(
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         console.print(f"[red]❌ Merge failed: {e}[/red]")
         logger.exception("Error merging indices")
         raise typer.Exit(1) from e
@@ -637,7 +637,7 @@ def stats(
 
         console.print(table)
 
-    except Exception as e:
+    except (IOError, OSError) as e:
         console.print(f"[red]❌ Failed to get stats: {e}[/red]")
         logger.exception("Error getting stats")
         raise typer.Exit(1) from e
@@ -697,7 +697,7 @@ def metrics(
     except ImportError as e:
         console.print(f"[red]❌ Missing dependencies: {e}[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         console.print(f"[red]❌ Failed to export metrics: {e}[/red]")
         logger.exception("Error exporting metrics")
         raise typer.Exit(1) from e
@@ -824,7 +824,7 @@ def benchmark(
     except ImportError as e:
         console.print(f"[red]❌ Missing benchmark dependencies: {e}[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         console.print(f"[red]❌ Benchmark failed: {e}[/red]")
         logger.exception("Benchmark error")
         raise typer.Exit(1) from e

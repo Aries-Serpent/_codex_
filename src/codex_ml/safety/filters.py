@@ -124,7 +124,7 @@ def _spans_overlap(span_a: tuple[int, int], span_b: tuple[int, int]) -> bool:
 def _text_sha256(text: str) -> str:
     try:
         return hashlib.sha256(text.encode("utf-8", errors="ignore")).hexdigest()
-    except Exception:  # pragma: no cover - defensive
+    except (IOError, OSError):  # pragma: no cover - defensive
         return ""
 
 
@@ -145,7 +145,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
         logger.debug(f"FileNotFoundError: {e}")
         logger.warning(f"FileNotFoundError: {e}", exc_info=True)
         return None
-    except Exception as exc:  # pragma: no cover - defensive
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive
         logger.warning("Unable to read safety policy %s: %s", path, exc)
         return None
 
@@ -155,7 +155,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
             data = yaml.safe_load(text)
             if isinstance(data, Mapping):
                 return data
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             logger.warning("Failed to parse YAML policy %s: %s", path, exc)
 
     # Try JSON
@@ -170,7 +170,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
         data = _minimal_yaml_load(text)
         if isinstance(data, Mapping):
             return data
-    except Exception:  # pragma: no cover - defensive
+    except (IOError, OSError):  # pragma: no cover - defensive
         logger.debug("Suppressed exception in handler", exc_info=True)
     logger.warning("Policy file %s is not valid YAML or JSON", path)
     return None
@@ -318,7 +318,7 @@ def _parse_scalar(value: str) -> Any:
         # Python literals (str, int, float, bool, None, list, dict, tuple, set).
         # The semgrep rule incorrectly groups it with eval()/exec().
         return ast.literal_eval(value)  # nosemgrep: semgrep_rules.python.python.insecure.eval
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return value
 
@@ -468,7 +468,7 @@ class SafetyPolicy:
                 policy = cls.from_dict(dict(data))
                 policy.source_path = candidate
                 return policy
-            except Exception as exc:  # pragma: no cover
+            except (IOError, OSError) as exc:  # pragma: no cover
                 logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
         # Fallback
         fallback = cls.from_dict(dict(DEFAULT_POLICY_DATA))
@@ -775,7 +775,7 @@ class SafetyFilters:
                 if banned_token_ids:
                     logits[(..., tuple(banned_token_ids))] = neg_inf
                 return logits
-        except Exception as exc:  # nosec B110 - fallback to generic masking, log for diagnostics
+        except (ValueError, TypeError, RuntimeError) as exc:  # nosec B110 - fallback to generic masking, log for diagnostics
             logger.debug(
                 "safety.filters: numpy masking failed; falling back: %s",
                 exc,
@@ -789,7 +789,7 @@ class SafetyFilters:
         for tid in banned_token_ids:
             try:
                 logits[tid] = neg_inf
-            except Exception as exc:  # nosec B112 - continue loop; log for observability
+            except (ValueError, TypeError, RuntimeError) as exc:  # nosec B112 - continue loop; log for observability
                 logger.debug(
                     "safety.filters: failed to assign neg_inf for token %s (%s)",
                     tid,
@@ -840,7 +840,7 @@ class SafetyFilters:
         try:
             mod_name, fn_name = hook.split(":", 1)
             fn = getattr(importlib.import_module(mod_name), fn_name)
-        except Exception as exc:  # pragma: no cover
+        except (ImportError, AttributeError) as exc:  # pragma: no cover
             log_error("safety_classifier", str(exc), hook)
             return True
         try:
@@ -865,7 +865,7 @@ class SafetyFilters:
         path = self.log_path
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
-        except Exception as exc:  # nosec B110 - best-effort cache dir creation
+        except (IOError, OSError) as exc:  # nosec B110 - best-effort cache dir creation
             logger.debug(
                 "safety.filters: failed to ensure log directory %s: %s",
                 path.parent,
@@ -906,7 +906,7 @@ class SafetyFilters:
                     if match.metadata:
                         entry["metadata"] = dict(match.metadata)
                     fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except Exception as exc:  # pragma: no cover
+        except (IOError, OSError) as exc:  # pragma: no cover
             logger.debug("Failed to log safety event: %s", exc)
 
 

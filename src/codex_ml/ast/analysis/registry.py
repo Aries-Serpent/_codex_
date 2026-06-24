@@ -181,7 +181,7 @@ class AnalyzerRegistry:
                     try:
                         node_findings = analyzer.analyze(node)
                         findings.extend(node_findings)
-                    except Exception:
+                    except (ValueError, TypeError, RuntimeError):
                         logger.debug("Suppressed exception in handler", exc_info=True)
         # Filter by severity
         if min_severity:

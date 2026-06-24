@@ -187,7 +187,7 @@ class ArchiveService:
                     reason=f"Tombstone not found: {exc}",
                 )
                 raise
-            except Exception as exc:  # pragma: no cover - defensive guard
+            except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - defensive guard
                 sanitized = redact_text_credentials(str(exc)).strip()
                 detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
                 self._record_restore_failure(

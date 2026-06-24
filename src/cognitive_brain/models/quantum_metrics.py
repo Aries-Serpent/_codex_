@@ -547,7 +547,7 @@ class QuantumMetricRepository:
                     import json as _json
 
                     meta = _json.loads(meta)
-                except Exception:
+                except (ValueError, TypeError):
                     meta = {}
             merged = {**d, **meta}
             dicts.append(merged)

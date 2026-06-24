@@ -33,9 +33,9 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
             from codex_ml.utils.seed_registry import register_seed_snapshot
 
             register_seed_snapshot(numpy_state=np.random.get_state())
-        except Exception:
+        except (ImportError, AttributeError):
             logger.debug("register_seed_snapshot unavailable; numpy seed set via np.random.seed()")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
@@ -45,7 +45,7 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
         if hasattr(torch, "cuda") and callable(getattr(torch.cuda, "manual_seed_all", None)):
             try:
                 torch.cuda.manual_seed_all(seed)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         try:
@@ -61,10 +61,10 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
             else:
                 with contextlib.suppress(Exception):
                     torch.use_deterministic_algorithms(False)
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -81,10 +81,10 @@ def set_deterministic(enabled: bool = True) -> None:
             backend = torch.backends.cudnn
             backend.deterministic = enabled
             backend.benchmark = not enabled
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 

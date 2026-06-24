@@ -179,7 +179,7 @@ class TaskRouter:
 
             data = yaml.safe_load(path.read_text())
             return data.get("agents", []) if isinstance(data, dict) else []
-        except Exception:
+        except (IOError, OSError):
             logger.exception("Failed to load AGENT_REGISTRY from %s", path)
             return []
 
@@ -205,7 +205,7 @@ class TaskRouter:
                 if "success" in outcome.lower():
                     counts[agent][0] += 1
             return {name: wins / total if total else 0.0 for name, (wins, total) in counts.items()}
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.exception("Failed to load pattern success rates.")
             return {}
 

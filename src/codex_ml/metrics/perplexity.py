@@ -19,6 +19,6 @@ def perplexity_from_loss(loss: float) -> float:
     """Perplexity = exp(loss)."""
     try:
         return float(math.exp(float(loss)))
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return float("inf")

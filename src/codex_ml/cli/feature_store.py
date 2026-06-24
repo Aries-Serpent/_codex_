@@ -71,7 +71,7 @@ def register(
         store.register_feature_group(group)
         console.print(f"[green]✓[/green] Registered feature group: {name} v{version}")
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error registering feature group: {e}")
         raise typer.Exit(code=1) from e
@@ -134,7 +134,7 @@ def list(
         console.print(table)
         console.print(f"\n[dim]Total features: {len(features)}[/dim]")
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error listing features: {e}")
         raise typer.Exit(code=1) from e
@@ -205,7 +205,7 @@ def health(
 
         console.print(f"\n[dim]Healthy: {healthy_count}/{total_count}[/dim]")
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error generating health report: {e}")
         raise typer.Exit(code=1) from e
@@ -248,7 +248,7 @@ def materialize(
 
         console.print("\n[dim]Use Python API for full materialization functionality[/dim]")
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error materializing features: {e}")
         raise typer.Exit(code=1) from e
@@ -288,7 +288,7 @@ def versions(
         console.print(table)
         console.print(f"\n[dim]Total versions: {len(versions)}[/dim]")
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error listing versions: {e}")
         raise typer.Exit(code=1) from e
@@ -357,7 +357,7 @@ def info(
             for warning in health.warnings:
                 console.print(f"  • {warning}")
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         console.print(f"[red]✗[/red] Error getting feature info: {e}")
         raise typer.Exit(code=1) from e

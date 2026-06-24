@@ -144,7 +144,7 @@ def maybe_mlflow(
         # caught here (catching a re-raised exception at `yield` would cause
         # RuntimeError: generator didn't stop after throw()).
         run_context = mlflow.start_run(run_name=run_name)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         LOGGER.warning("Exception occurred during MLflow initialization", exc_info=True)
         # Degrade gracefully to a no-op logger when MLflow is unavailable.
         yield _NoOpLogger()

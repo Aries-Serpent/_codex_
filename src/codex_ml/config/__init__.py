@@ -13,7 +13,7 @@ from typing import Any
 
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
-except Exception:  # pragma: no cover - optional dependency
+except (IOError, OSError):  # pragma: no cover - optional dependency
     DictConfig = Any  # type: ignore[assignment]
     OmegaConf = None  # type: ignore[assignment]
 
@@ -114,7 +114,7 @@ class OptimizerConfig:
             raise ConfigError(path + ".weight_decay", "must be non-negative", self.weight_decay)
         try:
             beta1, beta2 = (float(self.betas[0]), float(self.betas[1]))
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             raise ConfigError(path + ".betas", "must be a pair of floats", self.betas) from exc
         if not (0.0 <= beta1 < 1 and 0.0 <= beta2 < 1):
             raise ConfigError(path + ".betas", "beta values must be in [0, 1)", self.betas)
@@ -597,7 +597,7 @@ def override_dict(overrides: Sequence[str] | None) -> DictConfig:
         return OmegaConf.create()
     try:
         return OmegaConf.from_dotlist(list(overrides))
-    except Exception as exc:  # pragma: no cover - OmegaConf raises specific errors
+    except (IOError, OSError) as exc:  # pragma: no cover - OmegaConf raises specific errors
         raise ConfigError("overrides", f"Invalid override: {exc}") from exc
 
 
@@ -628,7 +628,7 @@ def load_app_config(
     except FileNotFoundError as exc:
         logger.debug(f"FileNotFoundError: {exc}")
         raise ConfigError("config", f"configuration file not found: {config_path}") from exc
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
 
@@ -641,7 +641,7 @@ def load_app_config(
         cfg = OmegaConf.merge(schema, file_cfg, override_dict(overrides))
         try:
             obj = OmegaConf.to_object(cfg)
-        except Exception as exc:  # pragma: no cover - defensive against OmegaConf issues
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive against OmegaConf issues
             raise ConfigError("config", f"failed to materialise dataclass: {exc}") from exc
         if not isinstance(obj, CodexConfig):  # pragma: no cover - structured config guarantees type
             raise ConfigError("config", "unexpected configuration object", type(obj).__name__)
@@ -711,7 +711,7 @@ def load_app_config(
                                 return int(text)
                             if isinstance(current, float):
                                 return float(text)
-                        except Exception as e:
+                        except (ValueError, TypeError, RuntimeError) as e:
                             logger.debug(f"Exception: {e}")
                             logger.warning(f"Exception: {e}", exc_info=True)
                     return new_value

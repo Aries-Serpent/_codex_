@@ -77,7 +77,7 @@ class WorkflowParser:
             logger.debug(f"UnicodeDecodeError: {e}")
             logger.error(f"Invalid UTF-8 encoding in {file_path}: {e}")
             return None
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Failed to parse workflow {file_path}: {e}", exc_info=True)
             return None
@@ -182,7 +182,7 @@ class WorkflowParser:
             logger.debug(f"ValueError: {e}")
             logger.error(f"Invalid value in {file_path}: {e}")
             return None
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Unexpected error parsing {file_path}: {e}", exc_info=True)
             return None

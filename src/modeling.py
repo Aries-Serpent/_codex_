@@ -13,7 +13,7 @@ from typing import Any
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency guard
     import torch
-except Exception:  # pragma: no cover - propagate a friendly error later
+except (ImportError, AttributeError):  # pragma: no cover - propagate a friendly error later
     torch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional dependency guard
@@ -23,7 +23,7 @@ try:  # pragma: no cover - optional dependency guard
         PreTrainedModel,
         PreTrainedTokenizerBase,
     )
-except Exception:  # pragma: no cover - transformers unavailable; defer failure until use
+except (ImportError, AttributeError):  # pragma: no cover - transformers unavailable; defer failure until use
     AutoModelForCausalLM = None  # type: ignore[assignment, misc]
     AutoTokenizer = None  # type: ignore[assignment, misc]
     PreTrainedModel = Any  # type: ignore[assignment, misc]
@@ -31,7 +31,7 @@ except Exception:  # pragma: no cover - transformers unavailable; defer failure 
 
 try:  # pragma: no cover - PEFT is optional for non-LoRA runs
     from peft import LoraConfig, get_peft_model
-except Exception:  # pragma: no cover - allow graceful degradation when PEFT is absent
+except (ImportError, AttributeError):  # pragma: no cover - allow graceful degradation when PEFT is absent
     LoraConfig = None
     get_peft_model = None
 
@@ -86,14 +86,14 @@ def _assert_bf16_capability(
 
     try:
         device_obj = torch.device(device)
-    except Exception:  # pragma: no cover - fall back to heuristic
+    except (ConnectionError, TimeoutError):  # pragma: no cover - fall back to heuristic
         device_obj = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     try:
         a = torch.ones((2, 2), dtype=bf16, device=device_obj)
         b = torch.ones((2, 2), dtype=bf16, device=device_obj)
         _ = a @ b
-    except Exception as exc:  # pragma: no cover - surface capability failure
+    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - surface capability failure
         raise RuntimeError(
             f"Requested bf16 but device '{device_obj}' lacks bfloat16 support"
         ) from exc
@@ -263,7 +263,7 @@ def load_tokenizer(
             )
             tokenizer.pad_token = tokenizer.eos_token
         return tokenizer
-    except Exception as exc:  # pragma: no cover - surface friendly error in tests
+    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - surface friendly error in tests
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
 
@@ -272,7 +272,7 @@ def _is_bf16_dtype(dtype_name: str | None, dtype_obj: Any) -> bool:
     if not requested and torch is not None and dtype_obj is not None:
         try:
             requested = dtype_obj == getattr(torch, "bfloat16", None)
-        except Exception:  # pragma: no cover - defensive
+        except (ConnectionError, TimeoutError):  # pragma: no cover - defensive
             requested = False
     return requested
 
@@ -302,14 +302,14 @@ def _ensure_bf16_capability(
 
     try:
         target = torch.device(device_name)
-    except Exception:  # pragma: no cover - fallback to cpu/cuda detection
+    except (ConnectionError, TimeoutError):  # pragma: no cover - fallback to cpu/cuda detection
         target = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     supported = False
     try:
         tensor = torch.zeros(1, dtype=torch.bfloat16, device=target)
         supported = tensor.dtype == torch.bfloat16
-    except Exception:
+    except (ConnectionError, TimeoutError):
         logger.warning("Exception occurred", exc_info=True)
         supported = False
 
@@ -410,7 +410,7 @@ def load_model(
 
     try:
         model = model.to(device)
-    except Exception as exc:  # pragma: no cover - propagate but annotate
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - propagate but annotate
         raise RuntimeError(f"Failed to move model to device '{device}': {exc}") from exc
 
     if coerced.lora.enabled:

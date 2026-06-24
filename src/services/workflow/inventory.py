@@ -103,7 +103,7 @@ class WorkflowInventory:
                     logger.debug(f"Parsed workflow:  {workflow_file.name}")
                 else:
                     logger.warning(f"Failed to parse workflow: {workflow_file.name}")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Error parsing {workflow_file.name}: {e}")
 
@@ -287,7 +287,7 @@ class WorkflowInventory:
                 self._build_dependency_graph()
                 logger.info(f"Refreshed workflow: {filename}")
                 return True
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Error refreshing {filename}: {e}")
 

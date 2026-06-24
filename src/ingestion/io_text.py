@@ -20,7 +20,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 try:
     from .encoding_detect import detect_encoding
-except Exception:
+except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
     detect_encoding = None  # type: ignore[assignment]
 
@@ -38,7 +38,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     """
     try:
         data = path.read_bytes()[: max(1024, int(sample_size))]
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
@@ -50,7 +50,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             return "utf-16"
         if data.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         # defensive: fall through to other strategies
 
@@ -71,7 +71,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         best = result.best() if result is not None else None
         enc = getattr(best, "encoding", None)
         enc_norm = enc.lower().replace("_", "-") if enc else None
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         enc_norm = None
 
@@ -128,7 +128,7 @@ def read_text(path: Path | str, encoding: str = "utf-8", errors: str = "strict")
     if encoding == "auto":
         try:
             used_encoding = detect_encoding(p)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             # Defensive fallback: if detection fails, default to utf-8
             used_encoding = "utf-8"
@@ -136,7 +136,7 @@ def read_text(path: Path | str, encoding: str = "utf-8", errors: str = "strict")
     # Read bytes
     try:
         raw = p.read_bytes()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return "", used_encoding
 
@@ -153,7 +153,7 @@ def read_text(path: Path | str, encoding: str = "utf-8", errors: str = "strict")
                 decoded = raw.decode(enc, "replace")
                 used_encoding = enc
                 break
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 decoded = None
                 continue

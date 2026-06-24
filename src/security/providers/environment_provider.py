@@ -187,7 +187,7 @@ class EnvironmentProvider(SecretProvider):
                 try:
                     metadata = self.get_secret_metadata(secret_id)
                     secrets.append(metadata)
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     # Don't log environment variable names for security
                     logger.warning(f"Failed to get metadata for a secret: {type(e).__name__}")
 

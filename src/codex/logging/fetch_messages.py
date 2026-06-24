@@ -17,7 +17,7 @@ from typing import Optional
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except Exception:  # pragma: no cover - final fallback
+except (IOError, OSError):  # pragma: no cover - final fallback
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 try:
     # use fully-qualified package import
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
-except Exception:  # pragma: no cover - best-effort fallback
+except (ImportError, AttributeError):  # pragma: no cover - best-effort fallback
 
     def _codex_auto_enable_from_env() -> None:
         return None
@@ -52,17 +52,17 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 

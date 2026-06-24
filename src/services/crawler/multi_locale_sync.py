@@ -217,7 +217,7 @@ class MultiLocaleSyncManager:
             )
             return result
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             duration = time.time() - start_time
             logger.error(f"Failed to sync locale {locale_code}: {e}")
             return LocaleSyncResult(

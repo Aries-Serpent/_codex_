@@ -305,7 +305,7 @@ class PluginSandbox:
 
             return result
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             # Record failure
             error_msg = f"{type(e).__name__}: {e!s}"
@@ -418,7 +418,7 @@ class PluginManager:
             if not plugin.initialize():
                 logger.error(f"Plugin {plugin_name} initialization failed")
                 return False
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Plugin {plugin_name} initialization raised exception: {e}")
             return False
@@ -470,7 +470,7 @@ class PluginManager:
             try:
                 plugin.cleanup()
                 logger.info(f"Plugin {plugin_name} cleanup complete")
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Plugin {plugin_name} cleanup failed: {e}")
 

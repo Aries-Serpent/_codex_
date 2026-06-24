@@ -247,7 +247,7 @@ class CircuitBreaker:
                 result = func(*args, **kwargs)
                 self.record_success()
                 return result
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 self.record_failure()
                 raise

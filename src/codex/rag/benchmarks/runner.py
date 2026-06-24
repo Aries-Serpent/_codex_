@@ -67,7 +67,7 @@ class BenchmarkRunner:
         for _ in range(self.warmup_runs):
             try:
                 func(*args, **kwargs)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
         durations = []
         memory_usage = []

@@ -176,7 +176,7 @@ def db_check() -> dict[str, object]:
     try:
         dal = ArchiveDAL.from_env()
         dal.ensure_schema()
-    except Exception as exc:  # pragma: no cover - defensive
+    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - defensive
         return {"ok": False, "error": repr(exc)}
     return {"ok": True}
 

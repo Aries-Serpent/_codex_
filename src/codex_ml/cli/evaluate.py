@@ -31,7 +31,7 @@ from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLErrorType, safe_
 
 try:
     from codex_ml.safety import SafetyConfig, sanitize_prompt
-except Exception:  # pragma: no cover - optional dependency
+except (IOError, OSError):  # pragma: no cover - optional dependency
     SafetyConfig = None
     sanitize_prompt = None
 
@@ -283,7 +283,7 @@ def evaluate(
                 dtype=None,
                 local_files_only=True,
             )
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             return {"error": f"Failed to load model: {exc}"}
 
     ckpt_dir = epoch_dir
@@ -326,7 +326,7 @@ def _run_dataset_evaluation(
                 line = line.strip()
                 if line:
                     records.append(_json.loads(line))
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         return {"error": f"Failed to load dataset: {exc}", "status": "error"}
 
     if limit is not None:
@@ -343,7 +343,7 @@ def _run_dataset_evaluation(
     if tok_name == "tiny-vocab" and tok_path:
         try:
             vocab = _json.loads(Path(tok_path).read_text(encoding="utf-8"))
-        except Exception:
+        except (IOError, OSError):
             vocab = {}
 
     def _tokenize(text: str) -> list:
@@ -379,7 +379,7 @@ def _run_dataset_evaluation(
     if "accuracy" in metric_names:
         try:
             metric_results["accuracy"] = accuracy(predictions, targets)
-        except Exception:
+        except (IOError, OSError):
             metric_results["accuracy"] = 0.0
 
     # Write summary.json

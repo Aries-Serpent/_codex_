@@ -11,7 +11,7 @@ from typing import Any, Optional  # noqa: E402
 
 try:
     from importlib import metadata
-except Exception:  # pragma: no cover - importlib metadata not available
+except (ImportError, AttributeError):  # pragma: no cover - importlib metadata not available
     metadata = None  # type: ignore[assignment]
 
 RegisterFn = Callable[..., Any]
@@ -31,13 +31,13 @@ def _iter_entry_points(group: str) -> Iterable[Any]:
         # Python <3.10 compatibility: entry_points() returns dict-like object
         try:
             eps = metadata.entry_points()
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return ()
         if hasattr(eps, "select"):
             return eps.select(group=group)
         return [ep for ep in eps if getattr(ep, "group", None) == group]
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return ()
 
@@ -53,7 +53,7 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
         try:
             hook(register)
             return True
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return False
 
@@ -65,7 +65,7 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
             logger.debug(f"TypeError: {e}")
             logger.warning(f"TypeError: {e}", exc_info=True)
             return False
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return False
 
@@ -88,10 +88,10 @@ def _register_direct(register: Optional[RegisterFn], name: str, target: Any) -> 
             decorator = register(name)
             decorator(target)
             return True
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return False
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 
@@ -117,7 +117,7 @@ def load_plugins(group: str, *, register: Optional[RegisterFn] = None) -> int:
     for ep in _iter_entry_points(group):
         try:
             target = ep.load()
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             continue
 

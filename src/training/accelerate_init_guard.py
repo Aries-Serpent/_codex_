@@ -212,7 +212,7 @@ def safe_accelerate_init(
         logger.info(f"Accelerate initialized successfully: {result}")
         return result
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         error_msg = f"{type(e).__name__}: {e}"
 

@@ -19,7 +19,7 @@ _warnings.warn(
 # Re-export canonical manager where compatible, to reduce duplication.
 try:  # pragma: no cover - mirror class
     from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore
-except Exception:  # pragma: no cover - defensive
+except (ImportError, AttributeError):  # pragma: no cover - defensive
     CheckpointManager = object
 
 
@@ -27,19 +27,19 @@ try:  # pragma: no cover - prefer canonical RNG helpers
     from codex_ml.utils.checkpoint_core import dump_rng_state as _canonical_dump_rng_state
     from codex_ml.utils.checkpoint_core import load_rng_state as _canonical_load_rng_state
     from codex_ml.utils.checkpoint_core import set_seed as _canonical_set_seed
-except Exception:  # pragma: no cover - canonical RNG helpers unavailable
+except (ImportError, AttributeError):  # pragma: no cover - canonical RNG helpers unavailable
     _canonical_dump_rng_state = None
     _canonical_load_rng_state = None
     _canonical_set_seed = None
 
 try:  # pragma: no cover - optional numpy
     import numpy as _np
-except Exception:  # pragma: no cover - numpy optional
+except (ImportError, AttributeError):  # pragma: no cover - numpy optional
     _np = None
 
 try:  # pragma: no cover - optional torch
     import torch as _torch
-except Exception:  # pragma: no cover - torch optional
+except (ImportError, AttributeError):  # pragma: no cover - torch optional
     _torch = None  # type: ignore[assignment]
 
 

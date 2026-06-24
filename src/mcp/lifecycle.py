@@ -172,7 +172,7 @@ class LifecycleManager:
             await self.transition_to(ServerState.READY)
             self._logger.info("Server initialized successfully")
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             self._logger.error("Initialization failed: %s", e)
             await self.transition_to(ServerState.ERROR)
@@ -212,7 +212,7 @@ class LifecycleManager:
         for hook in self._shutdown_hooks:
             try:
                 hook()
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 self._logger.error("Shutdown hook failed: %s", e)
 
@@ -267,7 +267,7 @@ class LifecycleManager:
                 if not result.healthy:
                     all_healthy = False
                     messages.append(result.message)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 all_healthy = False
                 details[f"check_{i}"] = {"healthy": False, "error": str(e)}

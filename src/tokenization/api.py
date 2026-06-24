@@ -25,7 +25,7 @@ try:  # pragma: no cover
     )
 
     HFTokenizerAdapter = _CanonicalLegacyTokenizer
-except Exception:  # pragma: no cover - defensive placeholders
+except (ImportError, AttributeError):  # pragma: no cover - defensive placeholders
     _CanonicalLegacyTokenizer = None
 
     class HFTokenizerAdapter:  # type: ignore[no-redef]

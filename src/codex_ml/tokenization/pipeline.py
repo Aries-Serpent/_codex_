@@ -109,7 +109,7 @@ def run_train(
         cfg.dry_run = dry_run
     try:
         return train(cfg)
-    except Exception as exc:  # pragma: no cover - surfaced via CLI
+    except (IOError, OSError) as exc:  # pragma: no cover - surfaced via CLI
         raise TokenizerPipelineError(str(exc)) from exc
 
 
@@ -202,7 +202,7 @@ def _load_tokenizer(path: str) -> tuple[str, object]:
     if suffix == ".json":
         try:
             tokenizer = Tokenizer.from_file(str(tokenizer_path))
-        except Exception as exc:  # pragma: no cover - delegated to caller
+        except (IOError, OSError) as exc:  # pragma: no cover - delegated to caller
             raise TokenizerPipelineError(
                 f"failed to load tokenizer {tokenizer_path}: {exc}"
             ) from exc
@@ -224,7 +224,7 @@ def run_encode(tokenizer_path: str, text: str) -> list[int]:
             return tokenizer.encode(text).ids  # type: ignore[attr-defined]
         encoded = tokenizer.encode(text)  # type: ignore[attr-defined]
         return list(encoded)
-    except Exception as exc:  # pragma: no cover - delegated to caller
+    except (IOError, OSError) as exc:  # pragma: no cover - delegated to caller
         raise TokenizerPipelineError(f"encoding failed: {exc}") from exc
 
 
@@ -236,7 +236,7 @@ def run_decode(tokenizer_path: str, token_ids: Sequence[int]) -> str:
         if kind == "hf":
             return tokenizer.decode(list(token_ids), skip_special_tokens=False)  # type: ignore[attr-defined]
         return tokenizer.decode(list(token_ids))  # type: ignore[attr-defined]
-    except Exception as exc:  # pragma: no cover - delegated to caller
+    except (IOError, OSError) as exc:  # pragma: no cover - delegated to caller
         raise TokenizerPipelineError(f"decoding failed: {exc}") from exc
 
 

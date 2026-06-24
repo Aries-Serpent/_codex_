@@ -406,7 +406,7 @@ class EmbeddingCache:
         try:
             file_path = self._disk_path / f"{key}.npy"
             np.save(file_path, entry.embedding)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.warning(f"Failed to save to disk cache: {e}")
 
     def _load_from_disk(self, key: str) -> Optional[np.ndarray]:
@@ -418,7 +418,7 @@ class EmbeddingCache:
             file_path = self._disk_path / f"{key}.npy"
             if file_path.exists():
                 return np.load(file_path)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.warning(f"Failed to load from disk cache: {e}")
 
         return None

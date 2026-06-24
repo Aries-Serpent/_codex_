@@ -18,7 +18,7 @@ from typing import Any
 logger = logging.getLogger(__name__)
 try:  # Optional dependency
     from omegaconf import DictConfig, OmegaConf
-except Exception:  # pragma: no cover - optional
+except (ValueError, TypeError):  # pragma: no cover - optional
     DictConfig = object  # type: ignore
     OmegaConf = None  # type: ignore[assignment]
 
@@ -40,7 +40,7 @@ def _capture_command(args: Sequence[str]) -> str | None:
         return subprocess.check_output(
             [resolved, *args[1:]], text=True, stderr=subprocess.STDOUT, timeout=5
         ).strip()
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         logger.debug(f"Exception: {exc}")
         LOGGER.debug("Failed to capture command %s: %s", args, exc)
         return None
@@ -62,7 +62,7 @@ def _parse_key_value_output(raw: str) -> dict[str, str]:
 def _pip_freeze() -> list[str]:
     try:  # pragma: no cover - dependent on environment
         output = subprocess.check_output([sys.executable, "-m", "pip", "freeze"], text=True)
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
     return [line.strip() for line in output.splitlines() if line.strip()]
@@ -73,7 +73,7 @@ def _yaml_dumps(data: Any) -> str:
 
     try:  # pragma: no cover - optional dependency
         import yaml
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         logger.debug(f"Exception: {exc}")
         LOGGER.debug("PyYAML unavailable; falling back to JSON: %s", exc)
         return json.dumps(data, indent=2, sort_keys=True)
@@ -93,7 +93,7 @@ def _git_commit() -> str | None:
                 root = parent
                 break
         return subprocess.check_output([git_bin, "rev-parse", "HEAD"], cwd=root, text=True).strip()
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         logger.debug(f"Exception: {exc}")
         LOGGER.debug("Unable to capture git commit for provenance: %s", exc)
         return None
@@ -106,7 +106,7 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
         logical = os.cpu_count()
         if logical is not None:
             details["logical_cores"] = int(logical)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         LOGGER.debug("Failed to read logical cpu count: %s", exc)
 
@@ -122,7 +122,7 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
                 details["max_frequency_mhz"] = round(float(freq.max), 3)
             if getattr(freq, "min", None):
                 details["min_frequency_mhz"] = round(float(freq.min), 3)
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         LOGGER.debug("Failed to collect psutil CPU metadata: %s", exc)
 
@@ -155,7 +155,7 @@ def _gpu_metadata() -> MutableMapping[str, Any]:
             details["gpus"] = [
                 torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())
             ]
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -236,7 +236,7 @@ def environment_summary() -> dict[str, Any]:
         from codex_ml.monitoring.codex_logging import _codex_sample_system
 
         info["system_metrics"] = _codex_sample_system()
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return info
@@ -261,7 +261,7 @@ def _hardware_fingerprint(hardware: Mapping[str, Any] | None) -> str | None:
             default=_fingerprint_default,
             separators=(",", ":"),
         )
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         serialized = repr(hardware)
 

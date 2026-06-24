@@ -15,7 +15,7 @@ __all__ = ["get_gpu_stats", "get_proc_stats", "get_sys_stats", "sample"]
 # ----- optional deps (never hard-crash) ---------------------------------------
 try:  # psutil for CPU/RAM (process + system)
     import psutil as _psutil
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     _psutil = None
 
 try:  # NVML for GPU stats via pynvml / nvidia-ml-py3
@@ -31,7 +31,7 @@ try:  # NVML for GPU stats via pynvml / nvidia-ml-py3
         nvmlInit,
         nvmlShutdown,
     )
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     nvmlInit = nvmlShutdown = nvmlDeviceGetCount = None
     nvmlDeviceGetHandleByIndex = nvmlDeviceGetName = None
     nvmlDeviceGetUtilizationRates = nvmlDeviceGetMemoryInfo = None
@@ -51,7 +51,7 @@ def _ensure_nvml() -> bool:
         nvmlInit()
         _NVML_READY = True
         return True
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 
@@ -74,7 +74,7 @@ def get_proc_stats() -> dict[str, Any]:
         cpu_pct = p.cpu_percent(interval=None)
         rss_mb = p.memory_info().rss / (1024 * 1024)
         return {"cpu_pct": float(cpu_pct), "rss_mb": float(rss_mb)}
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return {}
 
@@ -87,7 +87,7 @@ def get_sys_stats() -> dict[str, Any]:
         cpu_pct = _psutil.cpu_percent(interval=None)
         mem_pct = _psutil.virtual_memory().percent
         return {"cpu_pct": float(cpu_pct), "mem_pct": float(mem_pct)}
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return {}
 
@@ -133,7 +133,7 @@ def get_gpu_stats() -> list[dict[str, Any]]:
                 }
             )
         return out
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
     finally:

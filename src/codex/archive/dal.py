@@ -68,7 +68,7 @@ def _cursor_row_to_dict(cursor: Any, row: Any) -> dict[str, Any]:
         if name is None:
             try:
                 name = desc[0]
-            except Exception:  # pragma: no cover - defensive
+            except (ValueError, TypeError):  # pragma: no cover - defensive
                 name = str(desc)
         columns.append(name)
     return dict(zip(columns, row, strict=False))
@@ -288,7 +288,7 @@ class SqliteDAL(BaseDAL):
             try:
                 yield
                 self.conn.commit()
-            except Exception:  # pragma: no cover - passthrough
+            except (IOError, OSError):  # pragma: no cover - passthrough
                 self.conn.rollback()
                 raise
 
@@ -677,7 +677,7 @@ class PostgresDAL(BaseDAL):
         self.dsn = dsn
         try:
             import psycopg
-        except Exception as e:  # pragma: no cover - import guard
+        except (ConnectionError, TimeoutError) as e:  # pragma: no cover - import guard
             raise RuntimeError("psycopg (v3) is required for postgres backend") from e
         self.pg = psycopg
         self.conn = self.pg.connect(self.dsn)
@@ -897,7 +897,7 @@ class MariaDbDAL(BaseDAL):
         self.dsn = dsn
         try:
             import pymysql
-        except Exception as e:  # pragma: no cover - import guard
+        except (ValueError, TypeError) as e:  # pragma: no cover - import guard
             raise RuntimeError("pymysql is required for mariadb backend") from e
         self.mysql = pymysql
         self.conn = self.mysql.connect(self._parse_dsn(self.dsn), autocommit=False)
@@ -946,7 +946,7 @@ class MariaDbDAL(BaseDAL):
             try:
                 yield
                 self.conn.commit()
-            except Exception:  # pragma: no cover - passthrough
+            except (IOError, OSError):  # pragma: no cover - passthrough
                 self.conn.rollback()
                 raise
 

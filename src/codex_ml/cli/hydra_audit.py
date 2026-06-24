@@ -40,7 +40,7 @@ from typing import Any, Optional
 
 try:  # pragma: no cover - handled in tests via importorskip
     import yaml
-except Exception:  # pragma: no cover - reported via exit code
+except (IOError, OSError):  # pragma: no cover - reported via exit code
     yaml = None
 
 
@@ -108,7 +108,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         return {}
     try:
         data = yaml.safe_load(text)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return {}
     return data or {}

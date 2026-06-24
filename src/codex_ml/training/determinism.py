@@ -116,7 +116,7 @@ def set_deterministic_mode(
 
         return True
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.error(f"Failed to set deterministic mode: {e}")
         return False

@@ -51,7 +51,7 @@ def _ensure_sentencepiece() -> bool:
         return True
     try:  # pragma: no cover - optional dependency
         import sentencepiece as _spm
-    except Exception as exc:  # pragma: no cover - dependency missing
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - dependency missing
         _SPM_IMPORT_ERROR = exc
         spm = None
         return False
@@ -125,7 +125,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def __post_init__(self) -> None:  # pragma: no cover - simple delegation
         try:
             from transformers import AutoTokenizer
-        except Exception as exc:  # pragma: no cover - transformers optional
+        except (ImportError, AttributeError) as exc:  # pragma: no cover - transformers optional
             warnings.warn(
                 f"transformers unavailable for HFTokenizerAdapter; falling back to WhitespaceTokenizer ({exc})",  # noqa: E501
                 RuntimeWarning,

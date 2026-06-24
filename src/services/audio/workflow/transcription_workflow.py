@@ -264,7 +264,7 @@ class AudioTranscriptionWorkflow:
                 detected_speakers=detected_speakers,
                 output_files=output_files,
             )
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             return TranscriptionResult(
                 success=False,
                 input_path=media_path,
@@ -440,7 +440,7 @@ class AudioTranscriptionWorkflow:
         try:
             pipeline = self._get_pyannote_pipeline(Pipeline, token)
             annotation = pipeline(str(wav_path))  # type: ignore[operator]
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             raise RuntimeError(f"pyannote diarization failed: {exc}") from exc
 
         raw: list[tuple[float, float, str]] = []

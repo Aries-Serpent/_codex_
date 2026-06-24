@@ -54,7 +54,7 @@ try:
     app.include_router(create_auth_router(prefix=""), prefix="/api/auth", tags=["auth"])
 except ImportError:  # pragma: no cover – auth module not installed
     logger.debug("Suppressed exception in handler", exc_info=True)
-except Exception as _auth_exc:  # pragma: no cover – unexpected init error
+except (ImportError, AttributeError) as _auth_exc:  # pragma: no cover – unexpected init error
     import logging as _logging
 
     _logging.getLogger(__name__).warning(
@@ -68,7 +68,7 @@ try:
     app.include_router(legacy_router, tags=["legacy"])
 except ImportError:  # pragma: no cover – legacy module not installed
     logger.debug("Legacy endpoints not loaded")
-except Exception as _legacy_exc:  # pragma: no cover – unexpected init error
+except (IOError, OSError) as _legacy_exc:  # pragma: no cover – unexpected init error
     logger.warning("Legacy router not mounted — unexpected error during import: %s", _legacy_exc)
 
 _DEFAULT_CACHE_DIR = os.environ.get("CODEX_TOKENIZER_CACHE", "artifacts/tokenizer_cache")
@@ -202,7 +202,7 @@ def health() -> dict:
         result["cognitive_brain"] = {
             "available": client.is_available(),
         }
-    except Exception:
+    except (ImportError, AttributeError):
         result["cognitive_brain"] = {"available": False, "note": "import failed"}
 
     # -- PatternCompressor metrics (CB-003) ---------------------------------

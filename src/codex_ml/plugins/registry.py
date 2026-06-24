@@ -50,7 +50,7 @@ def _iter_entry_points(group: str):
             if hasattr(eps, "select")
             else [ep for ep in eps if ep.group == group]
         )
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         items = []  # type: ignore[assignment]
     collected.extend(items)
@@ -59,7 +59,7 @@ def _iter_entry_points(group: str):
             for ep in getattr(dist, "entry_points", ()):
                 if getattr(ep, "group", None) == group:
                     collected.append(ep)
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
     unique: dict[tuple[str, str], Any] = {}
     for ep in collected:
@@ -77,7 +77,7 @@ def _activate_editable_distribution(ep: Any) -> None:
         return
     try:
         files = dist.files or ()
-    except Exception:  # pragma: no cover - defensive
+    except (IOError, OSError):  # pragma: no cover - defensive
         return
     for file in files:
         if not str(file).endswith(".pth") or "__editable__" not in str(file):
@@ -85,7 +85,7 @@ def _activate_editable_distribution(ep: Any) -> None:
         try:
             pth_path = Path(dist.locate_file(file))
             lines = pth_path.read_text(encoding="utf-8").splitlines()
-        except Exception:  # pragma: no cover - best effort  # nosec B112
+        except (IOError, OSError):  # pragma: no cover - best effort  # nosec B112
             continue
         for line in lines:
             entry = line.strip()
@@ -96,7 +96,7 @@ def _activate_editable_distribution(ep: Any) -> None:
                 if match:
                     try:
                         _import_module(match.group(1))  # pragma: no cover - .pth bootstrap
-                    except Exception as e:  # pragma: no cover
+                    except (IOError, OSError) as e:  # pragma: no cover
                         logger.debug("import_module(%r) failed: %s", match.group(1), e)
                 else:
                     # Complex .pth lines (e.g. chained statements) are skipped to

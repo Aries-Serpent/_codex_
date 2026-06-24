@@ -130,7 +130,7 @@ class QuantumPlugin:
 
             return self._module
 
-        except Exception as exc:
+        except (ImportError, AttributeError) as exc:
             self.state = PluginState.DECOHERENT
             logger.error(f"Plugin '{self.name}' decoherence: {exc}")
             raise
@@ -261,7 +261,7 @@ class QuantumPluginRegistry:
                 plugin = self.plugins[p_name]
                 try:
                     loaded_modules[p_name] = plugin.observe()
-                except Exception as exc:
+                except (ImportError, AttributeError) as exc:
                     logger.warning(f"Failed to load dependency '{p_name}': {exc}")
 
         return loaded_modules.get(plugin_name)

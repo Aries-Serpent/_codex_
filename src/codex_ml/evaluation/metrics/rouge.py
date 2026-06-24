@@ -103,7 +103,7 @@ class RougeMetric(MetricAdapter):
                 results[rouge_type] = avg_score
 
             return results
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.debug("Exception caught, returning", exc_info=True)
             return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]

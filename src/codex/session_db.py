@@ -204,7 +204,7 @@ class SessionDB:
                             self._cache_session(session_id, session_data)
 
                         return session_data
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.error(f"Error loading archived session {session_id}: {e}")
 
         return row_dict
@@ -309,7 +309,7 @@ class SessionDB:
                 # Mark as deleted in database
                 self.mark_deleted(session_id)
                 deleted_count += 1
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.error(f"Error deleting archive {session_id}: {e}")
 
         conn.close()

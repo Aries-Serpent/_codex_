@@ -168,7 +168,7 @@ def load_jsonl(path: str | Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
                 continue
             try:
                 obj = json.loads(line)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 skipped += 1
                 continue
@@ -201,7 +201,7 @@ def _normalize_csv_value(value: Any) -> Any:
         if "\\" in value:
             try:
                 return codecs.decode(value, "unicode_escape")
-            except Exception:
+            except (IOError, OSError):
                 return value.replace('\\"', '"')
         return value
     return value
@@ -441,13 +441,13 @@ def _coerce_filters(value: Any) -> SafetyFilters | None:
     if value is True:
         try:
             return SafetyFilters.from_defaults()
-        except Exception:  # pragma: no cover - defensive
+        except (IOError, OSError):  # pragma: no cover - defensive
             return None
 
     if isinstance(value, (str, Path)):
         try:
             return SafetyFilters.from_policy_file(value)
-        except Exception:  # pragma: no cover - defensive
+        except (IOError, OSError):  # pragma: no cover - defensive
             return None
 
     if isinstance(value, Mapping):
@@ -459,7 +459,7 @@ def _coerce_filters(value: Any) -> SafetyFilters | None:
         if policy_path:
             try:
                 return SafetyFilters.from_policy_file(policy_path)
-            except Exception:  # pragma: no cover - defensive
+            except (IOError, OSError):  # pragma: no cover - defensive
                 return None
 
         if enabled:
@@ -534,7 +534,7 @@ def _log_safety_decision(path: Path, prompt: SafetyResult, completion: SafetyRes
             ensure_ascii=False,
         )
         log_error("data.safety", "dataset sample sanitized", context)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Logging should not interfere with dataset streaming.
 

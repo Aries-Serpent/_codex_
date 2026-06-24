@@ -249,7 +249,7 @@ class ZendeskKnowledgeSyncService:
                 )
                 if attempt < self.retries - 1:
                     time.sleep(self.backoff * (2**attempt))
-            except Exception as exc:  # pragma: no cover - network failures
+            except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - network failures
                 last_exc = exc
                 logger.warning(
                     f"Fetch attempt {attempt + 1}/{self.retries} failed for {url}: {exc}"
@@ -407,7 +407,7 @@ class ZendeskKnowledgeSyncService:
                         else:
                             logger.error(f"HTTP error {e.code} syncing {url}: {e}")
                             failed += 1
-                    except Exception as e:
+                    except (ConnectionError, TimeoutError) as e:
                         logger.error(f"Failed to sync {url}: {e}")
                         failed += 1
 
@@ -600,7 +600,7 @@ class ZendeskKnowledgeSyncService:
                 logger.error(f"HTTP error {e.code} fetching page {page_num}: {e}")
                 failed += len(articles) if "articles" in locals() else 0
                 break
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.error(f"Failed to fetch page {page_num}: {e}")
                 failed += len(articles) if "articles" in locals() else 0
                 break
@@ -681,7 +681,7 @@ class ZendeskKnowledgeSyncService:
 
                 articles.append(article_data)
 
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.warning(f"Failed to process {html_file}: {e}")
 
         # Write JSON dataset
@@ -836,7 +836,7 @@ def main() -> int:
 
         return 0 if result.failed == 0 else 1
 
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.error(f"Sync failed: {e}", exc_info=True)
         return 2
 

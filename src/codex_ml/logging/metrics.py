@@ -31,7 +31,7 @@ from typing import Optional, TextIO  # noqa: E402
 
 try:  # optional psutil
     import psutil
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     psutil = None
 
 
@@ -65,7 +65,7 @@ class MetricLogger:
                 "ram_used_mb": float(vm.used) / (1024.0 * 1024.0),
                 "ram_percent": float(vm.percent),
             }
-        except Exception:  # pragma: no cover
+        except (IOError, OSError):  # pragma: no cover
             return None
 
     def log(self, step: int, **scalars: float) -> None:

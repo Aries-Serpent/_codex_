@@ -36,7 +36,7 @@ def list_models_command(args: argparse.Namespace) -> int:
                 print(f"  - {model}")
 
         return 0
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
@@ -62,7 +62,7 @@ def list_versions_command(args: argparse.Namespace) -> int:
                 print(f"    Created: {version.created_at}")
 
         return 0
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
@@ -87,7 +87,7 @@ def promote_model_command(args: argparse.Namespace) -> int:
             print(f"✓ Promoted {args.name} version {args.version} to {stage.value}")
 
         return 0
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
@@ -120,7 +120,7 @@ def compare_models_command(args: argparse.Namespace) -> int:
                 print(f"\nTime difference: {comparison['created_diff_days']} days")
 
         return 0
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
@@ -137,7 +137,7 @@ def export_model_command(args: argparse.Namespace) -> int:
 
         print(f"✓ Exported {args.name} version {args.version} to {output_path}")
         return 0
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1
@@ -169,7 +169,7 @@ def get_lineage_command(args: argparse.Namespace) -> int:
                 print("\nNo lineage information available")
 
         return 0
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         print(f"Error: {e}", file=sys.stderr)
         return 1

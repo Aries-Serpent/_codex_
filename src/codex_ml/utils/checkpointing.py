@@ -31,7 +31,7 @@ from typing import Any, Literal, Optional, Protocol, Union, runtime_checkable
 try:  # Align schema metadata with checkpoint_core when available
     from codex_ml.utils import checkpoint_core
     from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     _CORE_SCHEMA_VERSION = "1.0"
     checkpoint_core = None
 
@@ -40,7 +40,7 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 # Prefer provenance utilities when available
 try:
     from codex_ml.utils.provenance import environment_summary as _prov_env_summary
-except Exception:  # pragma: no cover - provenance optional
+except (ImportError, AttributeError):  # pragma: no cover - provenance optional
     _prov_env_summary = None
 
 from codex_ml.utils import seed_registry as _seed_registry
@@ -59,12 +59,12 @@ logger = logging.getLogger(__name__)
 
 try:
     from codex_ml.utils.provenance import _git_commit as _prov_git_commit
-except Exception:  # pragma: no cover - provenance optional
+except (ImportError, AttributeError):  # pragma: no cover - provenance optional
     _prov_git_commit = None
 
 try:  # pragma: no cover - optional codex_digest dependency
     from codex_digest.error_capture import log_error as capture_error
-except Exception:  # pragma: no cover - fallback no-op
+except (ImportError, AttributeError):  # pragma: no cover - fallback no-op
 
     def capture_error(
         step_no: str,
@@ -84,14 +84,14 @@ try:  # pragma: no cover - optional torch dependency
     # Verify torch is actually functional (not just a stub)
     torch.get_rng_state()  # ensure get_rng_state is callable (catches stub modules)
     TORCH_AVAILABLE = True
-except Exception:  # pragma: no cover - torch missing
+except (ImportError, AttributeError):  # pragma: no cover - torch missing
     TORCH_AVAILABLE = False
 
 try:  # pragma: no cover - optional numpy dependency
     import numpy as np
 
     NUMPY_AVAILABLE = True
-except Exception:  # pragma: no cover - numpy missing
+except (ImportError, AttributeError):  # pragma: no cover - numpy missing
     NUMPY_AVAILABLE = False
 
 
@@ -104,7 +104,7 @@ def _random_seed_with_snapshot(a: Optional[Any] = None, version: int = 2) -> Non
     _ORIGINAL_RANDOM_SEED(a, version)
     try:
         register_seed_snapshot(python_state=random.getstate())
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -126,14 +126,14 @@ if TORCH_AVAILABLE:
             ):
                 try:
                     cuda_state = [s.tolist() for s in torch.cuda.get_rng_state_all()]
-                except Exception:
+                except (ValueError, TypeError, RuntimeError):
                     logger.warning("Exception occurred", exc_info=True)
                     cuda_state = None
             register_seed_snapshot(
                 torch_state=torch.get_rng_state().tolist(),
                 torch_cuda_state=cuda_state,
             )
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         return result
@@ -230,7 +230,7 @@ class SchedulerStateDictProvider(StateDictProvider):
         if callable(loader):
             try:
                 return loader(state_dict)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 return None
         return None
@@ -331,7 +331,7 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
             )
             try:
                 torch.save(dict(payload), path, pickle_protocol=2)
-            except Exception as e2:
+            except (IOError, OSError) as e2:
                 logger.error("torch.save failed even with pickle_protocol=2: %s", e2)
                 raise
         else:
@@ -344,7 +344,7 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
         try:
             _torch_dump(path, payload)
             return
-        except Exception as exc:  # pragma: no cover - torch optional
+        except (IOError, OSError) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
                 raise CheckpointLoadError(f"failed to save torch checkpoint: {exc}") from exc
@@ -353,7 +353,7 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
         try:
             _pickle_dump(path, payload)
             return
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             errors.append(exc)
             raise CheckpointLoadError(f"failed to save checkpoint via pickle: {exc}") from exc
@@ -375,7 +375,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
             return torch.load(
                 path, **kwargs
             )  # nosec B614 - weights_only=False required for optimizer/RNG state
-        except Exception as exc:  # pragma: no cover - torch optional
+        except (IOError, OSError) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
                 raise CheckpointLoadError(f"failed to load torch checkpoint: {exc}") from exc
@@ -383,7 +383,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         errors.append(exc)
         raise CheckpointLoadError(f"failed to load checkpoint via pickle: {exc}") from exc
@@ -479,7 +479,7 @@ def load_checkpoint(
         )
         logger.warning(f"CheckpointLoadError: {e}", exc_info=True)
         raise
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         capture_error(
             step_no="load_checkpoint",
             step_desc="checkpoint load unexpected",
@@ -521,7 +521,7 @@ def _fallback_git_commit() -> Optional[str]:
         return subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
         ).strip()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -531,7 +531,7 @@ def _safe_git_commit() -> Optional[str]:
     try:
         if callable(_prov_git_commit):
             return _prov_git_commit()
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         logger.info(
             "checkpointing._safe_git_commit: provenance hook failed: %s",
@@ -580,10 +580,10 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
                 try:
                     if torch.cuda.is_available():
                         cuda_version = torch.version.cuda
-                except Exception:
+                except (ValueError, TypeError, RuntimeError):
                     logger.debug("Suppressed exception in handler", exc_info=True)
             info["cuda"] = _safe_str_value(cuda_version)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             torch_version = getattr(torch, "__version__", None)
             info["torch"] = _safe_str_value(torch_version)
@@ -591,7 +591,7 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
         try:
             np_version = getattr(np, "__version__", None)
             info["numpy"] = _safe_str_value(np_version)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             info["numpy"] = None
     gc = _safe_git_commit()
@@ -617,7 +617,7 @@ def _compute_file_checksum(path: Path) -> Optional[str]:
             for chunk in iter(lambda: fh.read(1024 * 1024), b""):
                 h.update(chunk)
         return h.hexdigest()
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         logger.debug("Failed to compute checksum for %s: %s", path, exc)
         return None
@@ -661,7 +661,7 @@ def _safe_environment_summary() -> dict[str, Any]:
                 # MagicMock or other non-serializable objects from leaking in.
                 safe_types = (str, int, float, bool, type(None))
                 return {k: v for k, v in env.items() if isinstance(v, safe_types)}
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         logger.info(
             "checkpointing._safe_environment_summary: provenance summary failed: %s",
@@ -754,7 +754,7 @@ def save_checkpoint(
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except Exception as exc:  # pragma: no cover - metadata best effort
+    except (IOError, OSError) as exc:  # pragma: no cover - metadata best effort
         logger.info(
             "save_checkpoint: unable to write metadata sidecar for %s: %s",
             p,
@@ -773,7 +773,7 @@ def save_checkpoint(
             num_bytes=p.stat().st_size,
             extra={"epoch": epoch},
         )
-    except Exception as exc:  # pragma: no cover - telemetry best effort
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - telemetry best effort
         logger.info(
             "save_checkpoint: telemetry emission skipped for %s due to %s",
             p,
@@ -803,7 +803,7 @@ def load_training_checkpoint(
     except RuntimeError as exc:
         logger.debug(f"RuntimeError: {exc}")
         raise CheckpointLoadError(str(exc)) from exc
-    except Exception as exc:  # pragma: no cover - checksum verify is best-effort
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - checksum verify is best-effort
         logger.info(
             "load_training_checkpoint: checksum verification skipped for %s: %s",
             p,
@@ -817,7 +817,7 @@ def load_training_checkpoint(
         logger.debug(f"CheckpointLoadError: {e}")
         logger.warning(f"CheckpointLoadError: {e}", exc_info=True)
         raise
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
 
     if not isinstance(raw, Mapping):
@@ -854,12 +854,12 @@ def load_training_checkpoint(
     if optimizer is not None and data.get("optimizer_state_dict") is not None:
         try:
             _load_into_target(optimizer, data["optimizer_state_dict"], strict=True)
-        except Exception as exc:  # pragma: no cover - optimizer mismatch
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - optimizer mismatch
             raise CheckpointLoadError(f"failed to load optimizer state: {exc}") from exc
     if scheduler is not None and data.get("scheduler_state_dict") is not None:
         try:
             _load_into_target(scheduler, data["scheduler_state_dict"], strict=True)
-        except Exception as exc:  # pragma: no cover - scheduler load is best effort
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - scheduler load is best effort
             logger.info(
                 "load_training_checkpoint: scheduler state not restored: %s",
                 exc,
@@ -1038,7 +1038,7 @@ def _rng_dump() -> dict[str, Any]:
                     and hasattr(torch.cuda, "get_rng_state_all")
                 ):
                     torch_state["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
-            except Exception:  # pragma: no cover - cuda optional
+            except (ValueError, TypeError, RuntimeError):  # pragma: no cover - cuda optional
                 logger.debug("Suppressed exception in handler", exc_info=True)
             return torch_state
 
@@ -1104,7 +1104,7 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                 tensor_ctor = getattr(torch, "tensor", None)
                 if setter is not None and tensor_ctor is not None and "cpu" in torch_payload:
                     setter(tensor_ctor(torch_payload["cpu"], dtype=torch.uint8))
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
             try:
@@ -1120,7 +1120,7 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                         torch.cuda.set_rng_state_all(
                             [tensor_ctor(s, dtype=torch.uint8) for s in torch_payload["cuda"]]
                         )
-            except Exception:  # pragma: no cover - cuda optional
+            except (ValueError, TypeError, RuntimeError):  # pragma: no cover - cuda optional
                 logger.debug("Suppressed exception in handler", exc_info=True)
 
 
@@ -1231,7 +1231,7 @@ class CheckpointManager:
                 import yaml
 
                 (ep_dir / "config.yaml").write_text(yaml.dump(config), encoding="utf-8")
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 _write_json(ep_dir / "config.json", config)
 
@@ -1341,7 +1341,7 @@ class CheckpointManager:
                 state_payload = torch.load(
                     io.BytesIO(payload), map_location="cpu", weights_only=False
                 )  # nosec B614 - RNG state may contain complex objects
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 state_payload = {"payload": payload}
 
@@ -1377,7 +1377,7 @@ class CheckpointManager:
             else:
                 try:
                     meta_sidecar["rng"] = _rng_dump()
-                except Exception:
+                except (IOError, OSError):
                     logger.warning("Exception occurred", exc_info=True)
                     meta_sidecar["rng"] = {}
         try:
@@ -1385,7 +1385,7 @@ class CheckpointManager:
                 json.dumps(meta_sidecar, indent=2, sort_keys=True),
                 encoding="utf-8",
             )
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         return ckpt_path
@@ -1414,7 +1414,7 @@ class CheckpointManager:
             if optimizer is not None and state.get("optimizer") is not None:
                 try:
                     optimizer.load_state_dict(state["optimizer"])
-                except Exception as exc:  # pragma: no cover
+                except (IOError, OSError) as exc:  # pragma: no cover
                     raise ValueError(f"optimizer state load failed: {exc}") from exc
             if scheduler is not None and state.get("scheduler") is not None:
                 with contextlib.suppress(Exception):
@@ -1439,7 +1439,7 @@ class CheckpointManager:
             try:
                 rng_state = _read_json(rng_path)
                 _rng_load(rng_state)
-            except Exception as exc:  # pragma: no cover
+            except (IOError, OSError) as exc:  # pragma: no cover
                 raise RuntimeError(f"failed to restore RNG state: {exc}") from exc
 
         meta = _read_json(path / "meta.json") if (path / "meta.json").exists() else {}
@@ -1492,7 +1492,7 @@ class CheckpointManager:
                 return
             try:
                 resolved = str(candidate.resolve())
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 resolved = str(candidate)
             if resolved in seen:
@@ -1519,7 +1519,7 @@ class CheckpointManager:
                     logger.warning(f"IsADirectoryError: {e}", exc_info=True)
                     with contextlib.suppress(Exception):
                         marker_path = marker.resolve(strict=False)
-                except Exception:
+                except (IOError, OSError):
                     logger.warning("Exception occurred", exc_info=True)
                     marker_path = None
                 else:
@@ -1528,7 +1528,7 @@ class CheckpointManager:
                         if not candidate.is_absolute():
                             try:
                                 candidate = (root / candidate).resolve(strict=False)
-                            except Exception:
+                            except (IOError, OSError):
                                 logger.warning("Exception occurred", exc_info=True)
                                 candidate = root / candidate
                         marker_path = candidate

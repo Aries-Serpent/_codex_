@@ -113,7 +113,7 @@ class PineconeAdapter(BaseAdapter):
             logger.info("Connected to Pinecone index: %s", self._index_name)
             return True
 
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.error("Failed to connect to Pinecone: %s", e)
             return False
 
@@ -136,7 +136,7 @@ class PineconeAdapter(BaseAdapter):
                 self._index.describe_index_stats,  # type: ignore[attr-defined]
             )
             return stats is not None
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning("Pinecone health check failed: %s", e)
             return False
 
@@ -199,7 +199,7 @@ class PineconeAdapter(BaseAdapter):
                 metadata={"top_k": top_k, "total_matches": len(matches)},
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Pinecone query failed: %s", e)
             return QueryResult(
                 success=False,
@@ -273,7 +273,7 @@ class PineconeAdapter(BaseAdapter):
                 data={"upserted_count": total_upserted},
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Pinecone upsert failed: %s", e)
             return QueryResult(
                 success=False,
@@ -306,7 +306,7 @@ class PineconeAdapter(BaseAdapter):
                 data={"deleted_count": len(ids)},
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Pinecone delete failed: %s", e)
             return QueryResult(
                 success=False,

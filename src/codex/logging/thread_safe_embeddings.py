@@ -103,7 +103,7 @@ class ThreadSafeSessionEmbeddings:
                     logger.info("Created new Faiss index")
                 self._metadata = {}
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Failed to load/create index: {e}")
             log_error(e, "load_index", self.errors_path)
             if HAS_FAISS:
@@ -125,7 +125,7 @@ class ThreadSafeSessionEmbeddings:
             embedding = self._model.encode(text, convert_to_numpy=True)  # type: ignore[attr-defined]
             return embedding.astype(np.float32)
 
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.warning(f"Failed to get embedding: {e}")
             if HAS_NUMPY:
                 return np.random.rand(self.DIMENSION).astype(np.float32)
@@ -177,7 +177,7 @@ class ThreadSafeSessionEmbeddings:
                     self.save_index()
                 return result
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Failed to add session {session_id}: {e}")
             log_error(e, "add_session", self.errors_path)
             return False
@@ -241,7 +241,7 @@ class ThreadSafeSessionEmbeddings:
             with self._rw_lock.read_lock():
                 return _find()
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Failed to find similar sessions: {e}")
             log_error(e, "find_similar", self.errors_path)
             return []
@@ -266,7 +266,7 @@ class ThreadSafeSessionEmbeddings:
             try:
                 embedding = self._index.reconstruct(int(idx))
                 return embedding.astype(np.float32)
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.warning(f"Failed to reconstruct embedding for {session_id}: {e}")
                 return None
 
@@ -274,7 +274,7 @@ class ThreadSafeSessionEmbeddings:
             with self._rw_lock.read_lock():
                 return _get()
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Failed to get embedding: {e}")
             log_error(e, "get_embedding", self.errors_path)
             return None
@@ -297,7 +297,7 @@ class ThreadSafeSessionEmbeddings:
             logger.debug(f"Index saved to {self.embeddings_path}")
             return True
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Failed to save index: {e}")
             log_error(e, "save_index", self.errors_path)
             return False

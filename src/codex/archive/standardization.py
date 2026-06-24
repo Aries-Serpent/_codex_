@@ -77,7 +77,7 @@ class StandardizationManager:
         # Validate original record against v1 schema
         try:
             self.schema_validator.validate(record, version="1.0")
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             # If validation fails, continue anyway (graceful degradation)
 
@@ -108,7 +108,7 @@ class StandardizationManager:
         # Validate against v2 schema
         try:
             self.schema_validator.validate(enhanced_record, version="2.0")
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             # If validation fails, continue anyway (graceful degradation)
 
@@ -136,7 +136,7 @@ class StandardizationManager:
         try:
             self.schema_validator.validate(record, version=schema_version)
             result["verification_details"]["schema_valid"] = True
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             result["verification_details"]["schema_error"] = str(e)
             # For v1 records, schema validation might fail gracefully

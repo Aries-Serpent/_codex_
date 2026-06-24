@@ -39,7 +39,7 @@ def _maybe_cuda_sync() -> None:
 
         if torch.cuda.is_available():
             torch.cuda.synchronize()
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -178,7 +178,7 @@ def main(argv: list[str] | None = None) -> int:
                         "cuda_sync": not args.no_cuda_sync,
                     }
                 )
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             print(f"[mlflow] skipped: {e}")
     return 0

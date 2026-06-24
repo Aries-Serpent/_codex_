@@ -485,7 +485,7 @@ def record_scoring_pattern(
 
     except ImportError:
         logger.debug("AgentMemory not available, skipping pattern recording")
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.warning("Failed to record scoring pattern: %s", e)
 
 

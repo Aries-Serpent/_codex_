@@ -37,7 +37,7 @@ try:  # pragma: no cover - structured logging is optional offline
         init_json_logging,
         log_event,
     )
-except Exception:  # pragma: no cover - degrade gracefully without structured logging
+except (ValueError, TypeError):  # pragma: no cover - degrade gracefully without structured logging
     ArgparseJSONParser = None
 
     def init_json_logging():
@@ -78,7 +78,7 @@ def train_main() -> int:
     """Delegate to the Hydra training entrypoint while staying import-safe."""
     try:
         from . import hydra_main
-    except Exception as exc:  # pragma: no cover - defensive
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive
         _die(f"[codex-train] hydra_main not available: {exc}")
     try:
         main = getattr(hydra_main, "main", None)
@@ -95,7 +95,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
 
     try:
         module = import_module(module_path)
-    except Exception as exc:  # pragma: no cover - import failures are rare
+    except (IOError, OSError) as exc:  # pragma: no cover - import failures are rare
         failures.append(f"{module_path}: import failed ({exc})")
         return None
 
@@ -107,14 +107,14 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
         result = main_fn()
     except SystemExit:
         raise
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         failures.append(f"{module_path}.main() raised {exc!r}")
         return None
 
     try:
         return int(result)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         failures.append(f"{module_path}.main() returned non-int value ({exc})")
         return None
@@ -128,7 +128,7 @@ def _run_module(module_path: str, failures: list[str]) -> bool:
         return True
     except SystemExit:
         raise
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         failures.append(f"{module_path}: execution failed ({exc})")
         return False
@@ -266,7 +266,7 @@ def eval_main() -> int:
                     rc=rc,
                 )
                 return rc
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.debug(f"Exception: {exc}")
                 sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")
                 override_failed = True

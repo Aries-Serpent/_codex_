@@ -26,7 +26,7 @@ try:  # Optional dependency: prometheus-client
     from prometheus_client import CollectorRegistry, Counter, Gauge, Histogram
 
     _HAS_PROMETHEUS = True
-except Exception:  # pragma: no cover - optional dependency path
+except (IOError, OSError):  # pragma: no cover - optional dependency path
     CollectorRegistry = None
     Counter = Gauge = Histogram = None
     _HAS_PROMETHEUS = False

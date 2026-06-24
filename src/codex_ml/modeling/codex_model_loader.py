@@ -45,7 +45,7 @@ def _get_registry_factory(name: str):
         from codex_ml.models.loader_registry import get_model
 
         return get_model(name)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -55,7 +55,7 @@ def _maybe_import_peft():
         from peft import LoraConfig, PeftModel, get_peft_model
 
         return LoraConfig, get_peft_model, PeftModel
-    except Exception:  # pragma: no cover - optional dep
+    except (ImportError, AttributeError):  # pragma: no cover - optional dep
         return None, None, None
 
 
@@ -124,7 +124,7 @@ def load_model_with_optional_lora(
                 model = model.to(dtype=torch_dtype)
             if device_map is not None:
                 model = model.to(device_map)
-        except Exception:  # pragma: no cover - fallback to HF
+        except (IOError, OSError):  # pragma: no cover - fallback to HF
             model = load_from_pretrained(
                 AutoModelForCausalLM,
                 name_or_path,
@@ -162,7 +162,7 @@ def load_model_with_optional_lora(
             if revision is not None:
                 extra.setdefault("revision", revision)
             return PeftModel.from_pretrained(model, lora_path, **extra)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             return model
 
@@ -171,7 +171,7 @@ def load_model_with_optional_lora(
         from peft import TaskType as _TaskType
 
         TaskType = _TaskType
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         TaskType = None
 

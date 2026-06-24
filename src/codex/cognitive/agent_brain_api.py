@@ -530,7 +530,7 @@ class AgentBrainAPI:
                 }
                 for m in matches
             ]
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug("Pattern query skipped: %s", exc)
             return []
 
@@ -541,7 +541,7 @@ class AgentBrainAPI:
                 outcome=feedback.outcome,
                 context=feedback.context,
             )
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug("Learning submission skipped: %s", exc)
 
     def __repr__(self) -> str:  # pragma: no cover

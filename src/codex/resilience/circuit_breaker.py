@@ -144,7 +144,7 @@ class CircuitBreaker:
         # Execute outside the lock so we don't block other threads during I/O.
         try:
             result = fn(*args, **kwargs)
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             self._on_failure()
             raise exc from exc
         else:

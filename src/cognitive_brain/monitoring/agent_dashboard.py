@@ -298,7 +298,7 @@ class AgentDashboard:
             today = datetime.now(timezone.utc).date().isoformat()
             _al_queries_today = _al_hook._daily_counts.get(today, 0)
             _al_budget = _al_hook.query_budget_per_day
-        except Exception:  # pragma: no cover - optional AL module
+        except (ImportError, AttributeError):  # pragma: no cover - optional AL module
             logger.debug("Suppressed exception in handler", exc_info=True)
         return AgentHealthMetrics(
             coherence_current=coherence_current,

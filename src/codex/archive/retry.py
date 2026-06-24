@@ -74,7 +74,7 @@ def retry_with_backoff(config: RetryConfig | None = None) -> Callable[[Func], Fu
                         raise
                     delay = calculate_backoff(attempt, config=retry_config, rng=rng)
                     time.sleep(delay)
-                except Exception:
+                except (ValueError, TypeError, RuntimeError):
                     logger.warning("Exception occurred", exc_info=True)
                     raise
             if last_error is not None:  # pragma: no cover - defensive

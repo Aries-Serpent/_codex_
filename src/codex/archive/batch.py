@@ -196,7 +196,7 @@ class BatchRestore:
         try:
             with _optional_timer(performance_enabled, f"restore:{item.tombstone}") as metrics:
                 decorated(item.tombstone, output_path=item.output, actor=item.actor)
-        except Exception as exc:  # pragma: no cover - exercised in tests
+        except (IOError, OSError) as exc:  # pragma: no cover - exercised in tests
             status = "FAILED"
             detail = str(exc)
         result = {

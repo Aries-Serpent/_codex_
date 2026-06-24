@@ -203,7 +203,7 @@ class GitHubMCPPoster:
             status = exc.code
             body = {}
             raw_scopes = ""
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             health["expiry_warning"] = f"Request failed: {exc}"
             return health
 
@@ -1845,7 +1845,7 @@ class GitHubMCPPoster:
             mem = SQLiteMemory()
             mem.store_pattern(pattern)
             logger.debug("CB pattern stored: %s", pattern_id)
-        except Exception as _cb_exc:
+        except (ValueError, TypeError, RuntimeError) as _cb_exc:
             logger.debug(
                 "CB pattern storage skipped (%s: %s)",
                 type(_cb_exc).__name__,
@@ -1910,7 +1910,7 @@ class GitHubMCPPoster:
 
             return "\n".join(lines) + "\n"
 
-        except Exception as _exc:
+        except (IOError, OSError) as _exc:
             logger.debug("CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc)
             return ""
 

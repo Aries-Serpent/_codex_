@@ -9,7 +9,7 @@ from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional import
     import mlflow
-except Exception:  # pragma: no cover - environments without mlflow
+except (IOError, OSError):  # pragma: no cover - environments without mlflow
     mlflow = None
 
 from codex_ml.tracking.mlflow_guard import ensure_file_backend  # noqa: E402
@@ -51,7 +51,7 @@ def init_mlflow_safe(offline_mode: bool | None = None, **kwargs: object) -> bool
         mlflow.start_run()
         LOGGER.info("[codex] MLflow initialised (uri=%s)", uri)
         return True
-    except Exception as exc:  # pragma: no cover - defensive
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
         LOGGER.warning("[codex] MLflow initialisation failed: %s", exc)
         return False
 
@@ -64,7 +64,7 @@ def log_metric_safe(key: str, value: float, *, step: int | None = None) -> None:
     try:
         if mlflow.active_run():
             mlflow.log_metric(key, float(value), step=step)
-    except Exception as exc:  # pragma: no cover - defensive
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow metric logging failed (%s): %s", key, exc)
 
 
@@ -76,7 +76,7 @@ def log_params_safe(params: Mapping[str, Any]) -> None:
     try:
         if mlflow.active_run():
             mlflow.log_params(dict(params))
-    except Exception as exc:  # pragma: no cover - defensive
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow parameter logging failed: %s", exc)
 
 
@@ -88,7 +88,7 @@ def log_artifact_safe(path: str) -> None:
     try:
         if mlflow.active_run():
             mlflow.log_artifact(path)
-    except Exception as exc:  # pragma: no cover - defensive
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive
         LOGGER.debug("[codex] MLflow artifact logging failed for %s: %s", path, exc)
 
 

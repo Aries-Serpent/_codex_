@@ -181,7 +181,7 @@ class _WhitespaceFallbackTokenizer:
         if return_tensors == "pt":
             try:
                 import torch
-            except Exception:  # pragma: no cover - torch optional
+            except (ImportError, AttributeError):  # pragma: no cover - torch optional
                 logger.debug("Suppressed exception in handler", exc_info=True)
             else:
                 return {"input_ids": torch.tensor(sequences, dtype=torch.long)}

@@ -24,7 +24,7 @@ Example::
     try:
         run_training(...)
         manager.alert_training_complete(run_id="run-42", epochs=10, final_loss=0.15)
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         manager.alert_training_failure(exc, run_id="run-42", epoch=7)
         raise
 """

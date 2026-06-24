@@ -28,11 +28,11 @@ from dataclasses import dataclass  # noqa: E402
 
 try:
     import libcst as cst  # optional
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     cst = None
 try:
     import parso  # optional
-except Exception:  # pragma: no cover - optional dependency
+except (ValueError, TypeError):  # pragma: no cover - optional dependency
     parso = None
 
 
@@ -61,14 +61,14 @@ def parse_tiered(code: str) -> ParseResult:
     if cst is not None:
         try:
             return ParseResult(mode="cst", cst_tree=cst.parse_module(code))
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     # Tertiary: Parso (tolerant/partial)
     if parso is not None:
         try:
             return ParseResult(mode="parso", parso_tree=parso.parse(code))
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
     # Last resort: degraded

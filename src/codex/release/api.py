@@ -56,7 +56,7 @@ def _templated_bytes(data: bytes, vars: dict) -> bytes:
         return data
     try:
         s = data.decode("utf-8", "ignore")
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return data
     for k, v in vars.items():
@@ -245,7 +245,7 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
             try:
                 item_row, _ = dal.fetch_by_tombstone(component.tombstone)
                 item_id = item_row.id
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 item_id = None
             dal.add_release_component(
@@ -259,7 +259,7 @@ def pack_release(manifest_path: Path, staging_dir: Path, bundle_path: Path) -> t
         _evidence_append_release(
             "RELEASE_PERSIST", {"release_id": m.release_id, "meta_id": release_meta_id}
         )
-    except Exception as exc:  # pragma: no cover - best effort logging
+    except (IOError, OSError) as exc:  # pragma: no cover - best effort logging
         _evidence_append_release(
             "RELEASE_PERSIST_FAIL",
             {"release_id": m.release_id, "error": str(exc)},

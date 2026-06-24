@@ -96,7 +96,7 @@ def setup_distributed(
         logger.info(f"Distributed initialization successful (rank {rank}/{world_size})")
         return True
 
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.error(f"Failed to initialize distributed: {e}")
         return False

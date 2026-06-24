@@ -50,7 +50,7 @@ def _session_log_dir() -> Path:
     if raw:
         try:
             return Path(raw).expanduser()
-        except Exception:  # pragma: no cover - defensive fallback
+        except (IOError, OSError):  # pragma: no cover - defensive fallback
             return DEFAULT_LOG_DIR
     return DEFAULT_LOG_DIR
 
@@ -209,12 +209,12 @@ def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
     rec.setdefault("session.id", get_session_id())
     try:
         session_logger = get_session_logger()
-    except Exception:  # pragma: no cover - defensive
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
         pass
     else:
         try:
             session_logger.log_event(event, _prepare_session_payload(rec))
-        except Exception:  # pragma: no cover - defensive
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
             logger.debug("Suppressed exception in handler", exc_info=True)
     logger.info(rec)
 
@@ -423,7 +423,7 @@ def capture_exceptions(
                 return 0
             try:
                 return int(result)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 resolved_logger.warning("Exception occurred", exc_info=True)
                 return 0
 

@@ -66,7 +66,7 @@ class ThreadSafeArchive:
             log_error(e, f"archive_timeout_{session_id}", self.errors_path)
             raise
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Archive error for {session_id}: {e}")
             log_error(e, f"archive_error_{session_id}", self.errors_path)
             raise
@@ -83,7 +83,7 @@ class ThreadSafeArchive:
             log_error(e, f"retrieve_timeout_{session_id}", self.errors_path)
             raise
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Retrieve error for {session_id}: {e}")
             log_error(e, f"retrieve_error_{session_id}", self.errors_path)
             raise
@@ -152,7 +152,7 @@ class ArchiveSessionGuard:
             logger.error(f"Archive timeout for {session_id}")
             return None
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Archive operation failed for {session_id}: {e}")
             log_error(e, f"archive_guard_error_{session_id}", self.archive.errors_path)
             return None
@@ -173,7 +173,7 @@ class ArchiveSessionGuard:
             logger.error(f"Retrieve timeout for {session_id}")
             return None
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Retrieve operation failed for {session_id}: {e}")
             log_error(e, f"retrieve_guard_error_{session_id}", self.archive.errors_path)
             return None
@@ -193,7 +193,7 @@ class ArchiveSessionGuard:
             try:
                 result = self.archive_with_lock(sid, archive_func)
                 return sid, result is not None
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.error(f"Parallel archive failed for {sid}: {e}")
                 return sid, False
 
@@ -204,7 +204,7 @@ class ArchiveSessionGuard:
                 try:
                     sid, success = future.result()
                     results[sid] = success
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.error(f"Parallel archive exception: {e}")
                     results[futures[future]] = False
 

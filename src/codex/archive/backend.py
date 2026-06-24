@@ -35,7 +35,7 @@ from urllib.parse import urlparse  # noqa: E402 — CWE-20: proper URL parsing
 
 try:  # pragma: no cover - optional dependency
     import sqlalchemy as sa
-except Exception:  # pragma: no cover
+except (ValueError, TypeError):  # pragma: no cover
     sa = None
 
 from . import schema  # noqa: E402
@@ -531,7 +531,7 @@ class ArchiveDAL:
 
                 yield execute_sql
                 self._conn.commit()
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 self._conn.rollback()
                 raise

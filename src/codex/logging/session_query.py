@@ -39,7 +39,7 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as exc:  # pragma: no cover - defensive
+except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive
     logging.getLogger(__name__).debug("sqlite auto setup failed: %s", exc)
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
@@ -205,7 +205,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         rows, cols = fetch_rows(db, args.session_id, args.last, args.desc)
         print_rows(rows, cols)
         return 0
-    except Exception as exc:  # pragma: no cover - top-level guard
+    except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
 
@@ -214,7 +214,7 @@ if __name__ == "__main__":  # pragma: no cover - CLI entry
     session_ctx: Optional[Any]
     try:
         from .session_hooks import session as session_ctx
-    except Exception:  # pragma: no cover - optional helper
+    except (ImportError, AttributeError):  # pragma: no cover - optional helper
         session_ctx = None
     if session_ctx:
         with session_ctx(sys.argv):

@@ -256,7 +256,7 @@ class SandboxManager:
                 timed_out=True,
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             duration_ms = (time.time() - start_time) * 1000
 

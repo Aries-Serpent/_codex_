@@ -18,7 +18,7 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as exc:  # pragma: no cover
+except (ImportError, AttributeError) as exc:  # pragma: no cover
     logging.getLogger(__name__).debug("SQLite patch disabled: %s", exc)
 
 # Initialize logger early

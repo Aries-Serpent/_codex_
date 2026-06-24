@@ -21,7 +21,7 @@ from typing import Any  # noqa: E402
 
 try:
     import torch
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
 SCHEMA_VERSION = "2.0"  # Checkpoint schema version for compatibility tracking
@@ -128,7 +128,7 @@ def load_checkpoint(
         try:
             with open(metadata, encoding="utf-8") as f:
                 meta = json.load(f)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             meta = {}
     # Validate schema version for compatibility

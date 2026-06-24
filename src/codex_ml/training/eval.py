@@ -14,7 +14,7 @@ from codex_utils.ndjson import NDJSONLogger
 
 try:  # pragma: no cover - torch optional in tests
     import torch
-except Exception:  # pragma: no cover - torch optional in tests
+except (ValueError, TypeError):  # pragma: no cover - torch optional in tests
     torch = None  # type: ignore[assignment]
 
 
@@ -23,7 +23,7 @@ def _safe_float(value: object) -> float:
         if hasattr(value, "item"):
             return float(value.item())
         return float(value)  # type: ignore[arg-type]
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return 0.0
 
@@ -37,7 +37,7 @@ def _move_batch_to_device(batch: Mapping[str, object], device: object) -> Mappin
             try:
                 moved[key] = value.to(device)
                 continue
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         moved[key] = value
@@ -85,7 +85,7 @@ def evaluate(
                 if metrics_fn is not None:
                     try:
                         metrics = metrics_fn(outputs, batch_for_device)
-                    except Exception:
+                    except (ValueError, TypeError, RuntimeError):
                         logger.warning("Exception occurred", exc_info=True)
                         metrics = {}
                     for key, value in metrics.items():

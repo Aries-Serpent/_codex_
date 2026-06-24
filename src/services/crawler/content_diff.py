@@ -515,7 +515,7 @@ class SemanticDiffer:
 
             return float(similarity)
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"Semantic similarity computation failed: {e}")
             # Fallback to basic similarity
             return self._basic_similarity(text1, text2)
@@ -552,7 +552,7 @@ class SemanticDiffer:
             # scikit-learn is not available; fall back to SequenceMatcher
             matcher = difflib.SequenceMatcher(None, text1, text2)
             return matcher.ratio()
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             # Any unexpected failure in TF-IDF computation: log and fall back
             logger.error(f"TF-IDF similarity computation failed: {e}")
             matcher = difflib.SequenceMatcher(None, text1, text2)

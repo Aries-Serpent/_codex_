@@ -16,7 +16,7 @@ from math import exp  # noqa: E402
 
 try:  # optional dependency for a real classifier
     from transformers import pipeline  # type: ignore
-except Exception:  # pragma: no cover - transformers not installed
+except (ImportError, AttributeError):  # pragma: no cover - transformers not installed
     pipeline = None
 
 MODEL_NAME = "philschmid/tiny-bert-sst2-distilled"

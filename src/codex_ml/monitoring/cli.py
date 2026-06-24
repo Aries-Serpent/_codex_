@@ -50,7 +50,7 @@ def _export_file(src: str, dst: str, fmt: str, *, echo, bad_param_exc) -> None:
             rows.append(
                 LogRecord(**{k: r.get(k) for k in LogRecord.__dataclass_fields__ if k in r}).dict()
             )
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             rows.append(r)
     if fmt == "csv":

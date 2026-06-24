@@ -115,7 +115,7 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
         df = pd.read_csv(in_csv)
         df.to_parquet(out_parquet)
         return True
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 
@@ -123,7 +123,7 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
 def _validate_with_jsonschema(data_path: Path, schema_path: Path) -> None:
     try:
         import jsonschema
-    except Exception:  # pragma: no cover - import guards
+    except (IOError, OSError):  # pragma: no cover - import guards
         print(
             "[metrics-cli] jsonschema not installed; skipping validation",
             file=sys.stderr,
@@ -212,7 +212,7 @@ def _csv_to_duckdb(
         raise SystemExit(
             "[metrics-cli] duckdb dependency missing; install with `pip install duckdb`"
         ) from exc
-    except Exception as exc:  # pragma: no cover - defensive import guard
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive import guard
         raise SystemExit(f"[metrics-cli] unable to import duckdb: {exc}") from exc
 
     duck_db.parent.mkdir(parents=True, exist_ok=True)
@@ -330,7 +330,7 @@ def _summarize(path: Path) -> dict[str, Any]:
         if "epoch" in record:
             try:
                 epochs.add(int(record["epoch"]))
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         for key, value in record.items():
@@ -363,7 +363,7 @@ def cmd_summary(args: argparse.Namespace) -> int:
 def cmd_validate(args: argparse.Namespace) -> int:
     try:
         import jsonschema
-    except Exception as exc:  # pragma: no cover - import guard
+    except (IOError, OSError) as exc:  # pragma: no cover - import guard
         print(
             f"[metrics-cli] jsonschema not installed; cannot validate ({exc!r})",
             file=sys.stderr,

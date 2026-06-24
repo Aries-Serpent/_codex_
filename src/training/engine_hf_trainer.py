@@ -130,12 +130,12 @@ from typing import Any, Optional, cast
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
-except Exception:  # pragma: no cover - numpy missing
+except (IOError, OSError):  # pragma: no cover - numpy missing
     np = None
 
 try:  # pragma: no cover - optional datasets dependency
     from datasets import Dataset  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - datasets missing
+except (ImportError, AttributeError):  # pragma: no cover - datasets missing
 
     class Dataset:  # type: ignore[no-redef]
         """Minimal stand-in for datasets.Dataset used in tests/offline.
@@ -166,7 +166,7 @@ except Exception:  # pragma: no cover - datasets missing
             col = self._data[first_key]
             try:
                 return len(col)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 return 0
 
@@ -185,7 +185,7 @@ try:  # pragma: no cover - optional transformers dependency
     )
     from transformers import __version__ as _hf_version
     from transformers.optimization import get_scheduler
-except Exception:  # pragma: no cover - transformers missing
+except (ImportError, AttributeError):  # pragma: no cover - transformers missing
     _hf_version = "0.0.0-offline"
 
     class _MissingTransformersObject:
@@ -224,7 +224,7 @@ except Exception:  # pragma: no cover - transformers missing
 
 try:  # pragma: no cover - optional torch dependency
     import torch
-except Exception:  # pragma: no cover - torch missing or stubbed out by tests
+except (ImportError, AttributeError):  # pragma: no cover - torch missing or stubbed out by tests
     import types
 
     def _noop(*args: Any, **kwargs: Any) -> None:  # pragma: no cover - fallback helper
@@ -282,19 +282,19 @@ from omegaconf import OmegaConf
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
-except Exception as exc:  # pragma: no cover - missing in some envs
+except (IOError, OSError) as exc:  # pragma: no cover - missing in some envs
     CheckpointManager = None  # type: ignore[assignment]
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter
-except Exception:  # pragma: no cover - optional dep
+except (IOError, OSError):  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
 try:  # Optional accelerate integration
     from accelerate import Accelerator as _Accelerator
-except Exception:  # pragma: no cover - optional dep
+except (IOError, OSError):  # pragma: no cover - optional dep
     _Accelerator = None
 
 
@@ -372,7 +372,7 @@ def _log_mlflow_metrics(
             for key, value in metrics.items():
                 if isinstance(value, (int, float)):
                     mlflow_module.log_metric(key, float(value))
-    except Exception as exc:  # pragma: no cover - defensive logging
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive logging
         print(f"[codex][mlflow] skipped logging: {exc}")
 
 
@@ -581,7 +581,7 @@ def _compute_metrics(eval_pred):
         log_probs = logits - logits.max(axis=-1, keepdims=True)
         log_probs = log_probs - np.log(np.exp(log_probs).sum(axis=-1, keepdims=True))
         loss = float(-log_probs[np.arange(logits.shape[0]), lbl].mean())
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         loss = None
     ppl = float("inf") if loss in (None, 0) else math.exp(loss)
@@ -612,7 +612,7 @@ def _seed_everything(seed: int = 42):
     except RuntimeError as e:
         try:
             torch.use_deterministic_algorithms(True, warn_only=True)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Could not enable deterministic algorithms: %s", e)
 
 
@@ -655,7 +655,7 @@ class NDJSONMetricsWriter:
                 valid_keys = {f.name for f in _dc.fields(LogRecord)}
                 filtered = {k: v for k, v in obj.items() if k in valid_keys}
                 data = LogRecord(**filtered).redacted().dict()
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj
         if self._async is not None:
@@ -671,7 +671,7 @@ class NDJSONMetricsWriter:
     def __del__(self) -> None:  # pragma: no cover - best effort
         try:
             self.close()
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -962,7 +962,7 @@ def _sanitize_config_snapshot(cfg: Mapping[str, Any] | None) -> dict[str, Any] |
 
     try:
         normalized = _convert(cfg)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     return normalized if isinstance(normalized, dict) else None
@@ -1024,11 +1024,11 @@ def run_hf_trainer(
         raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
-    except Exception as exc:  # pragma: no cover - logging best effort
+    except (IOError, OSError) as exc:  # pragma: no cover - logging best effort
         log_error("env_log", str(exc), "env")
     try:
         snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)
-    except Exception as exc:  # pragma: no cover - logging best effort
+    except (IOError, OSError) as exc:  # pragma: no cover - logging best effort
         log_error("hydra_snapshot", str(exc), "env")
     resume_ckpt = Path(resume_from) if resume_from else None
     if resume_ckpt and not resume_ckpt.exists():
@@ -1056,7 +1056,7 @@ def run_hf_trainer(
         except YAMLError as exc:
             logger.debug(f"YAMLError: {exc}")
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             cfg = {}
         if config_snapshot is None and cfg:
@@ -1183,7 +1183,7 @@ def run_hf_trainer(
             if lora_task_type:
                 cfg["task_type"] = str(lora_task_type)
             model = apply_lora(model, cfg)
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             log_error("lora_import", str(exc), "peft")
 
@@ -1237,7 +1237,7 @@ def run_hf_trainer(
                     return control
 
             callbacks = [_CheckpointCallback()]
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             logger.debug(f"Exception: {exc}")
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
@@ -1252,7 +1252,7 @@ def run_hf_trainer(
             os.environ.setdefault("MLFLOW_TRACKING_URI", "file:./mlruns")
             try:
                 loggers = _codex_logging_bootstrap(log_args)
-            except Exception as exc:  # pragma: no cover - bootstrap is best-effort
+            except (IOError, OSError) as exc:  # pragma: no cover - bootstrap is best-effort
                 print(f"[telemetry] bootstrap skipped: {exc}")
 
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
@@ -1314,7 +1314,7 @@ def run_hf_trainer(
                 **sysd,
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -1329,7 +1329,7 @@ def run_hf_trainer(
                     writer.add_scalar(k, v, trainer.state.global_step)
             writer.flush()
             writer.close()
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(
                 f"Exception: {e}", exc_info=True
@@ -1364,7 +1364,7 @@ def run_hf_trainer(
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(config_path, target_path)
             copied_resume_config = target_path
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             copied_resume_config = None
 

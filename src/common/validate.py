@@ -84,7 +84,7 @@ def run_clean_checkpoint(
     context = gx.get_context()
     try:
         suite = context.get_expectation_suite(suite_name)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         suite = context.add_or_update_expectation_suite(suite_name)
 

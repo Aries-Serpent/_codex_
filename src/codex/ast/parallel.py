@@ -70,7 +70,7 @@ class ParallelParser:
                     node = future.result()
                     if node:
                         results[file_path] = node
-                except Exception as e:
+                except (IOError, OSError) as e:
                     logger.error(f"Failed to parse {file_path}: {e}")
 
                 # Update progress
@@ -84,7 +84,7 @@ class ParallelParser:
         """Parse a single file (called in worker thread)."""
         try:
             return parse_python(file_path)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Parse error in {file_path}: {e}")
             return None
 

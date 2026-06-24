@@ -47,7 +47,7 @@ class FSSpecStorage(StorageProvider):
     def __post_init__(self) -> None:
         try:
             import fsspec
-        except Exception as exc:  # pragma: no cover - optional dependency missing
+        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
             raise RuntimeError("fsspec is required to use the FSSpecStorage backend") from exc
 
         fs, root_path = fsspec.core.url_to_fs(self.base_url)

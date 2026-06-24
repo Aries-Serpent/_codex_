@@ -51,7 +51,7 @@ def _resolve_relative_path(path: Path) -> Path:
     if GlobalHydra is not None:
         try:
             hydra_initialized = bool(GlobalHydra.instance().is_initialized())
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             hydra_initialized = False
 

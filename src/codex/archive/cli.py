@@ -265,7 +265,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
             click.echo(f"[INFO] Archive URL: {redacted_display}", err=True)
         service.dal.list_items(limit=0)
         click.echo("[DEBUG] Backend validation: OK", err=True)
-    except Exception as validation_err:
+    except (ConnectionError, TimeoutError) as validation_err:
         logger.debug(f"Exception: {validation_err}")
         sanitized = redact_text_credentials(str(validation_err)).strip()
         detail = f"{type(validation_err).__name__}" + (f": {sanitized}" if sanitized else "")
@@ -473,7 +473,7 @@ def health_check(debug: bool) -> None:
         items = service.dal.list_items(limit=1)
         click.echo("Status: \N{CHECK MARK} OK")
         click.echo(f"Items Retrievable: {len(items)}")
-    except Exception as exc:  # pragma: no cover - diagnostics path
+    except (IOError, OSError) as exc:  # pragma: no cover - diagnostics path
         sanitized = redact_text_credentials(str(exc)).strip()
         detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
         click.echo(
@@ -601,14 +601,14 @@ def validate_standardization(
             try:
                 validator.validate(record, version=version)
                 valid_records += 1
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 if repair and version == "1.0":
                     try:
                         validator.migrate_to_v2(record)
                         valid_records += 1
                         repaired_records += 1
-                    except Exception as repair_err:
+                    except (ValueError, TypeError, RuntimeError) as repair_err:
                         logger.debug(f"Exception: {repair_err}")
                         issues.append(
                             f"Line {line_no}: Schema error: {e} (repair failed: {repair_err})"
@@ -624,7 +624,7 @@ def validate_standardization(
                     sig_valid = manager.verify_standardization(record)
                     if not sig_valid["valid"]:
                         warnings.append(f"Line {line_no}: Signature verification failed")
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     warnings.append(f"Line {line_no}: Could not verify signature: {e}")
 
@@ -692,7 +692,7 @@ def migrate_evidence_to_v2() -> None:
                 migrated_records.append(migrated)
             else:
                 migrated_records.append(record)  # Already v2
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             errors.append(f"Line {line_no}: {e}")
 

@@ -12,7 +12,7 @@ from .api import load_tokenizer, pad_sequences
 
 try:
     from codex_ml.interfaces.tokenizer import HFTokenizer
-except Exception:  # pragma: no cover - optional dependency guard
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency guard
     HFTokenizer = None
 
 # HFTokenizerAdapter and SPTokenizer are optional-dependency attributes.  They must

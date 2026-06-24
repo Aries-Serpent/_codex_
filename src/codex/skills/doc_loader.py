@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import yaml
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     yaml = None
 
 
@@ -61,7 +61,7 @@ def _extract_frontmatter(text: str) -> dict:
     try:
         data = yaml.safe_load(match.group(1)) or {}
         return data if isinstance(data, dict) else {}
-    except Exception:
+    except (IOError, OSError):
         return {}
 
 
@@ -184,7 +184,7 @@ def load_agent_docs_as_skills(
             if manifest is None:
                 continue
             skills.append(RegisteredSkill(manifest=manifest, source_path=str(md_file)))
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug("DocLoader: skipping '%s': %s", md_file, exc)
 
     logger.info("DocLoader: loaded %d agent doc skills from '%s'", len(skills), root)

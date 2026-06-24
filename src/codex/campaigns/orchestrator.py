@@ -419,7 +419,7 @@ cc: @mbaetiong
 
             with open(self.pattern_store_path, "w") as f:
                 json.dump(pattern_store, f, indent=2)
-        except Exception as e:
+        except (IOError, OSError) as e:
             self._log_event("pattern_store_update_error", {"error": str(e)})
 
     def _save_execution_record(self) -> None:
@@ -440,7 +440,7 @@ cc: @mbaetiong
         try:
             with open(executions_log, "a") as f:
                 f.write(json.dumps(record) + "\n")
-        except Exception as e:
+        except (IOError, OSError) as e:
             self._log_event("execution_record_error", {"error": str(e)})
 
     def _log_event(self, event_type: str, data: Dict[str, Any]) -> None:
@@ -466,7 +466,7 @@ class CampaignRegistryLoader:
         try:
             with open(registry_path, "r") as f:
                 registry = yaml.safe_load(f)
-        except Exception as e:
+        except (IOError, OSError) as e:
             raise ValueError(f"Failed to load campaign registry: {e}")
 
         campaigns = {}

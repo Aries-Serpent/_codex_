@@ -52,7 +52,7 @@ def _append_error_report(
     reports_dir = Path("_codex_reports")
     try:
         reports_dir.mkdir(parents=True, exist_ok=True)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # If error reporting fails we swallow the exception to avoid cascading failures.
         return
@@ -61,7 +61,7 @@ def _append_error_report(
     try:
         context_payload = context or {}
         context_str = json.dumps(context_payload, sort_keys=True, default=str)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         context_str = repr(context)
 
@@ -79,7 +79,7 @@ def _append_error_report(
     try:
         with error_file.open("a", encoding="utf-8") as fh:
             fh.write("\n".join(block_lines))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Suppress logging failures to keep evaluation running.
         return
@@ -95,7 +95,7 @@ def _safe_operation(
 
     try:
         return operation()
-    except Exception as exc:  # pragma: no cover - defensive logging path
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive logging path
         message = f"{exc.__class__.__name__}: {exc}"
         _append_error_report(step_name, message, context)
         raise
@@ -285,7 +285,7 @@ def _invoke_registry_metric(
             logger.debug(f"TypeError: {exc}")
             last_type_error = exc
             continue
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             append_error_entry(
                 "metric.execute",
@@ -323,7 +323,7 @@ def _compute_metrics(
                     registered_name,
                     get_registered_metric(registered_name),
                 )
-            except Exception as exc:
+            except (ValueError, TypeError, RuntimeError) as exc:
                 logger.debug(f"Exception: {exc}")
                 append_error_entry(
                     "metric-registry.load",
@@ -331,7 +331,7 @@ def _compute_metrics(
                     f"metric={registered_name}",
                     "Should this registry metric be reviewed or disabled?",
                 )
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         append_error_entry(
             "metric-registry.enumerate",
@@ -606,12 +606,12 @@ def run_evaluation(
 
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # Silently ignore param logging errors
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore MLflow errors
 
@@ -654,7 +654,7 @@ def run_evaluation(
                 sink_fp,
                 fieldnames=fieldnames if sink_kind == "csv" else None,
             )
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logger.debug(f"Exception: {exc}")
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
@@ -664,7 +664,7 @@ def run_evaluation(
         from codex_ml.utils.determinism import set_global_determinism
 
         set_global_determinism(1337)
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         # Determinism module not available or failed to initialize
 
@@ -674,7 +674,7 @@ def run_evaluation(
 
         _jl = JsonLogger("artifacts/logs/eval.ndjson")
         _jl.write(event="eval_start", metrics_sink=sink_kind)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Logging module not available or failed to initialize
 
@@ -684,7 +684,7 @@ def run_evaluation(
             from tools.perf.sampler import PerfSampler
 
             PerfSampler().run(steps=3)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             # Performance sampler not available or failed
 

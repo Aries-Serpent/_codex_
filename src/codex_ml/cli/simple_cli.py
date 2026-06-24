@@ -51,7 +51,7 @@ def _seed_everything(seed: int) -> None:
         import numpy as _np
 
         _np.random.seed(seed)
-    except Exception:  # pragma: no cover - numpy missing
+    except (ImportError, AttributeError):  # pragma: no cover - numpy missing
         logger.debug("Suppressed exception in handler", exc_info=True)
     try:  # pragma: no cover - torch optional in minimal installs
         import torch
@@ -59,7 +59,7 @@ def _seed_everything(seed: int) -> None:
         torch.manual_seed(seed)
         if torch.cuda.is_available():  # pragma: no cover - GPU dependent
             torch.cuda.manual_seed_all(seed)
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 

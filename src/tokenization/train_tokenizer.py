@@ -40,7 +40,7 @@ try:  # pragma: no cover - optional dependency
         logger.debug(f"hydra not available: {e}")
         import config_legacy as hydra
     from omegaconf import MISSING
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     hydra = None
     MISSING = object()  # type: ignore[assignment]
 
@@ -55,7 +55,7 @@ else:
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
-except Exception as exc:  # pragma: no cover
+except (ImportError, AttributeError) as exc:  # pragma: no cover
     spm = None  # type: ignore[assignment]
     _SPM_ERROR = exc
 else:  # pragma: no cover - import succeeded
@@ -226,13 +226,13 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             # pragma: no cover - optional dependency handling
             try:
                 _sp_model_pb2 = spm.sentencepiece_model_pb2
-            except Exception:  # pragma: no cover - dependency still missing
+            except (IOError, OSError):  # pragma: no cover - dependency still missing
                 logger.warning("Exception occurred", exc_info=True)
             else:
                 sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
         try:
             tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             processor = spm.SentencePieceProcessor()
             processor.Load(str(model_path))

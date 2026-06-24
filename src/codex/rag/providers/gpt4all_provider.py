@@ -68,7 +68,7 @@ class GPT4AllEmbeddingProvider:
             else:
                 self.dimension = dimension
 
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.error(f"Failed to initialize GPT4All: {e}")
             raise
 
@@ -97,7 +97,7 @@ class GPT4AllEmbeddingProvider:
             try:
                 embedding = self.embedder.embed(text)
                 embeddings.append(embedding)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error(f"Error encoding text: {e}")
                 embeddings.append([0.0] * self.dimension)
 

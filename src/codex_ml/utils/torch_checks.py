@@ -68,7 +68,7 @@ def inspect_torch(module: Optional[ModuleType] = None) -> TorchStatus:
 
     try:
         torch_mod = _load_torch(module)
-    except Exception as exc:  # pragma: no cover - best-effort guard
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - best-effort guard
         return TorchStatus(
             ok=False,
             detail=f"torch import failed: {exc!r}",
@@ -91,7 +91,7 @@ def inspect_torch(module: Optional[ModuleType] = None) -> TorchStatus:
 
     try:
         data_module = importlib.import_module("torch.utils.data")
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logger.debug(f"Exception: {exc}")
         logger.debug("Exception caught, returning", exc_info=True)
         return TorchStatus(

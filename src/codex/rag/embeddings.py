@@ -91,7 +91,7 @@ class LocalSentenceTransformerProvider:
                 "Install with: pip install sentence-transformers"
             )
             raise
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.error(f"Error loading local embedding model: {e}")
             raise
 
@@ -198,7 +198,7 @@ class OpenAIEmbeddingProvider:
                 batch_embeddings = [item.embedding for item in response.data]
                 embeddings.extend(batch_embeddings)
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error(f"Error encoding batch {i}-{i + len(batch)}: {e}")
                 raise
 
@@ -281,7 +281,7 @@ class CachedEmbeddingProvider:
                     self.cache_hits += 1
                     logger.debug(f"Cache hit for key: {cache_key}")
                     return embeddings
-                except Exception as e:
+                except (IOError, OSError) as e:
                     logger.warning(f"Error loading cache: {e}")
 
         # Cache miss - generate embeddings
@@ -307,7 +307,7 @@ class CachedEmbeddingProvider:
 
             logger.debug(f"Saved embeddings to cache: {cache_key}")
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.warning(f"Error saving to cache: {e}")
 
         return embeddings
@@ -339,7 +339,7 @@ class CachedEmbeddingProvider:
             # Add more validation rules as needed
             return True
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning(f"Error validating cache: {e}")
             return False
 
@@ -419,7 +419,7 @@ def create_embedding_provider(
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
-        except Exception as e:
+        except (ImportError, AttributeError) as e:
             logger.debug(f"sentence-transformers unavailable: {e}")
 
         # Priority 2: Try Ollama (good quality, local server)
@@ -435,7 +435,7 @@ def create_embedding_provider(
                     return CachedEmbeddingProvider(provider, cache_dir)
                 return provider
             logger.debug("Ollama server not running")
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Ollama unavailable: {e}")
 
         # Priority 3: Try llama.cpp (excellent performance, requires model file)
@@ -449,7 +449,7 @@ def create_embedding_provider(
                 if use_cache:
                     return CachedEmbeddingProvider(provider, cache_dir)
                 return provider
-            except Exception as e:
+            except (ImportError, AttributeError) as e:
                 logger.debug(f"llama.cpp unavailable: {e}")
 
         # Priority 4: Try GPT4All (easy setup, good quality)
@@ -463,7 +463,7 @@ def create_embedding_provider(
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"GPT4All unavailable: {e}")
 
         # Priority 5: Fall back to TF-IDF (always works, offline)
@@ -636,7 +636,7 @@ class TfidfEmbeddingProvider:
                 logger.info(
                     f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
                 )
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 logger.error(f"Error fitting TF-IDF vectorizer: {e}")
                 raise
 
@@ -645,7 +645,7 @@ class TfidfEmbeddingProvider:
             embeddings = self.vectorizer.transform(texts).toarray()
             logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)")
             return embeddings
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.error(f"Error transforming texts with TF-IDF: {e}")
             raise
 

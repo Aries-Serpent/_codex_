@@ -187,13 +187,13 @@ class CoherenceMonitor:
                     description="Quantum coherence and accuracy metrics",
                     unit="1",
                 )
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 self._otel_gauge = False
                 return
 
         try:
             self._otel_gauge.set(value, {"feature": feature, "metric": metric_name})
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.debug("Suppressed exception in handler", exc_info=True)
 
     # ------------------------------------------------------------------

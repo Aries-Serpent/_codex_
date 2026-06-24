@@ -132,7 +132,7 @@ class LoggerRegistry:
         for name, backend in self.backends.items():
             try:
                 backend.start_run(run_name)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed start on {name}: {e}")
 
@@ -140,7 +140,7 @@ class LoggerRegistry:
         for backend in self.backends.values():
             try:
                 backend.end_run()
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed end: {e}")
 
@@ -148,7 +148,7 @@ class LoggerRegistry:
         for backend in self.backends.values():
             try:
                 backend.log_metrics(metrics, step)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed log: {e}")
 
@@ -156,7 +156,7 @@ class LoggerRegistry:
         for backend in self.backends.values():
             try:
                 backend.log_params(params)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed params: {e}")
 

@@ -31,7 +31,7 @@ from codex_ml.training import run_functional_training
 
 try:
     from codex_ml import distributed as _distributed  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - safe fallback
+except (ImportError, AttributeError):  # pragma: no cover - safe fallback
 
     def init_distributed_if_needed(*_args, **_kwargs):
         return False
@@ -69,7 +69,7 @@ try:  # pragma: no cover - hydra optional at runtime
         logger.debug(f"hydra not available: {e}")
         import config_legacy as hydra
     from omegaconf import DictConfig, OmegaConf
-except Exception:  # pragma: no cover - degrade gracefully when hydra missing
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when hydra missing
     hydra = None
     DictConfig = type("_DictConfig", (), {})  # type: ignore[misc, assignment]
     OmegaConf = None  # type: ignore[assignment, misc]
@@ -123,7 +123,7 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
         container = OmegaConf.to_container(loaded, resolve=True)
         if isinstance(container, Mapping):
             return container
-    except Exception:
+    except (IOError, OSError):
         logger.debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
     return {}
 
@@ -150,7 +150,7 @@ def _load_conf_defaults(overrides: Sequence[str]) -> Mapping[str, Any]:
         }
     try:
         cfg = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
-    except Exception:
+    except (IOError, OSError):
         logger.debug("Failed to load YAML config from %s", config_path, exc_info=True)
         return {}
 
@@ -244,7 +244,7 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
                     resolved_cfg = OmegaConf.create(resolved)
                     merged_cfg = OmegaConf.merge(defaults_cfg, resolved_cfg)
                     resolved = OmegaConf.to_container(merged_cfg, resolve=True)
-                except Exception:
+                except (ValueError, TypeError, RuntimeError):
                     logger.debug("Hydra defaults merge failed", exc_info=True)
                     combined = dict(defaults)
                     combined.update(dict(resolved))

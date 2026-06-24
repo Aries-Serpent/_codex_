@@ -127,7 +127,7 @@ async def get_check_run_logs(
             logs=logs,
         )
 
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         logger.error(f"Failed to fetch check run logs: {e}", exc_info=True)
 
         # Convert GitHub client exceptions to HTTP exceptions
@@ -177,7 +177,7 @@ async def get_job_logs(
             logs=logs,
         )
 
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         logger.error(f"Failed to fetch job logs: {e}", exc_info=True)
 
         # Convert GitHub client exceptions to HTTP exceptions
@@ -253,7 +253,7 @@ async def list_check_runs(
             check_runs=check_runs_info,
         )
 
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         logger.error(f"Failed to list check runs: {e}", exc_info=True)
 
         # Convert GitHub client exceptions to HTTP exceptions

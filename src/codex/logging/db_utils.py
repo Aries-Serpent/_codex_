@@ -23,7 +23,7 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as e:
+except (IOError, OSError) as e:
     logger.debug(f"Exception: {e}")
     logger.warning(f"Exception: {e}", exc_info=True)
 from typing import Optional  # noqa: E402
@@ -49,7 +49,7 @@ def open_db(
         conn = sqlite3.connect(path)
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
         return conn
@@ -59,7 +59,7 @@ def open_db(
             conn = sqlite3.connect(v)
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
             return conn
@@ -74,7 +74,7 @@ def open_db(
             conn = sqlite3.connect(guess)
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
             return conn
@@ -82,7 +82,7 @@ def open_db(
     conn = sqlite3.connect(":memory:")
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return conn

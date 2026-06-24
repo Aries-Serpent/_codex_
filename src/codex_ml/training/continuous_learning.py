@@ -82,7 +82,7 @@ class ModelRegistry:
             try:
                 data = json.loads(self.registry_path.read_text())
                 self.versions = [ModelVersion.from_dict(v) for v in data.get("versions", [])]
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to load registry: {e}")
 

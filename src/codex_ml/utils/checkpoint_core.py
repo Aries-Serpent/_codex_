@@ -37,22 +37,22 @@ logger = logging.getLogger(__name__)
 
 try:
     import torch
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
 try:
     import numpy as np
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     np = None
 
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
-except Exception:  # pragma: no cover - treated as unavailable
+except (ImportError, AttributeError):  # pragma: no cover - treated as unavailable
     Version = None  # type: ignore[assignment]
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
-except Exception:  # pragma: no cover - optional dependency failures tolerated
+except (IOError, OSError):  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
@@ -61,7 +61,7 @@ from .safe_pickle import safe_pickle_load_bytes, trusted_pickle_dumps  # noqa: E
 
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
-except Exception:  # pragma: no cover - optional dependency issues tolerated
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency issues tolerated
     attach_integrity = None  # type: ignore[assignment]
 
     def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore
@@ -70,7 +70,7 @@ except Exception:  # pragma: no cover - optional dependency issues tolerated
 
 try:  # runtime metadata sidecar (best-effort)
     from .run_metadata import collect_run_metadata, write_run_manifest
-except Exception:  # pragma: no cover - optional dependency
+except (IOError, OSError):  # pragma: no cover - optional dependency
 
     def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore
         return {}
@@ -120,7 +120,7 @@ def _git_sha_try() -> str | None:
                 if ref_path.exists():
                     return ref_path.read_text(encoding="utf-8").strip()[:40]
             return ref[:40]
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             return None
     return None
@@ -149,13 +149,13 @@ def _rng_snapshot() -> dict[str, Any]:
                 "has_gauss": int(numpy_state[3]),
                 "cached_gauss": float(numpy_state[4]),
             }
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
     if torch is not None:
         try:
             snap["torch_cpu"] = torch.get_rng_state().tolist()  # tensor → list
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
         try:
@@ -166,7 +166,7 @@ def _rng_snapshot() -> dict[str, Any]:
                 snap["torch_cuda"] = [
                     {"data": state.tolist(), "dtype": str(state.dtype)} for state in cuda_states
                 ]
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
     return snap
@@ -198,7 +198,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     else:
                         python_state = tuple(python_state)
                 random.setstate(python_state)
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug("Exception: %s", e)
         logger.warning("Exception: %s", e, exc_info=True)
     if np is not None:
@@ -236,7 +236,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     else:
                         # Direct tuple format (not from JSON)
                         np.random.set_state(numpy_state)
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
     if torch is not None:
@@ -246,7 +246,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                 if torch_state_raw is not None:
                     torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
                     torch.set_rng_state(torch_cpu_state)
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
         try:
@@ -269,7 +269,7 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     tensor = torch.tensor(data, dtype=dtype, device=f"cuda:{i}")
                     cuda_states.append(tensor)
                 torch.cuda.set_rng_state_all(cuda_states)
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
 
@@ -297,7 +297,7 @@ def capture_environment_summary() -> dict[str, Any]:
     if _environment_summary is not None:
         try:
             return dict(_environment_summary())
-        except Exception as exc:  # pragma: no cover
+        except (ImportError, AttributeError) as exc:  # pragma: no cover
             logger.debug("provenance.environment_summary failed, using local fallback: %s", exc)
 
     summary: dict[str, Any] = {
@@ -308,22 +308,22 @@ def capture_environment_summary() -> dict[str, Any]:
     }
     try:
         summary["timestamp_utc"] = datetime.now(UTC).replace(microsecond=0).isoformat()
-    except Exception as exc:  # pragma: no cover
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
         logger.debug("Failed to get timestamp: %s", exc)
 
     if np is not None:
         try:
             summary["numpy_version"] = str(np.__version__)
-        except Exception as exc:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
             logger.debug("Failed to get numpy version: %s", exc)
     if torch is not None:
         try:
             summary["torch_version"] = str(torch.__version__)
-        except Exception as exc:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
             logger.debug("Failed to get torch version: %s", exc)
         try:
             summary["torch_cuda_available"] = bool(torch.cuda.is_available())
-        except Exception as exc:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
             logger.debug("Failed to check CUDA availability: %s", exc)
 
     return summary
@@ -351,7 +351,7 @@ def _config_hash(config: dict[str, Any] | None) -> str | None:
     try:
         payload = json.dumps(config, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(payload).hexdigest()
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -372,7 +372,7 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
     if callable(torch_save):
         try:
             torch_save(state, buf)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return trusted_pickle_dumps(state)
     else:
@@ -451,7 +451,7 @@ def _torch_supports_weights_only() -> bool:
         # Strip local version identifiers such as "+cpu"
         core_version = version.split("+")[0]
         return Version(core_version) >= Version("2.0.0")
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 
@@ -488,12 +488,12 @@ def _deserialize_payload(
                 fallback_kwargs.pop("weights_only", None)
                 try:
                     return torch_load(buf, **fallback_kwargs)
-                except Exception:
+                except (ValueError, TypeError, RuntimeError):
                     logger.warning("Exception occurred", exc_info=True)
                     buf.seek(0)
             else:
                 buf.seek(0)
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be
@@ -532,7 +532,7 @@ def _load_index(root: Path) -> dict[str, Any]:
         }
     try:
         return json.loads(p.read_text(encoding="utf-8"))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return {
             "schema_version": SCHEMA_VERSION,
@@ -577,7 +577,7 @@ def _prune_best_k(
                 shutil.rmtree(target)
             else:
                 target.unlink(missing_ok=True)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug("Exception: %s", e)
     idx["entries"] = keep
 
@@ -618,7 +618,7 @@ def save_checkpoint(
         if isinstance(metrics, dict) and metric_key in metrics:
             try:
                 metric_value = float(metrics[metric_key])
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 metric_value = metrics[metric_key]
 
@@ -627,7 +627,7 @@ def save_checkpoint(
     if config is not None:
         try:
             candidate = snapshot_config(config)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             candidate = {}
         if candidate:
@@ -704,7 +704,7 @@ def save_checkpoint(
     if not state_alias.exists():
         try:
             shutil.copyfile(ckpt_path, state_alias)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
 
@@ -717,7 +717,7 @@ def save_checkpoint(
                 ),
                 relative_to=root,
             )
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug("Exception: %s", e)
             logger.warning("Exception: %s", e, exc_info=True)
 
@@ -729,7 +729,7 @@ def save_checkpoint(
                 continue
             try:
                 shutil.rmtree(old)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug("Exception: %s", e)
                 logger.warning("Exception: %s", e, exc_info=True)
 
@@ -777,19 +777,19 @@ def save_checkpoint(
 
     try:
         manifest = dict(collect_run_metadata())
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         manifest = {}
     try:
         provenance = collect_run_meta()
         if provenance:
             manifest.setdefault("provenance", {}).update(provenance)
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug("Exception: %s", e)
         logger.warning("Exception: %s", e, exc_info=True)
     try:
         write_run_manifest(root, manifest)
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug("Exception: %s", e)
         logger.warning("Exception: %s", e, exc_info=True)
 
@@ -804,7 +804,7 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     version = meta_dict.get("schema_version")
@@ -848,7 +848,7 @@ def load_checkpoint(
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw, map_location=map_location)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})

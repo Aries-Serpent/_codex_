@@ -256,7 +256,7 @@ def evaluate_epoch(
                 for lg in logger:
                     try:
                         lg.log(record)
-                    except Exception:  # pragma: no cover (rare)
+                    except (ValueError, TypeError, RuntimeError):  # pragma: no cover (rare)
                         # Gracefully continue; avoid breaking evaluation on logger failure
                         logger.debug("Suppressed exception in handler", exc_info=True)  # type: ignore[attr-defined]
     avg_loss = running_loss / max(total, 1)
@@ -303,7 +303,7 @@ def evaluate_epoch(
             try:
                 lg.log(epoch_record)
                 lg.close()
-            except Exception:  # pragma: no cover
+            except (ValueError, TypeError, RuntimeError):  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)  # type: ignore[attr-defined]
     return result
 
@@ -336,7 +336,7 @@ def _collect_system_metrics() -> dict[str, float]:
 
         cpu_percent = float(psutil.cpu_percent(interval=None))
         memory_percent = float(psutil.virtual_memory().percent)
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
 

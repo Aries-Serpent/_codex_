@@ -145,7 +145,7 @@ class SlackChannel(AlertChannel):
         except RetryExhausted as exc:
             logger.warning("SlackChannel: all retry attempts exhausted — %s", exc.__cause__)
             return False
-        except Exception as exc:  # pragma: no cover — unexpected errors
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover — unexpected errors
             logger.warning("SlackChannel: unexpected error — %s", exc)
             return False
 

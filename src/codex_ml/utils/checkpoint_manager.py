@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional torch dependency
     import torch
-except Exception:  # pragma: no cover - torch missing
+except (IOError, OSError):  # pragma: no cover - torch missing
     torch = None  # type: ignore[assignment]
 
 __all__ = ["load_checkpoint", "save_checkpoint"]
@@ -78,7 +78,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
 
             try:
                 data = safe_pickle_load(str(target), use_restricted_unpickler=True)
-            except Exception as err:
+            except (ImportError, AttributeError) as err:
                 logger.warning("Exception occurred", exc_info=True)
                 raise torch_error from err
     else:  # pragma: no cover - exercised when torch is unavailable

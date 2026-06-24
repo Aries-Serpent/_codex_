@@ -28,7 +28,7 @@ def mlflow_run(
         module = importlib.import_module("mlflow")
         if module is None:
             raise ImportError("mlflow import returned None")
-    except Exception:  # pragma: no cover - dependency missing
+    except (ImportError, AttributeError):  # pragma: no cover - dependency missing
         yield
         return
 
@@ -41,12 +41,12 @@ def mlflow_run(
     run_stack: Optional[ExitStack] = ExitStack()
     try:
         run_stack.enter_context(run())  # type: ignore[union-attr]
-    except Exception as exc:  # pragma: no cover - runtime failures fall back to no-op
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime failures fall back to no-op
         LOGGER.warning("MLflow run initialization failed; continuing without tracking: %s", exc)
         if run_stack is not None:
             try:
                 run_stack.close()
-            except Exception as close_exc:  # pragma: no cover - suppress close errors
+            except (ValueError, TypeError, RuntimeError) as close_exc:  # pragma: no cover - suppress close errors
                 LOGGER.debug("Failed to close MLflow context after init failure: %s", close_exc)
         yield
         return
@@ -56,7 +56,7 @@ def mlflow_run(
             for key, value in params.items():
                 try:
                     log_param(key, value)
-                except Exception as exc:  # pragma: no cover - logging best effort
+                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - logging best effort
                     LOGGER.debug("Failed to log MLflow param %s=%s: %s", key, value, exc)
 
         yield
@@ -64,7 +64,7 @@ def mlflow_run(
         if run_stack is not None:
             try:
                 run_stack.close()
-            except Exception as exc:  # pragma: no cover - suppress close errors
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - suppress close errors
                 LOGGER.debug("MLflow run cleanup raised but was suppressed: %s", exc)
 
 

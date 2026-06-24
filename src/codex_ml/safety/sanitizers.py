@@ -30,7 +30,7 @@ from dataclasses import dataclass, field  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import yaml
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     yaml = None
 
 DEFAULT_SECRET_PATTERNS = [
@@ -88,7 +88,7 @@ def _safe_load_yaml(policy_yaml: str) -> dict:
         return {}
     try:
         data = yaml.safe_load(policy_yaml)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return {}
     return data if isinstance(data, dict) else {}
@@ -100,7 +100,7 @@ def _extend_patterns(base: list[re.Pattern[str]], patterns: Iterable[str] | None
     for pattern in patterns:
         try:
             compiled = re.compile(pattern)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             continue
         base.append(compiled)

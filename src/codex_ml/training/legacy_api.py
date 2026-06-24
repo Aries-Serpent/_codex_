@@ -81,7 +81,7 @@ def _torch_manual_training_available(torch_module: Any) -> bool:
 
 try:  # pragma: no cover - optional dependency in tests
     from omegaconf import DictConfig, OmegaConf
-except Exception as exc:  # pragma: no cover - OmegaConf optional
+except (ImportError, AttributeError) as exc:  # pragma: no cover - OmegaConf optional
     logger.debug("OmegaConf unavailable: %s", exc)
     DictConfig = None  # type: ignore[assignment,misc]
     OmegaConf = None  # type: ignore[assignment,misc]
@@ -90,12 +90,12 @@ try:  # pragma: no cover - guard should never raise fatally
     from codex_ml.tracking.mlflow_guard import (
         bootstrap_offline_tracking as _bootstrap_offline_tracking,
     )
-except Exception:  # pragma: no cover - guard import optional
+except (ImportError, AttributeError):  # pragma: no cover - guard import optional
     pass
 else:
     try:
         _bootstrap_offline_tracking()
-    except Exception:  # pragma: no cover - best-effort
+    except (ImportError, AttributeError):  # pragma: no cover - best-effort
         logger.debug("MLflow guard initialization failed", exc_info=True)
 
 __all__ = [
@@ -496,19 +496,19 @@ def _resolve_system_metrics_path(cfg: TrainingRunConfig, base_dir: Path) -> Opti
 def _start_system_metrics_logger(path: Path, interval: float):
     try:
         from codex_ml.monitoring.system_metrics import SystemMetricsLogger
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger.start()
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     return metrics_logger
@@ -521,7 +521,7 @@ def _stop_system_metrics_logger(logger: Any) -> None:
     if callable(stopper):
         try:
             stopper()
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -575,7 +575,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
                 return False
         try:
             return bool(int(raw))
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return bool(raw)
 
@@ -950,7 +950,7 @@ def run_functional_training(
     try:
         from datasets import Dataset  # type: ignore[attr-defined]
         from transformers import AutoTokenizer
-    except Exception:  # pragma: no cover - optional dependencies
+    except (IOError, OSError):  # pragma: no cover - optional dependencies
         # Track failed optional dependencies
         if "datasets" not in missing_optional:
             missing_optional = list(missing_optional) + ["datasets"]
@@ -964,7 +964,7 @@ def run_functional_training(
         try:
             import torch
             from torch.utils.data import DataLoader
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             return _fallback_metrics_result(cfg, train_texts)
         if not _torch_manual_training_available(torch):
@@ -1238,7 +1238,7 @@ def run_functional_training(
         from transformers import DataCollatorWithPadding  # type: ignore
 
         data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-    except Exception as exc:  # pragma: no cover - optional path
+    except (IOError, OSError) as exc:  # pragma: no cover - optional path
         logger.debug("DataCollatorWithPadding unavailable: %s", exc)
         data_collator = None
 
@@ -1528,7 +1528,7 @@ def build_dataloader(
 
     try:
         from torch.utils.data import DataLoader
-    except Exception:  # pragma: no cover - torch optional dependency
+    except (ImportError, AttributeError):  # pragma: no cover - torch optional dependency
         return iter(dataset)
 
     def _lookup(key: str, default: Any) -> Any:
@@ -1564,13 +1564,13 @@ def _evaluate_model(
 
     try:
         from torch.utils.data import DataLoader
-    except Exception:  # pragma: no cover - torch optional
+    except (ImportError, AttributeError):  # pragma: no cover - torch optional
         return {}
 
     try:
         if len(dataset) == 0:
             return {}
-    except Exception:  # pragma: no cover - len may not be defined
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - len may not be defined
         logger.debug("Suppressed exception in handler", exc_info=True)
     torch_dataset = dataset
     if hasattr(dataset, "with_format"):
@@ -1578,7 +1578,7 @@ def _evaluate_model(
             formatted = dataset.with_format("torch")
             if formatted is not None:
                 torch_dataset = formatted
-        except Exception:  # pragma: no cover - fallback to raw dataset
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - fallback to raw dataset
             logger.debug("Suppressed exception in handler", exc_info=True)
     loader = DataLoader(torch_dataset, batch_size=batch_size)
 
@@ -1588,7 +1588,7 @@ def _evaluate_model(
             first_param = next(model.parameters())
         except StopIteration:
             first_param = None
-        except Exception:  # pragma: no cover - non-module models
+        except (ImportError, AttributeError):  # pragma: no cover - non-module models
             first_param = None
         if first_param is not None:
             device = getattr(first_param, "device", None)

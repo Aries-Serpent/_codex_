@@ -160,7 +160,7 @@ def _get_git_commit() -> Optional[str]:
             .decode()
             .strip()
         )
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -293,7 +293,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         if callable(getter):
             try:
                 converted = getter()
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 continue
             if isinstance(converted, Mapping):
@@ -381,7 +381,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         from omegaconf import DictConfig, OmegaConf
 
         resolved = OmegaConf.to_container(cfg, resolve=True) if isinstance(cfg, DictConfig) else cfg
-    except Exception:  # pragma: no cover - OmegaConf missing
+    except (ValueError, TypeError):  # pragma: no cover - OmegaConf missing
         resolved = cfg
     serialised = _to_jsonable(resolved)
     if isinstance(serialised, Mapping):

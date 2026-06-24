@@ -337,7 +337,7 @@ async def build_index(request: Request, build_request: BuildIndexRequest) -> Bui
 
     except ImportError as e:
         raise HTTPException(status_code=500, detail=f"Missing dependencies: {e}") from e
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         raise HTTPException(status_code=500, detail=f"Failed to build index: {e}") from e
 
 
@@ -456,7 +456,7 @@ async def list_indices(
 
         return ListIndicesResponse(indices=indices, count=len(indices))
 
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         raise HTTPException(status_code=500, detail=f"Failed to list indices: {e}") from e
 
 
@@ -493,7 +493,7 @@ async def delete_index(
 
     except HTTPException:
         raise
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete index: {e}") from e
 
 
@@ -523,7 +523,7 @@ async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
             message=result.message,
         )
 
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         raise HTTPException(status_code=500, detail=f"Merge failed: {e}") from e
 
 
@@ -571,7 +571,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
 
     except HTTPException:
         raise
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         raise HTTPException(status_code=500, detail=f"Failed to get stats: {e}") from e
 
 
@@ -589,7 +589,7 @@ async def get_metrics(request: Request):
             timestamp=datetime.now(tz=timezone.utc).isoformat(),
         )
 
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         raise HTTPException(status_code=500, detail=f"Failed to get metrics: {e}") from e
 
 

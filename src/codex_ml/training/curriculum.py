@@ -170,7 +170,7 @@ class CurriculumScheduler:
                     data = json.load(f)
                 logger.info(f"Loaded curriculum state from {self.state_file}")
                 return CurriculumState.from_dict(data)
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to load state, creating new: {e}")
 
@@ -182,7 +182,7 @@ class CurriculumScheduler:
             with open(self.state_file, "w") as f:
                 json.dump(self.state.to_dict(), f, indent=2)
             logger.info(f"Saved curriculum state to {self.state_file}")
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Failed to save state: {e}")
             raise

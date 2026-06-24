@@ -158,7 +158,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 logger.warning("redis package not installed. Install with: pip install redis")
                 self._connected = False
                 return None
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.warning(f"Failed to connect to Redis: {e}")
                 self._connected = False
                 return None
@@ -207,7 +207,7 @@ class RedisCacheBackend(BaseCacheBackend):
             if data is None:
                 return None
             return self._deserialize(data)
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning(f"Redis get error: {e}")
             return None
 
@@ -221,7 +221,7 @@ class RedisCacheBackend(BaseCacheBackend):
             data = self._serialize(value)
             client.setex(self._make_key(key), ttl, data)
             return True
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning(f"Redis put error: {e}")
             return False
 
@@ -233,7 +233,7 @@ class RedisCacheBackend(BaseCacheBackend):
         try:
             result = client.delete(self._make_key(key))
             return result > 0
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning(f"Redis delete error: {e}")
             return False
 
@@ -253,7 +253,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 if cursor == 0:
                     break
             logger.debug("Redis cache cleared")
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning(f"Redis clear error: {e}")
 
     def contains(self, key: str) -> bool:
@@ -263,7 +263,7 @@ class RedisCacheBackend(BaseCacheBackend):
 
         try:
             return bool(client.exists(self._make_key(key)))
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.warning(f"Redis contains error: {e}")
             return False
 
@@ -279,7 +279,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 "keyspace_hits": info.get("keyspace_hits", 0),
                 "keyspace_misses": info.get("keyspace_misses", 0),
             }
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             return {"connected": False, "error": str(e)}
 
 

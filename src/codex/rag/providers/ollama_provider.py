@@ -85,7 +85,7 @@ class OllamaEmbeddingProvider:
         try:
             response = self.session.get(f"{self.base_url}/api/tags", timeout=5)
             return response.status_code == 200
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug(f"Health check failed: {e}")
             return False
 
@@ -126,7 +126,7 @@ class OllamaEmbeddingProvider:
                     logger.error(f"Ollama request failed: {response.status_code}")
                     embeddings.append([0.0] * self.dimension)
 
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.error(f"Error encoding text: {e}")
                 embeddings.append([0.0] * self.dimension)
 

@@ -29,19 +29,19 @@ LOGGER = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional torch dependency
     import torch
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
 try:  # pragma: no cover - optional psutil dependency
     import psutil as _psutil
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     _psutil = None
 
 try:  # pragma: no cover - optional pynvml dependency
     import pynvml as _pynvml
 
     _pynvml.nvmlInit()
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     _pynvml = None
 
 
@@ -73,7 +73,7 @@ def _git_commit(root: Optional[Path] = None) -> Optional[str]:
         return subprocess.check_output(
             [str(git_bin), "rev-parse", "HEAD"], cwd=root, text=True
         ).strip()
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         LOGGER.debug("Unable to read git commit from %s: %s", root, exc)
         return None
 
@@ -86,7 +86,7 @@ def _cuda_driver_version() -> Optional[str]:
             if isinstance(val, (bytes, bytearray)):
                 val = val.decode("utf-8", errors="replace")
             return val or None
-        except Exception:  # pragma: no cover - NVML runtime failure
+        except (IOError, OSError):  # pragma: no cover - NVML runtime failure
             LOGGER.debug("pynvml driver version query failed", exc_info=True)
     # Fallback: read nvidia-smi output
     smi = shutil.which("nvidia-smi")
@@ -99,7 +99,7 @@ def _cuda_driver_version() -> Optional[str]:
             )
             version = out.strip().splitlines()[0].strip()
             return version or None
-        except Exception:  # pragma: no cover - nvidia-smi unavailable / timeout
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - nvidia-smi unavailable / timeout
             LOGGER.debug("nvidia-smi driver version query failed", exc_info=True)
     return None
 
@@ -153,7 +153,7 @@ def _ram_total_mb() -> Optional[float]:
     if _psutil is not None:
         try:
             return round(_psutil.virtual_memory().total / 1024 / 1024, 1)
-        except Exception:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover
             LOGGER.debug("psutil RAM query failed", exc_info=True)
     return None
 

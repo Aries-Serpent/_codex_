@@ -65,7 +65,7 @@ class LifecycleManager:
             self._is_ready = True
             self._is_healthy = True
             logger.info(f"Initialized ({len(executed)} hooks)")
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Startup failed: {e}")
             await self._rollback_startup(executed)
@@ -76,7 +76,7 @@ class LifecycleManager:
         for hook in reversed(executed):
             try:
                 logger.debug(f"Rolling back: {hook.__name__}")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Rollback error: {e}")
 
@@ -90,7 +90,7 @@ class LifecycleManager:
                     await asyncio.wait_for(hook(), timeout=10.0)
                 else:
                     hook()
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Shutdown hook failed: {e}")
         await self._cleanup_resources()
@@ -117,7 +117,7 @@ class LifecycleManager:
                     else:
                         close()
                 logger.debug(f"Cleaned: {name}")
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Cleanup failed for {name}: {e}")
         self._resources.clear()
@@ -158,7 +158,7 @@ class LifecycleManager:
                     result = check()
                 if not bool(result):
                     checks_ok = False
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Health check failed: {e}")
                 checks_ok = False

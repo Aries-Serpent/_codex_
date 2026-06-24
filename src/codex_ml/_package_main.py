@@ -19,7 +19,7 @@ def _run_cli() -> int:
     try:
         # Prefer module execution to avoid import-time side effects
         mod = importlib.import_module("codex_ml.cli")
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         sys.stdout.write("codex_ml: package entrypoint\nTry: python -m codex_ml.cli --help\n")
         return 0

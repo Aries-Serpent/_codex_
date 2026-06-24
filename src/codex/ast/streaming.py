@@ -63,7 +63,7 @@ class StreamingParser:
                 for child in tree.children:
                     yield child
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Failed to parse {file_path}: {e}")
             raise
 
@@ -87,6 +87,6 @@ class StreamingParser:
                 try:
                     for node in self.parse_file(str(file_path)):
                         yield (str(file_path), node)
-                except Exception as e:
+                except (IOError, OSError) as e:
                     logger.warning(f"Failed to parse {file_path}: {e}")
                     continue

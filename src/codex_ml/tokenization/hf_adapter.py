@@ -29,7 +29,7 @@ from codex_ml.plugins.registries import tokenizers  # noqa: E402
 
 try:  # pragma: no cover - optional dependency guard
     from tokenizers import Tokenizer as _FastTokenizer
-except Exception:  # pragma: no cover - dependency missing
+except (ValueError, TypeError):  # pragma: no cover - dependency missing
     _FastTokenizer = None
 
 
@@ -67,7 +67,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
         for candidate in candidates:
             try:
                 idx = self._tokenizer.token_to_id(candidate)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 idx = None
             if idx is not None and idx >= 0:
@@ -85,7 +85,7 @@ class HFTokenizerAdapter(TokenizerAdapter):
     def vocab_size(self) -> int:
         try:
             return int(self._tokenizer.get_vocab_size())
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return 0
 

@@ -31,7 +31,7 @@ except ImportError:  # pragma: no cover - optional but present in dev requiremen
 
 try:
     import yaml
-except Exception:  # pragma: no cover - optional but present in requirements
+except (ImportError, AttributeError):  # pragma: no cover - optional but present in requirements
     yaml = None
 
 from .models import RegisteredSkill, SkillManifest
@@ -53,7 +53,7 @@ def _version_key(version: str) -> tuple:
     if _PkgVersion is not None:
         try:
             return (_PkgVersion(version),)
-        except Exception:
+        except (ImportError, AttributeError):
             logger.debug("Suppressed exception in handler", exc_info=True)
     # Naive integer-tuple fallback (handles "X.Y.Z" correctly)
     try:
@@ -230,7 +230,7 @@ class SkillRegistry:
         try:
             data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
             return SkillManifest.model_validate(data)
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.warning("Failed to load manifest '%s': %s", path, exc)
             return None
 
@@ -274,7 +274,7 @@ class SkillRegistry:
                 self.register(manifest, source_path=f"entry_point:{ep.name}")
                 if len(self._skills) > before:
                     count += 1
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.warning("Failed to load entry-point skill '%s': %s", ep.name, exc)
 
         return count

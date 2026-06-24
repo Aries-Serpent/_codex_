@@ -35,7 +35,7 @@ from typing import Any, Optional  # noqa: E402
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
     from peft import LoraConfig, get_peft_model
-except Exception:  # pragma: no cover - `peft` not installed
+except (ImportError, AttributeError):  # pragma: no cover - `peft` not installed
     LoraConfig = None
     get_peft_model = None
 
@@ -113,7 +113,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
     if get_peft_model is None or LoraConfig is None:  # pragma: no cover
         try:
             model.peft_config = dict(merged)
-        except Exception:
+        except (ImportError, AttributeError):
             logger.warning("Exception occurred", exc_info=True)
             # Silently ignore attribute setting failures
         return model
@@ -139,15 +139,15 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         adapted = get_peft_model(model, config)
         try:
             adapted.peft_config = dict(merged)
-        except Exception:
+        except (ImportError, AttributeError):
             logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures but continue with adapted model
         return adapted
-    except Exception:  # pragma: no cover - defensive fallback
+    except (ImportError, AttributeError):  # pragma: no cover - defensive fallback
         # If adaptation fails for any reason, return original model with config attached
         try:
             model.peft_config = dict(merged)
-        except Exception:
+        except (ImportError, AttributeError):
             logger.warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures in fallback case
         return model

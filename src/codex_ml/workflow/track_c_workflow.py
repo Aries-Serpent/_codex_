@@ -73,7 +73,7 @@ class WorkflowContext:
             label, rollback = self.rollbacks.pop()
             try:
                 rollback(self)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Rollbacks should not interrupt remaining cleanup.
                 self.failed_phases.append(f"rollback:{label}")

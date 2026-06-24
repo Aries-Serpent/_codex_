@@ -117,7 +117,7 @@ class TrainingAlertManager:
         for channel in self._channels:
             try:
                 ok = channel.send(event)
-            except Exception as exc:  # pragma: no cover — defensive
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover — defensive
                 logger.warning(
                     "TrainingAlertManager: channel %r raised unexpectedly — %s",
                     channel.name(),

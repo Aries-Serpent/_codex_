@@ -90,7 +90,7 @@ def read_text_safe(
         logger.error(f"Permission denied reading {path}")
         raise
 
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         logger.error(f"Unexpected error reading {path}: {type(e).__name__}: {e}")
         raise

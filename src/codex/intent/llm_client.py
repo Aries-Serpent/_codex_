@@ -303,7 +303,7 @@ Return ONLY valid JSON, no explanation or markdown."""
 
         except ModerationRejection:
             raise
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error("LLM call failed: %s", e)
             return None
@@ -351,7 +351,7 @@ Be concise and factual. Do not invent functionality not present in the code."""
             return result
         except ModerationRejection:
             raise
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error("Summarization failed: %s", e)
             return None

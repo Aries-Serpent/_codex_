@@ -26,7 +26,7 @@ try:
     import torch.nn.functional as F
 
     clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
-except Exception:  # keep imports resilient
+except (ImportError, AttributeError):  # keep imports resilient
     torch = None  # type: ignore[assignment]
     F = None  # type: ignore[assignment]
     clip_grad_norm_ = None
@@ -109,7 +109,7 @@ except ImportError as e:
 # Artifact hashing helpers (sidecar)
 try:
     from codex_ml.utils.artifacts import write_hash_sidecar, write_metadata
-except Exception:  # pragma: no cover - best effort
+except (IOError, OSError):  # pragma: no cover - best effort
     write_hash_sidecar = None
     write_metadata = None
 
@@ -132,25 +132,25 @@ def _build_safe_ckpt_payload(
     if extra:
         try:
             payload["meta"].update(dict(extra))
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             payload["meta"]["_extra_error"] = "failed to merge extra metadata"
     if hasattr(model, "state_dict"):
         try:
             payload["model_state_dict"] = model.state_dict()
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             payload["model_state_dict"] = {}
     if hasattr(optimizer, "state_dict"):
         try:
             payload["optimizer_state_dict"] = optimizer.state_dict()
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             payload["optimizer_state_dict"] = {}
     if scheduler is not None and hasattr(scheduler, "state_dict"):
         try:
             payload["scheduler_state_dict"] = scheduler.state_dict()
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             payload["scheduler_state_dict"] = {}
     return payload
@@ -178,7 +178,7 @@ def save_checkpoint(
             write_hash_sidecar(p)
         if write_metadata is not None:
             write_metadata(p, extra={"epoch": epoch, "keys": list(payload.keys())})
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return str(p)
@@ -186,7 +186,7 @@ def save_checkpoint(
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter
-except Exception:  # pragma: no cover - optional dep
+except (IOError, OSError):  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
@@ -217,7 +217,7 @@ def _safe_token_accuracy(y_true, y_pred) -> float:
             return 0.0
         match = sum(1 for i in range(n) if y_true[i] == y_pred[i])
         return match / float(n)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return 0.0
 
@@ -231,14 +231,14 @@ def _safe_perplexity(nll_values) -> float:
             return float("inf")
         mean = sum(vals) / float(len(vals))
         return float(math.exp(max(0.0, mean)))
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return float("inf")
 
 
 try:  # Attempt to import metrics; fall back to safe implementations
     from codex_ml.metrics import perplexity, token_accuracy
-except Exception:  # pragma: no cover - fallback if metrics module missing
+except (ImportError, AttributeError):  # pragma: no cover - fallback if metrics module missing
 
     def _fallback_perplexity(nll):
         """Simple perplexity wrapper used when metrics module is unavailable."""
@@ -411,7 +411,7 @@ def run_functional_training(
         # apply LoRA adapters if possible without hard PEFT dependency
         try:
             from codex_ml.peft.peft_adapter import apply_lora
-        except Exception:  # pragma: no cover - optional dependency
+        except (ImportError, AttributeError):  # pragma: no cover - optional dependency
 
             def apply_lora(model, *_args, **_kwargs):
                 return model
@@ -524,7 +524,7 @@ def _run_minilm_training(
                     target_path, interval=max(0.1, metrics_interval)
                 )
                 system_metrics_logger.start()
-            except Exception as exc:  # pragma: no cover - monitoring optional
+            except (IOError, OSError) as exc:  # pragma: no cover - monitoring optional
                 print(
                     f"[monitoring-error] failed to start system metrics logger: {exc}",
                     file=sys.stderr,
@@ -629,7 +629,7 @@ def _run_minilm_training(
                     epoch = load_info["meta"].get("epoch")
                     if epoch is not None:
                         print(f"Resumed training from checkpoint epoch {epoch}")
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 # Non-fatal: continue training anew if resume fails
                 print(f"Warning: failed to resume from {resume_from}: {e}")
@@ -653,7 +653,7 @@ def _run_minilm_training(
         tb_dir.mkdir(parents=True, exist_ok=True)
         try:
             writer = SummaryWriter(log_dir=str(tb_dir))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             writer = None
 
@@ -685,11 +685,11 @@ def _run_minilm_training(
         # token_accuracy: prefer (preds, tgt), fall back to (logits, targets)
         try:
             acc = float(token_accuracy(preds, tgt))
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             try:
                 acc = float(token_accuracy(logits, targets))
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 acc = float("nan")
 
@@ -702,11 +702,11 @@ def _run_minilm_training(
                     from_logits=True,
                 )
             )
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             try:
                 ppl = float(perplexity(loss_val))
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 ppl = float("nan")
 
@@ -724,7 +724,7 @@ def _run_minilm_training(
                 **{k: v for k, v in sysd.items() if v is not None},
             }
             _codex_log_all(epoch + 1, scalars, loggers)
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             print(f"[monitoring-error] {exc}", file=sys.stderr)
 
@@ -738,7 +738,7 @@ def _run_minilm_training(
                     config={"vocab_size": vocab_size, **cfg_payload},
                     metrics={"loss": loss_val, "accuracy": acc, "perplexity": ppl},
                 )
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 print(f"Warning: checkpoint save failed at epoch {epoch + 1}: {e}")
 
@@ -760,12 +760,12 @@ def _run_minilm_training(
                 v_tgt = val_targets.reshape(-1).tolist()
                 try:
                     v_acc = float(token_accuracy(v_preds, v_tgt))
-                except Exception:
+                except (ValueError, TypeError, RuntimeError):
                     logger.warning("Exception occurred", exc_info=True)
                     v_acc = _safe_token_accuracy(v_tgt, v_preds)
                 try:
                     v_ppl = float(perplexity(float(v_loss.item())))
-                except Exception:
+                except (ValueError, TypeError, RuntimeError):
                     logger.warning("Exception occurred", exc_info=True)
                     v_ppl = _safe_perplexity([float(v_loss.item())])
 
@@ -777,7 +777,7 @@ def _run_minilm_training(
                     **{k: v for k, v in sysd.items() if v is not None},
                 }
                 _codex_log_all(epoch + 1, val_metrics, loggers)
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.debug(f"Exception: {exc}")
                 print(f"[monitoring-error] {exc}", file=sys.stderr)
             emit_validation_metric_record(
@@ -799,7 +799,7 @@ def _run_minilm_training(
         try:
             writer.flush()
             writer.close()
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             print(f"[monitoring-error] {exc}", file=sys.stderr)
 
@@ -994,7 +994,7 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
             from omegaconf import OmegaConf
 
             training_section = OmegaConf.to_container(cfg.get("training", cfg), resolve=True)
-        except Exception:
+        except (ImportError, AttributeError):
             training_section = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
         texts = training_section.get("texts", ["hello world"])
         output_dir_val = getattr(args, "output_dir", None)
@@ -1034,7 +1034,7 @@ def main(argv: Optional[list] = None) -> None:  # pragma: no cover - convenience
                 cfg.get("training", cfg),
                 resolve=True,
             )
-        except Exception:
+        except (ImportError, AttributeError):
             ts = dict(cfg.get("training", cfg)) if hasattr(cfg, "get") else {}
         import importlib
 
@@ -1115,7 +1115,7 @@ def _codex_autodevice(cli_device: str | None = None) -> str:
         if torch is None:
             return "cpu"
         return "cuda" if torch.cuda.is_available() else "cpu"
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return cli_device or "cpu"
 
@@ -1133,7 +1133,7 @@ def _codex_maybe_scheduler(optimizer, name: str | None, **kw):
             return optim.lr_scheduler.StepLR(
                 optimizer, step_size=kw.get("step_size", 10), gamma=kw.get("gamma", 0.1)
             )
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     return None
@@ -1148,7 +1148,7 @@ def _codex_epoch_metrics(y_true, y_pred) -> dict:
             "token_accuracy": float(token_accuracy(y_true, y_pred)),
             "perplexity": float(perplexity_from_preds(y_true, y_pred)),
         }
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return {"token_accuracy": 0.0, "perplexity": 0.0}  # nosec B105
 
@@ -1179,7 +1179,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
             if grad_clip > 0 and model is not None and clip_grad_norm_ is not None:
                 try:
                     clip_grad_norm_(model.parameters(), grad_clip)
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             if optimizer is not None and sched_name and last_sched is None:
@@ -1187,7 +1187,7 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
             if last_sched is not None:
                 try:
                     last_sched.step()
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             rec = {
@@ -1279,7 +1279,7 @@ def codex_train_step(
             try:
                 scaler.unscale_(optimizer)
                 clip_grad_norm_(model.parameters(), grad_clip)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         scaler.step(optimizer)
@@ -1288,7 +1288,7 @@ def codex_train_step(
         if grad_clip is not None:
             try:
                 clip_grad_norm_(model.parameters(), grad_clip)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         optimizer.step()

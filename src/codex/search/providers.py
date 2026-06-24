@@ -51,7 +51,7 @@ class InternalRepoSearch(SearchProvider):
                 capture_output=True,
                 text=True,
             )
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             return []
 
@@ -117,7 +117,7 @@ class SearchRegistry:
         for provider in self.providers:
             try:
                 results.extend(provider.search(query))
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Each provider is responsible for handling its own errors. If
                 # an unexpected exception bubbles up we swallow it here so that

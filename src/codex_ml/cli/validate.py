@@ -34,7 +34,7 @@ except ModuleNotFoundError:  # pragma: no cover - pydantic missing
 
 try:
     from codex_ml.config_schema import TrainConfig, validate_config_file
-except Exception:  # pragma: no cover - schema validation optional
+except (IOError, OSError):  # pragma: no cover - schema validation optional
     TrainConfig = None
     validate_config_file = None
 
@@ -130,7 +130,7 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
             raise exit_cls(code=0)
         except exit_cls:
             raise
-        except Exception as exc:  # pragma: no cover - simple fallback
+        except (IOError, OSError) as exc:  # pragma: no cover - simple fallback
             echo(f"Invalid configuration:\n{exc}", err=True)
             raise exit_cls(code=2) from exc
 
@@ -144,7 +144,7 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
         logger.debug(f"ValidationError: {exc}")
         echo("Invalid configuration:\n" + _format_validation_error(exc), err=True)
         raise exit_cls(code=2) from exc
-    except Exception as exc:  # pragma: no cover - defensive fallback
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive fallback
         echo(f"Validation error: {exc}", err=True)
         raise exit_cls(code=2) from exc
 

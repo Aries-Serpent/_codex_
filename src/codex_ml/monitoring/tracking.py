@@ -10,12 +10,12 @@ from urllib.parse import urlparse
 
 try:  # pragma: no cover - optional dependency
     import mlflow
-except Exception:  # pragma: no cover - mlflow optional
+except (ValueError, TypeError):  # pragma: no cover - mlflow optional
     mlflow = None
 
 try:  # pragma: no cover - optional dependency
     import wandb
-except Exception:  # pragma: no cover - wandb optional
+except (ImportError, AttributeError):  # pragma: no cover - wandb optional
     wandb = None
 
 
@@ -64,7 +64,7 @@ class Tracker:
                             safe_uri = requested_uri
                         else:
                             safe_uri = Path(requested_uri).expanduser().resolve().as_uri()
-                    except Exception:
+                    except (IOError, OSError):
                         logger.warning("Exception occurred", exc_info=True)
                         logger.warning(
                             "Unable to coerce MLflow URI '%s'; using %s",

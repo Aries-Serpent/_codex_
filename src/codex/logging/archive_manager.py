@@ -122,7 +122,7 @@ class ArchiveManager:
             logger.info(f"Archived session {session_id} ({file_size} bytes)")
             return archive_record
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Error archiving session {session_id}: {e}")
             return None
 
@@ -209,7 +209,7 @@ class ArchiveManager:
 
             return session_data
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"Error retrieving archived session {session_id}: {e}")
             return None
 
@@ -247,7 +247,7 @@ class ArchiveManager:
             logger.info(f"Found {len(candidates)} archive candidates (>= {days} days old)")
             return candidates
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"Error identifying archive candidates: {e}")
             return []
 
@@ -316,7 +316,7 @@ class ArchiveManager:
             )
             return report
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"Error purging old archives: {e}")
             return report
 
@@ -351,7 +351,7 @@ class ArchiveManager:
                             "created_at": str(created_at),
                         }
                     )
-                except Exception as e:
+                except (IOError, OSError) as e:
                     logger.warning(f"Error processing {parquet_file}: {e}")
                     continue
 
@@ -380,7 +380,7 @@ class ArchiveManager:
             )
             return index
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"Error updating archive index: {e}")
             return {"sessions": [], "statistics": {}}
 
@@ -418,7 +418,7 @@ class ArchiveManager:
             conn.close()
             return session_data
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Error extracting session {session_id}: {e}")
             return None
 
@@ -455,7 +455,7 @@ class ArchiveManager:
 
             conn.commit()
             conn.close()
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Error updating archive metadata for {session_id}: {e}")
 
     def _mark_session_deleted(self, session_id: str) -> None:
@@ -475,7 +475,7 @@ class ArchiveManager:
 
             conn.commit()
             conn.close()
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.error(f"Error marking session deleted: {session_id}: {e}")
 
     def _add_to_cache(self, session_id: str, session_data: Dict[str, Any]) -> None:
@@ -512,5 +512,5 @@ class ArchiveManager:
             with open(self.retention_log_path, "w") as f:
                 json.dump(retention_log, f, indent=2)
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Error logging retention action: {e}")

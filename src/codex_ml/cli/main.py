@@ -18,7 +18,7 @@ from typing import Annotated, Any, Optional
 
 try:  # Optional dependency used for loading curriculum presets
     import yaml
-except Exception:  # pragma: no cover - PyYAML is optional
+except (IOError, OSError):  # pragma: no cover - PyYAML is optional
     yaml = None
 
 
@@ -36,7 +36,7 @@ typer = _load_typer()
 # monkeypatch.setattr("codex_ml.cli.main.evaluate_datasets", ...).
 try:  # pragma: no cover - evaluation is optional
     from codex_ml.eval.eval_runner import evaluate_datasets
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
 
     def evaluate_datasets(*args, **kwargs):
         return None
@@ -54,7 +54,7 @@ if typer is not None:
             from codex_ml.cli import tokenizer as tokenizer_cli  # type: ignore[attr-defined]
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
-        except Exception as e:
+        except (ImportError, AttributeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -402,7 +402,7 @@ if typer is not None:
             meta_payload = json.loads(metadata_json) if metadata_json else {}
             if not isinstance(meta_payload, dict):
                 raise ValueError("metadata must decode to a JSON object")
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             raise typer.BadParameter(str(exc)) from exc
 
@@ -509,13 +509,13 @@ else:
 
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
-    except Exception:  # pragma: no cover - optional
+    except (ImportError, AttributeError):  # pragma: no cover - optional
         DictConfig = Any  # type: ignore[assignment]
         OmegaConf = None  # type: ignore[assignment]
 
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error
-    except Exception:  # pragma: no cover
+    except (ImportError, AttributeError):  # pragma: no cover
 
         def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore
             return None
@@ -529,7 +529,7 @@ else:
         if _functional_training_main is None:
             try:
                 from codex.training import main as _functional_training
-            except Exception:
+            except (ImportError, AttributeError):
                 logger.debug("codex.training.main unavailable; functional training disabled")
                 _functional_training_main = None
             else:
@@ -701,7 +701,7 @@ else:
             sys.argv = [sys.argv[0], *args, *overrides]
             try:
                 main()
-            except Exception as exc:  # pragma: no cover - logging path
+            except (IOError, OSError) as exc:  # pragma: no cover - logging path
                 _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="error")
                 raise

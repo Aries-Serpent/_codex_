@@ -26,13 +26,13 @@ import click  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer
-except Exception:  # pragma: no cover - degrade gracefully when Typer missing
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when Typer missing
     logger.debug("Suppressed exception in handler", exc_info=True)
 else:  # pragma: no cover - exercised in Typer-enabled environments
     try:
         from codex.cli_knowledge import app as knowledge_typer_app
         from codex.cli_release import app as release_typer_app
-    except Exception:  # pragma: no cover - Typer sub-app import guard
+    except (ImportError, AttributeError):  # pragma: no cover - Typer sub-app import guard
         logger.debug("Suppressed exception in handler", exc_info=True)
     else:
         app = _typer.Typer(help="Codex Typer CLI (release + knowledge)")
@@ -43,12 +43,12 @@ try:  # pragma: no cover - optional dependency
     import typer.main as _typer_main
 
     _typer_get_command = _typer_main.get_command
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     _typer_get_command = None
 
 try:  # pragma: no cover - optional dependency
     from codex_digest.error_capture import log_error as _log_error
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
 
     def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore[func-returns-value]
         """Fallback error logger when codex_digest is unavailable."""
@@ -74,7 +74,7 @@ def _run_ci() -> None:
     """Run local CI checks (lint + tests)."""
     try:
         subprocess.run(["nox", "-s", "tests"], check=True)
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         print(f"CI failed: {exc}")
         _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
@@ -109,7 +109,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
             if executor is not None:
                 executor.shutdown(wait=False)
             _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
-    except Exception as exc:  # pragma: no cover - best effort
+    except (IOError, OSError) as exc:  # pragma: no cover - best effort
         _log_error("POOL", "fix executor", str(exc), "configure thread pool")
         # Don't return — continue to enable SQLite pooling below
 
@@ -126,7 +126,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
     for _ in range(max(0, workers)):
         try:  # pragma: no cover - best effort
             sqlite3.connect(str(db))
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             logger.debug(f"Exception: {exc}")
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
             break
@@ -170,7 +170,7 @@ def _register_click_command(
     try:
         module = importlib.import_module(module_path)
         command = getattr(module, attr)
-    except Exception as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
         message = f"{name} command unavailable: {exc}"
         group.add_command(_missing_command(name, message, help_text))
         return
@@ -197,7 +197,7 @@ def _register_typer_app(
     try:
         module = importlib.import_module(module_path)
         app = getattr(module, attr)
-    except Exception as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
         message = f"{name} command unavailable: {exc}"
         group.add_command(_missing_command(name, message, help_text))
         return
@@ -298,7 +298,7 @@ def logs_init(db: str) -> None:
     script = TOOLS_DIR / "codex_db.py"
     try:
         subprocess.run([sys.executable, str(script), "--init", "--db", db], check=True)
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"Failed to init logs DB: {exc}", err=True)
         _log_error("STEP logs_init", "codex_db --init", str(exc), f"db={db}")
@@ -320,7 +320,7 @@ def logs_ingest(changes, results, branch: str, db: str) -> None:
         args += ["--results", results]
     try:
         subprocess.run(args, check=True)
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"Failed to ingest logs: {exc}", err=True)
         _log_error("STEP logs_ingest", "codex_ingest_md", str(exc), f"db={db}")
@@ -336,7 +336,7 @@ def logs_query(sql: str, db: str) -> None:
     args = [sys.executable, str(script), "--db", db, "--query", sql]
     try:
         subprocess.run(args, check=True)
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"Failed to query logs: {exc}", err=True)
         _log_error("STEP logs_query", "codex_db --query", str(exc), f"db={db}")
@@ -410,7 +410,7 @@ def logs_export_data(output: str, format: str, db: str) -> None:
 
         conn.close()
         click.echo(f"✅ Exported {len(rows)} records to {output}")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Export failed: {exc}", err=True)
         sys.exit(1)
@@ -517,21 +517,21 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         try:
             run_hf_trainer(args.texts, args.output_dir, **kw)
             return
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             _log_error("STEP train", "run_hf_trainer", str(exc), f"texts={args.texts}")
             raise
     else:
         try:
             from codex.training import main as run_custom_train
-        except Exception as exc:  # pragma: no cover - fallback path
+        except (IOError, OSError) as exc:  # pragma: no cover - fallback path
             click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
             from training.engine_hf_trainer import run_hf_trainer
 
             try:
                 run_hf_trainer(*engine_args)
                 return
-            except Exception as exc2:
+            except (ImportError, AttributeError) as exc2:
                 logger.debug(f"Exception: {exc2}")
                 _log_error(
                     "STEP train",
@@ -545,7 +545,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         try:
             sys.argv = [orig_argv[0], *argv]
             run_custom_train()
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             _log_error("STEP train", "run_custom_train", str(exc), f"argv={argv}")
             raise
@@ -597,7 +597,7 @@ def batch_triage(issues, from_file, output, as_json, group_by):
 
     try:
         subprocess.run(args, check=True)
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"Batch triage failed: {exc}", err=True)
         _log_error("STEP batch_triage", "batch_triage.py", str(exc), "")
@@ -655,7 +655,7 @@ def resume_cmd(run_dir: Path) -> None:
 
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except Exception as exc:  # pragma: no cover - robust CLI behavior
+    except (IOError, OSError) as exc:  # pragma: no cover - robust CLI behavior
         click.echo(f"ERROR: failed to read resume_manifest.json: {exc}", err=True)
         raise SystemExit(2) from exc
 
@@ -672,7 +672,7 @@ def resume_cmd(run_dir: Path) -> None:
             try:
                 parsed = json.loads(content)
                 click.echo(json.dumps(parsed, indent=2, sort_keys=True))
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 click.echo(content)
             raise SystemExit(0)
@@ -686,7 +686,7 @@ def resume_cmd(run_dir: Path) -> None:
                 try:
                     parsed = json.loads(content)
                     click.echo(json.dumps(parsed, indent=2, sort_keys=True))
-                except Exception:
+                except (IOError, OSError):
                     logger.warning("Exception occurred", exc_info=True)
                     click.echo(content)
                 raise SystemExit(0)
@@ -769,7 +769,7 @@ def tokenizer_list_models() -> None:
         else:
             click.echo("❌ No tokenizer models available.")
             click.echo("Install codex_ml with tokenizer support to enable model listing.")
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"⚠️  Could not list tokenizer models: {exc}", err=True)
         click.echo("Hint: Ensure codex_ml is installed with tokenization extras.")
@@ -821,14 +821,14 @@ def repro_env(path: Path) -> None:
     """Record git commit and installed packages."""
     try:
         from codex_utils.repro import log_env_info
-    except Exception as exc:  # pragma: no cover
+    except (IOError, OSError) as exc:  # pragma: no cover
         click.echo(f"Environment logging module unavailable: {exc}", err=True)
         sys.exit(1)
 
     try:
         log_env_info(path)
         click.echo(f"wrote {path}")
-    except Exception as exc:  # pragma: no cover
+    except (IOError, OSError) as exc:  # pragma: no cover
         click.echo(f"Failed to write env info: {exc}", err=True)
         sys.exit(1)
 
@@ -886,7 +886,7 @@ def repro_checkpoint(path: Path, include_weights: bool) -> None:
         path.write_text(json.dumps(checkpoint_data, indent=2), encoding="utf-8")
         click.echo(f"✅ Checkpoint metadata saved to {path}")
         click.echo(f"   Include weights: {include_weights}")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to create checkpoint: {exc}", err=True)
         sys.exit(1)
@@ -897,7 +897,7 @@ def _register_tokenizer_pipeline_commands() -> None:
 
     try:
         from codex_ml.cli.codex_cli import tokenizer as codex_tokenizer
-    except Exception:  # pragma: no cover - optional dependency path
+    except (IOError, OSError):  # pragma: no cover - optional dependency path
         return
     for name, command in codex_tokenizer.commands.items():
         if name in tokenizer_group.commands:
@@ -1036,7 +1036,7 @@ def session_logger_cmd(session_id: str | None, role: str, message: str) -> None:
             click.echo(f"✅ Logged {role} message to session {logger.session_id}")
 
         _log()
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to log message: {exc}", err=True)
         sys.exit(1)
@@ -1069,7 +1069,7 @@ def viewer_cmd(session_id: str | None, output_format: str) -> None:
             viewer.view(session_id=session_id, output_format=output_format)
 
         _view()
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to view logs: {exc}", err=True)
         sys.exit(1)
@@ -1105,7 +1105,7 @@ def query_logs_cmd(search: str, role: str | None) -> None:
                 click.echo(f"\n[{timestamp}] {msg_role}: {msg}")
 
         _query()
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to query logs: {exc}", err=True)
         sys.exit(1)
@@ -1136,7 +1136,7 @@ def validate_env_cmd() -> None:
             click.echo("\n✅ Environment validation passed")
 
         _validate()
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Environment validation failed: {exc}", err=True)
         sys.exit(1)
@@ -1174,7 +1174,7 @@ def init_db_cmd(db_path: str | None) -> None:
             click.echo(f"   Location: {manager.db_path}")
 
         _init()
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to initialize database: {exc}", err=True)
         sys.exit(1)
@@ -1234,7 +1234,7 @@ def export_env_cmd(output_format: str, output: str | None) -> None:
                 click.echo(content)
 
         _export()
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to export environment: {exc}", err=True)
         sys.exit(1)
@@ -1312,7 +1312,7 @@ def list_sessions_cmd(limit: int, output_format: str) -> None:
                     click.echo(f"{row[0]:<40} {row[3]:<10} {last_seen}")
 
         _list()
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to list sessions: {exc}", err=True)
         sys.exit(1)
@@ -1392,14 +1392,14 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
                 try:
                     f.unlink()
                     deleted += 1
-                except Exception as e:
+                except (IOError, OSError) as e:
                     logger.debug(f"Exception: {e}")
                     click.echo(f"⚠️  Failed to delete {f}: {e}", err=True)
 
             click.echo(f"✅ Deleted {deleted} files")
 
         _clean()
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to clean logs: {exc}", err=True)
         sys.exit(1)
@@ -1502,7 +1502,7 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
                 f"\n✅ Duplication ratio {ratio.ratio:.2%} is within threshold {threshold:.2%}"
             )
 
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to check duplicates: {exc}", err=True)
         import traceback
@@ -1628,7 +1628,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
             result = storage.save(ratio)
             click.echo(f"💾 Saved to database (ID: {result.get('sqlite_id', 'N/A')})")
 
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to generate report: {exc}", err=True)
         import traceback
@@ -1705,7 +1705,7 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
             click.echo(f"  Duplicate lines: {current_data.get('duplicate_lines', 0):,}")
             click.echo("\n💡 Use --baseline to compare against a previous report")
 
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to compare metrics: {exc}", err=True)
         import traceback
@@ -1749,7 +1749,7 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
         report_data = {}
         try:
             report_data = json.loads(report_path.read_text())
-        except Exception:
+        except (IOError, OSError):
             # If not JSON, just copy as reference
             pass
 
@@ -1765,7 +1765,7 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
         click.echo(f"✅ Baseline created: {output}")
         click.echo(f"   Tag: {baseline_data['baseline_tag']}")
         click.echo(f"   Source: {report}")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to create baseline: {exc}", err=True)
         sys.exit(1)
@@ -1780,7 +1780,7 @@ try:
 
     # Add quantum orchestrator as a subcommand group
     cli.add_command(quantum_cli, name="quantum")
-except Exception:  # pragma: no cover - optional module
+except (ImportError, AttributeError):  # pragma: no cover - optional module
     logger.debug("quantum_orchestrator CLI not available — skipping registration")
 
 
@@ -2039,7 +2039,7 @@ def auth_refresh_token(session_token: str | None) -> None:
         click.echo("✅ Token refreshed successfully")
         click.echo(f"   User: {creds['username']}")
         click.echo("   Credentials updated in cache")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         click.echo(f"❌ Failed to refresh token: {exc}", err=True)
         sys.exit(1)
@@ -2071,7 +2071,7 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
         return
     except ImportError:
         logger.debug("keyring not installed — fall through to file-based storage")
-    except Exception as exc:  # pragma: no cover — runtime keyring backend error
+    except (IOError, OSError) as exc:  # pragma: no cover — runtime keyring backend error
         click.echo(
             f"   ⚠️  Keyring backend error: {exc}. Falling back to file-based storage.",
             err=True,
@@ -2097,7 +2097,7 @@ def _load_cached_credentials() -> dict | None:
             return json.loads(raw)
     except ImportError:
         logger.debug("keyring not installed — fall through to file-based lookup")
-    except Exception:  # pragma: no cover — runtime keyring read error
+    except (IOError, OSError):  # pragma: no cover — runtime keyring read error
         logger.debug("keyring read error — falling back to file-based lookup")
 
     if _CACHE_FILE.exists():
@@ -2117,7 +2117,7 @@ def _clear_cached_credentials() -> None:
         keyring.delete_password(_KEYRING_SERVICE, "credentials")
     except ImportError:
         logger.debug("keyring not installed — nothing to clear")
-    except Exception:  # pragma: no cover — runtime keyring delete error
+    except (IOError, OSError):  # pragma: no cover — runtime keyring delete error
         logger.debug("keyring delete error — entry may not exist or backend unavailable")
     if _CACHE_FILE.exists():
         _CACHE_FILE.unlink(missing_ok=True)

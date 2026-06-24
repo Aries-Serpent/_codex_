@@ -262,7 +262,7 @@ class TokenBudgetEnforcer:
                         self.budget.current_usage -= saved
                         block.token_count = summary_tokens
                         continue
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -291,6 +291,6 @@ class TokenBudgetEnforcer:
                     if saved > 0:
                         self.budget.current_usage -= saved
                         block.token_count = new_tokens
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)

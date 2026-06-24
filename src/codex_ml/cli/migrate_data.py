@@ -97,7 +97,7 @@ def migrate(
             )
             raise typer.Exit(1)
 
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         typer.echo(f"Error during migration: {e}", err=True)
         raise typer.Exit(1) from e

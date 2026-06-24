@@ -31,7 +31,7 @@ try:  # pragma: no cover - optional dependency import
     import pynvml
 
     _NVML_AVAILABLE = True
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     pynvml = None
     _NVML_AVAILABLE = False
 
@@ -39,7 +39,7 @@ except Exception:  # pragma: no cover - optional dependency
 def _psutil_snapshot() -> dict[str, Any]:
     try:
         import psutil
-    except Exception:  # pragma: no cover - optional dependency
+    except (ImportError, AttributeError):  # pragma: no cover - optional dependency
         return {}
 
     cpu = psutil.cpu_percent(interval=None)

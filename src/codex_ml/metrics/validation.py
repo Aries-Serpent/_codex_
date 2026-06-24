@@ -41,7 +41,7 @@ def validate_metric_registry() -> list[str]:
             raise MetricValidationError(
                 f"Metric '{metric_name}' registered but not implemented: {e}"
             ) from e
-        except Exception as e:
+        except (ImportError, AttributeError) as e:
             logger.debug(f"Exception: {e}")
             # Non-critical errors become warnings
             warnings.append(
@@ -65,7 +65,7 @@ def validate_metric_exists(metric_name: str) -> bool:
 
         metric_fn = get_metric(metric_name)
         return callable(metric_fn)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 

@@ -52,7 +52,7 @@ def _emit_evidence(resource: str, operation: Mapping[str, Any], env: str, phase:
         out_path = _evidence_dir() / f"zendesk_{resource}.jsonl"
         with out_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record) + "\n")
-    except Exception:  # pragma: no cover - evidence is best effort
+    except (IOError, OSError):  # pragma: no cover - evidence is best effort
         LOGGER.debug("Evidence emit skipped for resource '%s'.", resource)
 
 
@@ -141,7 +141,7 @@ def _list_existing(endpoint: Any) -> list[Any]:
         if isinstance(result, list):
             return result
         return list(result)
-    except Exception as exc:  # pragma: no cover - network interactions mocked in tests
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - network interactions mocked in tests
         LOGGER.debug("Unable to enumerate existing resources: %s", exc)
         return []
 
@@ -244,7 +244,7 @@ def _apply_named_resource(
             instance = api_class(**payload)
             try:
                 create_fn(instance)
-            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - API interactions mocked in tests
                 LOGGER.error(
                     "Failed to create %s '%s' in environment '%s': %s",
                     resource,
@@ -264,7 +264,7 @@ def _apply_named_resource(
                 continue
             try:
                 delete_fn(target)
-            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - API interactions mocked in tests
                 LOGGER.error(
                     "Failed to delete %s '%s' in environment '%s': %s",
                     resource,
@@ -287,7 +287,7 @@ def _apply_named_resource(
                 _apply_patch_set(target, changes)
             try:
                 update_fn(target)
-            except Exception as exc:  # pragma: no cover - API interactions mocked in tests
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - API interactions mocked in tests
                 LOGGER.error(
                     "Failed to update %s '%s' in environment '%s': %s",
                     resource,
@@ -349,14 +349,14 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
         LOGGER.info("No changes required for resource '%s'.", resource)
     try:
         _metrics.emit_counter("zendesk_diff_operations", len(ops))
-    except Exception:  # pragma: no cover - metrics are best effort in offline runs
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - metrics are best effort in offline runs
         LOGGER.debug("Skipping metrics emission for resource '%s'.", resource)
 
     try:
         metric = _metrics.get("zendesk_diff_operations")
         if metric is not None and hasattr(metric, "observe"):
             metric.observe(float(len(ops)))
-    except Exception:  # pragma: no cover - metrics are best-effort offline
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - metrics are best-effort offline
         LOGGER.debug("Metrics emit skipped for resource '%s'.", resource)
 
     for op in ops:

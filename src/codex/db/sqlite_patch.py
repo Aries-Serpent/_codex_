@@ -66,7 +66,7 @@ class PooledConnectionProxy:
         if exc_type is None:
             try:
                 self._conn.commit()
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Mirror sqlite behaviour which would raise the exception; allow
                 # propagation to caller.
@@ -74,7 +74,7 @@ class PooledConnectionProxy:
         else:
             try:
                 self._conn.rollback()
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         # Returning False ensures exceptions propagate like the standard
@@ -183,7 +183,7 @@ def _close_all():
         for conn in conns:
             try:
                 conn.close()
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
 

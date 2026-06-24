@@ -26,7 +26,7 @@ from typing import Any, Optional  # noqa: E402
 
 try:
     from peft import LoraConfig, get_peft_model
-except Exception:  # ImportError and others
+except (ImportError, AttributeError):  # ImportError and others
     LoraConfig = None
     get_peft_model = None
 

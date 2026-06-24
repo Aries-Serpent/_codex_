@@ -166,7 +166,7 @@ class TokenHealthChecker:
                     status=TokenHealthStatus.UNKNOWN,
                     message=f"Unknown token source: {source.value}",
                 )
-        except Exception as exc:  # noqa: BLE001
+        except (ValueError, TypeError, RuntimeError) as exc:  # noqa: BLE001
             logger.warning(
                 "Token health check failed for %s: %s",
                 source.value,
@@ -244,7 +244,7 @@ class TokenHealthChecker:
                     "issuer": payload.get("iss"),
                 },
             )
-        except Exception as exc:  # noqa: BLE001
+        except (ValueError, TypeError) as exc:  # noqa: BLE001
             return TokenHealthCheck(
                 status=TokenHealthStatus.UNKNOWN,
                 message=f"JWT decode error: {exc}",

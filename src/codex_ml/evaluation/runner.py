@@ -161,7 +161,7 @@ class EvaluationRunner:
                     if isinstance(result, dict):
                         return result
                     return {self.name: float(result)}
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.debug("Exception caught, returning", exc_info=True)
                     return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
@@ -269,7 +269,7 @@ class EvaluationRunner:
             try:
                 computed = metric.compute()
                 metric_results.update(computed)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 print(f"Warning: Metric {metric.name} failed: {e}")
                 metric_results[f"{metric.name}_error"] = str(e)  # type: ignore[assignment]
@@ -362,7 +362,7 @@ class EvaluationRunner:
                 self.tracking_writer.log_artifact(summary_path)  # type: ignore[union-attr]
 
             print("Logged results to tracking writer")
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             print(f"Warning: Failed to log to tracking writer: {e}")
 

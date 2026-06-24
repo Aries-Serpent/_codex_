@@ -118,7 +118,7 @@ def run(argv: list[str] | None = None) -> int:
                 print(f"\n📊 Metrics — {fp.name}")
                 for k, v in metrics.items():
                     print(f"   {k:<28} {v:+.4f}")
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.error("Failed to process '%s': %s", fp, exc)
             errors += 1
 

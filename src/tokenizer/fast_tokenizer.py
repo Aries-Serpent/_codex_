@@ -25,12 +25,12 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     from tokenizers import Tokenizer
-except Exception:  # pragma: no cover - degrade gracefully
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
     Tokenizer = None
 
 try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer
-except Exception:  # pragma: no cover - transformers missing is acceptable
+except (IOError, OSError):  # pragma: no cover - transformers missing is acceptable
     AutoTokenizer = None  # type: ignore[assignment, misc]
 
 
@@ -135,7 +135,7 @@ def build_tokenizer(path: str | Path) -> object:
                 # Ensure pad_token is set; many decoder-only models omit it.
                 if tokenizer.pad_token is None and tokenizer.eos_token is not None:
                     tokenizer.pad_token = tokenizer.eos_token
-            except Exception as exc:  # pragma: no cover - optional dependency path
+            except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
                 errors.append(f"transformers@{target}: {exc}")
                 continue
             else:
@@ -152,7 +152,7 @@ def build_tokenizer(path: str | Path) -> object:
 
     try:
         return FastTokenizerWrapper(str(candidate))
-    except Exception as exc:  # pragma: no cover - propagate readable error
+    except (IOError, OSError) as exc:  # pragma: no cover - propagate readable error
         context = "; ".join(errors)
         if context:
             raise RuntimeError(

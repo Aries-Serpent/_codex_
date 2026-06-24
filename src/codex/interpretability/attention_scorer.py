@@ -153,7 +153,7 @@ class AttentionScorer:
                 if hasattr(outputs, "attentions") and outputs.attentions:
                     attention_weights = [attn.detach().cpu() for attn in outputs.attentions]
                     layer_names = [f"layer_{i}" for i in range(len(attention_weights))]
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.warning(f"Could not extract attention using standard interface: {e}")
                 # Try forward pass with hooks
                 self.model(input_ids=input_ids, attention_mask=attention_mask)

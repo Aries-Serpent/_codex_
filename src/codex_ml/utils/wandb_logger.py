@@ -79,7 +79,7 @@ class WandBLogger:
             )
 
             logger.info(f"✓ W&B initialized (mode={mode}, project={self.project})")
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Failed to initialize W&B: {e}. Using fallback.")
             self.wandb_available = False
@@ -109,7 +109,7 @@ class WandBLogger:
                 import wandb
 
                 wandb.log(metrics, step=step)
-            except Exception as e:
+            except (ImportError, AttributeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"W&B logging failed: {e}")
                 self._log_fallback(metrics, step)
@@ -134,7 +134,7 @@ class WandBLogger:
 
                 wandb.finish()
                 logger.info("✓ W&B session finished")
-            except Exception as e:
+            except (ImportError, AttributeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to finish W&B: {e}")
 

@@ -26,18 +26,18 @@ logger = logging.getLogger(__name__)
 
 try:
     import chardet as _chardet  # preferred if available
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     _chardet = None  # type: ignore[assignment]
 
 # charset-normalizer provides multiple helpers depending on installed version
 try:
     from charset_normalizer import from_bytes as _cn_from_bytes
-except Exception:  # pragma: no cover - optional dependency
+except (IOError, OSError):  # pragma: no cover - optional dependency
     _cn_from_bytes = None  # type: ignore[assignment]
 
 try:
     from charset_normalizer import from_path as _cn_from_path
-except Exception:  # pragma: no cover - optional dependency
+except (IOError, OSError):  # pragma: no cover - optional dependency
     _cn_from_path = None  # type: ignore[assignment]
 
 __all__ = ["autodetect_encoding", "detect_encoding"]
@@ -58,7 +58,7 @@ def _norm_encoding(name: Optional[str]) -> Optional[str]:
         return None
     try:
         return name.lower().replace("_", "-")
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -83,7 +83,7 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
     # back to from_path if available and bytes-based detection isn't conclusive.
     try:
         raw = p.read_bytes()[: max(1024, int(sample_size))]
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Could not read file (missing file, permission, etc) — return default.
         return default
@@ -96,7 +96,7 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
             return "utf-16"
         if raw.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         # If something odd happens while checking BOMs, continue gracefully.
 
@@ -105,7 +105,7 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
         try:
             res = _chardet.detect(raw) or {}
             enc = _norm_encoding(res.get("encoding"))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             enc = None
         if enc in _SAFE_ENCODINGS:
@@ -119,7 +119,7 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
             result = _cn_from_bytes(raw)
             best = result.best() if result is not None else None
             enc = _norm_encoding(getattr(best, "encoding", None))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             enc = None
         if enc in _SAFE_ENCODINGS:
@@ -132,7 +132,7 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
             result = _cn_from_path(str(p))
             best = result.best() if result is not None else None
             enc = _norm_encoding(getattr(best, "encoding", None))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             enc = None
         if enc in _SAFE_ENCODINGS:
@@ -146,7 +146,7 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
         except (UnicodeDecodeError, LookupError):
             logger.debug("Exception caught, continuing", exc_info=True)
             continue
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             # Any other unexpected error skip to next trial
             continue

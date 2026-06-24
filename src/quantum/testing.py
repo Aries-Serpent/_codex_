@@ -88,7 +88,7 @@ class QuantumTest:
         try:
             result = self.test_func()
             self.state = TestState.PASSED if result else TestState.FAILED
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             self.state = TestState.FAILED
             self.error = exc
             logger.error(f"Test '{self.name}' exception: {exc}")

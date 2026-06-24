@@ -77,7 +77,7 @@ def _seed_everything(seed: int) -> dict[str, bool]:
 
         numpy.random.seed(seed)
         status["numpy"] = True
-    except Exception as exc:  # pragma: no cover - optional dependency missing
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency missing
         logger.debug("Failed to seed numpy: %s", exc)
 
     try:
@@ -91,11 +91,11 @@ def _seed_everything(seed: int) -> dict[str, bool]:
         if callable(use_det):  # pragma: no cover - optional availability
             try:
                 use_det(True)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
         status["torch"] = True
-    except Exception as exc:  # pragma: no cover - optional dependency missing
+    except (ValueError, TypeError) as exc:  # pragma: no cover - optional dependency missing
         logger.debug("Failed to seed torch: %s", exc)
 
     return status
@@ -302,7 +302,7 @@ class LLMService:
             }
             try:
                 append_event_ndjson(self.metrics_file, record)
-            except Exception:  # pragma: no cover - logging best effort
+            except (IOError, OSError):  # pragma: no cover - logging best effort
                 logger.debug("Failed to append request log", exc_info=True)
 
         return JSONResponse(response)
@@ -394,7 +394,7 @@ class _TorchInferenceContext:
     def __init__(self) -> None:
         try:
             import torch
-        except Exception:  # pragma: no cover - optional dependency missing
+        except (ImportError, AttributeError):  # pragma: no cover - optional dependency missing
             self._torch = None
             self._inference = None
             self._autocast = None

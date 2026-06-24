@@ -81,7 +81,7 @@ class PluginValidator:
                         f"{plugin_info.required_codex_version}, "
                         f"but {self.codex_version} is installed"
                     )
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Failed to parse version for {plugin_info.name}: {e}")
 
@@ -174,7 +174,7 @@ class EntryPointPluginRegistry:
                     if auto_load and is_valid:
                         self.load_plugin(group, ep.name)
 
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Failed to discover plugins in group {group}: {e}")
 
@@ -209,7 +209,7 @@ class EntryPointPluginRegistry:
                 plugin_class=plugin_class,
                 **metadata,  # type: ignore[arg-type]
             )
-        except Exception as e:
+        except (ImportError, AttributeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Failed to load entry point {entry_point.name}: {e}")
             return PluginInfo(
@@ -273,7 +273,7 @@ class EntryPointPluginRegistry:
             logger.info(f"Successfully loaded plugin: {name} from {group}")
             return instance
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             error_msg = f"Failed to load plugin {name}: {e}"
             plugin_info.error = error_msg

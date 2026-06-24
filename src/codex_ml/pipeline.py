@@ -67,13 +67,13 @@ def _resolve_tokenizer() -> TokenizerAdapter:
     if kwargs_env:
         try:
             kwargs = json.loads(kwargs_env)
-        except Exception:  # pragma: no cover - invalid env config
+        except (IOError, OSError):  # pragma: no cover - invalid env config
             logger.warning("Failed to decode text-backend kwargs; using defaults")
     try:
         tokenizer = get_tokenizer(name, **kwargs)
         logger.info("Using text backend: %s", tokenizer.__class__.__name__)
         return tokenizer
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to whitespace backend: %s", type(exc).__name__)
         return WhitespaceTokenizer()
 
@@ -83,7 +83,7 @@ def _resolve_reward_model() -> RewardModel:
         model = get_component("CODEX_REWARD_PATH", DEFAULT_REWARD_PATH)
         logger.info("Using reward model: %s", model.__class__.__name__)
         return model
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to HeuristicRewardModel: %s", exc)
         return HeuristicRewardModel()
 
@@ -93,7 +93,7 @@ def _resolve_rl_agent() -> RLAgent:
         agent = get_component("CODEX_RL_PATH", DEFAULT_RL_PATH)
         logger.info("Using RL agent: %s", agent.__class__.__name__)
         return agent
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to BanditRLAgent: %s", exc)
         return BanditRLAgent()
 
@@ -364,7 +364,7 @@ def _coerce_pairwise_list(value: Any) -> list[tuple[str, str, str, int]]:
             except KeyError as exc:
                 logger.debug(f"KeyError: {exc}")
                 raise ValueError(f"pairwise[{idx}] missing key {exc.args[0]}") from exc
-            except Exception as exc:
+            except (ValueError, TypeError, RuntimeError) as exc:
                 logger.debug(f"Exception: {exc}")
                 raise ValueError(f"pairwise[{idx}] has invalid values") from exc
         elif isinstance(item, Sequence) and len(item) == 4:
@@ -373,7 +373,7 @@ def _coerce_pairwise_list(value: Any) -> list[tuple[str, str, str, int]]:
                 raise ValueError(f"pairwise[{idx}] must contain three strings and an integer")
             try:
                 preference = int(preference)
-            except Exception as exc:
+            except (ValueError, TypeError, RuntimeError) as exc:
                 logger.debug(f"Exception: {exc}")
                 raise ValueError(f"pairwise[{idx}] preference must be an integer") from exc
         else:

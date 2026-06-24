@@ -174,7 +174,7 @@ class RuntimeTracer:
             )
             if result.exit_code == 0 and result.stdout:
                 return result.stdout
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             # Ignore errors from --help execution - it's optional metadata collection.
             # Failures here don't prevent the main analysis.
@@ -249,7 +249,7 @@ class RuntimeTracer:
                 if input_file.exists():
                     try:
                         stdin_input = input_file.read_text(encoding="utf-8")
-                    except Exception as e:
+                    except (IOError, OSError) as e:
                         logger.debug(f"Exception: {e}")
                         logger.warning("Could not read input file %s: %s", input_file, e)
 
@@ -340,7 +340,7 @@ class RuntimeTracer:
             elif "argparse" in source or "click" in source:
                 probe_result["detected_type"] = "cli"
 
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             logger.debug(f"Exception: {exc}")
             # Ignore errors during source code inspection - this is best-effort detection.
             # Missing type information doesn't prevent the rest of the analysis.

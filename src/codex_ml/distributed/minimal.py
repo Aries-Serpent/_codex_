@@ -29,7 +29,7 @@ try:  # pragma: no cover - torch is optional
     import torch.distributed as dist
 
     import torch
-except Exception:  # pragma: no cover - execution environments without torch
+except (ImportError, AttributeError):  # pragma: no cover - execution environments without torch
     torch = None  # type: ignore[assignment]
     dist = None
 
@@ -154,7 +154,7 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
     try:
         dist.init_process_group(backend=chosen_backend, **init_kwargs)
         return True
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.debug(f"Exception: {exc}")
         _warn_failed_init(chosen_backend, flag_used or env_flag, exc)
         return False

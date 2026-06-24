@@ -119,7 +119,7 @@ def train(
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record) + "\n")
-        except Exception:  # pragma: no cover - best-effort logging
+        except (IOError, OSError):  # pragma: no cover - best-effort logging
             logger.debug("Suppressed exception in handler", exc_info=True)
 
     # Load tokenizer and model
@@ -222,7 +222,7 @@ def train(
         if metrics_path.exists():
             try:
                 metrics_path.unlink()
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         try:
@@ -231,7 +231,7 @@ def train(
                 json.dumps(asdict(config), indent=2, sort_keys=True),
                 encoding="utf-8",
             )
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             config_snapshot = None
     else:
@@ -246,18 +246,18 @@ def train(
             if callable(size_attr):
                 try:
                     return int(size_attr(0))
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.debug(f"Exception: {e}")
                     logger.warning(f"Exception: {e}", exc_info=True)
             try:
                 return len(tensor)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 shape = getattr(tensor, "shape", None)
                 if shape:
                     try:
                         return int(shape[0])
-                    except Exception:
+                    except (ValueError, TypeError):
                         logger.warning("Exception occurred", exc_info=True)
                         return 0
                 return 0
@@ -289,7 +289,7 @@ def train(
         try:
             with metrics_path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record, sort_keys=True) + "\n")
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -309,7 +309,7 @@ def train(
                 ),
                 stop_event=stop_event,
             )
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             system_thread = None
 
@@ -335,7 +335,7 @@ def train(
                     "training.lora": config.lora_enable,
                 }
                 log_params_safe(_as_flat_params(params))
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -375,24 +375,24 @@ def train(
                 if writer is not None or config.mlflow_enable or config.wandb_enable:
                     try:
                         loss_value = float(raw_loss.detach().cpu().item())
-                    except Exception:
+                    except (IOError, OSError):
                         logger.warning("Exception occurred", exc_info=True)
                         try:
                             loss_value = float(loss.detach().cpu().item())
-                        except Exception:
+                        except (IOError, OSError):
                             logger.warning("Exception occurred", exc_info=True)
                             loss_value = None
                     if loss_value is not None:
                         if writer is not None:
                             try:
                                 writer.add_scalar("train/loss", loss_value, global_step)
-                            except Exception as e:
+                            except (IOError, OSError) as e:
                                 logger.debug(f"Exception: {e}")
                                 logger.warning(f"Exception: {e}", exc_info=True)
                         if config.mlflow_enable:
                             try:
                                 log_metric_safe("train/loss", float(loss_value), step=global_step)
-                            except Exception as e:
+                            except (ValueError, TypeError, RuntimeError) as e:
                                 logger.debug(f"Exception: {e}")
                                 logger.warning(f"Exception: {e}", exc_info=True)
                             _append_metric(
@@ -406,7 +406,7 @@ def train(
                         if config.wandb_enable:
                             try:
                                 wb.log({"train/loss": loss_value}, step=global_step)
-                            except Exception as e:
+                            except (ValueError, TypeError, RuntimeError) as e:
                                 logger.debug(f"Exception: {e}")
                                 logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -478,7 +478,7 @@ def train(
                             float(metrics["val_perplexity"]),
                             global_step,
                         )
-                    except Exception as e:
+                    except (IOError, OSError) as e:
                         logger.debug(f"Exception: {e}")
                         logger.warning(f"Exception: {e}", exc_info=True)
                 if config.mlflow_enable:
@@ -493,7 +493,7 @@ def train(
                             float(metrics["val_token_accuracy"]),
                             step=global_step,
                         )
-                    except Exception as e:
+                    except (ValueError, TypeError, RuntimeError) as e:
                         logger.debug(f"Exception: {e}")
                         logger.warning(f"Exception: {e}", exc_info=True)
                     _append_metric(
@@ -514,7 +514,7 @@ def train(
                             wb_payload["eval/token_accuracy"] = float(metrics["val_token_accuracy"])
                         if wb_payload:
                             wb.log(wb_payload, step=global_step)
-                    except Exception as e:
+                    except (ValueError, TypeError, RuntimeError) as e:
                         logger.debug(f"Exception: {e}")
                         logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -545,7 +545,7 @@ def train(
                     artifacts.append(env_dir)
                 for artifact in artifacts:
                     log_artifact_safe(str(artifact))
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         if config.wandb_enable:
@@ -557,7 +557,7 @@ def train(
                 }
                 if final_payload:
                     wb.log(final_payload, step=global_step)
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -565,7 +565,7 @@ def train(
         try:
             stop_event.set()
             system_thread.join(timeout=5.0)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 
@@ -573,7 +573,7 @@ def train(
         try:
             writer.flush()
             writer.close()
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             logger.warning(f"Exception: {e}", exc_info=True)
 

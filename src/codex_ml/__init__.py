@@ -25,7 +25,7 @@ try:  # pragma: no cover - optional dependency (OmegaConf)
         TrainingWeights,
         ValidationThresholds,
     )
-except Exception:  # pragma: no cover - degrade gracefully when config deps are missing
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when config deps are missing
 
     class _MissingConfig:
         def __init__(self, name: str):
@@ -49,7 +49,7 @@ except Exception:  # pragma: no cover - degrade gracefully when config deps are 
 
 try:  # pragma: no cover - optional dependency tree
     from .pipeline import run_codex_pipeline
-except Exception:  # pragma: no cover - degrade gracefully when configs missing
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when configs missing
 
     def run_codex_pipeline(*_args, **_kwargs):  # type: ignore[misc]
         raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
@@ -69,7 +69,7 @@ try:  # pragma: no cover - optional metrics dependency
         RecallScore,
         TokenAccuracy,
     )
-except Exception:  # pragma: no cover - degrade gracefully when metrics extras missing
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when metrics extras missing
 
     class _MissingMetric:
         def __init__(self, name: str):
@@ -119,7 +119,7 @@ try:  # pragma: no cover - optional path
         Weights,
         run_codex_symbolic_pipeline,
     )
-except Exception:  # pragma: no cover - degrade gracefully when symbolic deps missing
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when symbolic deps missing
 
     class _MissingSymbolic:
         def __init__(self, name: str):
@@ -198,7 +198,7 @@ def __getattr__(name: str):
     module_name, attr_name = _EXPORT_MAP[name]
     try:
         module = import_module(module_name)
-    except Exception as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
         message = (
             f"{attr_name} is unavailable because importing {module_name!r} failed."
             " Install optional Codex ML dependencies to enable this feature."

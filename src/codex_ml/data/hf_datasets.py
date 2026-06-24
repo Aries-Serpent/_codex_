@@ -32,7 +32,7 @@ try:  # optional dependency
     from datasets import load_dataset as _load_dataset  # type: ignore[attr-defined]
 
     _HAS_DATASETS = True
-except Exception:  # pragma: no cover - optional
+except (IOError, OSError):  # pragma: no cover - optional
     _load_dataset = None
     _HAS_DATASETS = False
 
@@ -63,7 +63,7 @@ def load_hf_dataset(name: str, split: str = "train", fallback_path: str | None =
             revision=revision,
             **extra,
         )  # nosec B615: revision pinned via ensure_pinned_kwargs
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         if fallback_path:
             from .registry import get_dataset

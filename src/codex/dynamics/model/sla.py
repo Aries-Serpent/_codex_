@@ -206,7 +206,7 @@ class D365CalendarClient:
                 "D365CalendarClient: requests library unavailable; using local schedule."
             )
             return None
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             logger.warning("D365CalendarClient: fetch failed (%s); using local schedule.", exc)
             return None
 
@@ -316,7 +316,7 @@ class SLAPolicy(BaseModel):
             from zoneinfo import ZoneInfo
 
             tz = ZoneInfo(tz_name)
-        except Exception:
+        except (ImportError, AttributeError):
             from datetime import timezone
 
             tz = timezone.utc  # type: ignore[assignment]

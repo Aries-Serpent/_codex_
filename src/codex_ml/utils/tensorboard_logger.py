@@ -76,7 +76,7 @@ def get_tb_writer(
         # TensorBoard not available - gracefully degrade
         yield None
 
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Any other error - gracefully degrade
         yield None
@@ -86,7 +86,7 @@ def get_tb_writer(
         if writer is not None:
             try:
                 writer.close()
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Silently ignore close errors to ensure cleanup doesn't fail
                 # the entire context. Common errors include already-closed writers

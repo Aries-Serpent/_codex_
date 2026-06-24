@@ -85,7 +85,7 @@ class UniversalParser:
         try:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.parse_string(code, file_path)
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
@@ -136,7 +136,7 @@ class UniversalParser:
 
             return root
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             if self.strict:
                 raise ParseError(str(e), file_path) from e

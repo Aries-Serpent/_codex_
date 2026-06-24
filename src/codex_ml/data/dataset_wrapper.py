@@ -22,7 +22,7 @@ from collections.abc import Iterable  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from datasets import Dataset  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - datasets missing
+except (ImportError, AttributeError):  # pragma: no cover - datasets missing
     Dataset = None
 
 __all__ = ["DATASETS_AVAILABLE", "train_val_test_split"]

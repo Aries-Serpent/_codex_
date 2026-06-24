@@ -10,7 +10,7 @@ import click
 def _analyze_module(path: Path) -> dict:
     try:
         source = path.read_text(encoding="utf-8", errors="replace")
-    except Exception:
+    except (IOError, OSError):
         return {
             "file": str(path),
             "lines": 0,

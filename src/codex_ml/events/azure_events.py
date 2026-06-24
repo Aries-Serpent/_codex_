@@ -93,7 +93,7 @@ class AzureEventPublisher(EventPublisher):
             logger.info(f"Published event to Azure Event Grid: {event.event_id}")
             return True
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish to Azure Event Grid: {e}")
             return False
@@ -129,7 +129,7 @@ class AzureEventPublisher(EventPublisher):
             logger.info(f"Published {len(events)} events to Azure Event Grid")
             return True
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Failed to publish batch to Azure Event Grid: {e}")
             return False

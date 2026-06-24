@@ -316,7 +316,7 @@ class PROperator:
                     sha=base.commit.sha,
                 )
                 logger.info("Created branch: %s", content.branch_name)
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 if "already exists" not in str(e).lower():
                     raise
@@ -335,7 +335,7 @@ class PROperator:
                             sha=existing.sha,
                             branch=content.branch_name,
                         )
-                    except Exception:
+                    except (IOError, OSError):
                         logger.warning("Exception occurred", exc_info=True)
                         # File doesn't exist, create it
                         repo.create_file(
@@ -370,7 +370,7 @@ class PROperator:
                 pr_url=pr.html_url,
             )
 
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.debug(f"Exception: {e}")
             logger.error("Failed to create PR: %s", e)
             return PRResult(

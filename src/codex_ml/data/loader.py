@@ -83,7 +83,7 @@ class CacheManifest:
             return None
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             return None
         return cls(
@@ -378,7 +378,7 @@ def load_dataset(
             data = safe_pickle_load(str(cache_file), use_restricted_unpickler=True)
             if isinstance(data, list):
                 return data
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             try:
                 cache_file.unlink()

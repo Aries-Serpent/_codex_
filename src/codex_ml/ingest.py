@@ -113,7 +113,7 @@ def _load_config(config_path: str | Path | None) -> _DataConfig:
         logger.debug(f"MissingPyYAMLError: {e}")
         logger.warning(f"MissingPyYAMLError: {e}", exc_info=True)
         return _default_config()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return _default_config()
 

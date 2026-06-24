@@ -140,7 +140,7 @@ class EventBus(EventPublisher, EventSubscriber):
         for callback in callbacks:
             try:
                 callback(event)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.error(f"Error in event callback: {e}")
 

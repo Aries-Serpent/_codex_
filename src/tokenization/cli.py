@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer
-except Exception:  # pragma: no cover - fallback when typer missing
+except (ImportError, AttributeError):  # pragma: no cover - fallback when typer missing
     _typer = None  # type: ignore[assignment]
 else:
     required_attrs = {"Typer", "echo", "Option", "Exit"}
@@ -135,7 +135,7 @@ def _format_context(context: dict[str, Any] | str | None) -> str:
         return context
     try:
         return json.dumps(context, sort_keys=True, default=str)
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return str(context)
 
@@ -163,7 +163,7 @@ def _append_error_block(
 
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         typer.echo(f"Failed to ensure error log directory {log_path.parent}: {exc}", err=True)
         return
@@ -171,7 +171,7 @@ def _append_error_block(
     try:
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block + "\n")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         typer.echo(f"Failed to append error log to {log_path}: {exc}", err=True)
 
@@ -202,7 +202,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
             {"tokenizer_path": str(tokenizer_path), "error": str(exc)},
             "Could you confirm the tokenizer path or share how to generate it?",
         )
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         _fail(
             step,
@@ -243,7 +243,7 @@ def vocab(
             vocab_size = int(vocab_attr)
         else:
             raise AttributeError("Tokenizer does not expose a vocab_size attribute.")
-    except Exception as exc:  # pragma: no cover - defensive casting guards
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive casting guards
         _fail(
             "vocab",
             f"Unable to determine vocabulary size: {exc}",
@@ -265,7 +265,7 @@ def vocab(
     for idx in range(sample_count):
         try:
             token = converter(idx)
-        except Exception as exc:  # pragma: no cover - optional backend failures
+        except (IOError, OSError) as exc:  # pragma: no cover - optional backend failures
             _append_error_block(
                 "vocab",
                 f"Failed to preview token {idx}: {exc}",
@@ -293,7 +293,7 @@ def inspect(tokenizer_path: Path) -> None:
     if manifest_path.exists():
         try:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             _append_error_block(
                 "inspect",
@@ -308,7 +308,7 @@ def inspect(tokenizer_path: Path) -> None:
     if callable(getter):
         try:
             special_tokens = list(getter())
-        except Exception as exc:  # pragma: no cover - backend specific guard
+        except (IOError, OSError) as exc:  # pragma: no cover - backend specific guard
             _append_error_block(
                 "inspect",
                 f"Failed to collect special tokens: {exc}",
@@ -322,7 +322,7 @@ def inspect(tokenizer_path: Path) -> None:
         if config_path.exists():
             try:
                 tokenizer_cfg = json.loads(config_path.read_text(encoding="utf-8"))
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.debug(f"Exception: {exc}")
                 _append_error_block(
                     "inspect",
@@ -374,7 +374,7 @@ def encode(
         input_path = Path(text)
         try:
             payload = input_path.read_text(encoding="utf-8")
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             _fail(
                 "encode",
@@ -389,7 +389,7 @@ def encode(
             padding="max_length" if pad_to else False,
             max_length=pad_to or None,
         )
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         _fail(
             "encode",
@@ -417,7 +417,7 @@ def encode(
 
     try:
         ids_source = ids_candidate if isinstance(ids_candidate, Sequence) else list(ids_candidate)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         _fail(
             "encode",
@@ -449,7 +449,7 @@ def encode(
         else:
             try:
                 tokens = [str(converter(i)) for i in ids_list]
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.debug(f"Exception: {exc}")
                 _append_error_block(
                     "encode",
@@ -511,7 +511,7 @@ def decode(
         logger.warning(f"TypeError: {e}", exc_info=True)
         try:
             decoded = decode_fn(id_list)
-        except Exception as exc:  # pragma: no cover - backend guard
+        except (IOError, OSError) as exc:  # pragma: no cover - backend guard
             _fail(
                 "decode",
                 f"Tokenizer decode failed: {exc}",
@@ -522,7 +522,7 @@ def decode(
                 },
                 "What changes are needed so decoding succeeds?",
             )
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         _fail(
             "decode",
@@ -545,7 +545,7 @@ def export(src: Path, dst: Path) -> None:
     root = _resolve_root(src)
     try:
         dst.mkdir(parents=True, exist_ok=True)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         _fail(
             "export",
@@ -561,7 +561,7 @@ def export(src: Path, dst: Path) -> None:
             target = dst / name
             try:
                 shutil.copy2(candidate, target)
-            except Exception as exc:
+            except (ValueError, TypeError, RuntimeError) as exc:
                 logger.debug(f"Exception: {exc}")
                 _append_error_block(
                     "export",
@@ -584,7 +584,7 @@ def export(src: Path, dst: Path) -> None:
     )
     try:
         readme_path.write_text(readme_contents, encoding="utf-8")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug(f"Exception: {exc}")
         _append_error_block(
             "export",

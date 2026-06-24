@@ -11,14 +11,14 @@ from typing import Any, Optional
 
 try:  # pragma: no cover - optional transformers dependency
     from transformers import BitsAndBytesConfig
-except Exception:  # pragma: no cover - transformers/quantization optional
+except (ImportError, AttributeError):  # pragma: no cover - transformers/quantization optional
     BitsAndBytesConfig = None  # type: ignore[assignment, misc]
 
 from .peft_hooks import LoraBuildCfg, build_lora
 
 try:  # pragma: no cover - optional dependency
     import torch
-except Exception:  # pragma: no cover - torch optional in lightweight envs
+except (ImportError, AttributeError):  # pragma: no cover - torch optional in lightweight envs
     torch = None  # type: ignore[assignment]
 
 logger = logging.getLogger(__name__)

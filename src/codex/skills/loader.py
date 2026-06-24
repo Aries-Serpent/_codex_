@@ -85,6 +85,6 @@ class SkillDocLoader:
                 manifests.append(self.load_manifest(path))
             except FileNotFoundError:
                 LOGGER.warning("Skill doc not found: %s", path)
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 LOGGER.warning("Failed to load skill doc %s: %s", path, exc)
         return manifests

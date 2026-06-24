@@ -36,7 +36,7 @@ def _sha256_file(path: Path) -> str | None:
             for chunk in iter(lambda: handle.read(1 << 16), b""):
                 hasher.update(chunk)
         return hasher.hexdigest()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -78,6 +78,6 @@ def write_run_manifest(directory: str | Path, payload: dict[str, Any]) -> None:
         target_dir.mkdir(parents=True, exist_ok=True)
         manifest = target_dir / "run_manifest.json"
         manifest.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return

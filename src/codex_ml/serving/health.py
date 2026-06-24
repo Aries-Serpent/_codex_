@@ -57,7 +57,7 @@ def readiness_check() -> dict[str, Any]:
         logger.debug(f"ImportError: {e}")
         logger.warning(f"ImportError: {e}", exc_info=True)
         checks["disk_space"] = {"status": "skipped", "reason": "psutil not available"}
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         checks["disk_space"] = {"status": "error", "error": str(e)}
         all_ready = False

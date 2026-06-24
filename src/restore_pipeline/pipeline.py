@@ -172,7 +172,7 @@ def _denoise_bm3d(img: np.ndarray, sigma: float = 0.1) -> np.ndarray:
         return np.clip(
             bm3d.bm3d(img, sigma_psd=sigma_psd, stage_arg=bm3d.BM3DStages.ALL_STAGES), 0.0, 1.0
         ).astype(np.float32)
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logger.warning("BM3D denoising failed (%s); falling back to NL-means.", exc)
         from skimage.restoration import denoise_nl_means
 
@@ -363,7 +363,7 @@ def _colorize(img: np.ndarray, cfg: PipelineConfig) -> np.ndarray:
         rgb_out = cv2.cvtColor(lab_out, cv2.COLOR_Lab2RGB)
         return rgb_out.astype(np.float32) / 255.0
 
-    except Exception as exc:
+    except (ImportError, AttributeError) as exc:
         logger.warning("Colorization failed (%s); returning image without colorization.", exc)
         return img
 

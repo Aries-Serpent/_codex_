@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 
 try:  # optional torch
     import torch
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
 
@@ -260,7 +260,7 @@ def distributed_context() -> dict[str, Any]:
                 context["backend"] = dist.get_backend()
                 context["world_size"] = max(context["world_size"], dist.get_world_size())
                 context["rank"] = max(context["rank"], dist.get_rank())
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.debug("Exception occurred", exc_info=True)
             context.setdefault("backend_error", "unavailable")
     return context
@@ -334,7 +334,7 @@ def _emit_checkpoint_epoch(
             rng_path = RNGState.path_for_checkpoint(checkpoint_path)
             rng_state.save_to_file(rng_path)
             state.setdefault("rng_state_paths", []).append(str(rng_path))
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             state.setdefault("rng_state_error", repr(exc))
 
     for key, value in metrics.items():
@@ -470,7 +470,7 @@ def run_unified_training(
             loaded_state, _ = load_checkpoint(cfg.resume_from, restore_rng=True)
             payload_keys = sorted(loaded_state.keys()) if isinstance(loaded_state, dict) else []
             state.update({"resume_loaded": True, "resume_payload_keys": payload_keys})
-        except Exception as exc:  # pragma: no cover
+        except (IOError, OSError) as exc:  # pragma: no cover
             state.update({"resume_error": repr(exc)})
         else:
             rng_candidate = RNGState.path_for_checkpoint(Path(cfg.resume_from))
@@ -479,7 +479,7 @@ def run_unified_training(
                     loaded_rng = RNGState.load_from_file(rng_candidate)
                     loaded_rng.restore()
                     state["rng_resumed_from"] = str(rng_candidate)
-                except Exception as exc:  # pragma: no cover - defensive
+                except (IOError, OSError) as exc:  # pragma: no cover - defensive
                     state["rng_resume_error"] = repr(exc)
 
     class _StateRelay:

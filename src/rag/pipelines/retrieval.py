@@ -121,7 +121,7 @@ class PGVectorStoreBackend(VectorStoreBackend):
 
             if HAS_PSYCOPG3:
                 self._store = PGVectorStore()
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(
                 "PGVectorStoreBackend: failed to initialize PGVectorStore; "
                 "falling back to in-memory: %s",

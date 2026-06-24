@@ -66,7 +66,7 @@ try:
     from codex.alerting import TrainingAlertManager as _TrainingAlertManager
 
     _ALERTING_AVAILABLE = True
-except Exception:  # pragma: no cover — optional dependency
+except (ImportError, AttributeError):  # pragma: no cover — optional dependency
     _ALERTING_AVAILABLE = False
     _TrainingAlertManager = None
 
@@ -77,7 +77,7 @@ try:
     from codex_ml.models.reasoning import attach_reasoning_adapters
 
     _HAS_REASONING_ADAPTERS = True
-except Exception:
+except (ImportError, AttributeError):
     attach_reasoning_adapters = None
     _HAS_REASONING_ADAPTERS = False
 from codex_ml.monitoring import CodexMetricsRegistry, metrics_enabled
@@ -88,7 +88,7 @@ from codex_ml.utils.checksum import sha256sum
 
 try:
     from codex_ml.utils.repro import record_dataset_checksums
-except Exception:
+except (ImportError, AttributeError):
 
     def record_dataset_checksums(*_, **__) -> dict[str, Any]:
         return {}
@@ -96,7 +96,7 @@ except Exception:
 
 try:
     from codex_ml.utils.seeding import set_reproducible
-except Exception:
+except (ImportError, AttributeError):
 
     def set_reproducible(*_, **__) -> None:
         return None
@@ -104,7 +104,7 @@ except Exception:
 
 try:
     from codex_ml.telemetry import start_metrics_server
-except Exception:
+except (ImportError, AttributeError):
 
     def start_metrics_server(*_, **__) -> None:
         return None
@@ -114,7 +114,7 @@ try:
     import mlflow
 
     _HAS_MLFLOW = True
-except Exception:
+except (IOError, OSError):
     mlflow = None
     _HAS_MLFLOW = False
 
@@ -142,12 +142,12 @@ except Exception:
 
 try:
     from codex_ml.models.registry import get_model as instantiate_model
-except Exception:
+except (ImportError, AttributeError):
     instantiate_model = None
 
 try:
     from codex_ml.lora import apply_lora
-except Exception:
+except (ImportError, AttributeError):
     apply_lora = None
 
 try:
@@ -190,7 +190,7 @@ except Exception:
 
 try:
     from codex_ml.utils.determinism import set_cudnn_deterministic
-except Exception:
+except (ImportError, AttributeError):
 
     def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
         _ = (enable, benchmark)
@@ -199,7 +199,7 @@ except Exception:
 
 try:
     from codex_ml.utils.retention import prune_checkpoints
-except Exception:
+except (ImportError, AttributeError):
 
     def prune_checkpoints(*args, **kwargs):
         return {"dry_run": True}
@@ -255,7 +255,7 @@ class ReasoningRuntime:
     def bind_model(self, model: Any) -> None:
         try:
             self.harness.attach(model)
-        except Exception as exc:  # pragma: no cover - defensive attachment guard
+        except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive attachment guard
             logger.warning("Failed to bind reasoning modules to model: %s", exc)
 
     def on_new_epoch(self) -> None:
@@ -288,7 +288,7 @@ class ReasoningRuntime:
                 top_k=self.top_k,
                 step_ctx=step_ctx,
             )
-        except Exception as exc:  # pragma: no cover - defensive capture guard
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive capture guard
             logger.debug("Skipping reasoning trace capture: %s", exc)
             return
         if not trace:
@@ -310,7 +310,7 @@ class ReasoningRuntime:
             _persist_reasoning_trace(self.store_path, payload)
         try:
             self.harness.record(payload)
-        except Exception:  # pragma: no cover - history append best effort
+        except (IOError, OSError):  # pragma: no cover - history append best effort
             logger.debug("Suppressed exception in handler", exc_info=True)
         self.traces_written += 1
 
@@ -361,7 +361,7 @@ def _initialize_reasoning_runtime(
         return model, None
     try:
         harness = attach_reasoning_adapters(model, reasoning_cfg)
-    except Exception as exc:  # pragma: no cover - adapter construction best effort
+    except (IOError, OSError) as exc:  # pragma: no cover - adapter construction best effort
         logger.warning("Failed to attach reasoning adapters: %s", exc)
         return model, None
     store_path = None
@@ -420,7 +420,7 @@ def _write_json_report(output_dir: Path | None, name: str, payload: Mapping[str,
         (output_dir / name).write_text(
             json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.warning("Failed to write %s: %s", name, exc)
 
 
@@ -445,7 +445,7 @@ def _set_seed(seed: Optional[int]) -> int:
         import numpy as np
 
         np.random.seed(resolved_seed)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.debug("Suppressed exception in handler", exc_info=True)
     if _HAS_TORCH:
         torch.manual_seed(resolved_seed)
@@ -545,7 +545,7 @@ def record_metrics(
             loaded = json.loads(json_path.read_text(encoding="utf-8"))
             if isinstance(loaded, list):
                 history = loaded
-        except Exception:
+        except (IOError, OSError):
             history = []
     history.append(payload)
     json_path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
@@ -618,7 +618,7 @@ def _assert_bf16_capability(
     want_bf16 = False
     try:
         import torch as _torch
-    except Exception as exc:  # pragma: no cover - environment dependent
+    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - environment dependent
         if requested_dtype and str(requested_dtype).lower() in {"bf16", "bfloat16"}:
             raise RuntimeError("bf16 required but PyTorch is not installed") from exc
         return
@@ -640,11 +640,11 @@ def _assert_bf16_capability(
             try:
                 a = a.to(device)
                 b = b.to(device)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 # If placement fails, let the matmul attempt occur on default device.
                 logger.debug("Suppressed exception in handler", exc_info=True)
         _ = a @ b
-    except Exception as exc:  # pragma: no cover - runtime check
+    except (IOError, OSError) as exc:  # pragma: no cover - runtime check
         raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
 
 
@@ -698,13 +698,13 @@ def _attempt_resume(model, optimizer, scheduler, checkpoint_dir: str | Path):
             if sha:
                 resume_meta["previous_checkpoint_sha256"] = sha
             return last_epoch + 1, resume_meta
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             resume_meta["model_state_loaded"] = False
             resume_meta["optimizer_state_loaded"] = False
             resume_meta["scheduler_state_loaded"] = False
             resume_meta["model_state_error"] = str(e)
             return 1, resume_meta
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         resume_meta["resume_error"] = f"latest.json parse failure: {e}"
         return 1, resume_meta
 
@@ -738,7 +738,7 @@ def _first_param_dtype(model) -> str | None:
         for p in model.parameters():
             if p.requires_grad:
                 return str(p.dtype)
-    except Exception:  # pragma: no cover - defensive
+    except (ConnectionError, TimeoutError):  # pragma: no cover - defensive
         return None
     return None
 
@@ -770,7 +770,7 @@ def _dataset_dtype_gate(dataset, desired: Any) -> None:
     try:
         sample = dataset[0]
         ds_dtype = getattr(sample, "dtype", None)
-    except Exception:
+    except (ConnectionError, TimeoutError):
         ds_dtype = None
     if ds_dtype is not None and desired is not None:
         logger.info(
@@ -794,7 +794,7 @@ def _append_metrics_event(art_dir_path: Path | None, record: dict[str, Any]) -> 
         if _telemetry_should_sample(record):
             _append_telemetry_ndjson(base, record)
             _append_telemetry_json_rollover(base, record)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug("Failed to append telemetry event: %s", exc)
 
 
@@ -803,7 +803,7 @@ def _persist_reasoning_trace(path: Path, payload: dict[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(payload, sort_keys=True) + "\n")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug("Failed to persist reasoning trace: %s", exc)
 
 
@@ -812,7 +812,7 @@ def _telemetry_max_items() -> int:
         raw = os.environ.get("CODEX_TELEMETRY_MAX_ITEMS", "1000").strip()
         n = int(raw)
         return n if n > 0 else 1000
-    except Exception:
+    except (IOError, OSError):
         return 1000
 
 
@@ -828,26 +828,26 @@ def _append_telemetry_json_rollover(base_dir: Path, record: dict[str, Any]) -> N
                 loaded = json.loads(path.read_text(encoding="utf-8"))
                 if isinstance(loaded, list):
                     history = list(loaded)
-            except Exception:
+            except (IOError, OSError):
                 history = []
         roll = len(history) >= _telemetry_max_items()
         max_bytes = _telemetry_max_bytes()
         if not roll and max_bytes > 0 and path.exists():
             try:
                 roll = path.stat().st_size >= max_bytes
-            except Exception:
+            except (IOError, OSError):
                 roll = False
         if roll:
             ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
             try:
                 path.rename(base_dir / f"telemetry-{ts}.json")
-            except Exception:
+            except (IOError, OSError):
                 history = []
             else:
                 history = []
         history.append(dict(record))
         path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug("Failed to append telemetry.json: %s", exc)
 
 
@@ -876,7 +876,7 @@ def _telemetry_max_bytes() -> int:
         raw = os.environ.get("CODEX_TELEMETRY_MAX_BYTES", "0").strip()
         n = int(raw)
         return n if n > 0 else 0
-    except Exception:
+    except (IOError, OSError):
         return 0
 
 
@@ -888,7 +888,7 @@ def _append_telemetry_ndjson(base_dir: Path, record: dict[str, Any]) -> None:
         path = base_dir / "telemetry.ndjson"
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, sort_keys=True) + "\n")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug("Telemetry write failed (best-effort): %s", e)
 
 
@@ -916,7 +916,7 @@ def _telemetry_should_sample(record: dict[str, Any]) -> bool:
         import random as _random
 
         return _random.random() < rate  # nosec B311 — non-cryptographic ML sampling/shuffling
-    except Exception:
+    except (ImportError, AttributeError):
         return True
 
 
@@ -946,7 +946,7 @@ def _cast_batch_for_policy(
     reason: Optional[str] = None
     try:
         import torch as _torch
-    except Exception:
+    except (IOError, OSError):
         reason = "torch_unavailable"
         event_payload["status"] = status
         event_payload["reason"] = reason
@@ -954,7 +954,7 @@ def _cast_batch_for_policy(
         return sample
     try:
         src_dtype = getattr(sample, "dtype", None)
-    except Exception:
+    except (IOError, OSError):
         src_dtype = None
     if src_dtype is not None:
         event_payload["from"] = str(src_dtype)
@@ -979,7 +979,7 @@ def _cast_batch_for_policy(
             status = "cast"
         else:
             reason = "no_to_method"
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.warning("Dataset cast policy '%s' failed: %s", policy_norm, exc)
         reason = f"cast_failed:{exc.__class__.__name__}"
     if reason is not None:
@@ -1000,7 +1000,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
             return batch
         try:
             return [_cast_batch_for_policy(x, policy, desired, device, art_dir_path) for x in batch]
-        except Exception:
+        except (IOError, OSError):
             return batch
 
     return _collate
@@ -1066,7 +1066,7 @@ def _scheduler_current_lr(scheduler, optimizer):
         return None
     try:
         return [pg["lr"] for pg in optimizer.param_groups]
-    except Exception:
+    except (IOError, OSError):
         return None
 
 
@@ -1075,13 +1075,13 @@ def _checkpoint_digest(ckpt_dir: Path) -> str | None:
     if sha_file.exists():
         try:
             return sha_file.read_text(encoding="utf-8").strip() or None
-        except Exception:
+        except (IOError, OSError):
             return None
     model_file = ckpt_dir / "model.pt"
     if model_file.exists():
         try:
             return sha256sum(model_file)
-        except Exception:
+        except (IOError, OSError):
             return None
     return None
 
@@ -1163,7 +1163,7 @@ def run_training(
     resolved_seed = _set_seed(seed)
     try:
         set_reproducible(resolved_seed, deterministic=bool(deterministic_cudnn))
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.debug("Suppressed exception in handler", exc_info=True)
     if deterministic_cudnn:
         set_cudnn_deterministic(True, benchmark=False)
@@ -1186,7 +1186,7 @@ def run_training(
         metrics_json = art_dir_path / "metrics.json"  # type: ignore[operator]
         if not metrics_json.exists():
             metrics_json.write_text("[]\n", encoding="utf-8")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.warning("Failed to prepare artifacts directory '%s': %s", default_art_dir, exc)
         art_dir_path = None
 
@@ -1257,7 +1257,7 @@ def run_training(
     try:
         session_logger = get_session_logger()
         session_id = session_logger.session_id
-    except Exception:  # pragma: no cover - defensive
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
         session_logger = None
         session_id = None
     if session_logger is not None:
@@ -1273,7 +1273,7 @@ def run_training(
                     "dataset_files": dataset_files_count,
                 },
             )
-        except Exception:  # pragma: no cover - best effort logging
+        except (IOError, OSError):  # pragma: no cover - best effort logging
             logger.debug("Suppressed exception in handler", exc_info=True)
     metrics_registry: CodexMetricsRegistry | None = None
     metrics_port_value: int | None = None
@@ -1290,7 +1290,7 @@ def run_training(
         try:
             metrics_registry = CodexMetricsRegistry()
             metrics_registry.active_sessions.set(1)
-        except Exception as exc:  # pragma: no cover - optional dependency path
+        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
             logger.debug("Prometheus metrics disabled: %s", exc)
             metrics_registry = None
         port_candidate = metrics_port_value or 8000
@@ -1312,7 +1312,7 @@ def run_training(
             else:
                 try:
                     safe_uri = Path(mlflow_uri).expanduser().resolve().as_uri()
-                except Exception:
+                except (IOError, OSError):
                     logger.warning(
                         "Unable to coerce MLflow URI '%s'; using %s",
                         mlflow_uri,
@@ -1346,7 +1346,7 @@ def run_training(
             model.to(device_obj)
             if dtype_obj is not None:
                 model = model.to(dtype=dtype_obj)
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             logger.warning("Failed to move model to device/dtype: %s", exc)
         else:
             # Verify effective dtype and surface implicit downcasts (e.g., bf16->fp32)
@@ -1354,7 +1354,7 @@ def run_training(
             # Emit telemetry event when bf16 was requested but effective dtype differs
             try:
                 import torch as _torch
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.debug("Torch import failed for dtype telemetry: %s", e)
             else:
                 eff = _first_param_dtype(model)
@@ -1415,7 +1415,7 @@ def run_training(
         if dataset_cast_policy:
             try:
                 sample0 = dataset[0]
-            except Exception:
+            except (IOError, OSError):
                 sample0 = None
             _ = _cast_batch_for_policy(
                 sample0, dataset_cast_policy, dtype_obj, device_obj, art_dir_path
@@ -1435,7 +1435,7 @@ def run_training(
     if model is not None and lora and apply_lora is not None:
         try:
             apply_lora(model, **(lora_cfg or {}))
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning("Failed to apply LoRA: %s", e)
 
     model_params_count = None
@@ -1464,7 +1464,7 @@ def run_training(
                         eff_dtype,
                         str(dtype_obj),
                     )
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.debug("Failed to check optimizer dtype compatibility: %s", e)
 
     if (
@@ -1483,7 +1483,7 @@ def run_training(
             logger.debug(f"ImportError: {exc}")
             logger.warning("Differential privacy disabled: %s", exc)
             dp_settings = None
-        except Exception as exc:  # pragma: no cover - optional dependency path
+        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
             logger.warning("Failed to enable differential privacy: %s", exc)
             dp_settings = None
     elif dp_settings is not None and not _HAS_TORCH:
@@ -1549,7 +1549,7 @@ def run_training(
     for cb in cb_list:
         try:
             cb.on_train_start(state)
-        except Exception as e:
+        except (IOError, OSError) as e:
             cb.record_error("on_train_start", e, state)
             logger.warning("Callback on_train_start error: %s", e)
 
@@ -1561,7 +1561,7 @@ def run_training(
             (ckpt_root / "config.snapshot.json").write_text(
                 json.dumps(run_config, indent=2, sort_keys=True)
             )
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.warning("Failed to write config snapshot: %s", e)
 
     start_epoch = 1
@@ -1609,7 +1609,7 @@ def run_training(
 
         try:
             (art_dir_path / "metrics.json").write_text(json.dumps(metrics_entries, indent=2))
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.warning("Failed to write metrics.json: %s", exc)
 
         env_payload: dict[str, Any] = {
@@ -1644,27 +1644,27 @@ def run_training(
 
         try:
             (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.warning("Failed to write environment.json: %s", exc)
 
         if reasoning_runtime is not None:
             try:
                 reasoning_history = reasoning_runtime.harness.history_snapshot()
-            except Exception:  # pragma: no cover - defensive snapshot
+            except (IOError, OSError):  # pragma: no cover - defensive snapshot
                 reasoning_history = []
             if reasoning_history:
                 try:
                     (art_dir_path / "reasoning_traces.json").write_text(
                         json.dumps(reasoning_history, indent=2)
                     )
-                except Exception as exc:
+                except (IOError, OSError) as exc:
                     logger.warning("Failed to write reasoning_traces.json: %s", exc)
 
         try:
             (art_dir_path / "dataset_checksums.json").write_text(
                 json.dumps(dataset_checksum_map, indent=2)
             )
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.warning("Failed to write dataset_checksums.json: %s", exc)
 
     def _persist_control_surface_artifacts() -> None:
@@ -1673,7 +1673,7 @@ def run_training(
 
         try:
             art_dir_path.mkdir(parents=True, exist_ok=True)
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.warning("Failed to prepare metadata directory '%s': %s", art_dir_path, exc)
             return
 
@@ -1755,7 +1755,7 @@ def run_training(
                 json.dumps(_json_ready(meta_payload), indent=2),
                 encoding="utf-8",
             )
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.warning("Failed to write run_metadata.json: %s", exc)
 
         reasoning_payload: dict[str, Any] = {}
@@ -1773,7 +1773,7 @@ def run_training(
             reasoning_payload["runtime"] = _json_ready(runtime_details)
             try:
                 reasoning_payload["harness"] = _json_ready(reasoning_runtime.harness.describe())
-            except Exception:
+            except (IOError, OSError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
         if reasoning_payload:
             try:
@@ -1781,7 +1781,7 @@ def run_training(
                     json.dumps(_json_ready(reasoning_payload), indent=2),
                     encoding="utf-8",
                 )
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.warning("Failed to write reasoning.json: %s", exc)
 
         if isinstance(evaluation_cfg, Mapping):
@@ -1790,7 +1790,7 @@ def run_training(
                     json.dumps(_json_ready(evaluation_cfg), indent=2),
                     encoding="utf-8",
                 )
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.warning("Failed to write evaluation.json: %s", exc)
 
     target_epochs = int(epochs)
@@ -1816,7 +1816,7 @@ def run_training(
         if reasoning_runtime is not None:
             try:
                 result["reasoning_traces"] = reasoning_runtime.harness.history_snapshot()
-            except Exception:  # pragma: no cover - defensive snapshot
+            except (IOError, OSError):  # pragma: no cover - defensive snapshot
                 result["reasoning_traces"] = []
         _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
         report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
@@ -1843,7 +1843,7 @@ def run_training(
         from codex.monitoring.performance_monitor import PerformanceSnapshot as _PerfSnap
 
         _perf_monitor = _PerfMon.from_env(run_id=_TRAIN_RUN_ID)
-    except Exception:  # pragma: no cover — optional dependency
+    except (ImportError, AttributeError):  # pragma: no cover — optional dependency
         pass
 
     # ------------------------------------------------------------------
@@ -1854,7 +1854,7 @@ def run_training(
         from codex_ml.monitoring.model_drift import ModelDriftDetector as _DriftDet
 
         _drift_detector = _DriftDet()
-    except Exception:  # pragma: no cover — optional dependency
+    except (ImportError, AttributeError):  # pragma: no cover — optional dependency
         logger.debug("ModelDriftDetector unavailable; drift monitoring disabled.")
 
     # ------------------------------------------------------------------
@@ -1875,7 +1875,7 @@ def run_training(
             for cb in cb_list:
                 try:
                     cb.on_epoch_start(epoch, state)
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     cb.record_error("on_epoch_start", e, state)
                     logger.warning("Callback on_epoch_start error: %s", e)
 
@@ -1890,7 +1890,7 @@ def run_training(
                 if dtype_obj is not None:
                     try:
                         model.to(dtype=dtype_obj)
-                    except Exception:
+                    except (ValueError, TypeError, RuntimeError):
                         logger.debug("Suppressed exception in handler", exc_info=True)
                 model.to(device_obj)
                 model.train()
@@ -1939,7 +1939,7 @@ def run_training(
                             optimizer.zero_grad(set_to_none=True)
                             optimizer_steps_this_epoch += 1
                             total_optimizer_steps += 1
-                        except Exception as e:
+                        except (ValueError, TypeError, RuntimeError) as e:
                             logger.warning("Optimizer step failed: %s", e)
 
                 if steps_per_epoch % grad_accum != 0:
@@ -1948,7 +1948,7 @@ def run_training(
                         optimizer.zero_grad(set_to_none=True)
                         optimizer_steps_this_epoch += 1
                         total_optimizer_steps += 1
-                    except Exception as e:
+                    except (ValueError, TypeError, RuntimeError) as e:
                         logger.warning("Final optimizer step failed: %s", e)
             else:
                 steps_this_epoch = steps_per_epoch
@@ -1961,7 +1961,7 @@ def run_training(
             if scheduler is not None and optimizer is not None:
                 try:
                     scheduler.step()
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.warning("Scheduler step failed: %s", e)
                 current_lrs = _scheduler_current_lr(scheduler, optimizer)
             else:
@@ -1989,7 +1989,7 @@ def run_training(
                     logger.debug(f"TypeError: {merge_exc}")
                     cb.record_error("merge_callback_results", merge_exc, state)
                     logger.warning("Callback merge error: %s", merge_exc)
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     cb.record_error("on_epoch_end", e, state)
                     logger.warning("Callback on_epoch_end error: %s", e)
 
@@ -2043,7 +2043,7 @@ def run_training(
                             metric_value=avg_loss,
                             best_k=best_k_index,
                         )
-                    except Exception as e:
+                    except (ValueError, TypeError, RuntimeError) as e:
                         msg = "Failed to save checkpoint for epoch %d: %s"
                         logger.warning(msg, epoch, e)
                 epoch_checkpoint_sha = _checkpoint_digest(epoch_dir)
@@ -2063,7 +2063,7 @@ def run_training(
                     (Path(checkpoint_dir) / "latest.json").write_text(
                         json.dumps(latest_payload, indent=2)
                     )
-                except Exception as e:
+                except (IOError, OSError) as e:
                     logger.warning("Failed to write latest.json: %s", e)
 
                 # Retention pruning
@@ -2071,7 +2071,7 @@ def run_training(
                     try:
                         prune_result = prune_checkpoints(checkpoint_dir, **retention_policy)
                         state["retention_last"] = prune_result
-                    except Exception as e:
+                    except (ValueError, TypeError, RuntimeError) as e:
                         logger.warning("Retention pruning failed: %s", e)
             else:
                 latest_payload = {
@@ -2097,7 +2097,7 @@ def run_training(
                     _perf_monitor.record(
                         _PerfSnap(epoch=epoch, loss=avg_loss, throughput=_epoch_throughput)
                     )
-                except Exception as _perf_exc:
+                except (ValueError, TypeError, RuntimeError) as _perf_exc:
                     logger.debug("Performance monitor record failed (non-fatal): %s", _perf_exc)
 
             # ------------------------------------------------------------------
@@ -2146,7 +2146,7 @@ def run_training(
                             "kl_severity": _kl_r.severity,
                         },
                     )
-            except Exception as _drift_exc:
+            except (ValueError, TypeError, RuntimeError) as _drift_exc:
                 logger.debug("Data drift check failed (non-fatal): %s", _drift_exc)
 
             # Model drift detection (Gap 18) — must never crash training.
@@ -2176,7 +2176,7 @@ def run_training(
                                 )
                             if state is not None and isinstance(state, dict):
                                 state["drift_result_epoch"] = _drift_result.to_dict()
-                except Exception as _drift_exc:
+                except (ValueError, TypeError, RuntimeError) as _drift_exc:
                     logger.debug("Drift detector failed (non-fatal): %s", _drift_exc)
 
             logger.info(
@@ -2198,7 +2198,7 @@ def run_training(
                     run_id=_TRAIN_RUN_ID,
                     epoch=locals().get("epoch", 0),
                 )
-            except Exception:  # pragma: no cover — alerting must never crash training
+            except (ValueError, TypeError, RuntimeError):  # pragma: no cover — alerting must never crash training
                 logger.debug(
                     "Suppressed alerting exception in training failure handler", exc_info=True
                 )
@@ -2207,14 +2207,14 @@ def run_training(
     for cb in cb_list:
         try:
             cb.on_train_end(state)
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             cb.record_error("on_train_end", e, state)
             logger.warning("Callback on_train_end error: %s", e)
 
     if metrics_registry is not None:
         try:
             metrics_registry.active_sessions.set(0)
-        except Exception:  # pragma: no cover - defensive
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
             logger.debug("Suppressed exception in handler", exc_info=True)
     wall = time.time() - t_start
     result = {
@@ -2270,7 +2270,7 @@ def run_training(
                     "metrics_enabled": bool(metrics_registry),
                 },
             )
-        except Exception:  # pragma: no cover - best effort logging
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - best effort logging
             logger.debug("Suppressed exception in handler", exc_info=True)
     if return_state:
         result["model"] = model
@@ -2293,7 +2293,7 @@ def run_training(
                 final_loss=_final_loss_val,
                 wall_time_sec=result.get("wall_time_sec", 0),
             )
-        except Exception:  # pragma: no cover — alerting must never crash training
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover — alerting must never crash training
             logger.debug(
                 "Suppressed alerting exception in training complete handler", exc_info=True
             )

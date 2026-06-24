@@ -92,12 +92,12 @@ def build_service_package(
         if callable(hook):
             try:
                 hook_results[name] = hook(output)
-            except Exception as exc:  # pragma: no cover - plugin specific
+            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - plugin specific
                 hook_results[name] = f"error: {exc}"
 
     try:
         shutil.rmtree(staging)
-    except Exception:  # pragma: no cover - best effort cleanup
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - best effort cleanup
         logger.debug("Suppressed exception in handler", exc_info=True)
     return {
         "run_id": run_id,

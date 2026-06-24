@@ -53,5 +53,5 @@ class PythonPlugin(ASTPlugin):
         """Validate plugin is ready."""
         try:
             return parse_python("def _validate():\n    return True\n", "validate.py") is not None
-        except Exception:
+        except (IOError, OSError):
             return False

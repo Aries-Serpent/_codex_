@@ -142,7 +142,7 @@ class ContextDistiller:
         try:
             with open(file_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Failed to read {file_path}: {e}")
             return {}
 

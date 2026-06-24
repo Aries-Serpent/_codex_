@@ -262,7 +262,7 @@ class ModelServer:
                     "path": self.config.model_path,
                 }
             return self.model
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             logger.debug(f"Exception: {exc}")
             self.load_errors.append(str(exc))
             raise
@@ -438,7 +438,7 @@ if FASTAPI_AVAILABLE:
         # Load the model early so integration tests hit a ready server.
         try:
             server.load_model()
-        except Exception as exc:  # pragma: no cover - surfaced via API if needed
+        except (IOError, OSError) as exc:  # pragma: no cover - surfaced via API if needed
             logger.warning("Model preload failed: %s", exc)
 
         # Setup dependencies based on auth config
@@ -534,7 +534,7 @@ if FASTAPI_AVAILABLE:
                 preds = server.predict_with_circuit_breaker(request.inputs)
             except RuntimeError as e:
                 raise HTTPException(status_code=500, detail=str(e)) from e
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 logger.debug(f"Exception: {e}")
                 if "Circuit breaker" in str(e):
                     raise HTTPException(status_code=503, detail=str(e)) from e
@@ -573,7 +573,7 @@ if FASTAPI_AVAILABLE:
             try:
                 vecs = server.embed(request.texts)
                 embeddings = vecs.tolist() if hasattr(vecs, "tolist") else [list(v) for v in vecs]
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 raise HTTPException(status_code=500, detail=str(e)) from e
             return EmbedResponse(
                 embeddings=embeddings,

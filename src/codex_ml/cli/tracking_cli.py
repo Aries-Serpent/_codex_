@@ -29,12 +29,12 @@ def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
             os.environ["MLFLOW_TRACKING_URI"] = uri
             try:
                 mlflow.set_tracking_uri(uri)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
         result["enabled"] = True
         result["tracking_uri"] = os.environ.get("MLFLOW_TRACKING_URI") or result["tracking_uri"]
-    except Exception as exc:  # pragma: no cover - depends on optional dep
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - depends on optional dep
         result["warning"] = f"mlflow not available: {exc!r}"
     return result
 
@@ -58,7 +58,7 @@ def _enable_wandb(project: Optional[str], mode: str) -> dict[str, Any]:
         )
         result["offline"] = getattr(run.settings, "_offline", False)
         run.finish()
-    except Exception as exc:  # pragma: no cover - depends on optional dep
+    except (ValueError, TypeError) as exc:  # pragma: no cover - depends on optional dep
         result["warning"] = f"wandb not available: {exc!r}"
     return result
 

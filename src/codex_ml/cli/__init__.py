@@ -373,7 +373,7 @@ if __name__ == "__main__":  # pragma: no cover
 
 try:
     from .codex_cli import app as infer  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - optional CLI wiring
+except (ImportError, AttributeError):  # pragma: no cover - optional CLI wiring
     infer = cli
 
 

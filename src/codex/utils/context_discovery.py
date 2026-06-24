@@ -47,7 +47,7 @@ def run_git_command(cmd: str) -> Optional[str]:
             timeout=5,
         )
         return result.stdout.strip() if result.returncode == 0 else None
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Git command failed: {cmd} - {e}")
         return None

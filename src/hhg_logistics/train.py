@@ -84,7 +84,7 @@ try:  # pragma: no cover - optional dependency
     AdamW = torch.optim.AdamW
     DataLoader = torch.utils.data.DataLoader
     Dataset = torch.utils.data.Dataset
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
     AdamW = None
     DataLoader = None
@@ -93,7 +93,7 @@ except Exception:  # pragma: no cover
 
 try:  # pragma: no cover - optional dependency
     import pandas as pd
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     pd = None
 
 
@@ -141,7 +141,7 @@ def _build_hook_manager(hooks_cfg: DictConfig | None) -> HookManager:
     try:
         if getattr(hooks_cfg, "ema", None) and bool(getattr(hooks_cfg.ema, "enable", False)):
             manager.add(EMAHook(decay=float(getattr(hooks_cfg.ema, "decay", 0.999))))
-    except Exception:  # pragma: no cover - best effort
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - best effort
         logger.warning("Failed to configure EMA hook", exc_info=True)
 
     try:
@@ -156,7 +156,7 @@ def _build_hook_manager(hooks_cfg: DictConfig | None) -> HookManager:
                     ),
                 )
             )
-    except Exception:  # pragma: no cover
+    except (ValueError, TypeError):  # pragma: no cover
         logger.warning("Failed to configure checkpoint hook", exc_info=True)
 
     try:
@@ -167,7 +167,7 @@ def _build_hook_manager(hooks_cfg: DictConfig | None) -> HookManager:
             manager.add(
                 NDJSONLogHook(file=str(getattr(ndjson_cfg, "file", ".codex/metrics/train.ndjson")))
             )
-    except Exception:  # pragma: no cover
+    except (IOError, OSError):  # pragma: no cover
         logger.warning("Failed to configure NDJSON log hook", exc_info=True)
 
     return manager
@@ -238,7 +238,7 @@ def _save_adapters(model, out_dir: Path, save_adapters: bool = True) -> None:
     if hasattr(model, "save_pretrained"):
         try:  # pragma: no cover - optional path
             model.save_pretrained(str(out_dir))
-        except Exception as exc:  # pragma: no cover
+        except (IOError, OSError) as exc:  # pragma: no cover
             logger.warning("Saving adapters failed: %s", exc)
 
 

@@ -18,7 +18,7 @@ from codex_ml.interfaces.tokenizer import TrainableTokenizerProtocol  # noqa: E4
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     spm = None  # type: ignore[assignment]
 
 __all__ = ["SPTokenizer"]

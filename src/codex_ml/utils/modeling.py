@@ -48,7 +48,7 @@ else:  # pragma: no cover - optional dependency
 
 try:  # optional PEFT
     from peft import LoraConfig, get_peft_model
-except Exception:  # pragma: no cover - optional
+except (ImportError, AttributeError):  # pragma: no cover - optional
     LoraConfig = None
     get_peft_model = None
 
@@ -99,14 +99,14 @@ def _assert_bf16_capability(
 
     try:
         device_obj = torch.device(device)
-    except Exception:  # pragma: no cover - defensive fallback when device parsing fails
+    except (ConnectionError, TimeoutError):  # pragma: no cover - defensive fallback when device parsing fails
         device_obj = torch.device("cuda" if torch.cuda and torch.cuda.is_available() else "cpu")
 
     try:
         a = torch.ones((2, 2), dtype=bf16, device=device_obj)
         b = torch.ones((2, 2), dtype=bf16, device=device_obj)
         _ = a @ b
-    except Exception as exc:  # pragma: no cover - propagate user-friendly error
+    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - propagate user-friendly error
         raise RuntimeError(
             f"Requested bf16 but device '{device_obj}' lacks bfloat16 support"
         ) from exc
@@ -427,7 +427,7 @@ def load_model(
 
     try:
         model = model.to(device)
-    except Exception as exc:  # pragma: no cover - device transfer failures
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - device transfer failures
         raise RuntimeError(f"Failed to move model to device '{device}': {exc}") from exc
 
     if coerced.lora.enabled:
@@ -448,7 +448,7 @@ def _get_registry_factory(name: str):
         from codex_ml.models.loader_registry import get_model
 
         return get_model(name)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 

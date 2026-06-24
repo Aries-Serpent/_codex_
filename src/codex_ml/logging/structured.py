@@ -39,7 +39,7 @@ def capture_exceptions(
         yield
     except SystemExit:
         raise
-    except Exception as exc:  # pragma: no cover - exercised via CLI integration tests
+    except (IOError, OSError) as exc:  # pragma: no cover - exercised via CLI integration tests
         if emit_json:
             print_error_json(f"{errmsg}: {exc}")
         else:

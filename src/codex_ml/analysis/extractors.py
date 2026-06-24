@@ -28,7 +28,7 @@ from typing import Any  # noqa: E402
 
 try:
     import libcst as cst  # optional
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     cst = None
 
 
@@ -131,7 +131,7 @@ def extract_cst(module: Any) -> Extraction:  # pragma: no cover - simple
                 code = n.code
                 if "import " in code:
                     out.imports.append({"raw": code})
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return out

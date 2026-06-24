@@ -49,7 +49,7 @@ def iter_jsonl_chunks(
                 continue
             try:
                 record = json.loads(line)
-            except Exception as exc:  # pragma: no cover - surfaced in tests
+            except (ValueError, TypeError) as exc:  # pragma: no cover - surfaced in tests
                 raise ValueError(f"Invalid JSON on line {line_number} of {p}: {exc}") from exc
             if not isinstance(record, dict):
                 raise ValueError(

@@ -75,7 +75,7 @@ class Retriever:
             logger.warning(f"Index not found: {e}")
             logger.warning("Use indexer.py to build an index first")
             # Allow initialization without an index for testing
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Error loading index: {e}")
             raise
 
@@ -98,7 +98,7 @@ class Retriever:
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             logger.error(f"Failed to load query embedding model: {e}")
             raise
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"Error loading embedding model: {e}")
             raise
 
@@ -300,7 +300,7 @@ class MultiIndexRetriever:
                     logger.warning(
                         f"Skipping index {idx_config.get('index_name')}: no index loaded"
                     )
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.warning(f"Failed to load index {idx_config.get('index_name')}: {e}")
 
         logger.info(f"Initialized with {len(self.retrievers)} indices")
@@ -330,7 +330,7 @@ class MultiIndexRetriever:
                     r["index_name"] = retriever.index_name
                     r["tenant_id"] = retriever.tenant_id
                 all_results.extend(results)
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.warning(f"Error querying index {retriever.index_name}: {e}")
 
         # Sort by score (lower is better for L2 distance)

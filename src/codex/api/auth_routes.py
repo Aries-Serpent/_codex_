@@ -306,7 +306,7 @@ def create_auth_router(
                 user_agent=user_agent,
                 totp_code=body.totp_code,
             )
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             code = getattr(exc, "code", "")
             if code == "mfa_required":
                 logger.info("MFA required for login attempt from %s", _safe_log_value(ip_address))
@@ -362,7 +362,7 @@ def create_auth_router(
         _enforce_rate_limit(_default_limiter, request)
         try:
             new_token = auth.refresh(body.refresh_token)
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             if isinstance(exc, ValueError) or hasattr(exc, "code"):
                 logger.warning("Session refresh rejected: %s", type(exc).__name__)
                 raise HTTPException(status_code=401, detail="Invalid or expired token") from exc

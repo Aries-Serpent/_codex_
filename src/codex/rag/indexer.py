@@ -364,7 +364,7 @@ def build_index_from_files(
 
             logger.info(f"Processed {file_path}: {len(chunks)} chunks")
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Error processing {file_path}: {e}")
             processing_errors.append(str(file_path))
 
@@ -531,7 +531,7 @@ def manage_tenant_indices(
                 )
                 created.append(index_name)
                 logger.info(f"Created index '{index_name}' at {index_path}")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.error(f"Failed to create index '{index_name}': {e}")
 
         if created:
@@ -583,7 +583,7 @@ def manage_tenant_indices(
                 )
                 updated.append(index_name)
                 logger.info(f"Updated index '{index_name}' at {index_path}")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.error(f"Failed to update index '{index_name}': {e}")
 
         if updated:
@@ -615,7 +615,7 @@ def manage_tenant_indices(
                     logger.info(f"Deleted index '{index_name}' from {tenant_dir}")
                 else:
                     logger.warning(f"Index '{index_name}' not found for tenant '{tenant_id}'")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.error(f"Failed to delete index '{index_name}': {e}")
 
         if deleted:
@@ -668,7 +668,7 @@ def manage_tenant_indices(
                         all_metadata.append(metadata)
 
                     logger.info(f"Loaded {index.ntotal} vectors from '{index_name}'")
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.error(f"Failed to load index '{index_name}': {e}")
 
             if not all_embeddings:
@@ -714,7 +714,7 @@ def manage_tenant_indices(
                 },
             )
 
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.error(f"Merge operation failed: {e}")
             return TenantOperationResult(
                 success=False,
@@ -772,7 +772,7 @@ def manage_tenant_indices(
                 details={"indices": indices},
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error(f"List operation failed: {e}")
             return TenantOperationResult(
                 success=False,
@@ -848,7 +848,7 @@ class RAGIndexer:
                 "sentence-transformers/all-MiniLM-L6-v2",
             )
             self.model = safe_model_to_device(self.model, self.device)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             # Model unavailable (offline, missing dep, etc.) — leave as None.
             logger.debug("Suppressed exception in handler", exc_info=True)
 

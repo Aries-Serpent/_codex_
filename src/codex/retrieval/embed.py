@@ -50,7 +50,7 @@ class EmbeddingModel:
                 "sentence-transformers not installed. Install with: pip install sentence-transformers"  # noqa: E501
             )
             raise
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug(f"Exception: {e}")
             logger.error(f"Error loading embedding model: {e}")
             raise

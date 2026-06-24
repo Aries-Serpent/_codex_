@@ -12,7 +12,7 @@ from typing import Optional  # noqa: E402
 
 try:  # Optional dependency for efficiency
     import numpy as _np
-except Exception:  # pragma: no cover - numpy is optional
+except (ImportError, AttributeError):  # pragma: no cover - numpy is optional
     _np = None
 
 __all__ = [
@@ -311,7 +311,7 @@ def bleu(
         # Clamp to [0, 1] — sacrebleu can return values marginally above 1.0
         # due to floating-point arithmetic (e.g. 1.0000000000000004).
         return max(0.0, min(1.0, result))
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning(
             "sacrebleu import or computation failed, falling back to NLTK",
             exc_info=True,
@@ -320,7 +320,7 @@ def bleu(
     # Fall back to NLTK
     try:
         from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("NLTK not available", exc_info=True)
         return None
 
@@ -337,7 +337,7 @@ def bleu(
             return result
         logger.warning(f"NLTK corpus_bleu returned unexpected value: {result}")
         return None
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("NLTK BLEU computation failed", exc_info=True)
         return None
 
@@ -354,7 +354,7 @@ def rouge_l(
         raise MetricError("rouge_l", "candidates and references length mismatch")
     try:
         from rouge_score import rouge_scorer
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)

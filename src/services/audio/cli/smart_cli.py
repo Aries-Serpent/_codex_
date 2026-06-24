@@ -194,7 +194,7 @@ def main() -> int:
             return _run_transcribe(args)
         parser.print_help()
         return 1
-    except Exception as exc:
+    except (ValueError, TypeError) as exc:
         print(f"❌ Error: {exc}")
         return 1
 

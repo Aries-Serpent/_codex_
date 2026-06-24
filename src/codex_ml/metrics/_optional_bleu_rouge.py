@@ -33,7 +33,7 @@ def _import_bleu_rouge():
         from rouge_score import rouge_scorer
 
         return sentence_bleu, SmoothingFunction, rouge_scorer
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return None, None, None
 

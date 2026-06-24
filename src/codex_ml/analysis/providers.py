@@ -32,7 +32,7 @@ from urllib.parse import urlparse  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import requests
-except Exception:  # pragma: no cover - requests missing or broken
+except (ValueError, TypeError):  # pragma: no cover - requests missing or broken
     requests = None  # type: ignore[assignment]
 
 
@@ -65,7 +65,7 @@ class InternalRepoSearch(SearchProvider):
                                     "snippet": line.strip(),
                                 }
                             )
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         return {"status": "ok", "query": query, "results": results}
@@ -216,7 +216,7 @@ class ExternalWebSearch(SearchProvider):
 
         try:
             response = http_get(self.endpoint, params=params, timeout=self.timeout)
-        except Exception as exc:  # pragma: no cover - network failures via mocks
+        except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - network failures via mocks
             result["status"] = "error"
             result["error"] = str(exc)
             return result
@@ -224,7 +224,7 @@ class ExternalWebSearch(SearchProvider):
         try:
             status_code = getattr(response, "status_code", None)
             response.raise_for_status()
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             result["status"] = "error"
             if status_code is not None:
@@ -245,7 +245,7 @@ class ExternalWebSearch(SearchProvider):
         if "application/json" in content_type:
             try:
                 payload = response.json()
-            except Exception as exc:
+            except (ValueError, TypeError) as exc:
                 logger.debug(f"Exception: {exc}")
                 result["status"] = "error"
                 result["error"] = f"invalid-json: {exc}"
@@ -280,7 +280,7 @@ class ExternalWebSearch(SearchProvider):
         else:
             try:
                 payload = json.loads(raw_text)
-            except Exception as exc:
+            except (ValueError, TypeError) as exc:
                 logger.debug(f"Exception: {exc}")
                 result["status"] = "error"
                 result["reason"] = "offline-invalid"

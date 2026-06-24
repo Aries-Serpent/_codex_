@@ -98,7 +98,7 @@ class SignstoreClient:
             )
             resp.raise_for_status()
             return resp.json().get("value", "github-oidc-token-placeholder")
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             logger.warning("GitHub OIDC exchange failed: %s", type(exc).__name__)
             return "github-oidc-token-placeholder"
 
@@ -165,7 +165,7 @@ class SignstoreClient:
                 return self._sigstore_verify(record, signature)
             # Fall back to mock verification
             return len(signature) > 0 and signature.startswith("MOCK_SIG_")
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.error("Signature verification failed: %s", exc)
             return False
 
@@ -194,7 +194,7 @@ class SignstoreClient:
                 "signed_at": signed_at,
                 "backend": "sigstore-python",
             }
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             logger.error("Sigstore signing failed: %s — falling back to mock", exc)
             return self._mock_sign_record(record_bytes, actor, signed_at)
 
@@ -212,7 +212,7 @@ class SignstoreClient:
                 UnsafeNoOp(),
             )
             return True
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.warning("Sigstore verification failed: %s", exc)
             return False
 

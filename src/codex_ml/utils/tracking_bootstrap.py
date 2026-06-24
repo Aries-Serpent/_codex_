@@ -33,7 +33,7 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     resolved: dict[str, str] = {}
     try:
         import mlflow
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return {"mlflow": "unavailable"}
 
@@ -42,7 +42,7 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     resolved["MLFLOW_TRACKING_URI"] = uri
     try:
         mlflow.set_tracking_uri(resolved["MLFLOW_TRACKING_URI"])
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.debug(f"Exception: {e}")
         logger.warning(f"Exception: {e}", exc_info=True)
     return resolved
@@ -56,7 +56,7 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
     resolved: dict[str, str] = {}
     try:
         import wandb
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return {"wandb": "unavailable"}
 
@@ -69,14 +69,14 @@ def init_wandb_offline(project: Optional[str] = None) -> dict[str, str]:
         resolved["wandb_mode"] = (
             getattr(getattr(run, "settings", None), "mode", "offline") or "offline"
         )
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         resolved["wandb_mode"] = "offline"
     finally:
         if run is not None:
             try:
                 run.finish()
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug(f"Exception: {e}")
                 logger.warning(f"Exception: {e}", exc_info=True)
     return resolved

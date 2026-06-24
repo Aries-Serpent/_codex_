@@ -38,14 +38,14 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as exc:  # pragma: no cover - defensive
+except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive
     logging.getLogger(__name__).debug("sqlite auto setup failed: %s", exc)
 
 _fetch_messages_mod = import_module(".fetch_messages", __package__)
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except Exception:  # pragma: no cover - fallback when not a package
+except (IOError, OSError):  # pragma: no cover - fallback when not a package
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 # -------------------------------
@@ -56,7 +56,7 @@ try:
     from .db import _DB_LOCK as _shared_DB_LOCK
     from .db import init_db as _shared_init_db
     from .db import log_event as _shared_log_event
-except Exception:
+except (ImportError, AttributeError):
     logger.debug("codex.logging.db not available; using built-in fallbacks", exc_info=True)
     _shared_DB_LOCK = None  # type: ignore[assignment]
     _shared_init_db = None  # type: ignore[assignment]
@@ -64,7 +64,7 @@ except Exception:
         from codex.monkeypatch.log_adapters import (  # type: ignore[no-redef]  # noqa: I001
             log_event as _shared_log_event,
         )
-    except Exception:  # pragma: no cover - nothing available
+    except (IOError, OSError):  # pragma: no cover - nothing available
         _shared_log_event = None  # type: ignore[assignment]
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
@@ -84,15 +84,15 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception as e:
+    except (ConnectionError, TimeoutError) as e:
         logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.warning("synchronous=NORMAL failed: %s", e)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
-    except Exception as e:
+    except (ValueError, TypeError, RuntimeError) as e:
         logger.warning("foreign_keys=ON failed: %s", e)
 
 
@@ -138,7 +138,7 @@ def init_db(db_path: Optional[Path] = None):
         conn = sqlite3.connect(p)
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
         try:
             conn.execute("""CREATE TABLE IF NOT EXISTS session_events(
@@ -166,7 +166,7 @@ def init_db(db_path: Optional[Path] = None):
             conn.commit()
         finally:
             conn.close()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("init_db failed", exc_info=True)
         with _DB_LOCK:
             _INITIALIZING_PATHS.pop(key, None)
@@ -218,7 +218,7 @@ def _fallback_log_event(
             ),
         )
         conn.commit()
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred in _fallback_log_event", exc_info=True)
         if USE_POOL:
             try:
@@ -368,7 +368,7 @@ class SessionLogger:
                     "session_end",
                     db_path=self.db_path,
                 )
-        except Exception:
+        except (IOError, OSError):
             logger.warning("session_end DB log failed", exc_info=True)
         return False
 
@@ -383,7 +383,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     conn = sqlite3.connect(path)
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
     try:
         conn.execute("BEGIN")

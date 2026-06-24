@@ -274,7 +274,7 @@ class BlueGreenDeployment:
         if self.health_check_fn:
             try:
                 return self.health_check_fn(deployment)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 return False
         return True

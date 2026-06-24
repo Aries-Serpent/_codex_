@@ -27,7 +27,7 @@ def _connect(path: str) -> sqlite3.Connection:
     # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
     try:
         cx.execute("PRAGMA journal_mode=WAL;")
-    except Exception as e:
+    except (IOError, OSError) as e:
         logger.warning("journal_mode=WAL failed: %s", e)
     return cx
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     session_ctx: Optional[Callable[[], Any]]
     try:
         from .session_hooks import session as session_ctx
-    except Exception:  # pragma: no cover - helper optional
+    except (ImportError, AttributeError):  # pragma: no cover - helper optional
         session_ctx = None
     if session_ctx:
         with session_ctx():

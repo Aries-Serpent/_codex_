@@ -22,9 +22,9 @@ def _load_metrics(n: int = 10) -> list[dict]:
                 if line:
                     try:
                         entries.append(json.loads(line))
-                    except Exception:
+                    except (IOError, OSError):
                         logger.debug("Suppressed exception in handler", exc_info=True)
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             click.echo(f"Warning: could not read metrics file: {exc}", err=True)
     return entries
 

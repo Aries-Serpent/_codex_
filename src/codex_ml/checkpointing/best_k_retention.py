@@ -59,7 +59,7 @@ class CheckpointIndex:
             with open(self.index_path) as f:
                 data = json.load(f)
             return [CheckpointEntry(**entry) for entry in data]
-        except Exception as e:
+        except (IOError, OSError) as e:
             logger.debug(f"Exception: {e}")
             LOGGER.warning(f"Failed to load index, using empty: {e}")
             return []
@@ -91,7 +91,7 @@ class CheckpointIndex:
                     f.flush()
                     os.fsync(f.fileno())
                 os.replace(temp_path, self.index_path)
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 if temp_path.exists():
                     temp_path.unlink()
@@ -164,7 +164,7 @@ def prune_checkpoints(
                     LOGGER.info(f"Deleted checkpoint: {file_path}")
                 else:
                     LOGGER.warning(f"Checkpoint file not found (already deleted?): {file_path}")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 errors.append(f"Failed to delete {file_path}: {e}")
                 LOGGER.error(f"Failed to delete {file_path}: {e}")
@@ -252,7 +252,7 @@ def save_checkpoint_with_retention(
                 if file_to_delete.exists():
                     file_to_delete.unlink()
                     LOGGER.info(f"Pruned checkpoint: {file_to_delete}")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 logger.debug(f"Exception: {e}")
                 LOGGER.warning(f"Failed to delete pruned checkpoint {file_to_delete}: {e}")
 

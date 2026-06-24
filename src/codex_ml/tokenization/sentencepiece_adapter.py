@@ -59,7 +59,7 @@ def _get_sentencepiece():
             )
         spm = sentencepiece_module
         return sentencepiece_module
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         # Provide a lightweight stub that satisfies smoke tests when the
         # native sentencepiece bindings are unavailable.
@@ -92,7 +92,7 @@ def _get_sentencepiece():
                     try:
                         data = json.loads(Path(model_file).read_text(encoding="utf-8"))
                         self.vocab = list(data.get("vocab", []))
-                    except Exception:
+                    except (IOError, OSError):
                         logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 

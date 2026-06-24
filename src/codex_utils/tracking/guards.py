@@ -23,7 +23,7 @@ def _is_remote_uri(uri: str) -> bool:
     """Return ``True`` when ``uri`` looks like a remote MLflow tracking target."""
     try:
         parsed = urlparse(uri)
-    except Exception:
+    except (ValueError, TypeError):
         return True
 
     scheme = (parsed.scheme or "").lower()

@@ -96,7 +96,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
         logger.debug(f"TypeError: {e}")
         logger.warning(f"TypeError: {e}", exc_info=True)
         raise
-    except Exception as exc:  # pragma: no cover - adapter-specific errors
+    except (ValueError, TypeError) as exc:  # pragma: no cover - adapter-specific errors
         raise TokenizationContractError(f"encode failed: {exc}") from exc
 
     if not isinstance(tokens, list) or not all(isinstance(t, int) for t in tokens):
@@ -115,7 +115,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.decode([0, 1])
-    except Exception as exc:  # pragma: no cover - adapter-specific
+    except (ValueError, TypeError) as exc:  # pragma: no cover - adapter-specific
         raise TokenizationContractError(f"decode failed for numeric ids: {exc}") from exc
 
     try:

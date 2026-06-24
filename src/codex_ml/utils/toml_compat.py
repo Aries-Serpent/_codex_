@@ -20,7 +20,7 @@ try:
     import tomllib as _toml  # Python >=3.11
 
     _BINARY_REQUIRED = True
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     import tomli as _toml  # type: ignore
 
     _BINARY_REQUIRED = False

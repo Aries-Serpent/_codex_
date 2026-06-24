@@ -87,7 +87,7 @@ class MetricsCollector:
 
         try:
             self._request_counter.labels(method=method, endpoint=endpoint, status=str(status)).inc()
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.debug(f"Exception: {e}")
             logger.debug("Failed to record request metric: %s", e)
 
@@ -104,7 +104,7 @@ class MetricsCollector:
 
         try:
             self._latency_histogram.labels(method=method, endpoint=endpoint).observe(duration)
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             logger.debug("Failed to record latency metric: %s", e)
 
@@ -120,7 +120,7 @@ class MetricsCollector:
 
         try:
             self._error_counter.labels(type=error_type, endpoint=endpoint).inc()
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.debug(f"Exception: {e}")
             logger.debug("Failed to record error metric: %s", e)
 
@@ -186,7 +186,7 @@ def get_metrics_router() -> Any:
         try:
             metrics_output = generate_latest()
             return Response(content=metrics_output, media_type=CONTENT_TYPE_LATEST)
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.debug(f"Exception: {e}")
             # Security: Don't expose internal error details to clients
             logger.error("Failed to generate metrics: %s", e, exc_info=True)

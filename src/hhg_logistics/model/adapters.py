@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     from peft import PeftModel
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     PeftModel = None
 
 

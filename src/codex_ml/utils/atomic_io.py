@@ -34,7 +34,7 @@ def _fsync_dir(path: Path) -> None:
             os.fsync(fd)
         finally:
             os.close(fd)
-    except Exception as exc:  # pragma: no cover - best effort safeguard
+    except (IOError, OSError) as exc:  # pragma: no cover - best effort safeguard
         # Not all platforms/filesystems support this; log at debug level.
         logger.debug("fsync(%s) failed: %s", path, exc)
 
