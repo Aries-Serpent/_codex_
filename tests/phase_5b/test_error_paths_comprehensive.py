@@ -118,7 +118,7 @@ class TestTokenManagerErrorPaths:
         try:
             new_access = manager.refresh_access_token(refresh_token)
             assert new_access is not None
-        except Exception:
+        except Exception as _err:
             # Some implementations may not support this
             pass
     
@@ -171,7 +171,7 @@ class TestMonitoringErrorPaths:
             from codex.monitoring import otel_metrics
             # Should initialize without error
             assert otel_metrics is not None
-        except Exception:
+        except Exception as _err:
             # Optional dependency
             pass
 

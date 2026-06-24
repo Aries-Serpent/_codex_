@@ -486,6 +486,6 @@ class TestSafetyFiltersEndToEnd:
             chain = mock_chain_cls()
             try:
                 chain.apply_filters("test")
-            except Exception:
+            except Exception as _err:
                 result = chain.fallback_filter()
                 assert result["filtered"] is False
