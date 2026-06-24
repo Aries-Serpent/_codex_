@@ -25,7 +25,7 @@ except (ImportError, ModuleNotFoundError):
 try:
     import importlib as _importlib
     _importlib.import_module('tests._bootstrap_determinism')
-except (ImportError, ModuleNotFoundError):
+except (ImportError, ModuleNotFoundError, AttributeError, Exception):
     pass  # Bootstrap may not be available in all test environments
 
 # Respect existing user setting; default to disabling plugin autoload for determinism.

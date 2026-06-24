@@ -42,8 +42,8 @@ try:
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
     print("✓ PyTorch determinism enabled (seed=0)", file=sys.stderr)
-except ImportError:
-    _ = None  # suppressed: no action needed
+except (ImportError, AttributeError):
+    _ = None  # suppressed: torch not available or attribute not found
 except (IOError, OSError) as e:
     # Some PyTorch operations may not support deterministic mode
     print(f"⚠ PyTorch determinism partially enabled: {e}", file=sys.stderr)
