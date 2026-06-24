@@ -398,7 +398,7 @@ def action_runner_registration_token(
     masked = _mask(token)
     # Security: Never log full tokens, only masked version
     print(
-        json.dumps(  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        json.dumps(  # codeql[py/clear-text-logging-sensitive-data] Token is masked; only masked version and expires_at logged
             {"token_masked": masked, "expires_at": data.get("expires_at")}, indent=2
         )
     )
@@ -446,7 +446,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     token, expires_at = _exchange_installation_token(app_jwt, inst_id, body=body)
 
     if args.verbose:
-        print("[info] Installation token minted successfully")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("[info] Installation token minted successfully")  # codeql[py/clear-text-logging-sensitive-data] Logs non-sensitive status message only
 
     session = GitHubSession(token)
 

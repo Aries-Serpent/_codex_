@@ -314,7 +314,7 @@ class WorkflowAnalyzer:
         print(f"  🐳 Docker required:     {summary['docker_required']}")
         # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
         _secrets_count: int = int(summary['secrets_used'])
-        print(f"  🔑 Unique secrets:      {_secrets_count}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        print(f"  🔑 Unique secrets:      {_secrets_count}")  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not secret values/names
         print(f"  🔧 Unique actions:      {summary['unique_actions']}")
         print("\nFailure Pattern Categories:")
         for category, patterns in self.failure_patterns.items():
