@@ -42,11 +42,11 @@
 SAST Scan (Bandit):
   └─ High-Severity Issues:    0 ✅
   └─ New Critical Vulns:      0 ✅
-  
+
 Dependency Scan (pip-audit):
   └─ Critical CVEs:           0 ✅
   └─ High-Severity CVEs:      0 ✅
-  
+
 Secret Detection:  # pragma: allowlist secret
   └─ Exposed Credentials:     0 ✅
   └─ Clear-text Secrets:      0 ✅  # pragma: allowlist secret
@@ -210,8 +210,8 @@ Known Advisory Issues (Non-Blocking):
 
 **Gate Logic**:
 ```
-IF (critical_issues == 0 AND 
-    high_severity_issues == 0 AND 
+IF (critical_issues == 0 AND
+    high_severity_issues == 0 AND
     exposed_secrets == 0 AND  # pragma: allowlist secret
     phase1_baseline_intact == TRUE)
 THEN gate_status = PASS

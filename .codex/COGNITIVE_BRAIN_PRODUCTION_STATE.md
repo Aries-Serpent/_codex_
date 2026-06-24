@@ -120,13 +120,13 @@ On-Call Contacts:
     Phone: +1-555-0001
     Slack: @alice
     PagerDuty: alice-pagerduty
-    
+
   Bob Smith:
     Email: bob@codex.io
     Phone: +1-555-0002
     Slack: @bob
     PagerDuty: bob-pagerduty
-    
+
   Carol Davis (Manager):
     Email: carol@codex.io
     Phone: +1-555-0100
@@ -138,7 +138,7 @@ Incident Response:
   Email Distribution: incidents@codex.io
   PagerDuty Team: https://codex.pagerduty.com
   Runbook Wiki: https://wiki.codex.io/runbooks
-  
+
 Security Incident:
   Security Team: security@codex.io
   CISO: ciso@codex.io

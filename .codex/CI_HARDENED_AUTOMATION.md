@@ -222,10 +222,10 @@ Fixed PyYAML dependency issue:
 steps:
   - name: Set up Python
     uses: actions/setup-python@v6
-  
+
   - name: Install PyYAML (required by setup-python-cached)
     run: pip install pyyaml --quiet
-  
+
   - name: Set up cached Python environment
     uses: ./.github/actions/setup-python-cached
 ```

@@ -67,7 +67,7 @@ Each incident follows this structure:
 
 **Summary:** Docker registry cache invalidation caused 3 consecutive build failures
 
-**Impact:** 
+**Impact:**
 - Affected: `build-docker.yml` workflow
 - Failed runs: 3 (fixed after 4th attempt)
 - Duration: 15 minutes (resolved)

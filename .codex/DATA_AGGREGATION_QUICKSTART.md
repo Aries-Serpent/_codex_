@@ -188,7 +188,7 @@ engine = DelegationEngine()
 # Queue agents (non-blocking, returns immediately)
 t1 = engine.queue_agent("unified-coverage-agent", {"phase": "2.1"}, priority="high")
 t2 = engine.queue_agent("ci-auto-healer-agent", {"issues": 5})
-t3 = engine.queue_agent("workflow-health-monitor", {}, 
+t3 = engine.queue_agent("workflow-health-monitor", {},
                         retry_fallback=["ci-testing-agent"])
 
 print(f"✅ Queued 3 agents: {t1}, {t2}, {t3}")

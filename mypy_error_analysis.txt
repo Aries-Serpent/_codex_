@@ -4,7 +4,7 @@
 
 ### ASSIGNMENT Errors (14 errors) - [assignment]
 1. src/tokenization/cli.py:21 - None → Module
-2. src/tokenization/cli.py:25 - None → Module  
+2. src/tokenization/cli.py:25 - None → Module
 3. src/codex_ml/monitoring/cli.py:31 - None → Module
 4. src/codex_ml/monitoring/cli.py:34 - None → Module
 5. src/codex_ml/eval/eval_runner.py:36 - None → Module

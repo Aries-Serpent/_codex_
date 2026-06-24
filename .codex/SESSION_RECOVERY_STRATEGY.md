@@ -342,10 +342,10 @@ escalation_contact: "@team-lead"
 schedule:
   # Current: every 30 minutes
   - cron: '*/30 * * * *'
-  
+
   # Alternative: every 15 minutes
   # - cron: '*/15 * * * *'
-  
+
   # Alternative: hourly
   # - cron: '0 * * * *'
 ```

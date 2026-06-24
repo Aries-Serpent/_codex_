@@ -56,7 +56,7 @@ All 205 workflows pass basic YAML parsing validation:
   - `admin_setup_verification.yml` (multiple)
   - `agent-auth-delegation.yml`
   - `app-package-download.yml`
-  
+
 - **Tier 2 (Standard - Script runs):** 48 workflows
   - `pre-flight-validation.yml`
   - `copilot-review-responder.yml`

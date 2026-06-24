@@ -163,7 +163,7 @@ Target:      single-stage (CPU-only runtime)
   - CI layer uses 3.14
   - Why 3.10? Check compatibility requirements; likely can upgrade
 
-**Action Item:** 
+**Action Item:**
 - [ ] Verify PyTorch CPU wheels support 3.12 (they do; pytorch.org confirms)
 - [ ] Update base image to `python:3.12-slim` in next PR
 - [ ] Test cpu-runtime locally before merge
@@ -317,7 +317,7 @@ Target:      single-stage (local codex environment)
 - **Severity:** Medium
 - **Issue:** Uses `python:3.10-slim` while main uses 3.12 and CI uses 3.14
 - **Impact:** Inconsistent runtime environment across variants; may miss Python 3.12+ features
-- **Action:** 
+- **Action:**
   - [ ] Verify PyTorch CPU wheels available for 3.12 (confirmed)
   - [ ] Update to `python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203`
   - [ ] Test locally: `docker build -f docker/Dockerfile.cpu -t codex-cpu:test .`

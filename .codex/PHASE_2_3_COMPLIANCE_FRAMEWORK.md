@@ -53,15 +53,15 @@ The Phase 2.3 Compliance Framework establishes a unified, 6-requirement governan
 ```python
 class RequirementValidator:
     """Base class for all requirement validators."""
-    
+
     def __init__(self, pr_number: str, repo: str = "Aries-Serpent/_codex_"):
         self.pr_number = pr_number
         self.repo = repo
-    
+
     def validate(self) -> ComplianceResult:
         """Run the validation. Returns JSON-serializable result."""
         raise NotImplementedError
-    
+
     @property
     def requirement_id(self) -> str:
         """REQ-1, REQ-2, etc."""
@@ -338,4 +338,3 @@ python scripts/ci/unified_compliance_check.py --pr 3575 --dry-run
 4. Validate against recent PRs
 5. Enable "strict mode" on new PRs
 6. Gradually roll out to all PRs over 2 weeks
-

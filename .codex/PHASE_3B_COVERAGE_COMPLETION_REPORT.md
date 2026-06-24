@@ -139,7 +139,7 @@ Selected modules for maximum impact:
 Comprehensive mutation tests designed to kill common mutation operators:
 
 1. **Boolean Return Mutations** - Tests verify True/False returns (17 tests)
-   - Tests check `is True` and `is not False` 
+   - Tests check `is True` and `is not False`
    - Tests check `is False` and `is not True`
 
 2. **Boundary Condition Mutations** - Off-by-one and boundary tests (12 tests)
@@ -309,7 +309,7 @@ Mutation Kill Rate: 91%+
 
 **Combined Phase 3 Testing Strategy:**
 1. Phase 3A - Infrastructure foundations (22% target)
-2. Phase 3B - Module-level unit tests (this phase) 
+2. Phase 3B - Module-level unit tests (this phase)
 3. Phase 3C - Integration workflows (25%+ target)
 4. Phase 3D - Advanced resilience scenarios
 

@@ -44,7 +44,7 @@ Phase 4: CI Integration & Enforcement
 def add_missing_assertions(test_file):
     """Add assertions to test functions without them."""
     tree = ast.parse(test_file)
-    
+
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef) and node.name.startswith('test_'):
             if not has_assertions(node):
@@ -130,7 +130,7 @@ def test_fetch_data():
 def test_fetch_data(mock_get):
     mock_get.return_value.status_code = 200
     mock_get.return_value.json.return_value = {'key': 'value'}
-    
+
     data = requests.get('https://api.example.com/data')
     assert data.status_code == 200
 ```
@@ -148,7 +148,7 @@ def test_find_user():
 def test_find_user(mock_get):
     mock_user = Mock(name='John', id=1)
     mock_get.return_value = mock_user
-    
+
     user = User.query.get(1)
     assert user.name == 'John'
 ```
@@ -241,24 +241,24 @@ def test_retries(mock_api):
         APIError('Connection refused'),
         Response(data='success')
     ]
-    
+
     result = api_with_retry(mock_api.call)
     assert result.data == 'success'
-    
+
     # If test calls again, StopIteration!
 
 # AFTER (reusable)
 def test_retries(mock_api):
     # Option 1: Return value (infinite)
     mock_api.call.return_value = Response(data='success')
-    
+
     # Option 2: Cycle through values
     from itertools import cycle
     mock_api.call.side_effect = cycle([
         APIError('Connection refused'),
         Response(data='success')
     ])
-    
+
     result = api_with_retry(mock_api.call)
     assert result.data == 'success'
 ```
@@ -315,10 +315,10 @@ def test_something(mock_func):
 # BEFORE
 class TestUser:
     self.users = []
-    
+
     def test_create(self):
         self.users.append(User())
-    
+
     def test_count(self):
         assert len(self.users) == 1  # Fragile!
 
@@ -327,7 +327,7 @@ class TestUser:
     def test_create(self, user_factory):
         user = user_factory.create()
         assert user.id is not None
-    
+
     def test_count(self, user_factory, db_session):
         user_factory.create()
         count = db_session.query(User).count()
@@ -428,7 +428,7 @@ def test_file_processing():
 def test_file_processing(tmp_path):
     test_file = tmp_path / 'test.txt'
     test_file.write_text('data')
-    
+
     with open(test_file) as f:
         data = f.read()
 ```
@@ -585,26 +585,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Check for remaining anti-patterns
         run: |
           python scripts/detect_test_patterns.py tests/ > pattern_report.json
-          
+
           # Fail if HIGH issues found
           CRITICAL_COUNT=$(jq '[.[] | select(.severity=="HIGH")] | length' pattern_report.json)
           if [ "$CRITICAL_COUNT" -gt 0 ]; then
             echo "❌ Found $CRITICAL_COUNT HIGH-severity patterns"
             exit 1
           fi
-      
+
       - name: Run test suite
         run: pytest tests/ --tb=short -q
-      
+
       - name: Verify test isolation
         run: |
           # Run tests in random order
           pytest tests/ --randomly-seed=random --tb=short
-          
+
           # Run each test file independently
           for test_file in tests/test_*.py; do
             pytest "$test_file" --tb=short
@@ -711,4 +711,3 @@ git revert <tier-2-commit>
 ---
 
 **Status:** 🟢 READY FOR PHASE 3 EXECUTION
-

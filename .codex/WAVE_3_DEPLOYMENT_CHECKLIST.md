@@ -141,18 +141,18 @@ git fetch origin
 # No blocking dependencies between lanes
 
 # Lane 3.1 Dispatch
-task(agent_type="autonomous-test-healer-agent", 
-     name="wave-3-lane-3.1-edge-cases", 
+task(agent_type="autonomous-test-healer-agent",
+     name="wave-3-lane-3.1-edge-cases",
      mode="background")
 
 # Lane 3.2 Dispatch
-task(agent_type="mutation-testing-agent", 
-     name="wave-3-lane-3.2-mutations", 
+task(agent_type="mutation-testing-agent",
+     name="wave-3-lane-3.2-mutations",
      mode="background")
 
 # Lane 3.3 Dispatch
-task(agent_type="qa-walkthrough-agent", 
-     name="wave-3-lane-3.3-validation", 
+task(agent_type="qa-walkthrough-agent",
+     name="wave-3-lane-3.3-validation",
      mode="background")
 ```
 

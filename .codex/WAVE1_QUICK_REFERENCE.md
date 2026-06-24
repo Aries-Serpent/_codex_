@@ -18,7 +18,7 @@
 ### 1. **codex_ml** (469 files, 94K LOC)
 - Current coverage: 20.3%
 - Target: 25%+
-- **What to test**: 
+- **What to test**:
   - `train_loop.py` (core training) - **CRITICAL**
   - `utils/checkpointing.py` (checkpoint system) - **CRITICAL**
   - `tracking/writers.py` (experiment tracking)
@@ -222,4 +222,3 @@ After implementing tests, verify:
 2. Integration tests before edge cases
 3. Parametrized tests for variations
 4. Error handling paths (60% of gaps)
-

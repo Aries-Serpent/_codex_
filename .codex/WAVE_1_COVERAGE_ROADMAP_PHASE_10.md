@@ -338,18 +338,18 @@ mutmut run --tests tests/test_*_gap_fill.py \
 ┌─────────────────────────────────────────────────────────┐
 │ COVERAGE GROWTH PROJECTION                              │
 │                                                         │
-│ 13.0% │                        ╱─ Phase 10D Target    
-│ 12.5% │         ╱─────────────╱                        
-│ 12.0% │    ╱───╱                                        
-│ 11.8% │   ╱                                             
-│ 11.5% │  ╱                                              
-│ 10.7% │ ╱  Phase 9 baseline                            
-│        ├────────────────────────────────────────        
-│        │ T+0h    T+24h    T+48h    T+72h              
-│        │ 10A     10B      10C      10D                
-│        │ CI Vald Gap-fill Mutation  Lock              
-│        │                                              
-│ Status: 🟢 On track for 13% by 2026-06-27             
+│ 13.0% │                        ╱─ Phase 10D Target  
+│ 12.5% │         ╱─────────────╱  
+│ 12.0% │    ╱───╱  
+│ 11.8% │   ╱  
+│ 11.5% │  ╱  
+│ 10.7% │ ╱  Phase 9 baseline  
+│        ├────────────────────────────────────────  
+│        │ T+0h    T+24h    T+48h    T+72h  
+│        │ 10A     10B      10C      10D  
+│        │ CI Vald Gap-fill Mutation  Lock  
+│        │  
+│ Status: 🟢 On track for 13% by 2026-06-27  
 └─────────────────────────────────────────────────────────┘
 ```
 

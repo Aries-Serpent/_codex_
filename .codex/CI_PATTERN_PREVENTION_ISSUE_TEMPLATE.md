@@ -31,7 +31,7 @@ This issue establishes permanent prevention patterns for three critical CI failu
 - **Fix:** Added null-guard and exception handling
 
 ### RP-002: mypy Baseline Regression
-- **File:** `.mypy_baseline` 
+- **File:** `.mypy_baseline`
 - **Error:** Type error count exceeded baseline (121 errors)
 - **Cause:** New code introduced type violations
 - **Status:** Fixed by mypy-manager-agent (details pending)

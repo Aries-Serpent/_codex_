@@ -30,7 +30,7 @@ subprocess.run(  # nosec B602 -- cmd comes from internal hardcoded fix_cmd strin
     cmd, cwd=REPO_ROOT, check=False, shell=True,
 )
 ```
-**Analysis**: 
+**Analysis**:
 - Command source: Internal hardcoded fix commands from `trusted_commands` dict only
 - Validation: Whitelist check at line 355 prevents arbitrary commands
 - Risk: **LOW** (trustworthy input source)
@@ -40,7 +40,7 @@ subprocess.run(  # nosec B602 -- cmd comes from internal hardcoded fix_cmd strin
 ---
 
 #### F-002: subprocess.run() with List Arguments (SAFE - Multiple Instances)
-**Files**: 
+**Files**:
 - `.github/agents/infra-linter-agent/agent/scanner.py:290-295` (tfsec, kube-score, cfn-lint, hadolint, ansible-lint)
 - `scripts/ci/fetch_codeql_alerts.py` (explicit list args)
 - `scripts/ci/github_api_trickle.py` (shell=False documented)
@@ -141,7 +141,7 @@ except ImportError:
 ---
 
 #### F-007: Coverage XML Parsing Correctly Documented (SAFE)
-**Files**: 
+**Files**:
 - `scripts/space_traversal/coverage_ingest.py:15-16`
 - `scripts/space_traversal/coverage_ingest_stub.py:15-16`
 

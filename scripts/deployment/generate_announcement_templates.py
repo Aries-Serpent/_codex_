@@ -132,8 +132,8 @@ Thank you to everyone who contributed to this release! Special thanks to:
 
 ---
 
-**Download**: [Release Page](../../releases/tag/{version})  
-**Source**: [GitHub Repository](../../)  
+**Download**: [Release Page](../../releases/tag/{version})
+**Source**: [GitHub Repository](../../)
 **License**: See [LICENSE](LICENSE) file
 
 ---
@@ -224,12 +224,12 @@ The Codex Team
 <body>
     <div class="container">
         <h1>🎉 Codex {version} Released!</h1>
-        
+
         <p>Hello,</p>
         <p>We're thrilled to announce the release of <strong>Codex {version}</strong>!</p>
-        
+
         <p><strong>Release Date:</strong> {date}</p>
-        
+
         <div class="section">
             <h2>✨ What's New</h2>
             <ul>
@@ -240,7 +240,7 @@ The Codex Team
                 <li>Production-ready containerization</li>
             </ul>
         </div>
-        
+
         <div class="section">
             <h2>📊 Key Metrics</h2>
             <div class="metrics">
@@ -250,7 +250,7 @@ The Codex Team
                 <div class="metric">🔐 Security: Complete</div>
             </div>
         </div>
-        
+
         <div class="section">
             <h2>📥 Installation</h2>
             <p><strong>Python Package:</strong></p>
@@ -258,7 +258,7 @@ The Codex Team
             <p><strong>Docker:</strong></p>
             <div class="code">docker pull ghcr.io/aries-serpent/_codex_:{version}</div>
         </div>
-        
+
         <div class="section">
             <h2>🔗 Resources</h2>
             <ul>
@@ -267,7 +267,7 @@ The Codex Team
                 <li><a href="https://aries-serpent.github.io/_codex_/">Documentation</a></li>
             </ul>
         </div>
-        
+
         <p>Thank you for using Codex!</p>
         <p><strong>The Codex Team</strong></p>
     </div>
@@ -326,7 +326,7 @@ def generate_twitter_template(version: str) -> str:
     Returns:
         Twitter-formatted message (280 char limit)
     """
-    return f"""🎉 Codex {version} is here! 
+    return f"""🎉 Codex {version} is here!
 
 New features:
 ✨ Docker variants

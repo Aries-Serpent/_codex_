@@ -133,16 +133,16 @@ BLOCKED PHRASES (hard block — PR will not merge):
 **ALLOWED ALTERNATIVES (use these instead):**
 
 ```
-✅ INSTEAD OF "This is pre-existing": 
-   "This issue exists in the codebase and is not related to my changes. 
+✅ INSTEAD OF "This is pre-existing":
+   "This issue exists in the codebase and is not related to my changes.
     It is documented in issue #XYZ and should be addressed in a separate PR."
 
 ✅ INSTEAD OF "Out of scope":
-   "This falls outside the scope of this PR (which addresses X). 
+   "This falls outside the scope of this PR (which addresses X).
     I've created issue #XYZ to track it separately."
 
 ✅ INSTEAD OF "Not my responsibility":
-   "This requires changes outside my domain of expertise. 
+   "This requires changes outside my domain of expertise.
     I've escalated to @person-X in issue #XYZ."
 ```
 
@@ -306,13 +306,13 @@ Code Security:
   ☐ No SQL injection vulnerabilities
   ☐ No XXE vulnerabilities in XML parsing
   ☐ Proper input validation throughout
-  
+
 Privacy:
   ☐ No PII (personally identifiable information) logged
   ☐ No sensitive data in error messages
   ☐ Proper access control checks
   ☐ No unauthorized data exposure
-  
+
 Dependencies:
   ☐ No new dependencies with known vulnerabilities
   ☐ Dependencies use approved licenses
@@ -349,7 +349,7 @@ Pre-Submission Verification:
   ☐ Security checks passed
   ☐ Merge conflicts resolved
   ☐ All tests passing (pytest, linters, security checks)
-  
+
 PR Description Quality:
   ☐ Clear summary of changes
   ☐ Links to related issues/PRs
@@ -357,7 +357,7 @@ PR Description Quality:
   ☐ Lists improvements made
   ☐ Includes testing evidence (test coverage change)
   ☐ References relevant documentation
-  
+
 Final CI Status:
   ☐ All GitHub Actions passing (green checkmarks)
   ☐ Code review gate passing
@@ -429,4 +429,3 @@ python scripts/ci/generate_accountability_report.py --session-id $SESSION_ID
 **STATUS: ✅ POLICY COMPLIANCE CHECKLIST COMPLETE AND OPERATIONAL**
 
 All governance requirements from CODEBASE_AGENCY_POLICY.md (v1.1.0) are now enforceable via this checklist and CI/CD gates.
-

@@ -216,7 +216,7 @@ Target completion: T+4h 0m
 
 #### 2. `scripts/catalog_workflows.py` (Lines 280, 281, 297-319)
 **Issue:** Multiple secret logging/storage violations
-**Action:** 
+**Action:**
 - Remove/redact secret values from print statements
 - Use environment variables for storage
 **Validation:** All 2 logging + 3 storage issues resolved

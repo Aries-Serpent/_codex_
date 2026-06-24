@@ -200,11 +200,11 @@ All variables are configured to be:
 1. **CODEX_CI_FAILURE_RATE**: Resolved ✅
    - Previous: Varied across runs
    - Current: `6.8:ok` (stable)
-   
+
 2. **CODEX_NETWORK_MODE**: Resolved ✅
    - Previous: Inconsistent defaults
    - Current: `isolated` (explicit)
-   
+
 3. **COGNITIVE_BRAIN_SESSION_NUMBER**: Resolved ✅
    - Previous: Drifting with each sync
    - Current: `1400` (fixed for production)
@@ -289,11 +289,11 @@ gh variable list --repo Aries-Serpent/_codex_ --json name,value > /tmp/gh_vars.j
 1. **Execute Sync** (Phase 6A Task 2)
    - Run GitHub Actions workflow to sync variables
    - Validate each variable is accessible via `gh variable view <VAR>`
-   
+
 2. **Verify Integration**
    - Test that variables are available in CI/CD environment
    - Confirm agent initialization uses correct values
-   
+
 3. **Monitor Drift**
    - Set up automated drift detection
    - Alert if file and GitHub variables diverge

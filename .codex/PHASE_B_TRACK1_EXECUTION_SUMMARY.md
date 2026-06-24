@@ -244,4 +244,3 @@ tests/codex_cli_main_enhancements.py                           (500 lines)
 
 *Report Generated: 2026-06-16*
 *Authorization: COPILOT_AGENT_AUTH_ENABLED=true, autonomy level D*
-

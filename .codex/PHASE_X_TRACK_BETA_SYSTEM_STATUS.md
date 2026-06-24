@@ -15,7 +15,7 @@ Attempted Launches: 4 (all failed)
 Error Code: "Maximum concurrent agent limit of 4 reached"
 
 Background Agents Running: 0 (per list_agents)
-Active Processes: 
+Active Processes:
   - uvicorn (Cognitive Brain API server on :8765) - PID 3231
   - padawan-fw (Firewall sandbox) - PID 5660
   - WALinuxAgent (System agent)

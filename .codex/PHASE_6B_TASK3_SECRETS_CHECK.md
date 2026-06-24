@@ -534,4 +534,3 @@ Example AWS key: `AKIAIOSFODNN7EXAMPLE` <!-- pragma: allowlist secret -->
 ---
 
 **Next Task:** Await completion of Phase 6B Task 1 & 2, then proceed to Phase 6C (Quality Assurance) upon campaign coordinator approval.
-

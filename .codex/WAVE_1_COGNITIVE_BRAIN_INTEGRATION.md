@@ -326,17 +326,17 @@ jobs:
       contains(github.event.comment.body, '@copilot heal')
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      
+
       - name: Install dependencies
         run: |
           pip install -e .
           pip install ruff isort yamllint pytest
-      
+
       - name: Run Pattern Pipeline
         run: |
           python scripts/ci/ci_pattern_pipeline.py \
@@ -422,11 +422,11 @@ alerts:
   - name: "RP-001 Success Rate Drop"
     condition: "success_rate < 0.95"
     action: "slack_notify + escalate"
-  
+
   - name: "RP-002 High False Positive Rate"
     condition: "fp_rate > 0.01"
     action: "page_on_call + disable_pattern"
-  
+
   - name: "Pattern Router Latency"
     condition: "p95_latency > 100ms"
     action: "slack_notify"

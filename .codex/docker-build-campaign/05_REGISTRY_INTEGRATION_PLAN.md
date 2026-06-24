@@ -345,7 +345,7 @@ on:
   workflow_run:
     workflows: ["Build and Push Docker Images"]
     types: [completed]
-  
+
 jobs:
   mirror:
     if: github.event.workflow_run.conclusion == 'success'

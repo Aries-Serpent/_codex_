@@ -74,7 +74,7 @@ Deserialization of untrusted data in model serving and artifact handling
 
 **Details**: DiskCache uses Python pickle by default for serialization. An attacker with write access to the cache directory can achieve arbitrary code execution when a victim application reads from the cache.
 
-**Used In**: 
+**Used In**:
 - Cache layer for ML model serving
 - Session caching
 - Artifact caching

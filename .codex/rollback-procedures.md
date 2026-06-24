@@ -285,4 +285,3 @@ kubectl get endpoints codex-ml-service -n default
 | codex-ml-server | RTO: 10-15 minutes | Strategy: RollingUpdate |
 | codex-ml-server | RTO: 2-3 minutes | Strategy: RollingUpdate |
 | codex-ml-server | RTO: 6-9 minutes | Strategy: RollingUpdate |
-

@@ -78,7 +78,7 @@ def analyze_import_order(file_path: str) -> ImportOrderAnalysis:
         capture_output=True,
         text=True
     )
-    
+
     return ImportOrderAnalysis(
         current_order=parse_imports(file_path),
         violations=parse_isort_output(result.stderr),
@@ -99,7 +99,7 @@ def apply_import_order_fix(file_path: str) -> FixResult:
         capture_output=True,
         text=True
     )
-    
+
     return FixResult(
         success=result.returncode == 0,
         lines_modified=count_lines_modified(file_path),

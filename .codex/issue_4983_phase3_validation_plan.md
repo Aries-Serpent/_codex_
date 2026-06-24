@@ -48,7 +48,7 @@ gh workflow run coverage-ratchet.yml --ref main
 gh workflow view validate.yml --json status
 ```
 
-**Expected Result:** 
+**Expected Result:**
 - These workflows should now PASS (code is fixed)
 - This breaks the cascade loop
 - Downstream validation workflows will reset their state
@@ -262,4 +262,3 @@ If any workflow fails after Phase 3:
 1. Check `.codex/issue_4983_phase3_validation.md` for status
 2. Review workflow logs via: `gh workflow view <id> --log`
 3. Escalate to: `@infrastructure-team`
-

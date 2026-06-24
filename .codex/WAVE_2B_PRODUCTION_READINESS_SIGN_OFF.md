@@ -185,7 +185,7 @@ e2d98ad  fix(ci): auto-sync .secrets.baseline and add pragma to test false-posit
 - **Configuration:** `.github/workflows/comprehensive_tests.yml` (active)
 - **Recent Status:** PASSING (98.3% success rate)
 - **Last 7-day Performance:** 47/48 runs successful (97.9% uptime)
-- **Pass Criteria:** 
+- **Pass Criteria:**
   - Test pass rate ≥ 95% ✅
   - No regressions ✅
   - Coverage maintenance ✅

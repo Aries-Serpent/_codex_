@@ -41,7 +41,7 @@
 
 Coverage Areas:
 - Numeric boundaries (9+ integer/float edge cases)
-- String boundaries (9+ string edge cases) 
+- String boundaries (9+ string edge cases)
 - Collection boundaries (9+ collection edge cases)
 - State transitions (5+ state machine tests)
 - Error handling (5+ exception path tests)
@@ -205,7 +205,7 @@ def test_boundary(value):
 # ❌ AVOID: Timing-based
 def test_timing():
     time.sleep(random.random())  # Flaky!
-    
+
 # ✅ GOOD: Fixed timeout with safety margin
 @pytest.mark.asyncio
 async def test_timeout():
@@ -395,7 +395,7 @@ pytest tests/test_edge_cases*.py -v --tb=short
    # Centralized edge case values
    class EdgeCaseFixtures:
        BOUNDARY_VALUES = [MIN, MAX, ZERO, NEGATIVE, SPECIAL]
-   
+
    @pytest.fixture(params=EdgeCaseFixtures.BOUNDARY_VALUES)
    def boundary_value(request):
        return request.param

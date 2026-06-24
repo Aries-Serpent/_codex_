@@ -136,7 +136,7 @@ def test_my_feature():
 def test_boundary_conditions():
     """Cover all boundary cases systematically."""
     from module import function
-    
+
     test_cases = [
         (0, "zero"),
         (-1, "negative"),
@@ -144,7 +144,7 @@ def test_boundary_conditions():
         ("", "empty_string"),
         (None, "null_value"),
     ]
-    
+
     for input_val, label in test_cases:
         try:
             result = function(input_val)
@@ -158,13 +158,13 @@ def test_boundary_conditions():
 def test_state_persistence():
     """Verify state is properly maintained."""
     from module import StateManager
-    
+
     manager = StateManager()
     manager.set_state("key1", "value1")
-    
+
     state1 = manager.get_state("key1")
     assert state1 == "value1"
-    
+
     manager.set_state("key1", "value2")  # Update
     state2 = manager.get_state("key1")
     assert state2 == "value2"
@@ -175,7 +175,7 @@ def test_state_persistence():
 def test_context_manager_integration():
     """Test context manager with proper cleanup."""
     from module import Manager
-    
+
     with Manager() as mgr:
         mgr.initialize()
         result = mgr.process()

@@ -69,7 +69,7 @@ All 9 instances found in scripts (not src/):
 - 6 instances are in test files (`test_auto_remediation.py`) - test data/assertions
 - 3 instances are comments/documentation
 
-**Assessment:** 
+**Assessment:**
 - ✅ Production source code (`src/`) has 0 unsafe command injection
 - ⚠️ Scripts contain 1 instance of shell=True that should be reviewed
 
@@ -175,7 +175,7 @@ All 9 instances found in scripts (not src/):
 1. **9 instances of `shell=True` in scripts** - ERROR-severity
    - 1 in `scripts/ci/scan_all.py:360` requires conversion to argument list
    - 8 in test code/comments
-   
+
 2. **1 unjustified MD5 usage** - MEDIUM-severity
    - `src/codex/metrics/duplication.py:221` needs suppression or migration
 

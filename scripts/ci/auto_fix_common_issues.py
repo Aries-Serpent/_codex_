@@ -191,12 +191,12 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
 
 class CascadeDetector:
     """Detects and prevents auto-fix cascades using circuit breaker pattern.
-    
+
     A cascade occurs when one pattern fix triggers another pattern, which then
     re-triggers the first pattern, creating a cycle. This detector implements
     a 3-strike circuit breaker: allow up to 3 consecutive retries per pattern,
     then escalate to manual review.
-    
+
     See: .codex/CI_STABILITY_CASCADE_PREVENTION.md for cascade detection rules.
     """
 

@@ -500,25 +500,25 @@ Analysis:
 ```
 T+0m     Wave 1 Complete (RP-001/002/003 deployed)
          └─ 95.2% success, 7,304 fixes
-         
+
 T+85m    Wave 2 Phase Detection Complete
          └─ RP-004/005 detections ready
-         
+
 T+95m    Wave 2-1 Deployment Complete (NOW)
          └─ 90.5% success, 1,526 detections
          └─ All validation gates PASSED
-         
+
 T+125m   Wave 2-2 Hand-Off Complete
          └─ RP-006/007 deployment window
          └─ Expected: 90%+ combined
-         
+
 T+160m   Wave 2 Complete
          └─ 90%+ combined success (7 patterns)
-         
+
 T+180m   Wave 3 Begins
          └─ RP-008 CodeQL pattern
          └─ Expected: 78% success
-         
+
 T+210m   Phase 10 Complete
          └─ All 8 patterns deployed
          └─ Expected: 88.7% combined success

@@ -91,14 +91,14 @@ SYNTHETIC_CASES = [
 @pytest.mark.integration
 def test_classify_patterns():
     router = PatternRouter()
-    
+
     for case in TEST_CASES[:15]:
         result = router.classify(case.log_text)
-        
+
         assert result.primary_pattern == case.expected_pattern
         assert result.confidence >= 0.75  # Min confidence for auto_fix
         assert result.processing_time_ms < 5000  # <5 seconds
-        
+
         # Verify no false positives
         for alt_pattern in case.false_positive_patterns:
             scores = [s for s in result.all_scores if s.pattern_id == alt_pattern]
@@ -120,21 +120,21 @@ def test_classify_patterns():
 @pytest.mark.parametrize("test_case", TEST_CASES[15:65])
 async def test_cascade_execution(test_case):
     orchestrator = CascadeOrchestrator()
-    
+
     session = await orchestrator.execute_cascade(
         session_id=f"test_{test_case.id}",
         failure_logs=test_case.log_text,
         dry_run=False,
     )
-    
+
     # Validate session state
     assert session.final_state in [FixState.DONE, FixState.ESCALATED]
     assert session.total_duration < 120  # <2 minutes
-    
+
     # Validate fix execution
     assert len(session.fix_executions) > 0
     successful = [f for f in session.fix_executions if f.success]
-    
+
     # Calculate auto-fix rate
     fix_rate = len(successful) / len(session.fix_executions)
     assert fix_rate >= test_case.expected_min_rate  # Per-case expectation
@@ -155,20 +155,20 @@ async def test_cascade_execution(test_case):
 @pytest.mark.parametrize("test_case", TEST_CASES[65:85])
 async def test_cascade_rollback(test_case):
     orchestrator = CascadeOrchestrator()
-    
+
     # Simulate failure scenario
     with patch.object(orchestrator, '_simulate_agent_execution') as mock_exec:
         mock_exec.side_effect = Exception("Simulated failure")
-        
+
         session = await orchestrator.execute_cascade(
             session_id=f"test_rollback_{test_case.id}",
             failure_logs=test_case.log_text,
         )
-    
+
     # Verify rollback occurred
     rolled_back = [f for f in session.fix_executions if f.rollback_attempted]
     assert len(rolled_back) > 0
-    
+
     # Verify state is clean
     assert session.final_state in [FixState.ROLLED_BACK, FixState.ESCALATED]
     assert not session.overall_success  # Expected failure
@@ -189,13 +189,13 @@ async def test_cascade_rollback(test_case):
 @pytest.mark.stress
 async def test_cascade_performance():
     orchestrator = CascadeOrchestrator(max_parallel=3)
-    
+
     # Sequential baseline
     start = time.time()
     for log in TEST_LOGS[:10]:
         await orchestrator.execute_cascade(f"seq_{log.id}", log.text)
     sequential_time = time.time() - start
-    
+
     # Concurrent stress
     start = time.time()
     tasks = [
@@ -204,7 +204,7 @@ async def test_cascade_performance():
     ]
     await asyncio.gather(*tasks)
     concurrent_time = time.time() - start
-    
+
     # Verify concurrent is faster (not blocked)
     parallelization_factor = sequential_time / concurrent_time
     assert parallelization_factor > 1.5  # At least 1.5x faster

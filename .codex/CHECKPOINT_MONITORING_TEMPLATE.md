@@ -100,4 +100,3 @@ When agents complete:
 3. Document issues & resolutions
 4. Commit checkpoint
 5. Update dashboard
-

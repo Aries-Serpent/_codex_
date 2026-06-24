@@ -122,7 +122,7 @@ Consolidate 4-6 duplicate documentation sets to reduce maintenance burden and im
 5. Test with link validator
 
 **Effort:** 1 hour  
-**Expected Benefit:** 
+**Expected Benefit:**
 - Single authoritative architecture reference
 - Reduced confusion about system design
 - Improved maintainability
@@ -222,8 +222,8 @@ Verify zero broken links in critical documentation:
 #### Step 3: Quality Score Recalculation
 **Formula:**
 ```
-Quality = (Accuracy × 0.30) + (Completeness × 0.25) + 
-          (Freshness × 0.20) + (LinkHealth × 0.15) + 
+Quality = (Accuracy × 0.30) + (Completeness × 0.25) +
+          (Freshness × 0.20) + (LinkHealth × 0.15) +
           (Structure × 0.10)
 ```
 

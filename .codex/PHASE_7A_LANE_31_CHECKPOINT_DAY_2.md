@@ -138,7 +138,7 @@ ContextFrame(
   errors_encountered: int = 0
 )
 
-ActionType Enum: ANALYZE, AUDIT, DEBUG, DEPLOY, DOCUMENT, EXECUTE, 
+ActionType Enum: ANALYZE, AUDIT, DEBUG, DEPLOY, DOCUMENT, EXECUTE,
                  IMPLEMENT, OPTIMIZE, PLAN, REFACTOR, REFLECT, RESEARCH, TEST
 
 ActionPath(

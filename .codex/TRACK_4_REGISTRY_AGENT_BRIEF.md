@@ -147,7 +147,7 @@ Automate registry configuration validation and credential injection using Cognit
    ```yaml
    # Inputs:
    # - registry_type: Registry type (dockerhub, ghcr, private)
-   # 
+   #
    # Steps:
    # 1. Query Cognitive Brain for patterns
    # 2. Validate registry configuration
@@ -302,4 +302,3 @@ Automate registry configuration validation and credential injection using Cognit
 **Campaign Authority:** @mbaetiong (D-level autonomy)  
 **Execution Authority:** This agent brief  
 **Status:** READY FOR DELEGATION (after Phase 1 gate or in parallel)
-

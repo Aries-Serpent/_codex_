@@ -127,11 +127,11 @@ workflows_dir = Path('.github/workflows')
 for filepath in workflows_dir.glob('*.yml'):
     with open(filepath) as f:
         content = f.read()
-    
+
     # Normalize indentation (odd spaces to even)
     lines = content.split('\n')
     fixed_lines = []
-    
+
     for line in lines:
         if line and not line[0].isspace():
             fixed_lines.append(line)
@@ -145,7 +145,7 @@ for filepath in workflows_dir.glob('*.yml'):
             fixed_lines.append(' ' * normalized + line.lstrip())
         else:
             fixed_lines.append(line)
-    
+
     fixed_content = '\n'.join(fixed_lines)
     with open(filepath, 'w') as f:
         f.write(fixed_content)

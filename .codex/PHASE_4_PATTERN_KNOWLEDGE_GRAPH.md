@@ -55,8 +55,8 @@
 
 **Query 1: "What patterns are used to fix security issues?"**
 ```
-Layer 1: Security_Hardening → 
-Layer 2: unified-security-scanner → 
+Layer 1: Security_Hardening →
+Layer 2: unified-security-scanner →
 Layer 3: [CodeQL remediation, secret scanning, CVE patching] →  # pragma: allowlist secret
 Layer 4: [45 instances, 92.5% success rate, last used Session S227]
 ```

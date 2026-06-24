@@ -12,7 +12,7 @@
 - **Overall Coverage**: 10.7% (statement coverage, src/codex_ml)
 - **Fail-Under Threshold**: 35% (pyproject.toml)
 - **Target This Phase**: 12%+ (1.3 percentage point gain)
-- **Focus Modules**: 
+- **Focus Modules**:
   - `src/codex_ml/training/`
   - `src/codex_ml/checkpointing/`
   - `src/codex_ml/continuous_learning/`
@@ -194,25 +194,25 @@ precision = 2
 ```python
 class TestCheckpointCore:
     """Test core checkpoint I/O operations."""
-    
+
     def setup_method(self):
         """Prepare test fixtures."""
         self.tmpdir = tempfile.mkdtemp()
         self.checkpoint_path = Path(self.tmpdir) / "checkpoint.pt"
-    
+
     def teardown_method(self):
         """Clean up test artifacts."""
         import shutil
         shutil.rmtree(self.tmpdir, ignore_errors=True)
-    
+
     def test_checkpoint_save_creates_file(self):
         """Test that save operation creates file."""
         # Arrange
         test_state = {"model": {"weight": [1.0, 2.0]}}
-        
+
         # Act
         save_checkpoint(test_state, self.checkpoint_path)
-        
+
         # Assert
         assert self.checkpoint_path.exists(), \
             f"Checkpoint not created at {self.checkpoint_path}"
@@ -222,21 +222,21 @@ class TestCheckpointCore:
 ```python
 class TestEventIntegrationE2E:
     """Test event integration across training cycle."""
-    
+
     def test_event_flow_during_training(self, mocker):
         """Verify events emitted during training."""
         # Arrange
         events_fired = []
-        
+
         def capture_event(event):
             events_fired.append(event)
-        
+
         mocker.patch("codex_ml.training.event_integration.emit_event",
                      side_effect=capture_event)
-        
+
         # Act
         run_training_simulation(max_steps=5)
-        
+
         # Assert
         assert "training_start" in events_fired, \
             "training_start event not fired"
@@ -287,7 +287,7 @@ class TestEventIntegrationE2E:
 ### Hygiene Score Calculation
 ```
 Score = (100 - violations) / 100
-  where violations = catch-all_count + missing_cleanup_count 
+  where violations = catch-all_count + missing_cleanup_count
                      + missing_assertions_count + hardcoded_paths_count
 ```
 Target: 100% (Score = 1.0)

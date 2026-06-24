@@ -98,7 +98,7 @@ The application logs sensitive information (passwords, API tokens, secrets, PII)
    ```python
    # BAD
    logger.debug(f"Token: {token}")
-   
+
    # GOOD
    logger.debug(f"Token: {redact_token(token)}")
    ```
@@ -172,15 +172,15 @@ The application stores sensitive data (secrets, tokens, passwords) in plaintext 
    ```python
    from cryptography.fernet import Fernet
    import os
-   
+
    class SecureVault:
        def __init__(self):
            key = os.environ.get('ENCRYPTION_KEY')
            self.cipher = Fernet(key)
-       
+
        def store(self, secret: str) -> str:
            return self.cipher.encrypt(secret.encode()).decode()
-       
+
        def retrieve(self, encrypted: str) -> str:
            return self.cipher.decrypt(encrypted.encode()).decode()
    ```
@@ -189,7 +189,7 @@ The application stores sensitive data (secrets, tokens, passwords) in plaintext 
    ```python
    # BAD
    workflows_data = {"token": raw_token}
-   
+
    # GOOD
    vault = SecureVault()
    workflows_data = {"token_ref": vault.store(raw_token)}
@@ -240,11 +240,11 @@ The application logs user-controlled input without proper sanitization, allowing
 1. **Sanitize log inputs:**
    ```python
    import re
-   
+
    def sanitize_for_logging(value: str) -> str:
        """Remove newlines and control characters."""
        return re.sub(r'[\n\r\x00-\x1f]', ' ', str(value))
-   
+
    logger.info(f"Event: {sanitize_for_logging(user_input)}")
    ```
 
@@ -291,7 +291,7 @@ Local variables are used without being initialized on all code paths. While this
    if condition:
        result = compute()
    return result  # May be undefined
-   
+
    # GOOD
    result = None
    if condition:
@@ -302,7 +302,7 @@ Local variables are used without being initialized on all code paths. While this
 2. **Use dataclass defaults:**
    ```python
    from dataclasses import dataclass, field
-   
+
    @dataclass
    class Config:
        value: str = ""  # Default initialization
@@ -614,7 +614,7 @@ Before committing any security fixes, verify:
 def test_redact_secret_length():
     """Verify secret redaction preserves length info."""
     assert len(redact_secret("my_token_12345")) == 14  # prefix + "***"
-    
+
 def test_log_injection_prevented():
     """Verify newline injection blocked."""
     assert "\n" not in sanitize_for_logging("injection\nattack")
@@ -730,4 +730,3 @@ This comprehensive report provides:
 **Last Updated:** 2026-06-19  
 **Next Review:** Weekly (Phase 1), then bi-weekly (Phase 2-3)  
 **Document Status:** READY FOR IMPLEMENTATION
-

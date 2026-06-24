@@ -53,13 +53,13 @@ def test_memory_entry_confidence_boundary_comprehensive(self) -> None:
         MemoryEntry("id", "cat", "content", {}, confidence=-0.01)
     with pytest.raises(ValueError):
         MemoryEntry("id", "cat", "content", {}, confidence=-1.0)
-    
+
     # Test upper boundary
     with pytest.raises(ValueError):
         MemoryEntry("id", "cat", "content", {}, confidence=1.01)
     with pytest.raises(ValueError):
         MemoryEntry("id", "cat", "content", {}, confidence=2.0)
-    
+
     # Test valid boundaries
     entry1 = MemoryEntry("id", "cat", "content", {}, confidence=0.0)
     assert entry1.confidence == 0.0
@@ -92,18 +92,18 @@ if access_count > 0:
 def test_memory_entry_access_count_boundary_comprehensive(self) -> None:
     """Catch boundary mutations in access count operations."""
     entry = MemoryEntry("id", "cat", "content", {})
-    
+
     # Test initial state
     assert entry.access_count == 0
     assert entry.access_count >= 0
     assert not (entry.access_count > 0)
-    
+
     # Test increment boundary
     entry.access_count += 1
     assert entry.access_count == 1
     assert entry.access_count > 0
     assert entry.access_count >= 1
-    
+
     # Test large values
     entry.access_count = 999999
     assert entry.access_count == 999999
@@ -136,19 +136,19 @@ if len(results) > 0:
 def test_memory_search_range_boundary_comprehensive(self) -> None:
     """Catch boundary mutations in collection search operations."""
     memory = AgentMemory()
-    
+
     # Test empty results
     results = memory.search_memories("nonexistent")
     assert results == []
     assert len(results) == 0
     assert not results  # Boolean check
-    
+
     # Test single result
     memory.store_memory("test", "decision", "content", {})
     results = memory.search_memories("test")
     assert len(results) == 1
     assert results[0] is not None
-    
+
     # Test multiple results
     memory.store_memory("test2", "decision", "content", {})
     results = memory.search_memories("test")
@@ -185,12 +185,12 @@ def test_memory_validation_boolean_logic_comprehensive(self) -> None:
     assert entry.category  # Non-empty
     assert entry.content   # Non-empty
     assert entry.context   # Non-empty
-    
+
     # Test invalid cases: any condition false
     entry2 = MemoryEntry("id", "", "content", {})
     assert entry2.category == ""
     assert not entry2.category  # Empty category
-    
+
     # Test negation
     is_empty = not entry.content
     assert not is_empty  # Double negative
@@ -221,24 +221,24 @@ if should_consolidate or force_consolidate:
 def test_memory_consolidation_or_logic_comprehensive(self) -> None:
     """Catch OR logic mutations in consolidation paths."""
     memory = AgentMemory()
-    
+
     # Store multiple memories
     memory.store_memory("mem1", "decision", "content1", {})
     memory.store_memory("mem2", "decision", "content2", {})
-    
+
     # Test OR conditions
     # Case 1: should_consolidate=True, force=False
     consolidated = memory.consolidate_memories(should_consolidate=True, force=False)
     assert consolidated is not None
-    
+
     # Case 2: should_consolidate=False, force=True
     consolidated = memory.consolidate_memories(should_consolidate=False, force=True)
     assert consolidated is not None
-    
+
     # Case 3: both True
     consolidated = memory.consolidate_memories(should_consolidate=True, force=True)
     assert consolidated is not None
-    
+
     # Case 4: both False
     consolidated = memory.consolidate_memories(should_consolidate=False, force=False)
     assert consolidated is None or isinstance(consolidated, dict)
@@ -269,20 +269,20 @@ def is_valid_memory(self, memory_id: str) -> bool:
 def test_memory_validation_return_true_false_comprehensive(self) -> None:
     """Catch return value mutations for boolean functions."""
     memory = AgentMemory()
-    
+
     # Test valid memory
     memory.store_memory("valid_id", "decision", "content", {})
     result = memory.is_valid_memory("valid_id")
     assert result is True
     assert result == True
     assert not (result is False)
-    
+
     # Test invalid memory
     result = memory.is_valid_memory("")
     assert result is False
     assert result == False
     assert not (result is True)
-    
+
     # Test nonexistent memory
     result = memory.is_valid_memory("nonexistent")
     assert result is False
@@ -315,13 +315,13 @@ def get_memory(self, memory_id: str) -> Optional[MemoryEntry]:
 def test_memory_retrieval_none_vs_data_comprehensive(self) -> None:
     """Catch return value mutations for None vs data."""
     memory = AgentMemory()
-    
+
     # Test None case
     result = memory.get_memory("nonexistent")
     assert result is None
     assert not result
     assert result is not None or result is None  # Force check
-    
+
     # Test data case
     memory.store_memory("test_id", "decision", "content", {})
     result = memory.get_memory("test_id")
@@ -361,11 +361,11 @@ def test_memory_category_string_state_comprehensive(self) -> None:
     assert entry_decision.category == "decision"
     assert entry_decision.category != "fact"
     assert entry_decision.category != "pattern"
-    
+
     entry_fact = MemoryEntry("id", "fact", "content", {})
     assert entry_fact.category == "fact"
     assert entry_fact.category != "decision"
-    
+
     # Test invalid category
     entry_invalid = MemoryEntry("id", "invalid", "content", {})
     assert entry_invalid.category == "invalid"
@@ -401,22 +401,22 @@ except KeyError:
 def test_memory_exception_type_handling_comprehensive(self) -> None:
     """Catch exception handling mutations."""
     memory = AgentMemory()
-    
+
     # Test ValueError exception
     with pytest.raises(ValueError):
         MemoryEntry("id", "cat", "content", {}, confidence=2.0)  # Out of bounds
-    
+
     with pytest.raises(ValueError):
         MemoryEntry("id", "cat", "content", {}, confidence=-1.0)
-    
+
     # Test TypeError for wrong types
     with pytest.raises((TypeError, ValueError)):
         MemoryEntry("id", "cat", "content", {}, confidence="invalid")  # String instead of float
-    
+
     # Test KeyError for missing keys
     with pytest.raises(KeyError):
         memory._access_required_key({"a": 1})  # Missing required key
-    
+
     # Ensure wrong exception type is NOT caught
     try:
         with pytest.raises(ValueError):
@@ -455,15 +455,15 @@ def test_memory_exception_recovery_comprehensive(self) -> None:
     """Catch exception suppression mutations in recovery paths."""
     memory = AgentMemory()
     memory.store_memory("mem1", "decision", "content", {})
-    
+
     # Test that consolidation with invalid data raises
     with pytest.raises(Exception):
         memory.consolidate_memories(force=True, invalid_param=True)
-    
+
     # Verify memory still accessible after exception
     result = memory.get_memory("mem1")
     assert result is not None
-    
+
     # Test partial success after error
     memory.store_memory("mem2", "decision", "content", {})
     try:
@@ -471,7 +471,7 @@ def test_memory_exception_recovery_comprehensive(self) -> None:
         memory.search_memories(query=None)
     except (TypeError, ValueError, AttributeError):
         pass  # Expected
-    
+
     # Verify memory integrity after error
     mem1 = memory.get_memory("mem1")
     mem2 = memory.get_memory("mem2")
@@ -510,22 +510,22 @@ def test_memory_context_dict_operation_comprehensive(self) -> None:
         "content",
         {"timestamp": "2024-01-01", "source": "api"}
     )
-    
+
     # Test correct keys exist
     assert "timestamp" in entry.context
     assert "source" in entry.context
     assert entry.context["timestamp"] == "2024-01-01"
     assert entry.context["source"] == "api"
-    
+
     # Test wrong keys don't exist
     assert "date" not in entry.context
     assert "origin" not in entry.context
-    
+
     # Test empty context case
     empty_entry = MemoryEntry("id", "cat", "content", {})
     assert empty_entry.context == {}
     assert not empty_entry.context or len(empty_entry.context) == 0
-    
+
     # Test context mutation doesn't affect entry
     original_value = entry.context["timestamp"]
     entry.context["timestamp"] = "2024-01-02"

@@ -108,12 +108,12 @@ sleep 30
 # Step 5: Rotate to production
 if [ "$ENVIRONMENT" = "production" ]; then
     echo "5️⃣  Updating production secrets..."
-    
+
     # Use secure secrets management service
     aws secretsmanager update-secret \
       --secret-id "$SERVICE_NAME-api-key" \
       --secret-string "$NEW_KEY"
-    
+
     # Verify update
     aws secretsmanager get-secret-value \
       --secret-id "$SERVICE_NAME-api-key" \
@@ -246,7 +246,7 @@ class OAuthTokenRotator:
             # Step 2: Update in secrets manager
             self.log("Updating GitHub token in secrets...")
             subprocess.run(
-                ["gh", "secret", "set", "GITHUB_TOKEN", 
+                ["gh", "secret", "set", "GITHUB_TOKEN",
                  "--body", new_token],
                 check=True
             )
@@ -385,9 +385,9 @@ echo "================================"
 
 # Most accessed secrets
 echo -e "\n📊 Top 10 Most Accessed Secrets:"
-jq -s 'group_by(.secret_name) | 
-       map({name: .[0].secret_name, count: length}) | 
-       sort_by(-.count) | 
+jq -s 'group_by(.secret_name) |
+       map({name: .[0].secret_name, count: length}) |
+       sort_by(-.count) |
        .[0:10]' logs/secret_audit.jsonl
 
 # Failed access attempts
@@ -396,20 +396,20 @@ jq 'select(.success == false)' logs/secret_audit.jsonl | wc -l
 
 # Recent rotations
 echo -e "\n🔄 Recent Secret Rotations (Last 7 days):"
-jq "select(.access_type == \"ROTATE\" and 
+jq "select(.access_type == \"ROTATE\" and
     (now - (.timestamp | fromdateiso8601)) < 604800)" \
     logs/secret_rotations_audit.jsonl
 
 # Access by user
 echo -e "\n👤 Access by User:"
-jq -s 'group_by(.user) | 
-       map({user: .[0].user, count: length}) | 
+jq -s 'group_by(.user) |
+       map({user: .[0].user, count: length}) |
        sort_by(-.count)' logs/secret_audit.jsonl
 
 # Unusual activity (high volume in short time)
 echo -e "\n🚨 Unusual Activity Detection:"
-jq -s 'group_by(.timestamp | split(".")[0]) | 
-       map({timestamp: .[0].timestamp, count: length}) | 
+jq -s 'group_by(.timestamp | split(".")[0]) |
+       map({timestamp: .[0].timestamp, count: length}) |
        select(.count > 100)' logs/secret_audit.jsonl
 ```
 
@@ -660,7 +660,7 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Configure secrets
         env:
           API_KEY: ${{ secrets.API_KEY }}
@@ -669,7 +669,7 @@ jobs:
         run: |
           echo "API_KEY=${API_KEY:0:10}..." # Log first 10 chars only
           # Use secrets in deployment
-      
+
       - name: Deploy application
         run: ./scripts/deploy.sh
         env:
@@ -695,24 +695,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Generate new secrets
         id: rotate
         run: |
           NEW_API_KEY=$(openssl rand -hex 32)
           echo "api_key=$NEW_API_KEY" >> $GITHUB_OUTPUT
-      
+
       - name: Test new secrets
         env:
           API_KEY: ${{ steps.rotate.outputs.api_key }}
         run: python -m pytest tests/integration/
-      
+
       - name: Update GitHub secret
         run: |
           gh secret set API_KEY \
             --body "${{ steps.rotate.outputs.api_key }}" \
             --env production
-      
+
       - name: Record rotation
         run: |
           echo "Secret rotated at $(date)" >> logs/rotations.log
@@ -732,7 +732,7 @@ logger.info(f"Auth: {api_key}")  # ❌ Never
    ```bash
    # ✅ Good
    export API_KEY="$(aws secretsmanager get-secret-value ...)"
-   
+
    # ❌ Bad
    API_KEY = "hardcoded_key_here"  # In config file <!-- pragma: allowlist secret -->
    ```

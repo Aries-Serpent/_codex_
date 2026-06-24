@@ -350,7 +350,7 @@ Each test must validate:
 def test_pipeline_error_handling_missing_config():
     """
     Test that pipeline gracefully handles missing config file.
-    
+
     Validates:
     - Error type: FileNotFoundError
     - Error message contains path
@@ -360,11 +360,11 @@ def test_pipeline_error_handling_missing_config():
     # Arrange
     runner = PipelineRunner()
     missing_config = "/non/existent/config.yaml"
-    
+
     # Act & Assert
     with pytest.raises(FileNotFoundError) as exc_info:
         runner.load_config(missing_config)
-    
+
     assert "config.yaml" in str(exc_info.value)
     assert runner.state == PipelineState.UNINITIALIZED
     assert not runner.has_partial_writes()

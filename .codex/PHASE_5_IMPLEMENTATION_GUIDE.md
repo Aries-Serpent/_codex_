@@ -118,12 +118,12 @@ from src.security.logging import redact_token
 def test_token_not_logged_in_plaintext():
     """Verify tokens are redacted, not logged plaintext."""
     logger = logging.getLogger(__name__)
-    
+
     # Capture log output
     with caplog.at_level(logging.DEBUG):
         token = "ghp_1234567890abcdefghij1234567890"
         logger.debug(f"Token: {redact_token(token)}")
-    
+
     # Verify plaintext token NOT in logs
     assert token not in caplog.text
     assert "ghp_****" in caplog.text  # Redacted version present

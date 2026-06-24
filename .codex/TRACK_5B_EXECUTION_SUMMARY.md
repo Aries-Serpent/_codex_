@@ -253,9 +253,9 @@
 
 **workflow_runs table**: Tracks all workflow executions
 ```sql
-SELECT 
-  workflow_name, 
-  COUNT(*) as runs, 
+SELECT
+  workflow_name,
+  COUNT(*) as runs,
   SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) as passed,
   SUM(CASE WHEN conclusion = 'failure' THEN 1 ELSE 0 END) as failed
 FROM workflow_runs
@@ -264,8 +264,8 @@ GROUP BY workflow_name
 
 **failures table**: Logs failures with categorization
 ```sql
-SELECT 
-  category, 
+SELECT
+  category,
   COUNT(*) as count,
   GROUP_CONCAT(workflow_name, ', ') as workflows
 FROM failures
@@ -298,13 +298,13 @@ sqlite3 .codex/monitoring_data.db \
 ### Get Workflow Run Statistics
 ```bash
 sqlite3 .codex/monitoring_data.db \
-  "SELECT workflow_name, 
+  "SELECT workflow_name,
     COUNT(*) as total,
     SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) as passed,
     SUM(CASE WHEN conclusion = 'failure' THEN 1 ELSE 0 END) as failed
-   FROM workflow_runs 
-   GROUP BY workflow_name 
-   ORDER BY failed DESC, total DESC 
+   FROM workflow_runs
+   GROUP BY workflow_name
+   ORDER BY failed DESC, total DESC
    LIMIT 20;"
 ```
 

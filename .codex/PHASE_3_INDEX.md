@@ -93,7 +93,7 @@ By Type:
   Missing imports: 1,399 (63.7%)
   Incomplete patterns: 632 (28.8%)
   Deprecated APIs: 167 (7.6%)
-  
+
 Severity:
   Critical: 1,399 (needs immediate attention)
   High: 799 (should fix soon)
@@ -106,7 +106,7 @@ Sample Results (150 blocks tested):
   Python: 9/50 valid (18%)
   Bash: 92/100 valid (92%)
   YAML: 70/100 valid (70%)
-  
+
 Overall: 171/150 (95%+ coverage)
 ```
 

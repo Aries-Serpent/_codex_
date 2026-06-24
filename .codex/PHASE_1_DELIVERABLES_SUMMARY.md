@@ -169,7 +169,7 @@ python scripts/ci/validate_phase1_checkpoint.py && echo "PASS" || echo "FAIL"
 # In your CI workflow
 - name: Validate Phase 1
   run: python scripts/ci/validate_phase1_checkpoint.py
-  
+
 - name: Upload Report
   uses: actions/upload-artifact@v3
   with:
@@ -257,4 +257,3 @@ Link to documentation in:
 
 All Phase 1 validation and documentation deliverables are complete and verified.
 The system is ready for optimization and expansion in Phase 2.
-

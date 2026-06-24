@@ -729,7 +729,7 @@ ALLOWED_INTERNAL_HOSTS = {
 def fetch_from_service(service: str, path: str):
     if service not in ALLOWED_INTERNAL_HOSTS:
         raise ValueError(f"Service {service} not in whitelist")
-    
+
     url = f"https://{service}/{path}"
     return requests.get(url, timeout=5)
 ```
@@ -879,4 +879,3 @@ pytest tests/ \
 **Document Version**: 1.0  
 **Last Updated**: 2026-01-23  
 **Prepared for**: Phase 4 Execution
-

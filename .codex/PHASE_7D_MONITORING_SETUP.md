@@ -306,7 +306,7 @@ datasources:
     editable: true
     jsonData:
       timeInterval: 15s
-      
+
   - name: Loki
     type: loki
     access: proxy
@@ -711,7 +711,7 @@ filter {
     match => ["timestamp", "UNIX_MS"]
     target => "@timestamp"
   }
-  
+
   if [level] == "error" or [level] == "ERROR" {
     mutate {
       add_tag => ["error"]
@@ -814,17 +814,17 @@ custom_metrics:
   - model_inference_throughput_req_sec
   - model_accuracy_percent
   - model_drift_score
-  
+
   # Data pipeline metrics
   - data_ingestion_rate_records_sec
   - data_processing_latency_ms
   - data_validation_errors_total
-  
+
   # Business metrics
   - predictions_generated_total
   - prediction_confidence_avg
   - user_satisfaction_score
-  
+
   # Infrastructure metrics
   - database_query_latency_ms
   - cache_hit_ratio_percent
@@ -851,13 +851,13 @@ def collect_metrics():
             # Query application API
             resp = requests.get('http://app:8000/metrics/custom')
             data = resp.json()
-            
+
             model_latency.set(data.get('inference_latency_ms', 0))
             throughput.set(data.get('throughput_req_sec', 0))
-            
+
         except Exception as e:
             print(f"Error collecting metrics: {e}")
-        
+
         time.sleep(10)
 
 if __name__ == '__main__':
@@ -919,17 +919,17 @@ Cost Optimization:
     - Metrics: 15 days local → 30d remote storage
     - Logs: 7 days hot → 30d archived
     - Traces: 24 hours default
-  
+
   Sampling:
     - Trace sampling: 10% for low-value operations
     - Log sampling: 100% for errors, 10% for info
     - Metric cardinality: Limit to <100k time series
-  
+
   Instance Sizing:
     - Dev: t3.micro ($10/mo)
     - Staging: t3.small ($20/mo)
     - Production: t3.large ($50/mo)
-  
+
   Reserved Capacity:
     - Commit to 1-year: 33% discount
     - Commit to 3-year: 55% discount

@@ -171,18 +171,18 @@ from src.services.core import ServiceBase
 
 class TestServiceBase:
     """Unit tests for core service abstractions."""
-    
+
     def test_service_initialization(self):
         """Test basic service initialization."""
         service = ServiceBase()
         assert service is not None
-    
+
     def test_service_configuration(self):
         """Test service configuration handling."""
         config = {"debug": True, "timeout": 30}
         service = ServiceBase(config=config)
         assert service.config == config
-    
+
     def test_service_error_handling(self):
         """Test error handling in service methods."""
         service = ServiceBase()
@@ -198,12 +198,12 @@ from src.codex_crm.models import CRMModel
 
 class TestCRMModel:
     """Unit tests for CRM data models."""
-    
+
     def test_model_creation(self):
         """Test CRM model creation."""
         model = CRMModel(name="test", version="1.0")
         assert model.name == "test"
-    
+
     def test_model_validation(self):
         """Test CRM model validation."""
         with pytest.raises(ValueError):
@@ -218,12 +218,12 @@ from src.codex_ml.training import TrainingConfig
 
 class TestTrainingConfig:
     """Unit tests for ML training configuration."""
-    
+
     def test_config_defaults(self):
         """Test default configuration values."""
         config = TrainingConfig()
         assert config.batch_size > 0
-    
+
     def test_config_validation(self):
         """Test configuration validation."""
         with pytest.raises(ValueError):

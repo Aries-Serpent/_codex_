@@ -217,7 +217,7 @@ The following files contain reference-style markdown links `[text](n)` where `n`
 
 2. **remediation_plan_pip_audit.md** (54 references)
    - Same pattern, same resolution
-   
+
 3. **remediation_plan_sbom.md** (38 references)
    - Same pattern, same resolution
 

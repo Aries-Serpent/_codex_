@@ -215,15 +215,15 @@ Wave 2 Outputs:               │
 
 ```bash
 # D2 (Workflow Compliance) - if not yet activated
-task(agent_type="workflow-compliance-guardian", 
+task(agent_type="workflow-compliance-guardian",
      name="phase7b-workflow-audit", mode="background")
 
 # E1 (Documentation Hub) - after D1+D2 running
-task(agent_type="unified-doc-agent", 
+task(agent_type="unified-doc-agent",
      name="phase7b-documentation-hub", mode="background")
 
 # E2 (Accountability Report) - after D1+D2 running
-task(agent_type="session-analysis-agent", 
+task(agent_type="session-analysis-agent",
      name="phase7b-accountability-report", mode="background")
 ```
 

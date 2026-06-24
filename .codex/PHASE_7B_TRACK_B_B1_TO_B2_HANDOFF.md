@@ -212,11 +212,11 @@ def test_feature_error_condition():
     # Arrange
     setup_initial_state()
     error_condition = prepare_error()
-    
+
     # Act & Assert
     with pytest.raises(ExpectedError) as exc_info:
         function_under_test(error_condition)
-    
+
     assert "specific_message" in str(exc_info.value)
     assert state_after_error_is_consistent()
 ```
@@ -227,7 +227,7 @@ def test_feature_boundary_condition():
     """Verify correct handling at boundary."""
     # Test with boundary values
     boundary_cases = [0, 1, -1, float('inf'), 'empty_string', None]
-    
+
     for boundary_value in boundary_cases:
         result = function_under_test(boundary_value)
         assert_valid_output(result)
@@ -240,11 +240,11 @@ def test_integration_workflow():
     # Setup
     component_a = ComponentA()
     component_b = ComponentB()
-    
+
     # Execute workflow
     result_1 = component_a.process(input_data)
     result_2 = component_b.process(result_1)
-    
+
     # Verify end-to-end
     assert result_2.is_valid()
     assert component_a.state == State.COMPLETE

@@ -87,7 +87,7 @@ First, diagnose whether this is actually a P19 shadow import:
 ```python
 def detect_shadow_import(import_error: str) -> Optional[ShadowImportMatch]:
     """Detect P19 shadow import patterns in CI logs."""
-    
+
     # Check for shadow import signatures
     for signature in SIGNATURES:
         if re.search(signature, import_error, re.IGNORECASE):
@@ -112,10 +112,10 @@ def verify_shadow_import(module_name: str) -> ShadowImportDiagnosis:
             reason="Module not installed",
             error=str(e)
         )
-    
+
     # Step 2: Check if installed path is under src/ (correct) or site-packages (wrong)
     is_correct_path = "src/" in installed_path or "/src\\" in installed_path
-    
+
     if not is_correct_path:
         return ShadowImportDiagnosis(
             is_shadow_import=True,
@@ -123,7 +123,7 @@ def verify_shadow_import(module_name: str) -> ShadowImportDiagnosis:
             root_cause="Stale site-packages entry",
             fix_required=True
         )
-    
+
     # Step 3: Check for stale .egg-link
     egg_link_path = find_egg_link(module_name)
     if egg_link_path:
@@ -136,7 +136,7 @@ def verify_shadow_import(module_name: str) -> ShadowImportDiagnosis:
                 root_cause="Stale .egg-link pointing to old build",
                 fix_required=True
             )
-    
+
     return ShadowImportDiagnosis(
         is_shadow_import=False,
         reason="No shadow import detected"
@@ -150,12 +150,12 @@ Determine the underlying problem:
 ```python
 def diagnose_shadow_import(module_name: str) -> RootCauseDiagnosis:
     """Diagnose root cause of shadow import."""
-    
+
     diagnosis = ShadowImportDiagnosis()
-    
+
     # Check root causes
     causes = []
-    
+
     # 1. Stale .egg-link
     if has_stale_egg_link(module_name):
         causes.append(RootCause(
@@ -164,7 +164,7 @@ def diagnose_shadow_import(module_name: str) -> RootCauseDiagnosis:
             likelihood=0.95,
             fix="pip install --force-reinstall --no-deps -e ."
         ))
-    
+
     # 2. Multiple virtualenvs (.venv vs .venv_ci)
     if multiple_venvs_detected():
         causes.append(RootCause(
@@ -173,7 +173,7 @@ def diagnose_shadow_import(module_name: str) -> RootCauseDiagnosis:
             likelihood=0.70,
             fix="Confirm `which python` is correct venv before re-running"
         ))
-    
+
     # 3. PYTHONPATH override
     if has_pythonpath_override():
         causes.append(RootCause(
@@ -182,7 +182,7 @@ def diagnose_shadow_import(module_name: str) -> RootCauseDiagnosis:
             likelihood=0.80,
             fix="Prepend src/ explicitly: PYTHONPATH=src:$PYTHONPATH"
         ))
-    
+
     # 4. conftest.py sys.path.insert conflict
     if has_conflicting_conftest_paths():
         causes.append(RootCause(
@@ -191,7 +191,7 @@ def diagnose_shadow_import(module_name: str) -> RootCauseDiagnosis:
             likelihood=0.75,
             fix="Remove redundant sys.path.insert; rely on editable install"
         ))
-    
+
     return RootCauseDiagnosis(
         likely_causes=sorted(causes, key=lambda c: c.likelihood, reverse=True),
         most_likely=causes[0] if causes else None
@@ -205,9 +205,9 @@ Apply the appropriate fix based on root cause:
 ```python
 def apply_shadow_import_fix(diagnosis: RootCauseDiagnosis) -> FixResult:
     """Apply targeted fix based on root cause diagnosis."""
-    
+
     root_cause = diagnosis.most_likely
-    
+
     if root_cause.type == "STALE_EGG_LINK":
         return fix_stale_egg_link()
     elif root_cause.type == "MULTIPLE_VENV":
@@ -222,7 +222,7 @@ def apply_shadow_import_fix(diagnosis: RootCauseDiagnosis) -> FixResult:
 
 def fix_stale_egg_link() -> FixResult:
     """Fix stale .egg-link by force-reinstalling editable package."""
-    
+
     try:
         # Force-reinstall with editable mode from src/ root
         result = subprocess.run(
@@ -232,14 +232,14 @@ def fix_stale_egg_link() -> FixResult:
             text=True,
             timeout=60
         )
-        
+
         if result.returncode != 0:
             return FixResult(
                 success=False,
                 error=result.stderr,
                 reason="pip install failed"
             )
-        
+
         # Verify import resolves to src/
         verification = verify_import_path("codex_ml")
         if "src/" not in verification.installed_path:
@@ -248,13 +248,13 @@ def fix_stale_egg_link() -> FixResult:
                 error="Import still resolves to wrong path",
                 reason="Shadow import not fixed"
             )
-        
+
         return FixResult(
             success=True,
             fix_applied="pip install --force-reinstall --no-deps -e .",
             verification_path=verification.installed_path
         )
-    
+
     except Exception as e:
         return FixResult(success=False, error=str(e))
 ```
@@ -266,9 +266,9 @@ Post-fix validation:
 ```python
 def verify_shadow_import_fix(package_name: str) -> VerificationResult:
     """Verify shadow import fix is complete."""
-    
+
     checks = []
-    
+
     # Check 1: Import resolves to src/
     try:
         module = __import__(package_name)
@@ -285,7 +285,7 @@ def verify_shadow_import_fix(package_name: str) -> VerificationResult:
             passed=False,
             error=str(e)
         ))
-    
+
     # Check 2: No stale .egg-link
     egg_link_status = check_egg_link_status(package_name)
     checks.append(VerificationCheck(
@@ -293,7 +293,7 @@ def verify_shadow_import_fix(package_name: str) -> VerificationResult:
         passed=egg_link_status.is_clean,
         detail=egg_link_status.message
     ))
-    
+
     # Check 3: Run smoke test
     try:
         smoke_test_result = run_smoke_test(package_name)
@@ -308,7 +308,7 @@ def verify_shadow_import_fix(package_name: str) -> VerificationResult:
             passed=False,
             error=str(e)
         ))
-    
+
     # Check 4: PYTHONPATH clean
     pythonpath_clean = not os.getenv("PYTHONPATH") or "src" in os.getenv("PYTHONPATH", "")
     checks.append(VerificationCheck(
@@ -316,9 +316,9 @@ def verify_shadow_import_fix(package_name: str) -> VerificationResult:
         passed=pythonpath_clean,
         detail=f"PYTHONPATH={os.getenv('PYTHONPATH', 'unset')}"
     ))
-    
+
     all_passed = all(c.passed for c in checks)
-    
+
     return VerificationResult(
         all_checks_passed=all_passed,
         checks=checks,
@@ -338,7 +338,7 @@ def verify_shadow_import_fix(package_name: str) -> VerificationResult:
   run: |
     pip install --upgrade pip
     pip install --force-reinstall --no-deps -e ".[dev,test]"
-    
+
 - name: Verify import path
   run: |
     python -c "import codex_ml; assert 'src/' in codex_ml.__file__, \

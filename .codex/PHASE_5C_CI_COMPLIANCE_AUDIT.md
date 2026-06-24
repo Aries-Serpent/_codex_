@@ -63,7 +63,7 @@ I001: Import block is un-sorted or un-formatted
   Action: Auto-fixable via `ruff check --fix`
 
 E501: Line too long (>100 chars)
-  Files: 
+  Files:
     - tests/_bootstrap_determinism.py:64 (115 chars)
     - tests/agents/test_agent_memory_comprehensive.py:224 (104 chars)
     - tests/agents/test_agent_orchestration.py:235 (106 chars)

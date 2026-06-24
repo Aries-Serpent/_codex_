@@ -151,7 +151,7 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 2
   - CodeQL: `codeql database analyze ...`
   - Semgrep: `semgrep --config=p/security-audit ...`
   - Bandit: `bandit -r src/`
-  
+
 - **Agent**: `unified-security-scanner`
 - **Actions**:
   1. Run full security scan
@@ -171,7 +171,7 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 2
   1. Re-measure coverage on Day 1 fixes
   2. Target: Coverage ≥ 5% (up from 3.61%)
   3. Identify critical zero-coverage modules
-  
+
 - **Timeline**: 1 hour
 - **Exit Criteria**:
   - [ ] Coverage measurement baseline established
@@ -189,7 +189,7 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 2
   - MD5 usage (non-cryptographic hashing)
   - SHA1 usage (deprecated)
   - Hardcoded crypto keys/salts
-  
+
 - **Agent**: `security-audit-agent`
 - **Mode**: Auto-remediation
 - **Actions**:
@@ -221,7 +221,7 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 2
   - Unsafe pickle.loads() without validation
   - Custom unpickler objects
   - Cached pickle objects from untrusted sources
-  
+
 - **Agent**: `unified-security-scanner` (pickle-specific mode)
 - **Mode**: Audit + remediation
 - **Actions**:
@@ -255,7 +255,7 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 2
   - String concatenation in URLs (urllib, requests)
   - Unvalidated URL construction from user input
   - SSRF risks in internal service communication
-  
+
 - **Agent**: `code-scanning-remediation-agent`
 - **Mode**: Safe refactoring
 - **Actions**:
@@ -269,7 +269,7 @@ python scripts/ci/rvs_preflight.py --group quick --changed-only --workers 2
   ```python
   # Before (UNSAFE)
   url = f"https://api.example.com/users/{user_id}"
-  
+
   # After (SAFE)
   url = urllib.parse.urljoin(
     base_url="https://api.example.com/",

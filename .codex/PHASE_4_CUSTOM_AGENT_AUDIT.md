@@ -358,16 +358,16 @@ DEFERRAL_TRIGGERS = [
     "Pre-existing issue",
     "Pre-existing code",
     "Not introduced by this PR",
-    
+
     # Scope category
     "Out of scope",
     "Outside the scope",
     "Not related to this PR",
-    
+
     # Responsibility
     "Not my responsibility",
     "Not my problem",
-    
+
     # Future deferral
     "Will address in a future PR",
     "Future PR",
@@ -376,11 +376,11 @@ DEFERRAL_TRIGGERS = [
     "Address incrementally",
     "Address separately",
     "Can be addressed later",
-    
+
     # Delegation
     "Another session should handle",
     "Not actionable in this PR",
-    
+
     # Agent bypass
     "Without using an agent",
     "Manually instead of",
@@ -404,12 +404,12 @@ AGENT_BYPASS_TRIGGERS = [
     "bypassed the agent",
     "skipped the agent",
     "agent not needed",
-    
+
     # Manual workarounds
     "manually ran",
     "direct edit",
     "bash script instead",
-    
+
     # Deprecation without replacement
     "deprecated agent",
     "removing agent support",
@@ -666,13 +666,13 @@ All Phase 1-3 work followed the Custom Agent Delegation Mandate perfectly:
 CAD Rule 1: Agent-First Delegation (AFD)
   ❌ Prohibited: Manual bash, direct file edits for covered tasks
   ✅ Required: Use task(agent_type=..., mode="background")
-  
+
 CAD Rule 2: Mandatory Session Pre-Load Validation (MSPV)
   ✅ Required: Load .codex/agent_context.json with all flags
   ✅ Required: Load policy + accountability docs
   ✅ Required: Resolve agents via AGENT_REGISTRY.yaml
   ✅ Required: Scan for deferral language
-  
+
 CAD Rule 3: CTEP-Aligned Plan Structure (CAPS)
   ✅ Required: Each task bound to agent_type
   ✅ Required: Agent Binding Map table

@@ -97,10 +97,10 @@ Other                673       7.0%   Variable
    ```python
    # Missing: import requests
    response = requests.get('https://api.example.com')
-   
+
    # Missing: from pathlib import Path
    path = Path('/tmp/file.txt')
-   
+
    # Missing: import json
    data = json.loads(response.text)
    ```
@@ -115,7 +115,7 @@ Other                673       7.0%   Variable
    ```python
    # Old: deprecated urllib2
    # New: use requests or urllib.request
-   
+
    # Old: collections.Mapping
    # New: collections.abc.Mapping
    ```
@@ -132,7 +132,7 @@ Other                673       7.0%   Variable
    def process_data(data):
        # TODO: implement processing
        ...
-   
+
    # After: Complete implementation
    def process_data(data):
        """Process input data and return results."""

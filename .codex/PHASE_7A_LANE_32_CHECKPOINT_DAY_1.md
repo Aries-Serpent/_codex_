@@ -259,7 +259,7 @@ Each checkpoint saved as:
 ### Mutation Score Regression Check
 - **Trigger:** Any day shows score decrease >2pp
 - **Action:** Investigate root cause immediately
-- **Likely Causes:** 
+- **Likely Causes:**
   - Test quality regression
   - Test removal or modification
   - Configuration change

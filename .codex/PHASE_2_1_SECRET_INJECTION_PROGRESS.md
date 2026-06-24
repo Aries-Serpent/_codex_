@@ -34,7 +34,7 @@
   - [ ] Navigate to GitHub token creation page
   - [ ] Configure token with correct permissions
   - [ ] Copy token to secure storage
-  
+
 - [ ] Step 2: Inject into repository secrets (3 min)
   - [ ] Go to repository settings
   - [ ] Create `CODEX_MASTER_KEY` secret

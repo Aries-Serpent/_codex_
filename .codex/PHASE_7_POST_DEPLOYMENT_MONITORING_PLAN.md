@@ -272,7 +272,7 @@ Step 3: Mitigation (5-10 min)
     - Identify issue
     - Deploy fix
     - Monitor
-  
+
   Option B: Roll back (if unresolvable)
     - Initiate rollback procedure
     - Monitor for stabilization
@@ -304,7 +304,7 @@ Step 3: Quick Fixes (5-15 min)
     - Check query execution plan
     - Add index if needed
     - Kill long-running queries if safe
-  
+
   Option B: Scale horizontally
     - Increase replica count
     - Restart service instances
@@ -335,7 +335,7 @@ Step 3: Recovery (5-30 min)
     - Repair specific records
     - Validate fix
     - Monitor closely
-  
+
   Option B: Rollback (if widespread)
     - Restore from backup
     - Run integrity checks

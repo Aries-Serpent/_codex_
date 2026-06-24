@@ -261,7 +261,7 @@ Status:         READY FOR ACTIVATION
     "actor": "github-actions[bot]",
     "action": "DOWNSTREAM_WORKFLOWS_DISCOVERED",
     "workflows_discovered": 5,
-    "workflows": ["ci-failure-resolution-agent", "autonomous-test-healer-agent", 
+    "workflows": ["ci-failure-resolution-agent", "autonomous-test-healer-agent",
                   "unified-coverage-agent", "unified-security-scanner", "ci-testing-agent"],
     "dry_run": true,
     "status": "COMPLETED",

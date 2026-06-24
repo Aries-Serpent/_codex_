@@ -147,33 +147,33 @@
 
 ### Query 1: Find all high-confidence patterns
 ```sql
-SELECT pattern_id, name, success_rate 
-FROM pattern_learning.jsonl 
-WHERE confidence >= 0.85 
+SELECT pattern_id, name, success_rate
+FROM pattern_learning.jsonl
+WHERE confidence >= 0.85
 ORDER BY success_rate DESC;
 ```
 
 ### Query 2: Find patterns by improvement area
 ```sql
-SELECT pattern_id, name, improvement_areas 
-FROM pattern_learning.jsonl 
-WHERE improvement_areas LIKE '%Coverage%' 
+SELECT pattern_id, name, improvement_areas
+FROM pattern_learning.jsonl
+WHERE improvement_areas LIKE '%Coverage%'
 ORDER BY success_rate DESC;
 ```
 
 ### Query 3: Find Tier 1 patterns for aggressive deployment
 ```sql
-SELECT pattern_id, name, category, success_rate, avg_fix_time_minutes 
-FROM pattern_learning.jsonl 
-WHERE success_rate >= 0.95 
+SELECT pattern_id, name, category, success_rate, avg_fix_time_minutes
+FROM pattern_learning.jsonl
+WHERE success_rate >= 0.95
 ORDER BY avg_fix_time_minutes ASC;
 ```
 
 ### Query 4: Track pattern evolution across phases
 ```sql
-SELECT pattern_id, phase_introduced, phase_refinement, success_rate 
-FROM pattern_learning.jsonl 
-WHERE phase_introduced < phase_refinement 
+SELECT pattern_id, phase_introduced, phase_refinement, success_rate
+FROM pattern_learning.jsonl
+WHERE phase_introduced < phase_refinement
 ORDER BY pattern_id;
 ```
 

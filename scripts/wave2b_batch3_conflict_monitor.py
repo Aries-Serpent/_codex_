@@ -40,7 +40,7 @@ class ConflictEvent:
 class ConflictMonitor:
     """
     Main conflict monitoring engine with 6+ escalation triggers
-    
+
     Triggers:
     1. Resolver Timeout (>120s)
     2. Circular Dependency Detection

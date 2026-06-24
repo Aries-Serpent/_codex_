@@ -168,8 +168,8 @@ Routing Rules:
   - Zero-coverage detection → Priority P1
 
 Consolidation Note:
-  Unified three specialized agents (coverage-gapfill-agent, 
-  coverage-maintenance-agent, coverage-roadmap-agent) into 
+  Unified three specialized agents (coverage-gapfill-agent,
+  coverage-maintenance-agent, coverage-roadmap-agent) into
   single entry point for consistency.
 
 Status: ✅ READY FOR PRODUCTION (Beta maturity)

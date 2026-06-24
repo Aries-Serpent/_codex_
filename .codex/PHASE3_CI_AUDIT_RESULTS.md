@@ -163,7 +163,7 @@ Purpose: Validates compliance of all modified workflows
 Triggers:
   - Pull requests modifying .github/workflows/**
   - Manual dispatch
-  
+
 Compliance Checks:
   ✅ All jobs have timeout-minutes
   ✅ All workflows have concurrency (except stubs)
@@ -236,27 +236,27 @@ These implement the self-healing protocol from `self-healing-orchestrator-agent`
 **Pattern Categories:**
 1. **CI Failure Healers** (8 workflows)
    - Test failures → auto-fix import errors, dependency issues, config mismatches
-   
+
 2. **Security Healers** (4 workflows)
    - CodeQL alerts → targeted fixes
    - Secret scanning → remediation
    - Dependency vulnerabilities → upgrades
-   
+
 3. **Workflow Healers** (6 workflows)
    - Compliance → auto-inject concurrency, timeouts
    - Deprecated actions → version updates
    - YAML → validation, fix, re-run
-   
+
 4. **Agent Healers** (5 workflows)
    - Session recovery → context injection
    - Auth failures → token refresh
    - Communication → retry with backoff
-   
+
 5. **Documentation Healers** (3 workflows)
    - Link validation → auto-fix broken references
    - Freshness → sync with current code
    - Alignment → post-merge doc updates
-   
+
 6. **Infrastructure Healers** (5 workflows)
    - Cache health → pruning, warming
    - Resource limits → cleanup, scaling

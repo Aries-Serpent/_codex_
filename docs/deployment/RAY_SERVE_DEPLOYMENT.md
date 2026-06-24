@@ -138,14 +138,14 @@ data:
   app.py: |
     from ray import serve
     from fastapi import FastAPI
-    
+
     app = FastAPI()
-    
+
     @serve.deployment
     class Predictor:
         async def predict(self, request):
             return {"prediction": "ok"}
-    
+
     serve.start()
     serve.run(Predictor.bind())
 
@@ -251,7 +251,7 @@ available_node_types:
             requests:
               cpu: "4"
               memory: "16Gi"
-  
+
   ray_worker:
     min_workers: 2
     max_workers: 8

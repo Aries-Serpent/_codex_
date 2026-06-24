@@ -89,8 +89,8 @@ CI Failure Detected
 
 #### Detection Example
 ```
-[ERROR] pip._vendor.urllib3.exceptions.ConnectTimeoutError: 
-        HTTPConnectionPool(host='pypi.org', port=443): 
+[ERROR] pip._vendor.urllib3.exceptions.ConnectTimeoutError:
+        HTTPConnectionPool(host='pypi.org', port=443):
         Read timed out. (read timeout=15)
 ```
 
@@ -129,9 +129,9 @@ pip install --find-links ./wheels <package>
 
 #### Detection Example
 ```
-ERROR: pip's dependency resolver does not currently take into account 
+ERROR: pip's dependency resolver does not currently take into account
        all the packages that are installed (27 packages in total).
-Conflict found: torch 2.0.0 requires numpy<2.0,>=1.21.0, 
+Conflict found: torch 2.0.0 requires numpy<2.0,>=1.21.0,
                 but scikit-learn 1.3.0 requires numpy>=1.17.3.
 ```
 
@@ -213,7 +213,7 @@ timeout-minutes: 90  # Was 60
 
 #### Detection Example
 ```
-[error] Error uploading artifact file to server: 
+[error] Error uploading artifact file to server:
         413 Payload Too Large
 [error] Artifact upload failed: Connection reset by peer
 ```
@@ -257,7 +257,7 @@ sha256sum build.tar.gz
 
 #### Detection Example
 ```
-FAILED tests/ml/test_training.py::test_convergence[seed42] 
+FAILED tests/ml/test_training.py::test_convergence[seed42]
        - AssertionError: loss_final (0.12) > threshold (0.10)
 [FLAKY] Test passed on next run
 ```
@@ -314,8 +314,8 @@ def wait_for_condition():
 
 #### Detection Example
 ```
-failed to solve with frontend dockerfile.v0: 
-  failed to fetch base image "python:3.11-slim": 
+failed to solve with frontend dockerfile.v0:
+  failed to fetch base image "python:3.11-slim":
   manifest not found: manifest unknown
 ```
 
@@ -560,7 +560,7 @@ jobs:
             patterns = json.load(f)
           print(f'Loaded {len(patterns[\"patterns\"])} healing patterns')
         "
-      
+
       - name: Apply pattern (auto)
         run: python .codex/apply_healing_patterns.py \
           --job-name ${{ job.name }} \
@@ -631,7 +631,7 @@ store_memory(
 
 ```sql
 -- Top failing patterns (by frequency)
-SELECT pattern_id, COUNT(*) as attempts, 
+SELECT pattern_id, COUNT(*) as attempts,
        ROUND(100 * SUM(CASE WHEN success THEN 1 ELSE 0 END) / COUNT(*), 1) as success_rate
 FROM healing_attempts
 WHERE timestamp > NOW() - INTERVAL 7 DAY
@@ -639,7 +639,7 @@ GROUP BY pattern_id
 ORDER BY attempts DESC;
 
 -- MTTR (Mean Time To Recovery) by pattern
-SELECT pattern_id, 
+SELECT pattern_id,
        ROUND(AVG(EXTRACT(EPOCH FROM (resolved_at - triggered_at)) / 60), 1) as avg_mttr_minutes
 FROM healing_attempts
 WHERE success = true AND timestamp > NOW() - INTERVAL 30 DAY

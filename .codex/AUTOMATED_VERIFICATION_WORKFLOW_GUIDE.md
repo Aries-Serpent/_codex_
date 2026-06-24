@@ -242,7 +242,7 @@ jobs:
     steps:
       - name: Build and deploy
         run: ./deploy.sh
-      
+
       - name: Trigger verification
         run: |
           gh workflow run automated-post-deployment-verification.yml \

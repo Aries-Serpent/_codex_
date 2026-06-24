@@ -345,4 +345,3 @@ All phases + external audit + manual review
 - **Authority:** @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 - **Phase:** D Integration (Executive Summary)
 - **Next Checkpoint:** 2026-06-22 12:00Z (Phase D Launch)
-

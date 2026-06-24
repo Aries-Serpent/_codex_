@@ -132,7 +132,7 @@ A critical blocker would be:
 
 ### Merge Approach
 
-**Recommended merge strategy:** 
+**Recommended merge strategy:**
 - **Branch:** `0D_base_` → `main` (or target base branch)
 - **Strategy:** Fast-forward merge (linear history preferred)
 - **Squash:** NO (preserve commit history for accountability)
@@ -236,11 +236,11 @@ git push origin main
 ```
 PHASE 5C MERGE READINESS CERTIFICATION
 
-I hereby certify that the codebase in branch `0D_base_` has been fully 
-validated and is production-ready for merge. All critical gates (REQ-1 
+I hereby certify that the codebase in branch `0D_base_` has been fully
+validated and is production-ready for merge. All critical gates (REQ-1
 through REQ-13) are passing. No blocking issues remain.
 
-This codebase is approved for immediate merge to `main` with high confidence 
+This codebase is approved for immediate merge to `main` with high confidence
 that post-merge CI will succeed and no critical issues will arise.
 
 Certification issued by: Workflow Compliance Guardian v2.0.0

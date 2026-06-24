@@ -100,7 +100,7 @@ else:
 - 64 broken references to incorrect index path
 - 7 broken relative paths in phase report
 
-**Fix Applied:** 
+**Fix Applied:**
 - Updated all chunk files to reference correct index: `INDEX.md`
 - Fixed all relative paths in phase migration report
 - Validated all 2,241 documentation files
@@ -180,11 +180,11 @@ else:
 - **RP-001: API Null-Handling Validator**
   - Auto-detects unsafe API field access
   - Pre-commit validation available
-  
+
 - **RP-002: mypy Baseline Ratchet Gate**
   - Enforces zero regressions
   - Auto-fix available (26→95 errors)
-  
+
 - **RP-003: Documentation Link Validation**
   - Validates 2,241+ files
   - Non-blocking on PRs, strict on main

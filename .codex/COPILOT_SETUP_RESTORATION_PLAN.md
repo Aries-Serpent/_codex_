@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The current `copilot-setup-steps.yml` (commits 10f8c1c59 / 384cde02 / fad67fd8, 1109 lines) is **unstable and causes Copilot agent session crashes**. 
+The current `copilot-setup-steps.yml` (commits 10f8c1c59 / 384cde02 / fad67fd8, 1109 lines) is **unstable and causes Copilot agent session crashes**.
 
 The root cause is the **removal of three critical CCA version lock environment variables** introduced in Sessions 1294-1295 to fix multi-turn agent crashes.
 
@@ -408,4 +408,3 @@ In every commit that touches `copilot-setup-steps.yml`:
 **Document Status:** Ready for implementation
 **Last Updated:** 2026-06-18
 **Next Steps:** Execute Phase 1 (Baseline Restoration)
-

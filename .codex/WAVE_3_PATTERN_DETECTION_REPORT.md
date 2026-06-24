@@ -298,10 +298,10 @@ def test_async_operation():
 # ❌ BAD - State shared across test methods
 class TestUser:
     self.users = []  # Shared state!
-    
+
     def test_create(self):
         self.users.append(User())
-    
+
     def test_count(self):
         assert len(self.users) == 1  # Depends on test order!
 
@@ -417,4 +417,3 @@ def test_cleanup_removes_resource(resource_factory):
 | Total HIGH issues | 2,196 | <100 | 0 |
 | Total MEDIUM issues | 3,935 | <500 | 0 |
 | Overall test quality | Baseline | +40% | +90% |
-

@@ -79,7 +79,7 @@ Analyzer examines coverage report to identify gaps:
 def analyze_coverage_gaps(coverage_report_path: str) -> CoverageAnalysis:
     """Analyze coverage report to identify gaps."""
     coverage_data = load_coverage_json(coverage_report_path)
-    
+
     gaps = []
     for module, stats in coverage_data.items():
         if stats.coverage_percent < TARGET_THRESHOLD:
@@ -91,7 +91,7 @@ def analyze_coverage_gaps(coverage_report_path: str) -> CoverageAnalysis:
                 priority=calculate_priority(module, len(uncovered_lines)),
                 test_difficulty=assess_test_difficulty(module, uncovered_lines)
             ))
-    
+
     return CoverageAnalysis(
         current_coverage=coverage_data.overall_coverage,
         target_coverage=TARGET_THRESHOLD,
@@ -108,7 +108,7 @@ Auto-generates smoke tests for critical uncovered paths:
 def generate_coverage_tests(analysis: CoverageAnalysis) -> TestGenerationResult:
     """Generate smoke tests for high-priority uncovered paths."""
     generated_tests = []
-    
+
     for gap in analysis.gaps[:10]:  # Top 10 priority gaps
         test_code = generate_smoke_test(
             module=gap.module,
@@ -116,7 +116,7 @@ def generate_coverage_tests(analysis: CoverageAnalysis) -> TestGenerationResult:
             strategy=SMOKE_TEST_STRATEGY,
             docstring=f"Auto-generated smoke test for {gap.module} coverage recovery"
         )
-        
+
         test_file = find_or_create_test_file(gap.module)
         generated_tests.append(TestFile(
             path=test_file,
@@ -124,7 +124,7 @@ def generate_coverage_tests(analysis: CoverageAnalysis) -> TestGenerationResult:
             module=gap.module,
             lines_added=count_new_lines(test_code)
         ))
-    
+
     return TestGenerationResult(
         generated_tests=generated_tests,
         total_lines_added=sum(t.lines_added for t in generated_tests),
@@ -177,7 +177,7 @@ from <package>.<module> import <function>
 
 class TestCoverageSmoke:
     """Smoke tests to reach coverage threshold."""
-    
+
     def test_<function_name>_coverage_smoke(self):
         """Smoke test for <function_name> - auto-generated."""
         result = <function>(<typical_args>)
@@ -192,7 +192,7 @@ def estimate_coverage_gain(generated_tests: List[TestFile]) -> float:
     # Based on new lines of code covered
     new_covered_lines = sum(count_covered_lines(t.path) for t in generated_tests)
     total_lines = get_total_lines_of_code()
-    
+
     estimated_gain = (new_covered_lines / total_lines) * 100
     return min(estimated_gain, 100.0 - current_coverage)  # Don't overshoot 100%
 ```
@@ -268,7 +268,7 @@ def test_validate_data_coverage_smoke(self):
     """Smoke test for validate_data - auto-generated."""
     result = validate_data({"key": "value"})
     assert result is not None
-    
+
     result = validate_data({})
     assert result is None
 ```

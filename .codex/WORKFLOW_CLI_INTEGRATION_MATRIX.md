@@ -393,15 +393,15 @@ routing_rules:
   - pattern: "cognitive workflow trigger test-*"
     agent: autonomous-test-healer-agent
     priority: HIGH
-  
+
   - pattern: "cognitive workflow trigger security-*"
     agent: security-audit-agent
     priority: HIGH
-  
+
   - pattern: "cognitive workflow trigger deploy-*"
     agent: unified-deployment.yml
     priority: CRITICAL
-  
+
   - pattern: "cognitive workflow trigger doc-*"
     agent: unified-doc-agent
     priority: MEDIUM
@@ -449,7 +449,7 @@ on:
         required: false
         type: boolean
         default: false
-      
+
 jobs:
   main:
     runs-on: ubuntu-latest

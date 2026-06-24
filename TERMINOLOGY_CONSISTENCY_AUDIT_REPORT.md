@@ -111,7 +111,7 @@ Agents (Generic)
 - "Track Cognitive Brain Skills Registry telemetry: skill invocations" ✅
 - "overlapping capability_tags" (should be "skill_tags") ⚠️
 
-**Suggested Fix:** 
+**Suggested Fix:**
 - **Skill**: Discrete, versioned, trackable unit in registry (e.g., `doc.retriever.core`)
 - **Capability**: What the agent can do (e.g., "document retrieval capability")
 - **Feature**: Repository/system-level feature (e.g., "RAG feature")

@@ -20,7 +20,7 @@ This document establishes the canonical version constraints for all critical dep
 
 **pandas 3.0.3 requires mlflow to be OPTIONAL**
 
-mlflow 2.22.4 and all current versions require `pandas<3`, which is incompatible with our required `pandas>=3.0.3,<4`. 
+mlflow 2.22.4 and all current versions require `pandas<3`, which is incompatible with our required `pandas>=3.0.3,<4`.
 
 **Solution**: mlflow is now an optional dependency available through extras: `tracking`, `train`, `perf`, `all`.
 
@@ -168,10 +168,10 @@ Example: pandas 3.0.3 → requires numpy 2.4.6+, which affects all files
    ```bash
    # Update pyproject.toml first
    edit pyproject.toml  # Update [project.dependencies]
-   
+
    # Validate consistency
    python scripts/ci/validate_dependency_consistency.py
-   
+
    # Run tests
    nox -s tests
    ```
@@ -295,4 +295,3 @@ pre-commit run --all-files  # Test the hook
 | 2026-06-19 | peft | 0.7.0 | 0.19.1,<1 | Version bound consistency | This task |
 | 2026-06-19 | accelerate | 1.14.0 | 1.14.0,<2 | Version bound consistency | This task |
 | 2026-06-19 | mlflow | 3.11.1 | 2.22.4,<4 | Broader compatibility | This task |
-

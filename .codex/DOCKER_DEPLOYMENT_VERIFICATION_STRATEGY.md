@@ -41,21 +41,21 @@ Docker Packaged Codebase Validation:
 1. Docker daemon availability
    - docker ps (verify connectivity)
    - docker version (verify compatibility)
-   
+
 2. BuildKit enablement
    - DOCKER_BUILDKIT=1 (environment variable)
    - docker buildx version (multi-platform support)
-   
+
 3. Disk space validation
    - df -h / (root filesystem space)
    - Required: 50-100GB for 8 variants + layers
    - Action: Fail if <25GB available
-   
+
 4. Registry credentials
    - DockerHub token test
    - GHCR token test
    - docker login verification
-   
+
 5. Build staging directory
    - .codex/docker-build-campaign/builds/ (create)
    - Permissions: 755 for appuser write access

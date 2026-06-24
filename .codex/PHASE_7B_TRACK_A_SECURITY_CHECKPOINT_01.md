@@ -88,4 +88,3 @@
 - Baseline: `remediation_plan_codeql_python.md`
 - Track Brief: `.codex/PHASE_7B_TRACK_A_BRIEF.md`
 - SBOM Status: `.codex/remediation_plan_sbom.md`
-

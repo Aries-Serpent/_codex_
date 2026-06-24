@@ -37,7 +37,7 @@
 
 These gaps directly block user adoption and production deployment:
 
-1. **GAP-1: Local Development Setup Guide** 
+1. **GAP-1: Local Development Setup Guide**
    - **Category:** Setup/Onboarding
    - **Issue:** QUICK_START.md missing complete local dev setup instructions (step-by-step, troubleshooting)
    - **File:** `docs/onboarding/QUICK_START.md`

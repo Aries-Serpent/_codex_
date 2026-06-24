@@ -229,7 +229,7 @@ Thresholds:
 ### 5.1 Primary Routing Flow
 
 ```
-TaskSpec → [Embed] → [Query FAISS] → [Filter Capability] → [Check Availability] 
+TaskSpec → [Embed] → [Query FAISS] → [Filter Capability] → [Check Availability]
           → [Resolve DAG] → [Score] → [RoutingDecision] ✓
 ```
 
@@ -246,7 +246,7 @@ TaskSpec → [Embed] → [Query FAISS] → [Filter Capability] → [Check Availa
 def has_cycle(task_id: str, dependencies: Dict[str, List[str]]) -> bool:
     visited = set()
     stack = set()
-    
+
     def visit(node):
         visited.add(node)
         stack.add(node)
@@ -258,7 +258,7 @@ def has_cycle(task_id: str, dependencies: Dict[str, List[str]]) -> bool:
                 return True
         stack.remove(node)
         return False
-    
+
     return visit(task_id)
 
 # Topological sort (DAG ordering)
@@ -267,7 +267,7 @@ def topological_sort(dependencies: Dict[str, List[str]]) -> List[str]:
     for task, deps in dependencies.items():
         for dep in deps:
             in_degree[task] += 1
-    
+
     queue = [t for t in dependencies if in_degree[t] == 0]
     result = []
     while queue:
@@ -278,7 +278,7 @@ def topological_sort(dependencies: Dict[str, List[str]]) -> List[str]:
                 in_degree[task_id] -= 1
                 if in_degree[task_id] == 0:
                     queue.append(task_id)
-    
+
     return result if len(result) == len(dependencies) else []
 ```
 

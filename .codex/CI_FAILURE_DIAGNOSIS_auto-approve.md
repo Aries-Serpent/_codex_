@@ -52,24 +52,24 @@ on:
 
 ```
 evaluate-approval
-  if: github.event_name == 'workflow_dispatch' && 
+  if: github.event_name == 'workflow_dispatch' &&
       github.event.inputs.approval_source != ''
   ❌ BLOCKS on push: Requires workflow_dispatch event
-  
+
   ↓ (depends on evaluate-approval)
-  
+
 execute-approval
   if: needs.evaluate-approve.outputs.should_proceed == 'true' &&
       needs.evaluate-approval.outputs.approval_decision == 'APPROVE'
   ❌ BLOCKS on push: Upstream job doesn't run
-  
+
 cleanup-single-session
   if: always() &&
       needs.evaluate-approval.outputs.should_proceed == 'true' &&
       (github.event.inputs.approval_source == 'self-approve-pending-runs' ||
        github.event.inputs.approval_source == 'trigger-on-approval')
   ❌ BLOCKS on push: Upstream job doesn't run + no approval_source input
-  
+
 publish-metrics
   if: always() && github.event.inputs.approval_source != ''
   ❌ BLOCKS on push: No approval_source input in push event
@@ -142,7 +142,7 @@ All failures on 2026-06-17:
 - **Severity**: 🔴 **HIGH** — Workflow silently fails on every push
 - **Type**: **Logic Error** (not syntax error)
 - **Category**: **Job Condition Mismatch**
-- **Impact**: 
+- **Impact**:
   - Approval automation blocked for this branch
   - Pending workflow runs unable to auto-approve
   - Silent failures (no logs to debug)
@@ -193,7 +193,7 @@ approve-pending-runs:
         echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
     - name: Approve pending runs
       if: steps.resolve.outputs.pr_number
       run: python scripts/ci/approve_pending_runs.py
@@ -259,7 +259,7 @@ After implementing fixes, verify:
 The `on:` keyword is a YAML reserved word (boolean), parsed as `True` by Python's yaml library:
 ```python
 >>> import yaml
->>> data = yaml.safe_load("on:\n  push: {}") 
+>>> data = yaml.safe_load("on:\n  push: {}")
 >>> True in data  # True (the boolean key exists)
 >>> 'on' in data  # False (string key doesn't exist)
 ```

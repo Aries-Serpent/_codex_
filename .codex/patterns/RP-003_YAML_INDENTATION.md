@@ -96,14 +96,14 @@ def apply_yaml_indentation_fix(file_path: str) -> FixResult:
     """Fix YAML indentation to 2-space standard."""
     with open(file_path, 'r') as f:
         content = f.read()
-    
+
     # Convert tabs to spaces
     content = content.replace('\t', '  ')
-    
+
     # Fix inconsistent indentation
     lines = content.split('\n')
     fixed_lines = []
-    
+
     for line in lines:
         # Count leading spaces, normalize to multiples of 2
         match = re.match(r'^( *)', line)
@@ -113,12 +113,12 @@ def apply_yaml_indentation_fix(file_path: str) -> FixResult:
             fixed_lines.append(' ' * normalized_indent + line.lstrip())
         else:
             fixed_lines.append(line)
-    
+
     fixed_content = '\n'.join(fixed_lines)
-    
+
     with open(file_path, 'w') as f:
         f.write(fixed_content)
-    
+
     return FixResult(
         success=True,
         lines_modified=count_modified_lines(content, fixed_content),

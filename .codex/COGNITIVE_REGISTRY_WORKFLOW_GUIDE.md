@@ -422,7 +422,7 @@ Ensure registry validation is current before deployment:
   run: |
     LAST_VALIDATED=$(gh variable get REGISTRY_LAST_VALIDATED)
     HOURS_AGO=$(( ($(date +%s) - $(date -d "$LAST_VALIDATED" +%s)) / 3600 ))
-    
+
     if [ $HOURS_AGO -gt 24 ]; then
       echo "ERROR: Registry not validated in last 24 hours"
       exit 1

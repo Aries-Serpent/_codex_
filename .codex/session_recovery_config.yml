@@ -56,11 +56,11 @@ detection_rules:
   - condition: "workflow_conclusion == 'cancelled' && duration > 300"
     description: "Workflow cancelled after >5 minutes"
     action: "auto_recover"
-  
+
   - condition: "workflow_conclusion == 'failure' && failure_type == 'timeout'"
     description: "Workflow failed due to timeout"
     action: "auto_recover"
-  
+
   - condition: "heartbeat_missing && heartbeat_timeout_exceeded"
     description: "No heartbeat received within timeout window"
     action: "auto_recover"
@@ -73,7 +73,7 @@ detection_rules:
 recovery_actions:
   - log_event: true
     destination: ".codex/session_recovery_log.jsonl"
-  
+
   - extract_context: true
     context_fields:
       - workflow_run_id
@@ -82,13 +82,13 @@ recovery_actions:
       - failure_type
       - duration
       - session_id
-  
+
   - create_recovery_log: true
     log_file_pattern: ".codex/session_recovery_${TIMESTAMP}.md"
-  
+
   - backup_state: true
     state_location: ".codex/sessions/"
-  
+
   - auto_retry: true
     retry_count: 2
     retry_delay: 30  # seconds between retries
@@ -127,31 +127,31 @@ retention_days: 30
 escalation_conditions:
   - consecutive_failures: 2
     action: "notify_escalation_contact"
-  
+
   - recovery_timeout_exceeded: true
     action: "notify_escalation_contact"
-  
+
   - state_recovery_failed: true
     action: "notify_escalation_contact"
 
 # Escalation notification template
 escalation_template: |
   🚨 **Session Recovery Escalation**
-  
+
   **Failed Session:** {session_id}
   **Branch:** {branch}
   **Failed Workflow Run:** {workflow_run_id}
   **Failure Type:** {failure_type}
   **Consecutive Failures:** {failure_count}
-  
+
   **Recovery Details:**
   - Auto-recovery attempted {auto_recovery_attempts}x
   - Last attempt: {last_attempt_time}
   - Status: ESCALATED
-  
+
   **Action Required:**
   Please review the failed session and determine appropriate recovery action.
-  
+
   **Resources:**
   - Failed Workflow: https://github.com/Aries-Serpent/_codex_/actions/runs/{workflow_run_id}
   - Recovery Log: .codex/session_recovery_log.jsonl

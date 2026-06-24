@@ -1170,7 +1170,7 @@ class AgentMemorySystem:
             if isinstance(score, (int, float)):
                 return float(score)
             return 0.0
-         
+
         scored_results.sort(key=get_relevance_score, reverse=True)
         return scored_results[:limit]
 

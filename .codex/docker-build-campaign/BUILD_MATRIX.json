@@ -6,7 +6,7 @@
   "execution_strategy": "parallel_with_dependencies",
   "estimated_total_duration_hours": 7,
   "cache_strategy": "multi_layer_reuse",
-  
+
   "execution_groups": [
     {
       "group_number": 1,

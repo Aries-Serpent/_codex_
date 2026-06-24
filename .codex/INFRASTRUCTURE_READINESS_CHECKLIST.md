@@ -213,22 +213,22 @@
   threshold: 1% over 5 minutes
   severity: critical
   action: page_oncall
-  
+
 - name: HighLatency
   threshold: P99 > 5s for 5 minutes
   severity: high
   action: alert_team
-  
+
 - name: HighCPU
   threshold: >85% for 10 minutes
   severity: high
   action: alert_ops
-  
+
 - name: LowDiskSpace
   threshold: >90%
   severity: critical
   action: page_oncall
-  
+
 - name: DatabaseReplicationLag
   threshold: >10s
   severity: high

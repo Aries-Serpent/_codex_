@@ -55,21 +55,21 @@ def generate_mock_embedding(text: str, seed_factor: int = 0) -> np.ndarray:
 def create_faiss_index():
     """Create and initialize Faiss index."""
     logger.info("Creating Faiss index (HNSW configuration)...")
-    
+
     # Use HNSW index for better performance
     # HNSW: Hierarchical Navigable Small World - efficient approximate nearest neighbor search
     quantizer = faiss.IndexFlatL2(DIMENSION)
     index = faiss.IndexIVFFlat(quantizer, DIMENSION, 10)
-    
+
     # Add test embeddings for training
     test_embeddings = []
     for i, text in enumerate([s[1] for s in TEST_SESSIONS]):
         embedding = generate_mock_embedding(text, i)
         test_embeddings.append(embedding)
-    
+
     test_embeddings_array = np.array(test_embeddings).astype(np.float32)
     index.train(test_embeddings_array)
-    
+
     logger.info("✓ Faiss index created (type: IVFFlat, dimension: %d)", DIMENSION)
     return index
 
@@ -77,17 +77,17 @@ def create_faiss_index():
 def populate_index(index) -> dict:
     """Populate index with test sessions."""
     logger.info("Populating index with %d test sessions...", len(TEST_SESSIONS))
-    
+
     metadata = {}
     embeddings_list = []
-    
+
     start_time = time.time()
     for idx, (session_id, summary, agent_name) in enumerate(TEST_SESSIONS):
         # Generate embedding
         combined_text = f"{summary} {agent_name}"
         embedding = generate_mock_embedding(combined_text, idx)
         embeddings_list.append(embedding)
-        
+
         # Store metadata
         metadata[session_id] = {
             "index": idx,
@@ -95,31 +95,31 @@ def populate_index(index) -> dict:
             "patterns": [],
             "tags": [agent_name],
         }
-        
+
         logger.debug("Added session %s (index %d)", session_id, idx)
-    
+
     # Add all embeddings to index
     embeddings_array = np.array(embeddings_list).astype(np.float32)
     index.add(embeddings_array)
-    
+
     elapsed = time.time() - start_time
     logger.info("✓ Index populated: %d sessions in %.2fs", len(TEST_SESSIONS), elapsed)
-    
+
     return metadata
 
 
 def save_index(index, metadata):
     """Save Faiss index and metadata."""
     logger.info("Saving index and metadata...")
-    
+
     # Create directories
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     Path("docs").mkdir(parents=True, exist_ok=True)
-    
+
     # Save Faiss index
     faiss.write_index(index, str(EMBEDDINGS_PATH))
     logger.info("✓ Saved Faiss index: %s", EMBEDDINGS_PATH)
-    
+
     # Save metadata
     metadata_dict = {
         "version": "1.0",
@@ -129,37 +129,37 @@ def save_index(index, metadata):
         "index_type": "IVFFlat",
         "sessions": metadata,
     }
-    
+
     with open(METADATA_PATH, "w") as f:
         json.dump(metadata_dict, f, indent=2)
-    
+
     logger.info("✓ Saved metadata: %s", METADATA_PATH)
 
 
 def test_semantic_search(index, metadata):
     """Test semantic search functionality."""
     logger.info("Testing semantic search...")
-    
+
     test_queries = [
         ("cache management", "cache-related"),
         ("CI failure", "ci-failure"),
         ("coverage", "coverage-related"),
     ]
-    
+
     results_summary = []
-    
+
     for query, category in test_queries:
         logger.info("Query: %s (%s)", query, category)
-        
+
         # Generate query embedding
         query_embedding = generate_mock_embedding(query).astype(np.float32).reshape(1, -1)
-        
+
         # Search
         distances, indices = index.search(query_embedding, k=3)
-        
+
         # Build results
         reverse_metadata = {v["index"]: k for k, v in metadata.items()}
-        
+
         for dist, idx in zip(distances[0], indices[0]):
             if idx >= 0 and idx in reverse_metadata:
                 session_id = reverse_metadata[idx]
@@ -172,7 +172,7 @@ def test_semantic_search(index, metadata):
                     "session_id": session_id,
                     "score": score,
                 })
-    
+
     logger.info("✓ Semantic search tests complete")
     return results_summary
 
@@ -180,9 +180,9 @@ def test_semantic_search(index, metadata):
 def benchmark_performance(index, metadata):
     """Benchmark search performance."""
     logger.info("Running performance benchmarks...")
-    
+
     metrics = {}
-    
+
     # Single query cold start
     query_embedding = generate_mock_embedding("test").astype(np.float32).reshape(1, -1)
     start = time.time()
@@ -190,14 +190,14 @@ def benchmark_performance(index, metadata):
     cold_latency = (time.time() - start) * 1000
     metrics["cold_latency_ms"] = cold_latency
     logger.info("  Cold latency: %.2fms", cold_latency)
-    
+
     # Single query warm cache
     start = time.time()
     index.search(query_embedding, k=5)
     warm_latency = (time.time() - start) * 1000
     metrics["warm_latency_ms"] = warm_latency
     logger.info("  Warm latency: %.2fms", warm_latency)
-    
+
     # Batch queries
     start = time.time()
     for i in range(10):
@@ -207,12 +207,12 @@ def benchmark_performance(index, metadata):
     metrics["batch_latency_ms"] = batch_latency
     metrics["avg_batch_latency_ms"] = batch_latency / 10
     logger.info("  Batch (10 queries): %.2fms (avg: %.2fms)", batch_latency, batch_latency / 10)
-    
+
     # Memory footprint
     index_size = EMBEDDINGS_PATH.stat().st_size / (1024 * 1024) if EMBEDDINGS_PATH.exists() else 0
     metrics["memory_mb"] = index_size
     logger.info("  Memory footprint: %.2f MB", index_size)
-    
+
     logger.info("✓ Performance benchmarks complete")
     return metrics
 
@@ -220,10 +220,10 @@ def benchmark_performance(index, metadata):
 def generate_performance_report(metrics, session_count):
     """Generate performance report."""
     logger.info("Generating performance report...")
-    
+
     report = f"""# Phase 4: Faiss Embeddings Integration - Performance Benchmarks
 
-**Date:** {datetime.now().isoformat()}  
+**Date:** {datetime.now().isoformat()}
 **Status:** ✅ Phase 4.1-4.2 Implementation Complete
 
 ---
@@ -304,25 +304,25 @@ def generate_performance_report(metrics, session_count):
 
 ---
 
-**Generated by**: phase4-embeddings-fast-integrator agent  
-**Session**: Phase 4 Implementation  
+**Generated by**: phase4-embeddings-fast-integrator agent
+**Session**: Phase 4 Implementation
 **Status**: Phase 4.1-4.2 COMPLETE
 """
 
     CODEX_DIR.mkdir(parents=True, exist_ok=True)
     with open(PERFORMANCE_REPORT, "w") as f:
         f.write(report)
-    
+
     logger.info("✓ Performance report generated: %s", PERFORMANCE_REPORT)
 
 
 def generate_integration_report(session_count, metrics):
     """Generate comprehensive integration report."""
     logger.info("Generating integration report...")
-    
+
     report = f"""# Phase 4: Faiss Embeddings Integration Report
 
-**Date:** {datetime.now().isoformat()}  
+**Date:** {datetime.now().isoformat()}
 **Status:** ✅ COMPLETE - Ready for Production
 
 ---
@@ -540,15 +540,15 @@ All deliverables complete:
 
 ---
 
-**Generated by**: phase4-embeddings-fast-integrator agent  
-**Session**: Phase 4 Implementation  
+**Generated by**: phase4-embeddings-fast-integrator agent
+**Session**: Phase 4 Implementation
 **Status**: Phase 4.1-4.2 COMPLETE - Proceeding to Phase 4.3
 """
 
     Path("docs").mkdir(parents=True, exist_ok=True)
     with open(INTEGRATION_REPORT, "w") as f:
         f.write(report)
-    
+
     logger.info("✓ Integration report generated: %s", INTEGRATION_REPORT)
 
 
@@ -557,27 +557,27 @@ def main():
     logger.info("=" * 80)
     logger.info("PHASE 4: FAISS EMBEDDINGS INTEGRATION (Fast Mode)")
     logger.info("=" * 80)
-    
+
     try:
         # Create index
         index = create_faiss_index()
-        
+
         # Populate with test sessions
         metadata = populate_index(index)
-        
+
         # Save
         save_index(index, metadata)
-        
+
         # Test semantic search
         search_results = test_semantic_search(index, metadata)
-        
+
         # Benchmark performance
         metrics = benchmark_performance(index, metadata)
-        
+
         # Generate reports
         generate_performance_report(metrics, len(TEST_SESSIONS))
         generate_integration_report(len(TEST_SESSIONS), metrics)
-        
+
         logger.info("=" * 80)
         logger.info("✓ PHASE 4 INTEGRATION COMPLETE")
         logger.info("=" * 80)
@@ -585,9 +585,9 @@ def main():
         logger.info("Metadata: %s", METADATA_PATH)
         logger.info("Performance Report: %s", PERFORMANCE_REPORT)
         logger.info("Integration Report: %s", INTEGRATION_REPORT)
-        
+
         return True
-        
+
     except Exception as e:
         logger.error("Phase 4 integration failed: %s", e)
         return False

@@ -133,7 +133,7 @@ T+5 minutes           ├─ All agents complete
 T+5-10 minutes        ├─ Results aggregation
                       ├─ Cognitive brain update
                       └─ Wave 2 reporting
-                      
+
 2026-06-30T23:59:59Z  └─ Wave 2 COMPLETION TARGET
 ```
 

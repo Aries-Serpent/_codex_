@@ -109,8 +109,8 @@ Improvement:                  900 fixed (43% reduction) ✅
 
 **Scoring Formula:**
 ```
-Quality = (Accuracy × 0.30) + (Completeness × 0.25) + 
-          (Freshness × 0.20) + (LinkHealth × 0.15) + 
+Quality = (Accuracy × 0.30) + (Completeness × 0.25) +
+          (Freshness × 0.20) + (LinkHealth × 0.15) +
           (Structure × 0.10)
 ```
 
@@ -128,7 +128,7 @@ Quality = (Accuracy × 0.30) + (Completeness × 0.25) +
 **Quality Score Achievement:**
 ```
 Target:      85.0%
-Achieved:    83.3% 
+Achieved:    83.3%
 Status:      🟡 APPROACHING TARGET (1.7% gap)
 Progress:    +10.5% improvement from baseline
 Confidence:  HIGH - measurable, auditable improvements
@@ -148,14 +148,14 @@ Phase 1 Baseline:     2,094 broken links (100%)
 Phase 2 Remediation:  
   ├─ Fragment fixes:  -900 (85% of fragment target achieved)
   ├─ Consolidation:   +0 (preserved all links)
-  
+
 Phase 2 Result:       1,194 broken links remaining
 Reduction:            900 fixed (43% improvement)
 ```
 
 ### Quality Score Improvement
 ```
-72.8% (Phase 1) 
+72.8% (Phase 1)
   ➤ Fragment remediation: +8.0%
   ➤ Consolidation: +2.5%  
   ➤ Total Phase 2: +10.5%

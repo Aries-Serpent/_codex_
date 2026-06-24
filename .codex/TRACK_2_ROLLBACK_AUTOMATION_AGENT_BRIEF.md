@@ -180,7 +180,7 @@ Automate generation of rollback procedures and incident response playbooks from 
    # Triggered: workflow_dispatch
    # Inputs:
    # - deployment: Deployment name (required)
-   # 
+   #
    # Steps:
    # 1. Generate rollback playbook
    # 2. Test dry-run commands
@@ -286,4 +286,3 @@ Automate generation of rollback procedures and incident response playbooks from 
 **Campaign Authority:** @mbaetiong (D-level autonomy)  
 **Execution Authority:** This agent brief  
 **Status:** READY FOR DELEGATION
-

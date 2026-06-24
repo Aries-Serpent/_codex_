@@ -569,4 +569,3 @@ workflow:
 - **Patterns:** 15+
 - **Authority:** @mbaetiong
 - **Next Update:** 2026-06-22T12:00Z
-

@@ -33,11 +33,11 @@ completed = [s for s in index['sessions'] if s['status'] == 'complete']
 pr_3854 = [s for s in index['sessions'] if s['pr_number'] == 3854]
 
 # Find sessions with specific patterns
-ci_fixes = [s for s in index['sessions'] 
+ci_fixes = [s for s in index['sessions']
             if any('CI' in p for p in s['patterns_fixed'])]
 
 # Find sessions in date range
-recent = [s for s in index['sessions'] 
+recent = [s for s in index['sessions']
           if s['timestamp'] > '2026-06-01T00:00:00Z']
 ```
 

@@ -138,12 +138,12 @@ Remaining Deliverables:     3/5
 
 **Confidence Scoring Formula:**
 ```
-confidence = base_score 
-           × maturity_factor 
-           × queue_penalty 
-           × autonomy_factor 
+confidence = base_score
+           × maturity_factor
+           × queue_penalty
+           × autonomy_factor
            × difficulty_factor
-           
+
 Clamped to [0, 100]
 ```
 
@@ -206,4 +206,3 @@ Clamped to [0, 100]
 **Next Update:** 2026-07-01T08:00:00Z (Day 2 Standup)  
 **Lead Agent:** agent-orchestrator  
 **Campaign Authority:** @mbaetiong (D-tier)
-

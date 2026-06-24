@@ -228,18 +228,18 @@ curl https://cdn.codex-ml.io/static/index.html -I
 ```
 Error Rate:        [MONITOR] Should stay <0.1%
   Alert threshold: >0.5% (escalate immediately)
-  
+
 Latency (p99):     [MONITOR] Should stay <500ms
   Alert threshold: >600ms (investigate cause)
-  
+
 Request Count:     [MONITOR] Should gradually increase as maintenance disabled
-  
+
 Database Queries:  [MONITOR] Should return to normal range
   Alert: >10k/sec (investigate slow query)
-  
+
 Memory Usage:      [MONITOR] Should stay <85%
   Alert: >90% (potential memory leak)
-  
+
 CPU Usage:         [MONITOR] Should stay <80%
   Alert: >90% (potential hotspot)
 ```
@@ -321,7 +321,7 @@ kubectl set env deployment/codex-ml \
   MAINTENANCE_MODE=false
 
 # Step 2: Verify application is live
-curl https://codex-ml.io/ 
+curl https://codex-ml.io/
 # Expected: 200 OK (normal page)
 
 # Step 3: Monitor traffic ramp-up

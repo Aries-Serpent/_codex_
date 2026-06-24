@@ -308,4 +308,3 @@ pip show cryptography urllib3 jinja2 twisted requests setuptools | grep Version
 **Data Source:** WAVE_2B_AGENT4_BASELINE_CVE_SCAN.json  
 **Accuracy:** 100% (derived from automated scan)  
 **Next Update:** Post-Wave 2B Installation (2026-06-19/20)
-

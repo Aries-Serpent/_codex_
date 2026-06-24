@@ -322,7 +322,7 @@ Behavior:
 - **RTO:** 4 hours (target)
 - **RPO:** 24 hours (target)
 - **Cost:** ~$20-50/month
-- **Strategy:** 
+- **Strategy:**
   - Automated daily cluster snapshots
   - Database backups (daily + weekly)
   - Cross-region replication

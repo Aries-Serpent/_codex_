@@ -125,7 +125,7 @@ v1_data = AssignmentMappingMigration.rollback_v2_to_v1(v2_file)
 **Example:**
 ```python
 mixed_data = AssignmentMappingMigration.selective_rollback(
-    v3_file, 
+    v3_file,
     item_ids=["item-1", "item-2"]
 )
 # Result: item-1 and item-2 in v2 format, others in v3 format

@@ -40,7 +40,7 @@
 
 ```
 [09:30Z] 🚀 BASELINE COVERAGE TEST INITIATED
-         Command: pytest tests/ --cov=src --cov=agents --cov=training 
+         Command: pytest tests/ --cov=src --cov=agents --cov=training
                   --cov-report=term-missing --cov-report=json
          Timeout: 300 seconds (5 minutes)
 
@@ -53,7 +53,7 @@
          • Total execution time: 30 minutes
          • Tests run successfully: 2,496 files
          • Test pass rate: 98.7% (9 collection errors only)
-         
+
          COVERAGE RESULTS:
          ├─ Total Lines: 106,817
          ├─ Executed: 24,572
@@ -81,12 +81,12 @@
          3. audio/cli/smart_cli.py                → 93 lines, 22 branches
          4. agents/orchestrator.py                → 164 lines, 52 branches
          5. mcp/routes/files/v1.py               → 128 lines, 44 branches
-         
+
          LOW-PRIORITY GAPS (0% coverage):
          6. training/cache.py                     → 5 lines
          7. training/datasets.py                  → 5 lines
          8. training/streaming.py                 → 5 lines
-         
+
          Total zero-coverage lines: 962 (0.90% of codebase)
 
 [10:45Z] 🟡 LOW-COVERAGE MODULES (<10% coverage)
@@ -95,14 +95,14 @@
          3. workflow/parser.py                    → 184 lines at 6.64%
          4. checkpoint_manager.py                 → 229 lines at 8.73%
          5. tls_config.py                         → 69 lines at 11.76%
-         
+
          Total low-coverage lines: 1,664 (1.56% of codebase)
 
 [11:00Z] 📈 GAP CLOSURE PATH ANALYSIS
          • Current: 18.04% (24,572 lines)
          • Target: 20.00% (≥2,118 additional lines)
          • Gap: 1.96 percentage points
-         
+
          PROJECTED CLOSURE PLAN:
          Phase A: Zero-coverage modules → +0.76pp
          Phase B: Low-coverage hardening → +1.41pp
@@ -139,7 +139,7 @@
          ├─ boto3 chain: Investigate vendoring options
          ├─ lib.GEN_EMAIL: Add fixture definition
          └─ Stub tests: Complete implementations
-         
+
          Risk Assessment: LOW
          └─ 9 errors affect ~200 lines of untested code
          └─ Core test suite (2,496 files) passing at 98.7%

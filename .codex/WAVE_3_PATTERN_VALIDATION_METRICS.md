@@ -210,18 +210,18 @@ def validate_commit_patterns():
     """Check for anti-patterns in staged files."""
     HIGH_ALLOWED = 0
     MEDIUM_ALLOWED = 5
-    
+
     issues = detect_patterns(staged_files)
-    
+
     high_count = len([i for i in issues if i['severity'] == 'HIGH'])
     medium_count = len([i for i in issues if i['severity'] == 'MEDIUM'])
-    
+
     if high_count > HIGH_ALLOWED:
         fail(f"❌ {high_count} HIGH-severity patterns detected")
-    
+
     if medium_count > MEDIUM_ALLOWED:
         fail(f"⚠️  {medium_count} MEDIUM-severity patterns (limit: {MEDIUM_ALLOWED})")
-    
+
     return success()
 ```
 
@@ -240,20 +240,20 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
+
       - name: Get changed test files
         run: |
           git diff origin/main...HEAD --name-only | grep 'tests/.*\.py' > changed_files.txt
-      
+
       - name: Check for new anti-patterns
         run: |
           python scripts/validate_patterns.py changed_files.txt
-      
+
       - name: Report results
         if: always()
         run: |
           python scripts/generate_pattern_report.py changed_files.txt
-      
+
       - name: Comment PR with findings
         if: failure()
         uses: actions/github-script@v6
@@ -359,31 +359,31 @@ class TestQualityMonitor:
             'MEDIUM': 200,
             'flaky_rate': 0.05,  # 5%
         }
-    
+
     def check_patterns(self, pattern_file):
         """Check current patterns against thresholds."""
         with open(pattern_file) as f:
             issues = json.load(f)
-        
+
         by_severity = {}
         for issue in issues:
             sev = issue['severity']
             by_severity[sev] = by_severity.get(sev, 0) + 1
-        
+
         alerts = []
         for severity, threshold in self.thresholds.items():
             if severity in by_severity:
                 count = by_severity[severity]
                 if count > threshold:
                     alerts.append(f"⚠️  {severity}: {count} > {threshold}")
-        
+
         return alerts
-    
+
     def check_flakiness(self, test_runs):
         """Check for flaky tests across multiple runs."""
         # Compare pass/fail across runs
         pass
-    
+
     def generate_report(self):
         """Generate monitoring report."""
         pass
@@ -392,7 +392,7 @@ class TestQualityMonitor:
 if __name__ == '__main__':
     monitor = TestQualityMonitor()
     alerts = monitor.check_patterns('pattern_report.json')
-    
+
     if alerts:
         for alert in alerts:
             print(alert)
@@ -416,15 +416,15 @@ jobs:
     if: github.event.workflow_run.conclusion == 'failure'
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Download pattern report
         uses: actions/download-artifact@v3
         with:
           name: pattern-report
-      
+
       - name: Check thresholds
         run: python scripts/monitor_test_quality.py
-      
+
       - name: Post Slack alert
         if: failure()
         uses: 8398a7/action-slack@v3
@@ -539,4 +539,3 @@ git checkout -b fix/manual-remediation
 ---
 
 **Status:** 🟢 METRICS FRAMEWORK READY FOR VALIDATION
-

@@ -60,7 +60,7 @@ graph LR
     C["Schedule Sweep"] -->|dispatch| B
     D["Environment Gate"] -->|dispatch| B
     E["WEC Checkbox"] -->|dispatch| B
-    
+
     B -->|sanitize| F["Input Validation"]
     F -->|evaluate| G["5-Tier Rule Engine"]
     G -->|tier1/2| H["Deterministic Deny/Approve"]

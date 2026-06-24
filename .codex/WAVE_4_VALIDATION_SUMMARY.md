@@ -71,7 +71,7 @@ Comprehensive validation of the Cognitive Brain Session Memory Injection System 
 - **Authority Level:** Advisory only (no direct code modifications)
 - **Context Reception:** ✅ Full context injected
 - **Escalation:** ✅ Properly isolated (no escalation path)
-- **Example Agents:** 
+- **Example Agents:**
   - `coverage-gapfill-agent`
   - `ci-failure-resolution-agent`
   - `code-scanning-remediation-agent`

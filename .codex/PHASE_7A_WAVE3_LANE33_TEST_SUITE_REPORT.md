@@ -96,7 +96,7 @@
 def test_authentication_with_expired_token():
     """
     Verify that authentication fails when token has expired.
-    
+
     Expected behavior: AuthenticationError raised with specific code
     """
     ...

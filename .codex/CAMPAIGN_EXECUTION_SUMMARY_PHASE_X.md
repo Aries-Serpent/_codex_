@@ -176,7 +176,7 @@ This campaign integrates the **exhaustive implementation plan** from Discussion 
   - YAML validation, setup-steps validation, actionlint audit
   - Monitoring & metrics, notifications & reporting
   - **Savings:** 25% token reduction for lightweight tasks
-  
+
 - **Claude Sonnet 4.6 Required (30-40 workflows):**
   - codeql-advanced, comprehensive-mutation-testing, coverage-gap-analysis
   - agent-orchestration-unified, iterative-self-healing-ci

@@ -322,7 +322,7 @@ All deployment artifacts are version-controlled in `.codex/`:
 ### Scenario 1: Deployment Failure in Dev Stage
 
 **If**: Dev environment deployment fails
-**Then**: 
+**Then**:
 1. Diagnose issue immediately
 2. Attempt fix within 15 minutes
 3. If not fixed: Escalate to @mbaetiong

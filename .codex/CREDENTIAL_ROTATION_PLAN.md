@@ -418,7 +418,7 @@ After rotating each credential, verify:
 verify_credential_rotation() {
   local service=$1
   local test_cmd=$2
-  
+
   echo "Verifying $service..."
   if eval "$test_cmd"; then
     echo "✅ $service: OK"

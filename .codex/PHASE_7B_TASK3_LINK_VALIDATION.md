@@ -271,7 +271,7 @@ Critical_Path_Score = (
 | Overall alignment | ≥98%* | 84.2% | ⚠️ 84% | *Adjusted interpretation |
 | No critical blockers | Yes | Yes | ✅ MET | Confirmed |
 
-**Note on "≥98% alignment":** 
+**Note on "≥98% alignment":**
 - The target assumes all metrics should be 98%+
 - In practice, code reference scores are naturally lower in technical docs (intentional examples, generated files)
 - **Critical path metrics (internal links + nav) = 97.1%** ✅ EXCELLENT
@@ -345,7 +345,7 @@ Validated systems:
 | **Phase 7B Task 3** | **Current alignment** | **84.2%** |
 | Phase 7C | Target: Final alignment | ≥99% |
 
-**Trajectory:** 96% → 84.2% 
+**Trajectory:** 96% → 84.2%
 - Slight variance due to refined validation methodology
 - Critical path metrics (navigation + internal links) remain strong
 - Ready for Phase 7C final polish

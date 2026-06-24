@@ -166,7 +166,7 @@ Where:
   queue_penalty = 1.0 - (queue_depth / 10)
   autonomy_factor = {0.5 (D_CAPABLE low), 1.0 (D_CAPABLE high), 1.0 (E)}
   difficulty_factor = {1.1 (simple), 1.0 (moderate), 0.85 (complex)}
-  
+
 Result: Clamped to [0, 100]
 
 Score Interpretation:
@@ -267,4 +267,3 @@ Go/No-Go Gate: 2026-07-05 (production readiness)
 **Authority:** @mbaetiong (D-tier, Campaign Lead)  
 **Next Standup:** 2026-07-01T08:00:00Z (Day 2)  
 **Status:** ✅ ON TRACK
-

@@ -131,7 +131,7 @@ For each flaky test:
 
 ## 🔗 INTEGRATION POINTS
 
-**Upstream:** 
+**Upstream:**
 - Track 1 (CI Stability): Stable CI enables reliable test runs
 - Track 2 (Coverage): New tests inform coverage analysis
 

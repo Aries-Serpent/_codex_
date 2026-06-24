@@ -86,7 +86,7 @@ Quality components:
   - Boundaries:        53% × 0.30 = 15.9%
   - Exceptions:        21% × 0.15 = 3.2%
   - Negative cases:    40% × 0.15 = 6.0%
-  
+
 TOTAL QUALITY SCORE = 64.7%
 (Conservative: 53.2% after adjustment factors)
 ```

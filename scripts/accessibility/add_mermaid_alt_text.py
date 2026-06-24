@@ -49,14 +49,14 @@ class MermaidAltTextProcessor:
     def generate_descriptive_title(self, diagram_code: str, file_path: str) -> str:
         """Generate a descriptive title based on diagram content."""
         diagram_type = self.extract_diagram_type(diagram_code)
-        
+
         # Extract key entities/nodes
         nodes = re.findall(r'\[([^\]]+)\]', diagram_code)
         labels = re.findall(r'--+\s*([^-]+)\s*-+', diagram_code)
-        
+
         entities = nodes[:3] if nodes else []
         entity_text = ', '.join(entities[:2]) if entities else ''
-        
+
         if entity_text:
             return f"{diagram_type} showing {entity_text}"
         elif labels:
@@ -73,17 +73,17 @@ class MermaidAltTextProcessor:
         """Add accessibility title to diagram block."""
         if self.has_accessibility_title(diagram_block):
             return diagram_block
-        
+
         # Extract code block parts
         lines = diagram_block.split('\n')
         opening = lines[0]  # ```mermaid
         code_lines = lines[1:-1]  # diagram code
         closing = lines[-1]  # ```
-        
+
         # Check for existing init directive
         init_pattern = r"%%{init:\s*\{([^}]+)\}\s*\}%%"
         has_init = False
-        
+
         for i, line in enumerate(code_lines):
             if re.search(init_pattern, line):
                 # Add to existing init
@@ -94,46 +94,46 @@ class MermaidAltTextProcessor:
                     code_lines[i] = new_init
                     has_init = True
                     break
-        
+
         if not has_init:
             # Add new init directive at start
             init_line = "%%{init: {'accessibility': {'title': '" + alt_text + "'}}%%"
             code_lines.insert(0, init_line)
-        
+
         return '\n'.join([opening] + code_lines + [closing])
 
     def process_file(self, file_path: Path) -> Tuple[int, int]:
         """Process a single markdown file."""
         if not file_path.is_file() or file_path.suffix != '.md':
             return 0, 0
-        
+
         try:
             content = file_path.read_text(encoding='utf-8')
         except (UnicodeDecodeError, OSError):
             return 0, 0
-        
+
         # Find all mermaid blocks
         pattern = r'```mermaid\n(.*?)```'
         matches = list(re.finditer(pattern, content, re.DOTALL))
-        
+
         if not matches:
             return 0, 0
-        
+
         with_alt = 0
         without_alt = 0
         updated_content = content
-        
+
         for match in reversed(matches):  # Process in reverse to maintain positions
             diagram_block = match.group(0)
             diagram_code = match.group(1)
-            
+
             if self.has_accessibility_title(diagram_block):
                 with_alt += 1
             else:
                 without_alt += 1
                 alt_text = self.generate_descriptive_title(diagram_code, str(file_path))
                 new_block = self.add_accessibility_title(diagram_block, alt_text)
-                
+
                 # Store sample for report
                 if len(self.samples) < 5:
                     self.samples.append({
@@ -142,26 +142,26 @@ class MermaidAltTextProcessor:
                         'alt_text': alt_text,
                         'updated': new_block[:150]
                     })
-                
+
                 updated_content = updated_content[:match.start()] + new_block + updated_content[match.end():]
-        
+
         if without_alt > 0:
             try:
                 file_path.write_text(updated_content, encoding='utf-8')
                 self.processed_files.append(str(file_path.relative_to(self.docs_dir)))
             except OSError:
                 pass
-        
+
         self.diagrams_with_alt += with_alt
         self.diagrams_without_alt += without_alt
-        
+
         return with_alt, without_alt
 
     def process_all(self) -> Dict:
         """Process all markdown files in docs directory."""
         for file_path in self.docs_dir.rglob('*.md'):
             self.process_file(file_path)
-        
+
         return {
             'total_diagrams': self.diagrams_with_alt + self.diagrams_without_alt,
             'with_alt_text': self.diagrams_with_alt,
@@ -174,7 +174,7 @@ class MermaidAltTextProcessor:
     def generate_report(self) -> str:
         """Generate accessibility report."""
         stats = self.process_all()
-        
+
         report = f"""# Mermaid Diagram Accessibility Report
 
 ## Summary
@@ -193,16 +193,16 @@ class MermaidAltTextProcessor:
         for i, sample in enumerate(stats['samples'], 1):
             report += f"\n### Example {i}: {sample['file']}\n"
             report += f"**Alt Text Added:** {sample['alt_text']}\n"
-        
+
         return report
 
 
 if __name__ == '__main__':
     import sys
-    
+
     docs_dir = sys.argv[1] if len(sys.argv) > 1 else 'docs'
     processor = MermaidAltTextProcessor(docs_dir)
     stats = processor.process_all()
-    
+
     print(processor.generate_report())
     print(f"\n✅ Processing complete: {stats['without_alt_text']} diagrams updated")

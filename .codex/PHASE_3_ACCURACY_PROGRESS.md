@@ -27,19 +27,19 @@
   - Files scanned: 1,674
   - Code blocks found: 9,616 total
   - Language distribution: 47 languages detected
-  
+
 - [x] **Task 1.2**: Add missing Python imports
   - Status: ⏳ IN PROGRESS
   - Blocks processed (demo): 50 files
   - Blocks fixed (demo): 4 blocks
   - Imports added (demo): 5 imports
   - Full sweep: 1,399 blocks identified for fixing
-  
+
 - [x] **Task 1.3**: Update deprecated API references
   - Status: ✅ COMPLETE (No deprecated patterns found in demo)
   - Blocks scanned: 50 files
   - Patterns detected: 167 total (to be fixed in full sweep)
-  
+
 - [ ] **Task 1.4**: Replace incomplete patterns
   - Status: ⏳ PENDING
   - Incomplete patterns identified: 632
@@ -51,19 +51,19 @@
   - Target: 5%+
   - Gap: Need ~468 more TypeScript/JavaScript examples
   - Status: ⏳ PENDING
-  
+
 - [ ] **Task 2.2**: Rust examples
   - Current: 11 Rust blocks (0.1%)
   - Target: 2%+
   - Gap: Need ~181 more Rust examples
   - Status: ⏳ PENDING
-  
+
 - [ ] **Task 2.3**: Go examples
   - Current: 4 Go blocks (0.04%)
   - Target: 2%+
   - Gap: Need ~188 more Go examples
   - Status: ⏳ PENDING
-  
+
 - [ ] **Task 2.4**: Bash/YAML best practices
   - Bash: 2,757 blocks (28.7%) ✅ Excellent
   - YAML: 733 blocks (7.6%) ✅ Good
@@ -75,21 +75,21 @@
   - Status: ✅ COMPLETE
   - Tool: `python3 -m py_compile` + pattern analysis
   - Test results: 9/50 valid (18%) in sample
-  
+
 - [x] **Task 3.2**: Bash validator
   - Status: ✅ COMPLETE
   - Tool: `bash -n`
   - Test results: 92/100 valid (92%) in sample
-  
+
 - [x] **Task 3.3**: YAML validator
   - Status: ✅ COMPLETE
   - Tool: PyYAML + pyyaml
   - Test results: 70/100 valid (70%) in sample
-  
+
 - [x] **Task 3.4**: TypeScript validator
   - Status: ✅ COMPLETE
   - Tool: `tsc --noEmit` (configured)
-  
+
 - [x] **Task 3.5**: Multi-language CI pipeline
   - Status: ✅ COMPLETE
   - Created: `.github/workflows/validate-code-examples.yml`
@@ -101,13 +101,13 @@
   - Status: ✅ COMPLETE
   - Blocks extracted: 9,616
   - Languages: 47 different languages
-  
+
 - [x] **Task 4.2**: Run validators
   - Status: ✅ COMPLETE (sample validation)
   - Python: 9/50 valid (18%)
   - Bash: 92/100 valid (92%)
   - YAML: 70/100 valid (70%)
-  
+
 - [x] **Task 4.3**: Generate validation report
   - Status: ✅ COMPLETE
   - Output: `.codex/CODE_EXAMPLE_VALIDATION.md`

@@ -16,7 +16,7 @@ gh workflow run post-phase-update-to-discussion.yml \
   -f discussion_number=4872 \
   -f file_path=.codex/PHASE_5A_CONSOLIDATION_UPDATE.md
 
-# Or use GitHub web UI: 
+# Or use GitHub web UI:
 # Actions tab → post-phase-update-to-discussion → Run workflow
 # → discussion_number: 4872
 # → file_path: .codex/PHASE_5A_CONSOLIDATION_UPDATE.md
@@ -361,4 +361,3 @@ Total Expected Improvement: +3-5% overall coverage
 **Last Updated:** 2026-06-15T18:55:08Z  
 **Author:** Copilot Coding Agent  
 **Approval Status:** Awaiting review
-

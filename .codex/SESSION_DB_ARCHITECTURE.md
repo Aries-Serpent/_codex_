@@ -262,7 +262,7 @@ with self._lock:
 class CacheEntry:
     data: Any
     timestamp: float
-    
+
     def is_expired(self, ttl: int = 300) -> bool:
         return time.time() - self.timestamp > ttl
 ```
@@ -658,4 +658,3 @@ db.vacuum()
 **Document Version:** 1.0.0
 **Last Updated:** 2026-06-23
 **Status:** ✅ Phase 3.1 & 3.2 Complete
-

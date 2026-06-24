@@ -116,7 +116,7 @@ Impact: ~1-2% of failures
 def test_notification():
     service.trigger_async_notification()
     assert notification_received()  # May fail if too slow
-    
+
 # Fix: Add explicit timeout + retry
 @pytest.mark.timeout(5)
 @pytest.mark.flaky(reruns=3)
@@ -130,10 +130,10 @@ def test_notification():
 # Example: Tests assume execution order
 def test_a():
     database.insert("user_1")
-    
+
 def test_b():
     assert database.has("user_1")  # Fails if test_a didn't run first
-    
+
 # Fix: Use fixtures with explicit dependencies
 @pytest.fixture
 def user_in_db(database):
@@ -148,7 +148,7 @@ def user_in_db(database):
 def test_external_api():
     response = requests.get("https://external-api.com/")
     assert response.status_code == 200  # May fail due to network
-    
+
 # Fix: Use mock + retry for resilience
 @pytest.mark.flaky(reruns=3)
 def test_external_api(mock_requests):

@@ -294,7 +294,7 @@ relabel_configs:
   - source_labels: [__meta_kubernetes_namespace]
     action: replace
     target_label: kubernetes_namespace
-  
+
   - source_labels: [__meta_kubernetes_pod_name]
     action: replace
     target_label: kubernetes_pod_name
@@ -461,4 +461,3 @@ spec:
 2. Add new services to monitoring
 3. Optimize underperforming scrape jobs
 4. Review retention policies against storage availability
-

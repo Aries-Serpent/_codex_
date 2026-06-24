@@ -131,7 +131,7 @@ build-push-action:
   platforms:
     main branch: linux/amd64,linux/arm64  # Multi-platform
     PR builds: linux/amd64                # Single platform (faster)
-  
+
 cache strategy:
     main: type=gha,scope=...,mode=max    # Full cache
     PR: type=gha,scope=...,mode=max      # Full cache
@@ -214,7 +214,7 @@ Cache key inputs:
   - Python 3.12
   - requirements.txt (hash: abc123)
   - pyproject.toml (hash: def456)
-  
+
 Generated cache key: python-312-abc123def456
 ```
 
@@ -224,7 +224,7 @@ Cache key inputs:
   - Python 3.12
   - requirements.txt (hash: NEW xyz789)
   - pyproject.toml (hash: NEW uvw234)
-  
+
 Generated cache key: python-312-xyz789uvw234
 Cache status: MISS (expected - dependencies changed)
 Action: Fresh pip install with patched versions
@@ -236,7 +236,7 @@ Cache key inputs:
   - Python 3.12
   - requirements.txt (hash: xyz789)
   - pyproject.toml (hash: uvw234)
-  
+
 Generated cache key: python-312-xyz789uvw234
 Cache status: HIT (stable after first run)
 Action: Restore cached pip packages from prior run
@@ -343,12 +343,12 @@ Installation sequence:
   1. pip resolves: urllib3==2.7.0 (latest matching)
   2. Cache key: hash("urllib3==2.7.0")
   3. Wheel cached: ~/.cache/pip/wheels/urllib3-2.7.0-...
-  
+
 Subsequent installations:
   1. pip resolves: urllib3==2.7.0 (same, locked by cache)
   2. Cache lookup: Found ✅
   3. Restore: From local cache (no download)
-  
+
 Result: ✅ Cache HIT (deterministic)
 ```
 
@@ -471,7 +471,7 @@ Total Cache Addition (with all patches):
   ├── idna 3.15:                +0.3 MB
   ├── twisted 24.7.0:           +2.5 MB
   └── Others:                   +1.6 MB
-  
+
 Total addition: ~15 MB
 Current pip cache: ~2.3 GB
 New cache size: ~2.315 GB (+0.65%)

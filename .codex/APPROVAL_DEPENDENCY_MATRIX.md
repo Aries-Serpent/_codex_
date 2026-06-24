@@ -269,7 +269,7 @@ actions/resolve-github-token/action.yml  # pragma: allowlist secret
 
 ### Opportunity 5: Merge Auto-Approve & Trigger Workflows (High Priority)
 
-**Problem**: 
+**Problem**:
 - `trigger-on-approval.yml` fires on PR approval → calls approve_pending_runs.py + dispatches 3 validation workflows
 - `auto-approve-workflows.yml` fires on multiple events → also calls approve_pending_runs.py
 
@@ -448,7 +448,7 @@ but doesn't prevent duplicate approval attempts.
 - Potential for approving twice (benign but wasteful)
 - Increased API rate limit consumption
 
-**Root Cause**: 
+**Root Cause**:
 ```yaml
 if: github.event_name != 'workflow_run' || github.event.workflow_run.name != '⚡ Self-Approve Pending Workflow Runs'
 ```
@@ -539,22 +539,22 @@ graph TB
     REVIEW["👤 PR Review (Approved)"]
     SCHEDULE["⏰ Schedule 5min"]
     MANUAL["🖱️ workflow_dispatch"]
-    
+
     TRIGGER["trigger-on-approval.yml"]
     AUTO["auto-approve-workflows.yml"]
     SELF["self-approve-pending-runs.yml"]
     AUTH["agent-auth-delegation.yml"]
     WEC["workflow-execution-gate.yml"]
-    
+
     APPROVE["scripts/ci/approve_pending_runs.py"]
-    
+
     VALIDATE["validate.yml"]
     PREMERGE["pre-merge-validation.yml"]
     CODEQL["codeql-alert-fetcher.yml"]
     WEC_DISPATCH["dispatch-checked (WEC)"]
-    
+
     ACTION_REQUIRED["action_required workflow runs"]
-    
+
     subgraph "Event Sources"
         direction LR
         PR
@@ -562,7 +562,7 @@ graph TB
         SCHEDULE
         MANUAL
     end
-    
+
     subgraph "Approval Workflows"
         direction TB
         TRIGGER
@@ -571,12 +571,12 @@ graph TB
         AUTH
         WEC
     end
-    
+
     subgraph "Shared Logic"
         direction TB
         APPROVE
     end
-    
+
     subgraph "Dispatch Targets"
         direction TB
         VALIDATE
@@ -584,61 +584,61 @@ graph TB
         CODEQL
         WEC_DISPATCH
     end
-    
+
     subgraph "Outcomes"
         direction TB
         ACTION_REQUIRED
     end
-    
+
     %% Event to Workflow Triggers
     REVIEW -->|pull_request_review| TRIGGER
     REVIEW -->|pull_request_review| AUTO
     REVIEW -->|pull_request_review| WEC
-    
+
     PR -->|pull_request| AUTO
     PR -->|pull_request| AUTH
-    
+
     SCHEDULE -->|schedule| SELF
     SCHEDULE -->|schedule| AUTO
-    
+
     MANUAL -->|workflow_dispatch| AUTO
     MANUAL -->|workflow_dispatch| WEC
-    
+
     %% Workflow Dispatch Chain
     TRIGGER -->|dispatch| VALIDATE
     TRIGGER -->|dispatch| PREMERGE
     TRIGGER -->|dispatch| CODEQL
-    
+
     WEC -->|parse WEC + dispatch| WEC_DISPATCH
-    
+
     %% Approval Logic
     TRIGGER -->|call| APPROVE
     AUTO -->|call| APPROVE
     SELF -->|call| APPROVE
     AUTH -->|call| APPROVE
-    
+
     APPROVE -->|approve| ACTION_REQUIRED
-    
+
     %% Workflow Completion Feedback
     VALIDATE -->|completion| SELF
     PREMERGE -->|completion| SELF
     CODEQL -->|completion| SELF
-    
+
     VALIDATE -->|workflow_run| AUTO
     PREMERGE -->|workflow_run| AUTO
     CODEQL -->|workflow_run| AUTO
-    
+
     VALIDATE -->|workflow_run| WEC
     PREMERGE -->|workflow_run| WEC
     CODEQL -->|workflow_run| WEC
-    
+
     %% Concurrency Group (All workflows use same pattern)
     style TRIGGER fill:#fff4e6
     style AUTO fill:#fff4e6
     style SELF fill:#fff4e6
     style AUTH fill:#fff4e6
     style WEC fill:#fff4e6
-    
+
     style APPROVE fill:#e8f5e9
 ```
 
@@ -655,33 +655,33 @@ sequenceDiagram
     participant Validate
     participant PreMerge
     participant CodeQL
-    
+
     User->>GitHub: Submit PR review (approved)
     GitHub->>TriggerApproval: pull_request_review event
-    
+
     par Approval & Validation Dispatch
         TriggerApproval->>ApprovePy: Call with PR number
         TriggerApproval->>Validate: Dispatch workflow
         TriggerApproval->>PreMerge: Dispatch workflow
         TriggerApproval->>CodeQL: Dispatch workflow
     end
-    
+
     par Parallel Validation Jobs
         Validate->>GitHub: Run validation checks
         PreMerge->>GitHub: Run merge validation
         CodeQL->>GitHub: Scan for vulnerabilities
     end
-    
+
     GitHub->>AutoApprove: workflow_run event (Validate completed)
     GitHub->>SelfApprove: workflow_run event (Validate completed)
     GitHub->>AutoApprove: workflow_run event (PreMerge completed)
     GitHub->>SelfApprove: workflow_run event (PreMerge completed)
     GitHub->>AutoApprove: workflow_run event (CodeQL completed)
     GitHub->>SelfApprove: workflow_run event (CodeQL completed)
-    
+
     AutoApprove->>ApprovePy: Call with PR number (no self-trigger guard)
     SelfApprove->>ApprovePy: Call with PR number (self-trigger guard prevents loop)
-    
+
     ApprovePy->>GitHub: Approve action_required runs
     GitHub->>User: ✅ PR ready for merge
 ```
@@ -691,29 +691,29 @@ sequenceDiagram
 ```mermaid
 graph LR
     APPROVER["approve_pending_runs.py"]
-    
+
     SUBGRAPH1["Token Resolution Chain"]
-    
+
     APP_TOKEN["🔐 Cognitive Brain App Token"]
     MASTER_KEY["🗝️ CODEX_MASTER_KEY PAT"]
     BACKUP_KEY["🗝️ CODEX_BACKUP_KEY PAT"]
     GITHUB_TOKEN["🔓 github.token (Fallback)"]
-    
+
     SELECTED["✅ Selected Token"]
-    
+
     APPROVER -->|Priority 1| APP_TOKEN
     APPROVER -->|Priority 2| MASTER_KEY
     APPROVER -->|Priority 3| BACKUP_KEY
     APPROVER -->|Priority 4| GITHUB_TOKEN
-    
+
     APP_TOKEN -->|Available| SELECTED
     MASTER_KEY -->|If App unavailable| SELECTED
     BACKUP_KEY -->|If Master unavailable| SELECTED
     GITHUB_TOKEN -->|Always available| SELECTED
-    
+
     SELECTED -->|Use for API calls| GITHUB_API["GitHub REST API"]
     GITHUB_API -->|Approve runs| ACTIONS["Action Required Runs"]
-    
+
     style APP_TOKEN fill:#c8e6c9
     style MASTER_KEY fill:#fff9c4
     style BACKUP_KEY fill:#fff9c4

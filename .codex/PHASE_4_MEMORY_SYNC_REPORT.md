@@ -266,11 +266,11 @@ Current tagging status:
 Phase 1 (Security):
   Tagged patterns: 0/5 (0%)
   Improvement area: Security_Hardening
-  
+
 Phase 2 (Coverage):
   Tagged patterns: 0/5 (0%)
   Improvement area: Coverage_Expansion
-  
+
 Phase 3 (CI):
   Tagged patterns: 0/5 (0%)
   Improvement area: CI_Stability

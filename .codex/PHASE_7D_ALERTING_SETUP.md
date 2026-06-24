@@ -52,7 +52,7 @@ route:
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 4h
-  
+
   routes:
     # Critical alerts
     - match:
@@ -61,14 +61,14 @@ route:
       group_wait: 10s
       repeat_interval: 1h
       continue: true
-    
+
     # Warning alerts
     - match:
         severity: warning
       receiver: 'slack-channel'
       group_wait: 60s
       repeat_interval: 4h
-    
+
     # Info alerts
     - match:
         severity: info
@@ -79,20 +79,20 @@ route:
 # Receivers
 receivers:
   - name: 'null'
-    
+
   - name: 'slack-channel'
     slack_configs:
       - channel: '#alerts-prod'
         title: 'Alert: {{ .GroupLabels.alertname }}'
         text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
         send_resolved: true
-  
+
   - name: 'slack-silent'
     slack_configs:
       - channel: '#alerts-info'
         title: 'Info: {{ .GroupLabels.alertname }}'
         send_resolved: false
-  
+
   - name: 'pagerduty-critical'
     pagerduty_configs:
       - service_key: 'YOUR_PAGERDUTY_SERVICE_KEY'
@@ -109,7 +109,7 @@ inhibit_rules:
     target_match:
       severity: 'warning'
     equal: ['alertname', 'instance']
-  
+
   # Suppress info if warning already firing
   - source_match:
       severity: 'warning'
@@ -139,7 +139,7 @@ groups:
           description: "Instance {{ $labels.instance }} CPU > 80% for 5 minutes"
           runbook_url: "https://wiki.example.com/runbooks/high-cpu-usage"
           dashboard: "http://grafana:3000/d/system-health"
-      
+
       # Memory Alert
       - alert: HighMemoryUsage
         expr: '(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85'
@@ -151,7 +151,7 @@ groups:
           summary: "High memory usage ({{ $value | humanize }}%)"
           description: "Instance {{ $labels.instance }} memory > 85%"
           runbook_url: "https://wiki.example.com/runbooks/high-memory"
-      
+
       # Disk Space Alert
       - alert: DiskSpaceRunningOut
         expr: '(node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 10'
@@ -163,7 +163,7 @@ groups:
           summary: "Disk space running out ({{ $value | humanize }}%)"
           description: "{{ $labels.device }} has only {{ $value }}% free"
           runbook_url: "https://wiki.example.com/runbooks/disk-space"
-      
+
       # Instance Down
       - alert: InstanceDown
         expr: 'up{job="codex-ml"} == 0'
@@ -175,7 +175,7 @@ groups:
           summary: "Instance {{ $labels.instance }} is down"
           description: "Instance {{ $labels.instance }} (job: {{ $labels.job }}) is unreachable"
           runbook_url: "https://wiki.example.com/runbooks/instance-down"
-  
+
   - name: application
     interval: 30s
     rules:
@@ -191,7 +191,7 @@ groups:
           description: "Error rate on {{ $labels.instance }} > 5%"
           runbook_url: "https://wiki.example.com/runbooks/high-error-rate"
           dashboard: "http://grafana:3000/d/app-performance"
-      
+
       # High Latency
       - alert: HighLatency
         expr: 'histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2'
@@ -203,7 +203,7 @@ groups:
           summary: "High latency detected ({{ $value | humanize }}s)"
           description: "P95 latency on {{ $labels.instance }} > 2s"
           runbook_url: "https://wiki.example.com/runbooks/high-latency"
-      
+
       # Service Degradation
       - alert: ServiceDegraded
         expr: |
@@ -216,7 +216,7 @@ groups:
           summary: "Service degradation: <50% instances healthy"
           description: "Less than 50% of codex-ml instances are healthy"
           runbook_url: "https://wiki.example.com/runbooks/service-degradation"
-      
+
       # Request Timeout
       - alert: RequestTimeout
         expr: 'histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) > 5'
@@ -228,7 +228,7 @@ groups:
           summary: "Request timeout ({{ $value | humanize }}s)"
           description: "P99 latency on {{ $labels.instance }} > 5s"
           runbook_url: "https://wiki.example.com/runbooks/request-timeout"
-  
+
   - name: dependencies
     interval: 30s
     rules:
@@ -243,7 +243,7 @@ groups:
           summary: "High number of slow queries ({{ $value }})"
           description: "Database {{ $labels.instance }} has {{ $value }} slow queries"
           runbook_url: "https://wiki.example.com/runbooks/slow-queries"
-      
+
       # Redis Connection Issues
       - alert: RedisConnectionPoolExhausted
         expr: 'redis_connected_clients > redis_config_maxclients * 0.9'
@@ -255,7 +255,7 @@ groups:
           summary: "Redis connection pool near exhaustion"
           description: "Redis {{ $labels.instance }} connection pool {{ $value }}% full"
           runbook_url: "https://wiki.example.com/runbooks/redis-exhaustion"
-      
+
       # Cache Hit Ratio Low
       - alert: LowCacheHitRatio
         expr: 'rate(cache_hits[5m]) / (rate(cache_hits[5m]) + rate(cache_misses[5m])) < 0.7'
@@ -267,7 +267,7 @@ groups:
           summary: "Low cache hit ratio ({{ $value | humanizePercentage }})"
           description: "Cache hit ratio on {{ $labels.instance }} < 70%"
           runbook_url: "https://wiki.example.com/runbooks/low-cache-hits"
-  
+
   - name: business_metrics
     interval: 60s
     rules:
@@ -283,7 +283,7 @@ groups:
           summary: "SLA violation: availability < 99.5%"
           description: "Current uptime {{ $value | humanize }}%"
           runbook_url: "https://wiki.example.com/runbooks/sla-violation"
-      
+
       # Prediction Accuracy Degradation
       - alert: PredictionAccuracyDegraded
         expr: 'model_accuracy_percent < 92'
@@ -323,7 +323,7 @@ escalation_policy:
   level_3:
     duration: 10m
     notify: ["on-call-manager", "leadership-team"]
-  
+
   on_acknowledge:
     action: "STOP_ESCALATION"
     notify: "slack-channel"
@@ -349,7 +349,7 @@ slack_configs:
       {{ else }}
         *Resolved:* {{ range .Alerts.Resolved }}{{ .Labels.instance }}{{ end }}
       {{ end }}
-    
+
     fields:
       - title: 'Severity'
         value: '{{ .GroupLabels.severity }}'
@@ -659,17 +659,17 @@ deduplication:
   # Group alerts from same job within time window
   group_wait: 30s
   group_interval: 5m
-  
+
   # Remove duplicate alerts
   duplicate_filter:
     enabled: true
     time_window: 5m
-    
+
   # Suppress repeat notifications
   repeat_prevention:
     enabled: true
     min_interval: 4h
-    
+
   # Correlation rules
   correlation:
     # Suppress instance-level if service-level alert exists

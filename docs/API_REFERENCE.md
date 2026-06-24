@@ -1719,7 +1719,7 @@ result = pipeline.ingest_file(
 
 **Returns:** `PipelineResult`
 
-**Raises:** 
+**Raises:**
 - `FileNotFoundError`: If input file not found
 - `ValueError`: If file exceeds max size
 - `TimeoutError`: If operation exceeds timeout
@@ -1997,4 +1997,3 @@ if not result.success:
 - [RAG Pipeline API Reference](./RAG_API_REFERENCE.md)
 - [Configuration Guide](./CONFIGURATION_GUIDE.md)
 - [Quickstart Guide](./QUICKSTART.md)
-

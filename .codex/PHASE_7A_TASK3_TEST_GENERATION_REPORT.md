@@ -35,62 +35,62 @@ All new test files compile successfully and follow the repository's testing conv
   - Removal of newlines, tabs, control characters
   - String truncation to max length
   - Unicode and special character handling
-  
+
 - `TestValidateInput` (15 tests)
   - SQL injection patterns (DROP, DELETE, UNION, etc.)
   - XSS attack patterns (script tags, JavaScript URIs, event handlers)
   - JSON prototype pollution detection
   - Clean input validation
-  
+
 - `TestSanitizeUserContent` (8 tests)
   - HTML escaping and dangerous tag removal
   - Quote and apostrophe handling
   - Numeric and None value handling
-  
+
 - `TestSanitizePath` (10 tests)
   - Null byte removal
   - Absolute/relative path handling
   - Windows path support
   - Double slash removal
-  
+
 - `TestEnforceAbsolutePath` (9 tests)
   - Absolute path enforcement
   - Relative path rejection
   - Parent directory (../) rejection
   - Path object return type validation
-  
+
 - `TestVerifyCSRFToken` (8 tests)
   - Valid/invalid token verification
   - Case sensitivity testing
   - Token comparison timing resistance
   - Long token handling
-  
+
 - `TestHmacCompare` (10 tests)
   - Timing-resistant comparison
   - Case sensitivity
   - Unicode support
   - Long string comparison
-  
+
 - `TestRateLimiter` (7 tests)
   - Rate limit enforcement
   - Per-user tracking
   - Time window expiration
   - Decorator creation and composition
-  
+
 - `TestVerifySessionIntegrity` (6 tests)
   - Valid/corrupted session detection
   - Expired session handling
   - Missing required fields validation
-  
+
 - `TestLogSecurityEvent` (5 tests)
   - Event logging with various types
   - Timestamp and context handling
-  
+
 - `TestCheckPermissions` (8 tests)
   - Permission verification
   - Admin override handling
   - Multiple permission requirements
-  
+
 - **Parametrized Tests:** 5 test suites with multiple parameters
 
 **Key Features:**

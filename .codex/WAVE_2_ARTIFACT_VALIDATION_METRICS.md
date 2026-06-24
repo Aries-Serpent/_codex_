@@ -238,7 +238,7 @@ Last 200 Runs Analysis:
   - Average run duration: ~15-20 min (estimated)
   - Peak concurrency: ~5 concurrent jobs
   - Success rate: 21.8%
-  
+
 Monthly Projected (30 days):
   - Total runs: ~900
   - Failed runs: ~180-200

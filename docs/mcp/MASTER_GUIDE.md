@@ -374,8 +374,8 @@ class MCPServer:
         """Retrieve stored embedding by ID."""
 
     async def search(
-        self, 
-        query: List[float], 
+        self,
+        query: List[float],
         top_k: int = 5
     ) -> List[dict]:
         """Find most similar embeddings."""

@@ -224,4 +224,3 @@ list_agents
 ---
 
 **Status:** ✅ ALL DISCUSSION REQUIREMENTS IMPLEMENTED — Agents active and monitoring
-

@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Index
 
-> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session 
+> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session
 > groups for GitHub rendering compatibility. All 316 sessions are preserved in 32 chunks.
 
 ## Quick Navigation

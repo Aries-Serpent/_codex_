@@ -285,7 +285,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check ${{ matrix.gate }} gate
         run: make ci-gate GATE=${{ matrix.gate }}
-      
+
   deployment_gates:
     runs-on: ubuntu-latest
     needs: quality_gates
@@ -354,14 +354,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/agent-health-check
-  
+
   agent_session_suite:
     runs-on: ubuntu-latest
     if: contains(github.event.head_commit.message, '@copilot')
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/copilot-session-handler
-  
+
   agent_orchestration:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
@@ -458,7 +458,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate deployment readiness
         run: make validate-deployment PHASE=${{ inputs.target_phase }}
-  
+
   deployment_execution:
     runs-on: ubuntu-latest
     needs: deployment_validation
@@ -467,7 +467,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Execute deployment to ${{ inputs.target_phase }}
         run: make deploy PHASE=${{ inputs.target_phase }}
-  
+
   deployment_notification:
     runs-on: ubuntu-latest
     needs: deployment_execution

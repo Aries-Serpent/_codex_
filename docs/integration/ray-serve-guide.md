@@ -97,13 +97,13 @@ applications:
   - name: my_app
     import_path: app:deployment_graph
     route_prefix: /api
-    
+
     # Ray configuration
     ray_actor_options:
       num_cpus: 2
       num_gpus: 1
       memory: 4_000_000_000
-    
+
     # Deployment-specific options
     deployments:
       - name: model
@@ -602,7 +602,7 @@ spec:
         image: my-registry/ray-serve:latest
         ports:
         - containerPort: 8000
-        
+
         # Resource limits
         resources:
           requests:
@@ -612,12 +612,12 @@ spec:
             memory: "8Gi"
             cpu: "4"
             nvidia.com/gpu: "1"
-        
+
         # Environment variables
         env:
         - name: RAY_memory
           value: "4000000000"
-        
+
         # Health checks
         livenessProbe:
           httpGet:
@@ -625,20 +625,20 @@ spec:
             port: 8000
           initialDelaySeconds: 30
           periodSeconds: 10
-        
+
         readinessProbe:
           httpGet:
             path: /-/routes
             port: 8000
           initialDelaySeconds: 5
           periodSeconds: 5
-        
+
         # Volume mounts
         volumeMounts:
         - name: models
           mountPath: /app/models
           readOnly: true
-      
+
       volumes:
       - name: models
         configMap:
@@ -678,16 +678,16 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: pip install -r requirements.txt pytest
-      
+
       - name: Run tests
         run: pytest tests/
-      
+
       - name: Build Docker image
         run: docker build -t ray-serve:latest .
-      
+
       - name: Test image locally
         run: |
           docker run -d -p 8000:8000 ray-serve:latest
@@ -700,7 +700,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Deploy to production
         run: |
           kubectl set image deployment/ray-serve \

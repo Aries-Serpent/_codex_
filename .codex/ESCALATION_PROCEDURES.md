@@ -433,4 +433,3 @@ The escalation procedures will be reviewed:
 - `.codex/ESCALATION_CONTACTS.md` - Contact information
 - `.codex/incident-templates/` - Communication templates
 - `.codex/ROLLBACK_VALIDATION_CHECKLIST.md` - Validation procedures
-

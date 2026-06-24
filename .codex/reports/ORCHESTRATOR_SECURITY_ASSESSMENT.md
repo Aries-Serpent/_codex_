@@ -142,7 +142,7 @@ This comprehensive security assessment reconciles findings from **4 major securi
 1. **Upgrade diskcache** from 5.6.3 → 5.6.4+
    - Patches CVE-2025-69872 (RCE via pickle)
    - Files affected: `requirements.txt`, any cache initialization code
-   
+
 2. **Upgrade sqlitedict** from 2.1.0 → 2.1.1+
    - Patches CVE-2024-35515 (RCE via deserialization)
    - Files affected: `requirements.txt`, database initialization code

@@ -288,8 +288,8 @@ Comprehensive Phase 6 production deployment across 4 batches has achieved an agg
 
 ```
 Aggregate Score = Σ(Dimension Score × Weight)
-                = 10 × 0.15 + 10 × 0.15 + 10 × 0.12 + 10 × 0.12 
-                  + 10 × 0.15 + 10 × 0.12 + 10 × 0.10 + 10 × 0.10 
+                = 10 × 0.15 + 10 × 0.15 + 10 × 0.12 + 10 × 0.12
+                  + 10 × 0.15 + 10 × 0.12 + 10 × 0.10 + 10 × 0.10
                   + 9.5 × 0.09
                 = 1.5 + 1.5 + 1.2 + 1.2 + 1.5 + 1.2 + 1.0 + 1.0 + 0.855
                 = 10.755 out of 10.0 maximum

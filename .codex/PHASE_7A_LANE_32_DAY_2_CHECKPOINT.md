@@ -11,7 +11,7 @@
 
 **Framework Issue Identified:** mutmut 3.6.0 configuration conflicts prevent execution of agent_memory.py mutations. The framework is attempting to mutate `src/codex_ml/utils/` files instead of the intended `agents/agent_memory.py` module.
 
-**Root Cause:** 
+**Root Cause:**
 1. `pyproject.toml` contains pytest configuration with `--ignore=tests/agents`
 2. mutmut is not respecting `source_paths` configuration in `.mutmut.ini`
 3. Configuration appears to be loading from pyproject.toml instead of dedicated `.mutmut.ini`
@@ -341,7 +341,7 @@ data["key"] = value  →  data["other_key"] = value  # Assignment target changes
 - ❌ Lane 3.1 needs immediate feedback
 
 ### Projected State (If No Changes)
-- Current: 0.94% 
+- Current: 0.94%
 - Target: 62-65%
 - **Gap: 61-64 percentage points**
 - **Effort: Add 80-120 tests**

@@ -318,7 +318,7 @@ For merging PRs:
 
    ```markdown
    # Document Title
-   
+
    ## Section
    ```
 

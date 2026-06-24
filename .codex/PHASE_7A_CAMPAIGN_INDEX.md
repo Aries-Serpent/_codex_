@@ -423,4 +423,3 @@ Use this index to navigate the 4-document plan set. Start with QUICK_REFERENCE.m
 Once approved, use EXECUTION_PLAN.md and TECHNICAL_REFERENCE.md as daily references during campaign execution.
 
 **All documents are designed to work together. Read in order of your role.**
-

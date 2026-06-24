@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class RetentionMaintenance:
     """Handle archive retention and cleanup"""
-    
+
     def __init__(self, max_iterations: int = 30):
         """
         Args:
@@ -36,26 +36,26 @@ class RetentionMaintenance:
         self.max_iterations = max_iterations
         self.archive_dir = Path(".codex/archive/sessions")
         self.log_path = Path(".codex/archive/retention_log.json")
-    
+
     def cleanup(self, dry_run: bool = False) -> dict:
         """Clean up old archives
-        
+
         Args:
             dry_run: Show what would be deleted
-            
+
         Returns:
             Cleanup results
         """
         cutoff_date = (datetime.utcnow() - timedelta(days=self.max_iterations)).isoformat()
-        
+
         logger.info(f"Scanning archives older than {self.max_iterations} iterations")
         logger.info(f"Cutoff date: {cutoff_date}")
-        
+
         # Get candidates from database
         import sqlite3
         conn = sqlite3.connect(self.db.db_path)
         cursor = conn.cursor()
-        
+
         cursor.execute("""
             SELECT session_id, archive_location, archive_timestamp
             FROM sessions
@@ -63,16 +63,16 @@ class RetentionMaintenance:
             AND archive_timestamp < ?
             ORDER BY archive_timestamp ASC
         """, (cutoff_date,))
-        
+
         old_sessions = cursor.fetchall()
         conn.close()
-        
+
         logger.info(f"Found {len(old_sessions)} archives for deletion")
-        
+
         deleted_count = 0
         failed = []
         deletions = []
-        
+
         for session_id, archive_location, archive_timestamp in old_sessions:
             if dry_run:
                 logger.info(f"[DRY RUN] Would delete: {session_id}")
@@ -90,25 +90,25 @@ class RetentionMaintenance:
                         if archive_path.exists():
                             archive_path.unlink()
                             logger.info(f"Deleted: {archive_location}")
-                    
+
                     # Mark as deleted in database
                     self.db.mark_deleted(session_id)
                     deleted_count += 1
-                    
+
                     deletions.append({
                         "session_id": session_id,
                         "archive_location": archive_location,
                         "archive_timestamp": archive_timestamp,
                         "deleted_at": datetime.utcnow().isoformat()
                     })
-                    
+
                 except Exception as e:
                     logger.error(f"Error deleting {session_id}: {e}")
                     failed.append({
                         "session_id": session_id,
                         "error": str(e)
                     })
-        
+
         result = {
             "status": "success" if not failed else "partial",
             "deleted_count": deleted_count,
@@ -119,16 +119,16 @@ class RetentionMaintenance:
             "timestamp": datetime.utcnow().isoformat(),
             "deletions": deletions
         }
-        
+
         if failed:
             result["failed"] = failed
-        
+
         # Log to retention log
         if not dry_run:
             self._log_retention(result)
-        
+
         return result
-    
+
     def _log_retention(self, result: dict):
         """Log retention cleanup to retention_log.json"""
         try:
@@ -142,7 +142,7 @@ class RetentionMaintenance:
                     "created": datetime.utcnow().isoformat(),
                     "cleanups": []
                 }
-            
+
             # Add this cleanup
             log_data["cleanups"].append({
                 "timestamp": result["timestamp"],
@@ -151,16 +151,16 @@ class RetentionMaintenance:
                 "max_iterations": result["max_iterations"],
                 "deletions_count": len(result["deletions"])
             })
-            
+
             # Write back
             self.log_path.parent.mkdir(parents=True, exist_ok=True)
             with open(self.log_path, 'w') as f:
                 json.dump(log_data, f, indent=2, default=str)
-            
+
             logger.info(f"Retention log updated: {self.log_path}")
         except Exception as e:
             logger.error(f"Error logging retention: {e}")
-    
+
     def get_retention_stats(self) -> dict:
         """Get retention statistics"""
         stats = {
@@ -168,7 +168,7 @@ class RetentionMaintenance:
             "cutoff_date": (datetime.utcnow() - timedelta(days=self.max_iterations)).isoformat(),
             "archive_stats": self.db.get_archive_stats()
         }
-        
+
         # Get log info
         if self.log_path.exists():
             with open(self.log_path, 'r') as f:
@@ -178,24 +178,24 @@ class RetentionMaintenance:
         else:
             stats["total_cleanups"] = 0
             stats["total_deletions"] = 0
-        
+
         return stats
 
 
 def main():
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Maintenance for archived sessions")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be deleted")
-    parser.add_argument("--max-iterations", type=int, default=30, 
+    parser.add_argument("--max-iterations", type=int, default=30,
                         help="Max iterations to keep (default: 30)")
     parser.add_argument("--json", action="store_true", help="JSON output")
     parser.add_argument("--stats", action="store_true", help="Show retention stats")
-    
+
     args = parser.parse_args()
-    
+
     maintenance = RetentionMaintenance(max_iterations=args.max_iterations)
-    
+
     if args.stats:
         stats = maintenance.get_retention_stats()
         if args.json:
@@ -208,9 +208,9 @@ def main():
             print(f"  Total deletions: {stats['total_deletions']}")
             print(f"  Current archives: {stats['archive_stats']['archived_sessions']}")
         return 0
-    
+
     result = maintenance.cleanup(dry_run=args.dry_run)
-    
+
     if args.json:
         print(json.dumps(result, indent=2, default=str))
     else:
@@ -221,12 +221,12 @@ def main():
         print(f"Deleted: {result['deleted_count']}/{result['total_candidates']}")
         print(f"Max iterations: {result['max_iterations']}")
         print(f"Dry run: {result['dry_run']}")
-        
+
         if result['failed_count'] > 0:
             print(f"\nFailed ({result['failed_count']}):")
             for failed in result['failed']:
                 print(f"  - {failed['session_id']}: {failed['error']}")
-    
+
     return 0 if result['status'] == 'success' else 1
 
 

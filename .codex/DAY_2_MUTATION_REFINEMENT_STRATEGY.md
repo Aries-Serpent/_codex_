@@ -48,12 +48,12 @@ def test_token_expiry_boundary():
     token = create_token(expires_in=1)
     time.sleep(1.01)
     assert token_manager.is_valid(token) is False
-    
+
     # Just before expiry
     token = create_token(expires_in=1)
     time.sleep(0.99)
     assert token_manager.is_valid(token) is True
-    
+
     # Negative/zero expiry edge cases
     with pytest.raises(ValueError):
         create_token(expires_in=0)
@@ -87,15 +87,15 @@ def test_cache_eviction_boundary():
     # Exact boundary condition
     cache.put("key1", EXACTLY_AT_MAX_SIZE)
     assert cache.size() == MAX_SIZE
-    
+
     # Just over boundary triggers eviction
     cache.put("key2", 1)  # Total > MAX_SIZE
     assert cache.size() <= MAX_SIZE
-    
+
     # Both conditions must be true (kill AND→OR mutation)
     cache.put("expired_and_over_size", large_value)
     assert cache.get("expired_and_over_size") is None
-    
+
     # Only one condition doesn't trigger eviction
     cache.put("fresh_and_in_size", small_value)
     assert cache.get("fresh_and_in_size") is not None
@@ -128,12 +128,12 @@ def test_email_validation_boundaries():
     assert validate_email("test.user@example.com") is True  # . is valid
     assert validate_email("test_user@example.com") is True  # _ is valid
     assert validate_email("test@domain.co.uk") is True      # multi-level
-    
+
     # Length boundaries
     assert validate_email("a@b.co") is True                 # minimal valid
     assert validate_email("@example.com") is False          # no user
     assert validate_email("test@") is False                 # no domain
-    
+
     # Domain boundaries (kill regex mutations)
     assert validate_email("test@localhost") is False        # no TLD
     assert validate_email("test@example..com") is False     # double dot
@@ -165,16 +165,16 @@ def test_middleware_authorization_comprehensive():
     result = middleware.authorize(valid_request)
     assert result is True
     assert result.status_code == 200
-    
+
     # Failed authorization returns False (kill True→False mutation)
     result = middleware.authorize(invalid_token_request)
     assert result is False
     assert result.status_code == 401
-    
+
     # Exception is NOT swallowed (kill exception suppression)
     with pytest.raises(SecurityError):
         middleware.authorize(malicious_request)
-    
+
     # Headers are preserved
     result = middleware.authorize(valid_request)
     assert "Authorization" in result.headers
@@ -205,16 +205,16 @@ def test_input_sanitization_unicode():
     # Unicode characters preserved correctly
     result = sanitize("café")
     assert "café" in result
-    
+
     # UTF-8 special chars handled
     result = sanitize("你好<script>")
     assert "<script>" not in result
     assert "你好" in result
-    
+
     # Combining marks preserved
     result = sanitize("e\u0301")  # é using combining mark
     assert len(result) > 0
-    
+
     # Case sensitivity enforced (kill case mutation)
     result = sanitize("test<SCRIPT>alert()</SCRIPT>")
     assert "<SCRIPT>" not in result
@@ -345,4 +345,3 @@ Target: 160/160 = 100% OR ≥95% practical target
 **Strategy Document Version:** 1.0  
 **Authority:** Campaign: 92% → 95%+  
 **Status:** 🚀 READY FOR EXECUTION
-

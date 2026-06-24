@@ -178,7 +178,7 @@ import os
 
 # Create checkpoint at start
 session_id = os.environ.get('COPILOT_SESSION_ID', 'default')
-subprocess.run(['python', 'scripts/ci/session_recovery.py', 'checkpoint', 
+subprocess.run(['python', 'scripts/ci/session_recovery.py', 'checkpoint',
                 '--session-id', session_id])
 
 # Your work here...

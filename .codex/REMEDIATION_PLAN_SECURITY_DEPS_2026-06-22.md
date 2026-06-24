@@ -365,7 +365,7 @@ def test_uri3_redirect_validation():
 def test_authentication_flow_with_new_pyjwt():
     """Full auth flow works with PyJWT 2.13.0"""
     # Login → token generation → token validation
-    
+
 def test_api_requests_with_new_urllib3():
     """API calls work with urllib3 2.7.0"""
     # HTTP requests, redirects, proxy handling

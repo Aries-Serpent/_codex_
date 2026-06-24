@@ -104,7 +104,7 @@ From `src/codex_ml/__init__.py`:
 - **Type:** Function
 - **Signature:** `set_reproducible(seed: int, deterministic: bool | None = None) -> None`
 - **Current Status:** NOT exported
-- **CLI Usage:** 
+- **CLI Usage:**
   ```python
   from codex_ml.utils.repro import set_reproducible
   # Used in: src/codex/cli.py line ~234
@@ -237,7 +237,7 @@ From `src/codex_ml/__init__.py`:
 # These MUST be added to __all__ immediately
 __all__ += [
     "set_reproducible",
-    "load_tokenizer",  # pragma: allowlist secret 
+    "load_tokenizer",  # pragma: allowlist secret
     "list_available_models",
     "set_seed"
 ]
@@ -292,7 +292,7 @@ Add these to `src/codex_ml/__init__.py`:
 __all__ += [
     "set_reproducible",
     "load_tokenizer",  # pragma: allowlist secret
-    "list_available_models", 
+    "list_available_models",
     "set_seed"
 ]
 
@@ -323,13 +323,13 @@ For each export, add to `_EXPORT_MAP`:
 ```python
 _EXPORT_MAP = {
     # ... existing exports ...
-    
+
     # CLI Critical (P1)
     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
     "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),  # pragma: allowlist secret
     "list_available_models": ("codex_ml.tokenization", "list_available_models"),  # pragma: allowlist secret
     "set_seed": ("codex_ml.utils.repro", "set_seed"),
-    
+
     # Core ML (P2)
     "CheckpointManager": ("codex_ml.utils.checkpointing", "CheckpointManager"),
     "load_checkpoint": ("codex_ml.utils.checkpointing", "load_checkpoint"),
@@ -339,7 +339,7 @@ _EXPORT_MAP = {
     "get_model": ("codex_ml.model_registry", "get_model"),
     "register_model": ("codex_ml.model_registry", "register_model"),
     "list_models": ("codex_ml.model_registry", "list_models"),
-    
+
     # Observability (P3)
     "init_logger": ("codex_ml.monitoring.codex_logging", "init_logger"),
     "init_telemetry": ("codex_ml.monitoring.codex_logging", "init_telemetry"),

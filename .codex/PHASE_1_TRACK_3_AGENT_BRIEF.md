@@ -91,7 +91,7 @@ For each CodeQL HIGH/MEDIUM finding:
 ## 🔗 INTEGRATION POINTS
 
 **Upstream:** None (independent track)  
-**Downstream:** 
+**Downstream:**
 - All tracks: Security fixes may affect dependencies/testing
 - Track 4 (Documentation): Update security posture docs
 

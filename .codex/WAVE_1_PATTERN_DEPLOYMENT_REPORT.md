@@ -345,7 +345,7 @@ def register_patterns():
             "fixer_module": "yaml_indentation_fixer",
         },
     ]
-    
+
     for pattern in patterns:
         register_in_cognitive_brain(pattern)
 ```
@@ -358,7 +358,7 @@ def detect_pattern(failure_log: str) -> Optional[PatternMatch]:
     """Detect RP-001, RP-002, RP-003 in CI failure logs."""
     router = PatternRouter()
     result = router.classify(failure_log)
-    
+
     if result.confidence >= 0.75:
         return PatternMatch(
             pattern_id=result.primary_pattern,
@@ -379,7 +379,7 @@ def apply_fix(pattern_id: str, file_path: str) -> FixResult:
         "RP-002": isort_fixer.fix,
         "RP-003": yaml_indentation_fixer.fix,
     }
-    
+
     if pattern_id in fixers:
         return fixers[pattern_id](file_path)
     return FixResult(success=False, error="Unknown pattern")

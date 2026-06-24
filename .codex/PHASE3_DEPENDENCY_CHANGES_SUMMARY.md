@@ -176,7 +176,7 @@ The upgrade from wrapt 1.17.3 → 2.2.1:
 2.1.0:
   - Python 3.11 support improvements
   - Decorator chaining enhancements
-  
+
 2.0.0 (Initial v2):
   - Removed Python 2 support (good for 3.12+ project!)
   - Internal API cleanup

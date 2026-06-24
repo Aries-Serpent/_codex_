@@ -12,7 +12,7 @@
 
 **Timeline:** Phase 10 (3-week sprint)  
 **Investment:** ~20 engineering hours  
-**Expected ROI:** 
+**Expected ROI:**
 - CI speed: 20-30% reduction (300+ min/week org-wide)
 - Cost savings: $3K-4K annually in GitHub Actions
 - Developer experience: Faster feedback loops

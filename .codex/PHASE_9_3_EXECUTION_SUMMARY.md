@@ -160,8 +160,8 @@ NEW → QUEUED → ASSIGNED → IN_PROGRESS → DONE/FAILED
 
 **Scoring Algorithm:**
 ```
-final_score = (cpu_score * 0.3) + (memory_score * 0.2) 
-            + (queue_score * 0.3) + (latency_score * 0.1) 
+final_score = (cpu_score * 0.3) + (memory_score * 0.2)
+            + (queue_score * 0.3) + (latency_score * 0.1)
             + (error_score * 0.1)
 ```
 

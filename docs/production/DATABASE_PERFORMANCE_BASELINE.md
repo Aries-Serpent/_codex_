@@ -99,7 +99,7 @@ LIMIT 100
 
 #### Action 1: Create Index on Category
 ```sql
-CREATE INDEX idx_items_category 
+CREATE INDEX idx_items_category
 ON items(category, created_at DESC, id);
 
 ANALYZE TABLE items;
@@ -136,7 +136,7 @@ SHOW PROFILE ALL;
 
 **Workload:**
 ```sql
-SELECT 
+SELECT
   o.order_id,
   o.total_amount,
   c.customer_name,
@@ -177,7 +177,7 @@ LIMIT 1000
 #### Action 1: Create Composite Indexes
 ```sql
 -- Index for JOIN on orders
-CREATE INDEX idx_orders_customer_status 
+CREATE INDEX idx_orders_customer_status
 ON orders(customer_id, status, created_at DESC);
 
 -- Index for JOIN on order_items  
@@ -196,7 +196,7 @@ ANALYZE TABLE orders, order_items, customers;
 #### Action 2: Rewrite for Better Performance
 ```sql
 -- Optimized query: use subquery to filter orders first
-SELECT 
+SELECT
   o.order_id,
   o.total_amount,
   c.customer_name,
@@ -210,7 +210,7 @@ FROM (
 ) o
 JOIN customers c ON o.customer_id = c.id
 LEFT JOIN (
-  SELECT 
+  SELECT
     order_id,
     COUNT(*) as item_count,
     SUM(quantity) as total_quantity
@@ -252,7 +252,7 @@ ON DUPLICATE KEY UPDATE ... ;
 **Workload:**
 ```sql
 INSERT INTO audit_logs (user_id, action, timestamp)
-VALUES 
+VALUES
   (?, ?, NOW()),
   (?, ?, NOW()),
   ...  -- 1000 rows

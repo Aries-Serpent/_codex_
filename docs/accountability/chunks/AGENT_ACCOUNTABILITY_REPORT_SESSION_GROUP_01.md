@@ -112,7 +112,7 @@ Fixed: MYPY-OPT-IMPORT, MYPY-REDUNDANT-CAST, MYPY-CALL-ARG, +6 more
 
 **Summary:**
 ```
-5 token methods attempted for discussion cleanup — all FORBIDDEN. CODEX_MASTER_KEY/CODEX_BACKUP_KEY 
+5 token methods attempted for discussion cleanup — all FORBIDDEN. CODEX_MASTER_KEY/CODEX_BACKUP_KEY
 ```
 
 **Tags:** complete  

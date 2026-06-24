@@ -32,10 +32,10 @@ class IncidentTemplateGenerator:
         """Generate incident report template."""
         template = '''# Incident Report
 
-**Incident ID:** [INCIDENT-YYYYMMDD-HHmm]  
-**Severity:** [Critical | High | Medium | Low]  
-**Status:** [Active | Mitigated | Resolved | Post-Mortem]  
-**Generated:** YYYY-MM-DD HH:mm UTC  
+**Incident ID:** [INCIDENT-YYYYMMDD-HHmm]
+**Severity:** [Critical | High | Medium | Low]
+**Status:** [Active | Mitigated | Resolved | Post-Mortem]
+**Generated:** YYYY-MM-DD HH:mm UTC
 
 ---
 
@@ -148,7 +148,7 @@ class IncidentTemplateGenerator:
 
 ### Internal Escalation Path
 1. **L1 Oncall (First Alert):** [Name] - notified at HH:mm
-2. **L2 Engineering:** [Name] - escalated at HH:mm  
+2. **L2 Engineering:** [Name] - escalated at HH:mm
 3. **L3 Leadership:** [Name] - escalated at HH:mm
 4. **Executive Notification:** [Yes | No] - CEO notified at HH:mm
 
@@ -190,8 +190,8 @@ class IncidentTemplateGenerator:
 
 ## 9. Sign-Off
 
-**Incident Commander:** [Name], [Title]  
-**Date:** YYYY-MM-DD  
+**Incident Commander:** [Name], [Title]
+**Date:** YYYY-MM-DD
 **Status:** [CONFIRMED | REQUIRES REVIEW]
 
 **Next Review Meeting:** YYYY-MM-DD HH:mm UTC
@@ -209,16 +209,16 @@ See: `ESCALATION_CONTACTS.md`
         """Generate status update template."""
         template = '''# Incident Status Update
 
-**Incident ID:** [INCIDENT-YYYYMMDD-HHmm]  
-**Update #:** [1/2/3/...]  
-**Time:** YYYY-MM-DD HH:mm UTC  
+**Incident ID:** [INCIDENT-YYYYMMDD-HHmm]
+**Update #:** [1/2/3/...]
+**Time:** YYYY-MM-DD HH:mm UTC
 **Status:** [Investigating | Mitigating | Resolved]
 
 ---
 
 ## Current Status
 
-**Situation:** 
+**Situation:**
 [Concise description of current state - 2-3 sentences]
 
 **Impact:**
@@ -266,7 +266,7 @@ Expected in: [15 minutes | 30 minutes | 1 hour]
 
 ---
 
-**Incident Commander:** [Name]  
+**Incident Commander:** [Name]
 **Next Update:** YYYY-MM-DD HH:mm UTC
 
 '''
@@ -336,18 +336,18 @@ Incident Response Team
         """Generate post-incident review template."""
         template = '''# Post-Incident Review (PIR)
 
-**Incident ID:** INCIDENT-YYYYMMDD-HHmm  
-**Review Date:** YYYY-MM-DD  
-**Participants:** [Names, roles]  
+**Incident ID:** INCIDENT-YYYYMMDD-HHmm
+**Review Date:** YYYY-MM-DD
+**Participants:** [Names, roles]
 **Facilitator:** [Name]
 
 ---
 
 ## 1. Incident Summary
 
-**Duration:** HH:mm (from start to full resolution)  
-**Severity:** [Critical | High | Medium | Low]  
-**Services Affected:** [List]  
+**Duration:** HH:mm (from start to full resolution)
+**Severity:** [Critical | High | Medium | Low]
+**Services Affected:** [List]
 **Root Cause:** [One sentence summary]
 
 ---
@@ -518,8 +518,8 @@ Incident Response Team
 
 ## 11. Sign-Off
 
-**Facilitator:** [Name]  
-**Date:** YYYY-MM-DD  
+**Facilitator:** [Name]
+**Date:** YYYY-MM-DD
 **Next Review:** YYYY-MM-DD (to verify action item completion)
 
 **Approval:**

@@ -260,16 +260,16 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: codex-api
-  
+
   service:
     port: 8000
-  
+
   analysis:
     interval: 1m
     threshold: 5  # max 5% error rate
     maxWeight: 100
     stepWeight: 20  # increase traffic by 20% every minute
-    
+
   metrics:
   - name: request-success-rate
     thresholdRange:
@@ -343,7 +343,7 @@ kubectl patch canary codex-api-canary \
 # (same scale-down, restore image, scale-up procedure)
 ```
 
-**Success Criteria for Stage 2:** 
+**Success Criteria for Stage 2:**
 - Canary health checks pass for full duration
 - No performance regressions detected
 - Load test completes successfully → PROCEED TO STAGE 3

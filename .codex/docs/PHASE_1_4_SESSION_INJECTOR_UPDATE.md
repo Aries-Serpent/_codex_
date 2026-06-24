@@ -39,20 +39,20 @@ def pda_summary() -> str:
 ```python
 def _pda_summary_from_index() -> str:
     """Query PDA summary from session index API (Phase 1.4 NEW).
-    
+
     Uses SessionQuery.list_recent_sessions(days=7) to get recent session data
     instead of scanning entire PDA file, reducing token footprint by 60%.
     """
     from scripts.ci.session_query import SessionQuery
-    
+
     query = SessionQuery()
     recent_sessions = query.list_recent_sessions(days=7)
-    
+
     # Score sessions by recency
     for session in recent_sessions[:20]:
         timestamp = session.get('first_timestamp')
         score = _calculate_recency_score(timestamp)
-        
+
     # Display top 10 scored sessions
 ```
 
@@ -189,7 +189,7 @@ recent = query.list_recent_sessions(days=7)
 ```python
 def _calculate_recency_score(timestamp_str: str) -> float:
     """Weight sessions by how recent they are.
-    
+
     Returns:
         float: Score from 0.0 to 1.0+
         - 1.0 = today (highest relevance)

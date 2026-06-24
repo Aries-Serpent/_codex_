@@ -10,7 +10,7 @@ Target: <5 second classification latency, 95%+ accuracy, <2% false positives
 
 Usage:
     from phase_9_2_pattern_router import PatternRouter
-    
+
     router = PatternRouter()
     classification = router.classify(ci_log_text)
     print(f"Confidence: {classification.confidence:.1%}")

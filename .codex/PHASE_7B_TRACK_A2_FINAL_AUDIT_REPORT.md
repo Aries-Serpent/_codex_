@@ -369,4 +369,3 @@ IMPROVEMENT:
 **Agent:** codeql-alert-resolution-agent (Track A2)  
 **Mission ID:** phase7b-codeql-final  
 **Authority:** @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)  
-

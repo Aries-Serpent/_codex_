@@ -13,7 +13,7 @@ This library is built from TelemetryCollector + auto_fix_common_issues.py patter
 
 Usage:
     from workflow_pattern_library import PatternLibrary
-    
+
     lib = PatternLibrary()
     pattern = lib.get_pattern("coverage-timeout")
     agents = lib.recommend_agents("coverage-timeout")
@@ -49,28 +49,28 @@ class FixStrategy(Enum):
 @dataclass
 class PatternDefinition:
     """Complete definition of a CI failure pattern."""
-    
+
     pattern_id: str
     pattern_name: str
     description: str
-    
+
     # Pattern detection
     keyword_matches: List[str]
     regex_patterns: List[str] = field(default_factory=list)
-    
+
     # Fix strategies
     fix_strategies: List[FixStrategy] = field(default_factory=list)
     preferred_strategy: FixStrategy = FixStrategy.AUTO_FIX_RUFF
-    
+
     # Agents
     recommended_agents: List[str] = field(default_factory=list)
     primary_agent: Optional[str] = None
     fallback_agents: List[str] = field(default_factory=list)
-    
+
     # Outcomes
     expected_outputs: List[str] = field(default_factory=list)
     success_criteria: List[str] = field(default_factory=list)
-    
+
     # Metadata
     severity: PatternSeverity = PatternSeverity.MEDIUM
     auto_fixable: bool = False

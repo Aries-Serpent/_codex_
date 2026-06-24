@@ -123,12 +123,12 @@ Where:
 ```markdown
 # Agent Accountability Report — Session Index
 
-> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session 
+> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session
 > groups for GitHub rendering compatibility. All 316 sessions are preserved in 32 chunks.
 
 ## Quick Navigation
 
-- **Latest Sessions:** [Group 32](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md) 
+- **Latest Sessions:** [Group 32](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md)
   (Sessions 311-316, 2026-06-22 to 2026-06-23)
 - **Search Sessions:** Use [session_query.py](../../scripts/ci/session_query.py) for complex queries
 - **Original Backup:** [Backup](archive/AGENT_ACCOUNTABILITY_REPORT_BACKUP_20260623.md)
@@ -257,9 +257,9 @@ Content:
 # Agent Accountability Report
 
 > **Note:** This file has been restructured for GitHub rendering compatibility.
-> 
+>
 > The accountability report is now split into session groups. Please refer to:
-> 
+>
 > ## 👉 [Agent Accountability Report Index](.../../.codex/AGENT_ACCOUNTABILITY_REPORT_INDEX.md)
 
 ### Quick Links

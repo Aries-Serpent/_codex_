@@ -160,7 +160,7 @@ Quality Score Impact:
   Before: 35.2/100 (F Grade - Fail)
   After:  ~65-72/100 (D+ to C- Range)
   Target: 75+/100 (B+ Grade)
-  
+
   Improvement: +30-37 points (85-105% improvement)
   Distance to Target: -3 to +7 points (5-7 hours remaining)
 
@@ -241,7 +241,7 @@ Successfully improved code quality through automated:
 
 Estimated Quality Score Improvement:
   From 35.2/100 (F) → To ~67/100 (D+/C-)
-  
+
   Path to 75+/100 target requires 5-7 additional hours of manual work
   on complexity refactoring and stricter type checking.
 

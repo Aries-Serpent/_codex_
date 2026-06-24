@@ -333,7 +333,7 @@ echo "=================================================="
 
     def save_setup_script(self, output_path: str = None):
         """Save the setup script to a file
-        
+
         SECURITY: Script contains sensitive data (secrets). Must be:
         1. Saved with secure permissions (700, owner-only)
         2. Kept on secure storage only

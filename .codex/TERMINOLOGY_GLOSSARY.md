@@ -351,4 +351,3 @@ For questions about terminology decisions:
 - [CONTRIBUTING.md](../../CONTRIBUTING.md) - Terminology section
 - [.markdownlintrc](../.markdownlintrc) - Automated rules
 - [terminology-consistency-agent](./.github/agents/terminology-consistency-agent.md) - Enforcement agent
-

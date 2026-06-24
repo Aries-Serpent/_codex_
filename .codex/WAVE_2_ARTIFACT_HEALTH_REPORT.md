@@ -376,7 +376,7 @@ Per ARTIFACT_CATALOG.md (.github/workflow-archive/ARTIFACT_CATALOG.md), the foll
 ### Methodology
 
 ```
-Overall Health = (Availability × 0.30) + (Completeness × 0.30) + 
+Overall Health = (Availability × 0.30) + (Completeness × 0.30) +
                  (Compliance × 0.25) + (Timeliness × 0.15)
 ```
 
@@ -503,7 +503,7 @@ This artifact health report confirms readiness for **Phase 10: Full CI/CD Observ
 **Authority**: D-tier autonomous  
 **Status**: ✅ VERIFIED & COMPLETE  
 
-**Recommendations**: 
+**Recommendations**:
 - ✅ PROCEED to Phase 10 CI/CD observability
 - ✅ ACTIVATE continuous monitoring
 - ✅ MAINTAIN current retention policies

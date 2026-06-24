@@ -192,7 +192,7 @@ mcp_servers:
     args: [mcp_server.py]
     env:
       DEBUG: "false"
-  
+
   # Remote server
   remote_service:
     url: "http://localhost:3000"

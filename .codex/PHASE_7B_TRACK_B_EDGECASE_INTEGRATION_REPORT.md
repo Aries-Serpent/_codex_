@@ -237,14 +237,14 @@ async def test_async_timeout_handling(self):
 def test_orchestrator_state_isolation(self):
     """Multiple orchestrator instances should not share state"""
     from codex.agents.orchestrator import Orchestrator
-    
+
     orch1 = Orchestrator()
     orch2 = Orchestrator()
-    
+
     # Assertion 1: Instance creation
     assert orch1 is not None
     assert orch2 is not None
-    
+
     # Assertion 2: State management
     if hasattr(orch1, 'state'):
         orch1.state = 'test_state_1'

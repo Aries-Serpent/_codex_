@@ -60,15 +60,15 @@ This represents a **regression**: the codebase reverted to an unstable state whi
 ```
 Turn 1: ✅ Agent runs, completes work
          Generates function calls, submits payload to CAPI
-         
+
 Turn 2: ❌ Agent fails to start
-         Error: "Duplicate function call ID" 
-         
+         Error: "Duplicate function call ID"
+
 Why?    ❌ COPILOT_AGENT_DEDUPLICATION_ENABLED is not set
          ❌ PayloadDeduplicator class not activated
          ❌ Function call IDs from Turn 1 leak into Turn 2
          ❌ CAPI rejects duplicate function call IDs
-         
+
 Solution: Set COPILOT_AGENT_DEDUPLICATION_ENABLED=true
          Set COPILOT_AGENT_CCA_VERSION_LOCK=stable
          Set COPILOT_AGENT_TURN_ISOLATION_ENABLED=true
@@ -276,4 +276,3 @@ The fix from Sessions 1294-1295 was intentional, deliberate, and critical. Remov
 **Next Step:** Execute Phase 1 (Baseline Restoration)
 **Owner:** @mbaetiong
 **Escalation:** Contact @mbaetiong if issues arise
-

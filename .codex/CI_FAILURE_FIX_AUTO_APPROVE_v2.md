@@ -63,16 +63,16 @@ on:
   workflow_run:
     workflows: ["Copilot coding agent", "..."]
     types: [requested, in_progress, completed]
-  
+
   pull_request:
     types: [synchronize, opened, reopened, ready_for_review]
-  
+
   pull_request_review:
     types: [submitted]
-  
+
   schedule:
     - cron: '*/5 * * * *'
-  
+
   workflow_dispatch:
     inputs: { ... }
 
@@ -96,12 +96,12 @@ on:
     branches:
       - 'copilot/**'
       - 'feature/**'
-  
+
   # Primary: fires after every Copilot agent session (from the default branch).
   workflow_run:
     workflows: ["Copilot coding agent", "..."]
     types: [requested, in_progress, completed]
-  
+
   # ... rest of triggers
 ```
 
@@ -131,7 +131,7 @@ on:
 +     branches:
 +       - 'copilot/**'
 +       - 'feature/**'
-+   
++  
     # Primary: fires after every Copilot agent session (from the default branch).
     workflow_run:
 ```
@@ -299,12 +299,12 @@ But if **step 1 or 2 fails**, the job conditions are never evaluated. The workfl
 - **Initial Diagnosis** (2026-06-17): `.codex/CI_FAILURE_DIAGNOSIS_auto-approve.md`
   - Identified 5 consecutive failures on push events
   - Root cause: Job condition mismatch
-  
+
 - **First Fix Attempt** (commit before this fix)
   - Added `approve-on-push` job
   - Expected to handle push events
   - **Failed**: Still got "workflow file issue" error
-  
+
 - **Root Cause Analysis** (this fix)
   - Discovered missing `push:` trigger in `on:` section
   - Implemented explicit push trigger
@@ -344,7 +344,7 @@ If needed, remove lines 44-49:
     branches:
       - 'copilot/**'
       - 'feature/**'
-  
+
 ```
 
 ---

@@ -76,12 +76,12 @@ fi
 # ============================================================================
 if [ ${#OPTIONAL_TOOLS[@]} -gt 0 ]; then
     echo -e "\n${BLUE}[2/4]${NC} Installing optional tools...\n"
-    
+
     echo -e "${YELLOW}The following optional tools are missing:${NC}"
     for tool in "${OPTIONAL_TOOLS[@]}"; do
         echo "  • $tool"
     done
-    
+
     read -p "Would you like to install them? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -91,7 +91,7 @@ if [ ${#OPTIONAL_TOOLS[@]} -gt 0 ]; then
                 npm install -g markdownlint-cli
             fi
         fi
-        
+
         if [[ "${OPTIONAL_TOOLS[*]}" == *"yamllint"* ]]; then
             echo -e "${BLUE}Installing yamllint...${NC}"
             if command -v brew &> /dev/null; then

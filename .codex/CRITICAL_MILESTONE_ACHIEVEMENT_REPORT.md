@@ -352,7 +352,7 @@ view .codex/WAVE3_DAILY_CHECKPOINT_2026-06-18.md
 
 **Next Critical Deadline:** 2026-06-19T14:00Z (Phase 3 completion)
 
-**Daily Monitoring Checkpoints:** 
+**Daily Monitoring Checkpoints:**
 - 09:00Z UTC (morning)
 - 21:00Z UTC (evening)
 

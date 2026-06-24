@@ -115,7 +115,7 @@ else:
 Mission: Scan scripts/ci/*.py for unsafe API field access patterns
          Apply null-guard fixes to all vulnerable instances
          Validate with pytest, mypy, ruff
-         
+
 Expected Output: .codex/WAVE_2_CI_TESTING_RP001_RESULTS.md
 Timeout: 300 seconds (5 minutes)
 Confidence Threshold: 0.99 (required for auto-commit)
@@ -139,7 +139,7 @@ Mission: Audit all .github/workflows/*.yml
          Check RP-003 (YAML indentation) and RP-007 (compliance config)
          Auto-fix safe issues
          Generate compliance report
-         
+
 Expected Output: .codex/WAVE_2_WORKFLOW_COMPLIANCE_RESULTS.md
 Timeout: 300 seconds (5 minutes)
 Compliance Threshold: >96%
@@ -163,7 +163,7 @@ Mission: Retrieve logs from 100+ workflow runs
          Classify failures by RP-001 through RP-008
          Generate trend analysis (7-day, 30-day)
          Provide recommendations for Wave 3
-         
+
 Expected Output: .codex/WAVE_2_CI_TRENDS_ANALYSIS.md
 Timeout: 600 seconds (10 minutes)
 Coverage: 50-60% of all CI failures
@@ -188,7 +188,7 @@ Coverage: 50-60% of all CI failures
 Mission: Check artifact storage usage vs. quota
          Identify stale/orphaned artifacts
          Generate cleanup recommendations
-         
+
 Expected Output: .codex/WAVE_2_ARTIFACT_HEALTH_REPORT.md
 Timeout: 300 seconds (5 minutes)
 ```

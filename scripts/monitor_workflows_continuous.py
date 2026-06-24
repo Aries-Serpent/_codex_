@@ -231,9 +231,9 @@ class WorkflowMonitor:
 
         report = f"""
 ## 📊 Monitoring Status Report
-**Timestamp**: {datetime.utcnow().isoformat()}Z  
-**Elapsed Time**: {elapsed.total_seconds():.0f}s  
-**Remaining Time**: {remaining.total_seconds():.0f}s  
+**Timestamp**: {datetime.utcnow().isoformat()}Z
+**Elapsed Time**: {elapsed.total_seconds():.0f}s
+**Remaining Time**: {remaining.total_seconds():.0f}s
 **Monitoring Status**: 🟢 ACTIVE
 
 ### Summary
@@ -358,8 +358,8 @@ class WorkflowMonitor:
 
         report = f"""# Track 5B: Workflow Health Final Report
 
-**Campaign Duration**: {total_time.total_seconds():.0f} seconds  
-**Report Generated**: {datetime.utcnow().isoformat()}Z  
+**Campaign Duration**: {total_time.total_seconds():.0f} seconds
+**Report Generated**: {datetime.utcnow().isoformat()}Z
 **Monitoring Status**: ✅ Complete
 
 ## 📊 Summary Statistics
@@ -426,8 +426,8 @@ class WorkflowMonitor:
 
 ---
 
-**Report Generated**: {datetime.utcnow().isoformat()}Z  
-**Monitoring Agent**: workflow-health-monitor  
+**Report Generated**: {datetime.utcnow().isoformat()}Z
+**Monitoring Agent**: workflow-health-monitor
 **Campaign**: Track 5B Continuous Workflow Health Monitoring
 """
 

@@ -113,15 +113,15 @@ def test_{func_name}_error_handling():
 
         return f'''class Test{cls_name}:
     """Test suite for {cls_name} class."""
-    
+
     def setup_method(self):
         """Setup for each test."""
         pass
-    
+
     def teardown_method(self):
         """Cleanup after each test."""
         pass
-    
+
     {chr(10).join(method_tests)}
 '''
 

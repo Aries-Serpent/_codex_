@@ -46,7 +46,7 @@
   ```bash
   # Use the issue template from:
   # .codex/CI_PATTERN_PREVENTION_ISSUE_TEMPLATE.md
-  
+
   # Via GitHub CLI:
   gh issue create \
     --title "[CI AUTO-FIX] Prevent Recurrence of 2026-06-23 Failures" \
@@ -81,7 +81,7 @@
     --base main \
     --title "fix: resolve 3 critical CI failures (RP-001, RP-002, RP-003)" \
     --body "$(cat .codex/CI_FINAL_RESOLUTION_REPORT_20260623.md)"
-  
+
   # Option 2: Via runtime tool
   # Use runtime-tools-create_pull_request
   ```
@@ -109,7 +109,7 @@
   ```bash
   # Create new workflow file:
   # .github/workflows/validate-api-null-handling.yml
-  
+
   # Content template from:
   # .codex/CI_PATTERN_PREVENTION_GUIDE.md (Pattern RP-001 section)
   ```
@@ -149,17 +149,17 @@
 - [ ] **E1:** Post announcement to team Discussions
   ```markdown
   ## 🎯 CI Pattern Prevention System Now Active
-  
+
   Three prevention patterns deployed:
   - **RP-001:** API Null-Handling (metrics collector)
   - **RP-002:** mypy Baseline Enforcement (type safety)
   - **RP-003:** Documentation Link Validation (docs quality)
-  
+
   Auto-fix commands available:
   - RP-001: python scripts/ci/validate_api_null_handling.py --fix
   - RP-002: python scripts/ci/mypy_baseline.py --auto-fix
   - RP-003: python scripts/ci/link_validator.py --validate --fix
-  
+
   See: .codex/CI_PATTERN_PREVENTION_GUIDE.md
   ```
 
@@ -225,12 +225,12 @@
 - [ ] **G2:** Update CHANGELOG.md with improvements
   ```
   ## [Unreleased]
-  
+
   ### Fixed
   - fix: CI metrics collector NoneType crash (phase_8_3_benchmark_collector.py)
   - refactor: Resolved 26 type errors, improved mypy baseline 121→95
   - docs: Fixed 71 broken documentation links across 2,241 files
-  
+
   ### Added
   - Prevention patterns: RP-001 (API null-handling), RP-002 (mypy baseline), RP-003 (link validation)
   - Comprehensive prevention guide: .codex/CI_PATTERN_PREVENTION_GUIDE.md
@@ -252,10 +252,10 @@
   ```bash
   # Test RP-001
   gh workflow run validate-api-null-handling.yml --ref main
-  
+
   # Test RP-002 (already exists)
   gh workflow run mypy-baseline.yml --ref main
-  
+
   # Test RP-003 (already exists)
   gh workflow run workflow-link-validation.yml --ref main
   ```

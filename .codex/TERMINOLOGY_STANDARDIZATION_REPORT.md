@@ -244,7 +244,7 @@ A new terminology-consistency-agent (future implementation) will:
 - **CONTRIBUTING.md** (+370 lines, +12 KB)
   - New "Terminology Standards" section
   - Tables, examples, enforcement explanation
-  
+
 - **Primary Documentation** (15 files)
   - 2,273 terminology standardizations
   - ~14 KB of corrections
@@ -263,7 +263,7 @@ A new terminology-consistency-agent (future implementation) will:
 
 1. **Reference the Glossary**
    ```markdown
-   See [.codex/TERMINOLOGY_GLOSSARY.md](.codex/TERMINOLOGY_GLOSSARY.md) 
+   See [.codex/TERMINOLOGY_GLOSSARY.md](.codex/TERMINOLOGY_GLOSSARY.md)
    for comprehensive terminology standards.
    ```
 

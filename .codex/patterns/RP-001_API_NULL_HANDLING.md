@@ -75,7 +75,7 @@ def analyze_null_access(file_path: str, error_context: str) -> NullAccessAnalysi
     """Analyze the null-access pattern."""
     # Example: collector.metrics.values.append(value)
     # Error: 'collector.metrics' is None
-    
+
     return NullAccessAnalysis(
         access_chain=["collector", "metrics", "values"],
         null_point="metrics",
@@ -92,12 +92,12 @@ def apply_null_check_fix(file_path: str, analysis: NullAccessAnalysis) -> FixRes
     """Apply null-check fix to source code."""
     # Before:
     # value = collector.metrics.values
-    
+
     # After:
     # if collector.metrics is None:
     #     collector.metrics = {}
     # value = collector.metrics.values
-    
+
     return FixResult(
         success=True,
         lines_modified=2,

@@ -112,7 +112,7 @@ Should reference and integrate:
 ### Merge Decision Tree
 
 ```
-Phase 2 PASS? 
+Phase 2 PASS?
 ├─ YES → Phase 3 agents proceed
 │  ├─ Agent 1 (Security) PASS?
 │  │  ├─ YES → Agent 2 (Compliance) PASS?

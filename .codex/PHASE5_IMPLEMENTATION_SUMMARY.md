@@ -214,7 +214,7 @@ Phase: test-enhancement-agent enhances tests
             .codex/enhance_phase5_tests.py (orchestration)
             tests/coverage_phase5_lane1_template.py (reference)
             .codex/PHASE5_QUICK_START.md (workflow)
-  
+
   └─> produces: Enhanced tests with semantic assertions
                 Edge case coverage tests
                 Mutation defense assertions
@@ -457,4 +457,3 @@ python .codex/enhance_phase5_tests.py --batch --report
 **Framework Ready:** YES - Awaiting test file input  
 **Estimated Enhancement Time:** 4.5 hours  
 **Target Mutation Score:** ≥75% per lane  
-

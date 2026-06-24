@@ -59,40 +59,40 @@ def build_agent_text_profile(agent: Dict[str, Any]) -> str:
     Combines all textual metadata into semantic context.
     """
     parts = []
-    
+
     # Primary identifiers
     parts.append(f"Agent: {agent.get('name', '')}")
     parts.append(f"ID: {agent.get('id', '')}")
-    
+
     # Description and purpose
     if agent.get('description'):
         parts.append(f"Description: {agent['description']}")
     if agent.get('purpose'):
         parts.append(f"Purpose: {agent['purpose']}")
-    
+
     # Skills
     if agent.get('primary_skill'):
         parts.append(f"Primary skill: {agent['primary_skill']}")
     if agent.get('secondary_skill'):
         parts.append(f"Secondary skill: {agent['secondary_skill']}")
-    
+
     # Capabilities
     if agent.get('capabilities'):
         capabilities_text = ", ".join(agent['capabilities'])
         parts.append(f"Capabilities: {capabilities_text}")
-    
+
     # Capability tags
     if agent.get('capability_tags'):
         tags_text = ", ".join(agent['capability_tags'])
         parts.append(f"Tags: {tags_text}")
-    
+
     # Category and subcategory
     parts.append(f"Category: {agent.get('category', '')} / {agent.get('subcategory', '')}")
-    
+
     # Metadata
     parts.append(f"Maturity: {agent.get('maturity', '')}")
     parts.append(f"Autonomy: {agent.get('autonomy_model', '')}")
-    
+
     return " ".join(parts)
 
 
@@ -103,16 +103,16 @@ def extract_agents_from_registry(registry: Dict[str, Any]) -> List[AgentCapabili
     """
     agents = []
     registry_agents = registry.get('agents', [])
-    
+
     print(f"Processing {len(registry_agents)} total agents from registry...")
     active_count = 0
-    
+
     for agent in registry_agents:
         if agent.get('status') != 'active':
             continue
-        
+
         active_count += 1
-        
+
         try:
             agent_id = agent.get('id', '')
             name = agent.get('name', agent_id)
@@ -133,7 +133,7 @@ def extract_agents_from_registry(registry: Dict[str, Any]) -> List[AgentCapabili
             created = agent.get('created', '2026-01-01')
             updated = agent.get('updated', '2026-01-01')
             maintainer = agent.get('maintainer', 'unknown')
-            
+
             agent_obj = AgentCapability(
                 agent_id=agent_id,
                 name=name,
@@ -158,11 +158,11 @@ def extract_agents_from_registry(registry: Dict[str, Any]) -> List[AgentCapabili
                 maintainer=maintainer,
             )
             agents.append(agent_obj)
-            
+
         except Exception as e:
             print(f"Error processing agent {agent.get('id', 'unknown')}: {e}")
             continue
-    
+
     print(f"Extracted {active_count} active agents from {len(registry_agents)} total")
     return agents
 
@@ -174,21 +174,21 @@ def generate_embeddings(agents: List[AgentCapability], model_name: str = "all-Mi
     """
     print(f"Loading SentenceTransformer model: {model_name}")
     model = SentenceTransformer(model_name)
-    
+
     # Build text profiles for all agents
     agent_texts = []
     for agent in agents:
         text_profile = build_agent_text_profile(asdict(agent))
         agent_texts.append(text_profile)
-    
+
     print(f"Generating embeddings for {len(agent_texts)} agents...")
     embeddings = model.encode(agent_texts, show_progress_bar=True, convert_to_numpy=True)
-    
+
     # Attach embeddings to agents
     for i, agent in enumerate(agents):
         agent.embedding_vector = embeddings[i].tolist()
         agent.embedding_dimension = embeddings[i].shape[0]
-    
+
     print(f"Generated embeddings: {embeddings.shape}")
     return agents, embeddings
 
@@ -199,15 +199,15 @@ def build_faiss_index(embeddings: np.ndarray) -> Tuple[Any, np.ndarray]:
     Uses L2 distance (Euclidean) metric.
     """
     print(f"Building FAISS index on {embeddings.shape[0]} embeddings...")
-    
+
     # Normalize embeddings for cosine similarity
     embeddings_normalized = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
-    
+
     # Create FAISS index (L2 metric, normalized = cosine)
     dimension = embeddings_normalized.shape[1]
     index = faiss.IndexFlatL2(dimension)
     index.add(embeddings_normalized.astype(np.float32))
-    
+
     print(f"FAISS index created with {index.ntotal} vectors, dimension={dimension}")
     return index, embeddings_normalized
 
@@ -223,32 +223,32 @@ def build_capability_index_json(
     Includes agent metadata, embeddings, and search structure.
     """
     print(f"Building JSON capability index...")
-    
+
     # Build agent lookup by ID and category
     agents_by_id = {agent.agent_id: asdict(agent) for agent in agents}
     agents_by_category = {}
     agents_by_tag = {}
     agents_by_autonomy = {}
-    
+
     for agent in agents:
         # By category
         cat_key = f"{agent.category}/{agent.subcategory}"
         if cat_key not in agents_by_category:
             agents_by_category[cat_key] = []
         agents_by_category[cat_key].append(agent.agent_id)
-        
+
         # By capability tags
         for tag in agent.capability_tags:
             if tag not in agents_by_tag:
                 agents_by_tag[tag] = []
             agents_by_tag[tag].append(agent.agent_id)
-        
+
         # By autonomy model
         autonomy = agent.autonomy_model
         if autonomy not in agents_by_autonomy:
             agents_by_autonomy[autonomy] = []
         agents_by_autonomy[autonomy].append(agent.agent_id)
-    
+
     # Build index document
     index_data = {
         "metadata": {
@@ -288,12 +288,12 @@ def build_capability_index_json(
             "top_k_default": 5,
         },
     }
-    
+
     # Save JSON index
     print(f"Writing capability index to {output_path}")
     with open(output_path, 'w') as f:
         json.dump(index_data, f, indent=2)
-    
+
     print(f"Capability index saved: {len(index_data['agents'])} agents indexed")
     return index_data
 
@@ -317,90 +317,90 @@ def generate_search_statistics(
         "capabilities_per_agent": [],
         "tags_per_agent": [],
     }
-    
+
     for agent in agents:
         # By category
         cat = agent.category
         if cat not in stats["by_category"]:
             stats["by_category"][cat] = 0
         stats["by_category"][cat] += 1
-        
+
         # By maturity
         mat = agent.maturity
         if mat not in stats["by_maturity"]:
             stats["by_maturity"][mat] = 0
         stats["by_maturity"][mat] += 1
-        
+
         # By autonomy
         aut = agent.autonomy_model
         if aut not in stats["by_autonomy"]:
             stats["by_autonomy"][aut] = 0
         stats["by_autonomy"][aut] += 1
-        
+
         # Capabilities per agent
         stats["capabilities_per_agent"].append(len(agent.capabilities))
-        
+
         # Tags per agent
         stats["tags_per_agent"].append(len(agent.capability_tags))
-    
+
     stats["avg_capabilities_per_agent"] = np.mean(stats["capabilities_per_agent"])
     stats["avg_tags_per_agent"] = np.mean(stats["tags_per_agent"])
-    
+
     return stats
 
 
 def main():
     """Main execution for Task 9.3.1: Build capability index."""
-    
+
     # Paths
     registry_path = ".github/agents/AGENT_REGISTRY.yaml"
     output_dir = ".codex"
     index_json_path = os.path.join(output_dir, "PHASE_9_3_CAPABILITY_INDEX.json")
     faiss_index_path = os.path.join(output_dir, "PHASE_9_3_AGENT_EMBEDDINGS.faiss")
     stats_path = os.path.join(output_dir, "PHASE_9_3_AGENT_CORPUS_STATS.json")
-    
+
     # Ensure output directory exists
     Path(output_dir).mkdir(parents=True, exist_ok=True)
-    
+
     print("=" * 80)
     print("PHASE 9.3 TASK 1: AUDIT 145-AGENT CAPABILITY CORPUS")
     print("=" * 80)
-    
+
     # Step 1: Load registry
     print("\n[1/6] Loading AGENT_REGISTRY.yaml...")
     registry = load_agent_registry(registry_path)
     print(f"Registry version: {registry.get('version')}")
     print(f"Total agents: {registry.get('total_agents')}, Active: {registry.get('active_agents')}")
-    
+
     # Step 2: Extract active agents
     print("\n[2/6] Extracting active agents...")
     agents = extract_agents_from_registry(registry)
     print(f"Extracted {len(agents)} active agents")
-    
+
     # Step 3: Generate embeddings
     print("\n[3/6] Generating semantic embeddings...")
     agents, embeddings = generate_embeddings(agents)
     print(f"Embeddings shape: {embeddings.shape}")
-    
+
     # Step 4: Build FAISS index
     print("\n[4/6] Building FAISS index...")
     faiss_index, embeddings_normalized = build_faiss_index(embeddings)
-    
+
     # Step 5: Build JSON index
     print("\n[5/6] Building JSON capability index...")
     index_data = build_capability_index_json(agents, faiss_index, embeddings_normalized, index_json_path)
-    
+
     # Step 6: Save FAISS index
     print("\n[6/6] Saving FAISS index...")
     save_faiss_index(faiss_index, faiss_index_path)
-    
+
     # Generate statistics
     print("\n[BONUS] Generating corpus statistics...")
     stats = generate_search_statistics(agents, index_data)
     with open(stats_path, 'w') as f:
         json.dump(stats, f, indent=2)
     print(f"Statistics saved to {stats_path}")
-    
+
     # Print summary
     print("\n" + "=" * 80)
     print("TASK 9.3.1 COMPLETE: 145-AGENT CAPABILITY INDEX BUILT")

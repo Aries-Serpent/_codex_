@@ -9,7 +9,7 @@
 ### ✅ Part 1: Security Baseline Achieved
 ```
 🔴 0 ERROR findings (currently 3)
-🟠 ≤10 HIGH findings (currently 35) 
+🟠 ≤10 HIGH findings (currently 35)
 🟡 ≤15 MEDIUM findings (currently 53)
 ✅ All CVE dependencies patched
 ✅ Secrets baseline reconciled (≤50 violations)  # pragma: allowlist secret

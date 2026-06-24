@@ -384,17 +384,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Check dependencies
         run: |
           pip install pip-audit
           pip-audit
-      
+
       - name: Check for secrets
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-      
+
       - name: SAST scan
         uses: github/super-linter@v4
 ```

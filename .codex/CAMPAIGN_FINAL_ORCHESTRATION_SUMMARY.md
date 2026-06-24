@@ -221,4 +221,3 @@ This end-to-end campaign demonstrates the **complete capability for autonomous, 
 **Authority:** COPILOT_AGENT_AUTH_ENABLED=true  
 **Campaign Lead:** @mbaetiong  
 **Implementation:** copilot-swe-agent[bot]
-

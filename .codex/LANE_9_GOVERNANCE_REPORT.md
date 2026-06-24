@@ -212,7 +212,7 @@ Level E (Advisory Only)
   ├─ Read-only pattern access
   ├─ Session context visible
   └─ No autonomous commits
-  
+
 Level D (Full Delegation) ← CURRENT
   ├─ Autonomous PR creation
   ├─ Session context injection

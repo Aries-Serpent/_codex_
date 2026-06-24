@@ -226,4 +226,3 @@ setup.py / setup.cfg / pyproject.toml
 
 *WAVE_2B_CVE_REMEDIATION_v1 Campaign - Batch 3*  
 *Verification Matrix: READY FOR AGENT 1 PATCH APPLICATION*
-

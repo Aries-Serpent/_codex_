@@ -99,7 +99,7 @@ class TokenHealthChecker:
     ) -> TokenHealthCheck:
         """
         Check token health: structure, expiration, scopes, revocation.
-        
+
         Parameters
         ----------
         token : str | None
@@ -108,7 +108,7 @@ class TokenHealthChecker:
             Source type (determines check strategy)
         required_class : ControlClass
             Required privilege level (for scope validation)
-        
+
         Returns
         -------
         TokenHealthCheck
@@ -188,16 +188,16 @@ class TokenCircuitBreaker:
 class TokenCircuitBreaker:
     def get_state(self, source: TokenSource) → CircuitBreakerState:
         """Get current state; transitions OPEN→HALF_OPEN after probe interval."""
-    
+
     def record_success(self, source: TokenSource) → None:
         """Record success; close circuit and reset backoff."""
-    
+
     def record_failure(self, source: TokenSource) → None:
         """Record failure; open circuit if threshold exceeded."""
-    
+
     def get_backoff_seconds(self, source: TokenSource) → float:
         """Get current backoff duration (0 if CLOSED)."""
-    
+
     def to_dict(self) → dict:
         """Serialize state for monitoring/logging."""
 ```
@@ -208,13 +208,13 @@ class TokenCircuitBreaker:
 CLOSED state:
   ├─ record_success() → stays CLOSED (reset failure_count=0)
   └─ record_failure() → if failure_count ≥ 3: open OPEN
-  
+
 OPEN state:
   ├─ time.time() - last_failure_time < 300s: stays OPEN
   ├─ time.time() - last_failure_time ≥ 300s: → HALF_OPEN (recovery probe)
   ├─ record_success() → CLOSED (reset failure_count, backoff=1.0)
   └─ record_failure() → stays OPEN, increment failure_count, increase backoff
-  
+
 HALF_OPEN state:
   ├─ record_success() → CLOSED
   └─ record_failure() → OPEN (reset recovery probe timer)
@@ -238,7 +238,7 @@ for source in candidates:
         logger.debug("Circuit open for %s — skipping (backoff=%.1fs)",
                      source.value, backoff_seconds)
         continue
-    
+
     token = broker._fetch(source)
     if token and health_check_passed:
         broker._circuit_breaker.record_success(source)
@@ -268,21 +268,21 @@ class TokenRotationScheduler:
 class TokenRotationScheduler:
     def register_token(self, source: TokenSource, created_at: Optional[int] = None) → None:
         """Register token with creation timestamp (Unix seconds)."""
-    
+
     def check_rotation_needed(self, source: TokenSource) → TokenRotationInfo | None:
         """
         Check if rotation is needed.
-        
+
         Returns
         -------
         TokenRotationInfo | None
             Info if overdue; None if still valid.
             Issues WARNING if approaching threshold.
         """
-    
+
     def get_rotation_info(self, source: TokenSource) → TokenRotationInfo | None:
         """Retrieve rotation metadata for source."""
-    
+
     def to_dict(self) → dict:
         """Serialize rotation schedule for monitoring."""
 ```
@@ -383,7 +383,7 @@ class TokenResolution:
     # ... existing fields ...
     health_check: Optional[TokenHealthCheck] = None      # 2.1.1
     resolution_time_ms: float = 0.0                      # 2.1.4
-    
+
     @property
     def is_healthy(self) -> bool:
         """Check token health status."""

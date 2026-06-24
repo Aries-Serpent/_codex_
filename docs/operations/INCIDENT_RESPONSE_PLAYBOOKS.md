@@ -82,18 +82,18 @@ DETECT INCIDENT
   ├─ Alert triggered / Report received
   ├─ Log initial information
   └─ Acknowledge receipt
-  
+
 CLASSIFY
   ├─ Severity level (P0-P3)
   ├─ Category (Credential/Access/Breach/Performance/Supply Chain)
   └─ Initial impact assessment
-  
+
 ASSEMBLE TEAM
   ├─ Notify Incident Commander
   ├─ Notify Security Lead
   ├─ Notify Infrastructure Lead
   └─ Create incident Slack channel: #incident-YYYY-MMDD-XXX
-  
+
 CREATE INCIDENT LOG
   ├─ Incident ID
   ├─ Detection time
@@ -740,14 +740,14 @@ P0 (Critical):
   0-15 min  → Incident Commander + On-call
   15-30 min → Team Lead + Security Lead
   30+ min   → CTO + Security Director
-  
+
 P1 (High):
   0-1 hour  → Incident Commander
   1+ hour   → Team Lead + Security Lead
-  
+
 P2 (Medium):
   0-4 hours → Incident Commander
-  
+
 P3 (Low):
   0-24 hours → Assigned engineer
 ```

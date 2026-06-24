@@ -27,7 +27,7 @@ This plan maps **immediate, short-term, and medium-term optimizations** to impro
 **Objective:** Re-enable cache health tracking for observability
 
 **Tasks:**
-1. **Restore cache-health-monitor.yml** 
+1. **Restore cache-health-monitor.yml**
    - [ ] Uncomment workflow (currently stub only)
    - [ ] Wire to CacheManager.validate_cache_health()
    - [ ] Add metrics export to `.codex/cache_metrics.json`
@@ -78,7 +78,7 @@ This plan maps **immediate, short-term, and medium-term optimizations** to impro
        key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
        restore-keys: |
          ${{ runner.os }}-pre-commit-
-   
+
    - name: Run pre-commit
      run: pre-commit run --all-files
    ```
@@ -131,13 +131,13 @@ This plan maps **immediate, short-term, and medium-term optimizations** to impro
    ```
    Format: ${os}-${workflow}-${cache-type}-${dependency-hash}
    Example: Linux-pr-checks-pip-a1b2c3d4e5f6
-   
+
    Components:
    - ${os}: runner.os (Linux, Windows, macOS)
    - ${workflow}: github.workflow (pr-checks, etc)
    - ${cache-type}: pip, pre-commit, mypy, etc
    - ${hash}: SHA256(dependency_files) [12 chars]
-   
+
    Restore Keys (fallback chain):
    1. ${os}-${workflow}-${cache-type}-${hash}
    2. ${os}-${workflow}-${cache-type}-
@@ -192,7 +192,7 @@ This plan maps **immediate, short-term, and medium-term optimizations** to impro
        key: ${{ runner.os }}-mypy-${{ hashFiles('pyproject.toml', 'src/**/*.py') }}
        restore-keys: |
          ${{ runner.os }}-mypy-
-   
+
    - name: Restore ruff cache
      uses: actions/cache@v4
      with:
@@ -261,7 +261,7 @@ This plan maps **immediate, short-term, and medium-term optimizations** to impro
        key: ${{ runner.os }}-coverage-${{ hashFiles('pyproject.toml') }}
        restore-keys: |
          ${{ runner.os }}-coverage-
-   
+
    # Add tool caches
    - name: Restore coverage cache
      uses: actions/cache@v4
@@ -351,14 +351,14 @@ class CacheOptimizer:
     def __init__(self):
         self.hit_rate_threshold = 0.70
         self.age_threshold_days = 14
-    
+
     def should_remove(self, cache):
         """Determine if cache should be removed."""
         return (
             cache.hit_rate < self.hit_rate_threshold and
             cache.age_days > self.age_threshold_days
         )
-    
+
     def get_optimization_plan(self):
         """Generate cache optimization plan."""
         # Analyze current caches
@@ -403,7 +403,7 @@ class CacheOptimizer:
    on:
      schedule:
        - cron: '0 1 * * *'  # Daily at 01:00 UTC
-   
+
    jobs:
      warmup:
        runs-on: ubuntu-latest
@@ -649,7 +649,7 @@ AFTER (Phase 10 Complete):
   Cache Monitoring:     Enabled (daily)
   Avg CI Duration:      140s (-22%)
   CI Costs:             -15% (~$3K/month saved)
-  
+
 ADDITIONAL BENEFITS:
   - Developer experience: Faster feedback
   - Cache reliability: Fully observable

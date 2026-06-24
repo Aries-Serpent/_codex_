@@ -201,24 +201,24 @@ Audit trail: ✅ Immutable log at .codex/rbac_audit.jsonl
 Step 1: PR Approved
   ├─ @mbaetiong submits "Approved" review
   └─ Trigger: pull_request_review / submitted
-  
+
 Step 2: Validation
   ├─ Check: Owner approval gate passes ✅
   ├─ Check: All CI checks passing ✅
   └─ Check: No merge conflicts ✅
-  
+
 Step 3: Delegation
   ├─ Set: COPILOT_AGENT_AUTH_ENABLED=true
   ├─ TTL: 4 hours (auto-expiry)
   ├─ Scope: This PR + branch only
   └─ Store: GitHub Actions environment
-  
+
 Step 4: Agent Resumption
   ├─ Post: @copilot continue (comment)
   ├─ Signal: Agent subscribes to mentions
   ├─ Resume: Multi-turn problem solving
   └─ Actions: Commit, push, dispatch workflows
-  
+
 Step 5: Session Cleanup
   ├─ Event: Merge or close PR
   ├─ Action: COPILOT_AGENT_AUTH_ENABLED=false

@@ -62,7 +62,7 @@ Based on Discussion Comments #17373172-17373173 (Advanced Automation Analysis):
 - **Deliverable:** `.codex/PHASE_8A_LANE_1_COVERAGE_COMPLETION.md`
 - **Success Criteria:** Coverage ≥20% OR documented clear path to 20%
 
-#### Lane 2: Mutation Testing Validation (2-4 hours) 
+#### Lane 2: Mutation Testing Validation (2-4 hours)
 **Agent:** `mutation-testing-agent` + `test-pattern-guardian`
 
 **Validation Tasks:**
@@ -119,7 +119,7 @@ Based on Discussion Comments #17373172-17373173 (Advanced Automation Analysis):
 **Agents:** `unified-security-scanner` + custom Cognitive Brain orchestrator
 
 **Automation Items:**
-1. **Item 3: Secrets & Environment Distribution** 
+1. **Item 3: Secrets & Environment Distribution**
    - 90% automatable | 3-4 hours | 1-2h ROI per deployment
    - **Cognitive Brain Integration:**
      - Query patterns for required secrets per environment
@@ -242,17 +242,17 @@ jobs:
           python scripts/cognitive/query_required_secrets.py \
             --environment ${{ inputs.environment }} \
             --output required_secrets.json
-      
+
       - name: Validate secrets manifest
         run: |
           python scripts/deployment/validate_secrets_manifest.py \
             --manifest required_secrets.json \
             --check-entropy true
-      
+
       - name: Create approval gate
         run: |
           gh pr create --title "Secrets Distribution: ${{ inputs.environment }}"
-      
+
       - name: Distribute via GitHub API (if approved)
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}

@@ -90,7 +90,7 @@ Multiple conflicting statements about autonomous operations:
 
 **Statement 1** (`.codex/guardrails.md`):
 ```
-"These are policy placeholders for the Genesis Protocol. 
+"These are policy placeholders for the Genesis Protocol.
 Human admin (mbaetiong) must review and finalize before enabling autonomous operations."
 Status: Template - Awaiting Human Review
 ```
@@ -502,4 +502,3 @@ Found multiple files with conflicting information about Codespace support:
 **Conflicts Identified**: 12  
 **Critical Issues**: 3  
 **Recommendations**: 16  
-

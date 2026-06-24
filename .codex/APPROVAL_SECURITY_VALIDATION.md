@@ -31,7 +31,7 @@ This document provides comprehensive security analysis of the proposed unified a
 
 **Description:** Leaked or exfiltrated CODEX_MASTER_KEY PAT used to auto-approve arbitrary PRs without review.
 
-**Attack Vector:** 
+**Attack Vector:**
 - Stored in GitHub secret (protected via GitHub encryption)
 - Visible in logs if token is inadvertently printed or leaked in error messages
 - Accessible to any GitHub Actions workflow with `secrets: inherit` and appropriate permissions
@@ -502,7 +502,7 @@ def check_approval_throttle(workflow_id):
   - [ ] CR-1: Token rotation workflow created and tested (one manual rotation cycle)
   - [ ] CR-3: Token validation at workflow startup prevents silent 403 failures
   - [ ] Test: Verify Tier 1-3 tokens work; Tier 4 fallback fails explicitly
-  
+
 - [ ] **Audit Logging:**
   - [ ] CR-2: All audit log entries have valid HMAC-SHA256 signatures
   - [ ] HR-2: Monthly log rotation to archive directory is automated
@@ -572,4 +572,3 @@ With implementation of all CRITICAL and HIGH recommendations, the consolidated a
 2. Prioritize implementation of CRITICAL recommendations
 3. Schedule pre-production security testing (2 weeks)
 4. Conduct 30-day post-deployment compliance audit
-

@@ -370,7 +370,7 @@ genesis_validation.json (genesis-bootstrap.yml capture)
 - name: Record WEC approval audit
   run: |
     cat >> .codex/audit/wec_approval_log.md <<'EOF'
-    
+
     ## Genesis Bootstrap Dispatch - $(date -u +"%Y-%m-%dT%H:%M:%SZ")
     - PR: ${{ github.event.pull_request.number || github.run_id }}
     - Author: ${{ github.actor }}

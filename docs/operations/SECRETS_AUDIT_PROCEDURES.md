@@ -170,7 +170,7 @@ for event in events:
     offset = (
         datetime.fromisoformat(event["timestamp"].replace("Z", "")) - incident_time
     ).total_seconds() / 3600
-    
+
     sign = "+" if offset >= 0 else ""
     print(f"{sign}{offset:6.1f}h: {event['actor']['id']:20} "
           f"{event['action']['type']:6} "
@@ -207,7 +207,7 @@ grep 'CODEX_MASTER_KEY' .codex/aftermath/secrets_audit.jsonl | \
 echo ""
 echo "Off-hours access (outside 8 AM - 6 PM UTC):"
 grep 'CODEX_MASTER_KEY' .codex/aftermath/secrets_audit.jsonl | \
-  jq 'select((.timestamp | split("T")[1] | split(":")[0] | tonumber) < 8 or 
+  jq 'select((.timestamp | split("T")[1] | split(":")[0] | tonumber) < 8 or
             (.timestamp | split("T")[1] | split(":")[0] | tonumber) > 18)' | \
   jq '.timestamp'
 ```
@@ -291,7 +291,7 @@ grep CODEX_MASTER_KEY .codex/aftermath/secrets_audit.jsonl | \
 
 # For each job, check what actions were taken
 gh api repos/Aries-Serpent/_codex_/actions/runs \
-  --jq '.workflow_runs[] | select(.created_at > "2026-06-14") | 
+  --jq '.workflow_runs[] | select(.created_at > "2026-06-14") |
   {id, status, conclusion, created_at}'
 ```
 

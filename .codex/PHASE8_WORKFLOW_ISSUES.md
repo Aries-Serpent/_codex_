@@ -97,4 +97,3 @@
 
 10. **.github/workflows/app-package-download.yml**
    - `checkout@df4cb1c069e1874edd31b4311f1884172cec0e10`
-

@@ -208,21 +208,21 @@ All 4 agents in Wave 1 have completed their missions on schedule or ahead of sch
 
 ```bash
 # Track C: Mutation Hardening (2 agents)
-task(agent_type="mutation-testing-agent", 
+task(agent_type="mutation-testing-agent",
      name="phase7b-mutation-hardening", mode="background")
-task(agent_type="test-pattern-guardian", 
+task(agent_type="test-pattern-guardian",
      name="phase7b-quality-metrics", mode="background")
 
 # Track D: CI Stabilization (2 agents)  
-task(agent_type="ci-auto-healer-agent", 
+task(agent_type="ci-auto-healer-agent",
      name="phase7b-ci-stabilization", mode="background")
-task(agent_type="workflow-compliance-guardian", 
+task(agent_type="workflow-compliance-guardian",
      name="phase7b-workflow-audit", mode="background")
 
 # Track E: Documentation & Meta (2 agents)
-task(agent_type="unified-doc-agent", 
+task(agent_type="unified-doc-agent",
      name="phase7b-documentation-hub", mode="background")
-task(agent_type="session-analysis-agent", 
+task(agent_type="session-analysis-agent",
      name="phase7b-accountability-report", mode="background")
 ```
 

@@ -67,7 +67,7 @@ def generate_stub_module(module_name: str, class_name: str, description: str) ->
 
 class {class_name}:
     """{description}."""
-    
+
     def __init__(self):
         """Initialize {class_name.lower()}."""
         pass
@@ -106,11 +106,11 @@ def {class_name.lower()}():
 
 class TestInitialization:
     """Test initialization and setup."""
-    
+
     def test_init_default(self, {class_name.lower()}):
         """Test default initialization."""
         assert {class_name.lower()} is not None
-    
+
     def test_init_with_config(self, {class_name.lower()}):
         """Test initialization with configuration."""
         assert {class_name.lower()} is not None

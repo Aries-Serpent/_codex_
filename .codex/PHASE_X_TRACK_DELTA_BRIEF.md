@@ -25,12 +25,12 @@
    - Hash-based keys not invalidating on code changes
    - Lock file changes not reflected in cache keys
    - Python version changes ignored
-   
+
 2. **State Corruption** (35% of failures)
    - Parallel workflows writing to same cache
    - Partial cache writes (interrupted uploads)
    - Stale artifacts from failed workflows
-   
+
 3. **Cache Coordination** (25% of failures)
    - Workflows unaware of other layer caches
    - No prioritization (should check layer 4 before layer 1)

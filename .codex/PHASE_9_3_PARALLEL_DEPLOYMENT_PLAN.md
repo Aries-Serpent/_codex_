@@ -121,7 +121,7 @@ docker push codex-router:9.3
 
 ```sql
 -- Routing latency distribution
-SELECT 
+SELECT
   percentile_cont(0.50) WITHIN GROUP (ORDER BY latency_ms) as p50,
   percentile_cont(0.95) WITHIN GROUP (ORDER BY latency_ms) as p95,
   percentile_cont(0.99) WITHIN GROUP (ORDER BY latency_ms) as p99
@@ -129,7 +129,7 @@ FROM routing_decisions
 WHERE created_at > now() - interval 1 hour;
 
 -- Error rate
-SELECT 
+SELECT
   COUNT(*) as total,
   COUNT(*) FILTER (WHERE success = false) as failures,
   COUNT(*) FILTER (WHERE success = false)::float / COUNT(*) * 100 as error_rate_pct
@@ -137,7 +137,7 @@ FROM routing_decisions
 WHERE created_at > now() - interval 1 hour;
 
 -- Accuracy (correct agent selected)
-SELECT 
+SELECT
   COUNT(*) as total_decisions,
   COUNT(*) FILTER (WHERE accuracy = 1.0) as correct,
   COUNT(*) FILTER (WHERE accuracy = 1.0)::float / COUNT(*) * 100 as accuracy_pct
@@ -145,7 +145,7 @@ FROM routing_decisions
 WHERE created_at > now() - interval 1 hour;
 
 -- Agent load distribution
-SELECT 
+SELECT
   agent_id,
   COUNT(*) as tasks_assigned,
   AVG(queue_depth) as avg_queue,
@@ -364,22 +364,22 @@ alerts:
     condition: p99_latency_ms > 500
     severity: warning
     action: page_on_call
-    
+
   - name: Low Routing Accuracy
     condition: accuracy < 0.95
     severity: warning
     action: escalate_to_platform
-    
+
   - name: High Error Rate
     condition: error_rate > 0.01  # 1%
     severity: critical
     action: trigger_rollback
-    
+
   - name: Deadlock Detected
     condition: circular_dependency_count > 0
     severity: critical
     action: immediate_rollback + page_cto
-    
+
   - name: Agent Queue Overflow
     condition: max_queue_depth > 10
     severity: warning
@@ -513,19 +513,19 @@ router:
   enabled: true
   traffic_percentage: 5  # Canary phase
   fallback_to_sequential: true
-  
+
   # Performance tuning
   routing_timeout_ms: 500
   cache_ttl_seconds: 3600
   max_queue_depth: 100
   max_agents_per_task: 3
-  
+
   # SLA thresholds
   sla:
     latency_p99_ms: 500
     accuracy_min: 0.95
     error_rate_max: 0.005
-    
+
   # Logging
   logging:
     level: INFO

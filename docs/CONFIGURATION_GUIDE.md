@@ -54,12 +54,12 @@ training:
   warmup_ratio: 0.1
   weight_decay: 0.01
   gradient_accumulation_steps: 1
-  
+
   # Advanced options
   gradient_checkpointing: false
   mixed_precision: false  # or 'fp16', 'bf16'
   max_grad_norm: 1.0
-  
+
 # Optimization
 optimizer:
   type: adamw  # adamw, adam, sgd
@@ -77,7 +77,7 @@ logging:
   level: INFO
   log_dir: ./logs
   log_interval: 100
-  
+
 # Checkpointing
 checkpoint:
   save_dir: ./checkpoints
@@ -96,31 +96,31 @@ data:
   train_path: data/train.jsonl
   eval_path: data/eval.jsonl
   test_path: data/test.jsonl
-  
+
   # Data loading
   num_workers: 4
   prefetch_factor: 2
   pin_memory: true
-  
+
 # Preprocessing
 preprocessing:
   # Text processing
   lowercase: false
   remove_special_chars: false
   remove_punctuation: false
-  
+
   # Normalization
   normalize_whitespace: true
   remove_extra_spaces: true
-  
+
   # Length filtering
   min_length: 1
   max_length: 512
-  
+
   # Sampling
   max_samples: null  # null = all samples
   sample_ratio: 1.0  # Use fraction of data
-  
+
 # Data splits
 splits:
   train_ratio: 0.8
@@ -136,19 +136,19 @@ splits:
 device:
   type: cuda  # cuda, cpu, tpu
   device_ids: [0, 1, 2, 3]  # For multi-GPU
-  
+
 # Distributed training
 distributed:
   enabled: true
   backend: nccl  # nccl, gloo
   num_processes: 4
-  
+
 # GPU optimization
 gpu:
   enable_tf32: true  # for A100
   cudnn_benchmark: true
   memory_fraction: 0.9
-  
+
 # Ray configuration (for distributed training)
 ray:
   num_workers: 4
@@ -338,12 +338,12 @@ Create `configs/hardware/production.yaml`:
 device:
   type: cuda
   device_ids: [0, 1, 2, 3]
-  
+
 distributed:
   enabled: true
   num_processes: 4
   backend: nccl
-  
+
 training:
   batch_size: 256
   mixed_precision: bf16
@@ -362,10 +362,10 @@ Create `configs/hardware/dev.yaml`:
 ```yaml
 device:
   type: cpu
-  
+
 distributed:
   enabled: false
-  
+
 training:
   batch_size: 8
   num_epochs: 1
@@ -385,7 +385,7 @@ python train.py --config-path configs/hardware \
    # Bad: Hardcoded values everywhere
    batch_size: 32
    learning_rate: 2e-5
-   
+
    # Good: Use clear defaults with documentation
    defaults:
      - _self_
@@ -418,7 +418,7 @@ python train.py --config-path configs/hardware \
      - /training: bert
      - /data: default
      - /hardware: cpu
-   
+
    training:
      num_epochs: 1
      log_interval: 10
@@ -872,4 +872,3 @@ See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues and solutions.
 
 **Maintained By:** PS-01 Configuration Consolidation  
 **Questions:** File an issue with "configuration" label
-

@@ -37,10 +37,10 @@ T+0:05    Agent 2 (unified-doc-agent) DISPATCHED
 T+0:10    Agent 3 (unified-security-scanner) DISPATCHED
 T+0:15    Agent 4 (cache-management-agent) DISPATCHED
           [4 agents running, queue paused]
-          
+
 T+15:00   Agent 1 completes → slot opens
 T+15:05   Agent 5 (self-healing-orchestrator-agent) DISPATCHED
-          
+
 T+30:00   Agents 2-5 complete → all Wave 1 complete
 ```
 

@@ -118,7 +118,7 @@ Time:   0s          300s          600s
         |-----------|-----------|
 Agent 1 [======unified-coverage======]
 Agent 2 [======test-enhancement====]
-        
+
 Both agents start at t=0s
 Both must complete by t=600s
 Gate check happens at t=600s+ when both finish or timeout
@@ -156,11 +156,11 @@ campaigns:
     name: "Campaign Name"
     description: "What this campaign does"
     category: "deployment|quality|reliability|security"
-    
+
     objectives:
       - "Objective 1"
       - "Objective 2"
-    
+
     phases:
       - id: "1"
         name: "Phase Name"
@@ -176,11 +176,11 @@ campaigns:
         metrics_expected:
           - "Metric 1"
           - "Metric 2"
-    
+
     success_criteria:
       - "Criterion 1"
       - "Criterion 2"
-    
+
     escalation_threshold: 3
     rollback_strategy: "revert_and_alert"  # or "commit_and_alert"
 ```
@@ -506,11 +506,11 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-      
+
       - name: Run Campaign
         run: |
           python -m codex campaign run production-readiness-v1
-      
+
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v4

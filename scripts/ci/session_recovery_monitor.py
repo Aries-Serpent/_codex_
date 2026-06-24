@@ -30,7 +30,7 @@ def check_recent_failures():
     recovery_log = Path(".codex/session_recovery_log.jsonl")
     if not recovery_log.exists():
         return []
-    
+
     failures = []
     with open(recovery_log) as f:
         for line in f:
@@ -40,7 +40,7 @@ def check_recent_failures():
                 failures.append(entry)
             except json.JSONDecodeError:
                 continue
-    
+
     return failures[-10:] if len(failures) > 10 else failures
 
 def check_checkpoint_status():
@@ -48,7 +48,7 @@ def check_checkpoint_status():
     checkpoints_dir = Path(".codex/sessions")
     if not checkpoints_dir.exists():
         return {"total": 0, "recent": []}
-    
+
     checkpoints = sorted(checkpoints_dir.glob("checkpoint_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
     return {
         "total": len(checkpoints),
@@ -69,7 +69,7 @@ def generate_report():
 if __name__ == "__main__":
     report = generate_report()
     print(json.dumps(report, indent=2))
-    
+
     # Save report for artifact upload
     report_file = Path(".codex/session_recovery_monitoring_report.json")
     report_file.write_text(json.dumps(report, indent=2))

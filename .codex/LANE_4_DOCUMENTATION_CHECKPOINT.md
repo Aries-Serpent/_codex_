@@ -97,12 +97,12 @@ Examples:
 **Sample of 98 broken file references:**
 
 ```
-1. docs/API_REFERENCE.md → ../ARCHITECTURE_BLUEPRINT.md 
+1. docs/API_REFERENCE.md → ../ARCHITECTURE_BLUEPRINT.md
    STATUS: Path exists at docs/ARCHITECTURE_BLUEPRINT.md (relative path incorrect)
-   
+
 2. docs/API_REFERENCE.md → ../guides/production_deployment.md
    STATUS: No matching file found
-   
+
 3. docs/CONFIGURATION_GUIDE.md → HYDRA_MIGRATION_GUIDE.md
    STATUS: File not found (likely deleted or archived)
 ```

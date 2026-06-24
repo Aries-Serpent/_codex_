@@ -77,7 +77,7 @@ print(f"   Secret Value Length: {len(self.results['BASE64_ENCODED'])} chars")  #
 print(f"   Secret Value Hash: {secret_fingerprint}... (see saved script for actual value)")  # pragma: allowlist secret
 ```
 
-**Impact**: 
+**Impact**:
 - ✅ Eliminates 14 direct secret logging violations
 - ✅ Uses 256-bit SHA hash for fingerprinting (collision-resistant)
 - ✅ Shows only first 8-16 hex chars of hash (sufficient for uniqueness)
@@ -320,4 +320,3 @@ security: fix 42 CodeQL HIGH findings - redact secrets logging  # pragma: allowl
 **Prepared by**: CodeQL Alert Resolution Agent  
 **Date**: 2026-02-26  
 **Review Status**: Ready for CodeQL verification scan
-

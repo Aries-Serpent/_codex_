@@ -22,22 +22,22 @@ class HeadingHierarchyFixer:
         issues = []
         lines = content.split('\n')
         previous_level = 0
-        
+
         for i, line in enumerate(lines, 1):
             match = re.match(r'^(#+)\s+', line)
             if not match:
                 continue
-            
+
             level = len(match.group(1))
-            
+
             # Check for improper jumps (e.g., H1 to H3)
             if previous_level > 0:
                 jump = level - previous_level
                 if jump > 1:
                     issues.append((i, line.strip(), level))
-            
+
             previous_level = level
-        
+
         return issues
 
     def fix_heading_hierarchy(self, content: str) -> str:
@@ -46,16 +46,16 @@ class HeadingHierarchyFixer:
         fixed_lines = []
         previous_level = 0
         level_map = {}  # Map of old level to new level
-        
+
         for line in lines:
             match = re.match(r'^(#+)\s+', line)
             if not match:
                 fixed_lines.append(line)
                 continue
-            
+
             old_level = len(match.group(1))
             title = line[old_level:].strip()
-            
+
             if previous_level == 0:
                 # First heading should be H1
                 new_level = 1
@@ -65,29 +65,29 @@ class HeadingHierarchyFixer:
                     new_level = previous_level + 1
                 else:
                     new_level = old_level
-            
+
             level_map[old_level] = new_level
             new_heading = '#' * new_level + ' ' + title
             fixed_lines.append(new_heading)
             previous_level = new_level
-        
+
         return '\n'.join(fixed_lines)
 
     def process_file(self, file_path: Path) -> bool:
         """Process a single markdown file."""
         if not file_path.is_file() or file_path.suffix != '.md':
             return False
-        
+
         try:
             content = file_path.read_text(encoding='utf-8')
         except (UnicodeDecodeError, OSError):
             return False
-        
+
         issues = self.find_heading_issues(content, str(file_path))
-        
+
         if not issues:
             return False
-        
+
         # Fix and save
         fixed_content = self.fix_heading_hierarchy(content)
         try:
@@ -106,7 +106,7 @@ class HeadingHierarchyFixer:
         """Process all markdown files."""
         for file_path in self.docs_dir.rglob('*.md'):
             self.process_file(file_path)
-        
+
         return {
             'files_fixed': self.files_fixed,
             'total_issues': sum(item['issues_count'] for item in self.issues_found),
@@ -116,7 +116,7 @@ class HeadingHierarchyFixer:
     def generate_report(self) -> str:
         """Generate heading hierarchy report."""
         stats = self.process_all()
-        
+
         report = f"""# Heading Hierarchy Consistency Report
 
 ## Summary
@@ -132,7 +132,7 @@ class HeadingHierarchyFixer:
                 report += f"  - Line {line_num}: H{level} - {heading[:50]}\n"
             if len(item['issues']) > 3:
                 report += f"  - ... and {len(item['issues']) - 3} more\n"
-        
+
         return report
 
 
@@ -141,6 +141,6 @@ if __name__ == '__main__':
     docs_dir = sys.argv[1] if len(sys.argv) > 1 else 'docs'
     fixer = HeadingHierarchyFixer(docs_dir)
     stats = fixer.process_all()
-    
+
     print(fixer.generate_report())
     print(f"\n✅ Fixed {stats['files_fixed']} files with {stats['total_issues']} heading issues")

@@ -318,7 +318,7 @@ ORDER BY kill_rate ASC
 
 ### Find Low Kill Rate Tests
 ```sql
-SELECT test_name, mutations_killed, total_mutations, 
+SELECT test_name, mutations_killed, total_mutations,
        (mutations_killed::float / total_mutations * 100) as kill_rate
 FROM test_mutations
 WHERE kill_rate < 50

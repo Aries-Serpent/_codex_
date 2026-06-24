@@ -22,7 +22,7 @@ Features:
 
 Usage:
   scorer = ConfidenceScorer()
-  
+
   # Score a decision
   score = scorer.score_decision(
       agent_id="test-assertion-updater",
@@ -31,7 +31,7 @@ Usage:
       test_coverage=95,
       manual_signals=0,
   )
-  
+
   # Score with full context
   score_info = scorer.score_with_context(
       agent_id="ci-testing-agent",

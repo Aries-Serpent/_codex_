@@ -204,7 +204,7 @@ def pytest_collection_modifyitems(config, items):
             timeout = 300  # 5 minutes
         elif "fast" in item.nodeid:
             timeout = 10   # 10 seconds
-        
+
         if not item.get_closest_marker("timeout"):
             item.add_marker(pytest.mark.timeout(timeout))
 ```
@@ -224,7 +224,7 @@ def seeded_rng():
     np.random.seed(42)
     import torch
     torch.manual_seed(42)
-    
+
     yield 42
 ```
 

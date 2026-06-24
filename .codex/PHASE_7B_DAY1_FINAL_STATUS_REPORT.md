@@ -220,9 +220,9 @@
 
 ```bash
 # Track C: Mutation Hardening (2 agents)
-task(agent_type="mutation-testing-agent", 
+task(agent_type="mutation-testing-agent",
      name="phase7b-mutation-hardening", mode="background")
-task(agent_type="test-pattern-guardian", 
+task(agent_type="test-pattern-guardian",
      name="phase7b-quality-metrics", mode="background")
 ```
 

@@ -292,7 +292,7 @@ aws s3 cp /tmp/${INCIDENT_ID}-evidence.tar.gz \
 # For Privilege Escalation:
 1. Review RBAC changes in Kubernetes
    kubectl get rolebindings -n production --all-namespaces -o wide
-   
+
 2. Check sudo/privileged command logs
    journalctl SYSLOG_IDENTIFIER=sudo
 
@@ -527,7 +527,7 @@ Subject: Security Incident Update - [Company Name]
 
 Dear Valued Customers,
 
-We want to inform you about a security incident we detected and 
+We want to inform you about a security incident we detected and
 immediately contained on [date] at [time] UTC.
 
 INCIDENT DETAILS:

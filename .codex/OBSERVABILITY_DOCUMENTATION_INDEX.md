@@ -369,7 +369,7 @@ See PHASE_7D_INCIDENT_RESPONSE.md page 18-19:
 
 **Attendees**: All team members involved + stakeholders
 
-**Output**: 
+**Output**:
 - Action items tracked in system
 - Runbooks updated based on learnings
 - Preventive changes prioritized

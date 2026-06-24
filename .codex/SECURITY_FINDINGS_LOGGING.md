@@ -291,7 +291,7 @@ if args.verbose:
 
 ### Standard 1: Truncation Pattern (First N + Last M)
 **Implemented**: ✅ Yes  
-**Files**: 
+**Files**:
 - `codex_mint_tokens_per_run.py` (4…4)
 - `codex_repo_admin_bootstrap.py` (4…4)
 
@@ -394,7 +394,7 @@ if args.verbose:
 1. Consider standardizing `_mask()` function across all scripts
    - Current: Implemented in 2 files independently
    - Recommended: Centralized utility module
-   
+
 2. Add `SECRET_*` environment variable detection
    - Automatically redact variables matching `SECRET_*` pattern
    - Prevents accidental logging of new secrets

@@ -6,7 +6,7 @@ Provides both programmatic and CLI interfaces for querying Copilot sessions.
 
 Example usage:
     from scripts.ci.session_query import SessionQuery
-    
+
     sq = SessionQuery()
     recent = sq.list_recent_sessions(days=7)
     agent_sessions = sq.get_sessions_by_agent('ci-auto-healer-agent')
@@ -37,7 +37,7 @@ class SessionQuery:
 
     def __init__(self, index_path: str = ".codex/sessions_index.json"):
         """Initialize query interface.
-        
+
         Args:
             index_path: Path to sessions index file (default: .codex/sessions_index.json)
         """
@@ -45,7 +45,7 @@ class SessionQuery:
         self.sessions: List[Dict[str, Any]] = []
         self.session_by_id: Dict[str, Dict[str, Any]] = {}
         self.verbose = False
-        
+
         self._load_index()
 
     def _load_index(self) -> None:
@@ -69,21 +69,21 @@ class SessionQuery:
     def _build_index_from_files(self) -> None:
         """Build index from session JSONL files in .codex/sessions/."""
         sessions_dir = Path(".codex/sessions")
-        
+
         if not sessions_dir.exists():
             if self.verbose:
                 print(f"[DEBUG] Sessions directory does not exist: {sessions_dir}", file=sys.stderr)
             return
 
         session_data: Dict[str, Dict[str, Any]] = {}
-        
+
         for session_file in sessions_dir.glob("session_*.jsonl"):
             session_id = session_file.stem.replace("session_", "")
-            
+
             first_timestamp = None
             last_timestamp = None
             event_types = set()
-            
+
             try:
                 with open(session_file, 'r') as f:
                     for line in f:
@@ -93,17 +93,17 @@ class SessionQuery:
                             event = json.loads(line)
                             timestamp = event.get('timestamp')
                             event_type = event.get('event_type')
-                            
+
                             if timestamp:
                                 if first_timestamp is None:
                                     first_timestamp = timestamp
                                 last_timestamp = timestamp
-                            
+
                             if event_type:
                                 event_types.add(event_type)
                         except json.JSONDecodeError:
                             continue
-                
+
                 if first_timestamp:
                     session_data[session_id] = {
                         'session_id': session_id,
@@ -119,13 +119,13 @@ class SessionQuery:
                     }
             except (IOError, OSError):
                 continue
-        
+
         self.sessions = list(session_data.values())
         self.session_by_id = session_data
-        
+
         if self.verbose:
             print(f"[DEBUG] Built index with {len(self.sessions)} sessions from files", file=sys.stderr)
-        
+
         # Save index
         self._save_index()
 
@@ -161,7 +161,7 @@ class SessionQuery:
                 print(f"[DEBUG] Failed to save index: {e}", file=sys.stderr)
 
     def query_sessions(
-        self, 
+        self,
         session_id: Optional[str] = None,
         pr_number: Optional[int] = None,
         agent_name: Optional[str] = None,
@@ -170,7 +170,7 @@ class SessionQuery:
         limit: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """Query sessions with filters.
-        
+
         Args:
             session_id: Filter by session ID
             pr_number: Filter by PR number
@@ -178,52 +178,52 @@ class SessionQuery:
             status: Filter by status (complete, pending, failed, in_progress)
             since_timestamp: ISO 8601 timestamp (YYYY-MM-DDTHH:MM:SSZ) to filter sessions after
             limit: Maximum number of results to return
-            
+
         Returns:
             List of matching session objects
         """
         results = self.sessions.copy()
-        
+
         if session_id:
             results = [s for s in results if s.get('session_id') == session_id]
-        
+
         if pr_number:
             results = [s for s in results if s.get('pr_number') == pr_number]
-        
+
         if agent_name:
             results = [s for s in results if s.get('agent_name') == agent_name]
-        
+
         if status:
             results = [s for s in results if s.get('status') == status]
-        
+
         if since_timestamp:
             try:
                 since_dt = datetime.fromisoformat(since_timestamp.replace('Z', '+00:00'))
                 results = [
                     s for s in results
-                    if s.get('first_timestamp') and 
+                    if s.get('first_timestamp') and
                     datetime.fromisoformat(s.get('first_timestamp').replace('Z', '+00:00')) >= since_dt
                 ]
             except (ValueError, AttributeError):
                 pass
-        
+
         # Sort by most recent first
         results.sort(
-            key=lambda x: x.get('last_timestamp', ''), 
+            key=lambda x: x.get('last_timestamp', ''),
             reverse=True
         )
-        
+
         if limit:
             results = results[:limit]
-        
+
         return results
 
     def get_session_by_id(self, session_id: str) -> Optional[Dict[str, Any]]:
         """Get single session by ID.
-        
+
         Args:
             session_id: Session ID to retrieve
-            
+
         Returns:
             Session object or None if not found
         """
@@ -231,64 +231,64 @@ class SessionQuery:
 
     def find_similar_sessions(self, tags: List[str], limit: int = 5) -> List[Dict[str, Any]]:
         """Find sessions with matching tags.
-        
+
         Args:
             tags: List of tags to search for
             limit: Maximum number of results
-            
+
         Returns:
             List of sessions with matching tags
         """
         results = []
         tag_set = set(tags)
-        
+
         for session in self.sessions:
             session_tags = set(session.get('tags', []))
             if session_tags & tag_set:  # Intersection
                 match_count = len(session_tags & tag_set)
                 results.append((session, match_count))
-        
+
         # Sort by match count descending
         results.sort(key=lambda x: x[1], reverse=True)
-        
+
         return [s[0] for s in results[:limit]]
 
     def list_recent_sessions(self, days: int = 7) -> List[Dict[str, Any]]:
         """List sessions from last N days.
-        
+
         Args:
             days: Number of days to look back (default: 7)
-            
+
         Returns:
             Chronological list of sessions
         """
         cutoff_dt = datetime.utcnow() - timedelta(days=days)
         cutoff_iso = cutoff_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-        
+
         results = self.query_sessions(since_timestamp=cutoff_iso)
         results.sort(key=lambda x: x.get('first_timestamp', ''))
-        
+
         return results
 
     def get_sessions_by_agent(
-        self, 
-        agent_name: str, 
+        self,
+        agent_name: str,
         days: int = 7,
         limit: int = 50
     ) -> List[Dict[str, Any]]:
         """Get sessions for specific agent in timeframe.
-        
+
         Args:
             agent_name: Name of the agent
             days: Number of days to look back
             limit: Maximum number of results
-            
+
         Returns:
             List of sessions for the agent
         """
         cutoff_dt = datetime.utcnow() - timedelta(days=days)
         cutoff_iso = cutoff_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
-        
+
         return self.query_sessions(
             agent_name=agent_name,
             since_timestamp=cutoff_iso,
@@ -297,10 +297,10 @@ class SessionQuery:
 
     def filter_by_status(self, status: str) -> List[Dict[str, Any]]:
         """Filter sessions by status.
-        
+
         Args:
             status: Status to filter by (complete, pending, failed, in_progress)
-            
+
         Returns:
             List of sessions with the given status
         """
@@ -308,7 +308,7 @@ class SessionQuery:
 
     def stats_summary(self) -> Dict[str, Any]:
         """Return statistics about sessions.
-        
+
         Returns:
             Dictionary with session statistics:
             - total_sessions: Total number of sessions
@@ -324,16 +324,16 @@ class SessionQuery:
             'by_branch': {},
             'date_range': None,
         }
-        
+
         for session in self.sessions:
             status = session.get('status', 'unknown')
             agent = session.get('agent_name', 'unknown')
             branch = session.get('branch', 'unknown')
-            
+
             stats['by_status'][status] = stats['by_status'].get(status, 0) + 1
             stats['by_agent'][agent] = stats['by_agent'].get(agent, 0) + 1
             stats['by_branch'][branch] = stats['by_branch'].get(branch, 0) + 1
-        
+
         # Calculate date range
         if self.sessions:
             timestamps = [
@@ -346,7 +346,7 @@ class SessionQuery:
                     'earliest': timestamps[0],
                     'latest': timestamps[-1],
                 }
-        
+
         return stats
 
 
@@ -359,25 +359,25 @@ def format_csv_output(data: List[Dict[str, Any]]) -> str:
     """Format list of dicts as CSV."""
     if not data:
         return ""
-    
+
     output = []
     fieldnames = set()
-    
+
     # Collect all field names
     for row in data:
         fieldnames.update(row.keys())
-    
+
     fieldnames = sorted(list(fieldnames))
-    
+
     # Write CSV
     import io
     csv_buffer = io.StringIO()
     writer = csv.DictWriter(csv_buffer, fieldnames=fieldnames)
     writer.writeheader()
-    
+
     for row in data:
         writer.writerow(row)
-    
+
     return csv_buffer.getvalue()
 
 
@@ -397,7 +397,7 @@ Examples:
   python scripts/ci/session_query.py --output csv
         """
     )
-    
+
     parser.add_argument(
         '--session-id',
         help='Query by session ID'
@@ -453,18 +453,18 @@ Examples:
         default='.codex/sessions_index.json',
         help='Path to session index file'
     )
-    
+
     args = parser.parse_args()
-    
+
     try:
         sq = SessionQuery(index_path=args.index_path)
         sq.verbose = args.verbose
-        
+
         if args.stats:
             result = sq.stats_summary()
             print(format_json_output(result))
             return 0
-        
+
         if args.recent:
             result = sq.list_recent_sessions(days=args.days)
         elif args.session_id:
@@ -487,17 +487,17 @@ Examples:
                 result = result[:args.limit]
         else:
             result = []
-        
+
         if not isinstance(result, list):
             result = [result] if result else []
-        
+
         if args.output == 'csv':
             print(format_csv_output(result))
         else:
             print(format_json_output(result))
-        
+
         return 0
-    
+
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         if args.verbose:

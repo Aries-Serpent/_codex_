@@ -354,4 +354,3 @@ Track these metrics for each agent:
 - **Classification Basis:** 2026-06 execution metrics
 - **Authority:** @mbaetiong
 - **Next Update:** 2026-07-20
-

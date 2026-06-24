@@ -116,7 +116,7 @@
 
 **Item 1: Registry Configuration & Authentication**
 - **What:** Configure DockerHub/GHCR registries for automated image publishing
-- **Why Maintainer-Only:** 
+- **Why Maintainer-Only:**
   - Requires OAuth tokens/credentials (cannot store in repo)
   - Registry org creation requires human authorization
   - Push credentials must be secured outside workflows

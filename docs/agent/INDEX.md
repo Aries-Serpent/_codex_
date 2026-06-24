@@ -38,12 +38,12 @@ The _codex_ agent ecosystem provides production-ready AI agents with specialized
   - Security and compliance standards
   - Performance SLAs
   - Certification criteria
-  
+
 - **[COPILOT_SETUP_STEPS_GUARD](COPILOT_SETUP_STEPS_GUARD.md)** — Agent initialization and validation
   - Setup verification procedures
   - Configuration validation
   - Health checks
-  
+
 - **[COPILOT_TOKEN_GUIDE](COPILOT_TOKEN_GUIDE.md)** — Authentication and token management
   - Token acquisition and lifecycle
   - Secure token storage

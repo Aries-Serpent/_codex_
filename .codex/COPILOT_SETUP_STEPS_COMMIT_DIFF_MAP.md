@@ -272,4 +272,3 @@ If 27240d92d actually added 436 lines, those lines contain the problematic expan
 6. 🟡 **Keeps the lfs_mode typo** — compounds YAML parsing issues
 
 **Solution:** Return to commit add792eb3 (673 lines, stable) and selectively add needed enhancements WITHOUT removing critical safety variables.
-

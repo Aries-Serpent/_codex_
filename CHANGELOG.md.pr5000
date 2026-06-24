@@ -6170,11 +6170,11 @@ Files updated: `Dockerfile`, `pyproject.toml`, `requirements/lock.txt`,
 - **`scripts/ci/pr_comment_consolidator.py`**: OTel coherence observation emitted on every dashboard update (fraction of workflows reporting `success`). Hardened **Merge Readiness Score** (0–100, weighted by CI 35% / Reviews 20% / Conflicts 15% / Comments 15% / Quality 10% / Freshness 5%) now computed and rendered **at the top of every dashboard update** — replaces soft/optional approach with a grounded, always-on implementation. Includes follow-up gap prompt and collapsible score breakdown table.
 - **`.github/workflows/coherence-snapshot.yml`** *(new)*: Weekly (Monday 08:00 UTC) OTel coherence snapshot workflow — runs AAIS scorer, emits `workflow_coherence_score.observe()`, posts results to the latest open PR's dashboard comment, and enforces the AAIS ≥ 99.7 threshold (exits non-zero on regression). Also triggerable manually via `workflow_dispatch`.
 - **`.github/workflows/pr3178-pytest-execution.yml`**: Hardened trigger policy — auto-run now **only triggers when `0D_base_` branch opens/updates a PR targeting `main`**. Any branch→main PR where `head_ref != '0D_base_'` is skipped at job level. Any branch→`0D_base_` combination cannot reach this workflow (trigger now `branches: ["main"]`). Manual `workflow_dispatch` continues to work unrestricted for user-triggered runs.
-- **`.github/workflows/ci-failure-issue-creator.yml`** *(new)*: Automated CI failure triage system. On any `workflow_run` failure on `main`:  
-  - Opens a labelled GitHub Issue for every untracked failure.  
-  - For **critical** failures (security/codeql/build/docker/test): creates a `fix/ci-*` branch and opens a PR with `@copilot` instructions to begin the fix immediately.  
-  - **Single-branch rule** (R3): uses a global serialisation concurrency lock (`ci-failure-issue-creator-global-lock`, `cancel-in-progress: false`) so at most ONE `fix/ci-*` branch exists at any time — additional failures are queued (issue opened, no second branch created).  
-  - Posts every outcome (new issue, critical PR, queued, skipped) to the **PR Status Dashboard** via `pr_comment_consolidator.py`.  
+- **`.github/workflows/ci-failure-issue-creator.yml`** *(new)*: Automated CI failure triage system. On any `workflow_run` failure on `main`:
+  - Opens a labelled GitHub Issue for every untracked failure.
+  - For **critical** failures (security/codeql/build/docker/test): creates a `fix/ci-*` branch and opens a PR with `@copilot` instructions to begin the fix immediately.
+  - **Single-branch rule** (R3): uses a global serialisation concurrency lock (`ci-failure-issue-creator-global-lock`, `cancel-in-progress: false`) so at most ONE `fix/ci-*` branch exists at any time — additional failures are queued (issue opened, no second branch created).
+  - Posts every outcome (new issue, critical PR, queued, skipped) to the **PR Status Dashboard** via `pr_comment_consolidator.py`.
   - Auto-closes tracking issues when the failing workflow passes on `main` again.
 - **`docs/ci/CI_FAILURE_AUTO_RESPONSE.md`** *(new)*: Complete process documentation — 10-section guide with Mermaid flowchart (end-to-end process map), state diagram (single-branch rule states), severity classification flowchart, actor sequence diagram, Gantt queue visualisation, and job dependency graph.
 
@@ -10069,5 +10069,3 @@ Added `tests/test_torch_stub.py` (30 tests) covering:
 - Switched the RAG availability check in `tests/codex_ml/test_rag_comprehensive.py` to `importlib.import_module(...)` with `ImportError` handling for explicit import-time validation.
 - Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for REQ-4/REQ-5 last-commit freshness compliance.
 # Latest update: 2026-06-19T00:50Z
-
-

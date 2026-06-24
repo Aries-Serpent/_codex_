@@ -313,10 +313,10 @@ def main(verbose: bool = False) -> int:
     # Write report
     report_path = Path(".codex/phase1_validation_report.json")
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Update report timestamp
     report["timestamp"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    
+
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
     print(f"Report written to: {report_path}")

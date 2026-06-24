@@ -247,7 +247,7 @@ python -m codex.logging.query_logs --search "database performance" --similar-k 1
 ```python
 class SessionEmbeddings:
     """Semantic search for Copilot sessions via embeddings."""
-    
+
     # Public API
     - __init__(embeddings_path, metadata_path)
     - add_session(session_id, summary, patterns, tags) -> bool
@@ -257,7 +257,7 @@ class SessionEmbeddings:
     - save_index() -> None
     - get_metadata(session_id) -> dict
     - list_sessions() -> [session_id, ...]
-    
+
     # Private
     - _load_model()
     - _load_index()

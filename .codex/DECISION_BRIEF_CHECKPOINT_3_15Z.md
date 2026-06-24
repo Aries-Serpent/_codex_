@@ -35,7 +35,7 @@ Which strategy for **Checkpoint 3 (15:05-18:00Z)**?
 **Effort:** Low (no API fixes required)  
 **Risk:** Zero  
 **Timeline:** Checkpoint 3 starts 15:30Z (on schedule)  
-**Checkpoint 3 Outcome:** 
+**Checkpoint 3 Outcome:**
 - Mutation: 82% → 91% (+9pp)
 - Coverage: 17.57% → 19% (+1.43pp)
 - Campaign: 92% → 91% EOD (net -1pp, but safe)
@@ -228,4 +228,3 @@ If you **must** hit 95%+ by EOD today:
 - **C** for Aggressive (maximum, 93-95%+ EOD)
 
 Checkpoint 3 agents deploy immediately upon authorization.
-

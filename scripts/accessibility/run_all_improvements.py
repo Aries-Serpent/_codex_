@@ -29,42 +29,42 @@ class AccessibilityOrchestrator:
         """Run all accessibility improvements."""
         print("🚀 Starting Accessibility Improvement Suite\n")
         print("=" * 60)
-        
+
         # 1. Add Mermaid Alt Text
         print("\n1️⃣  Adding Mermaid Diagram Alt Text...")
         mermaid_processor = MermaidAltTextProcessor(self.docs_dir)
         mermaid_stats = mermaid_processor.process_all()
         print(f"   ✅ {mermaid_stats['without_alt_text']} diagrams updated")
         self.results['mermaid'] = mermaid_stats
-        
+
         # 2. Fix Heading Hierarchy
         print("\n2️⃣  Fixing Heading Hierarchy...")
         heading_fixer = HeadingHierarchyFixer(self.docs_dir)
         heading_stats = heading_fixer.process_all()
         print(f"   ✅ Fixed {heading_stats['total_issues']} heading issues in {heading_stats['files_fixed']} files")
         self.results['headings'] = heading_stats
-        
+
         # 3. Add Table of Contents
         print("\n3️⃣  Adding Table of Contents to Long Documents...")
         toc_generator = TOCGenerator(self.docs_dir)
         toc_stats = toc_generator.process_all()
         print(f"   ✅ Added TOCs to {toc_stats['tocs_added']} documents")
         self.results['toc'] = toc_stats
-        
+
         # 4. Improve Link Descriptiveness
         print("\n4️⃣  Improving Link Descriptiveness...")
         link_improver = LinkDescriptivenessImprover(self.docs_dir)
         link_stats = link_improver.process_all()
         print(f"   ✅ Improved {link_stats['total_links_improved']} links")
         self.results['links'] = link_stats
-        
+
         # 5. WCAG Compliance Check
         print("\n5️⃣  Checking WCAG AA Compliance...")
         wcag_checker = WCAGComplianceChecker(self.docs_dir)
         wcag_stats = wcag_checker.process_all()
         print(f"   ⚠️  Found {wcag_stats['total_issues']} accessibility issues to review")
         self.results['wcag'] = wcag_stats
-        
+
         print("\n" + "=" * 60)
         return self.results
 
@@ -336,7 +336,7 @@ All improvements are immediately available and backward compatible.
 **Coverage:** 100% of documentation
 **Compliance Level:** WCAG AA
 """
-        
+
         return report.format(
             date=datetime.now().strftime("%Y-%m-%d"),
             docs_dir=self.docs_dir,
@@ -354,7 +354,7 @@ All improvements are immediately available and backward compatible.
             wcag_issues_files=self.results.get('wcag', {}).get('files_with_issues', 0),
             wcag_total_issues=self.results.get('wcag', {}).get('total_issues', 0),
             wcag_findings="See detailed WCAG compliance section below.",
-            total_files_modified=self.results.get('mermaid', {}).get('files_modified', 0) + 
+            total_files_modified=self.results.get('mermaid', {}).get('files_modified', 0) +
                                  self.results.get('headings', {}).get('files_fixed', 0),
             timestamp=datetime.now().isoformat()
         )
@@ -362,17 +362,17 @@ All improvements are immediately available and backward compatible.
 
 if __name__ == '__main__':
     docs_dir = sys.argv[1] if len(sys.argv) > 1 else 'docs'
-    
+
     orchestrator = AccessibilityOrchestrator(docs_dir)
     results = orchestrator.run_all_improvements()
-    
+
     # Generate and save comprehensive report
     report = orchestrator.generate_comprehensive_report()
-    
+
     report_path = Path('.codex/ACCESSIBILITY_IMPROVEMENT_REPORT.md')
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(report)
-    
+
     print("\n✅ ALL ACCESSIBILITY IMPROVEMENTS COMPLETE")
     print(f"\n📊 Report saved to: {report_path}")
     print("\n" + "=" * 60)

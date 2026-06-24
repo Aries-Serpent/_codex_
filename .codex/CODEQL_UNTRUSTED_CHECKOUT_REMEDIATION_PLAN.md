@@ -29,7 +29,7 @@ Five critical CodeQL alerts flagged workflows checking out potentially untrusted
     ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha)) || github.sha || '' }}
 ```
 
-**Issue:** 
+**Issue:**
 - `issue_comment` event trigger allows arbitrary users to comment on issues
 - Conditional logic has fallback: if `github.event_name != 'pull_request'`, it uses `github.sha`
 - For `issue_comment` events, `github.sha` points to the **DEFAULT BRANCH** (safe)

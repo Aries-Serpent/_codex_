@@ -361,23 +361,23 @@ Permissions automatically removed when:
 ```
 1. Create GitHub account + MFA setup
    └─ New employee completes
-   
+
 2. Request initial access via form
    └─ Manager approves
-   
+
 3. Grant Viewer role (read-only)
    └─ Automatic grant for all new members
-   
+
 4. Role escalation (if needed)
    └─ Team lead requests specific role
    └─ Security reviews and approves
    └─ Role assigned
-   
+
 5. Team setup (team-specific access)
    └─ Add to GitHub team
    └─ Add to deployment group
    └─ Configure team permissions
-   
+
 6. First-day setup
    └─ SSH key registration
    └─ Local environment setup
@@ -391,25 +391,25 @@ Permissions automatically removed when:
 ```
 1. Disable GitHub account access
    └─ Immediate (no grace period)
-   
+
 2. Revoke all API tokens  # pragma: allowlist secret
    └─ Immediate
-   
+
 3. Disable SSH keys
    └─ Immediate
-   
+
 4. Clear local secrets/credentials  # pragma: allowlist secret
    └─ Assisted by IT
-   
+
 5. Archive access history
    └─ 90-day retention for legal
-   
+
 6. Notify security team
    └─ Send offboarding summary
-   
+
 7. Remove from all deployment groups
    └─ Immediate
-   
+
 8. Audit verification
    └─ Confirm access fully removed
 ```

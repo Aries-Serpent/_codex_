@@ -170,12 +170,12 @@ Every 15 minutes:
   → Check .codex/ for new reports
   → Update agent status indicators
   → Verify CI passes for any new PRs
-  
+
 Every 30 minutes:
   → Review collected metrics
   → Assess Wave 1 health
   → Predict completion time
-  
+
 At Agent Completion:
   → Collect final report
   → Log metrics

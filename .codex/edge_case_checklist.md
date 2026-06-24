@@ -385,26 +385,26 @@ import threading
 
 def test_thread_safe_counter():
     counter = ThreadSafeCounter()
-    
+
     def increment_1000_times():
         for _ in range(1000):
             counter.increment()
-    
+
     threads = [threading.Thread(target=increment_1000_times) for _ in range(10)]
     for t in threads:
         t.start()
     for t in threads:
         t.join()
-    
+
     assert counter.value == 10000  # Would fail if not thread-safe
 
 async def test_async_race_condition():
     results = []
-    
+
     async def task():
         await asyncio.sleep(0)
         results.append(1)
-    
+
     await asyncio.gather(*[task() for _ in range(1000)])
     assert len(results) == 1000
 ```

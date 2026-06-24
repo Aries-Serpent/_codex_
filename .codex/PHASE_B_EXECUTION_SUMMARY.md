@@ -131,7 +131,7 @@ CLI integration candidates:
 - WORKFLOW_CLI_INTEGRATION_MATRIX.md (Complete document)
 - Section 5: Skills Integration Checklist
 **Responsibility:**
-1. Create "workflow-orchestration-skill" 
+1. Create "workflow-orchestration-skill"
 2. Register 50-80 workflows for CLI integration
 3. Document CLI patterns for each workflow
 4. Enhance Cognitive Brain app integration

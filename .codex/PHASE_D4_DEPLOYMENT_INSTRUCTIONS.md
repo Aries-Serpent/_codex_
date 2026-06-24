@@ -268,10 +268,10 @@ grep "Last Updated" .codex/CI_PATTERN_DASHBOARD.md
    ```bash
    # For RP-001: ripgrep
    rg --version  # Should show version
-   
+
    # For RP-002: mypy
    python -m mypy --version
-   
+
    # For RP-003: markdown-link-check
    npm install -g markdown-link-check 2>/dev/null || true
    ```

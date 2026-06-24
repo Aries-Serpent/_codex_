@@ -52,7 +52,7 @@ Used multi-pattern detection across all source directories:
 **SECRET-001: Hardcoded Auth Secret in auth_routes.py**
 - **File:** `src/codex/api/auth_routes.py`
 - **Line:** 180
-- **Original Code:** 
+- **Original Code:**
   ```python
   _DEFAULT_SECRET = "codex-auth-change-me-in-production"  # nosec B105  <!-- pragma: allowlist secret -->
   ```
@@ -126,7 +126,7 @@ def _get_default_secret() -> str:
     env_secret = os.environ.get("CODEX_AUTH_SECRET")
     if env_secret:
         return env_secret
-    
+
     logger.warning(
         "CODEX_AUTH_SECRET not set. Generating temporary development secret. "
         "Set CODEX_AUTH_SECRET environment variable for persistent key."
@@ -138,7 +138,7 @@ def create_auth_router(...):
         resolved_secret = secret_key or _get_default_secret()
 ```
 
-**Security Benefit:** 
+**Security Benefit:**
 - ✅ No hardcoded secret in source code
 - ✅ Secure random generation for development
 - ✅ Environment variable override support
@@ -437,7 +437,7 @@ vault kv put secret/codex/auth AUTH_SECRET_KEY="new-secure-jwt-secret-here"  <!-
 ```bash
 # Confirm old secret no longer works:
 curl -X GET https://api.codex.example.com/health \
-  -H "Authorization: ******" 
+  -H "Authorization: ******"
 # Expected: ❌ 401 Unauthorized
 
 # Confirm new secret works:

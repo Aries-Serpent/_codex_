@@ -322,4 +322,3 @@ I, **@mbaetiong**, COPILOT_AGENT_AUTH_ENABLED=true, hereby authorize and sign of
 **Signature:** codeql-alert-resolution-agent (Track A2)  
 **Date:** 2026-06-20T10:00:00Z UTC  
 **Authority:** @mbaetiong
-

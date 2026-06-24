@@ -31,7 +31,7 @@ STAGE 0: Orchestration Initiation
 
 STAGE 1: Parallel Agent Dispatch (Current)
 ├─ Wave 1: Strategic Consolidation
-│  └─ unified-coverage-agent, unified-doc-agent, unified-security-scanner, 
+│  └─ unified-coverage-agent, unified-doc-agent, unified-security-scanner,
 │     cache-management-agent, self-healing-orchestrator-agent
 ├─ Wave 2: CI/CD Pipeline Hardening
 │  └─ ci-auto-healer-agent, ci-testing-agent, workflow-ci-fixer,

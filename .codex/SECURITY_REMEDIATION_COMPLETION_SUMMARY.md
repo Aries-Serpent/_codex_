@@ -36,7 +36,7 @@ Identify and remediate **28 hardcoded secrets** blocking production deployment o
 - **CRITICAL** (hardcoded in source code): 2
   - `codex-auth-change-me-in-production` in `src/codex/api/auth_routes.py:180`
   - `codex-dev-secret-key-change-in-production` in `src/codex/auth/middleware.py:100`
-  
+
 - **HIGH** (weak defaults, env var misconfigurations): 26
   - API Keys: 7 instances
   - Database Credentials: 7 instances  
@@ -100,7 +100,7 @@ All remediation verified through:
    TEST 2: middleware.py hardcoded removal ✅ PASS
    TEST 3: .env.example configuration ✅ PASS
    TEST 4: Source code scan for secrets ✅ PASS
-   
+
    Overall: 4/4 Tests Passed ✅
    ```
 

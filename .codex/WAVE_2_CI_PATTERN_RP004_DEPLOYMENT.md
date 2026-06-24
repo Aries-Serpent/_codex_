@@ -307,7 +307,7 @@ def test_collect_metrics_coverage_smoke(self):
     """Smoke test for collect_metrics - auto-generated."""
     result = collect_metrics({"key": "value"})
     assert result is not None
-    
+
     result = collect_metrics({})
     assert result is None
 ```
@@ -347,7 +347,7 @@ def test_collect_metrics_coverage_smoke(self):
 
 **Impact**: Low (tests still cover code paths, don't guarantee correctness)
 
-**Workaround**: 
+**Workaround**:
 ```python
 # Tests are marked as auto-generated
 """Smoke test for X - auto-generated."""
@@ -396,7 +396,7 @@ def test_collect_metrics_coverage_smoke(self):
 - name: Run Coverage Check
   run: |
     pytest tests/ --cov=src --cov-report=json
-    
+
 - name: Apply RP-004 Coverage Fix
   if: failure()
   run: |
@@ -404,7 +404,7 @@ def test_collect_metrics_coverage_smoke(self):
     python -m ci_patterns.rp_004_coverage_fixer \
       --coverage-report coverage.json \
       --target-threshold 85.0
-    
+
 - name: Verify Coverage Recovered
   run: |
     pytest tests/ --cov=src --cov-report=json
@@ -423,16 +423,16 @@ def test_collect_metrics_coverage_smoke(self):
 # When RP-004 is triggered:
 def on_coverage_failure():
     """Hook called when coverage threshold fails."""
-    
+
     # 1. Detect with high confidence
     if detect_coverage_threshold(log_text):
-        
+
         # 2. Analyze gaps
         analysis = analyze_coverage_gaps(coverage_report)
-        
+
         # 3. Auto-generate tests
         tests = generate_coverage_tests(analysis)
-        
+
         # 4. Validate coverage
         if validate_coverage_threshold(tests):
             return FixResult(success=True)

@@ -259,7 +259,7 @@ Wave 1: Unified coverage agent - gap-fill tests and Phase 10 roadmap
   - test_mcp_lifecycle_gap_fill.py: MCP lifecycle tests (34 tests)
   - test_crm_evidence_gap_fill.py: CRM evidence tests (25 tests)
   - test_cli_pipeline_gap_fill.py: CLI pipeline tests (23 tests)
-  
+
   Plus 3 documentation files:
   - WAVE_1_COVERAGE_EXECUTION_PLAN.md
   - WAVE_1_COVERAGE_EXECUTION_REPORT.md

@@ -370,7 +370,7 @@ if __name__ == "__main__":
     if command == "create-labels":
         owner, repo = sys.argv[2], sys.argv[3]
         manager = GitHubLabelManager()
-        
+
         # Load labels from routing rules
         try:
             with open(".codex/PHASE_8_2_ROUTING_RULES.json") as f:

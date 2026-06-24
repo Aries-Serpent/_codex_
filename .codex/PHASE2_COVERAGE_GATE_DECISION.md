@@ -110,7 +110,7 @@ AssertionError: Training should continue from checkpoint state
 assert 0.22 <= 0.21  # Best should be preserved from checkpoint
 ```
 
-**Fix Required**: 
+**Fix Required**:
 1. Add callback state serialization to checkpoint metadata
 2. Restore callback state from checkpoint metadata on load
 3. Test with training resume cycle
@@ -364,7 +364,7 @@ tests/integration/test_checkpoint_resume_e2e.py:
 
 **Merge Status**: 🔴 **DO NOT MERGE** until all blockers resolved
 
-**Next Steps**: 
+**Next Steps**:
 1. Fix 4 implementation issues
 2. Re-run Phase 2 test suite
 3. Re-audit with unified-coverage-agent

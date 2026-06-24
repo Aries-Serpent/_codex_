@@ -195,27 +195,27 @@ def generate_module_impl(class_name: str, description: str, methods: List[str]) 
 
 class {class_name}:
     """{description}."""
-    
+
     def __init__(self):
         """Initialize {class_name}."""
         self._data = {}
         self._config = {}
-    
+
 '''
 
     for method in methods:
         impl += f'''    def {method}(self, *args, **kwargs):
         """Execute {method} operation.
-        
+
         Args:
             *args: Variable arguments
             **kwargs: Keyword arguments
-            
+
         Returns:
             Operation result
         """
         raise NotImplementedError(f"{{self.__class__.__name__}}.{method} not implemented")
-    
+
 '''
 
     return impl.format(description=description, class_name=class_name)
@@ -256,15 +256,15 @@ def instance():
 
 class TestInitialization:
     """Test initialization and setup."""
-    
+
     def test_init_creates_instance(self, instance):
         """Arrange: Create instance. Act: Verify creation. Assert: Instance exists."""
         assert instance is not None
-    
+
     def test_init_sets_empty_data(self, instance):
         """Arrange: Create instance. Act: Check data. Assert: Data initialized."""
         assert hasattr(instance, '_data') or True
-    
+
     def test_init_idempotent(self):
         """Arrange: Multiple inits. Act: Create instances. Assert: Each is valid."""
         from codex.{category}.{module_name} import {class_name}
@@ -287,14 +287,14 @@ class TestBasicOperations:
         """Test operation {i}."""
         # Arrange: Set up test data
         test_data = {{"key": "value_{i}"}}
-        
+
         # Act: Perform operation
         result = None
         try:
             result = instance
         except (NotImplementedError, Exception):
             pass
-        
+
         # Assert: Verify result
         assert result is not None or True
 
@@ -305,7 +305,7 @@ class TestBasicOperations:
     tests += '''
 class TestErrorHandling:
     """Test error handling and edge cases."""
-    
+
 '''
 
     for i in range(1, test_methods_per_group + 1):
@@ -323,7 +323,7 @@ class TestErrorHandling:
 
 class TestSecurityAndCompliance:
     """Test security and compliance aspects."""
-    
+
 '''
 
     for i in range(1, test_methods_per_group + 1):
@@ -339,7 +339,7 @@ class TestSecurityAndCompliance:
 
 class TestConcurrency:
     """Test thread safety and concurrent access."""
-    
+
 '''
 
     for i in range(1, min(test_methods_per_group, 5)):
@@ -351,7 +351,7 @@ class TestConcurrency:
                 pass
             except Exception:
                 pass
-        
+
         threads = [threading.Thread(target=worker) for _ in range(3)]
         for t in threads:
             t.start()
@@ -365,7 +365,7 @@ class TestConcurrency:
 
 class TestPerformance:
     """Test performance characteristics."""
-    
+
     def test_performance_baseline(self, instance):
         """Test baseline performance."""
         start = time.time()

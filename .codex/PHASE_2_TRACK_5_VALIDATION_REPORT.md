@@ -170,7 +170,7 @@ python -c "import sys; sys.path.insert(0, 'src'); import training.trainer; print
 ### Commit 1: Collection Error Fix
 ```
 Hash: b0fdbdb
-Message: Fix remaining test collection errors: Add P19 shadow import aware 
+Message: Fix remaining test collection errors: Add P19 shadow import aware
          skip logic for problematic test files
 
 Changed Files:

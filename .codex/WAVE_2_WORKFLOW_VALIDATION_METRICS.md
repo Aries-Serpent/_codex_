@@ -328,11 +328,11 @@ for f in wf_dir.glob('*.yml'):
         valid += 1
     except:
         pass
-    
+
     content = open(f).read()
     if "<<'" in content:
         heredoc += 1
-    
+
     for line in open(f):
         if line.strip() and line[0] == ' ':
             spaces = len(line) - len(line.lstrip())

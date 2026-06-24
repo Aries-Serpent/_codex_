@@ -148,7 +148,7 @@ sessions = index["sessions"]
 
 # Find all sessions that fixed pattern RP-SC2089
 sessions_with_pattern = [
-    s for s in sessions 
+    s for s in sessions
     if "RP-SC2089" in s["patterns_fixed"]
 ]
 
@@ -175,7 +175,7 @@ sessions = index["sessions"]
 # Sessions from the last 7 days
 cutoff = datetime.utcnow() - timedelta(days=7)
 recent = [
-    s for s in sessions 
+    s for s in sessions
     if datetime.fromisoformat(s["timestamp"].replace("Z", "+00:00")) > cutoff
 ]
 
@@ -222,7 +222,7 @@ sessions = index["sessions"]
 
 # Find sessions with CI failures
 failing = [
-    s for s in sessions 
+    s for s in sessions
     if s["ci_checks_red"] > 0
 ]
 
@@ -271,14 +271,14 @@ index = json.loads(Path(".codex/sessions_index.json").read_text())
 # Write CSV
 with open("sessions.csv", "w", newline="") as f:
     writer = csv.writer(f)
-    
+
     # Header
     headers = [
         "session_id", "pr_number", "timestamp", "status",
         "patterns_fixed", "ci_green", "ci_red", "summary"
     ]
     writer.writerow(headers)
-    
+
     # Rows
     for session in index["sessions"]:
         writer.writerow([
@@ -346,21 +346,21 @@ class CognitiveBrainSessionManager:
         """Query recent sessions using Phase 1 index."""
         index = json.loads(Path(".codex/sessions_index.json").read_text())
         sessions = index["sessions"]
-        
+
         # Sort by timestamp descending and return last N
         return sorted(
             sessions,
             key=lambda s: s["timestamp"],
             reverse=True
         )[:limit]
-    
+
     def find_sessions_by_pattern(self, pattern_id):
         """Find all sessions that fixed a pattern."""
         index = json.loads(Path(".codex/sessions_index.json").read_text())
         sessions = index["sessions"]
-        
+
         return [
-            s for s in sessions 
+            s for s in sessions
             if pattern_id in s["patterns_fixed"]
         ]
 ```
@@ -373,20 +373,20 @@ def select_agent_for_task(task):
     """Select best agent based on similar past sessions."""
     import json
     from pathlib import Path
-    
+
     index = json.loads(Path(".codex/sessions_index.json").read_text())
     sessions = index["sessions"]
-    
+
     # Find sessions with similar patterns
     similar = [
         s for s in sessions
         if any(p in task.patterns for p in s["patterns_fixed"])
     ]
-    
+
     # If most similar sessions succeeded, use same agent
     # Otherwise, try a different agent
     success_rate = sum(1 for s in similar if s["status"] == "complete") / len(similar) if similar else 0
-    
+
     return select_best_agent(task, success_rate)
 ```
 
@@ -473,4 +473,3 @@ See complete working examples in:
 - **API:** `src/codex/logging/session_query.py`
 - **Index:** `.codex/sessions_index.json`
 - **Validation:** `scripts/ci/validate_phase1_checkpoint.py`
-

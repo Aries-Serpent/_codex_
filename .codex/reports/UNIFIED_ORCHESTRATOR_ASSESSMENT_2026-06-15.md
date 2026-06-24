@@ -11,7 +11,7 @@
 The codebase presents **THREE CRITICAL BLOCKERS** preventing CVE remediation campaign deployment:
 
 1. **CI instability at 66.7% failure rate** blocks safe validation of security fixes (BLOCK-001)
-2. **Zero coverage in security-critical modules** (agents/, training/ = 0% coverage) hides untested vulnerabilities (BLOCK-002) 
+2. **Zero coverage in security-critical modules** (agents/, training/ = 0% coverage) hides untested vulnerabilities (BLOCK-002)
 3. **2,253 skipped tests (9% of test suite)** prevents proper validation of CVE patches (BLOCK-003)
 
 These three factors create a **HIGH-RISK triad**: even if CVEs are patched, the inability to validate those patches across untested code paths and the unstable CI pipeline mean we cannot safely assert that fixes are effective or won't introduce new vulnerabilities. **Recommend stabilizing CI and coverage baseline BEFORE deploying security fixes** (2-3 day sprint to baseline readiness, then 1-2 days for CVE remediation).
@@ -51,7 +51,7 @@ These three factors create a **HIGH-RISK triad**: even if CVEs are patched, the 
      * `isinstance()` TypeError with union types (3 failures)
      * PyTorch FloatStorage pickling error (1 failure)
      * Missing LICENSE metadata & CLI argument parsing (7 failures)
-   - **Resolution Path:** 
+   - **Resolution Path:**
      * Immediate (< 4 hours): Add `sentence-transformers` to dependencies
      * Quick wins (< 2 hours): Fix LICENSE metadata, CLI args
      * Medium effort (15-30 min each): Fix isinstance() and pickling errors
@@ -116,12 +116,12 @@ These three factors create a **HIGH-RISK triad**: even if CVEs are patched, the 
 ### **Flow Diagram: How Blockers Prevent Campaign Completion**
 
 ```
-CI Failure (66.7%) 
+CI Failure (66.7%)
   ↓ blocks → Cannot validate security patches
   ↓ blocks → Cannot run full test suite (skipped tests)
   ↓ blocks → Cannot deploy with confidence
 
-Zero Coverage (3.61%) 
+Zero Coverage (3.61%)
   ↓ hides → Undetected vulns in agents/, training
   ↓ hides → Untested CVE fix paths
   ↓ hides → Unknown error handling patterns
@@ -199,7 +199,7 @@ Result: CVE remediation campaign is **HIGH-RISK** until all 3 blockers cleared
   - Affected: `src/codex_ml/utils/checkpoint_core.py`, `src/caching/disk_cache_wrapper.py`
   - Actions: Upgrade dependency; add patch validation tests; test checkpoint save/load paths
   - Timeline: 2-4 hours
-  
+
 - [ ] **CVE-2024-35515** (sqlitedict 2.1.0 → 2.1.1+)
   - Affected: `src/db/persistence.py`, `src/codex_ml/utils/data_cache.py`
   - Actions: Upgrade dependency; validate deserialization paths; add security tests

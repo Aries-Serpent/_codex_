@@ -531,4 +531,3 @@ docker push ghcr.io/aries-serpent/codex:v0.1.0-final
 - `.codex/UNIFIED_DEPLOYMENT_EXECUTION_FRAMEWORK.md` (Section 3: Blockers)
 - `.codex/PHASE1_FINAL_STATUS.md` (Phase 1 completion)
 - `.github/workflows/docker-build.yml` (CI/CD integration)
-

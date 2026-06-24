@@ -168,7 +168,7 @@ Weak Patterns: 39
 
 ### Formula
 ```
-Quality Index = 0.5 (base) 
+Quality Index = 0.5 (base)
               + 0.068 (assertion count)
               + 0.200 (diversity)
               + 0.099 (error coverage)

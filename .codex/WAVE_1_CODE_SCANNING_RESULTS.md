@@ -484,7 +484,7 @@ Run metrics:
         Low: 419
         Medium: 0
         High: 0
-    
+
     Total issues (by confidence):
         Undefined: 0
         Low: 0
