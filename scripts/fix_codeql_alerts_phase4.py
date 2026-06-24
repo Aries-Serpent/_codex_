@@ -70,7 +70,7 @@ ALERTS_TO_FIX = {
 
 SUPPRESSION_TEMPLATES = {
     "credential_masking": {
-        "comment": "  # codeql[py/clear-text-logging-sensitive-data]
+        "comment": "  # codeql[py/clear-text-logging-sensitive-data]",
         "description": "Masked credential output — no sensitive data logged"
     },
     "secrets_storage": {
