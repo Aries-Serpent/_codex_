@@ -128,6 +128,8 @@ manifests/k8s/*/secret.yaml
 !.codex/sbom/.gitkeep
 !.codex/plans/
 !.codex/plans/**
+!.codex/security/
+!.codex/security/**
 !.codex/agents/
 !.codex/agents/**
 !.codex/cognitive_brain/
