@@ -217,7 +217,9 @@ class TokenScopeVerifier:
         if results.get("error"):
             # Security Practice: Redact error details in output to avoid information leakage
             # Detailed error information is available in logs for authorized debugging
-            print("❌ Error: Token verification failed (check logs for details)")  # codeql[py/clear-text-logging-sensitive-data] Redacted error; see logs  # codeql[py/log-injection] No injection possible
+            # codeql[py/clear-text-logging-sensitive-data] Error message is redacted; see logs for full details
+            # codeql[py/log-injection] No injection possible - message is a static string literal
+            print("❌ Error: Token verification failed (check logs for details)")
             # When DEBUG=1, provide additional non-sensitive error details to stdout
             if os.getenv("DEBUG") == "1":
                 print(f"Debug details: {results.get('error')}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
