@@ -469,13 +469,13 @@ class CommonIssueFixer:
             (25, "Last-Commit Accountability", self.fix_last_commit_accountability),
             (26, "Auto-Post Rebase Race",    self.check_autopost_rebase_race),
             (27, "Secrets FP Scan",          self.fix_secrets_baseline_false_positives),
-            (28, "Copilot Sandbox Guard",    self.check_copilot_sandbox_env),  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+            (28, "Copilot Sandbox Guard",    self.check_copilot_sandbox_env),  # codeql[py/clear-text-logging-sensitive-data] Non-sensitive pattern name only
             (29, "PR Comment Triage",        self.fix_pr_comment_triage),
             (30, "Merge Readiness Dims",     self.fix_merge_readiness_dims),
             (31, "Stale Type Ignore",        self.fix_stale_type_ignore),
             (32, "Bare Type Ignore Assign",  self.fix_bare_type_ignore_assign),
             (33, "Rate Limit Checkpoint",    self.check_rate_limit_checkpoint),
-            (34, "Missing Newline at EOF",   self.fix_missing_newline_at_eof),  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+            (34, "Missing Newline at EOF",   self.fix_missing_newline_at_eof),  # codeql[py/clear-text-logging-sensitive-data] Non-sensitive pattern name only
             (35, "Markdown FP Secrets",      self.fix_markdown_false_positive_secrets),
         ]
         patterns = all_patterns

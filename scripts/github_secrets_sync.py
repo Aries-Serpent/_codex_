@@ -109,12 +109,12 @@ class GitHubSecretsManager:
         with open(backup_file, 'w') as f:
             json.dump(backup_data, f, indent=2)
 
-        print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not secret values
         return {'backup_file': str(backup_file), 'count': len(backup_data['secrets'])}
 
-    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:  # codeql[py/clear-text-logging-sensitive-data] Function parameter names are non-sensitive
         """Rotate specified secrets."""
-        print(f"Rotating {len(secret_names)} secrets...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"Rotating {len(secret_names)} secrets...")  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not secret names/values
 
         results = {'rotated': [], 'failed': []}
 
