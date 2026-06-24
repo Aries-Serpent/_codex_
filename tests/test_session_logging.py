@@ -22,10 +22,10 @@ def _import_any(paths):
     for p in paths:
         try:
             return importlib.import_module(p)
-        except (ImportError, AttributeError) as e:  # pragma: no cover - optional deps
+        except ImportError as e:  # pragma: no cover - optional deps
             logging.debug("failed to import %s: %s", p, e)
             continue
-        except (ImportError, AttributeError) as e:  # pragma: no cover - unexpected import error
+        except AttributeError as e:  # pragma: no cover - unexpected import error
             logging.exception("unexpected error importing %s", p)
             pytest.fail(f"Unexpected error importing {p}: {e!r}")
     return None

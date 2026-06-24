@@ -33,7 +33,7 @@ def init_wandb_offline(project: str = "codex"):
     except ImportError:
         logger.warning("wandb not installed; skipping W&B init (pip install wandb)")
         return None
-    except (ImportError, AttributeError):
+    except AttributeError:
         logger.warning("Unexpected error importing wandb", exc_info=True)
         return None
     if not callable(getattr(wandb, "init", None)):

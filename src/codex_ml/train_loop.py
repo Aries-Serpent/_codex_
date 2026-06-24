@@ -1989,7 +1989,7 @@ def run_training(
                     logger.debug(f"TypeError: {merge_exc}")
                     cb.record_error("merge_callback_results", merge_exc, state)
                     logger.warning("Callback merge error: %s", merge_exc)
-                except (ValueError, TypeError, RuntimeError) as e:
+                except (ValueError, RuntimeError) as e:
                     cb.record_error("on_epoch_end", e, state)
                     logger.warning("Callback on_epoch_end error: %s", e)
 
