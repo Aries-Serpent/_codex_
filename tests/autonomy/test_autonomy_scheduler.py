@@ -101,7 +101,7 @@ class TestDecisionLoop:
     """Tests for the main decision loop in dry-run mode."""
 
     @pytest.mark.flaky(reruns=2, reason="P3-subprocess: sense_test_health subprocess timeout")
-    @pytest.mark.timeout(240)  # STABILIZATION: Increase from 120s to 240s for slow CI runners
+    @pytest.mark.timeout(240)  # STABILIZATION V2: Increased from 120s to 240s for slow CI runners
     def test_run_loop_dry_run_no_side_effects(self, tmp_path):
         """Dry-run mode should not write to memory/ directory."""
         mod = _import_scheduler()
@@ -113,13 +113,21 @@ class TestDecisionLoop:
         # loaded CI runners, causing spurious failures unrelated to the test intent).
         _healthy = {"status": "ok", "returncode": 0, "stderr_snippet": ""}
 
+        # STABILIZATION V2: Add explicit resource cleanup and isolation
+        import gc
+        gc.collect()  # Force garbage collection before test
+        
         # Patch SESSION_DIR to tmp_path so we don't pollute repo
         with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
              patch.object(mod, "DRY_RUN", True), \
              patch.object(mod, "MAX_ITERATIONS", 1), \
              patch.object(mod, "BUDGET_SECONDS", 30), \
              patch.object(mod, "sense_test_health", return_value=_healthy):
-            mod.run_autonomy_loop()
+            try:
+                mod.run_autonomy_loop()
+            finally:
+                # Explicit resource cleanup
+                gc.collect()
 
         # In dry-run, sessions dir should not be created by the loop
         # (or if created, should be empty / contain only non-mutating records)
