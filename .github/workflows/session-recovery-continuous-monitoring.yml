@@ -36,7 +36,7 @@ jobs:
         run: |
           python scripts/ci/session_recovery_monitor.py > /tmp/monitor_output.txt 2>&1
           cat /tmp/monitor_output.txt
-          
+
           # Check if report was created
           if [ -f .codex/session_recovery_monitoring_report.json ]; then
             echo "✅ Monitoring report generated successfully"
@@ -53,61 +53,61 @@ jobs:
         run: |
           python3 << 'PYTHON_EOF'
           import json
-          
+
           with open('.codex/session_recovery_monitoring_report.json') as f:
               report = json.load(f)
-          
+
           metrics = report.get('metrics', {})
           total_checkpoints = metrics.get('total_checkpoints', 0)
           total_failures = metrics.get('total_failures', 0)
           recovery_success_rate = metrics.get('recovery_success_rate', 0.0)
-          
+
           print(f"✅ Total Checkpoints: {total_checkpoints}")
           print(f"📊 Total Failures: {total_failures}")
           print(f"📈 Recovery Success Rate: {recovery_success_rate * 100:.1f}%")
-          
+
           # Check for issues
           recent_failures = report.get('recent_failures', [])
           if len(recent_failures) > 0:
               print(f"\n⚠️  Recent events: {len(recent_failures)}")
               for failure in recent_failures[-3:]:
                   print(f"   - {failure.get('type', 'unknown')}: {failure.get('timestamp', 'N/A')}")
-          
+
           PYTHON_EOF
 
       - name: Check recovery system health
         run: |
           echo "🔍 Session Recovery System Health Check"
           echo "========================================"
-          
+
           if [ -f .codex/session_recovery_config.yml ]; then
               echo "✅ Recovery configuration found"
               echo "   Location: .codex/session_recovery_config.yml"
           fi
-          
+
           if [ -f .github/workflows/session-recovery-handler.yml ]; then
               echo "✅ Recovery workflow found"
               echo "   Location: .github/workflows/session-recovery-handler.yml"
           fi
-          
+
           if [ -f scripts/ci/session_recovery.py ]; then
               echo "✅ Recovery script found"
               echo "   Location: scripts/ci/session_recovery.py"
           fi
-          
+
           SESSION_DIR=".codex/sessions"
           if [ -d "$SESSION_DIR" ]; then
               CHECKPOINT_COUNT=$(find "$SESSION_DIR" -name "checkpoint_*.json" 2>/dev/null | wc -l)
               echo "✅ Session checkpoint directory found"
               echo "   Checkpoints stored: $CHECKPOINT_COUNT"
           fi
-          
+
           if [ -f .codex/session_recovery_log.jsonl ]; then
               LOG_LINES=$(wc -l < .codex/session_recovery_log.jsonl)
               echo "✅ Recovery log found"
               echo "   Log entries: $LOG_LINES"
           fi
-          
+
           echo ""
           echo "🟢 Recovery System: OPERATIONAL"
 
@@ -126,7 +126,7 @@ jobs:
           script: |
             const fs = require('fs');
             const report = JSON.parse(fs.readFileSync('.codex/session_recovery_monitoring_report.json', 'utf8'));
-            
+
             if (report.recent_failures.length > 0) {
               github.rest.issues.createComment({
                 issue_number: process.env.GITHUB_PR_NUMBER,
@@ -136,7 +136,7 @@ jobs:
                       `Generated: ${report.timestamp}\n` +
                       `Recovery System Status: ${report.recovery_system_status}\n\n` +
                       `### Recent Events\n` +
-                      report.recent_failures.map(f => 
+                      report.recent_failures.map(f =>
                         `- **${f.type}**: ${f.timestamp} (Session: ${f.session_id})`
                       ).join('\n')
               });
