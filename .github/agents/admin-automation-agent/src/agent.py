@@ -152,22 +152,22 @@ class AdminAutomationAgent:
             "message": safe_message,  # Store sanitized version
             "details": details or {},
             "timestamp": datetime.now(UTC).isoformat()
-        }  # nosec  # codeql[py/clear-text-logging-sensitive-data]
-        self.results["tasks"].append(task_result)  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        }  # codeql[py/clear-text-logging-sensitive-data]
+        self.results["tasks"].append(task_result)  # codeql[py/clear-text-logging-sensitive-data]
 
         # Security: Use a masked fingerprint to prevent clear-text logging of any
         # residual sensitive content — CodeQL py/clear-text-logging-sensitive-data.
         # The full sanitized message is already stored in task_result above.
         # Fingerprint is first 8 chars only
-        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"  # codeql[py/clear-text-logging-sensitive-data]
         if status == "success":
-            logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
         elif status == "error":
-            logger.error("❌ Task error: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.error("❌ Task error: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
         elif status == "warning":
-            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("⚠️  Task warning: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
@@ -194,7 +194,7 @@ class AdminAutomationAgent:
 
         # Step 2: Generate CODEX_MASTER_KEY (if not exists)
         if self.secrets_manager:
-            logger.info("\n🔑 Step 2: Secret Management")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("\n🔑 Step 2: Secret Management")  # codeql[py/clear-text-logging-sensitive-data]
             secrets_result = self.secrets_manager.setup_phase10_secrets(force=False)
             # Security: Redact secret names from dict keys before storing
             # CodeQL alerts #3342, #3343, #3344, #3345
@@ -289,7 +289,7 @@ class AdminAutomationAgent:
         """
         Rotate repository secrets with backup and validation.
         """
-        logger.info("🔄 Starting Secret Rotation")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        logger.info("🔄 Starting Secret Rotation")  # codeql[py/clear-text-logging-sensitive-data]
         logger.info("=" * 70)
 
         if not self.secrets_manager:
@@ -302,7 +302,7 @@ class AdminAutomationAgent:
 
         for idx, secret_name in enumerate(secrets):
             # Security: Don't log secret names - CodeQL alert #3322
-            logger.info("\n🔑 Rotating secret %d/%d...", idx + 1, len(secrets))  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info("\n🔑 Rotating secret %d/%d...", idx + 1, len(secrets))  # codeql[py/clear-text-logging-sensitive-data]
 
             # Backup current secret (metadata only, never the value)
             if backup:
@@ -318,7 +318,7 @@ class AdminAutomationAgent:
                 new_value = self.secrets_manager.generate_secure_key(32)
             else:
                 # Security: Don't log secret names - CodeQL alert #3323
-                logger.warning("  ⚠️  Secret requires manual value")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning("  ⚠️  Secret requires manual value")  # codeql[py/clear-text-logging-sensitive-data]
                 results_list.append({"index": idx, "status": "manual_required"})
                 continue
 
@@ -557,7 +557,7 @@ def main():
         kwargs = {"comprehensive": args.comprehensive}
     elif args.task == "rotate_secrets":
         if not args.secrets:
-            print("❌ --secrets required for rotate_secrets task")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+            print("❌ --secrets required for rotate_secrets task")  # codeql[py/clear-text-logging-sensitive-data]
             return 1
         kwargs = {
             "secrets": args.secrets.split(","),
