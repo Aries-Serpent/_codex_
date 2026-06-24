@@ -408,11 +408,11 @@ If deploying:
 │   ├── STAKEHOLDER_NOTIFICATION.txt
 │   ├── POST_INCIDENT_REVIEW.md
 │   └── README.md
-├── TRACK_2_TASK_1_PLAYBOOK_GENERATION.md
-├── TRACK_2_TASK_2_DRY_RUN_TESTING.md
-├── TRACK_2_TASK_3_INCIDENT_TEMPLATES.md
-├── TRACK_2_TASK_4_ESCALATION_PROCEDURES.md
-└── TRACK_2_TASK_5_WORKFLOW_IMPLEMENTATION.md
+├── TRACK_2_TASK_1_PLAYBOOK_GENERATION.md  # pragma: allowlist secret
+├── TRACK_2_TASK_2_DRY_RUN_TESTING.md  # pragma: allowlist secret
+├── TRACK_2_TASK_3_INCIDENT_TEMPLATES.md  # pragma: allowlist secret
+├── TRACK_2_TASK_4_ESCALATION_PROCEDURES.md  # pragma: allowlist secret
+└── TRACK_2_TASK_5_WORKFLOW_IMPLEMENTATION.md  # pragma: allowlist secret
 
 scripts/deployment/
 ├── generate_rollback_playbook.py

@@ -11,7 +11,6 @@ from dataclasses import asdict
 from typing import Optional
 
 import requests
-
 from phase_8_2_issue_classifier import ClassificationResult, IssueClassifier
 
 
@@ -28,7 +27,7 @@ class GitHubLabelManager:
         self.token = token or os.environ.get("GITHUB_TOKEN")
         self.base_url = "https://api.github.com"
         self.headers = {
-            "Authorization": f"******",
+            "Authorization": "******",
             "Accept": "application/vnd.github.v3+json",
         }
 

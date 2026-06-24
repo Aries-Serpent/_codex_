@@ -34,5 +34,8 @@ def load_plugins(modules: Sequence[str]) -> None:
         try:
             importlib.import_module(module)
             logger.info("Plugin loaded: %s", module)
-        except (ImportError, AttributeError) as exc:  # pragma: no cover - plugin failures are non-fatal
+        except (
+            ImportError,
+            AttributeError,
+        ) as exc:  # pragma: no cover - plugin failures are non-fatal
             logger.warning("Failed to load plugin %s: %s", module, exc)

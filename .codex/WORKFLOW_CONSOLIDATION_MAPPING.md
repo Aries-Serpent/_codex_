@@ -95,8 +95,8 @@ codeql.yml - CodeQL analysis
 container-scan.yml - Container scanning
 dependency-scan.yml - Dependency scanning
 nightly-codeql-alert-triage.yml - CodeQL triage
-scan-secrets-variables.yml - Secret scanning
-secrets-baseline-enforcer.yml - Baseline enforcement
+scan-secrets-variables.yml - Secret scanning  # pragma: allowlist secret
+secrets-baseline-enforcer.yml - Baseline enforcement  # pragma: allowlist secret
 security-alert-notification.yml - Alert notification
 security-scanning-suite.yml - Security orchestration
 semgrep_sarif.yml - Semgrep scanning
@@ -320,7 +320,7 @@ agent-handoff-gate.yml - Handoff
 agent-health-check.yml - Health check
 agent-orchestration-unified.yml - Orchestration
 agent-registry-validation.yml - Registry validation
-agent-task-janitor.yml - Task cleanup
+agent-task-janitor.yml - Task cleanup  # pragma: allowlist secret
 agent-var-writer.yml - Var writing
 copilot-agent-checkin.yml - Agent checkin
 copilot-agent-session-done.yml - Session done

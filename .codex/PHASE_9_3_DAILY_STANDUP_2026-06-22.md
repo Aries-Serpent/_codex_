@@ -45,7 +45,7 @@ Remaining Deliverables:     3/5
 | CI/CD | 20 | 13.8% | ci-auto-healer, artifact-monitor, cache-management |
 | Testing | 15 | 10.3% | autonomous-test-healer, fragile-test-guardian |
 | Operations | 12 | 8.3% | github-guru, github-app-manager |
-| Security | 10 | 6.9% | code-scanning-remediation, secret-detection |
+| Security | 10 | 6.9% | code-scanning-remediation, secret-detection | <!-- pragma: allowlist secret -->
 | Documentation | 10 | 6.9% | doc-freshness-checker, link-validator |
 | Quality | 9 | 6.2% | code-analysis, codebase-health-guardian |
 | ML/Cognitive | 14 | 9.7% | meta-tensor-validator, rag-freshness-loop |

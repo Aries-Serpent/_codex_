@@ -70,7 +70,7 @@ This directory contains a comprehensive analysis of the `copilot-setup-steps.yml
 | **LFS Mode Description Typo** | 🔴 CRITICAL | `full=full=fetch all` causes YAML parse errors |
 | **Complex Error Handling** | 🟡 MEDIUM | Changed from shell `if` to GitHub Actions `format()` |
 | **436 Additional Lines** | 🟡 MEDIUM | 60+ git config, 40+ conflict check, 35+ issue check |
-| **Unquoted Secrets** | 🟡 MEDIUM | Changed from `"${{ ... }}"` to `${{ ... }}` |
+| **Unquoted Secrets** | 🟡 MEDIUM | Changed from `"${{ ... }}"` to `${{ ... }}` | <!-- pragma: allowlist secret -->
 
 ### Current Status
 

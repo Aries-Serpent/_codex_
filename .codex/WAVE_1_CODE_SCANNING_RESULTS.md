@@ -405,7 +405,7 @@ bandit -r src/ -f txt
 |-------|------|--------|---------|
 | A01: Injection | MED | ✅ SAFE | No SQL/command injection |
 | A02: Broken Auth | MED | ✅ SAFE | JWT + RBAC implemented |
-| A03: Sensitive Data | MED | ✅ SAFE | Encryption + no hardcoded secrets |
+| A03: Sensitive Data | MED | ✅ SAFE | Encryption + no hardcoded secrets | <!-- pragma: allowlist secret -->
 | A04: XML External Entities | MED | ✅ SAFE | defusedxml in use |
 | A05: Access Control | MED | ✅ SAFE | RBAC properly enforced |
 | A06: Security Misconfig | MED | ✅ SAFE | Config properly handled |

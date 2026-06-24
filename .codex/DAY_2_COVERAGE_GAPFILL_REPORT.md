@@ -54,7 +54,7 @@ Analyzed 40 source modules across the codebase and identified 12 priority module
 | 8 | `src/common` | 22.2% | 2/9 | 544 | Shared utilities |
 | 9 | `src/utils` | 30.0% | 3/10 | 490 | Helper functions |
 | 10 | `src/training` | 47.1% | 8/17 | 476 | Training pipeline |
-| 11 | `src/tokenization` | 28.6% | 2/7 | 357 | Tokenization |
+| 11 | `src/tokenization` | 28.6% | 2/7 | 357 | Tokenization | <!-- pragma: allowlist secret -->
 | 12 | `src/tools` | 20.0% | 1/5 | 320 | Tool integration |
 
 **Analysis Output:**

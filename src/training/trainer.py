@@ -343,7 +343,11 @@ class Trainer:
             if latest is not None:
                 try:
                     self._load_checkpoint(*latest)
-                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - resume is best-effort
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ) as exc:  # pragma: no cover - resume is best-effort
                     LOGGER.warning("Auto-resume skipped due to error: %s", exc)
                 else:
                     resumed = True
@@ -438,7 +442,11 @@ class Trainer:
         if self.metric_fn is not None:
             try:
                 metrics["val_metric"] = float(self.metric_fn(outputs, labels))
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - metric robustness guard
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - metric robustness guard
                 LOGGER.debug("Metric function failed: %s", exc)
         return metrics
 

@@ -23,14 +23,15 @@ Performance targets:
 - <500ms routing latency
 """
 
-import json
 import hashlib
+import json
 import time
-from typing import Dict, List, Tuple, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
-import numpy as np
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 
 @dataclass

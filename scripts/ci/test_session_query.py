@@ -15,20 +15,18 @@ Tests include:
 - Edge cases and error handling
 """
 
-import unittest
 import json
-import tempfile
 import os
-from datetime import datetime, timedelta
-from pathlib import Path
-from io import StringIO
-import sys
 
 # Import the module to test
 import sys
+import tempfile
+import unittest
+from datetime import datetime, timedelta
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from scripts.ci.session_query import SessionQuery, format_json_output, format_csv_output
+from scripts.ci.session_query import SessionQuery, format_csv_output, format_json_output
 
 
 class TestSessionQuery(unittest.TestCase):

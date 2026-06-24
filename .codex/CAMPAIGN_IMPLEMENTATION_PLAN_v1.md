@@ -54,7 +54,7 @@ Move Aries-Serpent/_codex_ from **pre-release (v0.1.0)** to **production-ready (
 | CI Failure Rate | 171 recent | <5% | 🔴 CRITICAL | Needs stabilization |
 | Prod-Ready Workflows | 142/172 (82%) | 100% | 🟡 HIGH | Needs alignment |
 | CodeQL Alerts Unresolved | 22 | 0 | 🔴 CRITICAL | Requires fixes |
-| Secrets Logging Issues | 30+ | 0 | 🔴 CRITICAL | Requires suppression |
+| Secrets Logging Issues | 30+ | 0 | 🔴 CRITICAL | Requires suppression | <!-- pragma: allowlist secret -->
 
 ### Recent Progress Indicators (as of 2026-06-24)
 

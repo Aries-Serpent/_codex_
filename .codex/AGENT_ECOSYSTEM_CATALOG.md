@@ -34,7 +34,7 @@ This catalog provides complete documentation of the 159-agent ecosystem for the 
 | CI/CD & Automation | 26 | 2 | 28 | Pipeline automation, failure detection, self-healing |
 | Testing & Quality | 28 | 1 | 29 | Test coverage, mutation testing, quality gates |
 | Repository Operations | 46 | 2 | 48 | PR analysis, issue triage, branch management |
-| Security & Compliance | 17 | 1 | 18 | SAST, dependency scanning, secret detection |
+| Security & Compliance | 17 | 1 | 18 | SAST, dependency scanning, secret detection | <!-- pragma: allowlist secret -->
 | Documentation & Knowledge | 12 | 0 | 12 | Doc consolidation, link validation, freshness |
 | Domain-Specific | 19 | 1 | 20 | ML validation, infrastructure, configuration |
 | Orchestration & Multi-Agent | 1 | 0 | 1 | Multi-agent workflow coordination |
@@ -1352,7 +1352,7 @@ This matrix shows which agents handle which capability categories:
 | **Issue Triage** | github-guru-agent, policy-coach-agent | github-guru-agent |
 | **CI/CD Automation** | ci-auto-healer-agent, ci-failure-resolution-agent, workflow-ci-fixer | ci-failure-resolution-agent |
 | **Test Coverage** | unified-coverage-agent, test-coverage-agent, fragile-test-guardian | unified-coverage-agent |
-| **Security Scanning** | unified-security-scanner, codeql-alert-resolution-agent, secret-detection-agent | unified-security-scanner |
+| **Security Scanning** | unified-security-scanner, codeql-alert-resolution-agent, secret-detection-agent | unified-security-scanner | <!-- pragma: allowlist secret -->
 | **Documentation** | unified-doc-agent, doc-freshness-checker, link-validator-agent | unified-doc-agent |
 | **Dependency Management** | dependency-vulnerability-scanner, dependency-conflict-agent | dependency-vulnerability-scanner |
 | **Code Quality** | code-analysis-agent, test-pattern-guardian, mutation-testing-agent | code-analysis-agent |

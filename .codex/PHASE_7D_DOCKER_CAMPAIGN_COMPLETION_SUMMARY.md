@@ -40,7 +40,7 @@
 │
 ├── PHASE_7D_DOCKER_SECURITY_AUDIT.md
 │   └─ Security controls: 6 baseline checks (100% pass rate)
-│      Base image digest pinning, non-root users, secrets scan
+│      Base image digest pinning, non-root users, secrets scan  # pragma: allowlist secret
 │      CIS Docker Benchmark, OWASP Container Top 10 compliance
 │
 ├── PHASE_7D_DOCKER_OPTIMIZATION.md

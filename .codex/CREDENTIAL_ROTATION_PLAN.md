@@ -116,18 +116,18 @@ tail -100 /var/log/codex/auth.log | grep -i error
 
 | # | Type | Service | Count | Exposed | Priority | Status |
 |----|------|---------|-------|---------|----------|--------|
-| 1 | JWT Secrets | Internal | 2 | YES | CRITICAL | ⏳ In progress |
+| 1 | JWT Secrets | Internal | 2 | YES | CRITICAL | ⏳ In progress | <!-- pragma: allowlist secret -->
 | 2 | API Keys | OpenAI | 1 | UNKNOWN | HIGH | ⏳ Pending |
 | 3 | API Keys | GitHub | 1 | UNKNOWN | HIGH | ⏳ Pending |
 | 4 | API Keys | Stripe | 1 | UNKNOWN | HIGH | ⏳ Pending |
 | 5 | API Keys | AWS | 2 | UNKNOWN | HIGH | ⏳ Pending |
-| 6 | DB Passwords | PostgreSQL | 1 | UNKNOWN | HIGH | ⏳ Pending |
-| 7 | DB Passwords | MongoDB | 1 | UNKNOWN | HIGH | ⏳ Pending |
+| 6 | DB Passwords | PostgreSQL | 1 | UNKNOWN | HIGH | ⏳ Pending | <!-- pragma: allowlist secret -->
+| 7 | DB Passwords | MongoDB | 1 | UNKNOWN | HIGH | ⏳ Pending | <!-- pragma: allowlist secret -->
 | 8 | API Keys | Pinecone | 1 | UNKNOWN | HIGH | ⏳ Pending |
 | 9 | API Keys | Weaviate | 1 | UNKNOWN | HIGH | ⏳ Pending |
-| 10 | Tokens | D365 | 1 | UNKNOWN | MEDIUM | ⏳ Pending |
-| 11 | Tokens | Slack | 1 | UNKNOWN | MEDIUM | ⏳ Pending |
-| 12 | Tokens | Twilio | 1 | UNKNOWN | MEDIUM | ⏳ Pending |
+| 10 | Tokens | D365 | 1 | UNKNOWN | MEDIUM | ⏳ Pending | <!-- pragma: allowlist secret -->
+| 11 | Tokens | Slack | 1 | UNKNOWN | MEDIUM | ⏳ Pending | <!-- pragma: allowlist secret -->
+| 12 | Tokens | Twilio | 1 | UNKNOWN | MEDIUM | ⏳ Pending | <!-- pragma: allowlist secret -->
 
 #### 2.2 Service-Specific Rotation Procedures
 
@@ -521,11 +521,11 @@ aws ec2 create-flow-logs \
 
 | Credential | Rotation Date | Rotated By | Verified By | Status |
 |-----------|---------------|-----------|------------|--------|
-| AUTH_SECRET_KEY | [DATE] | [NAME] | [NAME] | ⏳ Pending |
-| GITHUB_TOKEN | [DATE] | [NAME] | [NAME] | ⏳ Pending |
-| OPENAI_API_KEY | [DATE] | [NAME] | [NAME] | ⏳ Pending |
+| AUTH_SECRET_KEY | [DATE] | [NAME] | [NAME] | ⏳ Pending | <!-- pragma: allowlist secret -->
+| GITHUB_TOKEN | [DATE] | [NAME] | [NAME] | ⏳ Pending | <!-- pragma: allowlist secret -->
+| OPENAI_API_KEY | [DATE] | [NAME] | [NAME] | ⏳ Pending | <!-- pragma: allowlist secret -->
 | AWS Keys | [DATE] | [NAME] | [NAME] | ⏳ Pending |
-| DB Passwords | [DATE] | [NAME] | [NAME] | ⏳ Pending |
+| DB Passwords | [DATE] | [NAME] | [NAME] | ⏳ Pending | <!-- pragma: allowlist secret -->
 | Stripe Keys | [DATE] | [NAME] | [NAME] | ⏳ Pending |
 | [Others] | [DATE] | [NAME] | [NAME] | ⏳ Pending |
 

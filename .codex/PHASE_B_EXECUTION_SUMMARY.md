@@ -216,7 +216,7 @@ CLI integration candidates:
 .codex/MODEL_SELECTION_FRAMEWORK.md
 ├─ Complete model classification (186 workflows)
 ├─ Haiku/Sonnet assignment recommendations
-├─ Token savings calculations
+├─ Token savings calculations  # pragma: allowlist secret
 └─ Phase B execution guide
 
 .codex/WORKFLOW_CONSOLIDATION_MAPPING.md

@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+
 class HeadingHierarchyFixer:
     """Fix improper heading levels in markdown files."""
 

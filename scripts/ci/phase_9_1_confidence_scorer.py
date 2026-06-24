@@ -44,13 +44,13 @@ Usage:
   )
 """
 
+import argparse
 import json
 import sqlite3
-from functools import lru_cache
-from typing import Dict, Optional, Any, Tuple
 from dataclasses import dataclass
-import argparse
 from datetime import datetime
+from functools import lru_cache
+from typing import Any, Dict, Optional, Tuple
 
 
 @dataclass

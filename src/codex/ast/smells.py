@@ -520,7 +520,7 @@ class CodeSmellDetector:
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-S002",
-                            message="Broad 'except (IOError, OSError):' may hide unexpected failures",
+                            message="Broad 'except (IOError, OSError):' may hide unexpected failures",  # noqa: E501
                             severity=SmellSeverity.WARNING,
                             category=SmellCategory.STRUCTURE,
                             file_path=file_path,

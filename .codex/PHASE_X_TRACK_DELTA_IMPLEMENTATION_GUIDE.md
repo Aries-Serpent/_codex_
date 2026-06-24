@@ -55,7 +55,7 @@ rag-freshness-scheduler.yml
 rag-quality-nightly.yml
 reference-integrity.yml
 required-actions-enforcer.yml
-secrets-false-positive-healer.yml
+secrets-false-positive-healer.yml  # pragma: allowlist secret
 ```
 
 #### Fix Pattern (Copy-Paste):

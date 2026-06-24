@@ -33,7 +33,7 @@ COMPONENT                        BEFORE    AFTER     IMPROVEMENT
 ──────────────────────────────────────────────────────────────
 CodeQL (Static Analysis)         7.7/10    8.5/10    ↑ +0.8
 Dependency Security              10/10     10/10     ✓ Maintained
-Secrets Compliance               10/10     10/10     ✓ Maintained
+Secrets Compliance               10/10     10/10     ✓ Maintained  # pragma: allowlist secret
 Coverage Validation              6.2/10    6.5/10    ↑ +0.3
 ──────────────────────────────────────────────────────────────
 COMPOSITE SCORE                  8.2/10    8.7/10    ↑ +0.5
@@ -220,7 +220,7 @@ Performance Impact:         MINIMAL
 | Issue | File | Status | Resolution |
 |-------|------|--------|------------|
 | Import error: `audit_log` | `tests/security/test_decorators_comprehensive.py` | Noted | Non-blocking for Phase 5 |
-| Import error: `TokenManager` | `tests/security/test_token_rotation_comprehensive.py` | Noted | Non-blocking for Phase 5 |
+| Import error: `TokenManager` | `tests/security/test_token_rotation_comprehensive.py` | Noted | Non-blocking for Phase 5 | <!-- pragma: allowlist secret -->
 
 ---
 

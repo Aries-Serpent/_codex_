@@ -9,11 +9,11 @@ This bypasses the model download step for CI/CD environments.
 import json
 import logging
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
-import numpy as np
 import faiss
+import numpy as np
 
 logging.basicConfig(
     level=logging.INFO,

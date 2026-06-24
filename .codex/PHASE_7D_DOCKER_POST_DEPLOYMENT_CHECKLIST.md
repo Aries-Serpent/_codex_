@@ -215,7 +215,7 @@ echo "TEST 1: User Authentication"
 curl -X POST https://api.example.com/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username": "test@example.com", "password": "test"}' \
-  | jq '.token' > /dev/null && echo "✓ PASS" || echo "✗ FAIL"
+  | jq '.token' > /dev/null && echo "✓ PASS" || echo "✗ FAIL" <!-- pragma: allowlist secret -->
 
 # Test 2: Model Inference
 echo "TEST 2: Model Inference"

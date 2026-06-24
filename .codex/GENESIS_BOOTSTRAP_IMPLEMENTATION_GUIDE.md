@@ -22,7 +22,7 @@ This guide provides the **code-level implementation details** for Phase 2.2 gene
 | Item | Status | Effort | Notes |
 |------|--------|--------|-------|
 | **GENESIS_DRY_RUN input** | 📋 Design | 1 hour | Add to workflow inputs |
-| **Token health checks** | 📋 Design | 2 hours | Call TokenCircuitBreaker |
+| **Token health checks** | 📋 Design | 2 hours | Call TokenCircuitBreaker | <!-- pragma: allowlist secret -->
 | **JSON logging** | 📋 Design | 3 hours | Implement machine-readable logs |
 | **WEC integration** | 📋 Design | 1 hour | Update PR template |
 | **Approval audit trail** | 📋 Design | 1.5 hours | Create wec_approval_log.md |
@@ -416,9 +416,9 @@ _WEC_ALWAYS_REQUIRED = [
 
 | File | Purpose |
 |------|---------|
-| `src/codex/autonomy/token_broker.py` | TokenCircuitBreaker + TokenHealthChecker |
-| `scripts/ci/validate_token_setup.py` | Token validation script |
-| `.codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md` | Secret setup procedure |
+| `src/codex/autonomy/token_broker.py` | TokenCircuitBreaker + TokenHealthChecker | <!-- pragma: allowlist secret -->
+| `scripts/ci/validate_token_setup.py` | Token validation script | <!-- pragma: allowlist secret -->
+| `.codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md` | Secret setup procedure | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -430,7 +430,7 @@ _WEC_ALWAYS_REQUIRED = [
 ✅ Audit Document Created (PHASE_2_2_GENESIS_BOOTSTRAP_AUDIT.md)
 ✅ Implementation Guide Provided (this document)
 ✅ GENESIS_DRY_RUN Input Added
-✅ Token Health Checking Integrated
+✅ Token Health Checking Integrated  # pragma: allowlist secret
 ✅ JSON Audit Logging Implemented
 ✅ WEC Integration Complete
 ✅ Approval Audit Trail Functional

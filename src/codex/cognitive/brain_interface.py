@@ -392,9 +392,7 @@ class AgentBrainInterface:
                 # not for URL/domain validation. This is safe markdown parsing.
                 in_objectives = False
                 for line in content.split("\n"):
-                    if (
-                        "## Current Objectives" in line or "### Primary" in line
-                    ):  # nosec - markdown heading
+                    if "## Current Objectives" in line or "### Primary" in line:  # nosec - markdown heading
                         in_objectives = True
                         continue
                     if in_objectives and line.startswith("- [ ]"):

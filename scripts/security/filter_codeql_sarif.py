@@ -145,7 +145,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(f"Usage: {sys.argv[0]} <sarif_file_or_directory> [<output_file>]")
         print("\nFilters CodeQL SARIF results to remove false-positive alerts.")
-        print(f"\nExcluded rules:")
+        print("\nExcluded rules:")
         for rule in sorted(EXCLUDED_RULES):
             print(f"  - {rule}")
         sys.exit(1)

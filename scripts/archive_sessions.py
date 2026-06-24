@@ -10,10 +10,10 @@ Migrate sessions older than 90 days to Parquet cold storage.
 """
 
 import json
-import sys
 import logging
-from pathlib import Path
+import sys
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -237,14 +237,14 @@ def main():
         print(json.dumps(result, indent=2, default=str))
     else:
         print(f"\n{'='*60}")
-        print(f"Archive Migration Results")
+        print("Archive Migration Results")
         print(f"{'='*60}")
         print(f"Status: {result['status']}")
         print(f"Archived: {result['archived_count']}/{result['total_candidates']}")
 
         if 'archive_stats' in result:
             stats = result['archive_stats']
-            print(f"\nArchive Statistics:")
+            print("\nArchive Statistics:")
             print(f"  Active sessions: {stats['active_sessions']}")
             print(f"  Archived sessions: {stats['archived_sessions']}")
             print(f"  Total archive size: {stats['total_archive_size_mb']:.2f} MB")

@@ -7,10 +7,10 @@ Logs all deletions in retention_log.json for audit trail.
 """
 
 import json
-import sys
 import logging
-from pathlib import Path
+import sys
 from datetime import datetime, timedelta
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -201,7 +201,7 @@ def main():
         if args.json:
             print(json.dumps(stats, indent=2, default=str))
         else:
-            print(f"Retention Policy Statistics:")
+            print("Retention Policy Statistics:")
             print(f"  Max iterations: {stats['max_iterations']}")
             print(f"  Cutoff date: {stats['cutoff_date']}")
             print(f"  Total cleanups: {stats['total_cleanups']}")
@@ -215,7 +215,7 @@ def main():
         print(json.dumps(result, indent=2, default=str))
     else:
         print(f"\n{'='*60}")
-        print(f"Archive Retention Cleanup")
+        print("Archive Retention Cleanup")
         print(f"{'='*60}")
         print(f"Status: {result['status']}")
         print(f"Deleted: {result['deleted_count']}/{result['total_candidates']}")

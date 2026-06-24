@@ -16,7 +16,7 @@
 ### Score Breakdown by Module
 | Module | Current | Target | Gap | Priority |
 |--------|---------|--------|-----|----------|
-| `auth/token_handler.py` | 87% | 92% | -5pp | 🔴 High |
+| `auth/token_handler.py` | 87% | 92% | -5pp | 🔴 High | <!-- pragma: allowlist secret -->
 | `cache/memory_manager.py` | 86% | 92% | -6pp | 🔴 High |
 | `utils/validators.py` | 88% | 93% | -5pp | 🔴 High |
 | `api/middleware.py` | 90% | 94% | -4pp | 🟡 Medium |
@@ -37,28 +37,28 @@
 **Strengthening Actions:**
 ```python
 # WEAKNESS: Only checks validity, not boundary
-def test_token_expiry():
-    token = create_token(expires_in=3600)
-    assert token_manager.is_valid(token)
+def test_token_expiry():  # pragma: allowlist secret
+    token = create_token(expires_in=3600)  # pragma: allowlist secret
+    assert token_manager.is_valid(token)  # pragma: allowlist secret
 
 # ENHANCED: Checks exact boundary conditions
-def test_token_expiry_boundary():
-    """Kill boundary mutations in token expiry logic"""
+def test_token_expiry_boundary():  # pragma: allowlist secret
+    """Kill boundary mutations in token expiry logic"""  # pragma: allowlist secret
     # At exact expiry moment
-    token = create_token(expires_in=1)
+    token = create_token(expires_in=1)  # pragma: allowlist secret
     time.sleep(1.01)
-    assert token_manager.is_valid(token) is False
+    assert token_manager.is_valid(token) is False  # pragma: allowlist secret
 
     # Just before expiry
-    token = create_token(expires_in=1)
+    token = create_token(expires_in=1)  # pragma: allowlist secret
     time.sleep(0.99)
-    assert token_manager.is_valid(token) is True
+    assert token_manager.is_valid(token) is True  # pragma: allowlist secret
 
     # Negative/zero expiry edge cases
     with pytest.raises(ValueError):
-        create_token(expires_in=0)
+        create_token(expires_in=0)  # pragma: allowlist secret
     with pytest.raises(ValueError):
-        create_token(expires_in=-1)
+        create_token(expires_in=-1)  # pragma: allowlist secret
 ```
 
 **Estimated Impact:** +5-8pp improvement (kill 5-7 boundary mutations)
@@ -167,7 +167,7 @@ def test_middleware_authorization_comprehensive():
     assert result.status_code == 200
 
     # Failed authorization returns False (kill True→False mutation)
-    result = middleware.authorize(invalid_token_request)
+    result = middleware.authorize(invalid_token_request)  # pragma: allowlist secret
     assert result is False
     assert result.status_code == 401
 

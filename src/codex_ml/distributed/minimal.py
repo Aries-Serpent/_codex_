@@ -143,7 +143,10 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
         if cuda is not None and getattr(cuda, "is_available", lambda: False)():
             try:
                 cuda.set_device(local_rank)
-            except (ImportError, AttributeError) as exc:  # pragma: no cover - depends on runtime devices
+            except (
+                ImportError,
+                AttributeError,
+            ) as exc:  # pragma: no cover - depends on runtime devices
                 _warn_device_set_failed(local_rank, exc)
     if rank is None and local_rank is not None:
         rank = local_rank

@@ -13,7 +13,7 @@
 |-----------|--------|----------|-----|-----------------|
 | **Lane 3.1: Edge Cases** | 🟡 IN PROGRESS | 35% | 2026-07-04 (Day 18) | None |
 | **Lane 3.2: Mutations** | 🟢 AUTHORIZED | 40% (Phase 1-2 done) | 2026-07-03 (Day 17) | None |
-| **Lane 3.3: Validation** | 🔴 BLOCKER | 100% (with 28 secrets) | ⚠️ ESCALATED | **CRITICAL: 28 Hardcoded Secrets** |
+| **Lane 3.3: Validation** | 🔴 BLOCKER | 100% (with 28 secrets) | ⚠️ ESCALATED | **CRITICAL: 28 Hardcoded Secrets** | <!-- pragma: allowlist secret -->
 | **Wave 3 Overall** | ⚠️ AT-RISK | 58% | 2026-07-06 (Day 21) | 1 Critical Blocker |
 
 ---
@@ -148,7 +148,7 @@ Status: **READY FOR PHASE 3** — Excellent preparation, awaiting start signal
 | | Documentation | ✅ 55.6% rate | 🟡 Medium |
 | | Performance | ⏳ Framework ready | ⏳ TBD |
 | **Security** | Dependencies | ⏳ Deferred (network) | ⏳ TBD |
-| | **Secrets** | ✅ **28 CRITICAL FOUND** | 🔴 **BLOCKER** |
+| | **Secrets** | ✅ **28 CRITICAL FOUND** | 🔴 **BLOCKER** | <!-- pragma: allowlist secret -->
 | | SAST | ⏳ Framework ready | ⏳ TBD |
 | | Auth/Authz | ⏳ Framework ready | ⏳ TBD |
 | **CI/CD** | Workflows | ✅ PASS (185 valid) | ✅ Strong |
@@ -197,14 +197,14 @@ START: 2026-06-17T16:05:00Z (Current: 2026-06-17T16:36:44Z)
 Day 1 (Today, Jun 17):
 ├─ Lane 3.1: Starting edge case generation (35%)
 ├─ Lane 3.2: Phases 1-2 complete, Phase 3 queued (40%)
-├─ Lane 3.3: Audit complete, BUT 28 secrets detected (100%)
-│   └─ 🔴 CRITICAL: Secret remediation URGENT (4-hour window)
+├─ Lane 3.3: Audit complete, BUT 28 secrets detected (100%)  # pragma: allowlist secret
+│   └─ 🔴 CRITICAL: Secret remediation URGENT (4-hour window)  # pragma: allowlist secret
 └─ Monitoring: INITIATED (consolidated dashboard, daily checkpoints)
 
 Days 2-3 (Jun 18-19):
 ├─ Lane 3.1: Target 50% by end of Day 3
 ├─ Lane 3.2: Phase 3 execution in progress (20-40 hours)
-└─ Lane 3.3: Secret remediation MUST be complete
+└─ Lane 3.3: Secret remediation MUST be complete  # pragma: allowlist secret
    └─ Ruff violations fix (4 issues)
    └─ Code quality improvements (241 functions > CC10)
 

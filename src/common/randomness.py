@@ -72,7 +72,10 @@ def set_seed(seed: int | None) -> int:
                             manual_seed_all = getattr(cuda_module, "manual_seed_all", None)
                             if callable(manual_seed_all):
                                 manual_seed_all(seed)
-                    except (ImportError, AttributeError) as exc:  # pragma: no cover - fallback logging only
+                    except (
+                        ImportError,
+                        AttributeError,
+                    ) as exc:  # pragma: no cover - fallback logging only
                         logger.debug("Unable to configure torch.cuda seeds: %s", exc)
 
                 try:

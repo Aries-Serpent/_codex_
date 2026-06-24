@@ -36,7 +36,7 @@
 | CodeQL Findings | 0 NEW | <5 HIGH | ✅ PASS |
 | OWASP Top 10 | 8/10 (80%) | ≥80% | ✅ PASS |
 | CWE Top 25 | 23/25 (92%) | ≥90% | ✅ PASS |
-| Secrets Baseline | 22/22 plugins active | 22/22 | ✅ PASS |
+| Secrets Baseline | 22/22 plugins active | 22/22 | ✅ PASS | <!-- pragma: allowlist secret -->
 | Dependency Lock Status | 20 pinned | All locked | ✅ PASS |
 
 **Known Issues (Non-Blocking):**

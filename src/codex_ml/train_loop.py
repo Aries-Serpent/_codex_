@@ -255,7 +255,10 @@ class ReasoningRuntime:
     def bind_model(self, model: Any) -> None:
         try:
             self.harness.attach(model)
-        except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive attachment guard
+        except (
+            ImportError,
+            AttributeError,
+        ) as exc:  # pragma: no cover - defensive attachment guard
             logger.warning("Failed to bind reasoning modules to model: %s", exc)
 
     def on_new_epoch(self) -> None:
@@ -288,7 +291,11 @@ class ReasoningRuntime:
                 top_k=self.top_k,
                 step_ctx=step_ctx,
             )
-        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive capture guard
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ) as exc:  # pragma: no cover - defensive capture guard
             logger.debug("Skipping reasoning trace capture: %s", exc)
             return
         if not trace:
@@ -2198,7 +2205,11 @@ def run_training(
                     run_id=_TRAIN_RUN_ID,
                     epoch=locals().get("epoch", 0),
                 )
-            except (ValueError, TypeError, RuntimeError):  # pragma: no cover — alerting must never crash training
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ):  # pragma: no cover — alerting must never crash training
                 logger.debug(
                     "Suppressed alerting exception in training failure handler", exc_info=True
                 )
@@ -2293,7 +2304,11 @@ def run_training(
                 final_loss=_final_loss_val,
                 wall_time_sec=result.get("wall_time_sec", 0),
             )
-        except (ValueError, TypeError, RuntimeError):  # pragma: no cover — alerting must never crash training
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ):  # pragma: no cover — alerting must never crash training
             logger.debug(
                 "Suppressed alerting exception in training complete handler", exc_info=True
             )

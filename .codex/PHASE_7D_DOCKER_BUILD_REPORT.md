@@ -383,8 +383,8 @@ Priority: MEDIUM
 Time: 30 minutes
 
 1. Configure registry credentials
-   - Set DOCKER_USERNAME, DOCKER_PASSWORD in GitHub Settings
-   - Set GHCR_TOKEN for container registry access
+   - Set DOCKER_USERNAME, DOCKER_PASSWORD in GitHub Settings  # pragma: allowlist secret
+   - Set GHCR_TOKEN for container registry access  # pragma: allowlist secret
    - Test push with a single image
 
 2. Complete security scanning

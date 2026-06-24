@@ -34,7 +34,11 @@ def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
                 logger.warning(f"Exception: {e}", exc_info=True)
         result["enabled"] = True
         result["tracking_uri"] = os.environ.get("MLFLOW_TRACKING_URI") or result["tracking_uri"]
-    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - depends on optional dep
+    except (
+        ValueError,
+        TypeError,
+        RuntimeError,
+    ) as exc:  # pragma: no cover - depends on optional dep
         result["warning"] = f"mlflow not available: {exc!r}"
     return result
 

@@ -21,7 +21,7 @@
 | **Severity** | 🔴 CRITICAL |
 | **Category** | Security/Compliance |
 | **Detected** | 2026-06-17T16:20:00Z |
-| **Detection Source** | qa-walkthrough-agent (hardcoded secret scan) |
+| **Detection Source** | qa-walkthrough-agent (hardcoded secret scan) | <!-- pragma: allowlist secret -->
 | **Detection Agent ID** | wave-3-lane-3-3-validation |
 | **Impact** | BLOCKS production deployment certification |
 | **Timeline** | URGENT — Must resolve within 4 hours |
@@ -111,12 +111,12 @@ A comprehensive security audit of Lane 3.3 (Production Validation) detected **28
 
 | Step | Status | Owner | ETA |
 |------|--------|-------|-----|
-| Secret detection | ✅ COMPLETE | qa-walkthrough-agent | 2026-06-17T16:20Z |
+| Secret detection | ✅ COMPLETE | qa-walkthrough-agent | 2026-06-17T16:20Z | <!-- pragma: allowlist secret -->
 | Remediation delegation | ⏳ IN PROGRESS | Artifact Monitor Agent | 2026-06-17T16:36Z |
-| Secret removal | ⏳ PENDING | secret-detection-agent | 2026-06-17T18:00Z |
+| Secret removal | ⏳ PENDING | secret-detection-agent | 2026-06-17T18:00Z | <!-- pragma: allowlist secret -->
 | Credential rotation | ⏳ PENDING | Security Lead / DevOps | 2026-06-17T19:00Z |
 | Prevention setup | ⏳ PENDING | DevOps / Platform Eng | 2026-06-17T20:00Z |
-| Clean verification | ⏳ PENDING | secret-detection-agent | 2026-06-17T20:36Z |
+| Clean verification | ⏳ PENDING | secret-detection-agent | 2026-06-17T20:36Z | <!-- pragma: allowlist secret -->
 
 #### Escalation Path
 
@@ -127,7 +127,7 @@ Monitoring: Artifact Monitor Agent (2026-06-17T16:36Z)
     ↓
 Escalation: @mbaetiong (Campaign Authority)
     ↓
-Execution: secret-detection-agent + Security Lead + DevOps
+Execution: secret-detection-agent + Security Lead + DevOps  # pragma: allowlist secret
     ↓
 Verification: qa-walkthrough-agent (clean re-scan)
     ↓
@@ -174,23 +174,23 @@ Resolution: Confirmed by @mbaetiong
 Lane 3.3 Production Validation Audit Completed
 Detection Time: 2026-06-17T16:20:00Z
 
-CRITICAL FINDING: 28 hardcoded secrets detected in src/
+CRITICAL FINDING: 28 hardcoded secrets detected in src/  # pragma: allowlist secret
   - API Keys: 12
-  - Auth Tokens: 10
+  - Auth Tokens: 10  # pragma: allowlist secret
   - Database Credentials: 4
-  - OAuth Secrets: 2
+  - OAuth Secrets: 2  # pragma: allowlist secret
 
 IMPACT: BLOCKS production deployment certification
 TIMELINE: URGENT — Must resolve within 4 hours (deadline: 2026-06-17T20:36Z)
 
 ACTION REQUIRED:
-1. Initiate secret-detection-agent remediation immediately
+1. Initiate secret-detection-agent remediation immediately  # pragma: allowlist secret
 2. Monitor progress hourly
 3. Rotate all exposed credentials
 4. Verify clean re-scan by deadline
 
 STATUS: Awaiting remediation start
-OWNER: secret-detection-agent / Security Lead
+OWNER: secret-detection-agent / Security Lead  # pragma: allowlist secret
 CONTACT: @mbaetiong for authorization
 
 This blocker will delay Wave 3 completion if not resolved within 4-hour window.
@@ -281,7 +281,7 @@ This blocker will delay Wave 3 completion if not resolved within 4-hour window.
 | Critical Blockers | 1 |
 | High Priority Blockers | 0 |
 | Medium Priority Blockers | 0 |
-| Total Secrets Discovered | 28 |
+| Total Secrets Discovered | 28 | <!-- pragma: allowlist secret -->
 | Critical Deadline | 2026-06-17T20:36:00Z |
 | Time Remaining | 4 hours (as of 2026-06-17T16:36:44Z) |
 

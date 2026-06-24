@@ -34,7 +34,7 @@ Security is a continuous process, not a destination. This guide provides practic
 
 | Level | Characteristics |
 |-------|-----------------|
-| **L1: Basic** | HTTPS enabled, basic auth, no secrets in code |
+| **L1: Basic** | HTTPS enabled, basic auth, no secrets in code | <!-- pragma: allowlist secret -->
 | **L2: Standard** | Input validation, auth/authz, logging |
 | **L3: Advanced** | Threat modeling, penetration testing, encryption |
 | **L4: Mature** | Security reviews, incident response, continuous monitoring |
@@ -188,7 +188,7 @@ def get_user_by_email(email: str):
 
 # ❌ VULNERABLE: Command injection
 def backup_database(backup_name: str):
-    os.system(f"mysqldump -u root -p{password} > {backup_name}.sql")
+    os.system(f"mysqldump -u root -p{password} > {backup_name}.sql")  # pragma: allowlist secret
 
 # ✅ SECURE: Use subprocess with list
 import subprocess
@@ -196,7 +196,7 @@ def backup_database(backup_name: str):
     subprocess.run([
         "mysqldump",
         "-u", "root",
-        "-p" + password,
+        "-p" + password,  # pragma: allowlist secret
         ">", f"{backup_name}.sql"
     ], check=True)
 
@@ -236,16 +236,16 @@ class PaymentThreatModel:
     """
     Asset: Payment data
     Threat: Attacker intercepts payment
-    Mitigation: TLS encryption + tokenization
+    Mitigation: TLS encryption + tokenization  # pragma: allowlist secret
     """
 
     def process_payment(self, card: str, amount: float):
-        # Step 1: Tokenize card data (external service)
-        token = self.tokenizer.tokenize(card)
+        # Step 1: Tokenize card data (external service)  # pragma: allowlist secret
+        token = self.tokenizer.tokenize(card)  # pragma: allowlist secret
 
-        # Step 2: Store token only (never store card)
+        # Step 2: Store token only (never store card)  # pragma: allowlist secret
         payment_record = {
-            "token": token,
+            "token": token,  # pragma: allowlist secret
             "amount": amount,
             "timestamp": datetime.now(),
             "encrypted": True
@@ -254,7 +254,7 @@ class PaymentThreatModel:
         # Step 3: Log for audit
         self.audit_log.record(payment_record)
 
-        return {"status": "success", "transaction_id": token}
+        return {"status": "success", "transaction_id": token}  # pragma: allowlist secret
 ```
 
 ## 5. Security Misconfiguration
@@ -303,13 +303,13 @@ pip install --upgrade <package_name>
 **Risk**: Weak password policies, session management issues
 
 ```python
-# ✅ SECURE: Strong password validation
+# ✅ SECURE: Strong password validation  # pragma: allowlist secret
 import re
-from password_validator import PasswordValidator
+from password_validator import PasswordValidator  # pragma: allowlist secret
 
-class PasswordValidator:
+class PasswordValidator:  # pragma: allowlist secret
     def __init__(self):
-        self.validator = PasswordValidator()
+        self.validator = PasswordValidator()  # pragma: allowlist secret
         self.validator \
             .min(12) \
             .max(128) \
@@ -319,23 +319,23 @@ class PasswordValidator:
             .symbols() \
             .no_spaces()
 
-    def validate(self, password: str) -> tuple[bool, str]:
-        if not self.validator.validate(password):
-            return False, "Password does not meet requirements"
+    def validate(self, password: str) -> tuple[bool, str]:  # pragma: allowlist secret
+        if not self.validator.validate(password):  # pragma: allowlist secret
+            return False, "Password does not meet requirements"  # pragma: allowlist secret
         return True, "Valid"
 
 # ✅ SECURE: Multi-factor authentication
 import pyotp
 
 class MFAService:
-    def generate_secret(self, user_id: str) -> str:
-        secret = pyotp.random_base32()
-        store_mfa_secret(user_id, secret)
-        return secret
+    def generate_secret(self, user_id: str) -> str:  # pragma: allowlist secret
+        secret = pyotp.random_base32()  # pragma: allowlist secret
+        store_mfa_secret(user_id, secret)  # pragma: allowlist secret
+        return secret  # pragma: allowlist secret
 
     def verify_code(self, user_id: str, code: str) -> bool:
-        secret = get_mfa_secret(user_id)
-        totp = pyotp.TOTP(secret)
+        secret = get_mfa_secret(user_id)  # pragma: allowlist secret
+        totp = pyotp.TOTP(secret)  # pragma: allowlist secret
         return totp.verify(code)
 
 # ✅ SECURE: Session management
@@ -612,7 +612,7 @@ class SecurityConfig:
     allow_cors: bool = False
     require_https: bool = True
     enable_debug: bool = False
-    password_min_length: int = 12
+    password_min_length: int = 12  # pragma: allowlist secret
     session_timeout_minutes: int = 30
 ```
 

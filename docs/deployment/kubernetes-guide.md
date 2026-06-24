@@ -421,7 +421,7 @@ codex-ml-chart/
 ├── templates/
 │   ├── namespace.yaml
 │   ├── configmap.yaml
-│   ├── secret.yaml
+│   ├── secret.yaml  # pragma: allowlist secret
 │   ├── deployment.yaml
 │   ├── service.yaml
 │   ├── ingress.yaml

@@ -170,7 +170,7 @@ class SearchCache:
             raise ValueError(f"{arg_name} cannot be empty")
         if ".." in path_str:
             raise ValueError(f"{arg_name} cannot contain '..' (path traversal)")
-        if any(c in path_str for c in [';', '|', '&', '$', '`', '\n', '\r']):
+        if any(c in path_str for c in [";", "|", "&", "$", "`", "\n", "\r"]):
             raise ValueError(f"{arg_name} contains shell metacharacters")
         return path_str
 
@@ -188,7 +188,7 @@ class SearchCache:
         """
         if not pattern:
             raise ValueError("pattern cannot be empty")
-        if any(c in pattern for c in [';', '|', '&', '$', '`', '\n', '\r', "'"]):
+        if any(c in pattern for c in [";", "|", "&", "$", "`", "\n", "\r", "'"]):
             raise ValueError("pattern contains forbidden characters")
         return pattern
 

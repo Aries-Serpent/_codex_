@@ -173,12 +173,10 @@ def load_tokenizer(
     if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
         raise ImportError("transformers is required to load tokenizers")
     rev = _required_revision(repo_id, revision)
-    tokenizer = (
-        AutoTokenizer.from_pretrained(  # nosec B615 - revision enforced via _required_revision
-            repo_id,
-            revision=rev,
-            trust_remote_code=trust_remote_code,
-        )
+    tokenizer = AutoTokenizer.from_pretrained(  # nosec B615 - revision enforced via _required_revision
+        repo_id,
+        revision=rev,
+        trust_remote_code=trust_remote_code,
     )
     # Ensure pad_token is set; decoder-only models (GPT-2, LLaMA, Mistral …) omit it
     # because they use eos_token to pad — both serve as sequence terminators.
@@ -224,7 +222,11 @@ def load_model(
                 try:
                     model = PeftModel.from_pretrained(model, str(resolved))
                     logger.info("load_model: PEFT adapter loaded from %s", resolved)
-                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - runtime failure
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ) as exc:  # pragma: no cover - runtime failure
                     logger.info("load_model: PEFT adapter not applied (runtime error): %s", exc)
     return model
 
@@ -280,7 +282,10 @@ def load_causal_lm(
     if device:
         try:
             model = model.to(device)
-        except (ImportError, AttributeError) as exc:  # pragma: no cover - device mapping best-effort
+        except (
+            ImportError,
+            AttributeError,
+        ) as exc:  # pragma: no cover - device mapping best-effort
             logger.info("load_causal_lm: unable to move model to %s: %s", device, exc)
 
     if peft_cfg:
@@ -291,7 +296,11 @@ def load_causal_lm(
         else:
             try:
                 lora = LoraConfig(**peft_cfg)
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - invalid config values
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - invalid config values
                 logger.info("load_causal_lm: LoRA config rejected: %s", exc)
             else:
                 try:

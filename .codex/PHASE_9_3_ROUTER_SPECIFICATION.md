@@ -150,7 +150,7 @@ The semantic routing engine is a production-grade task → agent matching system
 class TaskSpec:
     id: str                                    # unique task ID
     description: str                           # semantic description
-    task_type: str                             # "ci_fix", "test_enhancement", etc.
+    task_type: str                             # "ci_fix", "test_enhancement", etc.  # pragma: allowlist secret
     priority: str = "medium"                   # high, medium, low
     timeout_seconds: int = 300
     required_capabilities: List[str] = []      # ["test_execution", "coverage_analysis"]
@@ -175,7 +175,7 @@ class AgentAssignment:
 
 @dataclass
 class RoutingDecision:
-    task_id: str
+    task_id: str  # pragma: allowlist secret
     assigned_agents: List[AgentAssignment]
     primary_agent: Optional[AgentAssignment]   # best match
     fallback_chain: List[AgentAssignment]      # ranked backups
@@ -243,7 +243,7 @@ TaskSpec → [Embed] → [Query FAISS] → [Filter Capability] → [Check Availa
 
 ```python
 # Circular dependency detection
-def has_cycle(task_id: str, dependencies: Dict[str, List[str]]) -> bool:
+def has_cycle(task_id: str, dependencies: Dict[str, List[str]]) -> bool:  # pragma: allowlist secret
     visited = set()
     stack = set()
 
@@ -259,7 +259,7 @@ def has_cycle(task_id: str, dependencies: Dict[str, List[str]]) -> bool:
         stack.remove(node)
         return False
 
-    return visit(task_id)
+    return visit(task_id)  # pragma: allowlist secret
 
 # Topological sort (DAG ordering)
 def topological_sort(dependencies: Dict[str, List[str]]) -> List[str]:
@@ -273,11 +273,11 @@ def topological_sort(dependencies: Dict[str, List[str]]) -> List[str]:
     while queue:
         task = queue.pop(0)
         result.append(task)
-        for task_id, deps in dependencies.items():
+        for task_id, deps in dependencies.items():  # pragma: allowlist secret
             if task in deps:
-                in_degree[task_id] -= 1
-                if in_degree[task_id] == 0:
-                    queue.append(task_id)
+                in_degree[task_id] -= 1  # pragma: allowlist secret
+                if in_degree[task_id] == 0:  # pragma: allowlist secret
+                    queue.append(task_id)  # pragma: allowlist secret
 
     return result if len(result) == len(dependencies) else []
 ```
@@ -336,8 +336,8 @@ def topological_sort(dependencies: Dict[str, List[str]]) -> List[str]:
 # Every routing decision logs:
 log.info({
     "event": "routing_decision",
-    "task_id": task_id,
-    "task_type": task_type,
+    "task_id": task_id,  # pragma: allowlist secret
+    "task_type": task_type,  # pragma: allowlist secret
     "primary_agent": primary_agent_id,
     "confidence": confidence_score,
     "latency_ms": latency,

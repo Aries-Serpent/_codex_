@@ -63,7 +63,7 @@ class SessionDB:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """)  # noqa: E501
 
         # Create session metadata table
         cursor.execute("""

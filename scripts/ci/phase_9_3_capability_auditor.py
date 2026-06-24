@@ -11,14 +11,15 @@ Output: .codex/PHASE_9_3_CAPABILITY_INDEX.json (searchable index)
 """
 
 import json
-import yaml
 import os
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
-from dataclasses import dataclass, asdict
-import numpy as np
-from sentence_transformers import SentenceTransformer
+from typing import Any, Dict, List, Tuple
+
 import faiss
+import numpy as np
+import yaml
+from sentence_transformers import SentenceTransformer
 
 
 @dataclass
@@ -222,7 +223,7 @@ def build_capability_index_json(
     Build comprehensive searchable JSON index.
     Includes agent metadata, embeddings, and search structure.
     """
-    print(f"Building JSON capability index...")
+    print("Building JSON capability index...")
 
     # Build agent lookup by ID and category
     agents_by_id = {agent.agent_id: asdict(agent) for agent in agents}
@@ -408,10 +409,10 @@ def main():
     print(f"✓ Capability index: {index_json_path} ({len(agents)} agents)")
     print(f"✓ FAISS embeddings: {faiss_index_path} ({embeddings.shape})")
     print(f"✓ Corpus statistics: {stats_path}")
-    print(f"\nAgent Distribution:")
+    print("\nAgent Distribution:")
     for category, count in sorted(stats["by_category"].items()):
         print(f"  • {category}: {count} agents")
-    print(f"\nMaturity Levels:")
+    print("\nMaturity Levels:")
     for maturity, count in sorted(stats["by_maturity"].items()):
         print(f"  • {maturity}: {count} agents")
     print("\nIndex ready for semantic routing engine (Task 9.3.2)")

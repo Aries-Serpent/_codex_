@@ -43,9 +43,9 @@ Ranked by coverage percentage across all 48 tracked modules:
 | 3 | **agent** | 34.12% | 72/211 | 5 | 🟡 Good |
 | 4 | **rag** | 33.09% | 179/541 | 4 | 🟡 Good |
 | 5 | **data** | 27.69% | 103/372 | 4 | 🟡 Good |
-| 6 | **tokenizer** | 22.73% | 15/66 | 1 | 🟡 Good |
+| 6 | **tokenizer** | 22.73% | 15/66 | 1 | 🟡 Good | <!-- pragma: allowlist secret -->
 | 7 | **services** | 22.56% | 532/2,358 | 16 | 🟡 Good |
-| 8 | **tokenization** | 20.93% | 104/497 | 6 | 🟡 Good |
+| 8 | **tokenization** | 20.93% | 104/497 | 6 | 🟡 Good | <!-- pragma: allowlist secret -->
 | 9 | **security** | 10.25% | 138/1,346 | 15 | 🔴 Needs Work |
 | 10 | **ingestion** | 8.57% | 54/630 | 8 | 🔴 Needs Work |
 
@@ -71,7 +71,7 @@ Based on Phase 5 lane allocations, key module performance:
 | **quantum** | 93.71% | Reference | ✅ Excellent |
 | **rag** | 33.09% | LANE 3: RAG | ✅ Good |
 | **data** | 27.69% | Support | ✅ Good |
-| **tokenization** | 20.93% | Support | ✅ Good |
+| **tokenization** | 20.93% | Support | ✅ Good | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -313,9 +313,9 @@ Phase 6C Task 1: Coverage Validation is **COMPLETE** with **ALL SUCCESS CRITERIA
 | 3 | agent | 34.12% | 72/211 | 5 |
 | 4 | rag | 33.09% | 179/541 | 4 |
 | 5 | data | 27.69% | 103/372 | 4 |
-| 6 | tokenizer | 22.73% | 15/66 | 1 |
+| 6 | tokenizer | 22.73% | 15/66 | 1 | <!-- pragma: allowlist secret -->
 | 7 | services | 22.56% | 532/2,358 | 16 |
-| 8 | tokenization | 20.93% | 104/497 | 6 |
+| 8 | tokenization | 20.93% | 104/497 | 6 | <!-- pragma: allowlist secret -->
 | 9 | security | 10.25% | 138/1,346 | 15 |
 | 10 | ingestion | 8.57% | 54/630 | 8 |
 | 11 | codex_ml | 7.21% | 2,967/41,129 | 401 |

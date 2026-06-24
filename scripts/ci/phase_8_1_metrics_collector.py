@@ -320,7 +320,7 @@ def main() -> int:
     # Print summary
     collector.print_summary()
 
-    print(f"✓ Metrics collection completed successfully")
+    print("✓ Metrics collection completed successfully")
     return 0
 
 

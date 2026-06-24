@@ -41,7 +41,11 @@ def collect_metrics() -> dict[str, float]:
             memory = psutil.virtual_memory()
             metrics["mem_used_mb"] = float(memory.used) / 1024.0 / 1024.0
             metrics["mem_available_mb"] = float(memory.available) / 1024.0 / 1024.0
-        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - psutil runtime errors best effort
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ):  # pragma: no cover - psutil runtime errors best effort
             LOGGER.debug("psutil metrics collection failed", exc_info=True)
 
     if pynvml is not None:
@@ -55,7 +59,11 @@ def collect_metrics() -> dict[str, float]:
                     handle = pynvml.nvmlDeviceGetHandleByIndex(index)
                     utilisation = pynvml.nvmlDeviceGetUtilizationRates(handle)
                     memory = pynvml.nvmlDeviceGetMemoryInfo(handle)
-                except (ValueError, TypeError, RuntimeError):  # pragma: no cover - per-device failure best effort
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ):  # pragma: no cover - per-device failure best effort
                     LOGGER.debug("NVML metrics failed for device %s", index, exc_info=True)
                     continue
                 metrics[f"gpu{index}_util_percent"] = float(utilisation.gpu)

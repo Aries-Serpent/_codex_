@@ -444,7 +444,7 @@ specialization variants
 |---------|--------|----------|
 | SHA256-pinned bases | ✅ PASS | 12/12 (100%) |
 | Non-root users | ✅ PASS | 12/12 (100%) |
-| No hardcoded secrets | ✅ PASS | 12/12 (100%) |
+| No hardcoded secrets | ✅ PASS | 12/12 (100%) | <!-- pragma: allowlist secret -->
 | APT cleanup | ✅ PASS | 12/12 (100%) |
 
 ---

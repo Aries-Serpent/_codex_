@@ -17,7 +17,7 @@ This audit verifies Phase 1 security hardening claims against the current main b
 | Claim | Target | Finding | Status |
 |-------|--------|---------|--------|
 | ERROR-severity findings (XXE, command injection, unsafe eval) | 0 | 9 | ❌ **FAIL** |
-| HIGH-severity findings (clear-text secret logging) | 0 | 0 | ✅ **PASS** |
+| HIGH-severity findings (clear-text secret logging) | 0 | 0 | ✅ **PASS** | <!-- pragma: allowlist secret -->
 | MEDIUM-severity findings (weak crypto, pickle) | <5 | 1 | ✅ **PASS** |
 
 ---
@@ -88,7 +88,7 @@ All 9 instances found in scripts (not src/):
 - Found references only in docstrings and examples showing CORRECT USAGE (with masking)
 - Example: `src/utils/sensitive_data.py:18` shows proper masking:
   ```python
-  >>> logger.info(f"Processing token: {mask_token(api_token)}")
+  >>> logger.info(f"Processing token: {mask_token(api_token)}")  # pragma: allowlist secret
   ```
 
 **Conclusion:** All logging of sensitive data properly uses masking functions. No HIGH-severity clear-text logging found.

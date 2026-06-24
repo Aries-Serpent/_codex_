@@ -67,7 +67,7 @@ Dimension Performance:
 ✅ Memory Health:             HEALTHY (STM initialized, LTM ready)
 ✅ D_CAPABLE Authorization:   100% verified (9/9 agents authorized)
 ✅ RBAC Gates:                ENFORCED (9/9 agents in capability map)
-✅ Token Budget:              ACTIVE (800 tokens allocated)
+✅ Token Budget:              ACTIVE (800 tokens allocated)  # pragma: allowlist secret
 ```
 
 ### Semantic Search Indexing (TASK 4 Results)

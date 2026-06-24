@@ -58,7 +58,7 @@ class AccountabilityChunksGenerator:
         self.sessions: List[Dict[str, Any]] = []
         self.chunk_metadata: Dict[int, Dict[str, Any]] = {}
 
-        print(f"[INFO] Generator initialized")
+        print("[INFO] Generator initialized")
         print(f"  Sessions index: {self.sessions_index_path}")
         print(f"  Output dir: {self.output_dir}")
         print(f"  Sessions per chunk: {self.sessions_per_chunk}")
@@ -166,7 +166,7 @@ class AccountabilityChunksGenerator:
             nav_rows.append("| **Previous Group** | (First group) |")
 
         nav_rows.append(
-            f"| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |"
+            "| **Index** | [Full Index](../AGENT_ACCOUNTABILITY_REPORT_INDEX.md) |"
         )
 
         if next_chunk:
@@ -523,7 +523,7 @@ Use the table above to navigate to specific session groups. Groups are ordered n
         success = len(issues) == 0
 
         if success:
-            print(f"[OK] Validation passed: All chunks validated successfully")
+            print("[OK] Validation passed: All chunks validated successfully")
         else:
             print(f"[WARNING] Validation found {len(issues)} issue(s):")
             for issue in issues:

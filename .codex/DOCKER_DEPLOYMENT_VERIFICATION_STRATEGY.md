@@ -17,7 +17,7 @@ This document details the comprehensive verification strategy to ensure the comp
 ```
 Docker Packaged Codebase Validation:
   ├─ Build Verification (8 variants)
-  ├─ Image Security (CVE scanning, secrets detection)
+  ├─ Image Security (CVE scanning, secrets detection)  # pragma: allowlist secret
   ├─ Artifact Generation (SBOM, attestations, manifests)
   ├─ Registry Push (DockerHub + GHCR)
   ├─ Runtime Validation (Docker Compose)
@@ -691,7 +691,7 @@ kubectl delete namespace codex-test
 | Check | Requirement | Status |
 |-------|-------------|--------|
 | CVE Scan (all 8 variants) | 0 CRITICAL, 0 HIGH | ✅ PASS |
-| Secrets Detection | No NEW secrets | ✅ PASS |
+| Secrets Detection | No NEW secrets | ✅ PASS | <!-- pragma: allowlist secret -->
 | Image Signing | All variants signed | ✅ PASS |
 | Layer Verification | Base image digest pinned | ✅ PASS |
 | Non-root User | All variants use non-root | ✅ PASS |

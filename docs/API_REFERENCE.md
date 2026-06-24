@@ -111,14 +111,14 @@ def health_check() -> Dict[str, Any]:
 def readiness_check(
     required_dirs: Optional[List[Path]] = None,
     required_env_vars: Optional[List[str]] = None,
-    min_disk_space_gb: float = 1.0
+    min_disk_space_gb: float = 1.0  # pragma: allowlist secret
 ) -> Dict[str, Any]:
     """Readiness check with system validation.
 
     Args:
         required_dirs: Directories that must exist
         required_env_vars: Environment variables that must be set
-        min_disk_space_gb: Minimum free disk space in GB
+        min_disk_space_gb: Minimum free disk space in GB  # pragma: allowlist secret
 
     Returns:
         {

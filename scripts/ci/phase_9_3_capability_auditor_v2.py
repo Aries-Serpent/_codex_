@@ -14,12 +14,13 @@ Output: .codex/PHASE_9_3_CAPABILITY_INDEX.json (searchable index)
 """
 
 import json
-import yaml
 import os
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, List, Any
-from dataclasses import dataclass, asdict
+from typing import Any, Dict, List
+
 import numpy as np
+import yaml
 
 
 @dataclass
@@ -339,19 +340,19 @@ def main():
     print(f"  - {len(stats['most_common_tags'])} unique tags")
     print(f"\n✓ Corpus statistics: {stats_path}")
 
-    print(f"\nAgent Distribution by Category:")
+    print("\nAgent Distribution by Category:")
     for category, count in sorted(stats["by_category"].items()):
         print(f"  • {category}: {count} agents")
 
-    print(f"\nMaturity Levels:")
+    print("\nMaturity Levels:")
     for maturity, count in sorted(stats["by_maturity"].items()):
         print(f"  • {maturity}: {count} agents")
 
-    print(f"\nAutonomy Models:")
+    print("\nAutonomy Models:")
     for autonomy, count in sorted(stats["by_autonomy"].items()):
         print(f"  • {autonomy}: {count} agents")
 
-    print(f"\nTop 10 Capability Tags:")
+    print("\nTop 10 Capability Tags:")
     for tag, count in stats["top_20_tags"][:10]:
         print(f"  • {tag}: {count} agents")
 

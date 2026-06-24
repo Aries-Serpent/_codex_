@@ -41,12 +41,19 @@ def mlflow_run(
     run_stack: Optional[ExitStack] = ExitStack()
     try:
         run_stack.enter_context(run())
-    except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime failures fall back to no-op
+    except (
+        ImportError,
+        AttributeError,
+    ) as exc:  # pragma: no cover - runtime failures fall back to no-op
         LOGGER.warning("MLflow run initialization failed; continuing without tracking: %s", exc)
         if run_stack is not None:
             try:
                 run_stack.close()
-            except (ValueError, TypeError, RuntimeError) as close_exc:  # pragma: no cover - suppress close errors
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as close_exc:  # pragma: no cover - suppress close errors
                 LOGGER.debug("Failed to close MLflow context after init failure: %s", close_exc)
         yield
         return
@@ -56,7 +63,11 @@ def mlflow_run(
             for key, value in params.items():
                 try:
                     log_param(key, value)
-                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - logging best effort
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ) as exc:  # pragma: no cover - logging best effort
                     LOGGER.debug("Failed to log MLflow param %s=%s: %s", key, value, exc)
 
         yield
@@ -64,7 +75,11 @@ def mlflow_run(
         if run_stack is not None:
             try:
                 run_stack.close()
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - suppress close errors
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - suppress close errors
                 LOGGER.debug("MLflow run cleanup raised but was suppressed: %s", exc)
 
 

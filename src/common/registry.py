@@ -30,7 +30,10 @@ try:  # pragma: no cover - optional import path when codex_ml unavailable
         RecallScore,
         TokenAccuracy,
     )
-except (ImportError, AttributeError):  # pragma: no cover - allow registry to exist without metrics module
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - allow registry to exist without metrics module
     BLEUScore = F1Score = RecallScore = TokenAccuracy = None
 
 

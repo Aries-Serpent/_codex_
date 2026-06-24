@@ -22,14 +22,14 @@ CLI usage:
     python scripts/ci/session_query.py --output csv
 """
 
-import json
 import argparse
 import csv
-import sys
+import json
 import os
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, Dict, List, Any
+from typing import Any, Dict, List, Optional
 
 
 class SessionQuery:

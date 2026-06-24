@@ -10,11 +10,11 @@ Verify archive integrity:
 """
 
 import json
+import logging
 import sys
 import time
-import logging
-from pathlib import Path
 from datetime import datetime, timedelta
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -296,12 +296,12 @@ def main():
         print(json.dumps(results, indent=2, default=str))
     else:
         print(f"\n{'='*60}")
-        print(f"Archive Integrity Check")
+        print("Archive Integrity Check")
         print(f"{'='*60}")
         print(f"Status: {results['status'].upper()}")
         print(f"Timestamp: {results['timestamp']}")
 
-        print(f"\nChecks:")
+        print("\nChecks:")
         for name, check in results["checks"].items():
             status = check.get("status", "unknown").upper()
             print(f"  [{status}] {name}")

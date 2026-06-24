@@ -310,7 +310,7 @@ gh run view <run-id> --log | grep -i "heal\|retry\|block"
 | Documentation Link Checker | 44.4% | 🟡 Below target |
 | Auto-Approve Pending Runs | 44.4% | 🟡 Below target |
 | Resilient Dependency Submission | 50.0% | 🟡 Below target |
-| Secrets Baseline Enforcer | 50.0% | 🟡 Below target |
+| Secrets Baseline Enforcer | 50.0% | 🟡 Below target | <!-- pragma: allowlist secret -->
 
 **Action Items**:
 1. Investigate blocking conditions
@@ -551,7 +551,7 @@ Priority 3 (Week 3):
 | Automatic Dependency Submission | 9 | 8 | 0 | 0 | 0 | 88.9% |
 | Admin Action — T-03 security_events | 9 | 0 | 0 | 9 | 0 | 0.0% |
 | Resilient Dependency Submission | 8 | 4 | 0 | 1 | 0 | 50.0% |
-| Secrets Baseline Enforcer | 8 | 4 | 0 | 1 | 0 | 50.0% |
+| Secrets Baseline Enforcer | 8 | 4 | 0 | 1 | 0 | 50.0% | <!-- pragma: allowlist secret -->
 | Cognitive Analysis & Learning | 1 | 1 | 0 | 0 | 0 | 100.0% |
 | **TOTAL** | **200** | **32** | **60** | **68** | **13** | **21.8%** |
 

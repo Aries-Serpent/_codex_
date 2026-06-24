@@ -358,7 +358,9 @@ def generate_migration_report() -> str:
         status = (
             "✅ Primary"
             if name == "primary"
-            else "⚠️ Deprecated" if "deprecated" in name else "🔄 Secondary"
+            else "⚠️ Deprecated"
+            if "deprecated" in name
+            else "🔄 Secondary"
         )
         report.append(f"\n### {name} - {status}\n")
         report.append(f"- **File Count:** {len(files)}\n")

@@ -10,6 +10,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+
 def run_command(cmd):
     """Run a shell command and return output"""
     try:

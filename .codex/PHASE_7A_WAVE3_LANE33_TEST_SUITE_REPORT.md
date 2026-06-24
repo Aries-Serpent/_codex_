@@ -93,9 +93,9 @@
 ### Documentation Requirements
 ```python
 # Good example - Clear purpose documented
-def test_authentication_with_expired_token():
+def test_authentication_with_expired_token():  # pragma: allowlist secret
     """
-    Verify that authentication fails when token has expired.
+    Verify that authentication fails when token has expired.  # pragma: allowlist secret
 
     Expected behavior: AuthenticationError raised with specific code
     """

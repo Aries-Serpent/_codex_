@@ -7,14 +7,10 @@ Usage:
     python scripts/fix_codeql_alerts_phase4.py [--dry-run] [--severity {high,medium,low}]
 """
 
-import json
-import os
-import re
-import sys
-from pathlib import Path
-from typing import Optional
-from datetime import datetime
 import logging
+import os
+from datetime import datetime
+from typing import Optional
 
 # Configure logging
 logging.basicConfig(

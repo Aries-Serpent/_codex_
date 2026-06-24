@@ -26,7 +26,7 @@
 |----------|------|-------|-------|--------|
 | **Core Infrastructure** | `test_phase7b_edge_cases_core.py` | ~40 | Agents, CLI, Adapters, Bridges | ✅ 559 lines |
 | **Security & Config** | `test_phase7b_edge_cases_security_config.py` | ~50 | Encryption, Auth, Config, DAL | ✅ 515 lines |
-| **Ingestion & Tokenization** | `test_phase7b_edge_cases_ingestion.py` | ~45 | File I/O, CSV/JSON, Tokenization, API | ✅ 504 lines |
+| **Ingestion & Tokenization** | `test_phase7b_edge_cases_ingestion.py` | ~45 | File I/O, CSV/JSON, Tokenization, API | ✅ 504 lines | <!-- pragma: allowlist secret -->
 | **Async & Integration** | `test_phase7b_edge_cases_async.py` | ~40 | Concurrency, Error Recovery, Workflows | ✅ 593 lines |
 
 **TOTAL: 143 test functions across 4 comprehensive files**
@@ -74,7 +74,7 @@
 
 | Subcategory | Tests | Examples |
 |------------|-------|----------|
-| Cross-Module Flows | 15 | CLI→API, Ingest→Tokenize→Embed |
+| Cross-Module Flows | 15 | CLI→API, Ingest→Tokenize→Embed | <!-- pragma: allowlist secret -->
 | State Transitions | 10 | Initialization, execution, cleanup |
 | Error Propagation | 8 | Nested call chains, exception chaining |
 | **Subtotal** | **33** | ✅ COMPLETE |
@@ -129,7 +129,7 @@
 | Module | Tests | Coverage Category | Status |
 |--------|-------|---|--------|
 | `src/security/encryption.py` (30%) | 5 | Encryption edge cases | ✅ TESTED |
-| `src/security/token_rotation.py` (41%) | 4 | Token rotation, expiration | ✅ TESTED |
+| `src/security/token_rotation.py` (41%) | 4 | Token rotation, expiration | ✅ TESTED | <!-- pragma: allowlist secret -->
 | `src/security/content_filters.py` (22%) | 3 | Content filtering, validation | ✅ TESTED |
 | `src/archive/config.py` (28%) | 4 | Config validation, defaults | ✅ TESTED |
 | `src/archive/dal.py` (20%) | 6 | Query execution, transactions | ✅ TESTED |
@@ -142,7 +142,7 @@
 | `src/ingestion/file_ingestor.py` | 4 | File I/O edge cases | ✅ TESTED |
 | `src/ingestion/csv_ingestor.py` | 4 | CSV parsing, malformed data | ✅ TESTED |
 | `src/ingestion/json_ingestor.py` | 3 | JSON validation, nesting | ✅ TESTED |
-| `src/tokenization/api.py` (62%) | 5 | Tokenization boundaries | ✅ TESTED |
+| `src/tokenization/api.py` (62%) | 5 | Tokenization boundaries | ✅ TESTED | <!-- pragma: allowlist secret -->
 | `src/api/rag_api.py` (42%) | 6 | API error paths, validation | ✅ TESTED |
 
 ---
@@ -153,7 +153,7 @@
 
 ```
 ✅ NameError / AttributeError         → test_adapter_method_not_implemented
-✅ TypeError / ValueError             → test_tokenize_none_text
+✅ TypeError / ValueError             → test_tokenize_none_text  # pragma: allowlist secret
 ✅ FileNotFoundError / PermissionError → test_ingest_permission_denied
 ✅ asyncio.TimeoutError              → test_async_timeout_handling
 ✅ json.JSONDecodeError              → test_json_invalid_syntax
@@ -167,11 +167,11 @@
 
 ```
 ✅ Empty string / empty collection   → test_encrypt_empty_plaintext
-✅ None / null value                 → test_tokenize_none_text
+✅ None / null value                 → test_tokenize_none_text  # pragma: allowlist secret
 ✅ Zero value                        → test_github_logs_with_zero_run_id
 ✅ Negative value                    → test_github_logs_with_negative_run_id
 ✅ Max integer / very large values   → test_encrypt_very_large_plaintext
-✅ Unicode / special characters      → test_tokenize_unicode_text
+✅ Unicode / special characters      → test_tokenize_unicode_text  # pragma: allowlist secret
 ✅ Whitespace only                   → test_csv_with_null_values
 ✅ Malformed / invalid format        → test_csv_malformed_rows
 ```
@@ -183,7 +183,7 @@
 ✅ Thread-safe state access          → test_shared_state_race_condition
 ✅ Async timeout with cancellation   → test_async_with_timeout_and_cancellation
 ✅ Resource cleanup on exception     → test_cleanup_on_exception
-✅ Multi-module workflow             → test_ingest_tokenize_embed_flow
+✅ Multi-module workflow             → test_ingest_tokenize_embed_flow  # pragma: allowlist secret
 ✅ Error propagation through chain   → test_error_in_pipeline_stage
 ✅ Partial success in batch          → test_partial_failure_in_batch
 ```
@@ -200,11 +200,11 @@
 
 **Example:**
 ```python
-def test_github_logs_with_invalid_token(self):
-    """Should handle invalid GitHub token"""
+def test_github_logs_with_invalid_token(self):  # pragma: allowlist secret
+    """Should handle invalid GitHub token"""  # pragma: allowlist secret
     from codex.api.github_logs import GitHubLogsAPI  # Explicit import
     with pytest.raises((ValueError, AttributeError)):
-        api = GitHubLogsAPI(token='')
+        api = GitHubLogsAPI(token='')  # pragma: allowlist secret
 ```
 
 ### Flaky Test Detection

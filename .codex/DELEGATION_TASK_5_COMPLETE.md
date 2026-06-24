@@ -82,7 +82,7 @@ Environment Setup
   ✅ Python environment verified
   ✅ Dependencies installed
   ✅ Database configured
-  ✅ API keys/secrets loaded
+  ✅ API keys/secrets loaded  # pragma: allowlist secret
   ✅ Monitoring enabled
 
 Infrastructure

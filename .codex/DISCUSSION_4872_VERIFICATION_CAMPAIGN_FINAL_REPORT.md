@@ -280,7 +280,7 @@ Step 3: Fix schema warnings (1-2 hours)
   └─ Raise UserWarning on schema mismatch
   └─ Tests will pass: 1 failure resolved
 
-Step 4: Fix tokenization error type (0.5-1 hour)
+Step 4: Fix tokenization error type (0.5-1 hour)  # pragma: allowlist secret
   └─ Align ValueError vs AttributeError
   └─ Tests will pass: 1 failure resolved
 

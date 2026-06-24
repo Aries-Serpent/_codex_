@@ -249,7 +249,7 @@ jobs:
 **Organization-level (recommended):**
 ```
 GitHub Org (aries-serpent)
-└── GHCR Token
+└── GHCR Token  # pragma: allowlist secret
     ├── Read: Public packages
     └── Write: aries-serpent org only
 ```

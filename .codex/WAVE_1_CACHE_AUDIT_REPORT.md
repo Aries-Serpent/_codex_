@@ -36,7 +36,7 @@ The 4-layer cache hierarchy audit reveals a **mature, production-ready caching i
 
 #### Metrics
 ```
-Token Cache:
+Token Cache:  # pragma: allowlist secret
   - Size Limit: 10 MB
   - Entries: ~1000-2000
   - Hit Count: 8500+
@@ -106,7 +106,7 @@ embeddings_cache:
   - Hit Rate: 91%
   - Eviction Frequency: 2x/month
 
-tokenizer_cache:
+tokenizer_cache:  # pragma: allowlist secret
   - Size: 300 MB
   - Hit Rate: 96%
   - Eviction Frequency: 1x/month
@@ -244,7 +244,7 @@ Current State:
 
   HuggingFace Hub:
     - Status: Auto-cached locally (L2)
-    - Scope: Model/tokenizer downloads
+    - Scope: Model/tokenizer downloads  # pragma: allowlist secret
     - Usage: On-demand during training
 
   CDN / Artifact Storage:

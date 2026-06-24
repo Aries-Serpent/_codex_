@@ -10,6 +10,7 @@ import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+
 class MermaidAltTextProcessor:
     """Process Mermaid diagrams to add accessibility titles."""
 

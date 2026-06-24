@@ -112,7 +112,7 @@ The Aries-Serpent/_codex_ agent ecosystem is **healthy and ready for Phase 9 com
 |----------|----------|-------|
 | **CI/CD** | ci_failure_detection, ci_blocker_detection | 18 |
 | **Testing** | test_alignment, assertion_updates, test_quality_enforcement | 20 |
-| **Security** | cve_scanning, secret_detection, ghas_alert_triage | 13 |
+| **Security** | cve_scanning, secret_detection, ghas_alert_triage | 13 | <!-- pragma: allowlist secret -->
 | **Cognitive Brain** | cognitive_brain_pattern_storage, cognitive_brain_update | 7 |
 | **Self-Healing** | fix_pattern_application, auto_remediation, pattern_library_management | 8 |
 

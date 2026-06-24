@@ -226,13 +226,13 @@ Missing edge cases:
 
 **Key Missing Tests:**
 ```
-- Expired token handling
+- Expired token handling  # pragma: allowlist secret
 - Invalid credentials
 - Permission escalation attempts
 - Decryption with wrong key
 - Audit log completeness
 - Rate limit bypass attempts
-- Secret rotation rollback
+- Secret rotation rollback  # pragma: allowlist secret
 ```
 
 ---

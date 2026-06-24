@@ -53,7 +53,7 @@ These workflows are **strictly suitable for Haiku 4.5** due to low complexity an
 ```
 admin-action-notifier.yml (1 job, 0 steps) - Notification dispatch
 admin-action-t03.yml (1 job, 3 steps) - Admin action handler
-agent-task-janitor.yml (1 job, 1 step) - Task cleanup (cron)
+agent-task-janitor.yml (1 job, 1 step) - Task cleanup (cron)  # pragma: allowlist secret
 agent-var-writer.yml (1 job, 0 steps) - Variable management
 api-documentation.yml (1 job, 0 steps) - Documentation generation
 app-package-download.yml (1 job, 0 steps) - Package download
@@ -126,8 +126,8 @@ sync-env-vars.yml (1 job, 0 steps) - Env var sync
 telemetry-collection.yml (1 job, 1 step) - Telemetry
 template_lint.yml (1 job, 0 steps) - Template linting
 test-pyramid-report.yml (1 job, 1 step) - Test pyramid
-token-expiry-monitor.yml (1 job, 1 step) - Token expiry check
-token-probe.yml (1 job, 0 steps) - Token probe
+token-expiry-monitor.yml (1 job, 1 step) - Token expiry check  # pragma: allowlist secret
+token-probe.yml (1 job, 0 steps) - Token probe  # pragma: allowlist secret
 trigger-on-approval.yml (1 job, 0 steps) - Approval trigger
 workflow-compliance-gate.yml (1 job, 0 steps) - Workflow compliance
 workflow-restore.yml (1 job, 0 steps) - Workflow restore
@@ -262,8 +262,8 @@ pre-flight-validation.yml - Multi-stage validation
 pre-merge-validation.yml - Pre-merge decisions
 reference-integrity.yml - Reference validation logic
 resilient_validation.yml - Validation resilience logic
-scan-secrets-variables.yml - Secret pattern analysis
-secrets-baseline-enforcer.yml - Baseline enforcement
+scan-secrets-variables.yml - Secret pattern analysis  # pragma: allowlist secret
+secrets-baseline-enforcer.yml - Baseline enforcement  # pragma: allowlist secret
 status_gate.yml - Status interpretation
 validate.yml - Multi-step validation logic
 ```
@@ -309,27 +309,27 @@ Workflows by assignment:
 ### Savings Calculation
 ```
 BASELINE (All Sonnet 4.6):
-87 + 78 + 21 = 186 workflows × ~2,000 tokens/workflow = ~372,000 tokens/month
+87 + 78 + 21 = 186 workflows × ~2,000 tokens/workflow = ~372,000 tokens/month  # pragma: allowlist secret
 
 OPTIMIZED SCENARIO:
-├─ 87 SIMPLE → Haiku 4.5          (×0.75 cost) = 65,250 tokens
-├─ 45 MEDIUM → Haiku 4.5          (×0.75 cost) = 33,750 tokens
-├─ 33 MEDIUM → Sonnet 4.6         (×1.00 cost) = 66,000 tokens
-└─ 21 COMPLEX → Sonnet 4.6        (×1.00 cost) = 42,000 tokens
-                        TOTAL OPTIMIZED = 207,000 tokens/month
+├─ 87 SIMPLE → Haiku 4.5          (×0.75 cost) = 65,250 tokens  # pragma: allowlist secret
+├─ 45 MEDIUM → Haiku 4.5          (×0.75 cost) = 33,750 tokens  # pragma: allowlist secret
+├─ 33 MEDIUM → Sonnet 4.6         (×1.00 cost) = 66,000 tokens  # pragma: allowlist secret
+└─ 21 COMPLEX → Sonnet 4.6        (×1.00 cost) = 42,000 tokens  # pragma: allowlist secret
+                        TOTAL OPTIMIZED = 207,000 tokens/month  # pragma: allowlist secret
 
-SAVINGS: 372,000 - 207,000 = 165,000 tokens/month = 44% REDUCTION
+SAVINGS: 372,000 - 207,000 = 165,000 tokens/month = 44% REDUCTION  # pragma: allowlist secret
 ```
 
 **Conservative Estimate (Excluding MEDIUM → Haiku transition):**
 ```
 CONSERVATIVE SCENARIO:
-├─ 87 SIMPLE → Haiku 4.5          = 65,250 tokens
-├─ 78 MEDIUM → Sonnet 4.6         = 156,000 tokens
-└─ 21 COMPLEX → Sonnet 4.6        = 42,000 tokens
-                        TOTAL = 263,250 tokens/month
+├─ 87 SIMPLE → Haiku 4.5          = 65,250 tokens  # pragma: allowlist secret
+├─ 78 MEDIUM → Sonnet 4.6         = 156,000 tokens  # pragma: allowlist secret
+└─ 21 COMPLEX → Sonnet 4.6        = 42,000 tokens  # pragma: allowlist secret
+                        TOTAL = 263,250 tokens/month  # pragma: allowlist secret
 
-CONSERVATIVE SAVINGS: 372,000 - 263,250 = 108,750 tokens/month = 29% REDUCTION
+CONSERVATIVE SAVINGS: 372,000 - 263,250 = 108,750 tokens/month = 29% REDUCTION  # pragma: allowlist secret
 ```
 
 **Recommended Target:** 25-30% token savings achievable by strict Haiku assignment to 87 simple workflows.
@@ -433,7 +433,7 @@ Output: SKILL_MODEL_SELECTION.md
 | Metric | Target | Measure | Criteria |
 |--------|--------|---------|----------|
 | Haiku Binding Coverage | 87 workflows | Count explicit bindings | ✅ All 87 simple bound to Haiku |
-| Token Savings | 25-30% | token_usage_delta | ✅ ≥25% monthly reduction |
+| Token Savings | 25-30% | token_usage_delta | ✅ ≥25% monthly reduction | <!-- pragma: allowlist secret -->
 | Workflow Success Rate | ≥99% | pass_rate | ✅ No regressions from model change |
 | Model Mismatch Rate | 0% | error_count | ✅ Zero workflows with wrong model |
 | Documentation Completeness | 100% | doc_coverage | ✅ All workflows documented |

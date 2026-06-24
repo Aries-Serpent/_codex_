@@ -5,19 +5,20 @@ Master orchestrator for accessibility improvements - Simplified Report.
 Coordinates all accessibility checks and fixes across documentation.
 """
 
-import sys
 import json
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Dict
 
 # Import all processors
 sys.path.insert(0, str(Path(__file__).parent))
 from add_mermaid_alt_text import MermaidAltTextProcessor
-from fix_heading_hierarchy import HeadingHierarchyFixer
 from add_table_of_contents import TOCGenerator
+from fix_heading_hierarchy import HeadingHierarchyFixer
 from improve_link_descriptiveness import LinkDescriptivenessImprover
 from wcag_compliance_checker import WCAGComplianceChecker
+
 
 class AccessibilityOrchestrator:
     """Master orchestrator for accessibility improvements."""

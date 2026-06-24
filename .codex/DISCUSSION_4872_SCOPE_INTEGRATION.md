@@ -208,7 +208,7 @@
 | High vulnerabilities | 0 | ✅ Maintained | All |
 | Medium vulnerabilities | 0 (36 remediated) | ✅ Maintained | α |
 | Low vulnerabilities | 0 | ✅ Maintained | All |
-| Secrets in repo | 0 | ✅ Maintained | All |
+| Secrets in repo | 0 | ✅ Maintained | All | <!-- pragma: allowlist secret -->
 | **Total CVE Score** | **0** | **✅ ZERO** | **All** |
 
 **Location:** PHASE_X_TRACK_ALPHA_BRIEF.md (security validation)
@@ -238,7 +238,7 @@
 |--------|-------|-----------|--------|
 | **CI/CD & Automation** | 20+ | ci-auto-healer-agent, ci-docker-build-healer, workflow-ci-fixer | ✅ Active |
 | **Testing & Quality** | 10+ | autonomous-test-healer-agent, test-alignment-fixer, test-enhancement-agent | ✅ Active |
-| **Security & Compliance** | 10+ | unified-security-scanner, codeql-alert-resolution-agent, secret-detection-agent | ✅ Active |
+| **Security & Compliance** | 10+ | unified-security-scanner, codeql-alert-resolution-agent, secret-detection-agent | ✅ Active | <!-- pragma: allowlist secret -->
 | **Documentation & Knowledge** | 8+ | unified-doc-agent, post-merge-doc-alignment-agent, link-validator-agent | ✅ Active |
 | **Repository Operations** | 10+ | repository-hygiene-agent, root-organizer-agent, reference-updater-agent | ✅ Active |
 | **Infrastructure & Platform** | 8+ | cache-management-agent, config-validator, rust-config-validator | ✅ Active |
@@ -251,7 +251,7 @@
 |-------------|---|---|---|
 | **unified-coverage-agent** | 5 agents | coverage-gapfill, coverage-maintenance, coverage-roadmap, test-coverage, test-coverage-monitor | Canonical coverage operations |
 | **unified-doc-agent** | 5 agents | documentation-consolidator, documentation-quality, doc-freshness, link-validator, post-merge-doc | Canonical doc management |
-| **unified-security-scanner** | 5 agents | secret-detection, dependency-vulnerability, dependency-security-review, security-audit, code-scanning-remediation | Canonical security scanning |
+| **unified-security-scanner** | 5 agents | secret-detection, dependency-vulnerability, dependency-security-review, security-audit, code-scanning-remediation | Canonical security scanning | <!-- pragma: allowlist secret -->
 | **unified-governance-gate** | Multiple agents | Integrates CI compliance, PR checks, deployment gates | Canonical governance |
 | **cache-management-agent** | 4-layer hierarchy | Manages build cache, dependency cache, artifact cache, state cache | Canonical cache operations |
 | **self-healing-orchestrator-agent** | Multiple fix patterns | Coordinates RP-001 through RP-004+ patterns | Canonical CI self-healing |
@@ -292,9 +292,9 @@
 
 #### 7B: Projected Model Classification
 
-| Classification | Count | Complexity | Model | Examples | Token Savings |
+| Classification | Count | Complexity | Model | Examples | Token Savings | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
-| **Haiku-Suitable** | ~40-50 | Low | Claude Haiku 4.5 | Lint, format, simple checks | 70% fewer tokens |
+| **Haiku-Suitable** | ~40-50 | Low | Claude Haiku 4.5 | Lint, format, simple checks | 70% fewer tokens | <!-- pragma: allowlist secret -->
 | **Sonnet-Required** | ~30-40 | High | Claude Sonnet 4.6 | Code analysis, complex reasoning | Full capability needed |
 | **Flexible** | ~96-116 | Medium | Auto-select | Route by complexity | Optimized per task |
 | **Consolidation** | 66 | Variable | Merge runs | Combine into unified workflows | 25-30% reduction |

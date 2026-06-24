@@ -70,14 +70,14 @@ The application logs sensitive information (passwords, API tokens, secrets, PII)
 | File | Count | Lines | Priority |
 |------|-------|-------|----------|
 | `scripts/catalog_workflows.py` | 3 | 280-281 | P1 |
-| `scripts/security/verify_token_scope.py` | 5 | 211,212,221,225,226 | P1 |
-| `scripts/github_secrets_sync.py` | 2 | 115,118 | P1 |
-| `scripts/ops/codex_mint_tokens_per_run.py` | 2 | 401,449 | P1 |
+| `scripts/security/verify_token_scope.py` | 5 | 211,212,221,225,226 | P1 | <!-- pragma: allowlist secret -->
+| `scripts/github_secrets_sync.py` | 2 | 115,118 | P1 | <!-- pragma: allowlist secret -->
+| `scripts/ops/codex_mint_tokens_per_run.py` | 2 | 401,449 | P1 | <!-- pragma: allowlist secret -->
 | `.github/agents/admin-automation-agent/src/agent.py` | 4 | 155-161 | P1 |
 | `src/codex/knowledge/pii.py` | 2 | 179-180 | P1 |
 | `src/security/providers/github_provider.py` | 2 | 481,519 | P1 |
 | `scripts/fix_security_issues.py` | 2 | 266,270 | P1 |
-| `scripts/decode_workflow_secrets.py` | 1 | 217 | P1 |
+| `scripts/decode_workflow_secrets.py` | 1 | 217 | P1 | <!-- pragma: allowlist secret -->
 | `scripts/ops/codex_repo_admin_bootstrap.py` | 1 | 572 | P1 |
 | `scripts/analyze_workflows.py` | 1 | 315 | P1 |
 | `.github/agents/github-security-validator-agent/src/agent.py` | 2 | 268,274 | P1 |
@@ -97,16 +97,16 @@ The application logs sensitive information (passwords, API tokens, secrets, PII)
 1. **Replace direct logging with redaction functions:**
    ```python
    # BAD
-   logger.debug(f"Token: {token}")
+   logger.debug(f"Token: {token}")  # pragma: allowlist secret
 
    # GOOD
-   logger.debug(f"Token: {redact_token(token)}")
+   logger.debug(f"Token: {redact_token(token)}")  # pragma: allowlist secret
    ```
 
 2. **Create centralized secret redaction utility:**
    ```python
    # src/security/logging.py
-   def redact_secret(value: str, prefix_len: int = 4) -> str:
+   def redact_secret(value: str, prefix_len: int = 4) -> str:  # pragma: allowlist secret
        """Show only first N chars, mask the rest."""
        if len(value) <= prefix_len:
            return "***"
@@ -178,8 +178,8 @@ The application stores sensitive data (secrets, tokens, passwords) in plaintext 
            key = os.environ.get('ENCRYPTION_KEY')
            self.cipher = Fernet(key)
 
-       def store(self, secret: str) -> str:
-           return self.cipher.encrypt(secret.encode()).decode()
+       def store(self, secret: str) -> str:  # pragma: allowlist secret
+           return self.cipher.encrypt(secret.encode()).decode()  # pragma: allowlist secret
 
        def retrieve(self, encrypted: str) -> str:
            return self.cipher.decrypt(encrypted.encode()).decode()
@@ -188,11 +188,11 @@ The application stores sensitive data (secrets, tokens, passwords) in plaintext 
 2. **Replace direct storage:**
    ```python
    # BAD
-   workflows_data = {"token": raw_token}
+   workflows_data = {"token": raw_token}  # pragma: allowlist secret
 
    # GOOD
    vault = SecureVault()
-   workflows_data = {"token_ref": vault.store(raw_token)}
+   workflows_data = {"token_ref": vault.store(raw_token)}  # pragma: allowlist secret
    ```
 
 3. **Add encryption-at-rest for artifacts:**
@@ -231,8 +231,8 @@ The application logs user-controlled input without proper sanitization, allowing
 
 | File | Pattern | Severity |
 |------|---------|----------|
-| `tests/tokenization/test_fast_tokenizer_wrapper.py` | Unvalidated user input in log | MEDIUM |
-| `tools/codex_secret_scan_stub.py` | Direct logging of parameters | MEDIUM |
+| `tests/tokenization/test_fast_tokenizer_wrapper.py` | Unvalidated user input in log | MEDIUM | <!-- pragma: allowlist secret -->
+| `tools/codex_secret_scan_stub.py` | Direct logging of parameters | MEDIUM | <!-- pragma: allowlist secret -->
 | Other files | Similar patterns | MEDIUM |
 
 #### Remediation Strategy
@@ -452,8 +452,8 @@ Log Injection (CWE-117): 6 issues across multiple files
 
 | Priority | Issue | Files | Effort | Start |
 |----------|-------|-------|--------|-------|
-| P0 | Clear-text logging secrets | 14 | 6-9h | Day 1 |
-| P0 | Clear-text storage secrets | 4 | 7-10h | Day 2 |
+| P0 | Clear-text logging secrets | 14 | 6-9h | Day 1 | <!-- pragma: allowlist secret -->
+| P0 | Clear-text storage secrets | 4 | 7-10h | Day 2 | <!-- pragma: allowlist secret -->
 | P0 | Log injection fixes | Multiple | 3-5h | Day 3 |
 
 **Success Criteria:**
@@ -611,9 +611,9 @@ Before committing any security fixes, verify:
 
 **Unit Tests:**
 ```python
-def test_redact_secret_length():
-    """Verify secret redaction preserves length info."""
-    assert len(redact_secret("my_token_12345")) == 14  # prefix + "***"
+def test_redact_secret_length():  # pragma: allowlist secret
+    """Verify secret redaction preserves length info."""  # pragma: allowlist secret
+    assert len(redact_secret("my_token_12345")) == 14  # prefix + "***"  # pragma: allowlist secret
 
 def test_log_injection_prevented():
     """Verify newline injection blocked."""
@@ -622,11 +622,11 @@ def test_log_injection_prevented():
 
 **Integration Tests:**
 ```python
-async def test_no_secrets_in_logs(caplog):
-    """Verify no raw secrets appear in captured logs."""
-    raw_token = "ghp_1234567890abcdefghijklmnopqrstuv"
-    logger.debug(f"Token: {redact_secret(raw_token)}")
-    assert raw_token not in caplog.text
+async def test_no_secrets_in_logs(caplog):  # pragma: allowlist secret
+    """Verify no raw secrets appear in captured logs."""  # pragma: allowlist secret
+    raw_token = "ghp_1234567890abcdefghijklmnopqrstuv"  # pragma: allowlist secret
+    logger.debug(f"Token: {redact_secret(raw_token)}")  # pragma: allowlist secret
+    assert raw_token not in caplog.text  # pragma: allowlist secret
 ```
 
 **Security Tests:**

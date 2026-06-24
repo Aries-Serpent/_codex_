@@ -10,7 +10,6 @@ This script dismisses alerts matching known suppression patterns.
 """
 
 import subprocess
-import json
 import sys
 from typing import Optional
 
@@ -58,7 +57,7 @@ def dismiss_alerts_by_rule(rule_id: str, reason: str, comment: str) -> int:
 
     try:
         # Get all alerts matching this rule
-        query = f"repos/Aries-Serpent/_codex_/code-scanning/alerts"
+        query = "repos/Aries-Serpent/_codex_/code-scanning/alerts"
         alerts_json = run_gh_api(query, f'.[] | select(.rule.id == "{rule_id}") | .number')
 
         if not alerts_json:

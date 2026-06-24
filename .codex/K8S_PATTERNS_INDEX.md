@@ -132,7 +132,7 @@ Each provider includes patterns for development and production environments.
 | RBAC | Enabled | Basic access control |
 | Pod Security Policy | Restricted | Prevent privileged pods |
 | Network Policies | Disabled | Not needed for isolated dev |
-| Secret Encryption | Cloud KMS | Secure secrets at rest |
+| Secret Encryption | Cloud KMS | Secure secrets at rest | <!-- pragma: allowlist secret -->
 | Audit Logging | Disabled | Reduce costs |
 | Container Scanning | Enabled | Catch vulnerabilities early |
 | Image Registry | Optional | Use any public or private registry |
@@ -144,7 +144,7 @@ Each provider includes patterns for development and production environments.
 | RBAC | Enabled | Comprehensive access control |
 | Pod Security Policy | Restricted | Enforce security standards |
 | Network Policies | Enabled | Isolate pod communication |
-| Secret Encryption | Cloud KMS | Mandatory encryption |
+| Secret Encryption | Cloud KMS | Mandatory encryption | <!-- pragma: allowlist secret -->
 | Audit Logging | Enabled | Compliance requirements |
 | Container Scanning | Enabled | Pre-deployment security check |
 | Image Registry | Required | Hardened, approved registries only |

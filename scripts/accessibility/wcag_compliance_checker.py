@@ -13,6 +13,7 @@ import re
 from pathlib import Path
 from typing import Dict, List
 
+
 class WCAGComplianceChecker:
     """Check WCAG AA compliance in markdown documentation."""
 

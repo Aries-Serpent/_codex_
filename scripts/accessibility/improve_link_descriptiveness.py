@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 from urllib.parse import urlparse
 
+
 class LinkDescriptivenessImprover:
     """Improve link descriptions in markdown."""
 

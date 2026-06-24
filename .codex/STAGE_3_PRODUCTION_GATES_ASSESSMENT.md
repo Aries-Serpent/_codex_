@@ -23,7 +23,7 @@
 
 | Check | Status | Notes |
 |---|---|---|
-| **Secrets Scanning** | ✅ PASS | No new secrets detected in 2f3187e commit |
+| **Secrets Scanning** | ✅ PASS | No new secrets detected in 2f3187e commit | <!-- pragma: allowlist secret -->
 | **Dependency Audit** | ✅ PASS | All dependencies approved (pyproject.toml locked) |
 | **Vulnerability Check** | ✅ PASS | 0 HIGH/CRITICAL CVEs in active dependencies |
 | **Code Review** | ✅ PASS | Phase 9 delivery passed upstream code review |

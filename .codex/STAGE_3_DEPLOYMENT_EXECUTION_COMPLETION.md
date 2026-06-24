@@ -127,7 +127,7 @@
 | **Authentication** | ✅ PASS | All auth flows working; MFA enabled |
 | **Authorization** | ✅ PASS | RBAC policies enforced; 0 violations |
 | **Data Encryption** | ✅ PASS | In-transit and at-rest encrypted |
-| **Secrets Management** | ✅ PASS | All secrets rotated; no leaks detected |
+| **Secrets Management** | ✅ PASS | All secrets rotated; no leaks detected | <!-- pragma: allowlist secret -->
 
 ---
 

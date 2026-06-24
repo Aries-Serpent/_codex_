@@ -292,7 +292,7 @@ Post-merge validation of PR #5056 has successfully completed **Phase 1 of the po
 |---|---|---|---|
 | Phase 9.1 Decision Framework | `.codex/PHASE_9_1_DECISION_FRAMEWORK.md` | 50+ lines | ✅ CREATED |
 | Phase 9.2 Autofix Patterns | `.codex/PHASE_9_2_AUTOFIX_PATTERNS.md` | 35 KB | ✅ CREATED |
-| Phase 9.2 CI Failure Analysis | `.codex/TASK_9_2_1_CI_FAILURE_ANALYSIS.md` | 8.4 KB | ✅ CREATED |
+| Phase 9.2 CI Failure Analysis | `.codex/TASK_9_2_1_CI_FAILURE_ANALYSIS.md` | 8.4 KB | ✅ CREATED | <!-- pragma: allowlist secret -->
 | Phase 9.3 Router Specification | `.codex/PHASE_9_3_ROUTER_SPECIFICATION_V2.md` | 23 KB | ✅ CREATED |
 | Phase 9.3 Agent Capability Matrix | `.codex/PHASE_9_3_AGENT_CAPABILITY_MATRIX.csv` | 17 KB | ✅ CREATED |
 | Post-Merge Validation Summary | `.codex/POST_MERGE_VALIDATION_SUMMARY_2026-06-22.md` | 10.8 KB | ✅ CREATED |

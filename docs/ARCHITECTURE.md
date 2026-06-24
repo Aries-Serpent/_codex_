@@ -709,7 +709,7 @@ This document defines the governance policy for import shims and canonical modul
 ### Import Reduction Progress
 - **Baseline**: 99 legacy import occurrences
 - **Current**: 42 occurrences (57.6% reduction ✅)
-- **Tokenization**: 100% migrated to `src.*` (13 → 0)
+- **Tokenization**: 100% migrated to `src.*` (13 → 0)  # pragma: allowlist secret
 - **Training**: 79% migrated to `src.*` (53 → 11)
 - **Models**: 50% migrated to `src.*` (4 → 2)
 - **Hydra**: config_legacy fallbacks (29 preserved for compatibility)
@@ -722,7 +722,7 @@ This document defines the governance policy for import shims and canonical modul
 - `src/training/data_utils.py` → forwards to `training.data_utils`
 - `src/training/checkpoint_manager.py` → forwards to `training.checkpoint_manager`
 - `src/training/config.py` → forwards to `training.config`
-- `src/tokenization/train_tokenizer.py` → forwards to `tokenization.train_tokenizer`
+- `src/tokenization/train_tokenizer.py` → forwards to `tokenization.train_tokenizer`  # pragma: allowlist secret
 
 **Shim Pattern**:
 ```python
@@ -816,7 +816,7 @@ SHIM_IDENTITY_STRICT=1 pytest -q tests/validation/test_shim_equivalence.py
 
 ### Determinism Validation
 - **workflow**: `.github/workflows/determinism.yml`
-- **Trigger**: Pull requests touching `src/`, `scripts/`, `tests/`, `training/`, `tokenization/`
+- **Trigger**: Pull requests touching `src/`, `scripts/`, `tests/`, `training/`, `tokenization/`  # pragma: allowlist secret
 - **Checks**: Full audit, 2-run determinism, strict conflicts
 - **Artifacts**: Uploaded for review
 
@@ -833,7 +833,7 @@ Two paths available:
 
 **Option A: Full Consolidation** (99% readiness)
 1. Move legacy modules from `training/` → `src/training/`
-2. Move legacy modules from `tokenization/` → `src/tokenization/`
+2. Move legacy modules from `tokenization/` → `src/tokenization/`  # pragma: allowlist secret
 3. Update root `__init__.py` files as compatibility shims
 4. Remove canonical shim files (no longer needed)
 5. Update remaining legacy imports (11 training + 29 hydra)
@@ -851,7 +851,7 @@ Two paths available:
 - **Consolidation Playbook**: `.github/CONSOLIDATION_PLAYBOOK.md`
 - **Wave 3 Convergence Plan**: `docs/validation/Wave3_SplitBrain_Convergence.md`
 - **v1.2.9 Validation Log**: `docs/validation/v1.2.9_Validation_Log.md`
-- **v1.3.0 Next Steps**: `.github/copilot_agent_task_prompt_v1.3.0.md`
+- **v1.3.0 Next Steps**: `.github/copilot_agent_task_prompt_v1.3.0.md`  # pragma: allowlist secret
 
 ## Revision History
 
@@ -888,7 +888,7 @@ The `_codex_` repository is a Level 4 MLOps-certified, production-grade machine 
 - **Test Coverage**: 2,079+ test files, 10.7% coverage, 100% pass rate
 - **Documentation**: 693+ markdown files, 64KB added in recent PRs
 - **Architecture**: Plugin-driven, Hydra-configured, containerized
-- **AI Integration**: Native support for Copilot workflows, agent orchestration, tokenized workflows
+- **AI Integration**: Native support for Copilot workflows, agent orchestration, tokenized workflows  # pragma: allowlist secret
 - **Security**: Zero known vulnerabilities, comprehensive scanning infrastructure
 - **Reproducibility**: Deterministic training with RNG checkpointing, environment snapshots
 
@@ -896,7 +896,7 @@ The `_codex_` repository is a Level 4 MLOps-certified, production-grade machine 
 
 This blueprint serves multiple audiences:
 1. **Human Developers**: Comprehensive onboarding, architecture understanding, contribution guidelines
-2. **AI Agents**: Tokenized workflows, structured prompts, automated task execution
+2. **AI Agents**: Tokenized workflows, structured prompts, automated task execution  # pragma: allowlist secret
 3. **DevOps Engineers**: Deployment patterns, CI/CD configuration, infrastructure management
 4. **Architects**: System design, integration patterns, scalability considerations
 
@@ -1011,7 +1011,7 @@ agents/
 └── codex_client/              # API bridge for Codex-GitHub ops
 ```
 
-**workflow Tokens**:
+**workflow Tokens**:  # pragma: allowlist secret
 - `AUDIT_EXEC`: Full audit pipeline execution
 - `PHYS_DECIDE`: Physics-inspired decision-making
 - `DOC_GEN`: Documentation generation
@@ -1223,7 +1223,7 @@ class Plugin(ABC):
 
 ### 5. workflow Navigator (`agents/workflow_navigator.py`)
 
-**Token-Based Execution**:
+**Token-Based Execution**:  # pragma: allowlist secret
 ```python
 navigator = WorkflowNavigator()
 navigator.execute('AUDIT_EXEC')  # Execute by token
@@ -1359,7 +1359,7 @@ pytest -m smoke -v
 ### Security Infrastructure
 
 **Scanning Tools**:
-- **Gitleaks**: Secret detection (`.gitleaks.toml`)
+- **Gitleaks**: Secret detection (`.gitleaks.toml`)  # pragma: allowlist secret
 - **Bandit**: Python security linter (`.bandit.yaml`)
 - **Semgrep**: Pattern-based scanning (`semgrep_rules/`)
 - **CodeQL**: Static analysis (GitHub Advanced Security)
@@ -1377,14 +1377,14 @@ pytest -m smoke -v
    - Path validation in `_resolve()`
    - Common path verification
 
-### Secrets Management
+### Secrets Management  # pragma: allowlist secret
 
-**Configuration**: `.codex/cache/secrets.status.json`
+**Configuration**: `.codex/cache/secrets.status.json`  # pragma: allowlist secret
 
 **Best Practices**:
 - Environment variables for sensitive data
 - No hardcoded credentials
-- Token rotation policies
+- Token rotation policies  # pragma: allowlist secret
 - Least-privilege access
 
 ### Compliance Artifacts
@@ -1420,7 +1420,7 @@ The repository is explicitly designed for AI Assistant/agent intuitiveness:
 
 #### 2. workflow Navigator
 
-**Tokenized Execution**:
+**Tokenized Execution**:  # pragma: allowlist secret
 ```python
 from agents.workflow_navigator import WorkflowNavigator
 
@@ -1736,9 +1736,9 @@ cat agents/prompts/debugging/test-failure-debugging.md
 - **Effort**: 1 iteration
 - **Owner**: Build team
 
-#### Priority 3: Secrets Hardening
-- **task**: Centralized secrets management
-- **Components**: Pre-merge secret scanning, token rotation
+#### Priority 3: Secrets Hardening  # pragma: allowlist secret
+- **task**: Centralized secrets management  # pragma: allowlist secret
+- **Components**: Pre-merge secret scanning, token rotation  # pragma: allowlist secret
 - **Effort**: 3-4 iterations
 - **Owner**: Security team
 
@@ -1827,7 +1827,7 @@ cat agents/prompts/debugging/test-failure-debugging.md
 - [ ] Verify UV lockfile consistency
 
 **Next Sprint** (Next 2 phases):
-- [ ] Implement token rotation
+- [ ] Implement token rotation  # pragma: allowlist secret
 - [ ] Enhance stub_cleanup.py
 - [ ] Add performance benchmarks
 - [ ] Automate archival process
@@ -1928,7 +1928,7 @@ nav.execute('AUDIT_EXEC')
 - **RNGState**: Deterministic random seed snapshot for reproducibility
 - **NDJSON**: Newline-delimited JSON for metrics
 - **Self-Hosted Runner**: GitHub Actions runner to avoid cloud costs
-- **workflow Token**: Short identifier for workflow execution (e.g., `AUDIT_EXEC`)
+- **workflow Token**: Short identifier for workflow execution (e.g., `AUDIT_EXEC`)  # pragma: allowlist secret
 - **Mental Mapping**: Decision tracking for agent learning
 - **Physics Orchestration**: Energy-based workflow optimization
 - **Capability Score**: Maturity metric (0.0-1.0 scale)
@@ -1968,10 +1968,10 @@ nav.execute('AUDIT_EXEC')
 
 ### Appendix F: Security Checklist
 
-- [ ] No hardcoded secrets
+- [ ] No hardcoded secrets  # pragma: allowlist secret
 - [ ] Environment variables for sensitive data
-- [ ] Pre-merge secret scanning enabled
-- [ ] Token rotation policy documented
+- [ ] Pre-merge secret scanning enabled  # pragma: allowlist secret
+- [ ] Token rotation policy documented  # pragma: allowlist secret
 - [ ] Self-hosted runners only
 - [ ] Branch protection enabled
 - [ ] Signed commits required
@@ -1999,7 +1999,7 @@ This blueprint provides a comprehensive technical reference for the `_codex_` re
 ### Key Takeaways
 
 1. **Production-Ready**: Zero critical gaps, 100% test pass rate, comprehensive security
-2. **AI-Friendly**: Native support for Copilot workflows, tokenized workflows, structured prompts
+2. **AI-Friendly**: Native support for Copilot workflows, tokenized workflows, structured prompts  # pragma: allowlist secret
 3. **Well-Documented**: 693+ markdown files, detailed guides, comprehensive onboarding
 4. **Secure**: Zero vulnerabilities, comprehensive scanning, path validation
 5. **Reproducible**: Deterministic training, RNG checkpointing, environment snapshots
@@ -2016,7 +2016,7 @@ This blueprint provides a comprehensive technical reference for the `_codex_` re
 **For AI Agents**:
 1. Use `agents/workflow_navigator.py` for orchestration
 2. Refer to `agents/prompts/` for structured prompts
-3. Execute tokenized workflows (e.g., `AUDIT_EXEC`)
+3. Execute tokenized workflows (e.g., `AUDIT_EXEC`)  # pragma: allowlist secret
 4. Update mental mappings for learning
 
 **For Architects**:
@@ -2129,7 +2129,7 @@ flowchart LR
 **Data Flow Steps:**
 
 1. **Ingestion**: Raw data ingestion from various sources
-2. **Tokenization**: Convert raw data to token sequences
+2. **Tokenization**: Convert raw data to token sequences  # pragma: allowlist secret
 3. **Datasets**: Create training/validation/test splits
 4. **Model Loading**: Load model from local or Hugging Face Hub
 5. **Training Engine**: Execute training loop
@@ -2225,7 +2225,7 @@ classDiagram
 
 - **Code Security**: Bandit, CodeQL scanning
 - **Dependency Security**: Pip-audit, Dependabot
-- **Secret Management**: Git secrets scanning
+- **Secret Management**: Git secrets scanning  # pragma: allowlist secret
 - **Access Control**: RBAC, GitHub teams
 - **Audit Logging**: Comprehensive activity logging
 
@@ -2383,7 +2383,7 @@ The system includes native support for AI agents:
 
 - **Copilot Integration**: Native GitHub Copilot support
 - **agent Orchestration**: 145+ active agents
-- **Tokenized Workflows**: Efficient token usage
+- **Tokenized Workflows**: Efficient token usage  # pragma: allowlist secret
 - **Structured Prompts**: Pre-defined prompt templates
 - **agent Context**: Session-based context management
 

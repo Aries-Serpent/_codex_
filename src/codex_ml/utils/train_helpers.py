@@ -23,7 +23,10 @@ def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator
         import torch
 
         autocast_cls: Any = torch.cuda.amp.autocast
-    except (ImportError, AttributeError):  # pragma: no cover - dependency missing or AMP unavailable
+    except (
+        ImportError,
+        AttributeError,
+    ):  # pragma: no cover - dependency missing or AMP unavailable
         yield
         return
 

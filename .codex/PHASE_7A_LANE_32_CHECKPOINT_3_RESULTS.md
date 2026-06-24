@@ -56,7 +56,7 @@ Achieved **92% mutation score** through hybrid strategy:
 
 | Module | C2 Score | C3 Score | Improvement | Status |
 |--------|----------|----------|------------|--------|
-| `auth/token_handler.py` | 71% | 87% | +16pp ✅ | Above target |
+| `auth/token_handler.py` | 71% | 87% | +16pp ✅ | Above target | <!-- pragma: allowlist secret -->
 | `cache/memory_manager.py` | 74% | 86% | +12pp ✅ | Above target |
 | `utils/validators.py` | 76% | 88% | +12pp ✅ | Above target |
 | `api/middleware.py` | 78% | 90% | +12pp ✅ | Excellent |

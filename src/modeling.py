@@ -23,7 +23,10 @@ try:  # pragma: no cover - optional dependency guard
         PreTrainedModel,
         PreTrainedTokenizerBase,
     )
-except (ImportError, AttributeError):  # pragma: no cover - transformers unavailable; defer failure until use
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - transformers unavailable; defer failure until use
     AutoModelForCausalLM = None
     AutoTokenizer = None
     PreTrainedModel = Any
@@ -31,7 +34,10 @@ except (ImportError, AttributeError):  # pragma: no cover - transformers unavail
 
 try:  # pragma: no cover - PEFT is optional for non-LoRA runs
     from peft import LoraConfig, get_peft_model
-except (ImportError, AttributeError):  # pragma: no cover - allow graceful degradation when PEFT is absent
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - allow graceful degradation when PEFT is absent
     LoraConfig = None
     get_peft_model = None
 
@@ -263,7 +269,10 @@ def load_tokenizer(
             )
             tokenizer.pad_token = tokenizer.eos_token
         return tokenizer
-    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - surface friendly error in tests
+    except (
+        ConnectionError,
+        TimeoutError,
+    ) as exc:  # pragma: no cover - surface friendly error in tests
         raise RuntimeError(f"Failed to load tokenizer '{tokenizer_name}': {exc}") from exc
 
 

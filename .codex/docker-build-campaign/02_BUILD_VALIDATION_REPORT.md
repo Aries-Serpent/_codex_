@@ -29,7 +29,7 @@
 | **Parse Validation** | Dockerfile syntax is valid | Parses without errors (hadolint) |
 | **Layer Analysis** | Stage structure optimized | Multi-stage where beneficial |
 | **Dependency Audit** | Requirements pins compatible with Python version | Python ≥3.12 or documented rationale |
-| **Security Baseline** | Base image hardened | Digest-pinned, non-root user, no secrets |
+| **Security Baseline** | Base image hardened | Digest-pinned, non-root user, no secrets | <!-- pragma: allowlist secret -->
 | **Build Dry-Run** | Layer inspection succeeds | Can extract layer metadata |
 | **Optimization Assessment** | Opportunity identified & documented | Consolidation potential documented |
 
@@ -50,7 +50,7 @@ Target:      base, cpu-runtime, gpu-runtime, test
 | **Parse Validation** | ✅ PASS | Valid Dockerfile syntax |
 | **Layer Analysis** | ✅ PASS | 4 stages: base (reusable) → cpu, gpu, test |
 | **Dependency Audit** | ✅ PASS | Python 3.12, requirements pinned in requirements.txt |
-| **Security Baseline** | ✅ PASS | SHA256-pinned base; appuser non-root; no hardcoded secrets |
+| **Security Baseline** | ✅ PASS | SHA256-pinned base; appuser non-root; no hardcoded secrets | <!-- pragma: allowlist secret -->
 | **Build Dry-Run** | ✅ PASS | Stages parse correctly |
 | **Optimization** | ⚠️ MEDIUM | Layer count: 15-18 per stage. Consolidation opportunity: combine apt-get updates with cleanup (lines 22-28) |
 

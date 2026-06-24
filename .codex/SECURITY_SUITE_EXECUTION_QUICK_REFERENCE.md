@@ -9,7 +9,7 @@
 | Metric | Value |
 |--------|-------|
 | **Security Run ID** | 28036137900 |
-| **Artifacts Produced** | 5 complete (CodeQL Python/JS, Semgrep, SBOM, Dependency) + 1 in-progress (Secret Scan) |
+| **Artifacts Produced** | 5 complete (CodeQL Python/JS, Semgrep, SBOM, Dependency) + 1 in-progress (Secret Scan) | <!-- pragma: allowlist secret -->
 | **CI Failures to Fix** | 199 across 25 workflows (Issue #5064) |
 | **Target Resolution** | 70%+ failure reduction (199 → <60) |
 | **Execution Time** | ~80 minutes (4 phases, 8 parallel agents) |

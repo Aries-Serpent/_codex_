@@ -60,10 +60,8 @@ def build_service_package(
         "model_dir": str(model_root),
         "files": sorted(p.name for p in model_root.glob("*")),
         "metadata": dict(metadata or {}),
-        # codeql[py/clear-text-storage-sensitive-data] Secrets stored only as SHA256 hashes, not raw values
-        "secrets": [
-            hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets
-        ],  # nosec - hashed identifiers only — no secret values stored
+        # codeql[py/clear-text-storage-sensitive-data] Secrets stored only as SHA256 hashes, not raw values  # noqa: E501
+        "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # nosec - hashed identifiers only — no secret values stored
     }
     manifest_path = staging / "manifest.json"
     # codeql[py/clear-text-storage-sensitive-data] Manifest stores only hashed secret identifiers
@@ -92,7 +90,11 @@ def build_service_package(
         if callable(hook):
             try:
                 hook_results[name] = hook(output)
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - plugin specific
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - plugin specific
                 hook_results[name] = f"error: {exc}"
 
     try:

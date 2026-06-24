@@ -21,7 +21,7 @@ Comprehensive validation of the Cognitive Brain Session Memory Injection System 
 | **D_CAPABLE Authorization** | 9/9 agents verified + authorized | ✅ OK |
 | **Memory Health** | Healthy (STM initialized, pattern library ready) | ✅ OK |
 | **RBAC Gates** | Fully enforced | ✅ OK |
-| **Token Budget** | Tracking active (800 token limit) | ✅ OK |
+| **Token Budget** | Tracking active (800 token limit) | ✅ OK | <!-- pragma: allowlist secret -->
 | **Overall Status** | No gaps, no critical issues | ✅ **OK** |
 
 ---
@@ -165,7 +165,7 @@ Comprehensive validation of the Cognitive Brain Session Memory Injection System 
 |-------|--------|---------|
 | All 9 agents verified | ✅ | Registry confirmed, tested, authorized |
 | RBAC gates enforced | ✅ | 9/9 agents pass `get_session_context` permission check |
-| Token budget tracking | ✅ | Per-agent token limits enforced at 800 tokens |
+| Token budget tracking | ✅ | Per-agent token limits enforced at 800 tokens | <!-- pragma: allowlist secret -->
 | Escalation paths defined | ✅ | Incident response → human review documented |
 | High-risk agents flagged | ✅ | None (all properly authorized) |
 

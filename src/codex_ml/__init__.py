@@ -25,7 +25,10 @@ try:  # pragma: no cover - optional dependency (OmegaConf)
         TrainingWeights,
         ValidationThresholds,
     )
-except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when config deps are missing
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - degrade gracefully when config deps are missing
 
     class _MissingConfig:
         def __init__(self, name: str):
@@ -69,7 +72,10 @@ try:  # pragma: no cover - optional metrics dependency
         RecallScore,
         TokenAccuracy,
     )
-except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when metrics extras missing
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - degrade gracefully when metrics extras missing
 
     class _MissingMetric:
         def __init__(self, name: str):
@@ -119,7 +125,10 @@ try:  # pragma: no cover - optional path
         Weights,
         run_codex_symbolic_pipeline,
     )
-except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when symbolic deps missing
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - degrade gracefully when symbolic deps missing
 
     class _MissingSymbolic:
         def __init__(self, name: str):

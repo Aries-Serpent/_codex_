@@ -46,25 +46,25 @@ Replace sensitive data values (tokens, API keys, credentials) with fingerprints 
 **Before:**
 ```python
 # .github/agents/admin-automation-agent/src/agent.py (line 145)
-logger.debug(f"Using GitHub token: {github_token} for API call")
+logger.debug(f"Using GitHub token: {github_token} for API call")  # pragma: allowlist secret
 ```
 
 **After:**
 ```python
 # codeql[py/clear-text-logging-sensitive-data]
-logger.debug(f"Using GitHub token: {github_token[:8]}… for API call")
+logger.debug(f"Using GitHub token: {github_token[:8]}… for API call")  # pragma: allowlist secret
 ```
 
 **Before:**
 ```python
-# scripts/security/verify_token_scope.py (line 89)
+# scripts/security/verify_token_scope.py (line 89)  # pragma: allowlist secret
 print(f"API response: {response_body}")  # Contains authorization header
 ```
 
 **After:**
 ```python
 # codeql[py/clear-text-logging-sensitive-data]
-response_safe = {k: (v[:8] + "…" if isinstance(v, str) else "…") if k in ["auth", "token"] else v for k, v in response_body.items()}
+response_safe = {k: (v[:8] + "…" if isinstance(v, str) else "…") if k in ["auth", "token"] else v for k, v in response_body.items()}  # pragma: allowlist secret
 print(f"API response: {response_safe}")
 ```
 
@@ -107,16 +107,16 @@ These findings require implementation of a **SecureVault wrapper** architecture 
 |------|------|-----------------|-----------------|-------|----------|
 | `.github/scripts/workflow_analyzer.py` | 234 | Plaintext config dict | SecureVault wrapper | Security | 2w |
 | `.github/scripts/workflow_analyzer.py` | 567 | Plaintext env vars | Envelope encryption | Security | 2w |
-| `scripts/catalog_workflows.py` | 123 | Plaintext secrets store | SecureVault impl | Security | 2w |
+| `scripts/catalog_workflows.py` | 123 | Plaintext secrets store | SecureVault impl | Security | 2w | <!-- pragma: allowlist secret -->
 | `scripts/catalog_workflows.py` | 456 | Plaintext cache dict | Encrypted cache | Security | 2w |
 | `scripts/catalog_workflows.py` | 789 | Plaintext state file | Encrypted state mgmt | Security | 2w |
-| `tools/codex_secret_scan_stub.py` | 234 | Plaintext test vectors | Secure test fixtures | Security | 2w |
-| `tools/codex_secret_scan_stub.py` | 567 | Plaintext baseline | Encrypted baseline | Security | 2w |
+| `tools/codex_secret_scan_stub.py` | 234 | Plaintext test vectors | Secure test fixtures | Security | 2w | <!-- pragma: allowlist secret -->
+| `tools/codex_secret_scan_stub.py` | 567 | Plaintext baseline | Encrypted baseline | Security | 2w | <!-- pragma: allowlist secret -->
 | `tools/diagnostic_health_checker.py` | 123 | Plaintext cache | Secure cache layer | Security | 2w |
 | `tools/diagnostic_health_checker.py` | 456 | Plaintext metrics | Encrypted metrics | Security | 2w |
-| `scripts/security/analyze_secrets.py` | 789 | Plaintext temp storage | Secure temp store | Security | 2w |
-| `scripts/security/verify_token_scope.py` | 234 | Plaintext token buffer | SecureVault buffer | Security | 2w |
-| `scripts/github_secrets_sync.py` | 567 | Plaintext state sync | Encrypted sync | Security | 2w |
+| `scripts/security/analyze_secrets.py` | 789 | Plaintext temp storage | Secure temp store | Security | 2w | <!-- pragma: allowlist secret -->
+| `scripts/security/verify_token_scope.py` | 234 | Plaintext token buffer | SecureVault buffer | Security | 2w | <!-- pragma: allowlist secret -->
+| `scripts/github_secrets_sync.py` | 567 | Plaintext state sync | Encrypted sync | Security | 2w | <!-- pragma: allowlist secret -->
 
 **Result:** ⚠️ 12 instances properly escalated with architectural recommendations for Phase 6C remediation
 
@@ -229,7 +229,7 @@ Date: 2026-06-16T15:33:23Z
 |------|--------|-----------|
 | **Task 1:** Unified Security Scanner | 🔄 RUNNING | - |
 | **Task 2:** CodeQL Alert Resolution | ✅ **COMPLETE** | 100% |
-| **Task 3:** Secrets Detection | ⏳ Awaiting execution | - |
+| **Task 3:** Secrets Detection | ⏳ Awaiting execution | - | <!-- pragma: allowlist secret -->
 | **Phase 6B Gate** | ⚠️ PARTIAL | 1/3 tasks complete |
 
 **Phase 6B Readiness:** Can proceed to Phase 6C pending Task 1 & 3 completion.

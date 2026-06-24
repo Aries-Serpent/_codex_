@@ -466,7 +466,11 @@ def system_metrics() -> dict[str, Any]:
                     "ram_total_bytes": int(memory.total),
                 }
             )
-        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - psutil metrics best-effort
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ):  # pragma: no cover - psutil metrics best-effort
             LOGGER.debug("psutil metrics collection failed", exc_info=True)
 
     if pynvml is not None:

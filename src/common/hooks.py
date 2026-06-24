@@ -59,7 +59,11 @@ class HookManager:
         for hook in self.hooks:
             try:
                 getattr(hook, name)(state)
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive logging
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - defensive logging
                 logger.warning("Hook %s.%s error: %s", hook.__class__.__name__, name, exc)
 
 

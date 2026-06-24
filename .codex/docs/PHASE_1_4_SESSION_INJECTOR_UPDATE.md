@@ -41,7 +41,7 @@ def _pda_summary_from_index() -> str:
     """Query PDA summary from session index API (Phase 1.4 NEW).
 
     Uses SessionQuery.list_recent_sessions(days=7) to get recent session data
-    instead of scanning entire PDA file, reducing token footprint by 60%.
+    instead of scanning entire PDA file, reducing token footprint by 60%.  # pragma: allowlist secret
     """
     from scripts.ci.session_query import SessionQuery
 
@@ -101,11 +101,11 @@ Unified entry point:
 Input: .codex/aftermath/pda_iterations.jsonl (66 lines total, ~264KB)
 Method: Read entire file, take last 5 lines
 Output entries: 5 PDA records
-Estimated tokens: ~10,000 tokens
+Estimated tokens: ~10,000 tokens  # pragma: allowlist secret
 Processing: Load all 66 lines into memory
 
 Example output:
-  [2026-06-21T14:30:00Z] P-043 — complete: Fixed CI failure in token validation
+  [2026-06-21T14:30:00Z] P-043 — complete: Fixed CI failure in token validation  # pragma: allowlist secret
   [2026-06-20T09:15:00Z] P-038 — complete: Updated Docker image cache strategy
   [2026-06-19T16:45:00Z] P-035 — pending: Dependency conflict resolution
   [2026-06-18T11:20:00Z] P-032 — complete: Test coverage threshold enforcement
@@ -118,7 +118,7 @@ Example output:
 Input: .codex/sessions_index.json (indexed sessions, ~50KB)
 Method: Query API for last 7 days, score by recency, limit to 10
 Output entries: 10 sessions (top-scored)
-Estimated tokens: ~2,000-3,000 tokens
+Estimated tokens: ~2,000-3,000 tokens  # pragma: allowlist secret
 Processing: Direct API call, only relevant data loaded
 
 Example output:
@@ -140,7 +140,7 @@ Example output:
 |--------|--------|-------|-------------|
 | **Files read** | 1 large (264KB) | 1 index (50KB) | ✅ 5.3x smaller |
 | **Entries returned** | 5 entries | 10 entries | ✅ More context |
-| **Tokens/injection** | ~10K | ~2-3K | ✅ **60-70% reduction** |
+| **Tokens/injection** | ~10K | ~2-3K | ✅ **60-70% reduction** | <!-- pragma: allowlist secret -->
 | **Processing latency** | ~50ms | ~5ms | ✅ **10x faster** |
 | **Memory footprint** | ~2.6MB (entire file) | ~500KB (index) | ✅ **80% less RAM** |
 | **Recency ranking** | None (oldest first) | ✅ Score-weighted | ✅ Better relevance |
@@ -298,7 +298,7 @@ git checkout HEAD~1 scripts/ci/session_preload.py
 
 | Benefit | Impact |
 |---------|--------|
-| **Token Efficiency** | 60-70% reduction per injection (10K → 2-3K) |
+| **Token Efficiency** | 60-70% reduction per injection (10K → 2-3K) | <!-- pragma: allowlist secret -->
 | **Speed** | 10x faster (75ms → 7ms) |
 | **Memory** | 80% less RAM used (2.6MB → 500KB) |
 | **Relevance** | Better recency ranking with scoring |

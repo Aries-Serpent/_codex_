@@ -22,8 +22,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-
 try:
     import faiss
     HAS_FAISS = True

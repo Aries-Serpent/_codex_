@@ -334,8 +334,7 @@ class DeadlockRecovery:
                     if attempt < max_retries - 1:
                         wait_time = base_delay * (2**attempt)
                         logger.warning(
-                            f"Database locked, retry {attempt + 1}/{max_retries} "
-                            f"after {wait_time}s"
+                            f"Database locked, retry {attempt + 1}/{max_retries} after {wait_time}s"
                         )
                         time.sleep(wait_time)
                     else:

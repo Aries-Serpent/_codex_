@@ -29,7 +29,7 @@
 | CodeQL MEDIUM | <10 | ≤10 | ✅ PASS |
 | CVEs (new) | 0 | 0 | ✅ PASS |
 | SBOM integrity | Valid | Valid (50 components) | ✅ PASS |
-| Secret baseline | Clean | 37 entries triaged | ✅ PASS |
+| Secret baseline | Clean | 37 entries triaged | ✅ PASS | <!-- pragma: allowlist secret -->
 | Regressions | 0 | 0 | ✅ PASS |
 
 **Result:** All 6 Phase 6 prerequisite gates confirmed PASS  

@@ -209,7 +209,7 @@ Based on mutation testing best practices:
 | Module | Tests | Coverage Focus | Status |
 |--------|-------|-----------------|--------|
 | Security Core | 70 | Validation, encryption, providers | ✅ COMPLETE |
-| Tokenization | 60 | API, loading, training, CLI | ✅ COMPLETE |
+| Tokenization | 60 | API, loading, training, CLI | ✅ COMPLETE | <!-- pragma: allowlist secret -->
 | Ingestion | 40 | CSV, JSON, files, streams | ✅ COMPLETE |
 | **Total** | **170** | **Comprehensive** | **✅ COMPLETE** |
 
@@ -269,7 +269,7 @@ Based on mutation testing best practices:
 tests/phase3b/
 ├── __init__.py
 ├── test_security_core_comprehensive.py (70 tests)
-├── test_tokenization_comprehensive.py (60 tests)
+├── test_tokenization_comprehensive.py (60 tests)  # pragma: allowlist secret
 └── test_ingestion_comprehensive.py (40 tests)
 
 Total: 170 tests

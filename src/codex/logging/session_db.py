@@ -187,7 +187,7 @@ class SessionDB:
         CREATE INDEX IF NOT EXISTS idx_events_session_time ON session_events(session_id, timestamp DESC);
         CREATE INDEX IF NOT EXISTS idx_outcomes_session ON session_outcomes(session_id);
         CREATE INDEX IF NOT EXISTS idx_sessions_status_created ON sessions(status, created_at DESC);
-        """
+        """  # noqa: E501
 
         with self._get_connection() as conn:
             conn.executescript(schema_sql)
@@ -246,7 +246,7 @@ class SessionDB:
                         INSERT INTO sessions
                         (session_id, pr_number, branch, timestamp, git_sha, status, agent_name, duration_minutes)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                        """,
+                        """,  # noqa: E501
                         (
                             session["session_id"],
                             session.get("pr_number"),
@@ -298,7 +298,7 @@ class SessionDB:
                                 """
                                 INSERT INTO session_patterns (session_id, pattern_id, pattern_name, success)
                                 VALUES (?, ?, ?, ?)
-                                """,
+                                """,  # noqa: E501
                                 (
                                     session["session_id"],
                                     pattern.get("pattern_id"),
@@ -522,7 +522,7 @@ class SessionDB:
 
             # Get patterns
             cursor.execute(
-                "SELECT pattern_id, pattern_name, success FROM session_patterns WHERE session_id = ?",
+                "SELECT pattern_id, pattern_name, success FROM session_patterns WHERE session_id = ?",  # noqa: E501
                 (session_id,),
             )
             patterns = [dict(row) for row in cursor.fetchall()]
@@ -538,7 +538,7 @@ class SessionDB:
 
             # Get events
             cursor.execute(
-                "SELECT event_type, event_details, timestamp FROM session_events WHERE session_id = ? ORDER BY timestamp DESC",
+                "SELECT event_type, event_details, timestamp FROM session_events WHERE session_id = ? ORDER BY timestamp DESC",  # noqa: E501
                 (session_id,),
             )
             events = [dict(row) for row in cursor.fetchall()]
@@ -570,7 +570,7 @@ class SessionDB:
             with self._get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "UPDATE sessions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE session_id = ?",
+                    "UPDATE sessions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE session_id = ?",  # noqa: E501
                     (new_status, session_id),
                 )
                 conn.commit()
@@ -631,7 +631,7 @@ class SessionDB:
                 # By status
                 if start_str:
                     cursor.execute(
-                        "SELECT status, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY status",
+                        "SELECT status, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY status",  # noqa: E501
                         (start_str,),
                     )
                 else:
@@ -641,7 +641,7 @@ class SessionDB:
                 # By agent
                 if start_str:
                     cursor.execute(
-                        "SELECT agent_name, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY agent_name",
+                        "SELECT agent_name, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY agent_name",  # noqa: E501
                         (start_str,),
                     )
                 else:
@@ -651,7 +651,7 @@ class SessionDB:
                 # By branch
                 if start_str:
                     cursor.execute(
-                        "SELECT branch, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY branch",
+                        "SELECT branch, COUNT(*) FROM sessions WHERE timestamp >= ? GROUP BY branch",  # noqa: E501
                         (start_str,),
                     )
                 else:
@@ -721,7 +721,7 @@ class SessionDB:
 
         Raises:
             ValueError: If event_type invalid.
-        """
+        """  # noqa: E501
         valid_types = {
             "start",
             "pattern_applied",

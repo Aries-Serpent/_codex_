@@ -446,7 +446,7 @@ No CI failure issue check
 |------|-----|--------|------|
 | `if ! command; then ... fi` | `command \| \| { ... }` | Functional change | 🟡 |
 | Explicit `if [ -n VAR ]` check | GitHub Actions `format()` | Complex expression | 🟡 |
-| Double-quoted secrets | Unquoted secrets | YAML parsing change | 🟡 |
+| Double-quoted secrets | Unquoted secrets | YAML parsing change | 🟡 | <!-- pragma: allowlist secret -->
 | Comments inline after values | Comments on separate lines | YAML formatting | 🟡 |
 
 ---

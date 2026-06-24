@@ -221,9 +221,7 @@ class SuperpositionEngine:
                     idx = future_to_idx[future]
                     try:
                         score = future.result()
-                        results[idx] = max(
-                            score, 0.0
-                        )  # Ensure non-negative
+                        results[idx] = max(score, 0.0)  # Ensure non-negative
                     except Exception:
                         # Fallback to zero score on error
                         results[idx] = 0.0

@@ -159,7 +159,7 @@ with pytest.warns(UserWarning, match="schema"):
 ```python
 # Test:
 with pytest.raises(AttributeError):
-    tokenizer(12345)
+    tokenizer(12345)  # pragma: allowlist secret
 
 # Actual:
 ValueError: text input must be of type `str` ...
@@ -337,8 +337,8 @@ tests/integration/test_event_integration_e2e.py:
   - line 120: test_multiple_callbacks_independent_state
   - line 155: test_training_recovery_from_checkpoint
 
-tests/unit/test_tokenization_edges.py:
-  - line 352: test_tokenize_invalid_type_raises_error
+tests/unit/test_tokenization_edges.py:  # pragma: allowlist secret
+  - line 352: test_tokenize_invalid_type_raises_error  # pragma: allowlist secret
 
 tests/integration/test_checkpoint_resume_e2e.py:
   - line 128: test_checkpoint_resume_with_schema_validation

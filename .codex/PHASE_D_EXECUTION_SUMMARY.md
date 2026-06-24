@@ -84,7 +84,7 @@ Need multi-failure diagnosis? → self-healing-orchestrator-agent
 | 10 | Cache Reuse | Repetition | -80% |
 | 11 | Dependency Chain | Complex DAGs | Optimal |
 | 12 | Timeout | Safety limits | Capped |
-| 13 | Cost Opt | Budget | -50% tokens |
+| 13 | Cost Opt | Budget | -50% tokens | <!-- pragma: allowlist secret -->
 | 14 | Monitoring | Observability | <1% overhead |
 | 15 | Escalation | Critical decisions | Variable |
 
@@ -127,14 +127,14 @@ Examples: unified-security-scanner, mutation-testing-agent, autonomous-test-heal
 ```
 For every commit:
 - policy-coach-agent
-- secret-detection-agent
+- secret-detection-agent  # pragma: allowlist secret
 - link-validator (basic)
 ```
 
 ### Profile 2: Standard (~10 min, $0.10)
 ```
 For every PR:
-Phase 1: policy + secrets (2 min)
+Phase 1: policy + secrets (2 min)  # pragma: allowlist secret
 Phase 2: code analysis + tests (7 min)
 Phase 3: Fail if phase 1 fails
 ```

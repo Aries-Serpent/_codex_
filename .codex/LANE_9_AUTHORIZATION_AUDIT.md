@@ -18,7 +18,7 @@ All deployment authorization mechanisms are operational and ready for production
 │ Auth Enabled:            ✅ true                      │
 │ Session Restore:         ✅ true                      │
 │ Firewall Protection:     ✅ true                      │
-│ Token Delegation:        ✅ Active (4h TTL)           │
+│ Token Delegation:        ✅ Active (4h TTL)           │  # pragma: allowlist secret
 │ RBAC Tiers:              ✅ 4 levels enforced         │
 │ Session Isolation:       ✅ Enabled                   │
 │ Deduplication:           ✅ Active (replay protection)│
@@ -112,11 +112,11 @@ github-copilot[bot]        → AGENT_DELEGATE (Level 2)
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Total token budget | 128,000 tokens | ✅ Allocated |
-| Injection overhead | 800 tokens (0.625%) | ✅ Minimal |
-| Available capacity | 127,200 tokens | ✅ Ample |
+| Total token budget | 128,000 tokens | ✅ Allocated | <!-- pragma: allowlist secret -->
+| Injection overhead | 800 tokens (0.625%) | ✅ Minimal | <!-- pragma: allowlist secret -->
+| Available capacity | 127,200 tokens | ✅ Ample | <!-- pragma: allowlist secret -->
 | Efficiency | >99% | ✅ Excellent |
-| Token budget enforcement | ✅ Active | Prevents overflow |
+| Token budget enforcement | ✅ Active | Prevents overflow | <!-- pragma: allowlist secret -->
 | Compression effectiveness | ✅ Verified | Reduces payload size |
 
 **Grade:** ✅ **OPTIMAL (99%)**
@@ -169,7 +169,7 @@ github-copilot[bot]        → AGENT_DELEGATE (Level 2)
 │                            │
 ├─ Injection check ◄────────┤
 │ • Verify tier >= required  │
-│ • Check token budget       │
+│ • Check token budget       │  # pragma: allowlist secret
 │ • Load session memory      │
 │                            │
 ├─ Turn execution ◄────────┤
@@ -241,7 +241,7 @@ Step 5: Session Cleanup
 | Checkpoint | Enforcement | Status |
 |-----------|------------|--------|
 | **Pre-Injection** | Tier >= required checked | ✅ Active |
-| **Token Budget** | Token usage validated | ✅ Active |
+| **Token Budget** | Token usage validated | ✅ Active | <!-- pragma: allowlist secret -->
 | **Session Isolation** | Turn sandboxing enabled | ✅ Active |
 | **Deduplication** | Replay attack check | ✅ Active |
 | **Firewall** | Request filtering | ✅ Active |
@@ -253,7 +253,7 @@ Step 5: Session Cleanup
 | Policy | Status | Evidence |
 |--------|--------|----------|
 | **Zero escalation paths** | ✅ YES | RBAC tier check: no bypass |
-| **No default credentials** | ✅ YES | All auth token-based |
+| **No default credentials** | ✅ YES | All auth token-based | <!-- pragma: allowlist secret -->
 | **Session timeout** | ✅ YES | 4h TTL on delegation |
 | **Audit trail immutable** | ✅ YES | JSONL append-only log |
 | **PII scrubbing** | ✅ YES | Filters active on context |
@@ -292,7 +292,7 @@ Workflow: repo-var-sync-schedule.yml (every 6h)
 
 | Variable | Value | Status |
 |----------|-------|--------|
-| COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS | 128000 | ✅ OK |
+| COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS | 128000 | ✅ OK | <!-- pragma: allowlist secret -->
 | COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE | 0.75 | ✅ OK |
 | COGNITIVE_BRAIN_LTM_RETENTION_DAYS | 90 | ✅ OK |
 | EMBEDDING_INDEX_AUTO_REBUILD | true | ✅ OK |
@@ -367,11 +367,11 @@ Workflow: repo-var-sync-schedule.yml (every 6h)
 │  AUTHORIZATION FRAMEWORK HEALTH: 98%               │
 │                                                     │
 │  ✅ Session Injection:        HEALTHY (98%)        │
-│  ✅ Token Budget:              OPTIMAL (99%)       │
+│  ✅ Token Budget:              OPTIMAL (99%)       │  # pragma: allowlist secret
 │  ✅ LTM/STM Consolidation:     READY (95%)         │
 │  ✅ RBAC Tiers:                ENFORCED (100%)     │
 │  ✅ Session Restoration:       OPERATIONAL (96%)   │
-│  ✅ Token Delegation:          ACTIVE (100%)       │
+│  ✅ Token Delegation:          ACTIVE (100%)       │  # pragma: allowlist secret
 │  ✅ Audit Logging:             OPERATIONAL (100%)  │
 │  ✅ Security Controls:         ROBUST (100%)       │
 │                                                     │

@@ -185,7 +185,7 @@ class ThreadSafeSessionDB:
             CREATE INDEX IF NOT EXISTS idx_events_session_time ON session_events(session_id, timestamp DESC);
             CREATE INDEX IF NOT EXISTS idx_outcomes_session ON session_outcomes(session_id);
             CREATE INDEX IF NOT EXISTS idx_sessions_status_created ON sessions(status, created_at DESC);
-            """
+            """  # noqa: E501
 
             conn.executescript(schema_sql)
             conn.commit()
@@ -208,7 +208,7 @@ class ThreadSafeSessionDB:
                         INSERT INTO sessions
                         (session_id, pr_number, branch, timestamp, git_sha, status, agent_name, duration_minutes)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                        """,
+                        """,  # noqa: E501
                         (
                             session.get("session_id"),
                             session.get("pr_number"),
@@ -297,7 +297,7 @@ class ThreadSafeSessionDB:
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
                     cursor.execute(
-                        "UPDATE sessions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE session_id = ?",
+                        "UPDATE sessions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE session_id = ?",  # noqa: E501
                         (new_status, session_id),
                     )
                     conn.commit()

@@ -149,8 +149,8 @@ String Operations   : 91.4% kill rate (very good)
 **Critical Functions Mutation Performance:**
 | Function | Mutants | Killed | % | Notes |
 |----------|---------|--------|---|-------|
-| verify_password | 124 | 121 | 97.6% | Excellent |
-| token_validation | 156 | 149 | 95.5% | Very good |
+| verify_password | 124 | 121 | 97.6% | Excellent | <!-- pragma: allowlist secret -->
+| token_validation | 156 | 149 | 95.5% | Very good | <!-- pragma: allowlist secret -->
 | session_check | 98 | 91 | 92.9% | Good |
 | permission_grant | 87 | 81 | 93.1% | Good |
 | oauth_flow | 134 | 125 | 93.3% | Good |
@@ -158,11 +158,11 @@ String Operations   : 91.4% kill rate (very good)
 
 **Survivor Analysis (92 survivors):**
 ```
-Token Expiration Logic      : 24 survivors (20 in boundary testing, 4 timeout edge cases)
+Token Expiration Logic      : 24 survivors (20 in boundary testing, 4 timeout edge cases)  # pragma: allowlist secret
 Multi-Factor Logic         : 18 survivors (complex 3-factor conditions)
 Session State Transitions  : 21 survivors (state machine edge cases)
 OAuth Flow Variants        : 15 survivors (third-party provider edge cases)
-Password Policy Validation : 14 survivors (edge cases: special chars, unicode)
+Password Policy Validation : 14 survivors (edge cases: special chars, unicode)  # pragma: allowlist secret
 ```
 
 **Test Gap:** Session state transitions and OAuth edge cases are less thoroughly tested.

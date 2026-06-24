@@ -37,7 +37,7 @@ This plan consolidates:
 | Dependency Security Scan | ✅ Success | ~3m21s | pip-audit + Safety + CycloneDX analysis |
 | SBOM Generation | ✅ Success | ~3m16s | Software Bill of Materials generated |
 | Semgrep SAST | ✅ Success | ~9m45s | 3 Semgrep passes (SARIF, JSON, summary) |
-| Secret Scanning | 🔄 In Progress (Step 5/7) | ~6m+ | detect-secrets running; summary/upload pending |
+| Secret Scanning | 🔄 In Progress (Step 5/7) | ~6m+ | detect-secrets running; summary/upload pending | <!-- pragma: allowlist secret -->
 
 ### Artifacts Produced
 

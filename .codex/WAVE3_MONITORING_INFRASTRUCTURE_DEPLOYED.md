@@ -105,7 +105,7 @@ Wave 3 Comprehensive Monitoring Infrastructure has been successfully deployed an
 |------|--------|----------|-----|----------|
 | **3.1: Edge Cases** | 🟡 IN PROGRESS | 35% | 2026-07-04 | None |
 | **3.2: Mutations** | ✅ READY | 40% (Phase 1-2) | 2026-07-03 | None |
-| **3.3: Validation** | 🔴 BLOCKED | 100% (audit) | ⚠️ ESCALATED | **28 SECRETS** |
+| **3.3: Validation** | 🔴 BLOCKED | 100% (audit) | ⚠️ ESCALATED | **28 SECRETS** | <!-- pragma: allowlist secret -->
 | **WAVE 3 TOTAL** | ⚠️ AT-RISK | 58% | 2026-07-06 | **1 CRITICAL** |
 
 ---
@@ -206,7 +206,7 @@ Wave 3 Comprehensive Monitoring Infrastructure has been successfully deployed an
 
 ```
 2026-06-17T16:36Z — Initial monitoring deployment (THIS CHECKPOINT)
-2026-06-17T20:36Z — CRITICAL: Secret remediation deadline (emergency checkpoint)
+2026-06-17T20:36Z — CRITICAL: Secret remediation deadline (emergency checkpoint)  # pragma: allowlist secret
 2026-06-18T09:00Z — First morning checkpoint
 2026-06-18T21:00Z — First evening checkpoint
 2026-06-19T09:00Z — Day 2 morning checkpoint (24-hour trend)

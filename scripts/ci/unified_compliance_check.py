@@ -251,7 +251,7 @@ def main():
             print(f"  {icon} {result_dict['requirement_id']}: {result_dict['reason']}")
 
         if report.next_steps:
-            print(f"\nNext Steps:")
+            print("\nNext Steps:")
             for i, step in enumerate(report.next_steps, 1):
                 print(f"  {i}. {step}")
 

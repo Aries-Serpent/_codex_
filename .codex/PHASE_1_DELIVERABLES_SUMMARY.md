@@ -132,7 +132,7 @@ python scripts/ci/validate_phase1_checkpoint.py && echo "PASS" || echo "FAIL"
 | Duplicate Session IDs | 17 |
 | Schema Version | 1.0.0 |
 | Query Response Time (Phase 1) | O(n) linear |
-| Token Savings vs. JSONL | 90% ✅ |
+| Token Savings vs. JSONL | 90% ✅ | <!-- pragma: allowlist secret -->
 
 ---
 

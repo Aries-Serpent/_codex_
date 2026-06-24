@@ -372,9 +372,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
                 kwargs["map_location"] = map_location
             if "weights_only" in inspect.signature(torch.load).parameters:
                 kwargs["weights_only"] = False
-            return torch.load(
-                path, **kwargs
-            )  # nosec B614 - weights_only=False required for optimizer/RNG state
+            return torch.load(path, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
         except (IOError, OSError) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
@@ -854,12 +852,20 @@ def load_training_checkpoint(
     if optimizer is not None and data.get("optimizer_state_dict") is not None:
         try:
             _load_into_target(optimizer, data["optimizer_state_dict"], strict=True)
-        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - optimizer mismatch
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ) as exc:  # pragma: no cover - optimizer mismatch
             raise CheckpointLoadError(f"failed to load optimizer state: {exc}") from exc
     if scheduler is not None and data.get("scheduler_state_dict") is not None:
         try:
             _load_into_target(scheduler, data["scheduler_state_dict"], strict=True)
-        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - scheduler load is best effort
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ) as exc:  # pragma: no cover - scheduler load is best effort
             logger.info(
                 "load_training_checkpoint: scheduler state not restored: %s",
                 exc,

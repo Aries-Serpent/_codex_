@@ -209,7 +209,7 @@ pytest tests/patterns/test_rp_005_*.py -v
 ```
 CodeQL: ✅ CLEAN (0 new alerts)
 SAST: ✅ CLEAN
-Secrets: ✅ CLEAN
+Secrets: ✅ CLEAN  # pragma: allowlist secret
 Dependency: ✅ CLEAN
 └─ Result: PRODUCTION-READY
 ```
@@ -427,7 +427,7 @@ Analysis:
 ✅ No New Security Issues
    └─ CodeQL: CLEAN
    └─ SAST: CLEAN
-   └─ Secrets: CLEAN
+   └─ Secrets: CLEAN  # pragma: allowlist secret
    └─ Status: PRODUCTION-READY
 
 ✅ CI Validation Gates Pass

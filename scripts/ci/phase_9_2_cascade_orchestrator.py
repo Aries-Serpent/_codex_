@@ -37,13 +37,12 @@ import logging
 import re
 import sys
 import time
-from dataclasses import dataclass, asdict, field
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(

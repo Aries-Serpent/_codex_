@@ -110,9 +110,7 @@ class TestReadWriteLock:
         for f in reader_futures:
             try:
                 f.result(timeout=1.0)
-            except (
-                Exception
-            ):  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity
+            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity  # noqa: E501
                 pass
 
         assert not test_timeout, "Writer should not timeout"
@@ -350,9 +348,9 @@ class TestThreadSafeArchive:
             for op2 in times[i + 1 :]:
                 if op1["session"] == op2["session"]:
                     # Operations should not overlap
-                    assert (
-                        op1["end"] <= op2["start"] or op2["end"] <= op1["start"]
-                    ), "Operations on same session should not overlap"
+                    assert op1["end"] <= op2["start"] or op2["end"] <= op1["start"], (
+                        "Operations on same session should not overlap"
+                    )
 
     def test_archive_timeout_retry(self):
         """Test archive timeout triggers retry."""
@@ -388,9 +386,7 @@ class TestThreadSafeArchive:
 
             try:
                 blocker_future.result(timeout=1.0)
-            except (
-                Exception
-            ):  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity
+            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity  # noqa: E501
                 pass
 
 

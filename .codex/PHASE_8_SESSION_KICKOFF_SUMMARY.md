@@ -166,7 +166,7 @@ Track B: Release (5-6h)        ←─ Agents from 8A Lanes 2-3
 
 ### Phase 8C: 2 Parallel Tracks with Cognitive Brain
 ```
-Track C: Secrets/Monitoring (8-10h)  ←─ Agents from 8B Track A
+Track C: Secrets/Monitoring (8-10h)  ←─ Agents from 8B Track A  # pragma: allowlist secret
 Track D: Infrastructure IaC (5-7h)   ←─ Agents from 8B Track B
 ```
 
@@ -178,7 +178,7 @@ Track D: Infrastructure IaC (5-7h)   ←─ Agents from 8B Track B
 |---------|--------|--------|-----------|
 | Coverage <20% | 🟡 Medium | Deployment readiness | Attempt closure; document roadmap if needed |
 | Mutation <85% | 🟡 Medium | Quality gates | Investigate weak tests; escalate if unresolvable |
-| Credentials (Blocker #1) | 🔴 High | Secrets/registry automation | Maintain manually OR @mbaetiong provides credentials |
+| Credentials (Blocker #1) | 🔴 High | Secrets/registry automation | Maintain manually OR @mbaetiong provides credentials | <!-- pragma: allowlist secret -->
 | Observability (Blocker #5) | 🔴 High | Monitoring setup | Defer OR @mbaetiong provides PagerDuty/Opsgenie keys |
 
 ---

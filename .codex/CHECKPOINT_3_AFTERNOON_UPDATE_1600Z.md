@@ -38,7 +38,7 @@
 |------|-----------|--------|--------|
 | G1 | CodeQL HIGH <5 | ≤5 | ✅ PASS |
 | G2 | CVE (new) = 0 | 0 | ✅ PASS |
-| G3 | Secret baseline clean | 37 triaged | ✅ PASS |
+| G3 | Secret baseline clean | 37 triaged | ✅ PASS | <!-- pragma: allowlist secret -->
 | G4 | SBOM integrity | 50 components valid | ✅ PASS |
 | G5 | Regressions = 0 | 0 detected | ✅ PASS |
 | G6 | Agent context stable | 27 vars synced | ✅ PASS |

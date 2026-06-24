@@ -14,7 +14,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 
 class LinkHealthMetrics:
@@ -178,7 +178,7 @@ class LinkHealthMetrics:
         print(f"\nTimestamp: {timestamp}")
 
         link_health = self.current.get('link_health', {})
-        print(f"\n🔗 Link Health:")
+        print("\n🔗 Link Health:")
         print(f"   Total links: {link_health.get('total_links', 0)}")
         print(f"   Valid: {link_health.get('valid_links', 0)}")
         print(f"   Broken: {link_health.get('broken_links', 0)}")
@@ -186,7 +186,7 @@ class LinkHealthMetrics:
         print(f"   Status: {link_health.get('status', 'UNKNOWN')}")
 
         anchor_health = self.current.get('anchor_health', {})
-        print(f"\n⚓ Anchor Health:")
+        print("\n⚓ Anchor Health:")
         print(f"   Files scanned: {anchor_health.get('files_scanned', 0)}")
         print(f"   Cross-references: {anchor_health.get('cross_references', 0)}")
         print(f"   Valid: {anchor_health.get('valid_anchors', 0)}")

@@ -101,9 +101,7 @@ def _get_client(env: str):
     email = os.getenv(f"{prefix}EMAIL")
     token = os.getenv(f"{prefix}TOKEN")
     if not subdomain or not email or not token:
-        LOGGER.error(
-            "Zendesk authentication config incomplete for environment '%s'.", env
-        )  # nosec B506 — environment name is not a credential value
+        LOGGER.error("Zendesk authentication config incomplete for environment '%s'.", env)  # nosec B506 — environment name is not a credential value
         return None
 
     return zenpy_client(subdomain=subdomain, email=email, token=token)
@@ -141,7 +139,11 @@ def _list_existing(endpoint: Any) -> list[Any]:
         if isinstance(result, list):
             return result
         return list(result)
-    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - network interactions mocked in tests
+    except (
+        ValueError,
+        TypeError,
+        RuntimeError,
+    ) as exc:  # pragma: no cover - network interactions mocked in tests
         LOGGER.debug("Unable to enumerate existing resources: %s", exc)
         return []
 
@@ -244,7 +246,11 @@ def _apply_named_resource(
             instance = api_class(**payload)
             try:
                 create_fn(instance)
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - API interactions mocked in tests
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - API interactions mocked in tests
                 LOGGER.error(
                     "Failed to create %s '%s' in environment '%s': %s",
                     resource,
@@ -264,7 +270,11 @@ def _apply_named_resource(
                 continue
             try:
                 delete_fn(target)
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - API interactions mocked in tests
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - API interactions mocked in tests
                 LOGGER.error(
                     "Failed to delete %s '%s' in environment '%s': %s",
                     resource,
@@ -287,7 +297,11 @@ def _apply_named_resource(
                 _apply_patch_set(target, changes)
             try:
                 update_fn(target)
-            except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - API interactions mocked in tests
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - API interactions mocked in tests
                 LOGGER.error(
                     "Failed to update %s '%s' in environment '%s': %s",
                     resource,
@@ -349,14 +363,22 @@ def _log_pending(resource: str, operations: PlanOperations, env: str) -> None:
         LOGGER.info("No changes required for resource '%s'.", resource)
     try:
         _metrics.emit_counter("zendesk_diff_operations", len(ops))
-    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - metrics are best effort in offline runs
+    except (
+        ValueError,
+        TypeError,
+        RuntimeError,
+    ):  # pragma: no cover - metrics are best effort in offline runs
         LOGGER.debug("Skipping metrics emission for resource '%s'.", resource)
 
     try:
         metric = _metrics.get("zendesk_diff_operations")
         if metric is not None and hasattr(metric, "observe"):
             metric.observe(float(len(ops)))
-    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - metrics are best-effort offline
+    except (
+        ValueError,
+        TypeError,
+        RuntimeError,
+    ):  # pragma: no cover - metrics are best-effort offline
         LOGGER.debug("Metrics emit skipped for resource '%s'.", resource)
 
     for op in ops:

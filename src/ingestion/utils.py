@@ -337,9 +337,7 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
                     return result
                 # Unexpected object: coerce to string
                 return str(result)
-            except (
-                Exception
-            ) as exc:  # nosec B110 - fall through to manual reader; log for visibility
+            except Exception as exc:  # nosec B110 - fall through to manual reader; log for visibility
                 logger.debug(
                     "ingestion.utils: primary reader result normalisation failed: %s",
                     exc,

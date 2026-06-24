@@ -24,7 +24,7 @@
 | 1. S228 | 3790 | pending | 2026-03-29T22:19:00Z |  |
 | 2. S283 | 3854 | complete | 2026-04-02T19:07:00Z | Fixed: RP-SC2089, RP-ZIP-SLIP, RP-REPO-ROOT-ORDER, +1 more |
 | 3. S285 | 3854 | complete | 2026-04-02T21:21:00Z | Fixed: MYPY-OPT-IMPORT, MYPY-REDUNDANT-CAST, MYPY-CALL-ARG,  |
-| 4. S301 | 3854 | complete | 2026-04-03T17:26:00Z | 5 token methods attempted for discussion cleanup — all FORBI |
+| 4. S301 | 3854 | complete | 2026-04-03T17:26:00Z | 5 token methods attempted for discussion cleanup — all FORBI | <!-- pragma: allowlist secret -->
 | 5. S_PR3946 | 3946 | complete | 2026-04-12T10:14:00Z | Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE |
 | 6. S_PR3946_iter2 | None | pending | 2026-04-12T10:31:23Z |  |
 | 7. S_PR3946_iter2 | None | pending | 2026-04-12T10:31:23Z |  |
@@ -112,7 +112,7 @@ Fixed: MYPY-OPT-IMPORT, MYPY-REDUNDANT-CAST, MYPY-CALL-ARG, +6 more
 
 **Summary:**
 ```
-5 token methods attempted for discussion cleanup — all FORBIDDEN. CODEX_MASTER_KEY/CODEX_BACKUP_KEY
+5 token methods attempted for discussion cleanup — all FORBIDDEN. CODEX_MASTER_KEY/CODEX_BACKUP_KEY  # pragma: allowlist secret
 ```
 
 **Tags:** complete  

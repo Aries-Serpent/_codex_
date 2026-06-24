@@ -44,7 +44,7 @@ Execute comprehensive QA validation to achieve **97%+ production readiness** thr
 | S001 | Application startup without errors | Core | ✅ Clean startup | Critical | 30s |
 | S002 | Configuration loading | Config | ✅ Config loaded | Critical | 20s |
 | S003 | Database connection | DB | ✅ Connected | Critical | 15s |
-| S004 | Authentication flow | Auth | ✅ Token issued | Critical | 25s |
+| S004 | Authentication flow | Auth | ✅ Token issued | Critical | 25s | <!-- pragma: allowlist secret -->
 | S005 | API health endpoint | API | ✅ 200 OK | Critical | 10s |
 | S006 | CLI basic command | CLI | ✅ Output received | High | 15s |
 | S007 | MCP protocol initialization | MCP | ✅ Handler ready | High | 20s |
@@ -147,9 +147,9 @@ Execute comprehensive QA validation to achieve **97%+ production readiness** thr
 | SEC001 | CodeQL analysis passes | SAST | ✅ 0 HIGH alerts | Critical | 120s |
 | SEC002 | SBOM validation complete | SCA | ✅ 338 components OK | Critical | 60s |
 | SEC003 | Dependency vulnerability scan | Vuln | ✅ No critical | Critical | 90s |
-| SEC004 | Secret scanning (git history) | Secrets | ✅ No secrets | Critical | 45s |
-| SEC005 | Authentication tokens secure | Crypto | ✅ Proper handling | High | 20s |
-| SEC006 | Password hashing (bcrypt) | Crypto | ✅ Salted & hashed | High | 15s |
+| SEC004 | Secret scanning (git history) | Secrets | ✅ No secrets | Critical | 45s | <!-- pragma: allowlist secret -->
+| SEC005 | Authentication tokens secure | Crypto | ✅ Proper handling | High | 20s | <!-- pragma: allowlist secret -->
+| SEC006 | Password hashing (bcrypt) | Crypto | ✅ Salted & hashed | High | 15s | <!-- pragma: allowlist secret -->
 | SEC007 | TLS certificate valid | TLS | ✅ Valid & non-expired | Critical | 10s |
 | SEC008 | Encryption keys rotated | Crypto | ✅ Current | High | 15s |
 | SEC009 | API rate limiting enforced | API | ✅ Enforced | High | 15s |

@@ -194,7 +194,7 @@ from src.mcp.backends import PineconeBackend
 
 # Initialize Pinecone backend
 backend = PineconeBackend(
-    api_key="YOUR_PINECONE_API_KEY",
+    api_key="YOUR_PINECONE_API_KEY",  # pragma: allowlist secret
     environment="us-west4-gcp",
     index_name="codex-prod",
     dimension=1536  # OpenAI embedding dimension
@@ -260,7 +260,7 @@ pip install pinecone-client
 from src.mcp.backends import PineconeBackend
 
 backend = PineconeBackend(
-    api_key="pc_...",  # From Pinecone console
+    api_key="pc_...",  # From Pinecone console  # pragma: allowlist secret
     environment="us-west4-gcp",
     index_name="my-index",
     dimension=1536,
@@ -446,13 +446,13 @@ class BaseBackend(ABC):
 ```python
 from src.mcp import MCPServer
 from src.mcp.backends import MockBackend
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModel  # pragma: allowlist secret
 import torch
 import asyncio
 
 async def store_documents():
     # Load model
-    tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+    tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")  # pragma: allowlist secret
     model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
     # Create server
@@ -467,7 +467,7 @@ async def store_documents():
 
     # Embed and store
     for doc_id, text in docs:
-        inputs = tokenizer(text, return_tensors="pt")
+        inputs = tokenizer(text, return_tensors="pt")  # pragma: allowlist secret
         with torch.no_grad():
             outputs = model(**inputs)
         embedding = outputs.last_hidden_state[0][0].tolist()

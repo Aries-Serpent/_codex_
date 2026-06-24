@@ -205,7 +205,7 @@ PHASE 8B (12-15 hours, 2 parallel tracks)
     ↓ YES → ROTATE & TRANSITION
 
 PHASE 8C (10-12 hours, 2 parallel tracks with Cognitive Brain)
-├─ Track C: Secrets/Monitoring (security-agent + brain-orchestrator) ⏳ Ready
+├─ Track C: Secrets/Monitoring (security-agent + brain-orchestrator) ⏳ Ready  # pragma: allowlist secret
 ├─ Track D: Infrastructure IaC (brain-orchestrator + workflow-agent) ⏳ Ready
     ↓ [Go/No-Go Check: Both tracks PASS?]
     ↓ YES → FINAL COMPLETION
@@ -307,7 +307,7 @@ jobs:
 
 | Blocker | Severity | Impact | Resolution | Escalation |
 |---------|----------|--------|-----------|------------|
-| **Blocker #1: Credentials** | 🔴 High | Secrets/registry automation | Maintainer provides creds → System validates → Approval gate | @mbaetiong |
+| **Blocker #1: Credentials** | 🔴 High | Secrets/registry automation | Maintainer provides creds → System validates → Approval gate | @mbaetiong | <!-- pragma: allowlist secret -->
 | **Blocker #5: Observability** | 🔴 High | Monitoring setup blocked | PagerDuty/Opsgenie API keys needed | @mbaetiong decision |
 | Coverage <20% | 🟡 Medium | Deployment readiness | Attempt Phase 8A Lane 1 → Document roadmap if unachievable | Continue with 19.78% baseline |
 | Mutation <85% | 🟡 Medium | Quality assurance | Re-run Phase 8A Lane 2 → Investigate weak tests | Escalate to mutation-testing-agent |

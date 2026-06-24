@@ -21,7 +21,7 @@ The system comprises three interconnected components:
 │         GitHub Actions Workflows (Triggers)                 │
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
-│  • secrets-baseline-enforcer.yml    (on: push/PR)          │
+│  • secrets-baseline-enforcer.yml    (on: push/PR)          │  # pragma: allowlist secret
 │  • workflow-link-validation.yml      (on: push/PR/sched)   │
 │  • batch-ci-triage.yml               (on: schedule 1h)     │
 │  • ci-pattern-healer.yml             (on: workflow_run/sch)│
@@ -44,7 +44,7 @@ The system comprises three interconnected components:
     ┌──────────────────────────────────┐
     │  Healing Pipeline                │
     ├──────────────────────────────────┤
-    │ • Detect-secrets pragmas         │
+    │ • Detect-secrets pragmas         │  # pragma: allowlist secret
     │ • PyYAML dependency injection    │
     │ • YAML indentation fixes         │
     │ • Coverage threshold standardize │
@@ -70,7 +70,7 @@ Central orchestrator for automated CI failure healing. Detects 9 distinct failur
 | 2 | Unused Variables | warning | ❌ No (detect-only) | Manual |
 | 3 | YAML Indentation | error | ❌ No (detect-only) | Manual |
 | 4 | Coverage Threshold | warning | ✅ Yes | Standardize to 70% |
-| 5 | Tokenizer Fallback | warning | ❌ No (detect-only) | Context-specific |
+| 5 | Tokenizer Fallback | warning | ❌ No (detect-only) | Context-specific | <!-- pragma: allowlist secret -->
 | 6 | Test Assertions | warning | ❌ No (detect-only) | Context-specific |
 | 7 | Redundant Imports | warning | ❌ No (detect-only) | Manual review |
 | 8 | CodeQL Suppression | error | ✅ Yes | lgtm → codeql |

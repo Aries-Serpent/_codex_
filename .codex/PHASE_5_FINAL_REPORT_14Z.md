@@ -190,7 +190,7 @@ py/unused-global-variable:                1 finding  (NOTE)
 
 **Formula**:
 ```
-risk_score = (cvss_weight × cvss_score +
+risk_score = (cvss_weight × cvss_score +  # pragma: allowlist secret
               entropy_weight × entropy_score +
               context_weight × context_score) / sum_weights
 
@@ -207,7 +207,7 @@ where:
 
 **Risk Score**:
 ```
-risk_score = (0.50 × 1.0 + 0.30 × 1.5 + 0.20 × 1.2) / 1.0
+risk_score = (0.50 × 1.0 + 0.30 × 1.5 + 0.20 × 1.2) / 1.0  # pragma: allowlist secret
            = (0.50 + 0.45 + 0.24) / 1.0
            = 1.19 / 1.0
            ≈ 1.3/10
@@ -222,7 +222,7 @@ risk_score = (0.50 × 1.0 + 0.30 × 1.5 + 0.20 × 1.2) / 1.0
 | **SBOM Valid** | ✅ PASS | Format verified, no corruption |
 | **Dependencies Current** | ✅ PASS | 8/8 target packages updated in specs |
 | **CodeQL <5 HIGH** | ✅ PASS | 0 HIGH findings (107 NOTE level) |
-| **No Critical Secrets** | ✅ PASS | No raw credentials in codebase |
+| **No Critical Secrets** | ✅ PASS | No raw credentials in codebase | <!-- pragma: allowlist secret -->
 | **Risk Score <2.0** | ✅ PASS | 1.3/10 maintained |
 | **Mutation Score >75%** | ✅ PASS | Phase 5 gate already met |
 | **Coverage ≥17.57%** | ✅ PASS | No regression |
@@ -235,7 +235,7 @@ risk_score = (0.50 × 1.0 + 0.30 × 1.5 + 0.20 × 1.2) / 1.0
 
 **Calculation**:
 ```
-security_posture = 10 - risk_score - compliance_penalties
+security_posture = 10 - risk_score - compliance_penalties  # pragma: allowlist secret
                  = 10 - 1.3 - 0.0 (no penalties)
                  = 8.7/10
 ```

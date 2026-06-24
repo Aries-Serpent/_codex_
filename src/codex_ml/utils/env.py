@@ -99,7 +99,11 @@ def _cuda_driver_version() -> Optional[str]:
             )
             version = out.strip().splitlines()[0].strip()
             return version or None
-        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - nvidia-smi unavailable / timeout
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ):  # pragma: no cover - nvidia-smi unavailable / timeout
             LOGGER.debug("nvidia-smi driver version query failed", exc_info=True)
     return None
 

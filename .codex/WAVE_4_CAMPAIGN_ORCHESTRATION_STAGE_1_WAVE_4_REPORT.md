@@ -433,7 +433,7 @@ D_CAPABLE Tier (9 agents)
   ├─ Decision authority: Pre-authorized
   ├─ Escalation: Incident response path
   ├─ RBAC: StructuralPolicyManager enforced
-  └─ Token budget: Per-decision limits
+  └─ Token budget: Per-decision limits  # pragma: allowlist secret
 ```
 
 ---

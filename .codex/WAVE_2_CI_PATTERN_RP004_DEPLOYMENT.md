@@ -464,7 +464,7 @@ Refinement Opportunities (for future waves):
 
 ✓ Enhance test prioritization algorithm
   └─ Currently: Line count based
-  └─ Future: Risk-based prioritization
+  └─ Future: Risk-based prioritization  # pragma: allowlist secret
 
 ✓ Improve test generation quality
   └─ Currently: Smoke tests

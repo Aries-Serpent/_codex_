@@ -363,7 +363,7 @@ graph TD
 | Base image digest pinning | ✅ 10/12 | All current Dockerfiles SHA256-pinned |
 | Non-root user enforcement | ✅ 12/12 | All use appuser |
 | Least privilege (no sudo) | ✅ 100% | No sudo in any Dockerfile |
-| Secrets management | ✅ Pass | No hardcoded credentials found |
+| Secrets management | ✅ Pass | No hardcoded credentials found | <!-- pragma: allowlist secret -->
 | .dockerignore completeness | ✅ Comprehensive | Covers all build artifacts, caches, venv |
 
 ---

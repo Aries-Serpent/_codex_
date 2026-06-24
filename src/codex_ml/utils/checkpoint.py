@@ -17,7 +17,10 @@ logger = logging.getLogger(__name__)
 
 try:  # Keep schema alignment with checkpoint_core when available
     from codex_ml.utils.checkpoint_core import SCHEMA_VERSION as _CORE_SCHEMA_VERSION
-except (ImportError, AttributeError):  # pragma: no cover - checkpoint_core optional in minimal installs
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - checkpoint_core optional in minimal installs
     _CORE_SCHEMA_VERSION = "1.0"
 
 CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)

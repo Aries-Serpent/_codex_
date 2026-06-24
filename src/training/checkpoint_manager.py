@@ -100,14 +100,22 @@ if "CheckpointManager" not in globals():
                         )
                     if cpu_state is not None and hasattr(cpu_state, "tolist"):
                         torch_state["cpu"] = cpu_state.tolist()
-                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - torch optional
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ) as exc:  # pragma: no cover - torch optional
                     logger.debug("Failed to capture torch CPU random state: %s", exc)
                 try:
                     if _torch_cuda_rng_available(_torch):
                         torch_state["cuda"] = [
                             tensor.tolist() for tensor in _torch.cuda.get_rng_state_all()
                         ]
-                except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - cuda optional
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ) as exc:  # pragma: no cover - cuda optional
                     logger.debug("Failed to capture CUDA random state: %s", exc)
                 if torch_state:
                     state["torch"] = torch_state

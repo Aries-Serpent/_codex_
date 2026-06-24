@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 from typing import Dict, List
 
+
 class TOCGenerator:
     """Generate table of contents for markdown files."""
 

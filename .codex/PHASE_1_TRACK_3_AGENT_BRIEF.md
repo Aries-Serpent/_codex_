@@ -85,7 +85,7 @@ For each CodeQL HIGH/MEDIUM finding:
 | CodeQL HIGH | TBD | ≤2 | ⏳ |
 | CodeQL MEDIUM | TBD | <5 | ⏳ |
 | CVE-Impacted Dependencies | TBD | 0 | ⏳ |
-| Secrets Detected | TBD | 0 | ⏳ |
+| Secrets Detected | TBD | 0 | ⏳ | <!-- pragma: allowlist secret -->
 | SBOM Validated | No | Yes | ⏳ |
 
 ## 🔗 INTEGRATION POINTS
