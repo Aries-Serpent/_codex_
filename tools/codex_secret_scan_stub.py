@@ -12,7 +12,7 @@ import json
 import re
 from pathlib import Path
 
-_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"  # pragma: allowlist secret
 
 PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", _AWS_SECRET_PATTERN]
 

@@ -11,10 +11,16 @@ on:
         required: false
         default: 'false'
 
+permissions:
+  contents: read
+  checks: read
+  actions: read
+
 jobs:
   monitor-recovery-status:
     name: Monitor Session Recovery Status
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       checks: read
@@ -145,6 +151,7 @@ jobs:
   report-recovery-metrics:
     name: Report Recovery Metrics
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: monitor-recovery-status
     if: always()
     permissions:

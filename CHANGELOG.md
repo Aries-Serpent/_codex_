@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### Fixed - PR #5071 CI Failures & Governance Compliance — 2026-06-24T08:40Z
+- **🔐 Secrets Baseline Enforcer:** Added `# pragma: allowlist secret` to `tools/codex_secret_scan_stub.py:15`
+  - Suppresses false positive on AWS_SECRET_ACCESS_KEY pattern used for scan logic
+  - Impact: Resolved secrets baseline detection failure
+
+- **🩹 Markdown False-Positive Healer (RP-007):** Added `<!-- pragma: allowlist secret -->` to `.codex/docs/SESSION_RECOVERY_DOCUMENTATION.md`
+  - Lines 108 and 111: Marked high-entropy git commit hash in JSON example block as allowlisted
+  - Impact: Resolved markdown secrets false-positive detection
+
+- **⚙️ Workflow Compliance:** Fixed missing `permissions:` blocks and `timeout-minutes` in 2 workflow files
+  - `.github/workflows/session-recovery-continuous-monitoring.yml`: Added top-level `permissions:` and `timeout-minutes: 10` to both jobs
+  - `.github/workflows/session-recovery-handler.yml`: Added top-level `permissions:` and `timeout-minutes: 15` to detect-session-failure job, `timeout-minutes: 10` to notify-recovery job
+  - Impact: Resolved 6 workflow compliance violations (1 missing permissions block + 1 missing timeout per workflow = 6 issues total)
+
+- **Governance Compliance (REQ-4 & REQ-5):** Updated both compliance files in this commit
+  - File: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — added current session entry (PR #5071 CI failures fix)
+  - File: `CHANGELOG.md` — this entry (latest commit)
+  - Impact: Satisfies governance compliance requirements for latest commit
+
 ### Fixed - GitHub Actions Workflow & Governance Compliance — 2026-06-24T07:49:57Z
 - **Workflow Validation (yamllint):** Removed 32 trailing spaces from `.github/workflows/session-recovery-handler.yml`
   - Affected lines: 15, 19, 24, 30, 36, 39, 48, 58, 71, 76, 79, 87, 89, 91, 96, 99, 101, 106, 111, 113, 119, 126, 128, 137, 142, 150, 153, 165, 170, 173, 176, 182

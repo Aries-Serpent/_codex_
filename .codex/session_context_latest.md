@@ -1,35 +1,36 @@
-# Session Context — 2026-06-24T08:22:29Z
+# Session Context — 2026-06-24T08:37:32Z
 **Branch:** `copilot/create-implementation-plan`  **PR:** #5071  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `4985` (✅)
+- REST remaining: `4812` (✅)
+- GraphQL remaining: `4972` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5071 — Remediate 14 GHAS CodeQL alerts with SARIF-level filtering and proper suppressions
+## 📋 PR #5071 — Resolve 21 CodeQL alerts: fix unreachable exception handlers and illegal raise
 State: `open`  Draft: `False`  Branch: `copilot/create-implementation-plan` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
+### ❌ 2 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `🚦 Comment review gate` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-24)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-24)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-24)
-- **Agent Token Delegation** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-24)
+- **Workflow Compliance Gate** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
+- **restore-pipeline CI** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
+- **🩹 Secrets False-Positive Healer** — `failure` on `copilot/create-implementation-plan` (2026-06-24)
 
 ## 📝 Recent Commits
+- `78ae7350` Potential fix for pull request finding 'CodeQL / Clear-text storage of sensitive — Statix (2026-06-24)
+- `50308d57` Fix CodeQL issues: remove unreachable exception handlers and fix illegal raise — copilot-swe-agent[bot] (2026-06-24)
+- `a6d81f21` Start resolving 21 CodeQL and security concerns from PR #5071 — copilot-swe-agent[bot] (2026-06-24)
 - `bb6ccff6` fix(governance): Final compliance update with latest timestamps and rescue respo — copilot-swe-agent[bot] (2026-06-24)
 - `b5a8890a` fix(style+governance): Remove trailing spaces and update compliance docs — copilot-swe-agent[bot] (2026-06-24)
 - `bf6207ff` fix(governance): Update accountability report and changelog (REQ-4/REQ-5) — copilot-swe-agent[bot] (2026-06-24)
 - `f3ef47fe` fix(style): Remove trailing spaces from session-recovery-handler.yml — copilot-swe-agent[bot] (2026-06-24)
 - `80946d9b` fix(style): Remove trailing spaces from files — copilot-swe-agent[bot] (2026-06-24)
-- `32c2bdf9` fix(ci): Remediate CI workflow failures - duplicate jobs key and compliance upda — copilot-swe-agent[bot] (2026-06-24)
-- `83d49df6` fix(ci): Remove trailing spaces from workflow file — copilot-swe-agent[bot] (2026-06-24)
-- `14fdf469` docs: Update accountability report and changelog per REQ-4/REQ-5 (CI remediation — copilot-swe-agent[bot] (2026-06-24)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

@@ -7,10 +7,16 @@ on:
     types:
       - completed
 
+permissions:
+  contents: read
+  actions: read
+  checks: read
+
 jobs:
   detect-session-failure:
     name: Detect and Recover Failed Sessions
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: |
       github.event.workflow_run.status == 'cancelled' ||
       github.event.workflow_run.conclusion == 'cancelled' ||
@@ -192,6 +198,7 @@ jobs:
   notify-recovery:
     name: Notify Recovery Status
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: detect-session-failure
     if: always()
     # ⚠️ SECURITY: Explicit permissions block (CodeQL-required)

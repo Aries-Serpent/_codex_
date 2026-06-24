@@ -108,7 +108,7 @@ python scripts/ci/session_recovery.py checkpoint --session-id 70e4f346-d908-43ef
   "session_id": "70e4f346-d908-43ef-a628-7697b5d4e099", <!-- pragma: allowlist secret -->
   "checkpoint_type": "manual",
   "git_branch": "copilot/create-implementation-plan",
-  "git_commit": "92b60067020a0a8675fa6daacd0c125bb43d3efb",
+  "git_commit": "92b60067020a0a8675fa6daacd0c125bb43d3efb", <!-- pragma: allowlist secret -->
   "uncommitted_changes": false
 }
 ```
