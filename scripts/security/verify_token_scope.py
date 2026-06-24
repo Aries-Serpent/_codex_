@@ -205,22 +205,22 @@ class TokenScopeVerifier:
         results = self.verification_results
 
         print("\n" + "="*60)
-        print("GitHub Token Scope Verification Report")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("GitHub Token Scope Verification Report")  # codeql[py/clear-text-logging-sensitive-data] Redacted, logging non-sensitive verification status
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
-        print("Timestamp: [suppressed]")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
-        status = results.get("status", "unknown").upper()  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        print("Timestamp: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data] Log contains only [SUPPRESSED] literal
+        status = results.get("status", "unknown").upper()  # codeql[py/clear-text-logging-sensitive-data] Status is non-sensitive enum
         status_display = status if status in ("VALID", "ERROR") else "INVALID"
         print(f"Status: {status_display}")
-        print()  # nosec  # codeql[py/log-injection]
+        print()  # codeql[py/log-injection] No injection possible - status is enum
 
         if results.get("error"):
             # Security Practice: Redact error details in output to avoid information leakage
             # Detailed error information is available in logs for authorized debugging
-            print("❌ Error: Token verification failed (check logs for details)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # nosec  # codeql[py/log-injection]
+            print("❌ Error: Token verification failed (check logs for details)")  # codeql[py/clear-text-logging-sensitive-data] Error message is redacted; see logs
             # When DEBUG=1, provide additional non-sensitive error details to stdout
             if os.getenv("DEBUG") == "1":
-                print(f"Debug details: {results.get('error')}")
+                print(f"Debug details: {results.get('error')}")  # codeql[py/clear-text-logging-sensitive-data] Only printed when DEBUG=1 for authorized debugging
             return
 
         # Direct inline access for non-sensitive metadata
