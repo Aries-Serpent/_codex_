@@ -46,8 +46,8 @@ except ImportError:
     # PyTorch not installed in this environment (expected in CPU-only test runs)
     pass
 except AttributeError:
-    # torch module exists but torch.use_deterministic_algorithms or required CUDA attributes
-    # (like torch.backends.cudnn) not available in CPU-only environments or stub modules
+    # torch module is installed but torch.use_deterministic_algorithms or CUDA-specific attributes
+    # (like torch.backends.cudnn) are unavailable in CPU-only or minimal PyTorch installations
     pass
 except (IOError, OSError) as e:
     # Some PyTorch operations may not support deterministic mode

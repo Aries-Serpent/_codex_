@@ -21,10 +21,6 @@ jobs:
     name: Monitor Session Recovery Status
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    permissions:
-      contents: read
-      checks: read
-      actions: read
 
     steps:
       - name: Checkout repository

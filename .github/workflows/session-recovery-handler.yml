@@ -23,11 +23,6 @@ jobs:
       github.event.workflow_run.conclusion == 'failure' ||
       (github.event.workflow_run.conclusion == 'timed_out')
 
-    permissions:
-      contents: read
-      actions: read
-      checks: read
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -201,11 +196,7 @@ jobs:
     timeout-minutes: 10
     needs: detect-session-failure
     if: always()
-    # ⚠️ SECURITY: Explicit permissions block (CodeQL-required)
-    permissions:
-      contents: read
-      actions: read
-      checks: read
+
     steps:
       - name: Log recovery completion
         run: |
