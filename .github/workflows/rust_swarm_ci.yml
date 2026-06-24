@@ -32,7 +32,6 @@ jobs:
   cost-gate:
     name: "\U0001F4B0 Cost Gate"
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name: Rust Swarm CI
