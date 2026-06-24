@@ -225,11 +225,11 @@ class TokenScopeVerifier:
 
         # Direct inline access for non-sensitive metadata
         print("HTTP Status: [suppressed]")
-        print("Rate Limit Remaining: [suppressed]")
+        print("Rate Limit Remaining: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data] HTTP metadata is non-sensitive
         print()
 
         # Display scope count only (not names) for security
-        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")
+        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")  # codeql[py/clear-text-logging-sensitive-data] Only count logged, not scope names
         # Security Practice: Scope names omitted from standard output to prevent
         # information disclosure. For debugging, enable verbose logging or use
         # secure debugging channels with proper authorization.

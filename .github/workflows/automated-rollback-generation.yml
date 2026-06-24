@@ -24,6 +24,10 @@ env:
   OUTPUT_DIR: .codex
   SCRIPTS_DIR: scripts/deployment
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generate-rollback-procedures:
     name: Generate Rollback Procedures

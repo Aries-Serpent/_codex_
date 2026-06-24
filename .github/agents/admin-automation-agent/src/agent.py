@@ -158,7 +158,8 @@ class AdminAutomationAgent:
         # Security: Use a masked fingerprint to prevent clear-text logging of any
         # residual sensitive content — CodeQL py/clear-text-logging-sensitive-data.
         # The full sanitized message is already stored in task_result above.
-        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"  # codeql[py/clear-text-logging-sensitive-data] Fingerprint is first 8 chars only
+        # nosec  # codeql[py/clear-text-logging-sensitive-data] Fingerprint is first 8 chars only
+        _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
         if status == "success":
             logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data] Only logs masked fingerprint
         elif status == "error":

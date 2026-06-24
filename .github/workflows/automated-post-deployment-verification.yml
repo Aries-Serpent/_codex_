@@ -231,6 +231,7 @@ jobs:
 
   generate-report:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [setup, health-checks, smoke-tests, critical-path-tests]
     if: always()
     steps:
@@ -346,6 +347,7 @@ jobs:
 
   slack-notification:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [setup, generate-report]
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
@@ -390,6 +392,7 @@ jobs:
 
   create-issue-on-failure:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [generate-report]
     if: failure()
     steps:

@@ -18,6 +18,10 @@ permissions:
   discussions: write
   packages: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   release:
     name: Create Release

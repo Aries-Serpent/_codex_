@@ -272,7 +272,7 @@ class SecurityValidator:
             "audit_logging": self.validate_audit_logging,
             "codeql_suppressions": self.validate_codeql_suppressions,
             "branch_protection": self.validate_branch_protection,  # codeql[py/clear-text-logging-sensitive-data] Non-sensitive validation type name only
-            "secret_scanning": self.validate_secret_scanning
+            "secret_scanning": self.validate_secret_scanning  # codeql[py/clear-text-logging-sensitive-data] Non-sensitive validation type name only
         }
 
         for validation_name, validator in validators.items():
