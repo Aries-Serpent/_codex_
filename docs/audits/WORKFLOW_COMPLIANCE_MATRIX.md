@@ -6,7 +6,7 @@
 | `actionlint-audit` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `adaptive-agent-delegation` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `admin-action-notifier` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `admin-action-t03` | ✅ | ❌ | ✅ | N/A | SOFT | — |
+| `admin-action-t03` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `admin_setup_verification` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `agent-auth-delegation` | ✅ | ✅ | ✅ | ✅ | GROUNDED | — |
 | `agent-handoff-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -24,10 +24,10 @@
 | `auto-approve-workflows` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `auto-fix-common-issues` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `auto-fix-pr-check` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
-| `automated-monitoring-setup` | ❌ | ✅ | ✅ | N/A | PARTIAL | — |
-| `automated-post-deployment-verification` | ❌ | ❌ | ✅ | N/A | GROUNDED | — |
-| `automated-release-creation` | ❌ | ✅ | ✅ | N/A | SOFT | — |
-| `automated-rollback-generation` | ❌ | ❌ | ✅ | N/A | GROUNDED | — |
+| `automated-monitoring-setup` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
+| `automated-post-deployment-verification` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `automated-release-creation` | ✅ | ✅ | ✅ | N/A | SOFT | — |
+| `automated-rollback-generation` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `autonomous-agent` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `autonomy-phase-ci-matrix` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `batch-ci-triage` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -36,7 +36,7 @@
 | `branch-divergence-monitor` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `branch-rebase-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `build-agent-env-cache` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `build-preview-image` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
+| `build-preview-image` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `cache-health-monitor` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cache-pruning` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cache-validation` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -58,9 +58,9 @@
 | `codex-manifest-refresh` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cognitive-action-decision` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cognitive-analysis-feed` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `cognitive-k8s-provisioning` | ❌ | ❌ | ✅ | N/A | SOFT | — |
+| `cognitive-k8s-provisioning` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cognitive-perception` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `cognitive-registry-validation` | ❌ | ❌ | ✅ | N/A | SOFT | — |
+| `cognitive-registry-validation` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cognitive_brain_ci_feedback` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `coherence-snapshot` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `comment-review-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -84,7 +84,7 @@
 | `coverage-with-timeout` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `create-sub-pr-to-0D_base_` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `d-capable-promotion-gate` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `data-quality-suite` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
+| `data-quality-suite` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `deferral-language-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `dependabot-auto-absorb` | ✅ | ✅ | ✅ | ✅ | SOFT | — |
 | `dependabot-preflight` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -96,13 +96,13 @@
 | `discussion-response-bridge` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `doc-freshness-check` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `doc-refresh-gate` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `docker-build-push` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
+| `docker-build-push` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `docs-code-alignment` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `docs-health` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `documentation-link-checker` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `documentation-quality-check` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `e-to-d-transition-gate` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `embedding-index-rebuild` | ✅ | ❌ | ✅ | N/A | PARTIAL | — |
+| `embedding-index-rebuild` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `fast-forward-safe-files` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `flush-queued-runs` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `forward-sync-autogen` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -145,7 +145,7 @@
 | `pre-merge-validation` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `proactive-ci-monitor` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `process-variable-intents` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `progressive-validation` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
+| `progressive-validation` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `promote-integration-branch` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `promotion-readiness-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `publish_dashboard_release` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -155,7 +155,7 @@
 | `rag-quality-nightly` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `ratelimit_history_prune` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `reference-integrity` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `release` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
+| `release` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `repo-organization` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `repo-var-sync-schedule` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `repository-health-monitoring` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -165,10 +165,10 @@
 | `root-org-validation` | ✅ | ✅ | ✅ | ✅ | GROUNDED | — |
 | `runner-diagnostics` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `rust-error-validator-observation` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `rust_swarm_ci` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
+| `rust_swarm_ci` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `sbom` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `scan-secrets-variables` | ✅ | ✅ | ✅ | N/A | SOFT | — |
-| `scheduled-archival` | ✅ | ❌ | ✅ | N/A | SOFT | — |
+| `scheduled-archival` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `scheduled-dependency-audit` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `secrets-baseline-enforcer` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `secrets-false-positive-healer` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -180,8 +180,8 @@
 | `semgrep_sarif` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `session-context-capture` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `session-incremental-summary-reminder` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `session-recovery-continuous-monitoring` | ❌ | ✅ | ✅ | N/A | PARTIAL | — |
-| `session-recovery-handler` | ❌ | ✅ | ✅ | N/A | SOFT | — |
+| `session-recovery-continuous-monitoring` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
+| `session-recovery-handler` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `session-watchdog` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `sigstore-verify` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `slo-canary-check` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -216,5 +216,5 @@
 | PARTIAL workflows      | 40 |
 | SOFT workflows         | 95 |
 | Cascade risk           | 0 |
-| Missing concurrency    | 8 |
-| Missing timeout        | 13 |
+| Missing concurrency    | 0 |
+| Missing timeout        | 0 |
