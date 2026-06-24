@@ -456,7 +456,7 @@ class TestMainFunction:
             assert exit_code != 0
         except (ImportError, SystemExit):
             pytest.skip("codex_ml.cli.codex_cli not available or exits")
-        except (ImportError, AttributeError) as exc:
+        except AttributeError as exc:
             if _click_exc is not None and isinstance(exc, _click_exc.UsageError):
                 pytest.skip("codex_ml.cli.codex_cli not available or exits")
             raise

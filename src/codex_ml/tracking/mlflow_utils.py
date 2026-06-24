@@ -45,7 +45,7 @@ try:
 except ImportError as exc:
     logger.debug("Failed to import mlflow at module load: %s", exc)
     _mlf = None
-except (ImportError, AttributeError):
+except AttributeError:
     logger.warning("Unexpected failure importing mlflow at module load", exc_info=True)
     _mlf = None
 

@@ -285,7 +285,7 @@ def _invoke_registry_metric(
             logger.debug(f"TypeError: {exc}")
             last_type_error = exc
             continue
-        except (ValueError, TypeError, RuntimeError) as exc:
+        except (ValueError, RuntimeError) as exc:
             logger.debug(f"Exception: {exc}")
             append_error_entry(
                 "metric.execute",

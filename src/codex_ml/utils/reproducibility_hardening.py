@@ -84,7 +84,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         logger.debug(f"ImportError: {e}")
         status["numpy"] = None  # Not installed
         logger.debug("NumPy not available (skipped)")
-    except (ImportError, AttributeError) as e:
+    except AttributeError as e:
         logger.debug(f"Exception: {e}")
         status["numpy"] = False
         logger.warning(f"Failed to seed NumPy: {e}")
@@ -140,7 +140,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         status["cublas_workspace"] = None
         status["torch_deterministic_algorithms"] = None
         logger.debug("PyTorch not available (skipped)")
-    except (ImportError, AttributeError) as e:
+    except AttributeError as e:
         logger.debug(f"Exception: {e}")
         status["torch"] = False
         logger.warning(f"Failed to seed PyTorch: {e}")

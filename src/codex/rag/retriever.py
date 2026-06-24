@@ -98,7 +98,7 @@ class Retriever:
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             logger.error(f"Failed to load query embedding model: {e}")
             raise
-        except (ValueError, TypeError, RuntimeError) as e:
+        except TypeError as e:
             logger.error(f"Error loading embedding model: {e}")
             raise
 

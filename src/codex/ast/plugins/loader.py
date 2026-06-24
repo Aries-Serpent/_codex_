@@ -74,7 +74,7 @@ class PluginLoader:
                         logger.info(f"Loaded external plugin: {name}")
                     except ImportError as ie:
                         logger.debug(f"Failed to import external plugin {name}: {ie}")
-                    except (ImportError, AttributeError) as e:
+                    except AttributeError as e:
                         logger.warning(f"Failed to load external plugin {name}: {e}", exc_info=True)
         except (ImportError, AttributeError) as e:
             logger.debug(f"External plugin discovery failed: {e}")

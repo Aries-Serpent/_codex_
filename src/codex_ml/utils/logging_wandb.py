@@ -62,7 +62,7 @@ def maybe_wandb(run_name: str | None = None, enable: bool = False) -> Iterator[A
         yield wandb
     except ImportError as exc:  # pragma: no cover - missing optional dependency
         raise build_optional_dependency_error("wandb", "Weights & Biases logging") from exc
-    except (ImportError, AttributeError):  # pragma: no cover - wandb init/import issues
+    except AttributeError:  # pragma: no cover - wandb init/import issues
         LOGGER.warning(
             "%s",
             optional_dependency_error(

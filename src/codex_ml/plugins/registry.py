@@ -50,7 +50,7 @@ def _iter_entry_points(group: str):
             if hasattr(eps, "select")
             else [ep for ep in eps if ep.group == group]
         )
-    except (ValueError, TypeError, RuntimeError):
+    except (ValueError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         items = []
     collected.extend(items)
