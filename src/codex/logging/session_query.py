@@ -111,7 +111,7 @@ def detect_schema(conn: sqlite3.Connection) -> tuple[str, dict[str, str]]:
             logger.debug(f"ValueError: {e}")
             logger.warning(f"ValueError: {e}", exc_info=True)
             continue
-        cur = conn.execute(f"PRAGMA table_info({safe})")
+        cur = conn.execute(f"PRAGMA table_info({safe})")  # codeql[py/sql-injection]
         cols = [row[1] for row in cur.fetchall()]
         mapping: dict[str, str] = {}
         for want, candidates in {
