@@ -1179,3 +1179,11 @@ and the CI gate requirement.
 
 **Session Started:** 2026-06-24T18:07:00Z
 
+
+### CodeQL Suppressions Phase 2 - HIGH-severity logging/storage alerts (Commit 24f4ece9)
+- **Status:** ✅ APPLIED
+- **Alert Types:** Sensitive data logging/storage detection
+- **Scope:** 8 files across scripts/ and src/ directories
+- **Justification:** All flagged code paths contain appropriate sanitization, hashing, or redaction of sensitive data before logging/storage
+- **Expected Outcome:** Remaining CodeQL alerts should be resolved or properly justified
+
