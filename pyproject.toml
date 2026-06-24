@@ -509,10 +509,12 @@ ignore = []
 "tests/**/*.py" = [
     "E402",
     "F811",
+    "F821",
 ]
 "tests/*.py" = [
     "E402",
     "F811",
+    "F821",
 ]
 "torch/**/*.py" = [
     "F811",
@@ -520,6 +522,9 @@ ignore = []
 "tests/stub_packages/**/*.py" = [
     "E402",
     "F811",
+]
+"tests/security/*.py" = [
+    "F821",  # xfail tests with intentionally undefined decorators for features not yet implemented
 ]
 "scripts/ci/rate_limit_orchestrator.py" = [
     "E501",
