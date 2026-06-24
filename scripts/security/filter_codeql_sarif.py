@@ -6,6 +6,8 @@ This script processes CodeQL SARIF output files and removes specific rule violat
 that are known false positives in this codebase. The filtered SARIF files are then
 used for upload to GitHub's code scanning dashboard.
 
+Requires: Python >= 3.12
+
 Usage:
     python scripts/security/filter_codeql_sarif.py <sarif_file> [<output_file>]
 
@@ -17,6 +19,7 @@ Rules excluded:
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 
 # Rules to exclude from SARIF results
 EXCLUDED_RULES = {
@@ -25,7 +28,7 @@ EXCLUDED_RULES = {
 }
 
 
-def filter_sarif(sarif_path: str, output_path: str | None = None) -> int:
+def filter_sarif(sarif_path: str, output_path: Optional[str] = None) -> int:
     """
     Filter CodeQL SARIF file to remove false-positive rules.
     
@@ -34,12 +37,15 @@ def filter_sarif(sarif_path: str, output_path: str | None = None) -> int:
         output_path: Path to write filtered SARIF (defaults to input path)
     
     Returns:
-        Number of results removed
+        Number of results removed (>= 0), or raises ValueError on error
+    
+    Raises:
+        FileNotFoundError: If SARIF file not found
+        ValueError: If SARIF processing fails
     """
     sarif_file = Path(sarif_path)
     if not sarif_file.exists():
-        print(f"Error: SARIF file not found: {sarif_path}", file=sys.stderr)
-        return -1
+        raise FileNotFoundError(f"SARIF file not found: {sarif_path}")
     
     if output_path is None:
         output_path = sarif_path
@@ -74,9 +80,10 @@ def filter_sarif(sarif_path: str, output_path: str | None = None) -> int:
         print(f"Filtered SARIF: {removed_count} results removed from {sarif_path}")
         return removed_count
     
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON in SARIF file: {e}") from e
     except Exception as e:
-        print(f"Error processing SARIF file: {e}", file=sys.stderr)
-        return -1
+        raise ValueError(f"Error processing SARIF file: {e}") from e
 
 
 def _is_excluded_result(result: dict) -> bool:
@@ -107,11 +114,13 @@ def filter_directory(sarif_dir: str) -> int:
     
     Returns:
         Total number of results removed
+    
+    Raises:
+        ValueError: If directory not found or processing fails
     """
     sarif_path = Path(sarif_dir)
     if not sarif_path.is_dir():
-        print(f"Error: SARIF directory not found: {sarif_dir}", file=sys.stderr)
-        return -1
+        raise ValueError(f"SARIF directory not found: {sarif_dir}")
     
     total_removed = 0
     sarif_files = list(sarif_path.glob('*.sarif'))
@@ -121,9 +130,12 @@ def filter_directory(sarif_dir: str) -> int:
         return 0
     
     for sarif_file in sarif_files:
-        removed = filter_sarif(str(sarif_file))
-        if removed >= 0:
+        try:
+            removed = filter_sarif(str(sarif_file))
             total_removed += removed
+        except ValueError as e:
+            print(f"Error processing {sarif_file}: {e}", file=sys.stderr)
+            continue
     
     print(f"Total results removed: {total_removed}")
     return total_removed
@@ -141,10 +153,13 @@ if __name__ == '__main__':
     input_path = sys.argv[1]
     output_path = sys.argv[2] if len(sys.argv) > 2 else None
     
-    # Check if input is a directory or file
-    if Path(input_path).is_dir():
-        result = filter_directory(input_path)
-    else:
-        result = filter_sarif(input_path, output_path)
-    
-    sys.exit(0 if result >= 0 else 1)
+    try:
+        # Check if input is a directory or file
+        if Path(input_path).is_dir():
+            result = filter_directory(input_path)
+        else:
+            result = filter_sarif(input_path, output_path)
+        sys.exit(0)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)

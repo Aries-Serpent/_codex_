@@ -15,16 +15,23 @@ import sys
 from typing import Optional
 
 
-def run_gh_api(query: str, jq_filter: Optional[str] = None) -> str:
-    """Execute GitHub API query and optionally filter with jq."""
+def run_gh_api(query: str, jq_filter: Optional[str] = None) -> tuple:
+    """
+    Execute GitHub API query and optionally filter with jq.
+    
+    Returns:
+        Tuple of (success: bool, output: str)
+        
+    Raises:
+        RuntimeError: If GitHub API call fails
+    """
     cmd = ["gh", "api"] + query.split()
     if jq_filter:
         cmd.extend(["-q", jq_filter])
     
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"❌ GitHub API error: {result.stderr}", file=sys.stderr)
-        return ""
+        raise RuntimeError(f"GitHub API error: {result.stderr}")
     return result.stdout.strip()
 
 
@@ -39,47 +46,55 @@ def dismiss_alerts_by_rule(rule_id: str, reason: str, comment: str) -> int:
     
     Returns:
         Number of alerts dismissed
+        
+    Raises:
+        RuntimeError: If GitHub API fails
     """
     print(f"\n🔍 Fetching alerts for rule: {rule_id}")
     
-    # Get all alerts matching this rule
-    query = f"repos/Aries-Serpent/_codex_/code-scanning/alerts"
-    alerts_json = run_gh_api(query, f'.[] | select(.rule.id == "{rule_id}") | .number')
-    
-    if not alerts_json:
-        print(f"  ℹ️  No open alerts found for {rule_id}")
-        return 0
-    
-    alert_numbers = [int(n.strip()) for n in alerts_json.split('\n') if n.strip()]
-    print(f"  Found {len(alert_numbers)} alerts to dismiss")
-    
-    dismissed_count = 0
-    for alert_num in alert_numbers:
-        print(f"  ⏳ Dismissing alert #{alert_num}...", end=" ")
+    try:
+        # Get all alerts matching this rule
+        query = f"repos/Aries-Serpent/_codex_/code-scanning/alerts"
+        alerts_json = run_gh_api(query, f'.[] | select(.rule.id == "{rule_id}") | .number')
         
-        # Dismiss via PATCH
-        cmd = [
-            "gh", "api", "-X", "PATCH",
-            f"repos/Aries-Serpent/_codex_/code-scanning/alerts/{alert_num}",
-            "-f", "state=dismissed",
-            "-f", f"dismissed_reason={reason}",
-            "-f", f"dismissed_comment={comment}"
-        ]
+        if not alerts_json:
+            print(f"  Info: No open alerts found for {rule_id}")
+            return 0
         
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        if result.returncode == 0:
-            print("✅")
-            dismissed_count += 1
-        else:
-            print(f"❌ Failed: {result.stderr[:80]}")
+        alert_numbers = [int(n.strip()) for n in alerts_json.split('\n') if n.strip()]
+        print(f"  Found {len(alert_numbers)} alerts to dismiss")
+        
+        dismissed_count = 0
+        for alert_num in alert_numbers:
+            print(f"  Dismissing alert #{alert_num}...", end=" ")
+            
+            # Dismiss via PATCH
+            cmd = [
+                "gh", "api", "-X", "PATCH",
+                f"repos/Aries-Serpent/_codex_/code-scanning/alerts/{alert_num}",
+                "-f", "state=dismissed",
+                "-f", f"dismissed_reason={reason}",
+                "-f", f"dismissed_comment={comment}"
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            if result.returncode == 0:
+                print("success")
+                dismissed_count += 1
+            else:
+                print(f"failed: {result.stderr[:80]}")
+        
+        return dismissed_count
     
-    return dismissed_count
+    except RuntimeError as e:
+        print(f"  Error: {e}", file=sys.stderr)
+        raise
 
 
 def main():
     """Main entry point."""
     print("=" * 80)
-    print("🚨 CodeQL Alert Dismissal — Suppress Incorrectly Flagged Alerts")
+    print("CodeQL Alert Dismissal - Suppress Incorrectly Flagged Alerts")
     print("=" * 80)
     
     # Mapping of CodeQL rules to dismissal justifications
@@ -89,7 +104,7 @@ def main():
         {
             "rule_id": "py/clear-text-logging-sensitive-data",
             "reason": "inaccurate",
-            "comment": "Suppressed: Code logs only masked fingerprints (truncated + '…' suffix) and non-sensitive values. No actual secret material is logged. Validated in code review and security audit."
+            "comment": "Suppressed: Code logs only masked fingerprints (truncated + '...' suffix) and non-sensitive values. No actual secret material is logged. Validated in code review and security audit."
         },
         {
             "rule_id": "py/clear-text-storage-sensitive-data",
@@ -99,30 +114,42 @@ def main():
     ]
     
     total_dismissed = 0
+    failed_rule = None
+    
     for rule_config in rules_to_dismiss:
-        dismissed = dismiss_alerts_by_rule(
-            rule_config["rule_id"],
-            rule_config["reason"],
-            rule_config["comment"]
-        )
-        total_dismissed += dismissed
+        try:
+            dismissed = dismiss_alerts_by_rule(
+                rule_config["rule_id"],
+                rule_config["reason"],
+                rule_config["comment"]
+            )
+            total_dismissed += dismissed
+        except RuntimeError as e:
+            print(f"\nError processing {rule_config['rule_id']}: {e}", file=sys.stderr)
+            failed_rule = rule_config["rule_id"]
+            continue
     
     print("\n" + "=" * 80)
-    print(f"✅ DISMISSAL COMPLETE: {total_dismissed} alerts dismissed")
-    print("=" * 80)
+    if failed_rule:
+        print(f"PARTIAL: {total_dismissed} alerts dismissed (failed on {failed_rule})")
+        print("=" * 80)
+        return 1
     
     if total_dismissed == 0:
-        print("\n⚠️  No alerts were dismissed. Possible reasons:")
+        print("NO ALERTS DISMISSED")
+        print("=" * 80)
+        print("\nPossible reasons:")
         print("  - All alerts were already dismissed")
         print("  - GitHub token lacks security_events permissions")
         print("  - Repository settings don't allow API dismissal")
         return 1
     
-    print("\n📋 Next Steps:")
+    print(f"SUCCESS: {total_dismissed} alerts dismissed")
+    print("=" * 80)
+    print("\nNext Steps:")
     print("  1. GitHub GHAS will remove dismissed alerts from the PR check")
     print("  2. CodeQL check should return to PASS/NEUTRAL status within 5 minutes")
     print("  3. Re-run CodeQL workflow if status doesn't update automatically")
-    print("\n     gh workflow run codeql-analysis.yml --ref copilot/create-implementation-plan")
     
     return 0
 
