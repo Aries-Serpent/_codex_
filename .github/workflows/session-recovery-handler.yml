@@ -31,21 +31,32 @@ jobs:
       - name: Extract failed workflow context
         id: extract_context
         run: |
+          # ⚠️ SECURITY: Validate all workflow_run inputs to prevent code injection (CodeQL)
+          # Only extract immutable numeric IDs; sanitize all string inputs
+           
+          # Extract numeric ID (immutable, safe for code context)
           WORKFLOW_RUN_ID="${{ github.event.workflow_run.id }}"
-          WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
-          BRANCH="${{ github.event.workflow_run.head_branch }}"
-          SHA="${{ github.event.workflow_run.head_sha }}"
-          CREATED_AT="${{ github.event.workflow_run.created_at }}"
-          UPDATED_AT="${{ github.event.workflow_run.updated_at }}"
-          STATUS="${{ github.event.workflow_run.status }}"
-          CONCLUSION="${{ github.event.workflow_run.conclusion }}"
-          
-          # Calculate duration
-          CREATED_TS=$(date -d "$CREATED_AT" +%s)
-          UPDATED_TS=$(date -d "$UPDATED_AT" +%s)
-          DURATION=$((UPDATED_TS - CREATED_TS))
-          
-          # Output values
+           
+          # Extract safely: use gh CLI to validate and escape
+          WORKFLOW_NAME=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .name 2>/dev/null | sed 's/[^a-zA-Z0-9 _.-]/_/g')
+          BRANCH=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .head_branch 2>/dev/null | sed 's/[^a-zA-Z0-9/_.-]/_/g')
+          SHA=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .head_sha 2>/dev/null | grep -oE '^[a-f0-9]{40}$' || echo "unknown")
+          CREATED_AT=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .created_at 2>/dev/null)
+          UPDATED_AT=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .updated_at 2>/dev/null)
+          STATUS=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .status 2>/dev/null | grep -E '^(queued|in_progress|completed)$' || echo "unknown")
+          CONCLUSION=$(gh api repos/${{ github.repository }}/actions/runs/$WORKFLOW_RUN_ID --jq .conclusion 2>/dev/null | grep -E '^(success|failure|neutral|cancelled|timed_out|action_required|stale|skipped)$' || echo "unknown")
+           
+          # Calculate duration safely
+          if [ -n "$CREATED_AT" ] && [ -n "$UPDATED_AT" ]; then
+            CREATED_TS=$(date -d "$CREATED_AT" +%s 2>/dev/null || echo "0")
+            UPDATED_TS=$(date -d "$UPDATED_AT" +%s 2>/dev/null || echo "0")
+            DURATION=$((UPDATED_TS - CREATED_TS))
+            [ $DURATION -lt 0 ] && DURATION=0
+          else
+            DURATION=0
+          fi
+           
+          # Output values (sanitized)
           echo "workflow_run_id=$WORKFLOW_RUN_ID" >> $GITHUB_OUTPUT
           echo "workflow_name=$WORKFLOW_NAME" >> $GITHUB_OUTPUT
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
@@ -55,6 +66,8 @@ jobs:
           echo "status=$STATUS" >> $GITHUB_OUTPUT
           echo "conclusion=$CONCLUSION" >> $GITHUB_OUTPUT
           echo "duration_seconds=$DURATION" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Create session recovery log
         id: create_recovery_log
@@ -181,6 +194,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: detect-session-failure
     if: always()
+    # ⚠️ SECURITY: Explicit permissions block (CodeQL-required)
+    permissions:
+      contents: read
+      actions: read
+      checks: read
     steps:
       - name: Log recovery completion
         run: |
