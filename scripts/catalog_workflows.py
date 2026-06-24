@@ -217,7 +217,7 @@ def generate_inventory():
     workflows_dir = Path(".github/workflows")
 
     if not workflows_dir.exists():
-        print(f"❌ Workflows directory not found: {workflows_dir}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"❌ Workflows directory not found: {workflows_dir}")
         return
 
     # Scan all workflow files
@@ -235,10 +235,10 @@ def generate_inventory():
         "workflows": [],
     }
 
-    print(f"📊 Cataloging {len(workflow_files)} workflows...")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"📊 Cataloging {len(workflow_files)} workflows...")
 
     for workflow_file in workflow_files:
-        print(f"  Processing: {workflow_file.name}")  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"  Processing: {workflow_file.name}")
         metadata = extract_workflow_metadata(workflow_file)
         inventory["workflows"].append(metadata)
 
@@ -256,10 +256,10 @@ def generate_inventory():
     with open(inventory_path, "w") as f:
         yaml.dump(inventory, f, default_flow_style=False, sort_keys=False)
 
-    print(f"\n✅ Inventory saved to: {inventory_path}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"   Total workflows: {inventory['metadata']['total_workflows']}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"   Active: {inventory['metadata']['active_count']}")  # codeql[py/clear-text-logging-sensitive-data]
-    print(f"   Consolidation candidates: {sum(1 for w in inventory['workflows'] if w.get('consolidation_candidate'))}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"\n✅ Inventory saved to: {inventory_path}")
+    print(f"   Total workflows: {inventory['metadata']['total_workflows']}")
+    print(f"   Active: {inventory['metadata']['active_count']}")
+    print(f"   Consolidation candidates: {sum(1 for w in inventory['workflows'] if w.get('consolidation_candidate'))}")
 
     # Security note: Secret names are stored in inventory file but NOT logged to console
     # to prevent information disclosure in CI logs
@@ -275,7 +275,7 @@ def generate_summary_report(inventory: dict):
     with open(report_path, "w") as f:
         f.write("# Workflow Inventory Summary\n\n")
         f.write(f"**Generated**: {inventory['metadata']['generated_at']}\n\n")
-        f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")  # codeql[py/clear-text-logging-sensitive-data]
+        f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")
 
         # Category breakdown
         f.write("## Workflows by Category\n\n")
@@ -284,21 +284,21 @@ def generate_summary_report(inventory: dict):
             by_category[workflow.get("category", "other")].append(workflow)
 
         for category, workflows in sorted(by_category.items()):
-            f.write(f"### {category.title()} ({len(workflows)} workflows)\n\n")  # codeql[py/clear-text-logging-sensitive-data]
+            f.write(f"### {category.title()} ({len(workflows)} workflows)\n\n")
             for workflow in workflows:
                 status_icon = "🟢" if workflow.get("status") == "active" else "🔴"
                 consolidation_icon = "⚠️" if workflow.get("consolidation_candidate") else ""
-                f.write(f"- {status_icon} {consolidation_icon} `{workflow['filename']}` - {workflow.get('name', 'N/A')}\n")  # codeql[py/clear-text-logging-sensitive-data]
+                f.write(f"- {status_icon} {consolidation_icon} `{workflow['filename']}` - {workflow.get('name', 'N/A')}\n")
             f.write("\n")
 
         # Consolidation candidates
         candidates = [w for w in inventory["workflows"] if w.get("consolidation_candidate")]
         if candidates:
-            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n")  # codeql[py/clear-text-storage-sensitive-data]
-            for workflow in candidates:  # codeql[py/clear-text-storage-sensitive-data]
+            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n")
+            for workflow in candidates:
                 f.write(f"### `{workflow['filename']}`\n\n")
                 f.write(f"**Reason**: {workflow.get('consolidation_plan', 'N/A')}\n\n")
-                f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")  # codeql[py/clear-text-storage-sensitive-data]
+                f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")
 
         # Secrets usage - SECURITY NOTE: Removed to prevent information disclosure
         # Secret names are stored in WORKFLOW_INVENTORY.yaml for internal tooling only

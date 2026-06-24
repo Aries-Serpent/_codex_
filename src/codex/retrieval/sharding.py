@@ -253,7 +253,7 @@ def get_shard_for_id(doc_id: str, total_shards: int, use_consistent_hashing: boo
         return ring.get_shard(doc_id)
     # Simple modulo hashing - MD5 used for distribution, not security
     # nosec B324 - MD5 used for data distribution hashing, not cryptographic security
-    hash_obj = hashlib.md5(doc_id.encode(), usedforsecurity=False)  # codeql[py/weak-crypto]
+    hash_obj = hashlib.md5(doc_id.encode(), usedforsecurity=False)
     hash_int = int.from_bytes(hash_obj.digest()[:4], "big")
     return hash_int % total_shards
 

@@ -36,9 +36,9 @@ for file in files:
             if re.search(r'(secret|token|password|key)', line, re.IGNORECASE):
                 # Ensure we don't mess up existing comments
                 if line.endswith('\n'):
-                    lines[i] = line.rstrip('\n') + '  # codeql[py/clear-text-logging-sensitive-data]\n'
+                    lines[i] = line.rstrip('\n') + '\n'
                 else:
-                    lines[i] = line + '  # codeql[py/clear-text-logging-sensitive-data]'
+                    lines[i] = line + ''
                 changed = True
 
     if changed:

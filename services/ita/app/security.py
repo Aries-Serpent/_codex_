@@ -153,7 +153,7 @@ def _legacy_hash_key(candidate_bytes: bytes) -> str:
     # Legacy-compatibility path: this must remain byte-for-byte equivalent to historic
     # pre-0.2 stored hashes so successful auth can trigger upgrade to PBKDF2.
     # New hashes are created via hash_key() (PBKDF2-HMAC-SHA256, 600 000 iterations).
-    h.update(candidate_bytes)  # codeql[py/weak-sensitive-data-hashing]
+    h.update(candidate_bytes)
     return h.hexdigest()
 
 
@@ -173,7 +173,7 @@ def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
         )
     pepper = _load_hash_pepper()
     h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 — migration-only
-    h.update(candidate_bytes)  # codeql[py/weak-sensitive-data-hashing] — migration-only; not used for new keys
+    h.update(candidate_bytes) — migration-only; not used for new keys
     return h.hexdigest()
 
 
@@ -201,7 +201,7 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
     pepper = _load_hash_pepper()
     key = pepper[:64]
     h = hashlib.blake2b(key=key)  # nosec B324 — migration-only
-    h.update(candidate_bytes)  # codeql[py/weak-sensitive-data-hashing] — migration-only; not used for new keys
+    h.update(candidate_bytes) — migration-only; not used for new keys
     return h.hexdigest()
 
 

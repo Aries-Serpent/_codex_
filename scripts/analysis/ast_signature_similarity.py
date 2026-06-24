@@ -33,7 +33,7 @@ def extract_ast_signature(code: str) -> Optional[dict]:
             counts[type(node).__name__] += 1
         # Create a normalized AST dump for structural hashing
         dump = ast.dump(tree, annotate_fields=False)
-        struct_hash = hashlib.md5(dump.encode('utf-8'), usedforsecurity=False).hexdigest()  # codeql[py/weak-crypto]
+        struct_hash = hashlib.md5(dump.encode('utf-8'), usedforsecurity=False).hexdigest()
         return {"nodes": dict(counts), "hash": struct_hash}
     except SyntaxError as e:
         logger.warning(f"SyntaxError: {e}", exc_info=True)

@@ -497,7 +497,7 @@ class GitHubTokenProvider(TokenProvider):
             prerequisites are missing, or the ``requests`` library is unavailable.
         """
         try:
-            logger.info(  # codeql[py/clear-text-logging-sensitive-data]
+            logger.info(
                 "Updating GitHub access scopes (grant_id: %s, scope_count: %d)",
                 _redact_identifier(secret_id) if secret_id else "<none>",
                 len(scopes) if scopes else 0,
@@ -534,7 +534,7 @@ class GitHubTokenProvider(TokenProvider):
             if resp.status_code in (200, 204):
                 logger.info(
                     "GitHub access scopes updated successfully."
-                )  # codeql[py/clear-text-logging-sensitive-data]
+                )
                 return True
             logger.warning(
                 "update_token_scopes(): GitHub API returned %d; scopes may not be updated.",

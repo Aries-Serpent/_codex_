@@ -42,12 +42,12 @@ def sanitize_for_logging(value: Any, max_length: int = 200) -> str:
         value: Input value to sanitize
         max_length: Maximum length of output (default: 200)
 
-    Returns:  # codeql[py/log-injection]
+    Returns:
         Sanitized string safe for logging
     """
     text = _ensure_str(value)
     # Remove newlines and control characters that could be used for log injection
-    sanitized = re.sub(r"[\r\n\t\x00-\x1f\x7f]", " ", text)  # codeql[py/log-injection]
+    sanitized = re.sub(r"[\r\n\t\x00-\x1f\x7f]", " ", text)
     # Truncate to reasonable length
     if len(sanitized) > max_length:
         sanitized = sanitized[:max_length] + "...[truncated]"

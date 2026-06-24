@@ -374,7 +374,7 @@ class TestCheckpointResumeErrorRecovery:
             readonly_dir.mkdir()
 
             # Make directory read-only
-            # codeql[py/overly-permissive-file] - intentional for testing permission errors
+           - intentional for testing permission errors
             os.chmod(readonly_dir, 0o444)
 
             ckpt_dir = readonly_dir / "checkpoint"
@@ -398,7 +398,7 @@ class TestCheckpointResumeErrorRecovery:
             # Restore permissions for cleanup
             readonly_dir_check = tmpdir / "readonly"
             if readonly_dir_check.exists():
-                # codeql[py/overly-permissive-file] - restoring normal permissions for cleanup
+               - restoring normal permissions for cleanup
                 os.chmod(readonly_dir_check, 0o755)
             shutil.rmtree(tmpdir, ignore_errors=True)
 

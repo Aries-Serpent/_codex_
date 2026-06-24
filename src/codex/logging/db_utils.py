@@ -112,7 +112,7 @@ def list_tables(con: sqlite3.Connection) -> list[str]:
 
 
 def get_columns(con: sqlite3.Connection, table: str) -> list[str]:
-    cur = con.execute(f"PRAGMA table_info({_sanitize_table(table)})")  # codeql[py/sql-injection]
+    cur = con.execute(f"PRAGMA table_info({_sanitize_table(table)})")
     return [r[1] for r in cur.fetchall()]
 
 

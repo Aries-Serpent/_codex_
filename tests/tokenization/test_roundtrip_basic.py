@@ -28,7 +28,7 @@ def test_roundtrip_basic(tmp_path):
         seed=123,
         workers=1,
     )
-    out = None  # codeql[py/uninitialized-local-variable] Assigned in try block, except branches skip test
+    out = None Assigned in try block, except branches skip test
     try:
         out = train(cfg)
     except OSError as exc:  # pragma: no cover - env missing sentencepiece
@@ -93,7 +93,7 @@ def test_cli_encode_decode_presence():
         pytest.skip("encode/decode helpers not exposed; skipping round-trip test")
 
     sample = "hello codex"
-    token_ids = None  # codeql[py/uninitialized-local-variable] Assigned in try block before use; except branches skip test
+    token_ids = None Assigned in try block before use; except branches skip test
     try:
         token_ids = encode_fn(sample, max_len=16, pad=True, trunc=True)
     except Exception as exc:
@@ -102,7 +102,7 @@ def test_cli_encode_decode_presence():
     # At this point, token_ids is guaranteed to be assigned (except branches skip test)
     assert isinstance(token_ids, (list, tuple)) and token_ids
 
-    decoded = None  # codeql[py/uninitialized-local-variable] Assigned in try block before use; except branches skip test
+    decoded = None Assigned in try block before use; except branches skip test
     try:
         decoded = decode_fn(token_ids)
     except Exception as exc:
