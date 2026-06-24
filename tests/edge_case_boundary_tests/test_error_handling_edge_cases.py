@@ -140,7 +140,7 @@ class TestResourceCleanup:
             resource2 = MagicMock()
             resource3 = MagicMock()
             raise Exception("Failure")
-        except Exception:
+        except Exception as _err:
             cleanup_order.append("resource3")
             cleanup_order.append("resource2")
             cleanup_order.append("resource1")

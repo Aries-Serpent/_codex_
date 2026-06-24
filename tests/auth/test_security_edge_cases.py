@@ -184,7 +184,7 @@ class TestTimingAttackPrevention:
         start = time.time()
         try:
             auth_system.token_manager.validate_token("invalid.token.format")
-        except Exception:
+        except (AttributeError, OSError, RuntimeError):
             pass
         time_invalid = time.time() - start
 
@@ -232,7 +232,7 @@ class TestResourceExhaustion:
         for i in range(20):
             try:
                 auth_system.change_password(user.user_id, "Str0ngPass!", f"NewPass{i}!")
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     def test_very_large_token_payload(self, auth_system):

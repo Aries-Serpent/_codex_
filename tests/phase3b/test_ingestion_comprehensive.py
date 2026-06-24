@@ -146,7 +146,7 @@ class TestFileIngestor:
             try:
                 content.decode("utf-8")
                 return "utf-8"
-            except Exception:
+            except Exception as _err:
                 return "latin-1"
 
         result = detect_encoding(b"hello")
@@ -174,7 +174,7 @@ class TestEncodingDetection:
             try:
                 data.decode("utf-8")
                 return "utf-8"
-            except Exception:
+            except Exception as _err:
                 return None
 
         result = detect_encoding(b"hello")
@@ -187,7 +187,7 @@ class TestEncodingDetection:
             try:
                 data.decode("latin-1")
                 return "latin-1"
-            except Exception:
+            except Exception as _err:
                 return None
 
         result = detect_encoding(b"\xc3\xa9")  # é in UTF-8
@@ -363,7 +363,7 @@ class TestDataValidation:
             try:
                 int(data)
                 return True
-            except Exception:
+            except Exception as _err:
                 return False
 
         assert is_valid_int("123") is True
@@ -409,7 +409,7 @@ class TestErrorHandling:
         def decode_safe(data, encoding):
             try:
                 return data.decode(encoding)
-            except Exception:
+            except Exception as _err:
                 return None
 
         result = decode_safe(b"\xff\xfe", "utf-8")
