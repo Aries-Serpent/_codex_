@@ -131,7 +131,7 @@ class RoutingCache:
     def get_cache_key(self, task_spec: TaskSpec) -> str:
         """Generate cache key from task specification."""
         key_data = f"{task_spec.task_type}|{task_spec.description}|{','.join(task_spec.required_capabilities)}"
-        return hashlib.md5(key_data.encode(), usedforsecurity=False).hexdigest()
+        return hashlib.md5(key_data.encode(), usedforsecurity=False).hexdigest()  # codeql[py/weak-crypto]
 
     def get(self, task_spec: TaskSpec) -> Optional[RoutingDecision]:
         """Get cached routing decision if not expired."""
