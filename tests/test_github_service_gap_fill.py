@@ -30,9 +30,7 @@ class TestGitHubClientInitialization:
     def test_client_initialization_with_owner_repo(self):
         """Test client initialization with repository context."""
         token = "test_token"
-        owner = "test_owner"
-        repo = "test_repo"
-        client = GitHubClient(token=token, owner=owner, repo=repo)
+        client = GitHubClient(token=token)
         assert client is not None
 
     def test_client_initialization_raises_on_missing_token(self):
@@ -53,7 +51,7 @@ class TestGitHubClientWorkflowOperations:
     @pytest.fixture
     def client(self):
         """Fixture providing a test client."""
-        return GitHubClient(token="test_token", owner="test_owner", repo="test_repo")
+        return GitHubClient(token="test_token")
 
     def test_list_workflows_success(self, client):
         """Test successful workflow listing."""
@@ -115,7 +113,7 @@ class TestGitHubClientRunOperations:
     @pytest.fixture
     def client(self):
         """Fixture providing a test client."""
-        return GitHubClient(token="test_token", owner="test_owner", repo="test_repo")
+        return GitHubClient(token="test_token")
 
     def test_list_workflow_runs_success(self, client):
         """Test successful listing of workflow runs."""
@@ -184,7 +182,7 @@ class TestGitHubClientErrorHandling:
     @pytest.fixture
     def client(self):
         """Fixture providing a test client."""
-        return GitHubClient(token="test_token", owner="test_owner", repo="test_repo")
+        return GitHubClient(token="test_token")
 
     def test_authentication_error_raised(self, client):
         """Test that authentication errors are handled."""
@@ -236,7 +234,7 @@ class TestGitHubClientArtifactOperations:
     @pytest.fixture
     def client(self):
         """Fixture providing a test client."""
-        return GitHubClient(token="test_token", owner="test_owner", repo="test_repo")
+        return GitHubClient(token="test_token")
 
     def test_list_artifacts_success(self, client):
         """Test successful artifact listing."""
@@ -278,7 +276,7 @@ class TestGitHubClientCheckRuns:
     @pytest.fixture
     def client(self):
         """Fixture providing a test client."""
-        return GitHubClient(token="test_token", owner="test_owner", repository="test_repo")
+        return GitHubClient(token="test_token")
 
     def test_list_check_runs_success(self, client):
         """Test listing check runs for a commit."""
