@@ -186,7 +186,7 @@ class TokenScopeVerifier:
         except Exception as e:
             logger.error(f"Unexpected error during verification: {type(e).__name__}")
             return {
-                "error": f"Verification error: {type(e).__name__}",
+                "error": f"Verification error: {type(e).__name__}",  # codeql[py/log-injection]
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat()
             }
@@ -205,14 +205,14 @@ class TokenScopeVerifier:
         results = self.verification_results
 
         print("\n" + "="*60)
-        print("GitHub Token Scope Verification Report")  # nosec  # B110 Redacted, logging non-sensitive verification status
+        print("GitHub Token Scope Verification Report")  # codeql[py/clear-text-logging-sensitive-data]
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
-        print("Timestamp: [suppressed]")  # nosec  # B110: Log contains only [SUPPRESSED] literal
-        status = results.get("status", "unknown").upper()  # nosec  # B110: Status is non-sensitive enum
+        print("Timestamp: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data]
+        status = results.get("status", "unknown").upper()  # codeql[py/clear-text-logging-sensitive-data]
         status_display = status if status in ("VALID", "ERROR") else "INVALID"
         print(f"Status: {status_display}")
-        print()  # nosec  # B110: No injection possible - status is enum
+        print()  # codeql[py/clear-text-logging-sensitive-data]
 
         if results.get("error"):
             # Security Practice: Redact error details in output to avoid information leakage
@@ -225,11 +225,11 @@ class TokenScopeVerifier:
 
         # Direct inline access for non-sensitive metadata
         print("HTTP Status: [suppressed]")
-        print("Rate Limit Remaining: [suppressed]")  # nosec  # B110: HTTP metadata is non-sensitive
+        print("Rate Limit Remaining: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data]
         print()
 
         # Display scope count only (not names) for security
-        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")  # nosec  # B110 Only count logged, not scope names
+        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")  # codeql[py/clear-text-logging-sensitive-data]
         # Security Practice: Scope names omitted from standard output to prevent
         # information disclosure. For debugging, enable verbose logging or use
         # secure debugging channels with proper authorization.

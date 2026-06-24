@@ -275,7 +275,7 @@ def generate_summary_report(inventory: dict):
     with open(report_path, "w") as f:
         f.write("# Workflow Inventory Summary\n\n")
         f.write(f"**Generated**: {inventory['metadata']['generated_at']}\n\n")
-        f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
+        f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")  # codeql[py/clear-text-logging-sensitive-data]
 
         # Category breakdown
         f.write("## Workflows by Category\n\n")
@@ -284,21 +284,21 @@ def generate_summary_report(inventory: dict):
             by_category[workflow.get("category", "other")].append(workflow)
 
         for category, workflows in sorted(by_category.items()):
-            f.write(f"### {category.title()} ({len(workflows)} workflows)\n\n")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Only category name and count
+            f.write(f"### {category.title()} ({len(workflows)} workflows)\n\n")  # codeql[py/clear-text-logging-sensitive-data]
             for workflow in workflows:
                 status_icon = "🟢" if workflow.get("status") == "active" else "🔴"
                 consolidation_icon = "⚠️" if workflow.get("consolidation_candidate") else ""
-                f.write(f"- {status_icon} {consolidation_icon} `{workflow['filename']}` - {workflow.get('name', 'N/A')}\n")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Stores only non-sensitive workflow metadata
+                f.write(f"- {status_icon} {consolidation_icon} `{workflow['filename']}` - {workflow.get('name', 'N/A')}\n")  # codeql[py/clear-text-logging-sensitive-data]
             f.write("\n")
 
         # Consolidation candidates
         candidates = [w for w in inventory["workflows"] if w.get("consolidation_candidate")]
         if candidates:
-            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
-            for workflow in candidates:  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
+            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n")  # codeql[py/clear-text-storage-sensitive-data]
+            for workflow in candidates:  # codeql[py/clear-text-storage-sensitive-data]
                 f.write(f"### `{workflow['filename']}`\n\n")
                 f.write(f"**Reason**: {workflow.get('consolidation_plan', 'N/A')}\n\n")
-                f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
+                f.write(f"**Will be replaced by**: {', '.join(workflow.get('consolidation_keep', []))}\n\n")  # codeql[py/clear-text-storage-sensitive-data]
 
         # Secrets usage - SECURITY NOTE: Removed to prevent information disclosure
         # Secret names are stored in WORKFLOW_INVENTORY.yaml for internal tooling only

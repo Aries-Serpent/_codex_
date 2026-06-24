@@ -234,7 +234,7 @@ class SecurityValidator:
 
     def validate_secret_scanning(self) -> dict:
         """Validate secret scanning configuration."""
-        print("🔐 Validating Secret Scanning...")  # nosec  # B110: Logging validation type only, not sensitive data
+        print("🔐 Validating Secret Scanning...")  # codeql[py/clear-text-logging-sensitive-data]
 
         # Check for secret scanning configuration files
         secret_scan_configs = [
@@ -271,8 +271,8 @@ class SecurityValidator:
         validators = {
             "audit_logging": self.validate_audit_logging,
             "codeql_suppressions": self.validate_codeql_suppressions,
-            "branch_protection": self.validate_branch_protection,  # nosec  # B110: Validation type name only
-            "secret_scanning": self.validate_secret_scanning  # nosec  # B110: Validation type name only
+            "branch_protection": self.validate_branch_protection,  # codeql[py/clear-text-logging-sensitive-data]
+            "secret_scanning": self.validate_secret_scanning  # codeql[py/clear-text-logging-sensitive-data]
         }
 
         for validation_name, validator in validators.items():

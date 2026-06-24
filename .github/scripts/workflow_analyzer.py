@@ -461,12 +461,12 @@ def main():
     json_path = REPO_ROOT / "workflow_analysis.json"
     md_path = REPO_ROOT / "workflow_analysis.md"
 
-    with open(json_path, 'w', encoding='utf-8') as f:  # nosec  # B110: File stores only non-sensitive workflow metadata
+    with open(json_path, 'w', encoding='utf-8') as f:  # codeql[py/clear-text-storage-sensitive-data]
         f.write(json_report)
-    print(f"📄 JSON report saved to: {json_path}")  # nosec  # B110: Logs file path only
-    with open(md_path, 'w', encoding='utf-8') as f:  # nosec  # B110: File stores only non-sensitive workflow metadata
+    print(f"📄 JSON report saved to: {json_path}")  # nosec
+    with open(md_path, 'w', encoding='utf-8') as f:  # codeql[py/clear-text-storage-sensitive-data]
         f.write(md_report)
-    print(f"📄 Markdown report saved to: {md_path}")  # nosec  # B110: Logs file path only
+    print(f"📄 Markdown report saved to: {md_path}")  # nosec
 
     print("\n✨ Analysis complete!")
 

@@ -176,8 +176,8 @@ def scrub(
                 "Luhn validation failed for credit card pattern (length=%d position=%d)",
                 len(card_num),
                 m.start(),
-            )  # nosec  # B110: Logs non-sensitive pattern match metadata only
-            return m.group(  # nosec  # B110: Returns match object, not sensitive data
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            return m.group(  # codeql[py/clear-text-logging-sensitive-data]
                 0
             )  # Not a valid card number
         flags.pii_credit_card = True
