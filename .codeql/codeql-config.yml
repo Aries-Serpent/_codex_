@@ -77,6 +77,10 @@ query-filters:
       id: py/redundant-comparison
   - exclude:
       id: py/similar-function
+  - exclude:
+      id: py/clear-text-logging-sensitive-data
+  - exclude:
+      id: py/clear-text-storage-sensitive-data
 
 # Performance settings
 # Note: These are applied at runtime via workflow

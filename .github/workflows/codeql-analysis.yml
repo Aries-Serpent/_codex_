@@ -58,6 +58,7 @@ jobs:
           languages: ${{ matrix.language }}
           # Use default queries plus security-extended
           queries: +security-extended
+          config: .codeql/codeql-config.yml
 
       # Autobuild for compiled languages
       - name: Autobuild
