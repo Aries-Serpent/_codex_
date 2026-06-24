@@ -82,7 +82,7 @@ def _write_markdown(path: Path, data: dict[str, object]) -> None:
     lines.append("| ---- | ------- | ------- |")
     for f in findings:
         lines.append(f"| `{f.get('file')}` | <redacted> | <redacted> |")
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
 
 
 def main(argv: list[str] | None = None) -> int:
