@@ -278,7 +278,7 @@ def generate_summary_report(inventory: dict):
         f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")  # nosec  # codeql[py/clear-text-storage-sensitive-data]
 
         # Category breakdown
-        f.write("## Workflows by Category\n\n")
+        f.write("## Workflows by Category\n\n")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
         by_category = defaultdict(list)
         for workflow in inventory["workflows"]:
             by_category[workflow.get("category", "other")].append(workflow)

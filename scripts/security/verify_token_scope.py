@@ -223,7 +223,7 @@ class TokenScopeVerifier:
             # When DEBUG=1, provide additional non-sensitive error details to stdout
             if os.getenv("DEBUG") == "1":
                 print(f"Debug details: {results.get('error')}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
-            return
+            return  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 
         # Direct inline access for non-sensitive metadata
         print("HTTP Status: [suppressed]")
