@@ -69,9 +69,8 @@ def _write_json(path: Path, data: dict[str, object]) -> None:
 
 def _write_markdown(path: Path, data: dict[str, object]) -> None:
     raw_findings = data.get("findings", []) or []
-    # Sanitize: replace raw snippet content with sentinel before persisting
-    # to avoid clear-text storage of credential patterns (CodeQL HIGH).
-    findings = [{**f, "snippet": "<redacted>"} for f in raw_findings]
+    # Sanitize for persistence: never store dynamic pattern/snippet content.
+    findings = [{**f, "pattern": "<redacted>", "snippet": "<redacted>"} for f in raw_findings]
     lines: list[str] = []
     lines.append("# `_codex_` Secret Scan Stub\n")  # codeql[py/clear-text-storage-sensitive-data] Static header text only
     lines.append(f"- Total findings: **{data.get('total_findings', 0)}**\n")
@@ -82,8 +81,8 @@ def _write_markdown(path: Path, data: dict[str, object]) -> None:
     lines.append("| File | Pattern | Snippet |")
     lines.append("| ---- | ------- | ------- |")
     for f in findings:
-        lines.append(f"| `{f.get('file')}` | {f.get('pattern')} | {f.get('snippet','')[:80]} |")  # codeql[py/clear-text-storage-sensitive-data] Snippet is already redacted
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")  # codeql[py/clear-text-storage-sensitive-data] pragma: allowlist secret
+        lines.append(f"| `{f.get('file')}` | <redacted> | <redacted> |")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main(argv: list[str] | None = None) -> int:
