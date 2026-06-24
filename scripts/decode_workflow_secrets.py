@@ -214,9 +214,9 @@ Examples:
     # Handle single decode
     if args.encoded:
         decoded = decode_secret_name(args.encoded)
-        # Security: show only a masked fingerprint — CodeQL py/clear-text-logging-sensitive-data  # nosec  # B110 Logs only count, not values
+        # Security: show only a masked fingerprint — CodeQL py/clear-text-logging-sensitive-data
         _decoded_fp = (str(decoded)[:8] + "…") if decoded else "<none>"
-        print(f"Decoded: {_decoded_fp}")  # nosec  # nosec  # B110
+        print(f"Decoded: {_decoded_fp}")  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     # Handle token listing (safe, no decoding)

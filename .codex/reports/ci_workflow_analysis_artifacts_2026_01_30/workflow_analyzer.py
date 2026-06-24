@@ -499,8 +499,8 @@ def main():
         f.write(json_report)
     print(f"📄 JSON report saved to: {json_path}")
 
-    with open(md_path, "w", encoding="utf-8") as f:  # nosec  # B110: Markdown report stores only non-sensitive workflow metadata
-        f.write(md_report)  # nosec  # B110: Report content contains only non-sensitive data
+    with open(md_path, "w", encoding="utf-8") as f:  # codeql[py/clear-text-storage-sensitive-data]
+        f.write(md_report)  # codeql[py/clear-text-storage-sensitive-data]
     print(f"📄 Markdown report saved to: {md_path}")
 
     print("\n✨ Analysis complete!")

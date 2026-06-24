@@ -158,16 +158,16 @@ class AdminAutomationAgent:
         # Security: Use a masked fingerprint to prevent clear-text logging of any
         # residual sensitive content — CodeQL py/clear-text-logging-sensitive-data.
         # The full sanitized message is already stored in task_result above.
-        # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Fingerprint is first 8 chars only
+        # Fingerprint is first 8 chars only
         _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
         if status == "success":
-            logger.info("✅ Task completed: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Only logs masked fingerprint
+            logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
         elif status == "error":
-            logger.error("❌ Task error: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Only logs masked fingerprint
+            logger.error("❌ Task error: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
         elif status == "warning":
-            logger.warning("⚠️  Task warning: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Only logs masked fingerprint
+            logger.warning("⚠️  Task warning: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            logger.info("ℹ️  Task info: %s", _msg_fp)  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
+            logger.info("ℹ️  Task info: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
 
     # ====================================================================
     # TASK 1: Setup Phase 10 (Automated)
