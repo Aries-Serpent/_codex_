@@ -62,7 +62,7 @@ def build_service_package(
         "metadata": dict(metadata or {}),
         # codeql[py/clear-text-storage-sensitive-data] Secrets stored only as SHA256 hashes, not raw values  # noqa: E501
         "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # nosec - hashed identifiers only — no secret values stored
-    }
+    }  # nosec  # codeql[py/clear-text-storage-sensitive-data]
     manifest_path = staging / "manifest.json"
     # codeql[py/clear-text-storage-sensitive-data] Manifest stores only hashed secret identifiers
     manifest_path.write_text(

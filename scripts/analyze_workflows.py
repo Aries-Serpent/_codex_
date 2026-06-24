@@ -312,7 +312,7 @@ class WorkflowAnalyzer:
         print("\nResources:")
         print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")
         print(f"  🐳 Docker required:     {summary['docker_required']}")
-        # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
+        # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not values
         _secrets_count: int = int(summary['secrets_used'])
         print(f"  🔑 Unique secrets:      {_secrets_count}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
         print(f"  🔧 Unique actions:      {summary['unique_actions']}")

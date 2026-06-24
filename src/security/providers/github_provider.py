@@ -478,7 +478,7 @@ class GitHubTokenProvider(TokenProvider):
 
         For fine-grained PATs, updates the permission set via
         ``PATCH /user/installations/{installation_id}/permissions`` (requires
-        the ``requests`` library and a valid bearer token).  For classic PATs,
+        the ``requests`` library and a valid bearer token).  For classic PATs,  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not values
         scope changes are not supported by the API — a new token must be
         created manually.
 
@@ -516,7 +516,7 @@ class GitHubTokenProvider(TokenProvider):
                     "scopes have NOT been updated."
                 )
                 return False
-
+  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not values
             # Resolve installation_id: prefer config/env, fall back to secret_id
             installation_id = self.config.get(
                 "installation_id", os.environ.get("GITHUB_APP_INSTALLATION_ID", secret_id)

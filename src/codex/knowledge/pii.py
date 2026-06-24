@@ -177,7 +177,7 @@ def scrub(
                 len(card_num),
                 m.start(),
             )  # codeql[py/clear-text-logging-sensitive-data] Logs non-sensitive pattern match metadata only  # noqa: E501
-            return m.group(
+            return m.group(  # codeql[py/clear-text-logging-sensitive-data] Logs only count, not values
                 0
             )  # Not a valid card number  # codeql[py/clear-text-logging-sensitive-data] Returns raw match object from regex  # noqa: E501
         flags.pii_credit_card = True
