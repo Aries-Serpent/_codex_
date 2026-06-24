@@ -95,10 +95,19 @@ AGENT_CAPABILITIES: dict[str, list[ImprovementArea]] = {
     # CI / Workflow
     "ci-failure-resolution-agent": [ImprovementArea.CI_SELF_HEALING],
     "ci-auto-healer-agent": [ImprovementArea.CI_SELF_HEALING],
+    "ci-testing-agent": [ImprovementArea.CI_SELF_HEALING],
+    "ci-health-alert-agent": [ImprovementArea.CI_SELF_HEALING],
     "workflow-health-monitor": [ImprovementArea.WORKFLOW_HEALTH],
     "workflow-ci-fixer": [ImprovementArea.WORKFLOW_HEALTH],
     "workflow-analytics-agent": [ImprovementArea.WORKFLOW_HEALTH],
     "workflow-optimization-agent": [ImprovementArea.WORKFLOW_HEALTH],
+    # D_CAPABLE Agents (Decision Authority)
+    "rust-error-validator": [ImprovementArea.CI_SELF_HEALING],
+    "test-assertion-updater": [ImprovementArea.TEST_ASSERTION_UPDATE],
+    "test-pattern-guardian": [ImprovementArea.TEST_ASSERTION_UPDATE],
+    "copilot-session-chain": [ImprovementArea.AGENT_CHAINING],
+    "packaging-validation-agent": [ImprovementArea.DEPENDENCY_MODERNISATION],
+    "energy-conversion-agent": [ImprovementArea.ML_PATTERN_FEEDING],
     # Cache
     "cache-management-agent": [ImprovementArea.CACHE_VALIDATION],
     "cache-manager-integration": [ImprovementArea.CACHE_VALIDATION],
