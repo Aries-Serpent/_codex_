@@ -21,6 +21,10 @@ on:
         type: boolean
         default: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 env:
   VERIFICATION_DIR: .codex/verification-results
 
@@ -71,6 +75,7 @@ jobs:
 
   verify-service-startup:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: setup
     steps:
       - name: Checkout
@@ -101,6 +106,7 @@ jobs:
 
   health-checks:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: setup
     outputs:
       health_status: ${{ steps.health.outputs.health_status }}

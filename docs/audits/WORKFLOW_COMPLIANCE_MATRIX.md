@@ -1,9 +1,5 @@
 # Workflow Compliance Matrix
-> Generated: Phase 0 audit (WU-0.1) | 198 workflows scanned
-## Table of Contents
-
-- [KPI Summary](#kpi-summary)
-
+> Generated: Phase 0 audit (WU-0.1) | 205 workflows scanned
 
 | Workflow | Concurrency | Timeout | Cascade Risk | Base-Ref Fetch | Enforcement Tier | Notes |
 |----------|:-----------:|:-------:|:------------:|:--------------:|:----------------:|-------|
@@ -49,6 +45,8 @@
 | `ci-failure-issue-creator` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `ci-health-monitor` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `ci-pass-rate-gate` | ✅ | ✅ | ✅ | N/A | SOFT | — |
+| `ci-pattern-healer` | ✅ | ✅ | ✅ | N/A | SOFT | — |
+| `ci-pattern-prevention-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `ci-rescue` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `cleanup-stale-branches` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `cleanup-stale-pr-comments` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -66,6 +64,7 @@
 | `cognitive_brain_ci_feedback` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `coherence-snapshot` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `comment-review-gate` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `consistency-checks` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `consolidated-pr-status` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `container-scan` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `copilot-agent-checkin` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
@@ -95,7 +94,7 @@
 | `detect-duplicates` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `discussion-cleanup` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `discussion-response-bridge` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
-| `doc-freshness-check` | ✅ | ✅ | ✅ | N/A | SOFT | — |
+| `doc-freshness-check` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `doc-refresh-gate` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `docker-build-push` | ✅ | ❌ | ✅ | N/A | GROUNDED | — |
 | `docs-code-alignment` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
@@ -181,6 +180,8 @@
 | `semgrep_sarif` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `session-context-capture` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `session-incremental-summary-reminder` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
+| `session-recovery-continuous-monitoring` | ❌ | ✅ | ✅ | N/A | PARTIAL | — |
+| `session-recovery-handler` | ❌ | ✅ | ✅ | N/A | SOFT | — |
 | `session-watchdog` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `sigstore-verify` | ✅ | ✅ | ✅ | N/A | SOFT | — |
 | `slo-canary-check` | ✅ | ✅ | ✅ | N/A | SOFT | — |
@@ -196,6 +197,8 @@
 | `trigger-on-approval` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
 | `unified-deployment` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `unified-governance-check` | ✅ | ✅ | ✅ | N/A | PARTIAL | — |
+| `validate-api-null-handling` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
+| `validate-code-examples` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `validate-token-health` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
 | `validate` | ✅ | ✅ | ✅ | N/A | SOFT | ⚠️ Cross-branch diff without explicit base-ref fetch |
 | `vars-guide-sync` | ✅ | ✅ | ✅ | N/A | GROUNDED | — |
@@ -209,9 +212,9 @@
 ## KPI Summary
 | KPI | Count |
 |-----|-------|
-| GROUNDED workflows     | 66 |
-| PARTIAL workflows      | 38 |
-| SOFT workflows         | 94 |
+| GROUNDED workflows     | 70 |
+| PARTIAL workflows      | 40 |
+| SOFT workflows         | 95 |
 | Cascade risk           | 0 |
-| Missing concurrency    | 6 |
+| Missing concurrency    | 8 |
 | Missing timeout        | 13 |

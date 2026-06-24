@@ -26,6 +26,8 @@ permissions:
 jobs:
   check-t03:
     name: "Check T-03 \u2014 security_events scope"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     uses: ./.github/workflows/admin-action-notifier.yml
     secrets: inherit  # pragma: allowlist secret
     with:
