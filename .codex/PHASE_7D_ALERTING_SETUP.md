@@ -338,7 +338,7 @@ escalation_policy:
 ```yaml
 # alertmanager configuration
 slack_configs:
-  - api_url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+  - api_url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL' <!-- pragma: allowlist secret -->
     channel: '#alerts-prod'
     title: '{{ .GroupLabels.alertname }}'
     title_link: 'http://grafana:3000/alerting/list'

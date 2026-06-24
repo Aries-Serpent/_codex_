@@ -221,7 +221,7 @@ The workflow requires this secret for Slack notifications:
 5. Add to GitHub as secret: `SLACK_WEBHOOK_URL`
 
 ```bash
-gh secret set SLACK_WEBHOOK_URL -b "https://hooks.slack.com/services/..."
+gh secret set SLACK_WEBHOOK_URL -b "https://hooks.slack.com/services/..." <!-- pragma: allowlist secret -->
 ```
 
 ## Integration Points
@@ -357,7 +357,7 @@ curl -I http://api.example.com
      --data '{"text":"test"}' \
      $SLACK_WEBHOOK_URL
    ```
-3. Check webhook URL format: should start with `https://hooks.slack.com/`
+3. Check webhook URL format: should start with `https://hooks.slack.com/` <!-- pragma: allowlist secret -->
 4. Update secret if needed: `gh secret set SLACK_WEBHOOK_URL`
 
 ### Artifacts Not Available
