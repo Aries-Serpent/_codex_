@@ -162,11 +162,11 @@ print("**Runners**:")
 for runner, count in sorted(runner_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
     print(f"- `{runner}`: {count} critical workflows")
 
-print("\n**Most Common Secrets**:")  # nosec  # B110 Header text only, non-sensitive
+print("\n**Most Common Secrets**:")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Header text only, non-sensitive
 for secret, count in sorted(secrets_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
     # Security: mask secret name to prevent clear-text logging — CodeQL py/clear-text-logging-sensitive-data  # nosec  # B110 Logs only count, not values
     _secret_fp = (str(secret)[:8] + "…") if secret else "<none>"
-    print(f"- `{_secret_fp}`: {count} critical workflows")  # nosec  # nosec  # B110
+    print(f"- `{_secret_fp}`: {count} critical workflows")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110
 
 print()
 print("\n## Recommended Action Plan\n")

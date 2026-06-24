@@ -398,7 +398,7 @@ def action_runner_registration_token(
     masked = _mask(token)
     # Security: Never log full tokens, only masked version
     print(
-        json.dumps(  # nosec  # B110 Token is masked; only masked version and expires_at logged
+        json.dumps(  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # B110 Token is masked; only masked version and expires_at logged
             {"token_masked": masked, "expires_at": data.get("expires_at")}, indent=2
         )
     )
