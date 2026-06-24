@@ -40,6 +40,8 @@ jobs:
         fi\n"
   generate-sbom:
     name: Generate SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: validate
     uses: ./.github/workflows/sbom.yml
     permissions:

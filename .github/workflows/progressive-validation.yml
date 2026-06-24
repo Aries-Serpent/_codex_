@@ -19,6 +19,8 @@ permissions:
   contents: read
 jobs:
   analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     uses: ./.github/workflows/pr-size-analyzer.yml
     permissions:
       contents: read

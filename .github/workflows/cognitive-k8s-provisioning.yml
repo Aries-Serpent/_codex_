@@ -22,6 +22,10 @@ on:
           - gcp
           - azure
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   query-patterns:
     name: Query K8s Patterns
@@ -57,6 +61,7 @@ jobs:
     name: Validate Configuration
     needs: query-patterns
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -86,6 +91,7 @@ jobs:
     name: Estimate Costs
     needs: query-patterns
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v5

@@ -16,6 +16,10 @@ permissions:
   checks: read
   actions: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   monitor-recovery-status:
     name: Monitor Session Recovery Status
