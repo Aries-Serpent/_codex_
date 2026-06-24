@@ -1187,3 +1187,14 @@ and the CI gate requirement.
 - **Justification:** All flagged code paths contain appropriate sanitization, hashing, or redaction of sensitive data before logging/storage
 - **Expected Outcome:** Remaining CodeQL alerts should be resolved or properly justified
 
+
+### Workflow Compliance Violations Resolution (Commit 5bd9a98d)
+- **Status:** ✅ COMPLETE
+- **Issues Fixed:** 21 compliance violations across 17 workflows
+- **Categories:**
+  - Concurrency blocks: 8 workflows
+  - Timeout-minutes: 13 workflows with 27 timeouts
+- **Total Workflow Coverage:** 205 workflows now compliant
+- **Pattern Applied:** GitHub Actions best practices for concurrency and timeouts
+- **Expected Outcome:** ⚙️ Workflow Compliance Check passes with 0 violations
+
