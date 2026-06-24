@@ -15,13 +15,17 @@ import sys
 from typing import Optional
 
 
-def run_gh_api(query: str, jq_filter: Optional[str] = None) -> tuple:
+def run_gh_api(query: str, jq_filter: Optional[str] = None) -> str:
     """
     Execute GitHub API query and optionally filter with jq.
     
+    Args:
+        query: GitHub API query string (space-separated path)
+        jq_filter: Optional jq filter to apply to output
+    
     Returns:
-        Tuple of (success: bool, output: str)
-        
+        API response output as string
+    
     Raises:
         RuntimeError: If GitHub API call fails
     """

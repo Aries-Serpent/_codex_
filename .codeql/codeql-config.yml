@@ -77,8 +77,11 @@ query-filters:
       id: py/redundant-comparison
   - exclude:
       id: py/similar-function
+  # Exclude false-positive rules that trigger on masked data:
+  # py/clear-text-logging-sensitive-data logs only masked fingerprints (first 8 chars + '...')
   - exclude:
       id: py/clear-text-logging-sensitive-data
+  # py/clear-text-storage-sensitive-data stores only non-sensitive metadata (workflow names, counts)
   - exclude:
       id: py/clear-text-storage-sensitive-data
 

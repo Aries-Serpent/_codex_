@@ -37,7 +37,7 @@ def filter_sarif(sarif_path: str, output_path: Optional[str] = None) -> int:
         output_path: Path to write filtered SARIF (defaults to input path)
     
     Returns:
-        Number of results removed (>= 0), or raises ValueError on error
+        Number of results removed (>= 0)
     
     Raises:
         FileNotFoundError: If SARIF file not found
@@ -105,12 +105,12 @@ def _is_excluded_result(result: dict) -> bool:
     return False
 
 
-def filter_directory(sarif_dir: str) -> int:
+def filter_directory(directory_path: str) -> int:
     """
     Filter all SARIF files in a directory.
     
     Args:
-        sarif_dir: Directory containing SARIF files
+        directory_path: Directory containing SARIF files
     
     Returns:
         Total number of results removed
@@ -118,15 +118,15 @@ def filter_directory(sarif_dir: str) -> int:
     Raises:
         ValueError: If directory not found or processing fails
     """
-    sarif_path = Path(sarif_dir)
+    sarif_path = Path(directory_path)
     if not sarif_path.is_dir():
-        raise ValueError(f"SARIF directory not found: {sarif_dir}")
+        raise ValueError(f"SARIF directory not found: {directory_path}")
     
     total_removed = 0
     sarif_files = list(sarif_path.glob('*.sarif'))
     
     if not sarif_files:
-        print(f"No SARIF files found in {sarif_dir}", file=sys.stderr)
+        print(f"No SARIF files found in {directory_path}", file=sys.stderr)
         return 0
     
     for sarif_file in sarif_files:
