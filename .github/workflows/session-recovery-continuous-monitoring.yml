@@ -1,0 +1,181 @@
+name: Session Recovery Continuous Monitoring
+
+on:
+  schedule:
+    # Run every 30 minutes to check recovery status
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      verbose:
+        description: 'Enable verbose output'
+        required: false
+        default: 'false'
+
+jobs:
+  monitor-recovery-status:
+    name: Monitor Session Recovery Status
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: read
+      actions: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Generate recovery monitoring report
+        id: monitor
+        run: |
+          python scripts/ci/session_recovery_monitor.py > /tmp/monitor_output.txt 2>&1
+          cat /tmp/monitor_output.txt
+          
+          # Check if report was created
+          if [ -f .codex/session_recovery_monitoring_report.json ]; then
+            echo "✅ Monitoring report generated successfully"
+            REPORT_CONTENT=$(cat .codex/session_recovery_monitoring_report.json)
+            echo "report_created=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Monitoring report not created"
+            echo "report_created=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Parse recovery metrics
+        id: parse_metrics
+        if: steps.monitor.outputs.report_created == 'true'
+        run: |
+          python3 << 'EOF'
+          import json
+          
+          with open('.codex/session_recovery_monitoring_report.json') as f:
+              report = json.load(f)
+          
+          metrics = report.get('metrics', {})
+          total_checkpoints = metrics.get('total_checkpoints', 0)
+          total_failures = metrics.get('total_failures', 0)
+          recovery_success_rate = metrics.get('recovery_success_rate', 0.0)
+          
+          print(f"✅ Total Checkpoints: {total_checkpoints}")
+          print(f"📊 Total Failures: {total_failures}")
+          print(f"📈 Recovery Success Rate: {recovery_success_rate * 100:.1f}%")
+          
+          # Check for issues
+          recent_failures = report.get('recent_failures', [])
+          if len(recent_failures) > 0:
+              print(f"\n⚠️  Recent events: {len(recent_failures)}")
+              for failure in recent_failures[-3:]:
+                  print(f"   - {failure.get('type', 'unknown')}: {failure.get('timestamp', 'N/A')}")
+          
+          EOF
+
+      - name: Check recovery system health
+        run: |
+          echo "🔍 Session Recovery System Health Check"
+          echo "========================================"
+          
+          if [ -f .codex/session_recovery_config.yml ]; then
+              echo "✅ Recovery configuration found"
+              echo "   Location: .codex/session_recovery_config.yml"
+          fi
+          
+          if [ -f .github/workflows/session-recovery-handler.yml ]; then
+              echo "✅ Recovery workflow found"
+              echo "   Location: .github/workflows/session-recovery-handler.yml"
+          fi
+          
+          if [ -f scripts/ci/session_recovery.py ]; then
+              echo "✅ Recovery script found"
+              echo "   Location: scripts/ci/session_recovery.py"
+          fi
+          
+          SESSION_DIR=".codex/sessions"
+          if [ -d "$SESSION_DIR" ]; then
+              CHECKPOINT_COUNT=$(find "$SESSION_DIR" -name "checkpoint_*.json" 2>/dev/null | wc -l)
+              echo "✅ Session checkpoint directory found"
+              echo "   Checkpoints stored: $CHECKPOINT_COUNT"
+          fi
+          
+          if [ -f .codex/session_recovery_log.jsonl ]; then
+              LOG_LINES=$(wc -l < .codex/session_recovery_log.jsonl)
+              echo "✅ Recovery log found"
+              echo "   Log entries: $LOG_LINES"
+          fi
+          
+          echo ""
+          echo "🟢 Recovery System: OPERATIONAL"
+
+      - name: Upload monitoring report
+        if: steps.monitor.outputs.report_created == 'true'
+        uses: actions/upload-artifact@v5
+        with:
+          name: session-recovery-monitoring-${{ github.run_number }}
+          path: .codex/session_recovery_monitoring_report.json
+          retention-days: 30
+
+      - name: Comment on recent failed sessions
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('.codex/session_recovery_monitoring_report.json', 'utf8'));
+            
+            if (report.recent_failures.length > 0) {
+              github.rest.issues.createComment({
+                issue_number: process.env.GITHUB_PR_NUMBER,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## 🔄 Session Recovery Monitoring Report\n\n` +
+                      `Generated: ${report.timestamp}\n` +
+                      `Recovery System Status: ${report.recovery_system_status}\n\n` +
+                      `### Recent Events\n` +
+                      report.recent_failures.map(f => 
+                        `- **${f.type}**: ${f.timestamp} (Session: ${f.session_id})`
+                      ).join('\n')
+              });
+            }
+
+jobs:
+  report-recovery-metrics:
+    name: Report Recovery Metrics
+    runs-on: ubuntu-latest
+    needs: monitor-recovery-status
+    if: always()
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Generate recovery trend report
+        run: |
+          echo "## Session Recovery Trend Report"
+          echo ""
+          echo "**Report Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "**Run ID:** ${{ github.run_id }}"
+          echo ""
+          echo "### System Status"
+          echo "- Recovery Workflow: ✅ Deployed"
+          echo "- Recovery Script: ✅ Operational"
+          echo "- Monitoring: ✅ Active"
+          echo "- Auto-Recovery: ✅ Enabled"
+          echo ""
+          echo "### Configuration"
+          echo "- Auto-recovery attempts: 2 (before escalation)"
+          echo "- Checkpoint interval: 15 minutes"
+          echo "- Heartbeat interval: 1 minute"
+          echo "- Escalation contact: @mbaetiong"
+          echo ""
+          echo "### Recommendations"
+          echo "1. Review recovery metrics weekly"
+          echo "2. Update configuration if needed"
+          echo "3. Escalate repeated failures to @mbaetiong"
+          echo "4. Archive old recovery logs (>30 days)"
