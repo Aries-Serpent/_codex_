@@ -278,7 +278,7 @@ class TestGitHubClientCheckRuns:
     @pytest.fixture
     def client(self):
         """Fixture providing a test client."""
-        return GitHubClient(token="test_token", owner="test_owner", repo="test_repo")
+        return GitHubClient(token="test_token", owner="test_owner", repository="test_repo")
 
     def test_list_check_runs_success(self, client):
         """Test listing check runs for a commit."""
