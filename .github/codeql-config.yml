@@ -8,6 +8,7 @@ paths:
   - src
   - tests
   - scripts
+  - .github
 
 paths-ignore:
   # Exclude temporary and build artifacts
@@ -22,8 +23,11 @@ paths-ignore:
   - '.codex/archive/**'
   - '.codex/reports/**'
   - '.github/workflows/archive/**'
+  - '.github/workflow-archive/**'
+  - '.github/misc/**'
+  - '.github/workflows.backup.*/**'
 
-# Query filters for CodeQL analysis
+# Query filters and customization
 queries:
   # Include security and quality queries
   - uses: security-and-quality
