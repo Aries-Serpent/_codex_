@@ -51,7 +51,7 @@ jobs:
         id: parse_metrics
         if: steps.monitor.outputs.report_created == 'true'
         run: |
-          python3 << 'EOF'
+          python3 << 'PYTHON_EOF'
           import json
           
           with open('.codex/session_recovery_monitoring_report.json') as f:
@@ -73,7 +73,7 @@ jobs:
               for failure in recent_failures[-3:]:
                   print(f"   - {failure.get('type', 'unknown')}: {failure.get('timestamp', 'N/A')}")
           
-          EOF
+          PYTHON_EOF
 
       - name: Check recovery system health
         run: |
@@ -142,7 +142,6 @@ jobs:
               });
             }
 
-jobs:
   report-recovery-metrics:
     name: Report Recovery Metrics
     runs-on: ubuntu-latest
