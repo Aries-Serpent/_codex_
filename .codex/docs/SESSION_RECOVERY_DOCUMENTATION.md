@@ -105,7 +105,7 @@ python scripts/ci/session_recovery.py checkpoint --session-id 70e4f346-d908-43ef
 ```json
 {
   "timestamp": "2026-06-23T22:57:43Z",
-  "session_id": "70e4f346-d908-43ef-a628-7697b5d4e099",
+  "session_id": "70e4f346-d908-43ef-a628-7697b5d4e099", <!-- pragma: allowlist secret -->
   "checkpoint_type": "manual",
   "git_branch": "copilot/create-implementation-plan",
   "git_commit": "92b60067020a0a8675fa6daacd0c125bb43d3efb",
