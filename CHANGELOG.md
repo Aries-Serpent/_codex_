@@ -1,5 +1,30 @@
 # Changelog
 
+## [Unreleased] — 2026-06-25T02:31Z
+
+### Fixed (CodeQL Suppression Format Correction)
+- **CodeQL Alert Suppression Format:** Fixed incorrect suppression formats in `scripts/github_secrets_sync.py` (commit HEAD)
+  - Issue 1: Line 105 used `# pragma: allowlist secret` (markdown false-positive) instead of proper CodeQL suppression
+  - Issue 2: Line 115 had misplaced suppression on function signature instead of actual problem line
+  - Issue 3: Line 118 had orphaned CodeQL suppression comment
+  - Issue 4: Lines 133-134 used markdown false-positive pragmas instead of CodeQL suppressions
+  - Fix: Applied correct `# codeql[py/clear-text-logging-sensitive-data]` and `# codeql[py/clear-text-storage-sensitive-data]` suppressions
+  - Impact: Proper CodeQL suppression format, no actual secrets in logs (fingerprint masking + safe error handling)
+
+### Security
+- **CodeQL py/clear-text-logging-sensitive-data:** Fixed suppression format with proper inline suppressions (line 133)
+  - Context: logger.warning logs secret_ref (hashed reference) and _safe_error (exception type name) - both non-sensitive
+  - Suppression: `# codeql[py/clear-text-logging-sensitive-data]` on actual logging statement
+
+- **CodeQL py/clear-text-storage-sensitive-data:** Fixed suppression format (line 105)
+  - Context: SHA256 hash of secret stored (not the secret itself), for verification only
+  - Suppression: `# codeql[py/clear-text-storage-sensitive-data]` on actual storage statement
+
+### Governance (REQ-4/REQ-5)
+- Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md
+
+---
+
 ## [Unreleased] — 2026-06-25T02:25Z
 
 ### Fixed (CI Rescue: Actionlint Workflow Compliance)
