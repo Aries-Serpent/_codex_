@@ -19,8 +19,8 @@ except (ImportError, AttributeError):
     pytest.skip("typer package not available", allow_module_level=True)
 
 
-ROOT = Path(__file__).resolve().parents[2]
-SRC_PATH = ROOT / "src"
+_ROOT = Path(__file__).resolve().parents[2]
+SRC_PATH = _ROOT / "src"
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
