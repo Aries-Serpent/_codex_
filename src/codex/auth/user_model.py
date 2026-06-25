@@ -42,12 +42,21 @@ class User:
     id: Optional[str] = None
 
     def __post_init__(self) -> None:
-        if self.user_id is None and self.id is not None:
-            self.user_id = self.id
-        elif self.user_id is None:
-            self.user_id = ""
-        if self.id is None:
-            self.id = self.user_id
+        resolved_user_id = self.user_id if self.user_id is not None and self.user_id != "" else None
+        resolved_id = self.id if self.id is not None and self.id != "" else None
+
+        if resolved_user_id is None and resolved_id is None:
+            raise ValueError("At least one identifier (user_id or id) must be provided")
+        if resolved_user_id is not None and resolved_id is not None and resolved_user_id != resolved_id:
+            raise ValueError("user_id and id must match when both are provided")
+
+        if resolved_user_id is None:
+            resolved_user_id = resolved_id
+        if resolved_id is None:
+            resolved_id = resolved_user_id
+
+        self.user_id = resolved_user_id
+        self.id = resolved_id
 
     # ------------------------------------------------------------------ #
     # Convenience                                                          #

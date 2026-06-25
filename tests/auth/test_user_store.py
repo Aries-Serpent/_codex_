@@ -100,6 +100,20 @@ class TestUser:
         ):
             assert key in d
 
+    def test_requires_identifier(self):
+        with pytest.raises(ValueError, match="At least one identifier"):
+            User(username="alice", email="alice@example.com", password_hash="x:y")
+
+    def test_rejects_conflicting_identifiers(self):
+        with pytest.raises(ValueError, match="must match"):
+            User(
+                user_id="u1",
+                id="u2",
+                username="alice",
+                email="alice@example.com",
+                password_hash="x:y",
+            )
+
 
 class TestUserStore:
     """Tests for UserStore CRUD and authentication."""
@@ -258,6 +272,13 @@ class TestUserStore:
         store = UserStore()
         with pytest.raises(InvalidCredentialsError):
             store.authenticate("nobody", "Str0ngPass!")
+
+    def test_authenticate_preserves_password_whitespace(self):
+        store = UserStore()
+        password = "  Str0ngPass!  "
+        user = store.create_user("uma", "uma@example.com", password)
+        authenticated = store.authenticate("uma", password)
+        assert authenticated.user_id == user.user_id
 
     def test_authenticate_inactive_user_raises(self):
         store = UserStore()

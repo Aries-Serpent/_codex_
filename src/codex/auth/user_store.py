@@ -121,9 +121,9 @@ class UserStore:
                 required field is empty.
             ValueError: If *password* does not meet minimum requirements.
         """
-        username = self._require_non_empty(username, "Username")
-        email = self._require_non_empty(email, "Email").lower()
-        password = self._require_non_empty(password, "Password")
+        username = self._require_non_blank(username, "Username")
+        email = self._require_non_blank(email, "Email").lower()
+        password = self._require_non_blank(password, "Password")
 
         self._validate_email_format(email)
         self._validate_password_strength(password)
@@ -292,8 +292,8 @@ class UserStore:
             InvalidCredentialsError: If the credentials are wrong or the
                 account is not active.
         """
-        identifier = self._require_non_empty(username_or_email, "Username or email")
-        password = self._require_non_empty(password, "Password")
+        identifier = self._require_non_blank(username_or_email, "Username or email")
+        password = self._require_non_blank(password, "Password")
 
         user = self.find_by_username(identifier)
         if user is None:
@@ -326,16 +326,20 @@ class UserStore:
         return user
 
     @staticmethod
-    def _require_non_empty(value: Optional[str], field_name: str) -> str:
-        """Validate that a required string value is present and non-blank."""
+    def _require_non_blank(value: Optional[str], field_name: str) -> str:
+        """Validate that a required string value is present and non-blank.
+
+        The original value is preserved so callers can keep meaningful
+        leading/trailing whitespace in passwords while still rejecting
+        whitespace-only inputs.
+        """
         if value is None:
             raise ValueError(f"{field_name} must not be empty")
         if not isinstance(value, str):
             raise ValueError(f"{field_name} must be a string")
-        normalized = value.strip()
-        if not normalized:
+        if not value.strip():
             raise ValueError(f"{field_name} must not be empty")
-        return normalized
+        return value
 
     @staticmethod
     def _validate_password_strength(password: str) -> None:

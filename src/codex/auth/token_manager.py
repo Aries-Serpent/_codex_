@@ -138,9 +138,15 @@ class TokenManager:
         self._secret_key = secret_key
         self._revoked_tokens: set[str] = set()  # Use Redis in production
         self._sessions: dict[str, SessionInfo] = {}  # Use database in production
-        self._access_token_expiry = access_token_timeout or self.ACCESS_TOKEN_EXPIRY
-        self._refresh_token_expiry = refresh_token_timeout or self.REFRESH_TOKEN_EXPIRY
-        self._session_token_expiry = session_token_timeout or self.SESSION_TOKEN_EXPIRY
+        self._access_token_expiry = (
+            self.ACCESS_TOKEN_EXPIRY if access_token_timeout is None else access_token_timeout
+        )
+        self._refresh_token_expiry = (
+            self.REFRESH_TOKEN_EXPIRY if refresh_token_timeout is None else refresh_token_timeout
+        )
+        self._session_token_expiry = (
+            self.SESSION_TOKEN_EXPIRY if session_token_timeout is None else session_token_timeout
+        )
 
     def _encode_token(self, claims: TokenClaims) -> str:
         """

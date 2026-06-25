@@ -40,7 +40,10 @@ class OAuthToken:
         if self.created_at == 0.0:
             self.created_at = time.time()
         if self.expires_at is None and self.expires_in > 0:
-            self.expires_at = datetime.now() + timedelta(seconds=self.expires_in)
+            self.expires_at = datetime.now(timezone.utc) + timedelta(seconds=self.expires_in)
+        elif self.expires_at is not None and self.expires_at.tzinfo is None:
+            # Treat naive datetimes as UTC to keep expiration checks consistent.
+            self.expires_at = self.expires_at.replace(tzinfo=timezone.utc)
 
     def is_expired(self, buffer_seconds: int = 300) -> bool:
         """
@@ -53,13 +56,9 @@ class OAuthToken:
             True if token is expired or will expire soon
         """
         if self.expires_at is not None:
-            if self.expires_at.tzinfo is not None:
-                now = datetime.now(timezone.utc)
-                expires_at = self.expires_at.astimezone(timezone.utc)
-            else:
-                now = datetime.now()
-                expires_at = self.expires_at
-            return now >= expires_at
+            now = datetime.now(timezone.utc)
+            expires_at = self.expires_at.astimezone(timezone.utc)
+            return now >= (expires_at - timedelta(seconds=buffer_seconds))
         if self.expires_in <= 0:
             return False
         elapsed = time.time() - self.created_at
