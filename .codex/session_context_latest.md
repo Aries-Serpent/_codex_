@@ -1,14 +1,14 @@
-# Session Context — 2026-06-25T15:49:07Z
+# Session Context — 2026-06-25T15:54:32Z
 **Branch:** `copilot/fix-ci-failure-rag-module-tests`  **PR:** #5081  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4752` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4712` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5081 — fix: Resolve 328 failing tests across RAG, Auth modules and Secrets workflow stability
+## 📋 PR #5081 — docs: PR merge readiness implementation plan (100% target with WEC integration)
 State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
@@ -19,6 +19,7 @@ State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-rag-module-tests` 
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
+- `2d76b255` Apply remaining changes — copilot-swe-agent[bot] (2026-06-25)
 - `7fabf4bd` fix(code-review): Replace ERROR_TYPE placeholders and fix git merge-base logic i — copilot-swe-agent[bot] (2026-06-25)
 - `5ab84089` Add email format validation to UserStore.create_user() — copilot-swe-agent[bot] (2026-06-25)
 - `3dfc43b6` Fix 314 auth module test failures: hash_password alias, password validation, rep — copilot-swe-agent[bot] (2026-06-25)
@@ -26,7 +27,6 @@ State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-rag-module-tests` 
 - `075e0892` fix(ci): add fetch+rebase retry logic to secrets-baseline-enforcer workflow — copilot-swe-agent[bot] (2026-06-25)
 - `75396a0a` ci(plan): Strategic fix plan for three critical CI failures - RAG, Auth, Secrets — copilot-swe-agent[bot] (2026-06-25)
 - `6cad08c3` Initial plan — copilot-swe-agent[bot] (2026-06-25)
-- `e72c0388` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
