@@ -1,32 +1,29 @@
-# Session Context — 2026-06-25T22:32:00Z
-**Branch:** `copilot/fix-ci-failure-triage-report`  **PR:** #5084  **Access:** `rest, graphql`
+# Session Context — 2026-06-25T22:53:06Z
+**Branch:** `copilot/post-merge-validation-setup`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql`
-- REST remaining: `4357` (✅)
-- GraphQL remaining: `4982` (✅)
-- gh CLI: ❌
+- Recommended method chain: `rest → graphql → gh_cli`
+- REST remaining: `4732` (✅)
+- GraphQL remaining: `4978` (✅)
+- gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5084 — Add post-merge session campaign groundwork: baseline validation framework and reversion protocol
-State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-triage-report` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 - **Workflow Execution Gate** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
 - **PR Comment Review Gate** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
-- **Validation Pipeline** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
-- **Resilient Validation Suite** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
 
 ## 📝 Recent Commits
-- `9aa1eda7` Add campaign artifact index for post-merge navigation — copilot-swe-agent[bot] (2026-06-25)
-- `ed1cf940` Implementation complete: Post-merge campaign groundwork documented — copilot-swe-agent[bot] (2026-06-25)
-- `8d0c55bf` Initial: Outline post-merge campaign implementation checklist — copilot-swe-agent[bot] (2026-06-25)
-- `68488fd1` Add post-merge Copilot agent execution prompt — copilot-swe-agent[bot] (2026-06-25)
-- `a6a47db2` Create post-merge validation campaign groundwork — copilot-swe-agent[bot] (2026-06-25)
-- `8f9195e4` Apply remaining changes — copilot-swe-agent[bot] (2026-06-25)
-- `1d3f521f` chore: Update compliance tracking files (AGENT_ACCOUNTABILITY_REPORT.md, CHANGEL — copilot-swe-agent[bot] (2026-06-25)
-- `e61e4178` fix(auth): Address review comments on MFA and token manager security issues — copilot-swe-agent[bot] (2026-06-25)
+- `cc5bc7a4` Merge pull request #5084 from Aries-Serpent/copilot/fix-ci-failure-triage-report — Statix (2026-06-25)
+- `6b5fb819` docs: Add comprehensive session completion report with post-merge entry point — copilot-swe-agent[bot] (2026-06-25)
+- `cf422f1c` docs: Add retention policy note for diagnostic logs — copilot-swe-agent[bot] (2026-06-25)
+- `85215d5b` fix: Apply critical security and documentation fixes from agent review — copilot-swe-agent[bot] (2026-06-25)
+- `a574cec5` docs: Add comprehensive agent validation reports and post-merge entry point — copilot-swe-agent[bot] (2026-06-25)
+- `59149bd6` docs: Add PR #5084 merge readiness summary and final validation checklist — copilot-swe-agent[bot] (2026-06-25)
+- `39572d18` docs: Add post-merge next session prompt and validation entry point — copilot-swe-agent[bot] (2026-06-25)
+- `9e48ca9a` fix(pr-5084): Resolve 7 CI failures — secrets, f-strings, compliance gates, comm — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
