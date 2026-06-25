@@ -15,7 +15,7 @@ Target: 70+ test methods covering 150+ statements
 class TestConfigurationValidation:
     """Test configuration validation."""
 
-    def test_config_schema_loading(self):
+    def test_config_schema_loading(self): # pragma: allowlist secret
         """Test schema loading."""
         schema = {
             "type": "object",

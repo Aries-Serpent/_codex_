@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 
 import pytest
-
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from codex.session.accountability_autoupdate import (
     append_to_report,
     collect_metadata,

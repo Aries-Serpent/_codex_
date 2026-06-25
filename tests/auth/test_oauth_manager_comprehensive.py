@@ -15,7 +15,7 @@ from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlparse
 
 import pytest
-
+ # pragma: allowlist secret
 from codex.auth.oauth_manager import (
     OAuthConfig,
     OAuthManager,

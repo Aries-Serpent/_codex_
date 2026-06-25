@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import pytest
 
-pytest.importorskip("fastapi")
+pytest.importorskip("fastapi") # pragma: allowlist secret
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 

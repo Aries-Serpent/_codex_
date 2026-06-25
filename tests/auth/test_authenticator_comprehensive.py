@@ -15,7 +15,7 @@ import pytest
 from codex.auth.authenticator import Authenticator, LoginResult
 from codex.auth.exceptions import (
     InvalidCredentialsError,
-    MFARequiredError,
+    MFARequiredError, # pragma: allowlist secret
     UserAlreadyExistsError,
 )
 from codex.auth.mfa_provider import MFAProvider

@@ -15,7 +15,7 @@ from src.services.github.exceptions import (
 )
 from src.services.github.types import (
     ArtifactInfo,
-    RateLimitInfo,
+    RateLimitInfo, # pragma: allowlist secret
     RunConclusion,
     RunStatus,
     WorkflowInfo,

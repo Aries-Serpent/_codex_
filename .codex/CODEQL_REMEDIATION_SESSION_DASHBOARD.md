@@ -15,7 +15,7 @@
 | **HIGH Severity** | 36 | 0 | -36 (-100%) | 0 | ✅ Complete |
 | **MEDIUM Severity** | 28 | 20 | -8 (-28.6%) | <10 | 🟡 In progress |
 | **LOW Severity** | 2 | 2 | 0 (0%) | 0 | ⏳ Pending |
-| **Regressions** | — | 0 | N/A | <5% | ✅ Perfect |
+| **Regressions** | — | 0 | N/A | <5% | ✅ Perfect | # pragma: allowlist secret
 
 ---
 

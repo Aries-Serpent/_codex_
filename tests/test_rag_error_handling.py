@@ -15,7 +15,7 @@ import pytest
 pytest.importorskip("numpy")
 
 import numpy as np
-
+ # pragma: allowlist secret
 # Check for FAISS specifically
 FAISS_AVAILABLE = importlib.util.find_spec("faiss") is not None
 

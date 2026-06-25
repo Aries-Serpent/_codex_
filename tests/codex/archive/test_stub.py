@@ -15,7 +15,7 @@ class TestMakeStubText:
         """Test basic stub generation."""
         from codex.archive.stub import make_stub_text
 
-        mock_utcnow.return_value = "2024-01-01T00:00:00Z"
+        mock_utcnow.return_value = "2024-01-01T00:00:00Z" # pragma: allowlist secret # pragma: allowlist secret
 
         result = make_stub_text(
             path="src/old_module.py",

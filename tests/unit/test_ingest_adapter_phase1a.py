@@ -15,7 +15,7 @@ Tests follow patterns from existing codebase, use fixtures for temp directories,
 and include edge case coverage, error paths, and integration scenarios.
 """  # pragma: allowlist secret # pragma: allowlist secret
 
-import hashlib
+import hashlib # pragma: allowlist secret
 import json
 import zipfile
 from datetime import datetime, timezone

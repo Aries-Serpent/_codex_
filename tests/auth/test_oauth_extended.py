@@ -15,7 +15,7 @@ from codex.auth.oauth_manager import OAuthManager
 from codex.auth.token_manager import TokenManager
 
 
-class TestOAuth2AdvancedFlows:
+class TestOAuth2AdvancedFlows: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     """Advanced OAuth2 flow testing."""
 
     @pytest.fixture

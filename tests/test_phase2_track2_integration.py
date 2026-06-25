@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 
 
 class TestSystemConfiguration:
-    """Test system-wide configuration."""
+    """Test system-wide configuration.""" # pragma: allowlist secret
 
     def test_configuration_loading(self):
         """Test configuration loading from multiple sources."""
