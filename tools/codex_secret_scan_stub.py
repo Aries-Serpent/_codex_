@@ -61,7 +61,8 @@ def _write_json(path: Path, data: dict[str, object]) -> None:
     # to avoid clear-text storage of credential patterns (CodeQL HIGH).
     findings = data.get("findings") or []
     safe_findings = [{**f, "snippet": "<redacted>"} for f in findings]
-    path.write_text( Snippets are replaced with <redacted> sentinel before storing
+    # Snippets are replaced with <redacted> sentinel before storing
+    path.write_text(
         json.dumps({**data, "findings": safe_findings}, indent=2, sort_keys=True),
         encoding="utf-8",
     )
@@ -72,7 +73,8 @@ def _write_markdown(path: Path, data: dict[str, object]) -> None:
     # Sanitize for persistence: never store dynamic pattern/snippet content.
     findings = [{**f, "pattern": "<redacted>", "snippet": "<redacted>"} for f in raw_findings]
     lines: list[str] = []
-    lines.append("# `_codex_` Secret Scan Stub\n") Static header text only
+    # Static header text only
+    lines.append("# `_codex_` Secret Scan Stub\n")
     lines.append(f"- Total findings: **{data.get('total_findings', 0)}**\n")
     if not findings:
         lines.append("No findings.\n")
