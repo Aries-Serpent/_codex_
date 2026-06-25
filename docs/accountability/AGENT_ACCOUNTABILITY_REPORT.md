@@ -3105,3 +3105,38 @@ With the correct suppression format in place, CodeQL's next scan should:
 ⏳ Awaiting CodeQL re-scan confirmation in CI
 
 ---
+
+## Session 2026-06-25T02:46Z — CodeQL Remediation: GitHub Secrets Sync Logging
+
+### Issue Discovered
+CodeQL alert in `scripts/github_secrets_sync.py` for clear-text logging of sensitive information:
+- **Line 135:** Print statement logs `secret_ref` variable in plaintext
+- **Alert:** `py/clear-text-logging-sensitive-data`
+- **Severity:** HIGH
+
+### Actions Taken
+**Commit a1f2488c** — fix(codeql): Remove plaintext secret reference from print statement
+- Removed `secret_ref` variable from print statement on line 135
+- Changed from: `print(f"✗ Failed to rotate secret ({secret_ref})")`
+- Changed to: `print("✗ Failed to rotate secret")`
+- Maintains original logging (line 133) with proper CodeQL suppression
+
+### Validation Results
+✅ Python syntax validation: PASS  
+✅ No new secrets introduced: PASS  
+✅ CodeQL suppression format: CORRECT (inherited from previous fix)  
+✅ Compile check: PASS  
+
+### Root Cause Analysis
+Debug print statement unnecessarily exposed the `secret_ref` variable (API key reference or similar). While the actual secret value was not logged, the reference identifier itself could be sensitive context.
+
+### Expected Outcome
+- Clear-text logging alert on `scripts/github_secrets_sync.py:135` should be resolved
+- CodeQL scan should show reduction in clear-text-logging alerts
+
+### Session Status
+✅ Issue identified and fixed  
+✅ Governance documentation updated (REQ-4/REQ-5)  
+⏳ Awaiting CodeQL re-scan confirmation in CI
+
+---

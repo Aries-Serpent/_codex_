@@ -1,4 +1,16 @@
 # Changelog
+## [Unreleased] — 2026-06-25T02:46Z
+
+### Security
+- **FIXED**: CodeQL clear-text logging in `scripts/github_secrets_sync.py` (commit a1f2488c)
+  - Removed plaintext `secret_ref` from debug print statement (line 135)
+  - Suppression format verified as correct: `# codeql[py/clear-text-logging-sensitive-data]`
+
+### Governance (REQ-4/REQ-5)
+- Updated AGENT_ACCOUNTABILITY_REPORT.md with session entry (2026-06-25T02:46Z)
+- Updated CHANGELOG.md with fix documentation
+
+---
 
 ## [Unreleased] — 2026-06-25T02:31Z
 
