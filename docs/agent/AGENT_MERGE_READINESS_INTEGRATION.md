@@ -153,7 +153,7 @@ from scripts.ci.pr_description_helper import calculate_merge_readiness_score
 gates_status = {
     "code_quality": True,      # ruff + mypy pass
     "test_coverage": True,     # ≥95% coverage
-    "security_secrets": False, # 1 CodeQL alert open
+    "security_secrets": False, # 1 CodeQL alert open  # pragma: allowlist secret
     "wec_integrity": True,     # WEC complete
     "deferral_language": True, # No prohibited phrases
     "comment_review": True,    # All comments resolved
@@ -325,7 +325,7 @@ coverage = get_pytest_coverage()  # Should be ≥95%
 gates = {
     "code_quality": ruff_pass and mypy_pass,
     "test_coverage": coverage >= 95,
-    "security_secrets": False,  # Not yet checked
+    "security_secrets": False,  # Not yet checked  # pragma: allowlist secret
     "wec_integrity": True,      # Always true
     "deferral_language": True,  # Always true
     "comment_review": True,     # No comments yet
@@ -378,14 +378,14 @@ engine_tools_report_progress(
 codeql_alerts = []  # Should be 0
 security_checks = {
     "codeql": len(codeql_alerts) == 0,
-    "secrets": True,
+    "secrets": True,  # pragma: allowlist secret
     "comment_review": True,
     "accountability_report": True,
 }
 
 # Update gates
 gates_turn_3 = {
-    "security_secrets": security_checks["codeql"] and security_checks["secrets"],
+    "security_secrets": security_checks["codeql"] and security_checks["secrets"],  # pragma: allowlist secret
     "comment_review": security_checks["comment_review"],
     "accountability_report": security_checks["accountability_report"],
 }
@@ -395,7 +395,7 @@ score_turn_3 = calculate_merge_readiness_score(gates_turn_3)  # 100/100
 checklist_turn_3 = f"""## 📊 Turn 3: Security & Final Verification
 
 - [x] CodeQL check: 0 open alerts
-- [x] Secrets baseline: Pass
+- [x] Secrets baseline: Pass  # pragma: allowlist secret
 - [x] Comment review: All resolved (0 blocking)
 - [x] Accountability records: Updated
 - [x] All 10 gates passing

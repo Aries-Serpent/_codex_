@@ -300,7 +300,7 @@ yamllint .github/workflows/ --config-file .yamllint.yml
 |--------|-----------|--------|----------|--------|-------|
 | 1 | Code Quality | 12 | ✅ | [ ] | [ ]/12 |
 | 2 | Test Coverage | 12 | ✅ | [ ] | [ ]/12 |
-| 3 | Security & Secrets | 15 | ✅ | [ ] | [ ]/15 |
+| 3 | Security & Secrets | 15 | ✅ | [ ] | [ ]/15 | <!-- pragma: allowlist secret -->
 | 4 | WEC Integrity | 14 | ✅ | [ ] | [ ]/14 |
 | 5 | Deferral Language | 10 | ✅ | [ ] | [ ]/10 |
 | 6 | Comment Review | 12 | ✅ | [ ] | [ ]/12 |
