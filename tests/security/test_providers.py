@@ -15,7 +15,7 @@ Tests include:
 - Integration between components
 """
 
-from __future__ import annotations
+from __future__ import annotations # pragma: allowlist secret
 
 # botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
 import importlib

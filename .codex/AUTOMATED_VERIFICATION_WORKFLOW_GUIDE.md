@@ -15,7 +15,7 @@ The `automated-post-deployment-verification.yml` workflow provides automated pos
 1. Go to **Actions** tab in GitHub repository
 2. Select **Automated Post-Deployment Verification** workflow
 3. Click **Run workflow**
-4. Fill in parameters:
+4. Fill in parameters: # pragma: allowlist secret
    - **Environment:** development, staging, or production
    - **Service URL:** Full URL to deployed service (e.g., http://api.example.com)
    - **Notify Slack:** Check to send results to Slack

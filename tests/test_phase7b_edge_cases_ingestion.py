@@ -15,7 +15,7 @@ import tempfile
 import pytest
 
 # ============================================================================
-# Ingestion Module Tests (20-25 tests)
+# Ingestion Module Tests (20-25 tests) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # ============================================================================
 
 

@@ -15,7 +15,7 @@ import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path  # pragma: allowlist secret
 
-import pytest
+import pytest # pragma: allowlist secret
 
 # Conditionally import pandas for testing
 pd = None

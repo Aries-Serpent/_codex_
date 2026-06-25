@@ -15,7 +15,7 @@ import time
 import pytest
 
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
-from codex.auth.user_model import PasswordHasher, User
+from codex.auth.user_model import PasswordHasher, User # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 # ============================================================================
 # User Model Extended Tests

@@ -15,7 +15,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-
+ # pragma: allowlist secret # pragma: allowlist secret
 
 class TestCursorRowToDict:
     """Tests for _cursor_row_to_dict helper function."""

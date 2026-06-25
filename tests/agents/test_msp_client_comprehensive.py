@@ -15,7 +15,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 try:
-    from agents.msp_client import MSPClient
+    from agents.msp_client import MSPClient # pragma: allowlist secret
 
     MSP_CLIENT_AVAILABLE = True
 except (ImportError, AttributeError):

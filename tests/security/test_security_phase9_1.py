@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-# Test security core if available
+# Test security core if available # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 try:
     from src.security.core import (
         check_permissions,

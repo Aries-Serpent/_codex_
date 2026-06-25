@@ -15,7 +15,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
+ # pragma: allowlist secret
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "security"))
 
 from close_codeql_alert import AlertCloser

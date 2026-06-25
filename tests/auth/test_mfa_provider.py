@@ -15,7 +15,7 @@ from codex.auth.mfa_provider import (
 )
 
 
-class TestMFASecret:
+class TestMFASecret: # pragma: allowlist secret
     """Tests for MFASecret data structure."""
 
     def test_secret_creation(self):
