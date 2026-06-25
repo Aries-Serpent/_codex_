@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "securi
 # Playwright scraper tests
 # ---------------------------------------------------------------------------
 
+
 class TestPlaywrightScraperImportGuard:
     """Ensure module loads even when playwright is absent."""
 
@@ -136,6 +137,7 @@ class TestPlaywrightScraperMainNoPlaywright:
 # Resolution pipeline tests
 # ---------------------------------------------------------------------------
 
+
 class TestPipelineResult:
     def test_to_dict_contains_all_keys(self):
         from resolution_pipeline import PipelineResult
@@ -218,14 +220,18 @@ class TestResolutionPipelineAnalyse:
         from resolution_pipeline import ResolutionPipeline
 
         inventory = tmp_path / "inv.json"
-        inventory.write_text(json.dumps({
-            "total_alerts": 3,
-            "alerts": [
-                {"severity": "critical", "alert_number": 1},
-                {"severity": "high", "alert_number": 2},
-                {"severity": "low", "alert_number": 3},
-            ],
-        }))
+        inventory.write_text(
+            json.dumps(
+                {
+                    "total_alerts": 3,
+                    "alerts": [
+                        {"severity": "critical", "alert_number": 1},
+                        {"severity": "high", "alert_number": 2},
+                        {"severity": "low", "alert_number": 3},
+                    ],
+                }
+            )
+        )
 
         pipeline = ResolutionPipeline(
             owner="owner",
@@ -313,22 +319,23 @@ class TestResolutionPipelineClose:
             with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path):
                 closer = tmp_path / "close_codeql_alert.py"
                 closer.write_text("")
-                closed = pipeline.close_alerts(
-                    alert_numbers=list(range(200)), max_batch=5
-                )
+                closed = pipeline.close_alerts(alert_numbers=list(range(200)), max_batch=5)
 
         assert closed == 5
 
 
 class TestResolutionPipelineSeverityMapping:
-    @pytest.mark.parametrize("severity,expected_priority", [
-        ("critical", "P0"),
-        ("high", "P1"),
-        ("medium", "P2"),
-        ("low", "P3"),
-        ("warning", "P4"),
-        ("note", "P4"),
-    ])
+    @pytest.mark.parametrize(
+        "severity,expected_priority",
+        [
+            ("critical", "P0"),
+            ("high", "P1"),
+            ("medium", "P2"),
+            ("low", "P3"),
+            ("warning", "P4"),
+            ("note", "P4"),
+        ],
+    )
     def test_severity_priority_mapping(self, severity, expected_priority):
         from resolution_pipeline import SEVERITY_PRIORITY
 
@@ -419,6 +426,7 @@ class TestPlaywrightScraperInit:
 
     def _make(self, monkeypatch, url="https://github.com/owner/repo", **kwargs):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
         return ps.PlaywrightScraper(url, **kwargs)
@@ -441,6 +449,7 @@ class TestPlaywrightScraperInit:
 
     def test_token_falls_back_to_env(self, monkeypatch):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         monkeypatch.setenv("GITHUB_TOKEN", "env_tok_xyz")
         scraper = ps.PlaywrightScraper("https://github.com/owner/repo")
@@ -469,6 +478,7 @@ class TestAuthenticate:
 
     def _make_scraper(self, monkeypatch, token=""):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
         return ps.PlaywrightScraper("https://github.com/owner/repo", github_token=token)
@@ -540,6 +550,7 @@ class TestExtractRowData:
 
     def _make_scraper(self, monkeypatch):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         return ps.PlaywrightScraper("https://github.com/owner/repo", github_token="tok")
 
@@ -634,6 +645,7 @@ class TestIterPages:
 
     def _make_scraper(self, monkeypatch):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         return ps.PlaywrightScraper("https://github.com/owner/repo", github_token="tok")
 
@@ -654,8 +666,10 @@ class TestIterPages:
         page.query_selector_all.return_value = [row]
         page.query_selector.return_value = None  # no next button
 
-        with patch("time.sleep"), \
-             patch.object(scraper, "_extract_row_data", return_value=alert_data):
+        with (
+            patch("time.sleep"),
+            patch.object(scraper, "_extract_row_data", return_value=alert_data),
+        ):
             results = list(scraper._iter_pages(page))
 
         assert len(results) == 1
@@ -670,8 +684,7 @@ class TestIterPages:
         page.query_selector_all.return_value = [row]
         page.query_selector.return_value = None
 
-        with patch("time.sleep"), \
-             patch.object(scraper, "_extract_row_data", return_value=None):
+        with patch("time.sleep"), patch.object(scraper, "_extract_row_data", return_value=None):
             results = list(scraper._iter_pages(page))
 
         assert len(results) == 1
@@ -731,15 +744,15 @@ class TestIterPages:
         # next_btn on first iteration, None on second
         page.query_selector.side_effect = [mock_next_btn, None]
 
-        with patch("time.sleep"), \
-             patch.object(scraper, "_extract_row_data", return_value=alert_data):
+        with (
+            patch("time.sleep"),
+            patch.object(scraper, "_extract_row_data", return_value=alert_data),
+        ):
             results = list(scraper._iter_pages(page))
 
         assert len(results) == 2
         mock_next_btn.click.assert_called_once()
-        page.wait_for_load_state.assert_called_once_with(
-            "networkidle", timeout=scraper.timeout_ms
-        )
+        page.wait_for_load_state.assert_called_once_with("networkidle", timeout=scraper.timeout_ms)
 
     def test_next_btn_with_disabled_class_stops(self, monkeypatch):
         """next_btn present but has 'disabled' class → stop after first page."""
@@ -754,8 +767,10 @@ class TestIterPages:
         mock_next_btn.get_attribute.return_value = "next_page disabled"
         page.query_selector.return_value = mock_next_btn
 
-        with patch("time.sleep"), \
-             patch.object(scraper, "_extract_row_data", return_value=alert_data):
+        with (
+            patch("time.sleep"),
+            patch.object(scraper, "_extract_row_data", return_value=alert_data),
+        ):
             results = list(scraper._iter_pages(page))
 
         assert len(results) == 1
@@ -785,6 +800,7 @@ class TestScrape:
 
     def _make_scraper(self, monkeypatch, token="tok"):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         return ps.PlaywrightScraper("https://github.com/owner/repo", github_token=token)
 
@@ -808,14 +824,17 @@ class TestScrape:
 
     def test_scrape_returns_list(self, monkeypatch):
         import playwright_scraper as ps
+
         scraper = self._make_scraper(monkeypatch)
 
         mock_sp, _mock_pw, _mock_browser, _mock_page = self._mock_sync_playwright()
         expected = [{"title": "T", "url": "U", "severity": "high", "alert_number": 1}]
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
-        with patch.object(scraper, "_authenticate", return_value=True), \
-             patch.object(scraper, "_iter_pages", return_value=iter([expected])):
+        with (
+            patch.object(scraper, "_authenticate", return_value=True),
+            patch.object(scraper, "_iter_pages", return_value=iter([expected])),
+        ):
             result = scraper.scrape()
 
         assert isinstance(result, list)
@@ -823,13 +842,16 @@ class TestScrape:
 
     def test_scrape_calls_browser_close_on_success(self, monkeypatch):
         import playwright_scraper as ps
+
         scraper = self._make_scraper(monkeypatch)
 
         mock_sp, _mock_pw, mock_browser, _mock_page = self._mock_sync_playwright()
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
-        with patch.object(scraper, "_authenticate", return_value=False), \
-             patch.object(scraper, "_iter_pages", return_value=iter([])):
+        with (
+            patch.object(scraper, "_authenticate", return_value=False),
+            patch.object(scraper, "_iter_pages", return_value=iter([])),
+        ):
             scraper.scrape()
 
         mock_browser.close.assert_called_once()
@@ -837,13 +859,18 @@ class TestScrape:
     def test_scrape_calls_browser_close_on_exception(self, monkeypatch):
         """browser.close() is called even when _iter_pages raises."""
         import playwright_scraper as ps
+
         scraper = self._make_scraper(monkeypatch)
 
         mock_sp, _mock_pw, mock_browser, _mock_page = self._mock_sync_playwright()
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
-        with patch.object(scraper, "_authenticate", return_value=True), \
-             patch.object(scraper, "_iter_pages", side_effect=RuntimeError("scrape iteration failed")):
+        with (
+            patch.object(scraper, "_authenticate", return_value=True),
+            patch.object(
+                scraper, "_iter_pages", side_effect=RuntimeError("scrape iteration failed")
+            ),
+        ):
             with pytest.raises(RuntimeError, match="scrape iteration failed"):
                 scraper.scrape()
 
@@ -851,6 +878,7 @@ class TestScrape:
 
     def test_scrape_aggregates_multiple_pages(self, monkeypatch):
         import playwright_scraper as ps
+
         scraper = self._make_scraper(monkeypatch)
 
         mock_sp, _mock_pw, _mock_browser, _mock_page = self._mock_sync_playwright()
@@ -859,8 +887,10 @@ class TestScrape:
         page2 = [{"title": "B", "url": "U2", "severity": "low", "alert_number": 2}]
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
-        with patch.object(scraper, "_authenticate", return_value=True), \
-             patch.object(scraper, "_iter_pages", return_value=iter([page1, page2])):
+        with (
+            patch.object(scraper, "_authenticate", return_value=True),
+            patch.object(scraper, "_iter_pages", return_value=iter([page1, page2])),
+        ):
             result = scraper.scrape()
 
         assert len(result) == 2
@@ -869,6 +899,7 @@ class TestScrape:
 
     def test_scrape_headless_passed_to_launch(self, monkeypatch):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         scraper = ps.PlaywrightScraper(
             "https://github.com/owner/repo", github_token="tok", headless=False
@@ -876,8 +907,10 @@ class TestScrape:
         mock_sp, mock_pw, _mock_browser, _mock_page = self._mock_sync_playwright()
 
         monkeypatch.setattr(ps, "sync_playwright", mock_sp, raising=False)
-        with patch.object(scraper, "_authenticate", return_value=False), \
-             patch.object(scraper, "_iter_pages", return_value=iter([])):
+        with (
+            patch.object(scraper, "_authenticate", return_value=False),
+            patch.object(scraper, "_iter_pages", return_value=iter([])),
+        ):
             scraper.scrape()
 
         mock_pw.chromium.launch.assert_called_once_with(
@@ -890,14 +923,16 @@ class TestMainWithPlaywright:
 
     def test_main_success_returns_0(self, monkeypatch, tmp_path):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
         alerts = [{"title": "T", "url": "U", "severity": "high", "alert_number": 1}]
         out = tmp_path / "out.json"
 
-        with patch("sys.argv", ["ps", "--repo", "https://github.com/a/b",
-                                 "--output", str(out)]), \
-             patch.object(ps.PlaywrightScraper, "scrape", return_value=alerts):
+        with (
+            patch("sys.argv", ["ps", "--repo", "https://github.com/a/b", "--output", str(out)]),
+            patch.object(ps.PlaywrightScraper, "scrape", return_value=alerts),
+        ):
             result = ps.main()
 
         assert result == 0
@@ -905,15 +940,28 @@ class TestMainWithPlaywright:
 
     def test_main_with_csv_writes_csv(self, monkeypatch, tmp_path):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
         alerts = [{"title": "T", "url": "U", "severity": "high", "alert_number": 1}]
         out = tmp_path / "out.json"
         csv_out = tmp_path / "out.csv"
 
-        with patch("sys.argv", ["ps", "--repo", "https://github.com/a/b",
-                                 "--output", str(out), "--csv", str(csv_out)]), \
-             patch.object(ps.PlaywrightScraper, "scrape", return_value=alerts):
+        with (
+            patch(
+                "sys.argv",
+                [
+                    "ps",
+                    "--repo",
+                    "https://github.com/a/b",
+                    "--output",
+                    str(out),
+                    "--csv",
+                    str(csv_out),
+                ],
+            ),
+            patch.object(ps.PlaywrightScraper, "scrape", return_value=alerts),
+        ):
             result = ps.main()
 
         assert result == 0
@@ -924,20 +972,22 @@ class TestMainWithPlaywright:
 
     def test_main_scrape_exception_returns_1(self, monkeypatch, tmp_path):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
         out = tmp_path / "out.json"
 
-        with patch("sys.argv", ["ps", "--repo", "https://github.com/a/b",
-                                 "--output", str(out)]), \
-             patch.object(ps.PlaywrightScraper, "scrape",
-                          side_effect=Exception("browser crashed")):
+        with (
+            patch("sys.argv", ["ps", "--repo", "https://github.com/a/b", "--output", str(out)]),
+            patch.object(ps.PlaywrightScraper, "scrape", side_effect=Exception("browser crashed")),
+        ):
             result = ps.main()
 
         assert result == 1
 
     def test_main_no_playwright_returns_1(self, monkeypatch):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", False)
 
         with patch("sys.argv", ["ps"]):
@@ -947,6 +997,7 @@ class TestMainWithPlaywright:
 
     def test_main_custom_token_and_timeout(self, monkeypatch, tmp_path):
         import playwright_scraper as ps
+
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
 
         out = tmp_path / "out.json"
@@ -957,12 +1008,24 @@ class TestMainWithPlaywright:
             captured["token"] = kwargs.get("github_token")
             captured["timeout"] = kwargs.get("timeout_ms", 30_000)
 
-        with patch("sys.argv", ["ps", "--repo", "https://github.com/a/b",
-                                 "--output", str(out),
-                                 "--token", "my_secret_tok",
-                                 "--timeout", "5000"]), \
-             patch.object(ps.PlaywrightScraper, "__init__", fake_init), \
-             patch.object(ps.PlaywrightScraper, "scrape", return_value=[]):
+        with (
+            patch(
+                "sys.argv",
+                [
+                    "ps",
+                    "--repo",
+                    "https://github.com/a/b",
+                    "--output",
+                    str(out),
+                    "--token",
+                    "my_secret_tok",
+                    "--timeout",
+                    "5000",
+                ],
+            ),
+            patch.object(ps.PlaywrightScraper, "__init__", fake_init),
+            patch.object(ps.PlaywrightScraper, "scrape", return_value=[]),
+        ):
             result = ps.main()
 
         assert result == 0
@@ -983,19 +1046,26 @@ class TestCollectViaApi:
         import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
-        inventory.write_text(json.dumps({
-            "total_alerts": 7,
-            "alerts": [{} for _ in range(7)],
-        }))
+        inventory.write_text(
+            json.dumps(
+                {
+                    "total_alerts": 7,
+                    "alerts": [{} for _ in range(7)],
+                }
+            )
+        )
         (tmp_path / "fetch_codeql_alerts.py").write_text("# fake")
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=inventory,
             report_path=tmp_path / "report.md",
         )
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", return_value=0):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(pipeline, "_run", return_value=0),
+        ):
             count = pipeline._collect_via_api()
 
         assert count == 7
@@ -1007,12 +1077,15 @@ class TestCollectViaApi:
         (tmp_path / "fetch_codeql_alerts.py").write_text("# fake")
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=tmp_path / "inv.json",
             report_path=tmp_path / "report.md",
         )
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", return_value=1):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(pipeline, "_run", return_value=1),
+        ):
             count = pipeline._collect_via_api()
 
         assert count == 0
@@ -1028,12 +1101,17 @@ class TestCollectViaApi:
         captured: list = []
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             token="mytoken",
             inventory_path=inventory,
         )
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", side_effect=lambda cmd, label="": captured.append(cmd) or 0):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(
+                pipeline, "_run", side_effect=lambda cmd, label="": captured.append(cmd) or 0
+            ),
+        ):
             pipeline._collect_via_api()
 
         assert any("--token" in cmd and "mytoken" in cmd for cmd in captured)
@@ -1055,12 +1133,15 @@ class TestCollectViaPlaywright:
         (tmp_path / "playwright_scraper.py").write_text("# fake")
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=inventory,
         )
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch("resolution_pipeline._DEFAULT_PLAYWRIGHT_OUT", pw_out), \
-             patch.object(pipeline, "_run", return_value=0):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch("resolution_pipeline._DEFAULT_PLAYWRIGHT_OUT", pw_out),
+            patch.object(pipeline, "_run", return_value=0),
+        ):
             count = pipeline._collect_via_playwright()
 
         assert count == 5
@@ -1073,11 +1154,14 @@ class TestCollectViaPlaywright:
         (tmp_path / "playwright_scraper.py").write_text("# fake")
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=tmp_path / "inv.json",
         )
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", return_value=1):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(pipeline, "_run", return_value=1),
+        ):
             count = pipeline._collect_via_playwright()
 
         assert count == 0
@@ -1103,7 +1187,8 @@ class TestAnalyseUncoveredPaths:
 
         # tmp_path has no analyze_alerts.py
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=tmp_path / "inv.json",
             report_path=tmp_path / "report.md",
         )
@@ -1124,12 +1209,15 @@ class TestAnalyseUncoveredPaths:
         analyser.write_text("# fake")
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=inventory,
             report_path=tmp_path / "report.md",
         )
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", return_value=1):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(pipeline, "_run", return_value=1),
+        ):
             result = pipeline.analyse()
 
         assert result == {}
@@ -1187,8 +1275,12 @@ class TestRemediateUncoveredPaths:
         captured: list = []
         pipeline = rp.ResolutionPipeline("owner", "repo", dry_run=True)
 
-        with patch("resolution_pipeline._CODEMODS", {"myfix": fake_codemod}), \
-             patch.object(pipeline, "_run", side_effect=lambda cmd, label="": captured.append(cmd) or 0):
+        with (
+            patch("resolution_pipeline._CODEMODS", {"myfix": fake_codemod}),
+            patch.object(
+                pipeline, "_run", side_effect=lambda cmd, label="": captured.append(cmd) or 0
+            ),
+        ):
             pipeline.remediate(categories=["myfix"])
 
         assert captured, "Expected _run to be called"
@@ -1202,8 +1294,10 @@ class TestRemediateUncoveredPaths:
         fake_codemod.write_text("# fake")
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
-        with patch("resolution_pipeline._CODEMODS", {"myfix": fake_codemod}), \
-             patch.object(pipeline, "_run", return_value=1):
+        with (
+            patch("resolution_pipeline._CODEMODS", {"myfix": fake_codemod}),
+            patch.object(pipeline, "_run", return_value=1),
+        ):
             applied = pipeline.remediate(categories=["myfix"])
 
         assert applied == 0
@@ -1252,23 +1346,30 @@ class TestCloseAlertsUncoveredPaths:
         import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
-        inventory.write_text(json.dumps({
-            "total_alerts": 3,
-            "alerts": [
-                {"severity": "critical", "alert_number": 10},
-                {"severity": "high", "alert_number": 20},
-                {"severity": "low", "alert_number": 30},
-            ],
-        }))
+        inventory.write_text(
+            json.dumps(
+                {
+                    "total_alerts": 3,
+                    "alerts": [
+                        {"severity": "critical", "alert_number": 10},
+                        {"severity": "high", "alert_number": 20},
+                        {"severity": "low", "alert_number": 30},
+                    ],
+                }
+            )
+        )
         closer = tmp_path / "close_codeql_alert.py"
         closer.write_text("# fake")
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=inventory,
         )
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", return_value=0):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(pipeline, "_run", return_value=0),
+        ):
             closed = pipeline.close_alerts()  # alert_numbers=None
 
         # Only critical (P0) and high (P1) → 2 closed
@@ -1284,8 +1385,12 @@ class TestCloseAlertsUncoveredPaths:
         captured: list = []
         pipeline = rp.ResolutionPipeline("owner", "repo", token="secret_tok")
 
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", side_effect=lambda cmd, label="": captured.append(list(cmd)) or 0):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(
+                pipeline, "_run", side_effect=lambda cmd, label="": captured.append(list(cmd)) or 0
+            ),
+        ):
             pipeline.close_alerts(alert_numbers=[99])
 
         assert captured, "Expected _run to be called"
@@ -1300,8 +1405,10 @@ class TestCloseAlertsUncoveredPaths:
         closer.write_text("# fake")
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
-        with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path), \
-             patch.object(pipeline, "_run", return_value=1):
+        with (
+            patch("resolution_pipeline._SCRIPTS_DIR", tmp_path),
+            patch.object(pipeline, "_run", return_value=1),
+        ):
             closed = pipeline.close_alerts(alert_numbers=[1])
 
         assert closed == 0
@@ -1315,14 +1422,18 @@ class TestResolveP0P1Alerts:
         import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
-        inventory.write_text(json.dumps({
-            "alerts": [
-                {"severity": "critical", "alert_number": 10},
-                {"severity": "high", "alert_number": 20},
-                {"severity": "medium", "alert_number": 30},
-                {"severity": "low", "alert_number": 40},
-            ],
-        }))
+        inventory.write_text(
+            json.dumps(
+                {
+                    "alerts": [
+                        {"severity": "critical", "alert_number": 10},
+                        {"severity": "high", "alert_number": 20},
+                        {"severity": "medium", "alert_number": 30},
+                        {"severity": "low", "alert_number": 40},
+                    ],
+                }
+            )
+        )
         pipeline = rp.ResolutionPipeline("owner", "repo", inventory_path=inventory)
         result = pipeline._resolve_p0_p1_alerts()
 
@@ -1335,12 +1446,16 @@ class TestResolveP0P1Alerts:
         import resolution_pipeline as rp
 
         inventory = tmp_path / "inv.json"
-        inventory.write_text(json.dumps({
-            "alerts": [
-                {"severity": "critical", "alert_number": None},
-                {"severity": "high", "alert_number": 5},
-            ],
-        }))
+        inventory.write_text(
+            json.dumps(
+                {
+                    "alerts": [
+                        {"severity": "critical", "alert_number": None},
+                        {"severity": "high", "alert_number": 5},
+                    ],
+                }
+            )
+        )
         pipeline = rp.ResolutionPipeline("owner", "repo", inventory_path=inventory)
         result = pipeline._resolve_p0_p1_alerts()
 
@@ -1351,7 +1466,8 @@ class TestResolveP0P1Alerts:
         import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline(
-            "owner", "repo",
+            "owner",
+            "repo",
             inventory_path=tmp_path / "missing.json",
         )
         result = pipeline._resolve_p0_p1_alerts()
@@ -1420,11 +1536,13 @@ class TestRunStageAliases:
         import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
-        with patch.object(pipeline, "collect") as m_collect, \
-             patch.object(pipeline, "analyse") as m_analyse, \
-             patch.object(pipeline, "remediate") as m_remediate, \
-             patch.object(pipeline, "validate") as m_validate, \
-             patch.object(pipeline, "close_alerts") as m_close:
+        with (
+            patch.object(pipeline, "collect") as m_collect,
+            patch.object(pipeline, "analyse") as m_analyse,
+            patch.object(pipeline, "remediate") as m_remediate,
+            patch.object(pipeline, "validate") as m_validate,
+            patch.object(pipeline, "close_alerts") as m_close,
+        ):
             pipeline.run(["analyze"])
 
         m_analyse.assert_called_once()
@@ -1438,11 +1556,13 @@ class TestRunStageAliases:
         import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
-        with patch.object(pipeline, "collect") as m_collect, \
-             patch.object(pipeline, "analyse") as m_analyse, \
-             patch.object(pipeline, "remediate") as m_remediate, \
-             patch.object(pipeline, "validate") as m_validate, \
-             patch.object(pipeline, "close_alerts") as m_close:
+        with (
+            patch.object(pipeline, "collect") as m_collect,
+            patch.object(pipeline, "analyse") as m_analyse,
+            patch.object(pipeline, "remediate") as m_remediate,
+            patch.object(pipeline, "validate") as m_validate,
+            patch.object(pipeline, "close_alerts") as m_close,
+        ):
             pipeline.run(["fix"])
 
         m_remediate.assert_called_once()
@@ -1456,11 +1576,13 @@ class TestRunStageAliases:
         import resolution_pipeline as rp
 
         pipeline = rp.ResolutionPipeline("owner", "repo")
-        with patch.object(pipeline, "collect") as m_collect, \
-             patch.object(pipeline, "analyse") as m_analyse, \
-             patch.object(pipeline, "remediate") as m_remediate, \
-             patch.object(pipeline, "validate") as m_validate, \
-             patch.object(pipeline, "close_alerts") as m_close:
+        with (
+            patch.object(pipeline, "collect") as m_collect,
+            patch.object(pipeline, "analyse") as m_analyse,
+            patch.object(pipeline, "remediate") as m_remediate,
+            patch.object(pipeline, "validate") as m_validate,
+            patch.object(pipeline, "close_alerts") as m_close,
+        ):
             pipeline.run(["close"])
 
         m_close.assert_called_once()
@@ -1476,10 +1598,10 @@ class TestMainFunction:
     def test_main_returns_0_when_no_errors(self):
         import resolution_pipeline as rp
 
-        with patch("sys.argv", ["rp", "--owner", "o", "--repo", "r",
-                                 "--stages", "collect"]), \
-             patch.object(rp.ResolutionPipeline, "run",
-                          return_value=rp.PipelineResult()):
+        with (
+            patch("sys.argv", ["rp", "--owner", "o", "--repo", "r", "--stages", "collect"]),
+            patch.object(rp.ResolutionPipeline, "run", return_value=rp.PipelineResult()),
+        ):
             ret = rp.main()
 
         assert ret == 0
@@ -1487,10 +1609,12 @@ class TestMainFunction:
     def test_main_returns_1_when_errors_present(self):
         import resolution_pipeline as rp
 
-        with patch("sys.argv", ["rp", "--owner", "o", "--repo", "r",
-                                 "--stages", "collect"]), \
-             patch.object(rp.ResolutionPipeline, "run",
-                          return_value=rp.PipelineResult(errors=["ruff_failed"])):
+        with (
+            patch("sys.argv", ["rp", "--owner", "o", "--repo", "r", "--stages", "collect"]),
+            patch.object(
+                rp.ResolutionPipeline, "run", return_value=rp.PipelineResult(errors=["ruff_failed"])
+            ),
+        ):
             ret = rp.main()
 
         assert ret == 1
@@ -1500,11 +1624,25 @@ class TestMainFunction:
 
         out_json = tmp_path / "result.json"
 
-        with patch("sys.argv", ["rp", "--owner", "o", "--repo", "r",
-                                 "--stages", "collect",
-                                 "--output-json", str(out_json)]), \
-             patch.object(rp.ResolutionPipeline, "run",
-                          return_value=rp.PipelineResult(alerts_collected=3)):
+        with (
+            patch(
+                "sys.argv",
+                [
+                    "rp",
+                    "--owner",
+                    "o",
+                    "--repo",
+                    "r",
+                    "--stages",
+                    "collect",
+                    "--output-json",
+                    str(out_json),
+                ],
+            ),
+            patch.object(
+                rp.ResolutionPipeline, "run", return_value=rp.PipelineResult(alerts_collected=3)
+            ),
+        ):
             rp.main()
 
         assert out_json.exists()
@@ -1517,9 +1655,10 @@ class TestMainFunction:
         import resolution_pipeline as rp
 
         result = rp.PipelineResult(validation_passed=True)
-        with patch("sys.argv", ["rp", "--owner", "o", "--repo", "r",
-                                 "--stages", "validate"]), \
-             patch.object(rp.ResolutionPipeline, "run", return_value=result):
+        with (
+            patch("sys.argv", ["rp", "--owner", "o", "--repo", "r", "--stages", "validate"]),
+            patch.object(rp.ResolutionPipeline, "run", return_value=result),
+        ):
             rp.main()
 
         captured = capsys.readouterr()
@@ -1529,9 +1668,10 @@ class TestMainFunction:
         import resolution_pipeline as rp
 
         result = rp.PipelineResult(errors=["ruff_failed", "bandit_high_severity"])
-        with patch("sys.argv", ["rp", "--owner", "o", "--repo", "r",
-                                 "--stages", "validate"]), \
-             patch.object(rp.ResolutionPipeline, "run", return_value=result):
+        with (
+            patch("sys.argv", ["rp", "--owner", "o", "--repo", "r", "--stages", "validate"]),
+            patch.object(rp.ResolutionPipeline, "run", return_value=result),
+        ):
             rp.main()
 
         captured = capsys.readouterr()
@@ -1548,12 +1688,14 @@ class TestMainFunction:
             constructed.append(kwargs.get("use_playwright"))
             original_init(self, *args, **kwargs)
 
-        with patch("sys.argv", ["rp", "--owner", "o", "--repo", "r",
-                                 "--stages", "collect",
-                                 "--use-playwright"]), \
-             patch.object(rp.ResolutionPipeline, "__init__", capturing_init), \
-             patch.object(rp.ResolutionPipeline, "run",
-                          return_value=rp.PipelineResult()):
+        with (
+            patch(
+                "sys.argv",
+                ["rp", "--owner", "o", "--repo", "r", "--stages", "collect", "--use-playwright"],
+            ),
+            patch.object(rp.ResolutionPipeline, "__init__", capturing_init),
+            patch.object(rp.ResolutionPipeline, "run", return_value=rp.PipelineResult()),
+        ):
             rp.main()
 
         assert constructed and constructed[0] is True

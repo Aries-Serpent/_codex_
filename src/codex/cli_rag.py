@@ -27,7 +27,7 @@ try:
     from codex.rag.indexer import RAGIndexer
 except ImportError:  # pragma: no cover - optional dependency
 
-    class RAGIndexer:  # type: ignore[no-redef]
+    class RAGIndexer:
         """Stub when codex.rag is not installed."""
 
         def __init__(self, *args, **kwargs):
@@ -42,7 +42,7 @@ try:
     from codex.rag.retriever import Retriever as RAGRetriever
 except ImportError:  # pragma: no cover - optional dependency
 
-    class RAGRetriever:  # type: ignore[no-redef]
+    class RAGRetriever:
         """Stub when codex.rag is not installed."""
 
         def __init__(self, *args, **kwargs):
@@ -97,7 +97,7 @@ def _format_bytes(size_bytes: int) -> str:
     for unit in ["B", "KB", "MB", "GB"]:
         if size_bytes < 1024.0:
             return f"{size_bytes:.2f} {unit}"
-        size_bytes /= 1024.0  # type: ignore[assignment]
+        size_bytes /= 1024.0
     return f"{size_bytes:.2f} TB"
 
 
@@ -198,11 +198,13 @@ def build(
         console.print(f"[dim]   Location: {index_path}[/dim]")
 
     except ImportError as e:
-        console.print(f"[red]❌ Missing dependencies: {e}[/red]")
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Missing dependencies: <ERROR_TYPE>[/red]")
         console.print("[yellow]Install with: pip install sentence-transformers faiss-cpu[/yellow]")
         raise typer.Exit(1) from e
-    except Exception as e:
-        console.print(f"[red]❌ Failed to build index: {e}[/red]")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Failed to build index: <ERROR_TYPE>[/red]")
         logger.exception("Error building index")
         raise typer.Exit(1) from e
 
@@ -327,10 +329,12 @@ def query(
         console.print("[yellow]Build an index first with: codex rag build[/yellow]")
         raise typer.Exit(1) from err
     except ImportError as e:
-        console.print(f"[red]❌ Missing dependencies: {e}[/red]")
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Missing dependencies: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
-        console.print(f"[red]❌ Query failed: {e}[/red]")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Query failed: <ERROR_TYPE>[/red]")
         logger.exception("Error querying index")
         raise typer.Exit(1) from e
 
@@ -386,8 +390,9 @@ def list_indices(
                                 "path": index_path,
                             }
                         )
-                    except Exception as e:
-                        logger.warning(f"Failed to read metadata for {index_path}: {e}")
+                    except (IOError, OSError) as e:
+                        error_type = type(e).__name__
+                        logger.warning(f"Failed to read metadata for {index_path}: <ERROR_TYPE>")
 
         if not indices:
             console.print(f"[yellow]No valid indices found for tenant '{tenant_id}'[/yellow]")
@@ -412,8 +417,9 @@ def list_indices(
         console.print(table)
         console.print(f"\n[dim]Total: {len(indices)} indices[/dim]")
 
-    except Exception as e:
-        console.print(f"[red]❌ Failed to list indices: {e}[/red]")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Failed to list indices: <ERROR_TYPE>[/red]")
         logger.exception("Error listing indices")
         raise typer.Exit(1) from e
 
@@ -478,8 +484,9 @@ def delete(
         shutil.rmtree(index_path)
         console.print(f"[green]✅ Deleted index '{index_name}' for tenant '{tenant_id}'[/green]")
 
-    except Exception as e:
-        console.print(f"[red]❌ Failed to delete index: {e}[/red]")
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Failed to delete index: <ERROR_TYPE>[/red]")
         logger.exception("Error deleting index")
         raise typer.Exit(1) from e
 
@@ -554,10 +561,12 @@ def merge(
             raise typer.Exit(1)
 
     except ImportError as e:
-        console.print(f"[red]❌ Missing dependencies: {e}[/red]")
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Missing dependencies: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
-        console.print(f"[red]❌ Merge failed: {e}[/red]")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Merge failed: <ERROR_TYPE>[/red]")
         logger.exception("Error merging indices")
         raise typer.Exit(1) from e
 
@@ -637,8 +646,9 @@ def stats(
 
         console.print(table)
 
-    except Exception as e:
-        console.print(f"[red]❌ Failed to get stats: {e}[/red]")
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Failed to get stats: <ERROR_TYPE>[/red]")
         logger.exception("Error getting stats")
         raise typer.Exit(1) from e
 
@@ -695,10 +705,12 @@ def metrics(
             print(content)
 
     except ImportError as e:
-        console.print(f"[red]❌ Missing dependencies: {e}[/red]")
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Missing dependencies: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
-        console.print(f"[red]❌ Failed to export metrics: {e}[/red]")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Failed to export metrics: <ERROR_TYPE>[/red]")
         logger.exception("Error exporting metrics")
         raise typer.Exit(1) from e
 
@@ -822,10 +834,12 @@ def benchmark(
             console.print("\n[green]✅ No performance regressions detected[/green]")
 
     except ImportError as e:
-        console.print(f"[red]❌ Missing benchmark dependencies: {e}[/red]")
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Missing benchmark dependencies: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
-    except Exception as e:
-        console.print(f"[red]❌ Benchmark failed: {e}[/red]")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        console.print(f"[red]❌ Benchmark failed: <ERROR_TYPE>[/red]")
         logger.exception("Benchmark error")
         raise typer.Exit(1) from e
 

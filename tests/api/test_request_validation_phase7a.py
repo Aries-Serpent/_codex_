@@ -15,7 +15,6 @@ Categories:
 - Parameter validation
 """
 
-
 import pytest
 
 pytest.importorskip("fastapi")
@@ -66,8 +65,8 @@ class TestValidRequests:
             json={
                 "username": "validuser",
                 "email": "valid@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code == 201
         data = response.json()
@@ -82,8 +81,8 @@ class TestValidRequests:
                 "username": "userwithroles",
                 "email": "roles@example.com",
                 "password": "SecurePass123!",
-                "roles": ["user", "admin"]
-            }
+                "roles": ["user", "admin"],
+            },
         )
         assert response.status_code == 201
 
@@ -95,16 +94,12 @@ class TestValidRequests:
             json={
                 "username": "logintest",
                 "email": "login@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Then login
         response = test_client.post(
-            "/auth/login",
-            json={
-                "username": "logintest",
-                "password": "SecurePass123!"
-            }
+            "/auth/login", json={"username": "logintest", "password": "SecurePass123!"}
         )
         assert response.status_code == 200
         data = response.json()
@@ -117,8 +112,8 @@ class TestValidRequests:
             json={
                 "username": "a" * 50,  # Assuming 50 char limit
                 "email": "maxlen@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should succeed or fail gracefully
         assert response.status_code in [201, 400, 422]
@@ -130,8 +125,8 @@ class TestValidRequests:
             json={
                 "username": "specialemail",
                 "email": "user+tag@example.co.uk",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400]
 
@@ -142,8 +137,8 @@ class TestValidRequests:
             json={
                 "username": "userñáéíóú",
                 "email": "intl@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should handle or reject gracefully
         assert response.status_code in [201, 400, 422]
@@ -155,8 +150,8 @@ class TestValidRequests:
             json={
                 "username": "minpass",
                 "email": "minpass@example.com",
-                "password": "Pass1!"  # 6 chars, but needs uppercase, lowercase, digit, special
-            }
+                "password": "Pass1!",  # 6 chars, but needs uppercase, lowercase, digit, special
+            },
         )
         # May fail password validation
         assert response.status_code in [201, 400]
@@ -179,11 +174,7 @@ class TestInvalidRequestBodies:
         """Null required field should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": None,
-                "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": None, "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code == 422
 
@@ -191,11 +182,7 @@ class TestInvalidRequestBodies:
         """Empty string username should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "",
-                "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "", "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code == 400 or response.status_code == 422
 
@@ -203,44 +190,28 @@ class TestInvalidRequestBodies:
         """Whitespace-only username should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "   ",
-                "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "   ", "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
 
     def test_missing_username_field(self, test_client):
         """Missing username field should fail."""
         response = test_client.post(
-            "/auth/register",
-            json={
-                "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+            "/auth/register", json={"email": "test@example.com", "password": "SecurePass123!"}
         )
         assert response.status_code == 422
 
     def test_missing_email_field(self, test_client):
         """Missing email field should fail."""
         response = test_client.post(
-            "/auth/register",
-            json={
-                "username": "test",
-                "password": "SecurePass123!"
-            }
+            "/auth/register", json={"username": "test", "password": "SecurePass123!"}
         )
         assert response.status_code == 422
 
     def test_missing_password_field(self, test_client):
         """Missing password field should fail."""
         response = test_client.post(
-            "/auth/register",
-            json={
-                "username": "test",
-                "email": "test@example.com"
-            }
+            "/auth/register", json={"username": "test", "email": "test@example.com"}
         )
         assert response.status_code == 422
 
@@ -257,11 +228,7 @@ class TestTypeMismatches:
         """Username as integer should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": 12345,
-                "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": 12345, "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
 
@@ -269,11 +236,7 @@ class TestTypeMismatches:
         """Email as integer should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": 12345,
-                "password": "SecurePass123!"
-            }
+            json={"username": "test", "email": 12345, "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
 
@@ -281,11 +244,7 @@ class TestTypeMismatches:
         """Password as integer should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": "test@example.com",
-                "password": 12345
-            }
+            json={"username": "test", "email": "test@example.com", "password": 12345},
         )
         assert response.status_code in [400, 422]
 
@@ -293,11 +252,7 @@ class TestTypeMismatches:
         """Username as array should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": ["test"],
-                "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": ["test"], "email": "test@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
 
@@ -305,11 +260,7 @@ class TestTypeMismatches:
         """Password as boolean should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": "test@example.com",
-                "password": True
-            }
+            json={"username": "test", "email": "test@example.com", "password": True},
         )
         assert response.status_code in [400, 422]
 
@@ -321,8 +272,8 @@ class TestTypeMismatches:
                 "username": "test",
                 "email": "test@example.com",
                 "password": "SecurePass123!",
-                "roles": "admin"  # Should be array
-            }
+                "roles": "admin",  # Should be array
+            },
         )
         # May coerce or reject
         assert response.status_code in [201, 400, 422]
@@ -336,38 +287,40 @@ class TestTypeMismatches:
 class TestEmailValidation:
     """Tests for email field validation."""
 
-    @pytest.mark.parametrize("invalid_email", [
-        "notanemail",
-        "missing@domain",
-        "@nodomain.com",
-        "spaces in@email.com",
-        "double@@domain.com",
-        ".startswithdot@domain.com",
-        "user@.com",
-        "user@domain..com",
-        "user name@domain.com",
-        "",
-    ])
+    @pytest.mark.parametrize(
+        "invalid_email",
+        [
+            "notanemail",
+            "missing@domain",
+            "@nodomain.com",
+            "spaces in@email.com",
+            "double@@domain.com",
+            ".startswithdot@domain.com",
+            "user@.com",
+            "user@domain..com",
+            "user name@domain.com",
+            "",
+        ],
+    )
     def test_invalid_email_formats(self, test_client, invalid_email):
         """Invalid email formats should fail."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": invalid_email,
-                "password": "SecurePass123!"
-            }
+            json={"username": "test", "email": invalid_email, "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
 
-    @pytest.mark.parametrize("valid_email", [
-        "user@domain.com",
-        "user.name@domain.com",
-        "user+tag@domain.com",
-        "user_name@domain.com",
-        "user123@domain.co.uk",
-        "a@b.co",
-    ])
+    @pytest.mark.parametrize(
+        "valid_email",
+        [
+            "user@domain.com",
+            "user.name@domain.com",
+            "user+tag@domain.com",
+            "user_name@domain.com",
+            "user123@domain.co.uk",
+            "a@b.co",
+        ],
+    )
     def test_valid_email_formats(self, test_client, valid_email):
         """Valid email formats should succeed."""
         response = test_client.post(
@@ -375,8 +328,8 @@ class TestEmailValidation:
             json={
                 "username": f"user{hash(valid_email) % 10000}",
                 "email": valid_email,
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400]  # May fail if email already exists
 
@@ -389,16 +342,19 @@ class TestEmailValidation:
 class TestPasswordValidation:
     """Tests for password field validation."""
 
-    @pytest.mark.parametrize("weak_password", [
-        "123456",           # Only digits
-        "password",         # Only lowercase
-        "PASSWORD",         # Only uppercase
-        "Pass",             # Too short
-        "password1",        # Missing uppercase
-        "PASSWORD1",        # Missing lowercase
-        "Password",         # Missing digit
-        "Pass123",          # Missing special char
-    ])
+    @pytest.mark.parametrize(
+        "weak_password",
+        [
+            "123456",  # Only digits
+            "password",  # Only lowercase
+            "PASSWORD",  # Only uppercase
+            "Pass",  # Too short
+            "password1",  # Missing uppercase
+            "PASSWORD1",  # Missing lowercase
+            "Password",  # Missing digit
+            "Pass123",  # Missing special char
+        ],
+    )
     def test_weak_passwords(self, test_client, weak_password):
         """Weak passwords should fail validation."""
         response = test_client.post(
@@ -406,18 +362,21 @@ class TestPasswordValidation:
             json={
                 "username": f"weakpass{hash(weak_password) % 10000}",
                 "email": f"weak{hash(weak_password)}@example.com",
-                "password": weak_password
-            }
+                "password": weak_password,
+            },
         )
         # Should reject weak password
         assert response.status_code in [400, 422]
 
-    @pytest.mark.parametrize("strong_password", [
-        "SecurePass123!",
-        "MyP@ssw0rd",
-        "Correct!Horse1",
-        "P@ssw0rd2024",
-    ])
+    @pytest.mark.parametrize(
+        "strong_password",
+        [
+            "SecurePass123!",
+            "MyP@ssw0rd",
+            "Correct!Horse1",
+            "P@ssw0rd2024",
+        ],
+    )
     def test_strong_passwords(self, test_client, strong_password):
         """Strong passwords should be accepted."""
         response = test_client.post(
@@ -425,8 +384,8 @@ class TestPasswordValidation:
             json={
                 "username": f"strongpass{hash(strong_password) % 10000}",
                 "email": f"strong{hash(strong_password)}@example.com",
-                "password": strong_password
-            }
+                "password": strong_password,
+            },
         )
         assert response.status_code == 201
 
@@ -437,8 +396,8 @@ class TestPasswordValidation:
             json={
                 "username": "spacedpass",
                 "email": "spaced@example.com",
-                "password": "My Pass Word 123!"
-            }
+                "password": "My Pass Word 123!",
+            },
         )
         # Should accept or reject
         assert response.status_code in [201, 400, 422]
@@ -450,8 +409,8 @@ class TestPasswordValidation:
             json={
                 "username": "unicodepass",
                 "email": "unicode@example.com",
-                "password": "Pässwörd123!"
-            }
+                "password": "Pässwörd123!",
+            },
         )
         # Should handle unicode
         assert response.status_code in [201, 400, 422]
@@ -463,8 +422,8 @@ class TestPasswordValidation:
             json={
                 "username": "longpass",
                 "email": "long@example.com",
-                "password": "P" + "a" * 1000 + "1!"
-            }
+                "password": "P" + "a" * 1000 + "1!",
+            },
         )
         # Should accept or have max length
         assert response.status_code in [201, 400, 422]
@@ -485,8 +444,8 @@ class TestUsernameValidation:
             json={
                 "username": "user name",
                 "email": "userspace@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should accept or reject
         assert response.status_code in [201, 400, 422]
@@ -498,8 +457,8 @@ class TestUsernameValidation:
             json={
                 "username": "user@name",
                 "email": "userspecial@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should accept or reject
         assert response.status_code in [201, 400, 422]
@@ -511,8 +470,8 @@ class TestUsernameValidation:
             json={
                 "username": "123user",
                 "email": "numuser@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400]
 
@@ -523,8 +482,8 @@ class TestUsernameValidation:
             json={
                 "username": "user_name",
                 "email": "underscore@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400]
 
@@ -535,8 +494,8 @@ class TestUsernameValidation:
             json={
                 "username": "user-name",
                 "email": "dash@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400]
 
@@ -557,8 +516,8 @@ class TestExtraFields:
                 "username": "test",
                 "email": "test@example.com",
                 "password": "SecurePass123!",
-                "unknown_field": "value"
-            }
+                "unknown_field": "value",
+            },
         )
         # Depends on Pydantic config
         assert response.status_code in [201, 400, 422]
@@ -573,8 +532,8 @@ class TestExtraFields:
                 "password": "SecurePass123!",
                 "extra1": "value1",
                 "extra2": "value2",
-                "extra3": "value3"
-            }
+                "extra3": "value3",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -586,8 +545,8 @@ class TestExtraFields:
                 "username": "test",
                 "email": "test@example.com",
                 "password": "SecurePass123!",
-                "metadata": {"key": "value"}
-            }
+                "metadata": {"key": "value"},
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -604,11 +563,7 @@ class TestBoundaryValues:
         """Username with minimum length."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "a",
-                "email": "minuser@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "a", "email": "minuser@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [201, 400, 422]
 
@@ -619,20 +574,15 @@ class TestBoundaryValues:
             json={
                 "username": "a" * 255,
                 "email": "maxuser@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
     def test_zero_length_password(self, test_client):
         """Zero length password."""
         response = test_client.post(
-            "/auth/register",
-            json={
-                "username": "test",
-                "email": "test@example.com",
-                "password": ""
-            }
+            "/auth/register", json={"username": "test", "email": "test@example.com", "password": ""}
         )
         assert response.status_code in [400, 422]
 
@@ -644,8 +594,8 @@ class TestBoundaryValues:
             json={
                 "username": f"user_{length}",
                 "email": f"test{length}@example.com",
-                "password": "S" + "a" * (length - 1) + "1!"
-            }
+                "password": "S" + "a" * (length - 1) + "1!",
+            },
         )
         # Should handle various lengths
         assert response.status_code in [201, 400, 422]
@@ -659,18 +609,21 @@ class TestBoundaryValues:
 class TestSpecialCharacters:
     """Tests for special characters in strings."""
 
-    @pytest.mark.parametrize("special_username", [
-        "user!name",
-        "user@name",
-        "user#name",
-        "user$name",
-        "user%name",
-        "user&name",
-        "user*name",
-        "user(name)",
-        "user[name]",
-        "user{name}",
-    ])
+    @pytest.mark.parametrize(
+        "special_username",
+        [
+            "user!name",
+            "user@name",
+            "user#name",
+            "user$name",
+            "user%name",
+            "user&name",
+            "user*name",
+            "user(name)",
+            "user[name]",
+            "user{name}",
+        ],
+    )
     def test_special_chars_in_username(self, test_client, special_username):
         """Special characters in username."""
         response = test_client.post(
@@ -678,8 +631,8 @@ class TestSpecialCharacters:
             json={
                 "username": special_username,
                 "email": f"special{hash(special_username)}@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [201, 400, 422]
 
@@ -690,8 +643,8 @@ class TestSpecialCharacters:
             json={
                 "username": "user\nname",
                 "email": "newline@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [400, 422]
 
@@ -699,11 +652,7 @@ class TestSpecialCharacters:
         """Tab character in email."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "test",
-                "email": "user\t@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "test", "email": "user\t@example.com", "password": "SecurePass123!"},
         )
         assert response.status_code in [400, 422]
 
@@ -714,8 +663,8 @@ class TestSpecialCharacters:
             json={
                 "username": "'; DROP TABLE users; --",
                 "email": "sqli@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should safely reject or handle
         assert response.status_code in [201, 400, 422]
@@ -727,8 +676,8 @@ class TestSpecialCharacters:
             json={
                 "username": "<script>alert('xss')</script>",
                 "email": "xss@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should safely reject or handle
         assert response.status_code in [201, 400, 422]
@@ -750,8 +699,8 @@ class TestParameterCombinations:
             json={
                 "username": "combo1",
                 "email": "combo1a@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response1.status_code == 201
 
@@ -761,8 +710,8 @@ class TestParameterCombinations:
             json={
                 "username": "combo1",
                 "email": "combo1b@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should fail - duplicate username
         assert response2.status_code == 400
@@ -775,8 +724,8 @@ class TestParameterCombinations:
             json={
                 "username": "combo2a",
                 "email": "combo@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response1.status_code == 201
 
@@ -786,8 +735,8 @@ class TestParameterCombinations:
             json={
                 "username": "combo2b",
                 "email": "combo@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # Should fail - duplicate email
         assert response2.status_code in [400, 409]
@@ -799,8 +748,8 @@ class TestParameterCombinations:
             json={
                 "username": "CaseTest",
                 "email": "case1@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response1.status_code == 201
 
@@ -809,8 +758,8 @@ class TestParameterCombinations:
             json={
                 "username": "casetest",
                 "email": "case2@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # May allow or reject based on case sensitivity
         assert response2.status_code in [201, 400]
@@ -819,21 +768,13 @@ class TestParameterCombinations:
         """Email case insensitivity."""
         response1 = test_client.post(
             "/auth/register",
-            json={
-                "username": "email1",
-                "email": "Test@Example.COM",
-                "password": "SecurePass123!"
-            }
+            json={"username": "email1", "email": "Test@Example.COM", "password": "SecurePass123!"},
         )
         assert response1.status_code == 201
 
         response2 = test_client.post(
             "/auth/register",
-            json={
-                "username": "email2",
-                "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "email2", "email": "test@example.com", "password": "SecurePass123!"},
         )
         # Should fail if emails match case-insensitively
         assert response2.status_code in [201, 400, 409]

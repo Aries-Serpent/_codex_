@@ -65,7 +65,8 @@ def check_pyproject_toml() -> bool:
     try:
         data = tomllib.loads(pyproject.read_text())
     except Exception as e:
-        print(f"❌ Failed to parse pyproject.toml: {e}")
+        error_type = type(e).__name__
+        print(f"❌ Failed to parse pyproject.toml: <ERROR_TYPE>")
         return False
 
     requires_python = data.get("project", {}).get("requires-python", "")
@@ -132,7 +133,8 @@ def main() -> int:
         try:
             results.append(check_func())
         except Exception as e:
-            print(f"❌ {name}: Unexpected error: {e}")
+            error_type = type(e).__name__
+            print(f"❌ {name}: Unexpected error: <ERROR_TYPE>")
             results.append(False)
         print()  # Blank line between checks
 

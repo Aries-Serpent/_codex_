@@ -7,6 +7,7 @@ Covers:
 - Token token auth priority with CODEX_MASTER_KEY / CODEX_BACKUP_KEY
 - CLI main() for set-variable command
 """
+
 from __future__ import annotations
 
 import json
@@ -57,9 +58,13 @@ def test_set_session_number_patch(poster, monkeypatch):
     """COGNITIVE_BRAIN_SESSION_NUMBER PATCH updates existing variable."""
     monkeypatch.setattr(
         "codex.github.mcp_poster.urllib.request.urlopen",
-        mock.Mock(return_value=_mock_urlopen({"name": "COGNITIVE_BRAIN_SESSION_NUMBER", "value": "109"})),
+        mock.Mock(
+            return_value=_mock_urlopen({"name": "COGNITIVE_BRAIN_SESSION_NUMBER", "value": "109"})
+        ),
     )
-    result = poster.set_repo_variable("Aries-Serpent/_codex_", "COGNITIVE_BRAIN_SESSION_NUMBER", "109")
+    result = poster.set_repo_variable(
+        "Aries-Serpent/_codex_", "COGNITIVE_BRAIN_SESSION_NUMBER", "109"
+    )
     assert result.get("value") == "109" or result.get("name") == "COGNITIVE_BRAIN_SESSION_NUMBER"
 
 
@@ -74,8 +79,12 @@ def test_set_session_number_creates_on_404(poster, monkeypatch):
             raise err("url", 404, "Not Found", {}, None)
         return _mock_urlopen({"name": "COGNITIVE_BRAIN_SESSION_NUMBER", "value": "109"})
 
-    monkeypatch.setattr("codex.github.mcp_poster.urllib.request.urlopen", mock.Mock(side_effect=side_effect))
-    result = poster.set_repo_variable("Aries-Serpent/_codex_", "COGNITIVE_BRAIN_SESSION_NUMBER", "109")
+    monkeypatch.setattr(
+        "codex.github.mcp_poster.urllib.request.urlopen", mock.Mock(side_effect=side_effect)
+    )
+    result = poster.set_repo_variable(
+        "Aries-Serpent/_codex_", "COGNITIVE_BRAIN_SESSION_NUMBER", "109"
+    )
     assert result is not None
     assert call_count["n"] == 2
 
@@ -85,9 +94,15 @@ def test_set_allowed_actors_patch(poster, monkeypatch):
     new_value = "mbaetiong,github-actions[bot],copilot-swe-agent[bot]"
     monkeypatch.setattr(
         "codex.github.mcp_poster.urllib.request.urlopen",
-        mock.Mock(return_value=_mock_urlopen({"name": "COGNITIVE_BRAIN_ALLOWED_ACTORS", "value": new_value})),
+        mock.Mock(
+            return_value=_mock_urlopen(
+                {"name": "COGNITIVE_BRAIN_ALLOWED_ACTORS", "value": new_value}
+            )
+        ),
     )
-    result = poster.set_repo_variable("Aries-Serpent/_codex_", "COGNITIVE_BRAIN_ALLOWED_ACTORS", new_value)
+    result = poster.set_repo_variable(
+        "Aries-Serpent/_codex_", "COGNITIVE_BRAIN_ALLOWED_ACTORS", new_value
+    )
     assert result is not None
 
 
@@ -95,9 +110,15 @@ def test_set_injection_enabled_true(poster, monkeypatch):
     """COGNITIVE_BRAIN_INJECTION_ENABLED=true update."""
     monkeypatch.setattr(
         "codex.github.mcp_poster.urllib.request.urlopen",
-        mock.Mock(return_value=_mock_urlopen({"name": "COGNITIVE_BRAIN_INJECTION_ENABLED", "value": "true"})),
+        mock.Mock(
+            return_value=_mock_urlopen(
+                {"name": "COGNITIVE_BRAIN_INJECTION_ENABLED", "value": "true"}
+            )
+        ),
     )
-    result = poster.set_repo_variable("Aries-Serpent/_codex_", "COGNITIVE_BRAIN_INJECTION_ENABLED", "true")
+    result = poster.set_repo_variable(
+        "Aries-Serpent/_codex_", "COGNITIVE_BRAIN_INJECTION_ENABLED", "true"
+    )
     assert result is not None
 
 
@@ -140,10 +161,21 @@ def test_cli_set_session_number_s109(monkeypatch):
     monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_s109_cli_token")
     monkeypatch.setattr(
         "codex.github.mcp_poster.urllib.request.urlopen",
-        mock.Mock(return_value=_mock_urlopen({"name": "COGNITIVE_BRAIN_SESSION_NUMBER", "value": "109"})),
+        mock.Mock(
+            return_value=_mock_urlopen({"name": "COGNITIVE_BRAIN_SESSION_NUMBER", "value": "109"})
+        ),
     )
-    rc = main(["set-variable", "--repo", "Aries-Serpent/_codex_",
-               "--name", "COGNITIVE_BRAIN_SESSION_NUMBER", "--value", "109"])
+    rc = main(
+        [
+            "set-variable",
+            "--repo",
+            "Aries-Serpent/_codex_",
+            "--name",
+            "COGNITIVE_BRAIN_SESSION_NUMBER",
+            "--value",
+            "109",
+        ]
+    )
     assert rc == 0
 
 
@@ -153,8 +185,21 @@ def test_cli_set_allowed_actors_s109(monkeypatch):
     new_actors = "mbaetiong,github-actions[bot],copilot-swe-agent[bot]"
     monkeypatch.setattr(
         "codex.github.mcp_poster.urllib.request.urlopen",
-        mock.Mock(return_value=_mock_urlopen({"name": "COGNITIVE_BRAIN_ALLOWED_ACTORS", "value": new_actors})),
+        mock.Mock(
+            return_value=_mock_urlopen(
+                {"name": "COGNITIVE_BRAIN_ALLOWED_ACTORS", "value": new_actors}
+            )
+        ),
     )
-    rc = main(["set-variable", "--repo", "Aries-Serpent/_codex_",
-               "--name", "COGNITIVE_BRAIN_ALLOWED_ACTORS", "--value", new_actors])
+    rc = main(
+        [
+            "set-variable",
+            "--repo",
+            "Aries-Serpent/_codex_",
+            "--name",
+            "COGNITIVE_BRAIN_ALLOWED_ACTORS",
+            "--value",
+            new_actors,
+        ]
+    )
     assert rc == 0

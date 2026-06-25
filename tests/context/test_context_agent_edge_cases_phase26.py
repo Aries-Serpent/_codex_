@@ -71,7 +71,7 @@ class TestContextEdgeCases:
         unicode_messages = [
             {"role": "user", "content": "你好世界"},
             {"role": "assistant", "content": "🚀🔥"},
-            {"role": "user", "content": "Привет"}
+            {"role": "user", "content": "Привет"},
         ]
         # Should handle Unicode correctly
         for msg in unicode_messages:

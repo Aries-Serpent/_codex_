@@ -68,14 +68,17 @@ class TestIngestAdapter:
 
         # Create manifest
         manifest_file = tmp_path / "manifest.yaml"
-        manifest_file.write_text("""
+        manifest_file.write_text(
+            """
 version: "1.0"
 source:
   type: file
   path: "./script.py"
 metadata:
   owner: "@test"
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         # Create artifacts directory
         artifacts_dir = tmp_path / "artifacts"
@@ -170,12 +173,15 @@ class TestManifestParser:
         from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
-        manifest_file.write_text("""
+        manifest_file.write_text(
+            """
 version: "1.0"
 source:
   type: file
   path: "./script.py"
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         manifest = parse_manifest(manifest_file)
 
@@ -188,7 +194,8 @@ source:
         from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
-        manifest_file.write_text("""
+        manifest_file.write_text(
+            """
 version: "1.0"
 source:
   type: git-url
@@ -214,7 +221,9 @@ metadata:
   allow_external_llm: true
   tags:
     - "utility"
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         manifest = parse_manifest(manifest_file)
 
@@ -231,11 +240,14 @@ metadata:
         from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
-        manifest_file.write_text("""
+        manifest_file.write_text(
+            """
 source:
   type: file
   path: "./script.py"
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         with pytest.raises(ValueError, match="version"):
             parse_manifest(manifest_file)
@@ -245,12 +257,15 @@ source:
         from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
-        manifest_file.write_text("""
+        manifest_file.write_text(
+            """
 version: "invalid"
 source:
   type: file
   path: "./script.py"
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         with pytest.raises(ValueError):
             parse_manifest(manifest_file)
@@ -260,14 +275,17 @@ source:
         from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
-        manifest_file.write_text("""
+        manifest_file.write_text(
+            """
 version: "1.0"
 source:
   type: file
   path: "./script.py"
 constraints:
   max_runtime_seconds: 10000
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         with pytest.raises(ValueError, match="max_runtime_seconds"):
             parse_manifest(manifest_file)
@@ -277,12 +295,15 @@ constraints:
         from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
-        manifest_file.write_text("""
+        manifest_file.write_text(
+            """
 version: "1.0"
 source:
   type: file
   path: "./script.py"
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         manifest = parse_manifest(manifest_file)
         data = manifest.to_dict()

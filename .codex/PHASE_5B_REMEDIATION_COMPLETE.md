@@ -231,7 +231,7 @@ nox -s tests -- --cov=src --cov-report=term-missing
 **Expected Output:**
 ```
 Line Coverage:    ≥12.0% ✓
-Branch Coverage:  70%+ 
+Branch Coverage:  70%+
 Function Coverage: 85%+
 ```
 

@@ -152,7 +152,8 @@ class AutomatedPRGenerator:
             return metadata
 
         except Exception as e:
-            print(f"Error creating PR: {e}")
+            error_type = type(e).__name__
+            print(f"Error creating PR: <ERROR_TYPE>")
             self._rollback_branch(branch_name)
             return None
 
@@ -179,7 +180,8 @@ class AutomatedPRGenerator:
             return True
 
         except subprocess.CalledProcessError as e:
-            print(f"Error creating branch: {e}")
+            error_type = type(e).__name__
+            print(f"Error creating branch: <ERROR_TYPE>")
             return False
 
     def _apply_fix(self, fix: GeneratedFix) -> bool:
@@ -222,7 +224,8 @@ class AutomatedPRGenerator:
             return True
 
         except Exception as e:
-            print(f"Error applying fix to {fix.file_path}: {e}")
+            error_type = type(e).__name__
+            print(f"Error applying fix to {fix.file_path}: <ERROR_TYPE>")
             return False
 
     def _replace_by_line(self, lines: list[str], fix: GeneratedFix) -> str:
@@ -253,7 +256,8 @@ class AutomatedPRGenerator:
             print("❌ Tests timed out")
             return False
         except Exception as e:
-            print(f"Error running tests: {e}")
+            error_type = type(e).__name__
+            print(f"Error running tests: <ERROR_TYPE>")
             return False
 
     def _commit_changes(self, message: str) -> bool:
@@ -268,7 +272,8 @@ class AutomatedPRGenerator:
             return True
 
         except subprocess.CalledProcessError as e:
-            print(f"Error committing changes: {e}")
+            error_type = type(e).__name__
+            print(f"Error committing changes: <ERROR_TYPE>")
             return False
 
     def _push_branch(self, branch_name: str) -> bool:
@@ -282,7 +287,8 @@ class AutomatedPRGenerator:
             return True
 
         except subprocess.CalledProcessError as e:
-            print(f"Error pushing branch: {e}")
+            error_type = type(e).__name__
+            print(f"Error pushing branch: <ERROR_TYPE>")
             return False
 
     def _create_github_pr(self, branch_name: str, title: str, body: str) -> tuple:
@@ -350,7 +356,8 @@ class AutomatedPRGenerator:
             return True
 
         except Exception as e:
-            print(f"Error rolling back: {e}")
+            error_type = type(e).__name__
+            print(f"Error rolling back: <ERROR_TYPE>")
             return False
 
     def _generate_commit_message(self, fixes: list[dict]) -> str:
@@ -420,7 +427,8 @@ class AutomatedPRGenerator:
             return json.loads(result.stdout)
 
         except Exception as e:
-            print(f"Error getting PR status: {e}")
+            error_type = type(e).__name__
+            print(f"Error getting PR status: <ERROR_TYPE>")
             return None
 
 

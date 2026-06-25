@@ -37,6 +37,7 @@ def setup_deterministic_environment():
     random.seed(42)
     try:
         import numpy as np
+
         np.random.seed(42)
     except ImportError:
         _ = None  # suppressed: no action needed
@@ -157,9 +158,7 @@ class TestAdaptiveScoringOptimized:
         try:
             results = run_exp1b_revalidation(scenarios=10, seed=42)
             # Accuracy should be maintained at or above 84%
-            assert results.accuracy >= 0.84, (
-                f"Accuracy {results.accuracy:.1%} below 84% threshold"
-            )
+            assert results.accuracy >= 0.84, f"Accuracy {results.accuracy:.1%} below 84% threshold"
         except Exception as e:
             # Skip test if quantum simulation environment is not properly configured
             pytest.skip(f"Quantum simulation environment not available: {e}")
@@ -232,28 +231,24 @@ class TestAdaptiveScoringOptimized:
         results2 = run_exp1b_revalidation(scenarios=20, seed=42)
 
         # Results should be identical (deterministic)
-        assert results1.k1 == pytest.approx(results2.k1, abs=0.001), (
-            "k₁ values differ between runs with same seed"
-        )
-        assert results1.accuracy == pytest.approx(results2.accuracy, abs=0.001), (
-            "Accuracy differs between runs with same seed"
-        )
-        assert results1.coherence == pytest.approx(results2.coherence, abs=0.001), (
-            "Coherence differs between runs with same seed"
-        )
-        assert results1.total_scenarios == results2.total_scenarios, (
-            "Total scenarios differ between runs with same seed"
-        )
+        assert results1.k1 == pytest.approx(
+            results2.k1, abs=0.001
+        ), "k₁ values differ between runs with same seed"
+        assert results1.accuracy == pytest.approx(
+            results2.accuracy, abs=0.001
+        ), "Accuracy differs between runs with same seed"
+        assert results1.coherence == pytest.approx(
+            results2.coherence, abs=0.001
+        ), "Coherence differs between runs with same seed"
+        assert (
+            results1.total_scenarios == results2.total_scenarios
+        ), "Total scenarios differ between runs with same seed"
 
         # Different seed should produce different results (non-deterministic across seeds)
         results3 = run_exp1b_revalidation(scenarios=20, seed=123)
         k1_differs = results1.k1 != pytest.approx(results3.k1, abs=0.001)
-        accuracy_differs = results1.accuracy != pytest.approx(
-            results3.accuracy, abs=0.001
-        )
-        assert k1_differs or accuracy_differs, (
-            "Results with different seeds should differ"
-        )
+        accuracy_differs = results1.accuracy != pytest.approx(results3.accuracy, abs=0.001)
+        assert k1_differs or accuracy_differs, "Results with different seeds should differ"
 
 
 class TestK1Calculation:
@@ -315,11 +310,8 @@ class TestWeightNormalization:
         assert normalized_sum == pytest.approx(1.0, abs=0.001)
 
         # Proportions should be preserved
-        assert (
-            normalized.compliance_score_weight / normalized.risk_weight
-            == pytest.approx(
-                weights.compliance_score_weight / weights.risk_weight, rel=0.01
-            )
+        assert normalized.compliance_score_weight / normalized.risk_weight == pytest.approx(
+            weights.compliance_score_weight / weights.risk_weight, rel=0.01
         )
 
     def test_normalize_zero_weights(self):

@@ -6,8 +6,9 @@ import math
 from dataclasses import dataclass
 from typing import Optional
 
-import torch
 import torch.nn.init as init
+
+import torch
 from torch import nn
 from torch.nn import functional as F
 

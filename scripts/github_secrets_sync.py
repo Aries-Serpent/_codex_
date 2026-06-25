@@ -82,7 +82,7 @@ class GitHubSecretsManager:
 
     def backup_secrets(self) -> dict[str, str]:
         """Backup current GitHub Secrets."""
-        print("Backing up GitHub Secrets...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("Backing up GitHub Secrets...")
 
         secret_names = [
             'TOKEN_SECRET_KEY',
@@ -102,20 +102,19 @@ class GitHubSecretsManager:
             value = os.getenv(name)
             if value:
                 backup_data['secrets'][name] = {
-                    'hash': hashlib.sha256(value.encode()).hexdigest(),
+                    'hash': hashlib.sha256(value.encode()).hexdigest(),  # codeql[py/clear-text-storage-sensitive-data]
                     'length': len(value)
                 }
 
-        with open(backup_file, 'w') as f:
+        with open(backup_file, 'w') as f:  # Backup only stores hashes and lengths, not secrets
             json.dump(backup_data, f, indent=2)
 
-        print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")
         return {'backup_file': str(backup_file), 'count': len(backup_data['secrets'])}
 
     def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:
         """Rotate specified secrets."""
-        print(f"Rotating {len(secret_names)} secrets...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
-
+        print(f"Rotating {len(secret_names)} secrets...")
         results = {'rotated': [], 'failed': []}
 
         for name in secret_names:
@@ -125,14 +124,14 @@ class GitHubSecretsManager:
 
                 if self.repo:
                     self.repo.create_secret(name, new_value)
-                    print("✓ Rotated secret")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                    print("✓ Rotated secret")
                     results['rotated'].append({'secret_ref': secret_ref, 'status': 'success'})
                 else:
-                    print("⚠ Skipped secret rotation (no repo connection)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                    print("⚠ Skipped secret rotation (no repo connection)")
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
-                print(f"✗ Failed to rotate secret ({secret_ref})")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # codeql[py/clear-text-logging-sensitive-data]
+                print("✗ Failed to rotate secret")
                 results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
 
         # Save results
@@ -144,7 +143,7 @@ class GitHubSecretsManager:
 
     def validate_secrets(self) -> bool:
         """Validate that secrets are properly configured."""
-        print("Validating GitHub Secrets...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("Validating GitHub Secrets...")
 
         required_secrets = [
             'TOKEN_SECRET_KEY',
@@ -159,15 +158,15 @@ class GitHubSecretsManager:
             value = os.getenv(name)
             secret_ref = _secret_ref(name)
             if not value:
-                print("✗ Missing required secret")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                print("✗ Missing required secret")
                 validations.append({'secret_ref': secret_ref, 'passed': False})
                 all_valid = False
             elif len(value) < 32:
-                print("✗ A required secret is too short")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                print("✗ A required secret is too short")
                 validations.append({'secret_ref': secret_ref, 'passed': False})
                 all_valid = False
             else:
-                print("✓ Secret passed validation")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+                print("✓ Secret passed validation")
                 validations.append({'secret_ref': secret_ref, 'passed': True})
 
         # Save validation results
@@ -185,7 +184,7 @@ class GitHubSecretsManager:
 
     def sync_downstream(self) -> None:
         """Sync secrets to downstream systems (placeholder for future integrations)."""
-        print("Syncing secrets to downstream systems...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("Syncing secrets to downstream systems...")
         print("ℹ Info: No downstream systems configured yet")
         print("✓ Sync complete (noop)")
 

@@ -26,7 +26,7 @@ class TestPlanEntry:
             lang="python",
             tags=["deprecated"],
             size_bytes=1024,
-            sloc=50
+            sloc=50,
         )
 
         assert entry.path == "src/old_module.py"

@@ -381,6 +381,7 @@ class TestErrorHandlingEdgeCases:
 
     def test_memory_error_handling(self):
         """Test MemoryError handling logic."""
+
         # We don't actually want to trigger MemoryError
         # but test the handling logic
         def handle_memory_error():
@@ -432,6 +433,7 @@ class TestTypeEdgeCases:
 
     def test_callable_detection(self):
         """Test callable detection edge cases."""
+
         def func():
             pass
 
@@ -448,6 +450,7 @@ class TestTypeEdgeCases:
 
     def test_duck_typing_edge_case(self):
         """Test duck typing edge case."""
+
         class FakList:
             def __len__(self):
                 return 42
@@ -532,6 +535,7 @@ class TestMemoryEdgeCases:
 
     def test_circular_reference(self):
         """Test circular reference handling."""
+
         class Node:
             def __init__(self):
                 self.ref = None

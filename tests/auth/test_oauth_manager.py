@@ -63,15 +63,12 @@ class TestOAuthManager:
     def test_get_authorization_url_with_custom_scopes(self, oauth_manager):
         """Test authorization URL with custom scopes."""
         custom_scopes = ["read:user"]
-        auth_url = oauth_manager.get_authorization_url(
-            state="test_state",
-            scopes=custom_scopes
-        )
+        auth_url = oauth_manager.get_authorization_url(state="test_state", scopes=custom_scopes)
 
         assert "state=test_state" in auth_url
         assert oauth_manager.config.client_id in auth_url
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_exchange_code_for_token(self, mock_post, oauth_manager):
         """Test exchanging authorization code for token."""
         mock_response = MagicMock()
@@ -90,7 +87,7 @@ class TestOAuthManager:
         assert token.token_type == "Bearer"
         assert token.expires_in == 3600
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_exchange_code_with_invalid_code(self, mock_post, oauth_manager):
         """Test exchanging invalid authorization code."""
         mock_response = MagicMock()
@@ -101,7 +98,7 @@ class TestOAuthManager:
         with pytest.raises(OAuthException):
             oauth_manager.exchange_code_for_token("invalid_code")
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_exchange_code_with_network_error(self, mock_post, oauth_manager):
         """Test exchanging code with network error."""
         mock_post.side_effect = Exception("Network error")
@@ -160,7 +157,7 @@ class TestOAuthManager:
                 token_url="https://oauth.example.com/token",
             )
 
-    @patch('httpx.Client')
+    @patch("httpx.Client")
     def test_refresh_token(self, mock_client_class, oauth_manager):
         """Test token refresh."""
         mock_response = MagicMock()
@@ -209,7 +206,7 @@ class TestOAuthManager:
 
         assert not oauth_manager.validate_state(state1, state2)
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_exchange_code_response_parsing(self, mock_post, oauth_manager):
         """Test parsing of token exchange response."""
         mock_response = MagicMock()
@@ -233,7 +230,7 @@ class TestOAuthManager:
         with pytest.raises(OAuthException):
             raise OAuthException("Test error")
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_exchange_code_with_missing_token_in_response(self, mock_post, oauth_manager):
         """Test handling of malformed token response."""
         mock_response = MagicMock()
@@ -318,7 +315,7 @@ class TestOAuthEdgeCases:
         # Should be URL encoded
         assert "test%20state%20with%20spaces" in auth_url or "test+state+with+spaces" in auth_url
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_token_exchange_with_large_token(self, mock_post, oauth_config):
         """Test token exchange with very large token value."""
         oauth_manager = OAuthManager(oauth_config)

@@ -95,7 +95,7 @@ Security, auth, safety, and crypto modules require:
 
 ### Total Effort Assessment
 
-**Tier 1 + Tier 2 Coverage:** 
+**Tier 1 + Tier 2 Coverage:**
 - Base estimate: ~350 days
 - Optimized (parallel development): ~50-60 days
 - With automation/generation: ~25-35 days

@@ -31,8 +31,8 @@ if _t.TYPE_CHECKING:  # pragma: no cover - typing helpers
     from .backend import ArchiveConfig as _ArchiveConfig
     from .retry import RetryConfig as _RetryConfig
 else:  # pragma: no cover - runtime fallback for type hints
-    _ArchiveConfig = _t.Any  # type: ignore[assignment]
-    _RetryConfig = _t.Any  # type: ignore[assignment]
+    _ArchiveConfig = _t.Any
+    _RetryConfig = _t.Any
 
 try:  # pragma: no cover - Python 3.11+
     import tomllib as _toml
@@ -71,8 +71,9 @@ def _coerce_int(value: object, *, default: int) -> int:
         try:
             return int(value.strip())
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
-            logger.warning(f"ValueError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
+            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
             return default
     return default
 
@@ -84,8 +85,9 @@ def _coerce_float(value: object, *, default: float) -> float:
         try:
             return float(value.strip())
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
-            logger.warning(f"ValueError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
+            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
             return default
     return default
 
@@ -378,10 +380,10 @@ def _merge(current: _T, override: _T) -> _T:
     if current == override:
         return current
     cls = type(current)
-    defaults = asdict(cls())  # type: ignore[call-overload]
-    payload = asdict(current)  # type: ignore[call-overload]
+    defaults = asdict(cls())
+    payload = asdict(current)
     explicit_fields = getattr(override, "_codex_explicit_fields", None)
-    for key, value in asdict(override).items():  # type: ignore[call-overload]
+    for key, value in asdict(override).items():
         if explicit_fields is not None and key not in explicit_fields:
             continue
         default_value = defaults.get(key)

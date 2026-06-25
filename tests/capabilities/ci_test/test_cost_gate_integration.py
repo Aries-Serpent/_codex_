@@ -12,6 +12,7 @@ Validates the FULL cost gate lifecycle:
 Previously deferred as "admin T-002 smoke test" — now implemented
 programmatically so it runs in CI without any live GitHub API calls.
 """
+
 # -*- coding: utf-8 -*-
 from __future__ import annotations
 
@@ -51,6 +52,7 @@ log_usage = _log_mod.log_usage
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def make_estimate(name, runner="ubuntu-latest", timeout=30, matrix=1, ghcr=False):
     return CostEstimate(
@@ -93,6 +95,7 @@ def _is_approved(pr_body: str) -> bool:
 # T-002: Full gate lifecycle
 # ---------------------------------------------------------------------------
 
+
 class TestCostGateLifecycle:
     """OBJ-001 T-002 -- end-to-end gate lifecycle without live GitHub API."""
 
@@ -118,32 +121,32 @@ class TestCostGateLifecycle:
         """Effective minutes just below TIER_GREEN_MAX is GREEN; at/above is YELLOW."""
         # TIER_GREEN_MAX uses strict less-than: effective_minutes < TIER_GREEN_MAX
         e_below = make_estimate("boundary-green-below", timeout=TIER_GREEN_MAX - 1, matrix=1)
-        assert e_below.tier == "GREEN", (
-            f"effective_minutes < TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be GREEN"
-        )
+        assert (
+            e_below.tier == "GREEN"
+        ), f"effective_minutes < TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be GREEN"
         e_at = make_estimate("boundary-green-at", timeout=TIER_GREEN_MAX, matrix=1)
-        assert e_at.tier == "YELLOW", (
-            f"effective_minutes == TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be YELLOW (exclusive upper bound)"
-        )
+        assert (
+            e_at.tier == "YELLOW"
+        ), f"effective_minutes == TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be YELLOW (exclusive upper bound)"
 
     def test_yellow_red_boundary(self):
         """Effective minutes at TIER_YELLOW_MAX is YELLOW; above is RED."""
         # TIER_YELLOW_MAX uses less-than-or-equal: effective_minutes <= TIER_YELLOW_MAX
         e_at = make_estimate("boundary-yellow-at", timeout=TIER_YELLOW_MAX, matrix=1)
-        assert e_at.tier == "YELLOW", (
-            f"effective_minutes == TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be YELLOW (inclusive)"
-        )
+        assert (
+            e_at.tier == "YELLOW"
+        ), f"effective_minutes == TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be YELLOW (inclusive)"
         e_above = make_estimate("boundary-yellow-above", timeout=TIER_YELLOW_MAX + 1, matrix=1)
-        assert e_above.tier == "RED", (
-            f"effective_minutes > TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be RED"
-        )
+        assert (
+            e_above.tier == "RED"
+        ), f"effective_minutes > TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be RED"
 
     # -- Checkbox detection with bold markers --------------------------------
 
     def test_approval_detected_with_bold_markers(self):
-        assert _is_approved(PR_BODY_WITH_APPROVAL), (
-            "Approval must be detected even when checkbox text is wrapped in **bold**"
-        )
+        assert _is_approved(
+            PR_BODY_WITH_APPROVAL
+        ), "Approval must be detected even when checkbox text is wrapped in **bold**"
 
     def test_approval_detected_plain_text(self):
         assert _is_approved(PR_BODY_PLAIN_APPROVAL)
@@ -203,19 +206,21 @@ class TestCostGateLifecycle:
 
     # -- All 5 production workflows gate correctly ---------------------------
 
-    @pytest.mark.parametrize("name,runner,timeout,matrix,ghcr,expected_tier", [
-        ("Build & Push Preview Image",  "ubuntu-latest-m", 60, 2, True,  "RED"),
-        ("Data Quality Suite",          "ubuntu-latest",   60, 3, False, "RED"),
-        ("Scheduled Archival",          "ubuntu-latest",   60, 3, False, "RED"),
-        ("Rust Swarm CI",               "ubuntu-latest",   60, 3, False, "RED"),
-        ("Docker Build & Push",         "ubuntu-latest-m", 60, 2, True,  "RED"),
-        ("Embedding Index Rebuild",     "ubuntu-latest",   15, 1, False, "GREEN"),
-    ])
+    @pytest.mark.parametrize(
+        "name,runner,timeout,matrix,ghcr,expected_tier",
+        [
+            ("Build & Push Preview Image", "ubuntu-latest-m", 60, 2, True, "RED"),
+            ("Data Quality Suite", "ubuntu-latest", 60, 3, False, "RED"),
+            ("Scheduled Archival", "ubuntu-latest", 60, 3, False, "RED"),
+            ("Rust Swarm CI", "ubuntu-latest", 60, 3, False, "RED"),
+            ("Docker Build & Push", "ubuntu-latest-m", 60, 2, True, "RED"),
+            ("Embedding Index Rebuild", "ubuntu-latest", 15, 1, False, "GREEN"),
+        ],
+    )
     def test_production_workflows(self, name, runner, timeout, matrix, ghcr, expected_tier):
         e = make_estimate(name, runner=runner, timeout=timeout, matrix=matrix, ghcr=ghcr)
         assert e.tier == expected_tier, (
-            f"{name}: expected {expected_tier}, got {e.tier} "
-            f"(eff_min={e.effective_minutes})"
+            f"{name}: expected {expected_tier}, got {e.tier} " f"(eff_min={e.effective_minutes})"
         )
 
     # -- Budget tracking integration ----------------------------------------
@@ -242,9 +247,14 @@ class TestCostGateLifecycle:
         log_path = tmp_path / "usage.ndjson"
         monkeypatch.setattr(_log_mod, "_LOG_PATH", log_path)
         for i in range(5):
-            log_usage(workflow=f"job-{i}", runner="ubuntu-latest",
-                      tier="GREEN", effective_minutes=10.0,
-                      approved=True, pr_number=str(100 + i))
+            log_usage(
+                workflow=f"job-{i}",
+                runner="ubuntu-latest",
+                tier="GREEN",
+                effective_minutes=10.0,
+                approved=True,
+                pr_number=str(100 + i),
+            )
         lines = log_path.read_text().strip().splitlines()
         assert len(lines) == 5
 
@@ -253,20 +263,24 @@ class TestCostGateLifecycle:
         log_path = tmp_path / "usage.ndjson"
         monkeypatch.setattr(_log_mod, "_LOG_PATH", log_path)
         events = [
-            ("build-preview-image", "RED",   120.0),
-            ("data-quality-suite",  "RED",   180.0),
-            ("rust-swarm-ci",       "RED",   180.0),
-            ("embed-rebuild",       "GREEN",  15.0),
+            ("build-preview-image", "RED", 120.0),
+            ("data-quality-suite", "RED", 180.0),
+            ("rust-swarm-ci", "RED", 180.0),
+            ("embed-rebuild", "GREEN", 15.0),
         ]
         for wf, tier, mins in events:
-            log_usage(workflow=wf, runner="ubuntu-latest", tier=tier,
-                      effective_minutes=mins, approved=True, pr_number="3579")
+            log_usage(
+                workflow=wf,
+                runner="ubuntu-latest",
+                tier=tier,
+                effective_minutes=mins,
+                approved=True,
+                pr_number="3579",
+            )
         total = sum(
             json.loads(line)["effective_minutes"]
             for line in log_path.read_text().strip().splitlines()
         )
         assert total == pytest.approx(495.0)
         pct = total / 3000 * 100
-        assert pct < 20.0, (
-            f"Single PR consumed {pct:.1f}% of monthly budget (budget=3000 min)"
-        )
+        assert pct < 20.0, f"Single PR consumed {pct:.1f}% of monthly budget (budget=3000 min)"

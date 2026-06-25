@@ -164,9 +164,7 @@ def test_run_triggered_false_on_no_drift():
 # T-06: timestamp is UTC ISO-8601 format
 # ---------------------------------------------------------------------------
 
-_UTC_ISO_PATTERN = re.compile(
-    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?\+00:00$"
-)
+_UTC_ISO_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?\+00:00$")
 
 
 def test_retrain_result_timestamp_utc_iso():
@@ -174,9 +172,9 @@ def test_retrain_result_timestamp_utc_iso():
     pipeline = AutoRetrainPipeline(drift_threshold=0.05)
     result = pipeline.run(_drifted(0.10))
 
-    assert _UTC_ISO_PATTERN.match(result.timestamp), (
-        f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
-    )
+    assert _UTC_ISO_PATTERN.match(
+        result.timestamp
+    ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
 
     # Verify it can be parsed back to a timezone-aware datetime
     parsed = datetime.fromisoformat(result.timestamp)

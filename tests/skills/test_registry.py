@@ -131,13 +131,12 @@ class TestSkillRegistryList:
 class TestSkillRegistryDiscover:
     def test_discover_finds_manifest_yaml(self, simple_manifest):
         import yaml
+
         with tempfile.TemporaryDirectory() as tmpdir:
             skill_dir = Path(tmpdir) / "my_skill"
             skill_dir.mkdir()
             manifest_file = skill_dir / "manifest.yaml"
-            manifest_file.write_text(
-                yaml.safe_dump(simple_manifest.model_dump()), encoding="utf-8"
-            )
+            manifest_file.write_text(yaml.safe_dump(simple_manifest.model_dump()), encoding="utf-8")
             reg = SkillRegistry()
             count = reg.discover(Path(tmpdir))
             assert count == 1

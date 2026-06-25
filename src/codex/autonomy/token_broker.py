@@ -166,7 +166,7 @@ class TokenHealthChecker:
                     status=TokenHealthStatus.UNKNOWN,
                     message=f"Unknown token source: {source.value}",
                 )
-        except Exception as exc:  # noqa: BLE001
+        except (ValueError, TypeError, RuntimeError) as exc:  # noqa: BLE001
             logger.warning(
                 "Token health check failed for %s: %s",
                 source.value,
@@ -244,7 +244,7 @@ class TokenHealthChecker:
                     "issuer": payload.get("iss"),
                 },
             )
-        except Exception as exc:  # noqa: BLE001
+        except (ValueError, TypeError) as exc:  # noqa: BLE001
             return TokenHealthCheck(
                 status=TokenHealthStatus.UNKNOWN,
                 message=f"JWT decode error: {exc}",
@@ -338,7 +338,10 @@ class TokenCircuitBreaker:
 
         # Check if circuit should transition from OPEN → HALF_OPEN (recovery probe)
         if record.state == CircuitBreakerState.OPEN:
-            if record.last_failure_time and (now - record.last_failure_time) >= self._RECOVERY_PROBE_INTERVAL:
+            if (
+                record.last_failure_time
+                and (now - record.last_failure_time) >= self._RECOVERY_PROBE_INTERVAL
+            ):
                 logger.info(
                     "Circuit breaker: recovery probe for %s",
                     source.value,
@@ -516,7 +519,6 @@ class TokenRotationScheduler:
         }
 
 
-
 @dataclass(frozen=True)
 class TokenResolution:
     """Result of a token broker lookup."""
@@ -539,7 +541,6 @@ class TokenResolution:
         if self.health_check is None:
             return True  # No health check means assume healthy
         return self.health_check.status == TokenHealthStatus.HEALTHY
-
 
 
 class TokenBrokerError(RuntimeError):

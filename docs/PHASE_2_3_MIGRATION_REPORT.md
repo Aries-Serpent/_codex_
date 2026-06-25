@@ -314,13 +314,13 @@ for group_num in range(1, 33):
     start_idx = (group_num - 1) * 10
     end_idx = min(start_idx + 10, total_sessions)
     sessions = sorted_sessions[start_idx:end_idx]
-    
+
     markdown = generate_chunk_markdown(
         group_num=group_num,
         sessions=sessions,
         total_groups=32
     )
-    
+
     filename = f"AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_{group_num:02d}.md"
     write_file(markdown, filename)
 ```

@@ -22,6 +22,7 @@ import pytest
 @dataclass
 class Checkpoint:
     """Checkpoint metadata."""
+
     id: str
     epoch: int
     loss: float
@@ -58,7 +59,7 @@ class CheckpointManager:
             epoch=epoch,
             loss=loss,
             created_at=datetime.now(),
-            metadata={"saved": True}
+            metadata={"saved": True},
         )
         self.current_checkpoint_id = checkpoint_id
         self.total_checkpoints_saved += 1
@@ -122,6 +123,7 @@ class SaaSIntegration:
 # TEST SUITE 1: Checkpoint Manager Initialization
 # ============================================================================
 
+
 class TestCheckpointManagerInitialization:
     """Test checkpoint manager initialization."""
 
@@ -156,6 +158,7 @@ class TestCheckpointManagerInitialization:
 # ============================================================================
 # TEST SUITE 2: Checkpoint Saving
 # ============================================================================
+
 
 class TestCheckpointSaving:
     """Test checkpoint saving with semantic assertions."""
@@ -249,6 +252,7 @@ class TestCheckpointSaving:
 # TEST SUITE 3: Checkpoint Loading and Listing
 # ============================================================================
 
+
 class TestCheckpointLoading:
     """Test checkpoint loading with mutation defense."""
 
@@ -311,6 +315,7 @@ class TestCheckpointLoading:
 # TEST SUITE 4: Checkpoint Deletion
 # ============================================================================
 
+
 class TestCheckpointDeletion:
     """Test checkpoint deletion."""
 
@@ -336,6 +341,7 @@ class TestCheckpointDeletion:
 # ============================================================================
 # TEST SUITE 5: SaaS Integration
 # ============================================================================
+
 
 class TestSaaSIntegration:
     """Test SaaS integration with boundary conditions."""
@@ -434,6 +440,7 @@ class TestSaaSIntegration:
 # ============================================================================
 # TEST SUITE 6: Operator Mutation Defense
 # ============================================================================
+
 
 class TestOperatorMutationDefense:
     """Test operators for mutation defense."""

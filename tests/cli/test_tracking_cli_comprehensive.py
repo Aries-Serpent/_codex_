@@ -24,7 +24,7 @@ class TestMLflowEnablement:
             result = _enable_mlflow("file:./test_mlruns")
 
             assert isinstance(result, dict)
-            assert 'tracking_uri' in result or 'enabled' in result
+            assert "tracking_uri" in result or "enabled" in result
 
     def test_enable_mlflow_without_uri(self):
         """Test _enable_mlflow with default URI."""
@@ -35,7 +35,7 @@ class TestMLflowEnablement:
             result = _enable_mlflow(None)
 
         assert isinstance(result, dict)
-        assert result.get('tracking_uri') == 'mlruns' or 'warning' in result
+        assert result.get("tracking_uri") == "mlruns" or "warning" in result
 
     @patch.dict(os.environ, {}, clear=False)
     def test_enable_mlflow_sets_env_var(self):
@@ -45,13 +45,13 @@ class TestMLflowEnablement:
         result = _enable_mlflow("file:./custom_path")
 
         # Either MLflow is available and env is set, or warning is returned
-        assert 'enabled' in result or 'warning' in result
+        assert "enabled" in result or "warning" in result
 
     def test_enable_mlflow_handles_import_error(self):
         """Test _enable_mlflow handles missing mlflow gracefully."""
         from codex_ml.cli.tracking_cli import _enable_mlflow
 
-        with patch.dict('sys.modules', {'mlflow': None}):
+        with patch.dict("sys.modules", {"mlflow": None}):
             result = _enable_mlflow("file:./mlruns")
             # Should not raise, returns result dict
             assert isinstance(result, dict)
@@ -68,7 +68,7 @@ class TestWandbEnablement:
             result = _enable_wandb(project="test_project", mode="offline")
 
             assert isinstance(result, dict)
-            assert 'enabled' in result or 'warning' in result
+            assert "enabled" in result or "warning" in result
 
     def test_enable_wandb_disabled_mode(self):
         """Test _enable_wandb in disabled mode."""
@@ -93,7 +93,7 @@ class TestWandbEnablement:
         """Test _enable_wandb handles missing wandb gracefully."""
         from codex_ml.cli.tracking_cli import _enable_wandb
 
-        with patch.dict('sys.modules', {'wandb': None}):
+        with patch.dict("sys.modules", {"wandb": None}):
             result = _enable_wandb(project="test", mode="offline")
             # Should not raise, returns result dict
             assert isinstance(result, dict)
@@ -116,15 +116,15 @@ class TestArgumentParser:
 
         parser = _mk_parser()
         # Parse with bootstrap subcommand
-        args = parser.parse_args(['bootstrap'])
-        assert args.subcommand == 'bootstrap'
+        args = parser.parse_args(["bootstrap"])
+        assert args.subcommand == "bootstrap"
 
     def test_parser_bootstrap_mlflow_flag(self):
         """Test parser handles --mlflow flag."""
         from codex_ml.cli.tracking_cli import _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap', '--mlflow'])
+        args = parser.parse_args(["bootstrap", "--mlflow"])
         assert args.mlflow is True
 
     def test_parser_bootstrap_wandb_flag(self):
@@ -132,7 +132,7 @@ class TestArgumentParser:
         from codex_ml.cli.tracking_cli import _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap', '--wandb'])
+        args = parser.parse_args(["bootstrap", "--wandb"])
         assert args.wandb is True
 
     def test_parser_bootstrap_mlflow_uri(self):
@@ -140,16 +140,16 @@ class TestArgumentParser:
         from codex_ml.cli.tracking_cli import _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap', '--mlflow', '--mlflow-uri', 'file:./custom'])
-        assert args.mlflow_uri == 'file:./custom'
+        args = parser.parse_args(["bootstrap", "--mlflow", "--mlflow-uri", "file:./custom"])
+        assert args.mlflow_uri == "file:./custom"
 
     def test_parser_bootstrap_project(self):
         """Test parser handles --project option."""
         from codex_ml.cli.tracking_cli import _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap', '--wandb', '--project', 'my_project'])
-        assert args.project == 'my_project'
+        args = parser.parse_args(["bootstrap", "--wandb", "--project", "my_project"])
+        assert args.project == "my_project"
 
     def test_parser_bootstrap_mode_choices(self):
         """Test parser validates mode choices."""
@@ -158,8 +158,8 @@ class TestArgumentParser:
         parser = _mk_parser()
 
         # Valid modes
-        for mode in ['online', 'offline', 'disabled']:
-            args = parser.parse_args(['bootstrap', '--mode', mode])
+        for mode in ["online", "offline", "disabled"]:
+            args = parser.parse_args(["bootstrap", "--mode", mode])
             assert args.mode == mode
 
     def test_parser_default_mode(self):
@@ -167,16 +167,16 @@ class TestArgumentParser:
         from codex_ml.cli.tracking_cli import _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap'])
-        assert args.mode == 'offline'
+        args = parser.parse_args(["bootstrap"])
+        assert args.mode == "offline"
 
     def test_parser_default_mlflow_uri(self):
         """Test parser default mlflow-uri."""
         from codex_ml.cli.tracking_cli import _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap'])
-        assert args.mlflow_uri == 'file:./mlruns'
+        args = parser.parse_args(["bootstrap"])
+        assert args.mlflow_uri == "file:./mlruns"
 
 
 class TestBootstrapCommand:
@@ -187,7 +187,7 @@ class TestBootstrapCommand:
         from codex_ml.cli.tracking_cli import _cmd_bootstrap, _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap'])
+        args = parser.parse_args(["bootstrap"])
 
         result = _cmd_bootstrap(args)
         assert isinstance(result, int)
@@ -197,7 +197,7 @@ class TestBootstrapCommand:
         from codex_ml.cli.tracking_cli import _cmd_bootstrap, _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap', '--mlflow'])
+        args = parser.parse_args(["bootstrap", "--mlflow"])
 
         result = _cmd_bootstrap(args)
         assert result == 0
@@ -207,7 +207,7 @@ class TestBootstrapCommand:
         from codex_ml.cli.tracking_cli import _cmd_bootstrap, _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap', '--wandb', '--mode', 'disabled'])
+        args = parser.parse_args(["bootstrap", "--wandb", "--mode", "disabled"])
 
         result = _cmd_bootstrap(args)
         assert result == 0
@@ -217,7 +217,7 @@ class TestBootstrapCommand:
         from codex_ml.cli.tracking_cli import _cmd_bootstrap, _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap', '--mlflow', '--wandb', '--mode', 'disabled'])
+        args = parser.parse_args(["bootstrap", "--mlflow", "--wandb", "--mode", "disabled"])
 
         result = _cmd_bootstrap(args)
         assert result == 0
@@ -227,7 +227,7 @@ class TestBootstrapCommand:
         from codex_ml.cli.tracking_cli import _cmd_bootstrap, _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args(['bootstrap'])
+        args = parser.parse_args(["bootstrap"])
 
         result = _cmd_bootstrap(args)
         assert result == 0
@@ -239,22 +239,20 @@ class TestTrackingCLIIntegration:
     def test_module_imports(self):
         """Test that module can be imported."""
         from codex_ml.cli import tracking_cli
-        assert hasattr(tracking_cli, '_enable_mlflow')
-        assert hasattr(tracking_cli, '_enable_wandb')
-        assert hasattr(tracking_cli, '_mk_parser')
-        assert hasattr(tracking_cli, '_cmd_bootstrap')
+
+        assert hasattr(tracking_cli, "_enable_mlflow")
+        assert hasattr(tracking_cli, "_enable_wandb")
+        assert hasattr(tracking_cli, "_mk_parser")
+        assert hasattr(tracking_cli, "_cmd_bootstrap")
 
     def test_full_cli_workflow(self):
         """Test complete CLI workflow."""
         from codex_ml.cli.tracking_cli import _cmd_bootstrap, _mk_parser
 
         parser = _mk_parser()
-        args = parser.parse_args([
-            'bootstrap',
-            '--mlflow',
-            '--mlflow-uri', 'file:./test_mlruns',
-            '--mode', 'disabled'
-        ])
+        args = parser.parse_args(
+            ["bootstrap", "--mlflow", "--mlflow-uri", "file:./test_mlruns", "--mode", "disabled"]
+        )
 
         result = _cmd_bootstrap(args)
         assert isinstance(result, int)

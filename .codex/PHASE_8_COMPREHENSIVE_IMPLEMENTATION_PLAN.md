@@ -62,7 +62,7 @@ Based on Discussion Comments #17373172-17373173 (Advanced Automation Analysis):
 - **Deliverable:** `.codex/PHASE_8A_LANE_1_COVERAGE_COMPLETION.md`
 - **Success Criteria:** Coverage ≥20% OR documented clear path to 20%
 
-#### Lane 2: Mutation Testing Validation (2-4 hours) 
+#### Lane 2: Mutation Testing Validation (2-4 hours)
 **Agent:** `mutation-testing-agent` + `test-pattern-guardian`
 
 **Validation Tasks:**
@@ -119,7 +119,7 @@ Based on Discussion Comments #17373172-17373173 (Advanced Automation Analysis):
 **Agents:** `unified-security-scanner` + custom Cognitive Brain orchestrator
 
 **Automation Items:**
-1. **Item 3: Secrets & Environment Distribution** 
+1. **Item 3: Secrets & Environment Distribution**
    - 90% automatable | 3-4 hours | 1-2h ROI per deployment
    - **Cognitive Brain Integration:**
      - Query patterns for required secrets per environment
@@ -205,7 +205,7 @@ PHASE 8B (12-15 hours, 2 parallel tracks)
     ↓ YES → ROTATE & TRANSITION
 
 PHASE 8C (10-12 hours, 2 parallel tracks with Cognitive Brain)
-├─ Track C: Secrets/Monitoring (security-agent + brain-orchestrator) ⏳ Ready
+├─ Track C: Secrets/Monitoring (security-agent + brain-orchestrator) ⏳ Ready  # pragma: allowlist secret
 ├─ Track D: Infrastructure IaC (brain-orchestrator + workflow-agent) ⏳ Ready
     ↓ [Go/No-Go Check: Both tracks PASS?]
     ↓ YES → FINAL COMPLETION
@@ -242,17 +242,17 @@ jobs:
           python scripts/cognitive/query_required_secrets.py \
             --environment ${{ inputs.environment }} \
             --output required_secrets.json
-      
+
       - name: Validate secrets manifest
         run: |
           python scripts/deployment/validate_secrets_manifest.py \
             --manifest required_secrets.json \
             --check-entropy true
-      
+
       - name: Create approval gate
         run: |
           gh pr create --title "Secrets Distribution: ${{ inputs.environment }}"
-      
+
       - name: Distribute via GitHub API (if approved)
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY }}
@@ -307,7 +307,7 @@ jobs:
 
 | Blocker | Severity | Impact | Resolution | Escalation |
 |---------|----------|--------|-----------|------------|
-| **Blocker #1: Credentials** | 🔴 High | Secrets/registry automation | Maintainer provides creds → System validates → Approval gate | @mbaetiong |
+| **Blocker #1: Credentials** | 🔴 High | Secrets/registry automation | Maintainer provides creds → System validates → Approval gate | @mbaetiong | <!-- pragma: allowlist secret -->
 | **Blocker #5: Observability** | 🔴 High | Monitoring setup blocked | PagerDuty/Opsgenie API keys needed | @mbaetiong decision |
 | Coverage <20% | 🟡 Medium | Deployment readiness | Attempt Phase 8A Lane 1 → Document roadmap if unachievable | Continue with 19.78% baseline |
 | Mutation <85% | 🟡 Medium | Quality assurance | Re-run Phase 8A Lane 2 → Investigate weak tests | Escalate to mutation-testing-agent |

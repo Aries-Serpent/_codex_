@@ -44,7 +44,11 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:
         type(
             "DT",
             (),
-            {"from_pretrained": staticmethod(lambda name, use_fast=True, **kwargs: DummyTokenizer())},
+            {
+                "from_pretrained": staticmethod(
+                    lambda name, use_fast=True, **kwargs: DummyTokenizer()
+                )
+            },
         ),
     )
     monkeypatch.setattr(hf, "prepare_dataset", lambda texts, tokenizer: list(texts))

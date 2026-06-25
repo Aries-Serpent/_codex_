@@ -42,23 +42,24 @@ try:  # pragma: no cover - optional dependency
         from hydra import compose, initialize_config_dir
         from hydra.errors import MissingConfigException
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         from config_legacy import compose, initialize_config_dir
         from config_legacy.errors import MissingConfigException
 
     _HYDRA_AVAILABLE = True
-except Exception:  # pragma: no cover - import guard
+except (ImportError, AttributeError):  # pragma: no cover - import guard
     try:
         from hydra_core import compose, initialize_config_dir
         from hydra_core.errors import MissingConfigException
 
         _HYDRA_AVAILABLE = True
-    except Exception:  # pragma: no cover - import guard
+    except (IOError, OSError):  # pragma: no cover - import guard
         compose = None
         initialize_config_dir = None
 
-        class MissingConfigException(RuntimeError):  # type: ignore[no-redef]
+        class MissingConfigException(RuntimeError):
             """Fallback error used when Hydra is unavailable."""
 
             def __init__(self, *, missing_cfg_file: str, message: str) -> None:
@@ -134,16 +135,17 @@ def _normalize_training_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
 try:  # pragma: no cover - runtime capability detection
     _TEST_CFG = OmegaConf.create({"training": {}})
     _ = _TEST_CFG.training
-except Exception:  # AttributeError when attribute access unsupported
+except (IOError, OSError):  # AttributeError when attribute access unsupported
     _DICTCONFIG_SUPPORTS_ATTR = False
 else:
     _DICTCONFIG_SUPPORTS_ATTR = True
 finally:  # pragma: no cover - cleanup guard
     try:
         del _TEST_CFG
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (ImportError, AttributeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 class _AttrDictConfig(DictConfig):
@@ -200,7 +202,8 @@ def _read_yaml_mapping(path: Path) -> dict[str, Any]:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            logger.debug(f"MissingPyYAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
                 f"before loading {path}."
@@ -221,7 +224,8 @@ def _apply_overrides_to_mapping(
         try:
             parsed = safe_load(value)
         except MissingPyYAMLError as exc:
-            logger.debug(f"MissingPyYAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'YAML overrides require PyYAML. Install it via ``pip install "PyYAML>=6.0"`` '
                 "before specifying overrides."
@@ -323,7 +327,8 @@ def load_config(*, config_path: str) -> DictConfig:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            logger.debug(f"MissingPyYAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
                 f"before loading {config_path}."
@@ -347,6 +352,6 @@ def load_config(*, config_path: str) -> DictConfig:
     training_block = cfg.get("training")
     if isinstance(training_block, Mapping) and "lr" not in training_block:
         if "learning_rate" in training_block:
-            training_block["lr"] = training_block["learning_rate"]  # type: ignore[index]
+            training_block["lr"] = training_block["learning_rate"]
 
     return cfg

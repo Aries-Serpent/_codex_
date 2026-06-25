@@ -139,10 +139,10 @@ def create_scheduler(
 
         # Add scheduler-specific arguments
         if scheduler_type == "cosine_with_restarts":
-            scheduler_kwargs["num_cycles"] = num_cycles  # type: ignore[assignment]
+            scheduler_kwargs["num_cycles"] = num_cycles
         elif scheduler_type == "polynomial":
-            scheduler_kwargs["lr_end"] = lr_end  # type: ignore[assignment]
-            scheduler_kwargs["power"] = power  # type: ignore[assignment]
+            scheduler_kwargs["lr_end"] = lr_end
+            scheduler_kwargs["power"] = power
 
         # Merge with any additional kwargs
         scheduler_kwargs.update(kwargs)
@@ -160,8 +160,9 @@ def create_scheduler(
         )
 
     except (ImportError, TypeError) as e:
-        logger.debug(f"ImportError or TypeError: {e}")
-        logger.debug(f"transformers error: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"ImportError or TypeError: <ERROR_TYPE>")
+        logger.debug(f"transformers error: <ERROR_TYPE>")
         LOGGER.warning(
             "transformers not available or TypeError, falling back to PyTorch schedulers"
         )
@@ -195,7 +196,8 @@ def _create_pytorch_scheduler(
     try:
         from torch.optim import lr_scheduler
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
         raise ImportError(
             "PyTorch is required for scheduler creation. Install with: pip install torch"
         ) from e

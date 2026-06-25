@@ -10,6 +10,7 @@ class TestTaskStatus:
         """Test that TaskStatus can be imported."""
         try:
             from src.agent.core import TaskStatus
+
             assert TaskStatus is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -18,6 +19,7 @@ class TestTaskStatus:
         """Test all TaskStatus enum values."""
         try:
             from src.agent.core import TaskStatus
+
             assert TaskStatus.PENDING.value == "pending"
             assert TaskStatus.RUNNING.value == "running"
             assert TaskStatus.COMPLETED.value == "completed"
@@ -35,6 +37,7 @@ class TestSafeguardConstants:
         """Test MAX_TASK_LENGTH constant."""
         try:
             from src.agent.core import MAX_TASK_LENGTH
+
             assert MAX_TASK_LENGTH == 50000
         except ImportError:
             pytest.skip("Module not available")
@@ -43,6 +46,7 @@ class TestSafeguardConstants:
         """Test MAX_CONTEXT_LENGTH constant."""
         try:
             from src.agent.core import MAX_CONTEXT_LENGTH
+
             assert MAX_CONTEXT_LENGTH == 100000
         except ImportError:
             pytest.skip("Module not available")
@@ -51,6 +55,7 @@ class TestSafeguardConstants:
         """Test MAX_TOOL_CALLS constant."""
         try:
             from src.agent.core import MAX_TOOL_CALLS
+
             assert MAX_TOOL_CALLS == 20
         except ImportError:
             pytest.skip("Module not available")
@@ -63,6 +68,7 @@ class TestAgentConfig:
         """Test creating AgentConfig."""
         try:
             from src.agent.core import AgentConfig
+
             config = AgentConfig()
             assert config is not None
         except ImportError:
@@ -72,6 +78,7 @@ class TestAgentConfig:
         """Test AgentConfig default values."""
         try:
             from src.agent.core import AgentConfig
+
             config = AgentConfig()
             assert config.model_preference == "auto"
             assert config.max_tool_calls == 10
@@ -86,11 +93,9 @@ class TestAgentConfig:
         """Test AgentConfig with custom values."""
         try:
             from src.agent.core import AgentConfig
+
             config = AgentConfig(
-                model_preference="gpt-4",
-                max_tool_calls=5,
-                enable_rag=False,
-                timeout_seconds=600
+                model_preference="gpt-4", max_tool_calls=5, enable_rag=False, timeout_seconds=600
             )
             assert config.model_preference == "gpt-4"
             assert config.max_tool_calls == 5
@@ -107,6 +112,7 @@ class TestTaskResult:
         """Test creating TaskResult."""
         try:
             from src.agent.core import TaskResult, TaskStatus
+
             result = TaskResult(status=TaskStatus.COMPLETED)
             assert result.status == TaskStatus.COMPLETED
         except ImportError:
@@ -116,6 +122,7 @@ class TestTaskResult:
         """Test TaskResult default values."""
         try:
             from src.agent.core import TaskResult, TaskStatus
+
             result = TaskResult(status=TaskStatus.PENDING)
             assert result.response is None
             assert result.error is None
@@ -131,10 +138,8 @@ class TestTaskResult:
         """Test TaskResult with response."""
         try:
             from src.agent.core import TaskResult, TaskStatus
-            result = TaskResult(
-                status=TaskStatus.COMPLETED,
-                response="Task completed successfully"
-            )
+
+            result = TaskResult(status=TaskStatus.COMPLETED, response="Task completed successfully")
             assert result.response == "Task completed successfully"
         except ImportError:
             pytest.skip("Module not available")
@@ -143,10 +148,8 @@ class TestTaskResult:
         """Test TaskResult with error."""
         try:
             from src.agent.core import TaskResult, TaskStatus
-            result = TaskResult(
-                status=TaskStatus.FAILED,
-                error="Something went wrong"
-            )
+
+            result = TaskResult(status=TaskStatus.FAILED, error="Something went wrong")
             assert result.status == TaskStatus.FAILED
             assert result.error == "Something went wrong"
         except ImportError:
@@ -156,11 +159,9 @@ class TestTaskResult:
         """Test TaskResult with tool calls."""
         try:
             from src.agent.core import TaskResult, TaskStatus
+
             tool_calls = [{"name": "search", "args": {"query": "test"}}]
-            result = TaskResult(
-                status=TaskStatus.COMPLETED,
-                tool_calls=tool_calls
-            )
+            result = TaskResult(status=TaskStatus.COMPLETED, tool_calls=tool_calls)
             assert result.tool_calls == tool_calls
         except ImportError:
             pytest.skip("Module not available")
@@ -173,6 +174,7 @@ class TestToolCall:
         """Test creating ToolCall."""
         try:
             from src.agent.core import ToolCall
+
             call = ToolCall(name="search", parameters={"query": "test"})
             assert call.name == "search"
             assert call.parameters == {"query": "test"}
@@ -183,6 +185,7 @@ class TestToolCall:
         """Test ToolCall default values."""
         try:
             from src.agent.core import ToolCall
+
             call = ToolCall(name="test", parameters={})
             assert call.result is None
             assert call.error is None
@@ -194,11 +197,8 @@ class TestToolCall:
         """Test ToolCall with result."""
         try:
             from src.agent.core import ToolCall
-            call = ToolCall(
-                name="search",
-                parameters={"query": "test"},
-                result={"matches": 5}
-            )
+
+            call = ToolCall(name="search", parameters={"query": "test"}, result={"matches": 5})
             assert call.result == {"matches": 5}
         except ImportError:
             pytest.skip("Module not available")
@@ -211,6 +211,7 @@ class TestAgentCore:
         """Test that AgentCore can be imported."""
         try:
             from src.agent.core import AgentCore
+
             assert AgentCore is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -219,6 +220,7 @@ class TestAgentCore:
         """Test AgentCore has proper docstring."""
         try:
             from src.agent.core import AgentCore
+
             assert AgentCore.__doc__ is not None
             assert "autonomous agents" in AgentCore.__doc__.lower()
         except ImportError:
@@ -232,6 +234,7 @@ class TestModuleImports:
         """Test that logger is configured."""
         try:
             from src.agent.core import logger
+
             assert logger is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -246,6 +249,7 @@ class TestModuleImports:
                 TaskStatus,
                 ToolCall,
             )
+
             assert all([TaskStatus, AgentConfig, TaskResult, ToolCall, AgentCore])
         except ImportError:
             pytest.skip("Module not available")

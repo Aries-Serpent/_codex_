@@ -6,7 +6,7 @@ Phase 8.1 Performance Benchmark Tests.
 Tests performance targets: compression speed, retrieval speed, cache hit rate,
 memory efficiency, and consolidation throughput.
 """
-pytest.importorskip('psutil')
+pytest.importorskip("psutil")
 
 import os
 import time
@@ -60,9 +60,9 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 1000 patterns/second
         # Relaxed for test environment: >= 500 patterns/second
-        assert patterns_per_second >= 500, (
-            f"Compression speed: {patterns_per_second:.0f} patterns/s (target: 1000)"
-        )
+        assert (
+            patterns_per_second >= 500
+        ), f"Compression speed: {patterns_per_second:.0f} patterns/s (target: 1000)"
 
     def test_retrieval_speed_benchmark(self):
         """Test retrieval speed: target <10ms for k=5."""
@@ -99,9 +99,9 @@ class TestPerformanceBenchmarks:
 
         # Target: < 10ms average
         # Relaxed for test environment: < 50ms
-        assert avg_retrieval_time < 50, (
-            f"Avg retrieval time: {avg_retrieval_time:.2f}ms (target: <10ms)"
-        )
+        assert (
+            avg_retrieval_time < 50
+        ), f"Avg retrieval time: {avg_retrieval_time:.2f}ms (target: <10ms)"
 
     def test_cache_hit_rate_realistic_workload(self):
         """Test cache hit rate: target >=30% on realistic workload."""
@@ -121,9 +121,7 @@ class TestPerformanceBenchmarks:
         assessor.memory_manager.consolidate()
 
         # Second batch: similar patterns (should hit cache)
-        test_scenarios = generate_complex_scenarios(
-            50, seed=43
-        )  # Similar but not identical
+        test_scenarios = generate_complex_scenarios(50, seed=43)  # Similar but not identical
 
         initial_hits = assessor.memory_manager.cache_hits
 
@@ -137,9 +135,7 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 30%
         # Relaxed for test: >= 10% (depends on scenario similarity)
-        assert cache_hit_rate >= 0.10, (
-            f"Cache hit rate: {cache_hit_rate * 100:.1f}% (target: 30%)"
-        )
+        assert cache_hit_rate >= 0.10, f"Cache hit rate: {cache_hit_rate * 100:.1f}% (target: 30%)"
 
     def test_memory_efficiency_ltm_capacity(self):
         """Test memory efficiency: <100MB for 10,000 LTM patterns."""
@@ -177,9 +173,9 @@ class TestPerformanceBenchmarks:
 
         # Target: < 100MB for 10k patterns
         # Relaxed: < 200MB
-        assert estimated_10k_memory < 200, (
-            f"Estimated memory for 10k: {estimated_10k_memory:.1f}MB (target: <100MB)"
-        )
+        assert (
+            estimated_10k_memory < 200
+        ), f"Estimated memory for 10k: {estimated_10k_memory:.1f}MB (target: <100MB)"
 
     def test_consolidation_throughput(self):
         """Test consolidation throughput: target 100 STM→LTM/second."""
@@ -205,7 +201,7 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 100 patterns/second
         # Relaxed: >= 50 patterns/second
-        assert patterns_per_second >= 50, (
-            f"Consolidation throughput: {patterns_per_second:.0f} patterns/s (target: 100)"
-        )
+        assert (
+            patterns_per_second >= 50
+        ), f"Consolidation throughput: {patterns_per_second:.0f} patterns/s (target: 100)"
         assert result.promoted > 0, "No patterns were promoted during consolidation"

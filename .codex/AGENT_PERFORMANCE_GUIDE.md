@@ -200,10 +200,10 @@ unified-security-scanner:
 
 **Decision Logic:**
 ```python
-def select_model(task_complexity):
-    if task_complexity < 3:
+def select_model(task_complexity):  # pragma: allowlist secret
+    if task_complexity < 3:  # pragma: allowlist secret
         return "haiku-4.5"      # <0.01 cost
-    elif task_complexity < 6:
+    elif task_complexity < 6:  # pragma: allowlist secret
         return "haiku-4.5"      # 60% tasks
     else:
         return "sonnet-4.6"     # 30% tasks
@@ -299,14 +299,14 @@ Sequential execution (4x slower)
 ```
 policy-coach-agent +
 link-validator-agent (basic) +
-secret-detection-agent
+secret-detection-agent  # pragma: allowlist secret
 Total: 2 min, <$0.01
 ```
 
 ### Profile 2: Standard (10 min)
 **Use for:** Every PR
 ```
-phase1: policy + secrets (2 min)
+phase1: policy + secrets (2 min)  # pragma: allowlist secret
 phase2: code-analysis + test-alignment (7 min)
 phase3: reject if phase1 fails
 Total: 10 min, ~$0.10
@@ -315,7 +315,7 @@ Total: 10 min, ~$0.10
 ### Profile 3: Comprehensive (35 min)
 **Use for:** Pre-release only
 ```
-phase1: policy + secrets (2 min)
+phase1: policy + secrets (2 min)  # pragma: allowlist secret
 phase2: code + tests + performance (7 min)
 phase3: security + coverage (15 min)
 phase4: mutation testing (10 min)
@@ -342,7 +342,7 @@ Track these metrics for each agent:
 |--------|------|--------|------|
 | Avg Runtime | <1 min | 5 min | 25 min |
 | P95 Runtime | <1.5 min | 8 min | 35 min |
-| Token Usage | <500 | 2K | 10K |
+| Token Usage | <500 | 2K | 10K | <!-- pragma: allowlist secret -->
 | Success Rate | >99% | >95% | >90% |
 | Cost/Run | <$0.01 | $0.05 | $0.30 |
 
@@ -354,4 +354,3 @@ Track these metrics for each agent:
 - **Classification Basis:** 2026-06 execution metrics
 - **Authority:** @mbaetiong
 - **Next Update:** 2026-07-20
-

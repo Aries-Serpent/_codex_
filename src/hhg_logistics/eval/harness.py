@@ -27,14 +27,15 @@ logger = logging.getLogger(__name__)
 try:
     import hydra
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     import config_legacy as hydra
 from omegaconf import DictConfig  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from lm_eval import evaluator
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     evaluator = None
 
 
@@ -84,7 +85,7 @@ def main(cfg: DictConfig):
             num_fewshot=cfg.eval.num_fewshot,
             limit=cfg.eval.limit,
         )
-    except Exception as exc:  # pragma: no cover
+    except (IOError, OSError) as exc:  # pragma: no cover
         logger.error("Evaluation failed: %s", exc)
         raise
 

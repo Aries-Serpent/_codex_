@@ -200,7 +200,8 @@ def main():
         print(f"  rm {report_path}")
 
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        error_type = type(e).__name__
+        print(f"\n❌ Error: <ERROR_TYPE>")
         import traceback
         traceback.print_exc()
         return 1

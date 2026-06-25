@@ -57,7 +57,8 @@ class ModuleAnalyzer:
                         self.imports.add(node.module)
 
         except SyntaxError as e:
-            logger.warning(f"Syntax error in {self.module_path}: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Syntax error in {self.module_path}: <ERROR_TYPE>")
 
 
 class TestGenerator:
@@ -113,15 +114,15 @@ def test_{func_name}_error_handling():
 
         return f'''class Test{cls_name}:
     """Test suite for {cls_name} class."""
-    
+
     def setup_method(self):
         """Setup for each test."""
         pass
-    
+
     def teardown_method(self):
         """Cleanup after each test."""
         pass
-    
+
     {chr(10).join(method_tests)}
 '''
 

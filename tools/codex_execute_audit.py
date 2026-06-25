@@ -321,7 +321,7 @@ def main():
             print(f"[OK ] {idx:02d}/{len(ops)} {name}")
         except Exception as e:
             write_error(f"STEP_{idx:02d}", name, e, "Executor main loop")
-            print(f"[ERR] {idx:02d}/{len(ops)} {name}: {e}", file=sys.stderr)
+            print(f"[ERR] {idx:02d}/{len(ops)} {name}: <ERROR_TYPE>", file=sys.stderr)
 
     summary = f"""
     === Codex Offline Execution Summary ({utcnow()}) ===

@@ -8,7 +8,6 @@ Tests quantum principles:
 - Pattern correlation
 """
 
-
 import json
 import math
 
@@ -49,8 +48,7 @@ class TestPatternWave:
         # Constructive interference: should add amplitudes
         expected = wave1.amplitude + wave2.amplitude
         assert abs(interference - expected) < 0.01, (
-            f"Constructive interference failed: "
-            f"got {interference}, expected ~{expected}"
+            f"Constructive interference failed: " f"got {interference}, expected ~{expected}"
         )
 
     def test_destructive_interference(self):
@@ -67,8 +65,7 @@ class TestPatternWave:
         # Destructive interference: should subtract amplitudes
         expected = abs(wave1.amplitude - wave2.amplitude)
         assert abs(interference - expected) < 0.01, (
-            f"Destructive interference failed: "
-            f"got {interference}, expected ~{expected}"
+            f"Destructive interference failed: " f"got {interference}, expected ~{expected}"
         )
 
     def test_partial_interference(self):
@@ -84,9 +81,9 @@ class TestPatternWave:
 
         # Partial interference: should be sqrt(a1² + a2²)
         expected = math.hypot(wave1.amplitude, wave2.amplitude)
-        assert abs(interference - expected) < 0.01, (
-            f"Partial interference failed: got {interference}, expected ~{expected}"
-        )
+        assert (
+            abs(interference - expected) < 0.01
+        ), f"Partial interference failed: got {interference}, expected ~{expected}"
 
 
 class TestQuantumPatternClassifier:
@@ -449,8 +446,7 @@ class TestCognitiveBrainFeeder:
 
 
 @pytest.mark.skipif(
-    not sys.platform.startswith("linux"),
-    reason="Integration test requires GitHub token"
+    not sys.platform.startswith("linux"), reason="Integration test requires GitHub token"
 )
 class TestIntegration:
     """Integration tests with real GitHub API (skipped without token)"""

@@ -21,6 +21,7 @@ class TestHelperFunctions:
         """Test creating test tasks with default count."""
         try:
             from codex.quantum_orchestrator.cli import create_test_tasks
+
             tasks = create_test_tasks(5)
             assert len(tasks) == 5
             assert all(f"task_{i}" in tasks for i in range(5))
@@ -32,6 +33,7 @@ class TestHelperFunctions:
         try:
             from codex.quantum_orchestrator import PhysicsConstants
             from codex.quantum_orchestrator.cli import create_test_tasks
+
             constants = PhysicsConstants()
             tasks = create_test_tasks(3, constants)
             assert len(tasks) == 3
@@ -42,6 +44,7 @@ class TestHelperFunctions:
         """Test creating zero test tasks."""
         try:
             from codex.quantum_orchestrator.cli import create_test_tasks
+
             tasks = create_test_tasks(0)
             assert len(tasks) == 0
         except ImportError:
@@ -54,6 +57,7 @@ class TestHelperFunctions:
                 create_test_tasks,
                 format_task_state,
             )
+
             tasks = create_test_tasks(1)
             task = tasks["task_0"]
             output = format_task_state(task)
@@ -116,6 +120,7 @@ class TestCLIGroup:
         """Test CLI help output."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["--help"])
             assert result.exit_code == 0
@@ -127,6 +132,7 @@ class TestCLIGroup:
         """Test CLI version output."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["--version"])
             assert result.exit_code == 0
@@ -142,6 +148,7 @@ class TestRunCommand:
         """Test run command with default options."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["run"])
             # May fail due to imports but should at least parse
@@ -153,6 +160,7 @@ class TestRunCommand:
         """Test run command with task count option."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["run", "--tasks", "3"])
             assert result.exit_code in (0, 1, 2)
@@ -163,6 +171,7 @@ class TestRunCommand:
         """Test run command with steps option."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["run", "--tasks", "2", "--steps", "5"])
             assert result.exit_code in (0, 1, 2)
@@ -173,9 +182,12 @@ class TestRunCommand:
         """Test run command with output file."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             output_file = tmp_path / "results.json"
-            result = runner.invoke(cli, ["run", "--tasks", "2", "--steps", "2", "--output", str(output_file)])
+            result = runner.invoke(
+                cli, ["run", "--tasks", "2", "--steps", "2", "--output", str(output_file)]
+            )
             assert result.exit_code in (0, 1, 2)
         except ImportError:
             pytest.skip("quantum_orchestrator CLI not available")
@@ -184,6 +196,7 @@ class TestRunCommand:
         """Test run command with verbose flag."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["run", "--tasks", "2", "--verbose"])
             assert result.exit_code in (0, 1, 2)
@@ -198,6 +211,7 @@ class TestBenchmarkCommand:
         """Test benchmark command with defaults."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["benchmark", "--tasks", "3", "--iterations", "5"])
             assert result.exit_code in (0, 1, 2)
@@ -208,8 +222,11 @@ class TestBenchmarkCommand:
         """Test benchmark command with warmup iterations."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
-            result = runner.invoke(cli, ["benchmark", "--tasks", "2", "--iterations", "5", "--warmup", "2"])
+            result = runner.invoke(
+                cli, ["benchmark", "--tasks", "2", "--iterations", "5", "--warmup", "2"]
+            )
             assert result.exit_code in (0, 1, 2)
         except ImportError:
             pytest.skip("quantum_orchestrator CLI not available")
@@ -222,6 +239,7 @@ class TestInspectCommand:
         """Test inspect command with text format."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["inspect", "task_0"])
             assert result.exit_code in (0, 1, 2)
@@ -232,6 +250,7 @@ class TestInspectCommand:
         """Test inspect command with JSON format."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["inspect", "task_0", "--format", "json"])
             assert result.exit_code in (0, 1, 2)
@@ -242,6 +261,7 @@ class TestInspectCommand:
         """Test inspect command with non-existent task."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["inspect", "nonexistent_task"])
             # Should fail with task not found
@@ -257,6 +277,7 @@ class TestMetricsCommand:
         """Test metrics command with defaults."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["metrics"])
             assert result.exit_code in (0, 1, 2)
@@ -267,6 +288,7 @@ class TestMetricsCommand:
         """Test metrics command with task count."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["metrics", "--tasks", "3"])
             assert result.exit_code in (0, 1, 2)
@@ -277,6 +299,7 @@ class TestMetricsCommand:
         """Test metrics command with output file."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             output_file = tmp_path / "metrics.txt"
             result = runner.invoke(cli, ["metrics", "--output", str(output_file)])
@@ -292,6 +315,7 @@ class TestQFTCommands:
         """Test QFT subgroup help."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["qft", "--help"])
             assert result.exit_code in (0, 1, 2)
@@ -302,6 +326,7 @@ class TestQFTCommands:
         """Test spawn command with defaults."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["qft", "spawn"])
             assert result.exit_code in (0, 1, 2)
@@ -312,6 +337,7 @@ class TestQFTCommands:
         """Test spawn command with count option."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["qft", "spawn", "--count", "5"])
             assert result.exit_code in (0, 1, 2)
@@ -322,6 +348,7 @@ class TestQFTCommands:
         """Test entangle command."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["qft", "entangle", "task_0", "task_1"])
             assert result.exit_code in (0, 1, 2)
@@ -332,8 +359,11 @@ class TestQFTCommands:
         """Test entangle command with bell state option."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
-            result = runner.invoke(cli, ["qft", "entangle", "task_0", "task_1", "--bell-state", "psi_minus"])
+            result = runner.invoke(
+                cli, ["qft", "entangle", "task_0", "task_1", "--bell-state", "psi_minus"]
+            )
             assert result.exit_code in (0, 1, 2)
         except ImportError:
             pytest.skip("quantum_orchestrator CLI not available")
@@ -342,6 +372,7 @@ class TestQFTCommands:
         """Test optimize command."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
             result = runner.invoke(cli, ["qft", "optimize", "--paths", "10"])
             assert result.exit_code in (0, 1, 2)
@@ -352,8 +383,11 @@ class TestQFTCommands:
         """Test optimize command with temperature option."""
         try:
             from codex.quantum_orchestrator.cli import cli
+
             runner = CliRunner()
-            result = runner.invoke(cli, ["qft", "optimize", "--paths", "10", "--temperature", "0.5"])
+            result = runner.invoke(
+                cli, ["qft", "optimize", "--paths", "10", "--temperature", "0.5"]
+            )
             assert result.exit_code in (0, 1, 2)
         except ImportError:
             pytest.skip("quantum_orchestrator CLI not available")
@@ -366,6 +400,7 @@ class TestModuleImports:
         """Test QFT_AVAILABLE flag detection."""
         try:
             from codex.quantum_orchestrator import cli as cli_module
+
             # QFT_AVAILABLE should be a boolean
             assert isinstance(cli_module.QFT_AVAILABLE, bool)
         except ImportError:
@@ -382,6 +417,7 @@ class TestModuleImports:
                 TaskVector,
                 create_observable_orchestrator,
             )
+
             # Verify all components are importable
             assert DiracSpinor is not None
             assert OrchestratorState is not None

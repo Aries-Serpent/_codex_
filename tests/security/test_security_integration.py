@@ -9,7 +9,7 @@ import pytest
 
 
 class TestSecurityMasking:
-    """Test sensitive data masking functions.""" # pragma: allowlist secret # pragma: allowlist secret
+    """Test sensitive data masking functions."""  # pragma: allowlist secret # pragma: allowlist secret
 
     def test_mask_token_standard(self):
         """Test standard token masking."""
@@ -211,7 +211,7 @@ class TestSecureHashing:
         from codex.security import hash_secure
 
         token = "my_secret_token"
-        hash_val = hash_secure(token, algorithm='sha512')
+        hash_val = hash_secure(token, algorithm="sha512")
 
         # SHA-512 produces 128 hex characters
         assert len(hash_val) == 128
@@ -221,7 +221,7 @@ class TestSecureHashing:
         from codex.security import hash_secure
 
         with pytest.raises(ValueError, match="Unsupported algorithm"):
-            hash_secure("data", algorithm='md5')
+            hash_secure("data", algorithm="md5")
 
 
 class TestEncryptedStorage:
@@ -238,6 +238,7 @@ class TestEncryptedStorage:
         """Set up encryption key for tests."""
         try:
             from codex.security.storage import generate_key
+
             key = generate_key()
         except ImportError:
             raise pytest.skip.Exception("cryptography package not installed")
@@ -257,7 +258,7 @@ class TestEncryptedStorage:
         assert os.path.exists(filepath)
 
         # Verify file is not plain text
-        with open(filepath, 'rb') as f:
+        with open(filepath, "rb") as f:
             encrypted_content = f.read()
         assert secret.encode() not in encrypted_content
 
@@ -326,7 +327,7 @@ class TestIntegrationScenarios:
         # Set up test logger
         log_stream = StringIO()
         handler = logging.StreamHandler(log_stream)
-        logger = logging.getLogger('test_security')
+        logger = logging.getLogger("test_security")
         logger.addHandler(handler)
         logger.setLevel(logging.INFO)
 

@@ -44,7 +44,9 @@ def test_infer_passes_lora_args(monkeypatch, tmp_path: Path) -> None:
 
     class DummyAutoTokenizer:
         @staticmethod
-        def from_pretrained(name: str, **kwargs) -> DummyTokenizer:  # pragma: no cover - simple stub
+        def from_pretrained(
+            name: str, **kwargs
+        ) -> DummyTokenizer:  # pragma: no cover - simple stub
             return DummyTokenizer()
 
     monkeypatch.setattr(infer, "AutoTokenizer", DummyAutoTokenizer)

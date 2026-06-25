@@ -53,25 +53,25 @@
 1. Update CHANGELOG.md
    ```
    ## [0.1.1] - 2026-06-17
-   
+
    ### Completed
    - Phase 1: Approval Hub Architecture & Design Documentation
    - Phase 2: Integration Framework & Security Validation
    - Phase 3: Unified Approval Hub Implementation (4 source workflows integrated)
    - Phase 4: Metrics Dashboard, Insights Report, Workflows Mapping
-   
+
    ### Summary
    - Created unified approval workflow hub with 5-tier priority system
    - Integrated 4 production workflows (auto-approve, agent-auth, workflow-gate, trigger)
    - Comprehensive documentation: 27KB+ integration guide, dependency matrix, validation rules
    - Security validation framework with RBAC + approval audit trail
    - Metrics dashboard and insights report for approval system health
-   
+
    ### Files Added
    - `.github/workflows/auto-approve-workflows.yml` (988 lines, enhanced hub)
    - `.codex/APPROVAL_*.md` (7 comprehensive documents)
    - `.codex/reports/PHASE_*.md` (phase completion reports)
-   
+
    ### Fixed Issues
    - auto-approve-workflows.yml CI failures (TBD by ci-failure-diagnosis)
    ```

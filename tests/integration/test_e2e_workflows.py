@@ -17,6 +17,7 @@ import torch
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 
+
 @pytest.fixture
 def e2e_workspace(tmp_path):
     workspace = tmp_path / "e2e"
@@ -24,6 +25,7 @@ def e2e_workspace(tmp_path):
     for d in ["documents", "index", "models", "checkpoints", "data"]:
         (workspace / d).mkdir()
     return workspace
+
 
 class TestRAGWorkflow:
     """Complete RAG workflow (8 tests)."""
@@ -73,6 +75,7 @@ class TestRAGWorkflow:
         assert docs[0]["id"] == index[0]["doc_id"]
         assert query.startswith("machine")
         assert len(results) == 1
+
 
 class TestTrainingWorkflow:
     """Full training workflow (8 tests)."""
@@ -132,6 +135,7 @@ class TestTrainingWorkflow:
         torch.save({"model": model.state_dict()}, path)
         assert path.exists()
 
+
 class TestMultiComponentWorkflows:
     """Multi-component workflows (9 tests)."""
 
@@ -154,7 +158,7 @@ class TestMultiComponentWorkflows:
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",
-        strict=False
+        strict=False,
     )
     def test_iterative_loop(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
@@ -172,8 +176,7 @@ class TestMultiComponentWorkflows:
         assert (e2e_workspace / "index" / "updated.json").exists()
 
     @pytest.mark.xfail(
-        reason="PyTorch 2.6.x pickling bug with FloatStorage (known issue)",
-        strict=False
+        reason="PyTorch 2.6.x pickling bug with FloatStorage (known issue)", strict=False
     )
     def test_ckpt_rag_state(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
@@ -189,7 +192,7 @@ class TestMultiComponentWorkflows:
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",
-        strict=False
+        strict=False,
     )
     def test_multi_stage(self, e2e_workspace):
         docs = [{"content": "text"}]
@@ -197,7 +200,9 @@ class TestMultiComponentWorkflows:
         model = torch.nn.Linear(1, 1)
         opt = torch.optim.SGD(model.parameters(), lr=0.01)
         for f in features:
-            loss = torch.nn.functional.mse_loss(model(torch.tensor([f], dtype=torch.float32)), torch.tensor([[1.0]]))
+            loss = torch.nn.functional.mse_loss(
+                model(torch.tensor([f], dtype=torch.float32)), torch.tensor([[1.0]])
+            )
             opt.zero_grad()
             loss.backward()
             opt.step()
@@ -205,7 +210,7 @@ class TestMultiComponentWorkflows:
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",
-        strict=False
+        strict=False,
     )
     def test_complete_integration(self, e2e_workspace):
         docs = [{"id": "d1", "content": "doc content"}]
@@ -213,7 +218,9 @@ class TestMultiComponentWorkflows:
         model = torch.nn.Linear(1, 1)
         opt = torch.optim.SGD(model.parameters(), lr=0.01)
         for item in index:
-            loss = torch.nn.functional.mse_loss(model(torch.tensor([item["emb"]], dtype=torch.float32)), torch.tensor([[1.0]]))
+            loss = torch.nn.functional.mse_loss(
+                model(torch.tensor([item["emb"]], dtype=torch.float32)), torch.tensor([[1.0]])
+            )
             opt.zero_grad()
             loss.backward()
             opt.step()

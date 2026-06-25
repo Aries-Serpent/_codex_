@@ -36,7 +36,7 @@
 | CodeQL Findings | 0 NEW | <5 HIGH | ✅ PASS |
 | OWASP Top 10 | 8/10 (80%) | ≥80% | ✅ PASS |
 | CWE Top 25 | 23/25 (92%) | ≥90% | ✅ PASS |
-| Secrets Baseline | 22/22 plugins active | 22/22 | ✅ PASS |
+| Secrets Baseline | 22/22 plugins active | 22/22 | ✅ PASS | <!-- pragma: allowlist secret -->
 | Dependency Lock Status | 20 pinned | All locked | ✅ PASS |
 
 **Known Issues (Non-Blocking):**
@@ -120,7 +120,7 @@
 - Code examples: 94.3% (-3.7% from 98% target)
 - Completeness: ~96% (-3% from 99% target)
 
-**Lane 2 Status:** 
+**Lane 2 Status:**
 - ⏳ Still in progress (~60% complete)
 - Documentation gap audit: Ready
 - Example accuracy improvements: Queued

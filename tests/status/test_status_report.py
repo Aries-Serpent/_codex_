@@ -35,9 +35,7 @@ def test_status_report_creates_markdown(tmp_path: Path, monkeypatch):
             str(out),
         ]
     )
-    assert rc in (0, 1), (
-        "status_report should exit 0 (all pass) or 1 (some gate failed)"
-    )
+    assert rc in (0, 1), "status_report should exit 0 (all pass) or 1 (some gate failed)"
     assert out.exists(), "STATUS_REPORT.md was not created"
     t = out.read_text(encoding="utf-8")
     assert "# Status Report — _codex_" in t

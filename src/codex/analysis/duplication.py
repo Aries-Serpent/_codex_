@@ -44,8 +44,9 @@ def _hash_file(path: Path) -> str:
     try:
         return hashlib.sha256(path.read_bytes()).hexdigest()
     except OSError as e:
-        logger.debug(f"OSError: {e}")
-        logger.warning(f"OSError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"OSError: <ERROR_TYPE>")
+        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
         return ""
 
 

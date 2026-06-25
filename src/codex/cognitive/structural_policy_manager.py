@@ -133,6 +133,16 @@ class StructuralPolicyManager:
         "github-actions[bot]": PermissionTier.READ_ONLY_AGENT,
         "copilot-swe-agent[bot]": PermissionTier.READ_ONLY_AGENT,
         "dependabot[bot]": PermissionTier.READ_ONLY_AGENT,
+        # D_CAPABLE agents — elevated authority with decision capability (ORG_OWNER tier)
+        "ci-testing-agent": PermissionTier.ORG_OWNER,
+        "rust-error-validator": PermissionTier.ORG_OWNER,
+        "test-assertion-updater": PermissionTier.ORG_OWNER,
+        "test-pattern-guardian": PermissionTier.ORG_OWNER,
+        "workflow-ci-fixer": PermissionTier.ORG_OWNER,
+        "ci-health-alert-agent": PermissionTier.ORG_OWNER,
+        "copilot-session-chain": PermissionTier.ORG_OWNER,
+        "packaging-validation-agent": PermissionTier.ORG_OWNER,
+        "energy-conversion-agent": PermissionTier.ORG_OWNER,
     }
 
     def __init__(

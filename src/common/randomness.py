@@ -26,13 +26,13 @@ logger = logging.getLogger(__name__)
 
 try:
     import numpy as np
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     np = None
 
 try:
     import torch
-except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover
+    torch = None
 
 
 def set_seed(seed: int | None) -> int:
@@ -58,7 +58,7 @@ def set_seed(seed: int | None) -> int:
         if manual_seed is not None:
             try:
                 manual_seed(seed)
-            except Exception as exc:  # pragma: no cover - fallback logging only
+            except (ImportError, AttributeError) as exc:  # pragma: no cover - fallback logging only
                 logger.debug("Unable to invoke torch.manual_seed: %s", exc)
             else:
                 try:
@@ -72,7 +72,10 @@ def set_seed(seed: int | None) -> int:
                             manual_seed_all = getattr(cuda_module, "manual_seed_all", None)
                             if callable(manual_seed_all):
                                 manual_seed_all(seed)
-                    except Exception as exc:  # pragma: no cover - fallback logging only
+                    except (
+                        ImportError,
+                        AttributeError,
+                    ) as exc:  # pragma: no cover - fallback logging only
                         logger.debug("Unable to configure torch.cuda seeds: %s", exc)
 
                 try:
@@ -84,8 +87,9 @@ def set_seed(seed: int | None) -> int:
                     try:
                         backends.cudnn.deterministic = True
                         backends.cudnn.benchmark = False
-                    except Exception as exc:
-                        logger.debug(f"Exception: {exc}")
+                    except (ValueError, TypeError, RuntimeError) as exc:
+                        error_type = type(exc).__name__
+                        logger.debug(f"Exception: <ERROR_TYPE>")
                         logger.debug("Unable to set CuDNN deterministic flags: %s", exc)
 
     return seed

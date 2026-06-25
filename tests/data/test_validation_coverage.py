@@ -74,6 +74,7 @@ class TestModuleImport:
         """Verify validation module can be imported."""
         try:
             from codex_ml.data import validation
+
             assert validation is not None
         except ImportError as e:
             pytest.skip(f"validation module not available: {e}")
@@ -82,6 +83,7 @@ class TestModuleImport:
         """Verify Validator class can be imported."""
         try:
             from codex_ml.data.validation import Validator
+
             assert Validator is not None
         except ImportError:
             pytest.skip("Validator not available")
@@ -99,6 +101,7 @@ class TestSchemaValidation:
         """Test validating a valid data record."""
         try:
             from codex_ml.data import validation
+
             record = {"id": 1, "text": "test"}
             # Look for validation function
             if hasattr(validation, "validate_record"):
@@ -116,6 +119,7 @@ class TestSchemaValidation:
         """Test validating a record with missing required fields."""
         try:
             from codex_ml.data import validation
+
             record = {}  # Empty record
             if hasattr(validation, "validate_record"):
                 # May raise or return False for invalid
@@ -140,6 +144,7 @@ class TestFileValidation:
         """Test validating a JSONL file."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(valid_jsonl_file))
                 assert result is not None
@@ -153,6 +158,7 @@ class TestFileValidation:
         """Test validating an invalid JSONL file."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(invalid_jsonl_file))
                 # Should indicate validation errors
@@ -164,6 +170,7 @@ class TestFileValidation:
         """Test validating an empty file."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(empty_file))
                 assert result is not None
@@ -198,6 +205,7 @@ class TestDataTypeValidation:
         """Test validating text field type."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_text"):
                 assert validation.validate_text("valid text")
                 assert not validation.validate_text(None)
@@ -217,6 +225,7 @@ class TestChecksumValidation:
         """Test computing file checksum."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "compute_checksum"):
                 checksum = validation.compute_checksum(str(valid_jsonl_file))
                 assert isinstance(checksum, str)
@@ -228,6 +237,7 @@ class TestChecksumValidation:
         """Test verifying file checksum."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "compute_checksum") and hasattr(validation, "verify_checksum"):
                 expected = validation.compute_checksum(str(valid_jsonl_file))
                 result = validation.verify_checksum(str(valid_jsonl_file), expected)
@@ -248,6 +258,7 @@ class TestEncodingValidation:
         """Test validating UTF-8 encoding."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_encoding"):
                 result = validation.validate_encoding(str(valid_jsonl_file), "utf-8")
                 assert result is True or result is None
@@ -258,6 +269,7 @@ class TestEncodingValidation:
         """Test detecting file encoding."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "detect_encoding"):
                 encoding = validation.detect_encoding(str(valid_jsonl_file))
                 assert encoding in ("utf-8", "ascii", "utf-8-sig", None)
@@ -277,6 +289,7 @@ class TestRecordCountValidation:
         """Test counting records in file."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "count_records"):
                 count = validation.count_records(str(valid_jsonl_file))
                 assert count == 3
@@ -287,6 +300,7 @@ class TestRecordCountValidation:
         """Test validating expected record count."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_record_count"):
                 result = validation.validate_record_count(str(valid_jsonl_file), 3)
                 assert result is True
@@ -306,6 +320,7 @@ class TestValidationResults:
         """Test validation result structure."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "ValidationResult"):
                 result = validation.ValidationResult(
                     rule_name="test_rule",
@@ -332,6 +347,7 @@ class TestErrorHandling:
         """Test validating non-existent file."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_file"):
                 with pytest.raises((FileNotFoundError, IOError, ValueError)):
                     validation.validate_file("/nonexistent/file.jsonl")
@@ -342,6 +358,7 @@ class TestErrorHandling:
         """Test validating null input."""
         try:
             from codex_ml.data import validation
+
             if hasattr(validation, "validate_record"):
                 result = validation.validate_record(None)
                 # Should return False or raise

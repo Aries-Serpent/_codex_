@@ -17,6 +17,7 @@ import pytest
 @dataclass
 class AudioFrame:
     """Audio frame with metadata."""
+
     sample_rate: int
     channels: int
     duration_ms: int
@@ -110,6 +111,7 @@ class AudioAnalyzer:
 # TEST SUITE 1: Cognitive Brain Audio Processor Initialization
 # ============================================================================
 
+
 class TestAudioProcessorInitialization:
     """Test audio processor creation with semantic assertions."""
 
@@ -165,6 +167,7 @@ class TestAudioProcessorInitialization:
 # TEST SUITE 2: Audio Frame Processing with Mutation Defense
 # ============================================================================
 
+
 class TestFrameProcessing:
     """Test frame processing with comprehensive assertions."""
 
@@ -172,11 +175,7 @@ class TestFrameProcessing:
         """✅ PATTERN: Multi-level assertion depth."""
         processor = CognitiveBrainAudioProcessor()
         frame = AudioFrame(
-            sample_rate=16000,
-            channels=1,
-            duration_ms=20,
-            amplitude=0.5,
-            data=b"audio_data"
+            sample_rate=16000, channels=1, duration_ms=20, amplitude=0.5, data=b"audio_data"
         )
 
         result = processor.process_frame(frame)
@@ -299,6 +298,7 @@ class TestFrameProcessing:
 # TEST SUITE 3: Buffer Management with Fill Percentage
 # ============================================================================
 
+
 class TestBufferManagement:
     """Test buffer operations with state verification."""
 
@@ -371,6 +371,7 @@ class TestBufferManagement:
 # ============================================================================
 # TEST SUITE 4: Audio Session Management
 # ============================================================================
+
 
 class TestAudioSessionManagement:
     """Test session creation and management."""
@@ -477,6 +478,7 @@ class TestAudioSessionManagement:
 # ============================================================================
 # TEST SUITE 5: Operator Mutation Defense
 # ============================================================================
+
 
 class TestOperatorMutationDefense:
     """Test operators for mutation score improvement."""

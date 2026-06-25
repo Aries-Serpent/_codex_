@@ -51,7 +51,7 @@ def _load_click_cli() -> Any:
         sys.modules["codex._cli_click"] = module
         spec.loader.exec_module(module)
         return getattr(module, "cli", None)
-    except Exception as exc:  # pragma: no cover
+    except (ImportError, AttributeError) as exc:  # pragma: no cover
         _cli_load_error = exc
         return None
 

@@ -24,9 +24,7 @@ try:
 except ImportError:  # pragma: no cover
     _FASTAPI_AVAILABLE = False
 
-pytestmark = pytest.mark.skipif(
-    not _FASTAPI_AVAILABLE, reason="fastapi[testclient] not installed"
-)
+pytestmark = pytest.mark.skipif(not _FASTAPI_AVAILABLE, reason="fastapi[testclient] not installed")
 
 
 @pytest.fixture(scope="module")

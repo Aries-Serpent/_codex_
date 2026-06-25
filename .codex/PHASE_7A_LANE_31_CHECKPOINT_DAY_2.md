@@ -123,7 +123,7 @@ MemoryEntry(
 
 ContextFrame(
   frame_id: str,
-  task_description: str,
+  task_description: str,  # pragma: allowlist secret
   start_time: str,
   end_time: Optional[str] = None,
   status: str = 'active',
@@ -133,12 +133,12 @@ ContextFrame(
   repository: Optional[str] = None,
   branch: Optional[str] = None,
   files_modified: list[str] = [],
-  tokens_used: int = 0,
+  tokens_used: int = 0,  # pragma: allowlist secret
   actions_taken: int = 0,
   errors_encountered: int = 0
 )
 
-ActionType Enum: ANALYZE, AUDIT, DEBUG, DEPLOY, DOCUMENT, EXECUTE, 
+ActionType Enum: ANALYZE, AUDIT, DEBUG, DEPLOY, DOCUMENT, EXECUTE,
                  IMPLEMENT, OPTIMIZE, PLAN, REFACTOR, REFLECT, RESEARCH, TEST
 
 ActionPath(

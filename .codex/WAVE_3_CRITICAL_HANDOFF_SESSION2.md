@@ -12,7 +12,7 @@
 |------|-------|--------|----------|-------------|
 | **3.1** | autonomous-test-healer-agent | 🚀 ACTIVE | 35% | Monitor; expect completion by 2026-07-04 |
 | **3.2** | mutation-testing-agent | ✅ PHASE 1-2 DONE | 40% prep | Await approval for Phase 3: `python3 -m mutmut run` |
-| **3.3** | qa-walkthrough-agent | ✅ **COMPLETE** | 100% | **CRITICAL: 28 hardcoded secrets must be removed within 8 hours** |
+| **3.3** | qa-walkthrough-agent | ✅ **COMPLETE** | 100% | **CRITICAL: 28 hardcoded secrets must be removed within 8 hours** | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -416,4 +416,3 @@ The critical path is:
 **Wave:** 3 (Final Wave)  
 **Date:** 2026-06-17T16:45:00Z  
 **Status:** 🚀 **WAVE 3 ACTIVE — 58% COMPLETE — ON TRACK**
-

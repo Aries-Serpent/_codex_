@@ -256,7 +256,8 @@ class CacheMonitor:
             }
 
         except Exception as e:
-            print(f"❌ Error fetching cache data: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Error fetching cache data: {error_type}")
             return {}
 
     def analyze_workflow_performance(self, days: int = 7) -> dict:
@@ -331,7 +332,8 @@ class CacheMonitor:
             return workflow_stats
 
         except Exception as e:
-            print(f"❌ Error analyzing workflows: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Error analyzing workflows: {error_type}")
             return {}
 
 
@@ -382,7 +384,8 @@ def main():
             with open('workflow-validation-report.json', 'w') as f:
                 json.dump(report, f, indent=2)
     except Exception as e:
-        print(f"\n⚠️  Cache monitoring skipped: {e}")
+        error_type = type(e).__name__
+        print(f"\n⚠️  Cache monitoring skipped: {error_type}")
 
     # Final summary
     print("\n" + "=" * 70)

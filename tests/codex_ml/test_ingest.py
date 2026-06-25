@@ -265,7 +265,7 @@ class TestReadJson:
     def test_read_invalid_json(self, tmp_path: Path) -> None:
         """Test reading invalid JSON."""
         json_file = tmp_path / "data.json"
-        json_file.write_text('not valid json')
+        json_file.write_text("not valid json")
 
         records = _read_json(json_file)
 
@@ -356,7 +356,7 @@ class TestPublicAPI:
         try:
             result = load_dataset()
             assert isinstance(result, list)
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             # May fail if no dataset available
             pytest.skip("Dataset not available")
 

@@ -90,7 +90,9 @@ class TestHybridPhysicsOrchestrator:
 
         assert result is not None
         assert "paradigms_used" in result
-        assert isinstance(result["paradigms_used"], (list, tuple, set, dict))  # was: len() >= 0 (always true)
+        assert isinstance(
+            result["paradigms_used"], (list, tuple, set, dict)
+        )  # was: len() >= 0 (always true)
 
     def test_orchestrate_tracks_decision_history(self, orchestrator):
         """Test that decisions are tracked in history."""
@@ -120,9 +122,7 @@ class TestHybridPhysicsOrchestrator:
 
     # ========== ADVANCED PHYSICS INTEGRATION TESTS ==========
 
-    @pytest.mark.skipif(
-        not ADVANCED_PHYSICS_AVAILABLE, reason="Advanced physics not available"
-    )
+    @pytest.mark.skipif(not ADVANCED_PHYSICS_AVAILABLE, reason="Advanced physics not available")
     def test_advanced_physics_integration(self, orchestrator):
         """Test integration with advanced physics orchestrator."""
         assert orchestrator.advanced_orchestrator is not None

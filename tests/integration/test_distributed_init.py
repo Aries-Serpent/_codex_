@@ -47,7 +47,7 @@ class TestAccelerateInitGuard:
     def test_is_gpu_available(self):
         """Test GPU availability detection."""
         # Test with GPU not available
-        with patch('torch.cuda.is_available') as mock_cuda:
+        with patch("torch.cuda.is_available") as mock_cuda:
             mock_cuda.return_value = False  # Return actual bool, not MagicMock
 
             result = is_gpu_available()
@@ -56,7 +56,7 @@ class TestAccelerateInitGuard:
             assert result is False
 
         # Test with GPU available
-        with patch('torch.cuda.is_available') as mock_cuda:
+        with patch("torch.cuda.is_available") as mock_cuda:
             mock_cuda.return_value = True  # Return actual bool, not MagicMock
 
             result = is_gpu_available()
@@ -111,13 +111,13 @@ class TestAccelerateInitGuard:
     def test_safe_init_structured_result(self):
         """Test that safe_accelerate_init returns structured result."""
         # Mock is_gpu_available to return actual bool
-        with patch('src.training.accelerate_init_guard.is_gpu_available') as mock_gpu:
+        with patch("src.training.accelerate_init_guard.is_gpu_available") as mock_gpu:
             mock_gpu.return_value = False  # Return actual bool, not MagicMock
 
             # Mock accelerate.PartialState if accelerate is available
-            with patch('accelerate.PartialState', create=True) as mock_partial_state:
+            with patch("accelerate.PartialState", create=True) as mock_partial_state:
                 mock_state = MagicMock()
-                mock_state.distributed_type = 'DistributedType.NO'
+                mock_state.distributed_type = "DistributedType.NO"
                 mock_state.num_processes = 1
                 mock_state.process_index = 0
                 mock_partial_state.return_value = mock_state

@@ -505,7 +505,7 @@ class GitHubApp:
                 f"Failed to get installation token for installation "
                 f"{installation_id}: HTTP {exc.code} — {error_body}"
             ) from exc
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             raise AuthenticationError(f"Network error fetching installation token: {exc}") from exc
 
         # Parse ISO-8601 expiry → Unix timestamp
@@ -577,7 +577,7 @@ class GitHubApp:
             raise AuthenticationError(
                 f"GitHub API GET {path} failed: HTTP {exc.code} — {body}"
             ) from exc
-        except Exception as exc:
+        except (IOError, OSError) as exc:
             raise AuthenticationError(f"Network error on GET {path}: {exc}") from exc
 
     def pat_api_get(self, url: str) -> Any:
@@ -639,7 +639,7 @@ class GitHubApp:
                 raise AuthenticationError(
                     f"PAT API GET {url} failed: HTTP {exc.code} — {body}"
                 ) from exc
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 raise AuthenticationError(f"Network error on PAT GET {url}: {exc}") from exc
 
         raise AuthenticationError(
@@ -864,6 +864,6 @@ def _parse_iso8601(ts: str) -> float:
         normalised = ts.replace("Z", "+00:00")
         dt = datetime.fromisoformat(normalised)
         return dt.timestamp()
-    except Exception:
+    except (ImportError, AttributeError):
         # Unrecognised format — default to 1 hour from now.
         return time.time() + 3600

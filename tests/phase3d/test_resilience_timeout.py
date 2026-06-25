@@ -22,6 +22,7 @@ import pytest
 @contextmanager
 def timeout(seconds):
     """Context manager for timeout handling."""
+
     def signal_handler(signum, frame):
         raise TimeoutError(f"Operation timed out after {seconds}s")
 
@@ -97,7 +98,7 @@ class TestTimeoutHandling:
             attempt_count += 1
             try:
                 # Fast operation that succeeds
-                result = attempt * 2
+                attempt * 2
                 break
             except TimeoutError:
                 if attempt == max_attempts - 1:
@@ -145,7 +146,7 @@ class TestResourceExhaustion:
                 try:
                     f.close()
                     os.unlink(f.name)
-                except:
+                except (AttributeError, OSError, RuntimeError):
                     pass
 
     def test_thread_exhaustion_handling(self):
@@ -165,6 +166,7 @@ class TestResourceExhaustion:
 
     def test_stack_overflow_protection(self):
         """Test protection against stack overflow."""
+
         def recursive_func(depth, max_depth=100):
             if depth >= max_depth:
                 return depth
@@ -226,15 +228,16 @@ class TestRecoveryPaths:
 
         for attempt in range(max_retries):
             attempts.append(attempt)
-            delay = base_delay * (2 ** attempt)
+            delay = base_delay * (2**attempt)
             assert delay > 0
 
     def test_recovery_graceful_degradation(self):
         """Test graceful degradation of functionality."""
+
         def get_feature_level():
             try:
                 # Try to use advanced feature
-                advanced_feature = eval("complex_calculation()")
+                eval("complex_calculation()")
             except NameError:
                 # Fallback to basic feature
                 return "basic"
@@ -283,7 +286,7 @@ class TestPerformanceBoundaries:
 
     def test_dict_lookup_performance(self):
         """Test dictionary lookup performance."""
-        dct = {i: i*2 for i in range(100000)}
+        dct = {i: i * 2 for i in range(100000)}
 
         start = time.time()
         for i in range(1000):
@@ -381,6 +384,7 @@ class TestLongRunningOperations:
 
     def test_long_running_async_simulation(self):
         """Test simulation of long async operation."""
+
         def async_operation():
             results = []
             for i in range(100):

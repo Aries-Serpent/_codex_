@@ -14,8 +14,9 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     NUMPY_AVAILABLE = False
     np = None
 

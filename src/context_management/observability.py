@@ -288,7 +288,7 @@ class ContextObserver:
             Created Alert object
         """
         if not self.enable_alerts:
-            return None  # type: ignore[return-value]
+            return None
 
         alert = Alert(
             alert_id=str(uuid.uuid4())[:8],
@@ -305,9 +305,10 @@ class ContextObserver:
         if self._alert_callback:
             try:
                 self._alert_callback(alert)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
         # Also log the alert
         self.log(

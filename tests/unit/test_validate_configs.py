@@ -21,6 +21,7 @@ import validate_configs as vc  # noqa: E402
 # validate_yaml_syntax tests
 # ---------------------------------------------------------------------------
 
+
 class TestValidateYamlSyntax:
     def test_valid_yaml_returns_none(self, tmp_path: Path) -> None:
         f = tmp_path / "ok.yaml"
@@ -44,6 +45,7 @@ class TestValidateYamlSyntax:
 # _is_train_candidate tests
 # ---------------------------------------------------------------------------
 
+
 class TestIsTrainCandidate:
     def test_dict_with_int_config_version_is_candidate(self) -> None:
         assert vc._is_train_candidate({"config_version": 1, "learning_rate": 1e-4})
@@ -66,6 +68,7 @@ class TestIsTrainCandidate:
 # ---------------------------------------------------------------------------
 # _should_skip tests
 # ---------------------------------------------------------------------------
+
 
 class TestShouldSkip:
     def test_skips_desired_subdir(self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -91,6 +94,7 @@ class TestShouldSkip:
 # ---------------------------------------------------------------------------
 # run() tests
 # ---------------------------------------------------------------------------
+
 
 class TestRun:
     def test_run_on_empty_directory_returns_zero(self, tmp_path: Path) -> None:
@@ -151,6 +155,7 @@ class TestRun:
 # ---------------------------------------------------------------------------
 # validate_train_config — graceful degradation
 # ---------------------------------------------------------------------------
+
 
 class TestValidateTrainConfig:
     def test_returns_skip_message_when_import_fails(self, tmp_path: Path) -> None:

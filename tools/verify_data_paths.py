@@ -23,7 +23,8 @@ def main() -> int:
         run_argv([sys.executable, str(snap)])
         run_argv([sys.executable, str(parq)])
     except subprocess.CalledProcessError as exc:
-        print(f"Verification failed: {exc}")
+        error_type = type(exc).__name__
+        print(f"Verification failed: <ERROR_TYPE>")
         return 1
     db_path = ROOT / ".artifacts" / "snippets.db"
     url = f"https://lite.datasette.io/?url={db_path.as_uri()}"

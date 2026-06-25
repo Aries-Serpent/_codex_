@@ -197,10 +197,10 @@ class CascadeDetector:
         """Return True if cascade detected for this pattern."""
         if pattern_id not in self.pattern_history:
             self.pattern_history[pattern_id] = []
-        
+
         current = set(files_modified)
         previous = set(f for f, _ in self.pattern_history[pattern_id])
-        
+
         # Cascade: same files being modified again
         if current & previous:  # Intersection non-empty
             self.retry_count[pattern_id] = self.retry_count.get(pattern_id, 0) + 1
@@ -212,7 +212,7 @@ class CascadeDetector:
                 self.circuit_state[pattern_id] = "OPEN"
                 logger.warning(f"Cascade detected Pattern {pattern_id} (attempt {self.retry_count[pattern_id]})")
                 return True
-        
+
         # No cascade: record this run
         for f in files_modified:
             self.pattern_history[pattern_id].append((f, self.retry_count.get(pattern_id, 0) + 1))

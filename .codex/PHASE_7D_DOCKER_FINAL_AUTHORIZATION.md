@@ -84,7 +84,7 @@ This authorization may be REVOKED if:
 ### PILLAR 2: PHASE 7D SECURITY ✅
 ```
 ✅ Gate 2.1: CVE Status (0 critical/high)    PASS
-✅ Gate 2.2: Secret Detection (0 exposed)    PASS
+✅ Gate 2.2: Secret Detection (0 exposed)    PASS  # pragma: allowlist secret
 ✅ Gate 2.3: Dependency Integrity            PASS
 ✅ Gate 2.4: Build Attestation Ready         PASS
 ```
@@ -170,7 +170,7 @@ FINAL PRODUCTION SCORE  99/100   ✅ APPROVED
 | Risk Factor | Status | Mitigation |
 |-------------|--------|-----------|
 | Code Quality | 🟢 LOW | Full test suite passing, zero regressions |
-| Security | 🟢 LOW | 0 CVEs, secrets scanning clean, attestation ready |
+| Security | 🟢 LOW | 0 CVEs, secrets scanning clean, attestation ready | <!-- pragma: allowlist secret -->
 | Infrastructure | 🟢 LOW | Cluster healthy, capacity verified, DR tested |
 | Data | 🟢 LOW | Migration tested, rollback procedures ready |
 | Third-Party | 🟢 LOW | All integrations verified, fallback available |
@@ -322,7 +322,7 @@ All deployment artifacts are version-controlled in `.codex/`:
 ### Scenario 1: Deployment Failure in Dev Stage
 
 **If**: Dev environment deployment fails
-**Then**: 
+**Then**:
 1. Diagnose issue immediately
 2. Attempt fix within 15 minutes
 3. If not fixed: Escalate to @mbaetiong

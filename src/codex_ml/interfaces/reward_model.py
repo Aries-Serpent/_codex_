@@ -171,7 +171,7 @@ class HeuristicRewardModel(RewardModel):
             label = entry.get("label") or entry.get("score") or 0.0
             try:
                 avg_label += float(label)
-            except Exception:  # pragma: no cover - defensive fallback
+            except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive fallback
                 logger.debug("Suppressed exception in handler", exc_info=True)
             count += 1
 

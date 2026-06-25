@@ -13,8 +13,7 @@ import json
 import sqlite3
 import tempfile
 from datetime import datetime, timedelta
-from pathlib import Path # pragma: allowlist secret
-from unittest.mock import patch, MagicMock
+from pathlib import Path  # pragma: allowlist secret
 
 import pytest
 
@@ -42,8 +41,7 @@ def test_db(temp_db_dir):
     cursor = conn.cursor()
 
     # Create schema
-    cursor.executescript(
-        """
+    cursor.executescript("""
         CREATE TABLE sessions (
             session_id TEXT PRIMARY KEY,
             pr_number INTEGER,
@@ -59,7 +57,7 @@ def test_db(temp_db_dir):
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
-        
+
         CREATE TABLE session_metadata (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT NOT NULL,
@@ -69,7 +67,7 @@ def test_db(temp_db_dir):
             FOREIGN KEY (session_id) REFERENCES sessions(session_id),
             UNIQUE(session_id, key)
         );
-        
+
         CREATE TABLE session_events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT NOT NULL,
@@ -78,7 +76,7 @@ def test_db(temp_db_dir):
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (session_id) REFERENCES sessions(session_id)
         );
-        
+
         CREATE TABLE session_outcomes (
             session_id TEXT PRIMARY KEY,
             ci_checks_green INTEGER DEFAULT 0,
@@ -88,11 +86,10 @@ def test_db(temp_db_dir):
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (session_id) REFERENCES sessions(session_id)
         );
-        
+
         CREATE INDEX idx_archive_status ON sessions(archive_status);
         CREATE INDEX idx_created_at ON sessions(created_at DESC);
-    """
-    )
+    """)
 
     conn.commit()
     conn.close()
@@ -236,8 +233,9 @@ class TestArchiveManager:
 
     def test_cache_performance(self, test_db, archive_dir, test_session_data):
         """Test LRU caching improves retrieval performance."""
-        from codex.logging.archive_manager import ArchiveManager
         import time
+
+        from codex.logging.archive_manager import ArchiveManager
 
         insert_test_session(test_db, test_session_data)
 
@@ -302,7 +300,11 @@ class TestArchiveManager:
         old_ts = (datetime.now() - timedelta(days=1000)).timestamp()
 
         # Update archive index with old timestamp - use actual archive location
-        actual_archive_location = archived.archive_location if archived else str(archive_dir / "2026" / "03" / "very-old-session.parquet")
+        actual_archive_location = (
+            archived.archive_location
+            if archived
+            else str(archive_dir / "2026" / "03" / "very-old-session.parquet")
+        )
         actual_file_size = archived.file_size_bytes if archived else 1000
 
         index_data = {

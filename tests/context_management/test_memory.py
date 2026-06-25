@@ -21,11 +21,7 @@ class TestMemoryChunk:
 
     def test_memory_chunk_initialization(self):
         """Test MemoryChunk initialization."""
-        chunk = MemoryChunk(
-            chunk_id="chunk_1",
-            content="test content",
-            token_count=10
-        )
+        chunk = MemoryChunk(chunk_id="chunk_1", content="test content", token_count=10)
         assert chunk.chunk_id == "chunk_1"
         assert chunk.content == "test content"
         assert chunk.token_count == 10
@@ -38,28 +34,19 @@ class TestMemoryChunk:
             chunk_id="chunk_1",
             content="test",
             token_count=5,
-            metadata={"source": "test_file.py", "line": 42}
+            metadata={"source": "test_file.py", "line": 42},
         )
         assert chunk.metadata["source"] == "test_file.py"
         assert chunk.metadata["line"] == 42
 
     def test_memory_chunk_with_priority(self):
         """Test MemoryChunk with priority."""
-        chunk = MemoryChunk(
-            chunk_id="chunk_1",
-            content="critical",
-            token_count=5,
-            priority=100
-        )
+        chunk = MemoryChunk(chunk_id="chunk_1", content="critical", token_count=5, priority=100)
         assert chunk.priority == 100
 
     def test_memory_chunk_access(self):
         """Test MemoryChunk access tracking."""
-        chunk = MemoryChunk(
-            chunk_id="chunk_1",
-            content="test",
-            token_count=5
-        )
+        chunk = MemoryChunk(chunk_id="chunk_1", content="test", token_count=5)
         initial_access_count = chunk.access_count
         initial_accessed = chunk.last_accessed
 
@@ -72,10 +59,7 @@ class TestMemoryChunk:
     def test_memory_chunk_summary(self):
         """Test MemoryChunk with summary."""
         chunk = MemoryChunk(
-            chunk_id="chunk_1",
-            content="long content here",
-            token_count=10,
-            summary="short summary"
+            chunk_id="chunk_1", content="long content here", token_count=10, summary="short summary"
         )
         assert chunk.summary == "short summary"
 
@@ -89,10 +73,7 @@ class TestRetrievalResult:
             MemoryChunk(chunk_id="1", content="test", token_count=5),
         ]
         result = RetrievalResult(
-            chunks=chunks,
-            total_tokens=5,
-            query_used="test query",
-            retrieval_method="keyword"
+            chunks=chunks, total_tokens=5, query_used="test query", retrieval_method="keyword"
         )
         assert len(result.chunks) == 1
         assert result.total_tokens == 5
@@ -129,10 +110,7 @@ class TestContextMemory:
         """Test storing content with metadata."""
         memory = ContextMemory(max_total_tokens=10000)
 
-        chunk_ids = memory.store(
-            "Test content",
-            metadata={"source": "test.py"}
-        )
+        chunk_ids = memory.store("Test content", metadata={"source": "test.py"})
 
         chunk = memory.get_chunk(chunk_ids[0])
         assert chunk is not None
@@ -142,10 +120,7 @@ class TestContextMemory:
         """Test storing content with priority."""
         memory = ContextMemory(max_total_tokens=10000)
 
-        chunk_ids = memory.store(
-            "Critical content",
-            priority=100
-        )
+        chunk_ids = memory.store("Critical content", priority=100)
 
         chunk = memory.get_chunk(chunk_ids[0])
         assert chunk is not None
@@ -234,6 +209,7 @@ class TestContextMemoryWithEmbeddings:
 
     def test_store_with_embedder(self):
         """Test storing content with embedder."""
+
         def mock_embedder(text):
             return [0.1] * 128
 
@@ -244,6 +220,7 @@ class TestContextMemoryWithEmbeddings:
 
     def test_retrieve_with_embedder(self):
         """Test retrieval with embedder."""
+
         def mock_embedder(text):
             return [len(text) / 100.0] * 128
 
@@ -261,6 +238,7 @@ class TestContextMemoryWithSummarizer:
 
     def test_store_with_summarizer(self):
         """Test storing with summarizer generates summaries."""
+
         def mock_summarizer(text):
             return text[:20] + "..." if len(text) > 20 else text
 
@@ -273,6 +251,7 @@ class TestContextMemoryWithSummarizer:
 
     def test_map_reduce_summarize(self):
         """Test map-reduce summarization."""
+
         def mock_summarizer(text):
             return f"Summary: {text[:30]}..."
 

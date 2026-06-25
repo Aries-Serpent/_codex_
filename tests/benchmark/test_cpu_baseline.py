@@ -3,6 +3,7 @@
 Verifies that the baseline runner produces valid output on CPU-only machines.
 All tests are hardware-agnostic and complete in < 5 s.
 """
+
 from __future__ import annotations
 
 import json
@@ -139,6 +140,7 @@ class TestCompareWithBaseline:
 class TestCLI:
     def test_cli_suite_flag(self, tmp_path):
         from cpu_baseline import main
+
         json_path = tmp_path / "result.json"
         rc = main(["--suite", "cpu", "--json", str(json_path)])
         assert rc == 0
@@ -148,6 +150,7 @@ class TestCLI:
 
     def test_cli_compare_creates_baseline_if_missing(self, tmp_path):
         from cpu_baseline import main
+
         baseline_path = tmp_path / "baseline.json"
         rc = main(["--suite", "cpu", "--compare", str(baseline_path)])
         assert rc == 0
@@ -155,6 +158,7 @@ class TestCLI:
 
     def test_cli_compare_no_regression(self, tmp_path):
         from cpu_baseline import main, run_benchmarks
+
         # Save a baseline first
         baseline_path = tmp_path / "baseline.json"
         baseline = run_benchmarks(["cpu"])

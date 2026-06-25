@@ -3,6 +3,7 @@ Test ExceptionGroup compatibility (Python 3.12 standard feature).
 
 ExceptionGroup was introduced in Python 3.11 and is fully supported in 3.12.
 """
+
 # ruff: noqa: F821
 
 from __future__ import annotations
@@ -27,7 +28,7 @@ class TestExceptionGroups:
                 ValueError("error 1"),
                 TypeError("error 2"),
                 RuntimeError("error 3"),
-            ]
+            ],
         )
 
         assert isinstance(eg, ExceptionGroup)
@@ -36,10 +37,10 @@ class TestExceptionGroups:
 
     def test_exception_group_catching(self):
         """Test catching ExceptionGroup."""
+
         def raise_multiple_errors():
             raise ExceptionGroup(
-                "errors occurred",
-                [ValueError("val error"), TypeError("type error")]
+                "errors occurred", [ValueError("val error"), TypeError("type error")]
             )
 
         with pytest.raises(ExceptionGroup) as exc_info:
@@ -67,19 +68,13 @@ except* TypeError as eg:
     type_errors = eg.exceptions
 """
         # This should compile without errors in Python 3.12
-        compile(code, '<string>', 'exec')
+        compile(code, "<string>", "exec")
 
     def test_nested_exception_groups(self):
         """Test nested ExceptionGroups."""
-        inner_eg = ExceptionGroup(
-            "inner errors",
-            [ValueError("inner1"), ValueError("inner2")]
-        )
+        inner_eg = ExceptionGroup("inner errors", [ValueError("inner1"), ValueError("inner2")])
 
-        outer_eg = ExceptionGroup(
-            "outer errors",
-            [TypeError("outer"), inner_eg]
-        )
+        outer_eg = ExceptionGroup("outer errors", [TypeError("outer"), inner_eg])
 
         assert len(outer_eg.exceptions) == 2
         assert isinstance(outer_eg.exceptions[0], TypeError)
@@ -94,7 +89,7 @@ except* TypeError as eg:
                 TypeError("t1"),
                 ValueError("v2"),
                 RuntimeError("r1"),
-            ]
+            ],
         )
 
         # Split by ValueError
@@ -138,7 +133,7 @@ class TestPython312ExceptionImprovements:
                 e.add_note("Additional context 2")
                 raise
         except ValueError as e:
-            assert hasattr(e, '__notes__')
+            assert hasattr(e, "__notes__")
             assert len(e.__notes__) == 2
             assert "Additional context 1" in e.__notes__
             assert "Additional context 2" in e.__notes__
@@ -180,6 +175,7 @@ class TestCodexMLExceptionHandling:
 
     def test_exception_handling_patterns(self):
         """Test that standard exception handling works."""
+
         def risky_operation():
             raise ValueError("test error")
 
@@ -191,8 +187,10 @@ class TestCodexMLExceptionHandling:
 
     def test_custom_exception_classes(self):
         """Test custom exception classes work in Python 3.12."""
+
         class CustomError(Exception):
             """Custom exception for testing."""
+
             def __init__(self, message: str, code: int):
                 super().__init__(message)
                 self.code = code
@@ -225,10 +223,7 @@ class TestExceptionGroupIntegration:
         async def gather_with_exception_group():
             try:
                 results = await asyncio.gather(
-                    failing_task(0),
-                    failing_task(1),
-                    failing_task(2),
-                    return_exceptions=True
+                    failing_task(0), failing_task(1), failing_task(2), return_exceptions=True
                 )
 
                 # Collect exceptions

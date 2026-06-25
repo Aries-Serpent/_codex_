@@ -126,8 +126,9 @@ class FileProcessor:
             return json.dumps(metadata), quality
 
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            print(f"Warning: Could not process documentation {filepath}: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"Warning: Could not process documentation {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return None, 0.5
 
     @classmethod
@@ -164,8 +165,9 @@ class FileProcessor:
                     return json.dumps(metadata), quality
 
                 except SyntaxError as e:
-                    logger.debug(f"SyntaxError: {e}")
-                    logger.warning(f"SyntaxError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"SyntaxError: <ERROR_TYPE>")
+                    logger.warning(f"SyntaxError: <ERROR_TYPE>", exc_info=True)
                     return None, 0.3
 
             # For other languages, basic metrics
@@ -184,8 +186,9 @@ class FileProcessor:
             return json.dumps(metadata), quality
 
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            print(f"Warning: Could not process source code {filepath}: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"Warning: Could not process source code {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return None, 0.5
 
     @classmethod
@@ -211,8 +214,9 @@ class FileProcessor:
             return json.dumps(metadata), quality
 
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            print(f"Warning: Could not process config {filepath}: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"Warning: Could not process config {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return None, 0.5
 
     @classmethod
@@ -317,8 +321,9 @@ class DatasetManager:
                     try:
                         tar.add(pf.path, arcname=pf.relative_path)
                     except Exception as e:
-                        logger.debug(f"Exception: {e}")
-                        print(f"Warning: Could not add {pf.path}: {e}", file=sys.stderr)
+                        error_type = type(e).__name__
+                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        print(f"Warning: Could not add {pf.path}: <ERROR_TYPE>", file=sys.stderr)
 
         elif format == "zip":
             with zipfile.ZipFile(archive_path, 'w', zipfile.ZIP_DEFLATED) as zf:
@@ -326,8 +331,9 @@ class DatasetManager:
                     try:
                         zf.write(pf.path, arcname=pf.relative_path)
                     except Exception as e:
-                        logger.debug(f"Exception: {e}")
-                        print(f"Warning: Could not add {pf.path}: {e}", file=sys.stderr)
+                        error_type = type(e).__name__
+                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        print(f"Warning: Could not add {pf.path}: <ERROR_TYPE>", file=sys.stderr)
 
         print(f"✓ Created archive: {archive_path}")
         return archive_path

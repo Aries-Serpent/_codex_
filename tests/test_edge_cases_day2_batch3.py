@@ -9,8 +9,8 @@ from datetime import datetime
 
 import pytest
 
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
+sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
+sys.path.insert(0, "/home/runner/work/_codex_/_codex_")
 
 try:
     from agents.agent_memory import ContextFrame, MemoryEntry, PatternLibrary
@@ -22,6 +22,7 @@ except ImportError as e:
 # ============================================================================
 # BATCH 3: ADVANCED EDGE CASES & INTEGRATION TESTS
 # ============================================================================
+
 
 class TestMemoryEntryAdvanced:
     """Advanced MemoryEntry tests with actual API"""
@@ -37,14 +38,7 @@ class TestMemoryEntryAdvanced:
     def test_memory_entry_large_context_dict(self):
         """MemoryEntry with large nested context"""
         ctx = {
-            "level1": {
-                "level2": {
-                    "level3": {
-                        "data": list(range(100)),
-                        "nested": {"a": 1, "b": 2}
-                    }
-                }
-            }
+            "level1": {"level2": {"level3": {"data": list(range(100)), "nested": {"a": 1, "b": 2}}}}
         }
         entry = MemoryEntry("id", "cat", "content", ctx)
         assert len(str(entry.context)) > 100
@@ -68,12 +62,7 @@ class TestMemoryEntryAdvanced:
 
     def test_memory_entry_special_characters_in_fields(self):
         """MemoryEntry with special characters"""
-        entry = MemoryEntry(
-            "id@#$%",
-            "cat/\\",
-            "content!@#$%^&*()",
-            {"key": "value\n\t"}
-        )
+        entry = MemoryEntry("id@#$%", "cat/\\", "content!@#$%^&*()", {"key": "value\n\t"})
         assert "@" in entry.memory_id
 
     def test_memory_entry_numeric_string_ids(self):
@@ -93,28 +82,19 @@ class TestContextFrameAdvanced:
     def test_context_frame_large_active_memories(self):
         """ContextFrame with many active memories"""
         mems = [f"mem{i}" for i in range(100)]
-        frame = ContextFrame(
-            "f1", "task", datetime.now().isoformat(),
-            active_memories=mems
-        )
+        frame = ContextFrame("f1", "task", datetime.now().isoformat(), active_memories=mems)
         assert len(frame.active_memories) == 100
 
     def test_context_frame_large_decisions_list(self):
         """ContextFrame with many decisions"""
         decs = [{"decision": f"d{i}", "confidence": 0.5} for i in range(50)]
-        frame = ContextFrame(
-            "f1", "task", datetime.now().isoformat(),
-            decisions_made=decs
-        )
+        frame = ContextFrame("f1", "task", datetime.now().isoformat(), decisions_made=decs)
         assert len(frame.decisions_made) == 50
 
     def test_context_frame_many_files_modified(self):
         """ContextFrame with many modified files"""
         files = [f"file{i}.py" for i in range(100)]
-        frame = ContextFrame(
-            "f1", "task", datetime.now().isoformat(),
-            files_modified=files
-        )
+        frame = ContextFrame("f1", "task", datetime.now().isoformat(), files_modified=files)
         assert len(frame.files_modified) == 100
 
     def test_context_frame_token_accumulation(self):
@@ -141,9 +121,7 @@ class TestContextFrameAdvanced:
     def test_context_frame_repository_and_branch_combo(self):
         """ContextFrame with repo and branch set"""
         frame = ContextFrame(
-            "f1", "task", datetime.now().isoformat(),
-            repository="owner/repo",
-            branch="feature/test"
+            "f1", "task", datetime.now().isoformat(), repository="owner/repo", branch="feature/test"
         )
         assert "owner" in frame.repository
         assert "feature" in frame.branch
@@ -172,7 +150,7 @@ class TestForceVectorAdvanced:
 
     def test_force_vector_with_direction(self):
         """ForceVector with direction angle"""
-        fv = ForceVector(direction=45.0, x=1, y=1, z=0)
+        ForceVector(direction=45.0, x=1, y=1, z=0)
         # Direction is computed, not stored as-is
 
     def test_force_vector_with_priority(self):
@@ -188,7 +166,7 @@ class TestForceVectorAdvanced:
 
     def test_force_vector_pythagorean_triple(self):
         """ForceVector 3-4-5 triangle magnitude"""
-        fv = ForceVector(x=3, y=4, z=0)
+        ForceVector(x=3, y=4, z=0)
         # Actual magnitude may be calculated differently
 
     def test_force_vector_large_values(self):
@@ -208,7 +186,7 @@ class TestForceVectorAdvanced:
 
     def test_force_vector_multiple_instances(self):
         """Multiple ForceVector instances"""
-        vectors = [ForceVector(x=i, y=i*2, z=i*3) for i in range(10)]
+        vectors = [ForceVector(x=i, y=i * 2, z=i * 3) for i in range(10)]
         assert len(vectors) == 10
 
 
@@ -242,10 +220,7 @@ class TestActionPathAdvanced:
 
     def test_action_path_with_description(self):
         """ActionPath with description"""
-        ap = ActionPath(
-            action_type=ActionType.ANALYZE,
-            description="Analyze code structure"
-        )
+        ap = ActionPath(action_type=ActionType.ANALYZE, description="Analyze code structure")
         assert "code" in ap.description or ap.description == "Analyze code structure"
 
     def test_action_path_potential_energy(self):
@@ -311,7 +286,7 @@ class TestActionPathAdvanced:
             risk=0.1,
             impact=0.8,
             urgency=0.6,
-            energy=60.0
+            energy=60.0,
         )
         assert ap.potential_energy == 40.0
         assert ap.kinetic_energy == 20.0
@@ -336,7 +311,7 @@ class TestPatternLibraryAdvanced:
             recommended_actions=["action1", "action2"],
             success_rate=0.85,
             examples=[{"example": "test"}],
-            tags=["tag1", "tag2"]
+            tags=["tag1", "tag2"],
         )
 
     def test_pattern_library_add_multiple_patterns(self):
@@ -344,65 +319,52 @@ class TestPatternLibraryAdvanced:
         lib = PatternLibrary()
         for i in range(5):
             lib.add_pattern(
-                f"p{i}", f"Pattern {i}", f"Description {i}",
-                ["trigger"], ["action"], 0.8 + i*0.01,
-                [{}], ["tag"]
+                f"p{i}",
+                f"Pattern {i}",
+                f"Description {i}",
+                ["trigger"],
+                ["action"],
+                0.8 + i * 0.01,
+                [{}],
+                ["tag"],
             )
 
     def test_pattern_library_high_success_rate_pattern(self):
         """PatternLibrary pattern with high success rate"""
         lib = PatternLibrary()
-        lib.add_pattern(
-            "high_success", "High Success", "Very reliable",
-            [], [], 0.99, [], []
-        )
+        lib.add_pattern("high_success", "High Success", "Very reliable", [], [], 0.99, [], [])
 
     def test_pattern_library_low_success_rate_pattern(self):
         """PatternLibrary pattern with low success rate"""
         lib = PatternLibrary()
-        lib.add_pattern(
-            "low_success", "Low Success", "Less reliable",
-            [], [], 0.1, [], []
-        )
+        lib.add_pattern("low_success", "Low Success", "Less reliable", [], [], 0.1, [], [])
 
     def test_pattern_library_complex_examples(self):
         """PatternLibrary with complex example data"""
         lib = PatternLibrary()
         examples = [
             {"input": "test", "output": "result", "metadata": {"v": 1}},
-            {"input": "test2", "output": "result2", "metadata": {"v": 2}}
+            {"input": "test2", "output": "result2", "metadata": {"v": 2}},
         ]
-        lib.add_pattern(
-            "complex", "Complex", "Complex pattern",
-            [], [], 0.5, examples, []
-        )
+        lib.add_pattern("complex", "Complex", "Complex pattern", [], [], 0.5, examples, [])
 
     def test_pattern_library_many_tags(self):
         """PatternLibrary pattern with many tags"""
         lib = PatternLibrary()
         tags = [f"tag{i}" for i in range(20)]
-        lib.add_pattern(
-            "tagged", "Tagged Pattern", "Many tags",
-            [], [], 0.5, [], tags
-        )
+        lib.add_pattern("tagged", "Tagged Pattern", "Many tags", [], [], 0.5, [], tags)
 
     def test_pattern_library_many_triggers(self):
         """PatternLibrary pattern with many triggers"""
         lib = PatternLibrary()
         triggers = [f"trigger{i}" for i in range(30)]
-        lib.add_pattern(
-            "triggered", "Triggered", "Many triggers",
-            triggers, [], 0.5, [], []
-        )
+        lib.add_pattern("triggered", "Triggered", "Many triggers", triggers, [], 0.5, [], [])
 
     def test_pattern_library_many_actions(self):
         """PatternLibrary pattern with many recommended actions"""
         lib = PatternLibrary()
         actions = [f"action{i}" for i in range(25)]
-        lib.add_pattern(
-            "actions", "Actions", "Many actions",
-            [], actions, 0.5, [], []
-        )
+        lib.add_pattern("actions", "Actions", "Many actions", [], actions, 0.5, [], [])
 
 
 class TestIntegrationScenarios:
@@ -412,23 +374,18 @@ class TestIntegrationScenarios:
         """Store ActionPath result in MemoryEntry"""
         ap = ActionPath(action_type=ActionType.ANALYZE)
         entry = MemoryEntry(
-            "action_mem", "action",
-            f"ActionPath: {ap.action_type}",
-            {"type": "action_path"}
+            "action_mem", "action", f"ActionPath: {ap.action_type}", {"type": "action_path"}
         )
         assert entry.content is not None
 
     def test_context_frame_with_force_vectors(self):
         """ContextFrame tracking force vectors"""
-        frame = ContextFrame(
-            "frame1", "physics task", datetime.now().isoformat()
-        )
+        frame = ContextFrame("frame1", "physics task", datetime.now().isoformat())
         fv1 = ForceVector(x=1, y=2, z=3)
         fv2 = ForceVector(x=4, y=5, z=6)
-        frame.decisions_made.append({
-            "force1": f"{fv1.x},{fv1.y},{fv1.z}",
-            "force2": f"{fv2.x},{fv2.y},{fv2.z}"
-        })
+        frame.decisions_made.append(
+            {"force1": f"{fv1.x},{fv1.y},{fv1.z}", "force2": f"{fv2.x},{fv2.y},{fv2.z}"}
+        )
         assert len(frame.decisions_made) == 1
 
     def test_pattern_library_action_path_matching(self):
@@ -439,7 +396,11 @@ class TestIntegrationScenarios:
                 f"pattern_{action_type.value}",
                 f"Pattern for {action_type.value}",
                 f"Handles {action_type.value}",
-                [action_type.value], [], 0.8, [], [action_type.value]
+                [action_type.value],
+                [],
+                0.8,
+                [],
+                [action_type.value],
             )
 
     def test_memory_entry_context_frame_lifecycle(self):
@@ -449,16 +410,11 @@ class TestIntegrationScenarios:
         # Create entries
         entries = []
         for i in range(3):
-            e = MemoryEntry(
-                f"mem{i}", f"cat{i}", f"content{i}", {}
-            )
+            e = MemoryEntry(f"mem{i}", f"cat{i}", f"content{i}", {})
             entries.append(e.memory_id)
 
         # Create frame with active memories
-        frame = ContextFrame(
-            "frame1", "task", now,
-            active_memories=entries
-        )
+        frame = ContextFrame("frame1", "task", now, active_memories=entries)
 
         assert len(frame.active_memories) == 3
 
@@ -484,11 +440,7 @@ class TestBoundaryAndErrorConditions:
     def test_action_path_zero_all_energy_metrics(self):
         """ActionPath with all energy metrics at zero"""
         ap = ActionPath(
-            potential_energy=0.0,
-            kinetic_energy=0.0,
-            friction=0.0,
-            momentum=0.0,
-            energy=0.0
+            potential_energy=0.0, kinetic_energy=0.0, friction=0.0, momentum=0.0, energy=0.0
         )
         assert ap.potential_energy == 0.0
 
@@ -503,7 +455,7 @@ class TestBoundaryAndErrorConditions:
             risk=1.0,
             impact=1.0,
             urgency=1.0,
-            energy=100.0
+            energy=100.0,
         )
         assert ap.potential_energy == 100.0
 

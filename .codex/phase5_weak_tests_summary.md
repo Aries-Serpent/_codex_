@@ -61,17 +61,17 @@ def test_process_request_exact_values(self):
         "params": {"x": 10, "y": 20},
         "id": 1
     }
-    
+
     result = process_request(request)
-    
+
     # Verify exact value (catches arithmetic mutations)
     assert result["result"] == 30  # ✅ Would catch x - y mutation
     assert result["result"] == (10 + 20)  # Double-check
-    
+
     # Verify exact keys (catches string mutations)
     assert "result" in result  # ✅ Would catch "result" → "output"
     assert "error" not in result
-    
+
     # Verify type
     assert isinstance(result["result"], int)
 
@@ -82,7 +82,7 @@ def test_process_request_edge_cases(self):
         ({"x": -5, "y": 5}, 0),
         ({"x": 100, "y": -100}, 0),
     ]
-    
+
     for params, expected in test_cases:
         request = {"params": params, "id": 1}
         result = process_request(request)
@@ -108,16 +108,16 @@ def test_process_request_edge_cases(self):
 def test_encode_protocol_encoding_format(self):
     """Verify UTF-8 encoding is used"""
     data = {"text": "Hello, 世界"}
-    
+
     encoded = encode_protocol(data)
-    
+
     # Verify it's bytes (catches encoding mutations)
     assert isinstance(encoded, bytes)
-    
+
     # Verify UTF-8 specifically by decoding
     decoded_str = encoded.decode('utf-8')
     assert "世界" in decoded_str  # ✅ Would fail with utf-16
-    
+
     # Verify it round-trips correctly
     assert decode_protocol(encoded) == data
 
@@ -125,16 +125,16 @@ def test_encode_protocol_byte_format(self):
     """Verify output is valid UTF-8 bytes"""
     data = {"key": "value"}
     encoded = encode_protocol(data)
-    
+
     # Must be bytes
     assert isinstance(encoded, bytes)
-    
+
     # Must be valid UTF-8
     try:
         encoded.decode('utf-8')
     except UnicodeDecodeError:
         pytest.fail("Encoded data is not valid UTF-8")
-    
+
     # Verify no BOM (UTF-8 shouldn't have BOM)
     assert not encoded.startswith(b'\xff\xfe')  # UTF-16 BOM
     assert not encoded.startswith(b'\xfe\xff')  # UTF-16 BOM
@@ -161,13 +161,13 @@ def test_decode_protocol_encoding_format(self):
     # Create UTF-8 encoded bytes
     data = {"text": "Hello, 日本語"}
     utf8_bytes = json.dumps(data).encode('utf-8')
-    
+
     decoded = decode_protocol(utf8_bytes)
-    
+
     # Verify correct decoding
     assert decoded == data
     assert decoded["text"] == "Hello, 日本語"  # ✅ Would fail with utf-16
-    
+
 def test_decode_protocol_round_trip_encoding(self):
     """Ensure encode/decode preserve data with UTF-8"""
     test_data = [
@@ -176,7 +176,7 @@ def test_decode_protocol_round_trip_encoding(self):
         {"text": "العربية"},
         {"text": "Русский"},
     ]
-    
+
     for original in test_data:
         encoded = encode_protocol(original)
         decoded = decode_protocol(encoded)

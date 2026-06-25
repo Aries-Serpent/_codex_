@@ -52,6 +52,7 @@ class TestMessageCompression:
     def test_compress_incompressible(self):
         """Random data may not compress well."""
         import os
+
         data = os.urandom(COMPRESSION_THRESHOLD + 1000)
         compressed, was_compressed = compress_message(data)
 

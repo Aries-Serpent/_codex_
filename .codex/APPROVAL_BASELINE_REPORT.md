@@ -340,7 +340,7 @@ The target of keeping auto-approval <20% reflects organizational risk tolerance.
 #### 1. **Approval Success Rate is 50% (Consider Improvement)**
 - **Observation:** Approval workflow succeeds in only half of attempts
 - **Root Cause:** Likely due to cancellation pattern from concurrency control
-- **Recommendation:** 
+- **Recommendation:**
   - Analyze approval run logs to quantify actual vs. cascaded failures
   - Verify if 50% represents actual incomplete approvals or expected cancellations
   - If actual failures, investigate error patterns

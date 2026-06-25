@@ -4,7 +4,6 @@ Integration tests for RAG CLI with offline TF-IDF provider.
 Tests the complete RAG pipeline using TF-IDF embeddings (no network required).
 """
 
-
 import importlib.util
 
 import pytest
@@ -54,22 +53,28 @@ class TestTfidfIntegration:
     def test_build_with_tfidf(self, runner, sample_docs, tmp_path):
         """Test building index with TF-IDF provider."""
         # Note: This test requires scikit-learn
-        if importlib.util.find_spec('sklearn') is None:
+        if importlib.util.find_spec("sklearn") is None:
             pytest.skip("scikit-learn not installed")
 
         result = runner.invoke(
             app,
             [
                 "build",
-                "--files", str(sample_docs / "*.md"),
-                "--index-name", "test_tfidf",
-                "--tenant-id", "test",
+                "--files",
+                str(sample_docs / "*.md"),
+                "--index-name",
+                "test_tfidf",
+                "--tenant-id",
+                "test",
             ],
-            env={"RAG_EMBEDDING_PROVIDER": "tfidf"}
+            env={"RAG_EMBEDDING_PROVIDER": "tfidf"},
         )
 
         # Should succeed or gracefully handle
-        assert result.exit_code in [0, 1], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
+        assert result.exit_code in [
+            0,
+            1,
+        ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
 
         # Check output
         if result.exit_code == 0:
@@ -84,10 +89,7 @@ class TestTfidfIntegration:
 
     def test_stats_command(self, runner):
         """Test stats command error handling."""
-        result = runner.invoke(
-            app,
-            ["stats", "--index-name", "nonexistent", "--tenant-id", "test"]
-        )
+        result = runner.invoke(app, ["stats", "--index-name", "nonexistent", "--tenant-id", "test"])
 
         # Should fail gracefully
         assert result.exit_code == 1
@@ -123,17 +125,17 @@ class TestProviderSelection:
         try:
             from codex.rag.embeddings import create_embedding_provider
 
-            provider = create_embedding_provider(provider_type='tfidf')
+            provider = create_embedding_provider(provider_type="tfidf")
             assert provider is not None
 
             # Test encoding with longer, more varied text
             texts = [
                 "This is the first test document about machine learning and artificial intelligence",
                 "This is the second test document covering natural language processing and embeddings",
-                "The third document discusses vector search and semantic similarity in detail"
+                "The third document discusses vector search and semantic similarity in detail",
             ]
             # Access the wrapped provider
-            if hasattr(provider, 'provider'):
+            if hasattr(provider, "provider"):
                 embeddings = provider.provider.encode(texts)
             else:
                 embeddings = provider.encode(texts)
@@ -148,12 +150,14 @@ class TestProviderSelection:
             from codex.rag.embeddings import create_embedding_provider
 
             # Auto mode should fall back to TF-IDF if transformers unavailable
-            provider = create_embedding_provider(provider_type='auto')
+            provider = create_embedding_provider(provider_type="auto")
             assert provider is not None
 
             # Verify it's using TF-IDF (wrapped in cache)
-            assert 'CachedEmbeddingProvider' in provider.__class__.__name__ or \
-                   'TfidfEmbeddingProvider' in provider.__class__.__name__
+            assert (
+                "CachedEmbeddingProvider" in provider.__class__.__name__
+                or "TfidfEmbeddingProvider" in provider.__class__.__name__
+            )
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
 
@@ -226,7 +230,7 @@ class TestOfflineCapability:
                 chunks=chunks,
                 metadata={"source": str(doc_path)},
                 tenant_id="test",
-                index_dir=str(index_dir)
+                index_dir=str(index_dir),
             )
 
             # Verify index was created
@@ -238,9 +242,7 @@ class TestOfflineCapability:
             # Note: Retriever might need sentence-transformers, skip if unavailable
             try:
                 retriever = Retriever(
-                    index_name="test_offline",
-                    tenant_id="test",
-                    index_dir=str(index_dir)
+                    index_name="test_offline", tenant_id="test", index_dir=str(index_dir)
                 )
                 # If we got here, retrieval setup worked
                 assert retriever.faiss_index is not None

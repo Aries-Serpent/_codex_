@@ -63,9 +63,7 @@ def test_final_status_reflects_strategy_result(monkeypatch, tmp_path) -> None:
     # See comment in unified_training.py: "tests can monkeypatch
     # `codex_ml.training.unified_training.save_checkpoint`"
     monkeypatch.setattr(unified_training, "save_checkpoint", fake_save)
-    monkeypatch.setattr(
-        strategies, "resolve_strategy", lambda name: _FailingStrategy()
-    )
+    monkeypatch.setattr(strategies, "resolve_strategy", lambda name: _FailingStrategy())
 
     callback = _NoOpCallback()
     cfg = unified_training.UnifiedTrainingConfig(output_dir=str(tmp_path / "run"), epochs=1)

@@ -55,8 +55,9 @@ class PluginLoader:
             try:
                 module = importlib.import_module(f"codex.ast.plugins.{module_name}")
                 self._register_from_module(module)
-            except Exception as e:
-                logger.warning(f"Failed to load plugin {module_name}: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Failed to load plugin {module_name}: <ERROR_TYPE>")
 
     def _load_external_plugins(self):
         """Load plugins from installed packages."""
@@ -74,10 +75,12 @@ class PluginLoader:
                         logger.info(f"Loaded external plugin: {name}")
                     except ImportError as ie:
                         logger.debug(f"Failed to import external plugin {name}: {ie}")
-                    except Exception as e:
-                        logger.warning(f"Failed to load external plugin {name}: {e}", exc_info=True)
-        except Exception as e:
-            logger.debug(f"External plugin discovery failed: {e}")
+                    except AttributeError as e:
+                        error_type = type(e).__name__
+                        logger.warning(f"Failed to load external plugin {name}: <ERROR_TYPE>", exc_info=True)
+        except (ImportError, AttributeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"External plugin discovery failed: <ERROR_TYPE>")
 
     def _register_from_module(self, module):
         """Register plugins from a module."""
@@ -92,16 +95,18 @@ class PluginLoader:
                         if plugin_instance.validate():
                             self._ast_plugins[plugin_instance.language] = plugin_instance
                             logger.info(f"Registered AST plugin: {plugin_instance.language}")
-                    except Exception as e:
-                        logger.warning(f"Failed to instantiate plugin {attr_name}: {e}")
+                    except (ValueError, TypeError, RuntimeError) as e:
+                        error_type = type(e).__name__
+                        logger.warning(f"Failed to instantiate plugin {attr_name}: <ERROR_TYPE>")
 
                 elif issubclass(attr, AnalysisPlugin) and attr is not AnalysisPlugin:
                     try:
                         plugin_instance = attr()
                         self._analysis_plugins[plugin_instance.name] = plugin_instance
                         logger.info(f"Registered analysis plugin: {plugin_instance.name}")
-                    except Exception as e:
-                        logger.warning(f"Failed to instantiate analysis plugin {attr_name}: {e}")
+                    except (IOError, OSError) as e:
+                        error_type = type(e).__name__
+                        logger.warning(f"Failed to instantiate analysis plugin {attr_name}: <ERROR_TYPE>")
 
     def get_plugin_for_file(self, file_path: str) -> Optional[ASTPlugin]:
         """

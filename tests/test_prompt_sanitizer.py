@@ -169,12 +169,13 @@ def test_prompt_sanitizer_case_insensitive():
 # MUTATION-KILLING TESTS FOR SANITIZERS
 # ============================================================================
 
+
 class TestSanitizersMutations:
     """Kill mutations in sanitizer functions."""
 
     def test_case_insensitive_exact_match(self):
         """Kill: Case mutation operators.
-        
+
         Verifies that .lower() or case-insensitive matching works correctly.
         """
         sanitizer = PromptSanitizer(strict=True)
@@ -192,7 +193,7 @@ class TestSanitizersMutations:
 
     def test_unicode_preservation_exact(self):
         """Kill: Unicode mutation operators.
-        
+
         Verifies Unicode characters are preserved.
         """
         sanitizer = PromptSanitizer(strict=False)
@@ -215,5 +216,3 @@ class TestSanitizersMutations:
         for pattern in xss_patterns:
             with pytest.raises(ValueError):
                 sanitizer.sanitize(pattern)
-
-

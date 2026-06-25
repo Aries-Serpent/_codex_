@@ -90,7 +90,8 @@ class WorkflowMonitor:
 
             return json.loads(result.stdout)
         except Exception as e:
-            print(f"Exception getting runs: {e}")
+            error_type = type(e).__name__
+            print(f"Exception getting runs: <ERROR_TYPE>")
             return {}
 
     def categorize_failure(self, workflow_name: str, error_msg: str = "") -> str:
@@ -231,9 +232,9 @@ class WorkflowMonitor:
 
         report = f"""
 ## 📊 Monitoring Status Report
-**Timestamp**: {datetime.utcnow().isoformat()}Z  
-**Elapsed Time**: {elapsed.total_seconds():.0f}s  
-**Remaining Time**: {remaining.total_seconds():.0f}s  
+**Timestamp**: {datetime.utcnow().isoformat()}Z
+**Elapsed Time**: {elapsed.total_seconds():.0f}s
+**Remaining Time**: {remaining.total_seconds():.0f}s
 **Monitoring Status**: 🟢 ACTIVE
 
 ### Summary
@@ -322,7 +323,8 @@ class WorkflowMonitor:
         except KeyboardInterrupt:
             print("\n[Interrupted by user]")
         except Exception as e:
-            print(f"\n[ERROR] {e}")
+            error_type = type(e).__name__
+            print(f"\n[ERROR] <ERROR_TYPE>")
 
         finally:
             self.finalize()
@@ -358,8 +360,8 @@ class WorkflowMonitor:
 
         report = f"""# Track 5B: Workflow Health Final Report
 
-**Campaign Duration**: {total_time.total_seconds():.0f} seconds  
-**Report Generated**: {datetime.utcnow().isoformat()}Z  
+**Campaign Duration**: {total_time.total_seconds():.0f} seconds
+**Report Generated**: {datetime.utcnow().isoformat()}Z
 **Monitoring Status**: ✅ Complete
 
 ## 📊 Summary Statistics
@@ -426,8 +428,8 @@ class WorkflowMonitor:
 
 ---
 
-**Report Generated**: {datetime.utcnow().isoformat()}Z  
-**Monitoring Agent**: workflow-health-monitor  
+**Report Generated**: {datetime.utcnow().isoformat()}Z
+**Monitoring Agent**: workflow-health-monitor
 **Campaign**: Track 5B Continuous Workflow Health Monitoring
 """
 

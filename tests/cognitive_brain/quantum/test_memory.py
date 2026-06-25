@@ -11,7 +11,6 @@ Test Coverage:
 Total: 25 tests validating Phase 8.1 implementation
 """
 
-
 import time
 from datetime import UTC, datetime, timedelta
 
@@ -247,10 +246,7 @@ class TestConsolidation:
         memory_manager.consolidate()
 
         # Similar pattern should not be added (distinctiveness check)
-        assert (
-            len(memory_manager.ltm) == before_ltm_size
-            or "similar-2" not in memory_manager.ltm
-        )
+        assert len(memory_manager.ltm) == before_ltm_size or "similar-2" not in memory_manager.ltm
 
     def test_success_rate_criterion(self, memory_manager):
         """Test 2.3: Success rate affects consolidation."""
@@ -507,8 +503,7 @@ class TestIntegration:
 
         # Second assessment should be faster (cache hit)
         assert (
-            assessment2.cache_hit
-            or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
+            assessment2.cache_hit or assessment2.evaluation_time_ms < assessment1.evaluation_time_ms
         )
 
     def test_cache_hit_rate_tracking(self, assessor):

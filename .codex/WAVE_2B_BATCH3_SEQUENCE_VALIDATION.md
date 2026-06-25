@@ -257,7 +257,7 @@ P0 (46 CVEs)
   ├─ Has: urllib3@any, certifi@any, filelock@any
   ├─ Has: pytest@any, jinja2@any, cryptography@any
   └─ All existing functionality intact
-     
+
   → Apply Batch 1 Patches (P0→P1)
      ├─ cryptography: any→==49.0.0
      ├─ torch: any→==2.6.0+cpu
@@ -272,7 +272,7 @@ P1 (34 CVEs, 12 eliminated)
   ├─ urllib3 >=2.7.0 ✅
   ├─ jinja2 >=3.1.6 ✅
   └─ Other packages still need updates
-     
+
   → Apply Batch 2 Patches (P1→P2)
      ├─ pip: Update to 24.0+
      ├─ twisted: any→>=24.7.0
@@ -285,7 +285,7 @@ P2 (30 CVEs, 4 more eliminated)
   ├─ twisted >=24.7.0 ✅
   ├─ idna >=3.15 ✅
   └─ Ready for Batch 3 patches
-     
+
   → Apply Batch 3 Patches (P2→P3)
      ├─ pytest: Verify >=9.0.3
      ├─ requests: Verify >=2.34.2

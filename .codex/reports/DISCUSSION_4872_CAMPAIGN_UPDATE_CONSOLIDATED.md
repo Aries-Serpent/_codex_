@@ -220,4 +220,3 @@ All 6 Phase 1–3 reports are available in `.codex/reports/`:
 **Campaign Status:** 🟡 **AWAITING APPROVAL** (all assessment work complete; ready for Phase 0)  
 **Estimated Duration:** 5–6 days total (2–3 day Phase 0 + 2–3 day Phase 1)  
 **Risk Level:** MEDIUM (CI instability is primary constraint; Phase 0 mitigates)
-

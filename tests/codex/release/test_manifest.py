@@ -16,10 +16,7 @@ class TestComponent:
         """Test Component basic creation."""
         from codex.release.manifest import Component
 
-        component = Component(
-            tombstone="tombstone_1",
-            dest_path="path/to/dest"
-        )
+        component = Component(tombstone="tombstone_1", dest_path="path/to/dest")
 
         assert component.tombstone == "tombstone_1"
         assert component.dest_path == "path/to/dest"
@@ -36,7 +33,7 @@ class TestComponent:
             dest_path="dest",
             mode="0755",
             type="file",
-            template_vars={"key": "value"}
+            template_vars={"key": "value"},
         )
 
         assert component.mode == "0755"
@@ -50,10 +47,7 @@ class TestSymlink:
         """Test Symlink basic creation."""
         from codex.release.manifest import Symlink
 
-        symlink = Symlink(
-            link_path="path/to/link",
-            target="path/to/target"
-        )
+        symlink = Symlink(link_path="path/to/link", target="path/to/target")
 
         assert symlink.link_path == "path/to/link"
         assert symlink.target == "path/to/target"
@@ -75,7 +69,7 @@ class TestManifest:
             components=[Component("ts", "dest")],
             symlinks=[],
             post_unpack_commands=[],
-            checks={}
+            checks={},
         )
 
         assert manifest.release_id == "release_1"
@@ -138,12 +132,10 @@ class TestLoadManifest:
             "created_at": "2024-01-01T00:00:00Z",
             "actor": "user@example.com",
             "target": {"platform": "linux"},
-            "components": [
-                {"tombstone": "ts1", "dest_path": "dest/path"}
-            ],
+            "components": [{"tombstone": "ts1", "dest_path": "dest/path"}],
             "symlinks": [],
             "post_unpack_commands": [],
-            "checks": {}
+            "checks": {},
         }
 
         manifest_file = tmp_path / "manifest.json"
@@ -162,7 +154,7 @@ class TestLoadManifest:
             "version": "1.0.0",
             "created_at": "2024-01-01T00:00:00Z",
             "actor": "user@example.com",
-            "components": [{"tombstone": "ts1", "dest_path": "dest"}]
+            "components": [{"tombstone": "ts1", "dest_path": "dest"}],
         }
 
         manifest_file = tmp_path / "manifest.json"
@@ -179,7 +171,7 @@ class TestLoadManifest:
             "release_id": "test_release_1",
             "created_at": "2024-01-01T00:00:00Z",
             "actor": "user@example.com",
-            "components": [{"tombstone": "ts1", "dest_path": "dest"}]
+            "components": [{"tombstone": "ts1", "dest_path": "dest"}],
         }
 
         manifest_file = tmp_path / "manifest.json"
@@ -197,7 +189,7 @@ class TestLoadManifest:
             "version": "1.0.0",
             "created_at": "2024-01-01T00:00:00Z",
             "actor": "user@example.com",
-            "components": []
+            "components": [],
         }
 
         manifest_file = tmp_path / "manifest.json"

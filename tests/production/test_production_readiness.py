@@ -23,6 +23,7 @@ from typing import Any
 @dataclass
 class HealthCheckResult:
     """Result of a health check."""
+
     component: str
     status: str  # "healthy", "degraded", "unhealthy"
     latency_ms: float
@@ -32,6 +33,7 @@ class HealthCheckResult:
 @dataclass
 class GracefulDegradationConfig:
     """Configuration for graceful degradation."""
+
     fallback_enabled: bool
     timeout_ms: float
     retry_count: int
@@ -51,13 +53,15 @@ class TestProductionErrorHandling:
         log_entries: list[dict[str, Any]] = []
 
         def log_exception(exc: Exception, context: dict[str, Any]) -> None:
-            log_entries.append({
-                "timestamp": "2026-01-18T12:00:00Z",
-                "level": "ERROR",
-                "exception_type": type(exc).__name__,
-                "message": str(exc),
-                "context": context,
-            })
+            log_entries.append(
+                {
+                    "timestamp": "2026-01-18T12:00:00Z",
+                    "level": "ERROR",
+                    "exception_type": type(exc).__name__,
+                    "message": str(exc),
+                    "context": context,
+                }
+            )
 
         try:
             raise ValueError("Test error")
@@ -70,6 +74,7 @@ class TestProductionErrorHandling:
 
     def test_error_categorization(self) -> None:
         """Test error categorization for different exception types."""
+
         def categorize_error(exc: Exception) -> str:
             if isinstance(exc, (ValueError, TypeError)):
                 return "validation_error"
@@ -86,6 +91,7 @@ class TestProductionErrorHandling:
 
     def test_error_recovery_with_fallback(self) -> None:
         """Test error recovery using fallback values."""
+
         def fetch_config_with_fallback(key: str, default: Any) -> Any:
             try:
                 # Simulate config fetch failure
@@ -137,6 +143,7 @@ class TestGracefulDegradation:
 
     def test_circuit_breaker_pattern(self) -> None:
         """Test circuit breaker pattern implementation."""
+
         class CircuitBreaker:
             def __init__(self, threshold: int = 5) -> None:
                 self.failure_count = 0
@@ -171,6 +178,7 @@ class TestGracefulDegradation:
 
     def test_timeout_handling(self) -> None:
         """Test timeout handling in operations."""
+
         def operation_with_timeout(timeout_ms: float) -> str:
             start = time.perf_counter()
             # Simulate operation
@@ -197,7 +205,7 @@ class TestGracefulDegradation:
             for attempt in range(max_retries + 1):
                 try:
                     if attempt < max_retries:
-                        delay = base_delay_ms * (2 ** attempt)
+                        delay = base_delay_ms * (2**attempt)
                         attempts.append(delay)
                         raise ValueError("Simulated failure")
                     return "success"
@@ -212,6 +220,7 @@ class TestGracefulDegradation:
 
     def test_fallback_chain(self) -> None:
         """Test fallback chain execution."""
+
         def primary() -> str:
             raise ConnectionError("Primary failed")
 
@@ -261,6 +270,7 @@ class TestHealthChecks:
 
     def test_component_health_check(self) -> None:
         """Test individual component health check."""
+
         def check_component(name: str, is_healthy: bool) -> HealthCheckResult:
             return HealthCheckResult(
                 component=name,
@@ -291,6 +301,7 @@ class TestHealthChecks:
 
     def test_health_check_timeout(self) -> None:
         """Test health check with timeout."""
+
         def health_check_with_timeout(timeout_ms: float) -> HealthCheckResult:
             start = time.perf_counter()
             # Simulate check
@@ -298,12 +309,8 @@ class TestHealthChecks:
             latency = (time.perf_counter() - start) * 1000
 
             if latency > timeout_ms:
-                return HealthCheckResult(
-                    "service", "unhealthy", latency, "Timeout"
-                )
-            return HealthCheckResult(
-                "service", "healthy", latency, "OK"
-            )
+                return HealthCheckResult("service", "unhealthy", latency, "Timeout")
+            return HealthCheckResult("service", "healthy", latency, "OK")
 
         result = health_check_with_timeout(1000)
         assert result.status == "healthy"
@@ -324,6 +331,7 @@ class TestHealthChecks:
 
     def test_liveness_probe(self) -> None:
         """Test Kubernetes-style liveness probe."""
+
         def liveness_check() -> bool:
             # Check if main thread is responsive
             return threading.main_thread().is_alive()
@@ -341,6 +349,7 @@ class TestResourceManagement:
 
     def test_connection_pool_management(self) -> None:
         """Test connection pool management."""
+
         class ConnectionPool:
             def __init__(self, max_size: int) -> None:
                 self.max_size = max_size
@@ -465,11 +474,13 @@ class TestMonitoringIntegration:
         alerts = []
         for metric, threshold in thresholds.items():
             if current_metrics[metric] > threshold:
-                alerts.append({
-                    "metric": metric,
-                    "value": current_metrics[metric],
-                    "threshold": threshold,
-                })
+                alerts.append(
+                    {
+                        "metric": metric,
+                        "value": current_metrics[metric],
+                        "threshold": threshold,
+                    }
+                )
 
         assert len(alerts) == 1
         assert alerts[0]["metric"] == "error_rate"

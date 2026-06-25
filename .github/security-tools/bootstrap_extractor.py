@@ -102,7 +102,7 @@ class BootstrapExtractor:
             # Security: executable tools remain owner-only executable (0o700) and
             # non-executable artifacts are owner read/write only (0o600).
             # nosemgrep: python.lang.security.audit.insecure-file-permissions.insecure-file-permissions
-            os.chmod(output_file, 0o700 if executable else 0o600)  # nosec  # codeql[py/overly-permissive-file]  # pragma: allowlist secret
+            os.chmod(output_file, 0o700 if executable else 0o600)
 
             print(f"✅ Extracted: {output_file}")
             return True

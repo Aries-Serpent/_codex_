@@ -85,7 +85,7 @@ Timeline:
 
 ### When Track A Completes (ETA 2026-06-20 12:00Z)
 
-**Trigger Condition:** 
+**Trigger Condition:**
 ```
 IF (phase7b-security-audit-tracka1 == COMPLETE) AND
    (phase7b-codeql-final-tracka2 == COMPLETE)

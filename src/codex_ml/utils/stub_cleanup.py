@@ -136,7 +136,7 @@ class StubAnalyzer:
                                     return True
 
             # Also check for top-level functions (not in classes)
-            for node in ast.walk(tree):  # type: ignore[assignment]
+            for node in ast.walk(tree):
                 if isinstance(node, ast.FunctionDef) and node not in func_to_class:
                     if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
                         if node.lineno <= line_number <= (node.end_lineno or node.lineno):
@@ -153,9 +153,10 @@ class StubAnalyzer:
                                 ):
                                     return True
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to parse {file_path} for abstract method detection: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>")
 
         return False
 
@@ -238,9 +239,10 @@ class StubAnalyzer:
                         )
                     )
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to analyze {file_path}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to analyze {file_path}: <ERROR_TYPE>")
 
     def _determine_priority(self, line: str) -> str:
         """Determine priority from line content.

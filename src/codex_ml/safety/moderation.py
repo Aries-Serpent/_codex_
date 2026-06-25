@@ -56,7 +56,7 @@ def _make_moderation_counter() -> Any:
             "Total moderation decisions by stage and verdict",
             ["stage", "verdict"],
         )
-    except Exception:  # pragma: no cover — prometheus-client absent or already registered
+    except (IOError, OSError):  # pragma: no cover — prometheus-client absent or already registered
         return _NoopModCounter()
 
 
@@ -159,7 +159,7 @@ class ModerationAdapter:
         if self._provider is not None:
             try:
                 decision = self._call_provider(text, stage)
-            except Exception as exc:  # pragma: no cover - defensive guard
+            except (ValueError, TypeError) as exc:  # pragma: no cover - defensive guard
                 provider_error = exc
                 log_error(
                     "moderation.provider",
@@ -212,7 +212,7 @@ class ModerationAdapter:
         try:
             module = importlib.import_module(module_name)
             candidate = getattr(module, attr)
-        except Exception as exc:  # pragma: no cover - defensive guard
+        except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive guard
             logger.warning("Failed to import moderation provider %s: %s", identifier, exc)
             return None
         if not callable(candidate):
@@ -259,7 +259,7 @@ class ModerationAdapter:
         )
 
     def _call_provider(self, text: str, stage: str) -> ModerationDecision | None:
-        payload = self._provider(text=text, stage=stage)  # type: ignore[misc]
+        payload = self._provider(text=text, stage=stage)
         return self._normalize_payload(payload, stage)
 
     def _normalize_payload(self, payload: Any, stage: str) -> ModerationDecision | None:
@@ -331,7 +331,7 @@ class ModerationAdapter:
             entry["original_digest"] = self._hash_text(original_text)
             with path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except Exception:  # pragma: no cover - audit trail is best-effort
+        except (IOError, OSError):  # pragma: no cover - audit trail is best-effort
             logger.debug("Failed to write moderation audit entry", exc_info=True)
 
     @staticmethod
@@ -340,7 +340,7 @@ class ModerationAdapter:
             import hashlib
 
             return hashlib.sha256(value.encode("utf-8", "ignore")).hexdigest()
-        except Exception:  # pragma: no cover - defensive guard
+        except (ValueError, TypeError):  # pragma: no cover - defensive guard
             return ""
 
 

@@ -5,7 +5,6 @@ This module contains tests for code metrics aggregation and analysis.
 """
 
 
-
 class TestCodeMetrics:
     """Tests for CodeMetrics dataclass."""
 
@@ -18,7 +17,7 @@ class TestCodeMetrics:
             cognitive_complexity=5.0,
             lines_of_code=100,
             comment_lines=20,
-            maintainability_index=75.0
+            maintainability_index=75.0,
         )
 
         assert metrics.cyclomatic_complexity == 10
@@ -86,7 +85,7 @@ class TestCodeMetrics:
             cognitive_complexity=3.5,
             lines_of_code=50,
             comment_lines=10,
-            maintainability_index=80.0
+            maintainability_index=80.0,
         )
 
         result = metrics.to_dict()

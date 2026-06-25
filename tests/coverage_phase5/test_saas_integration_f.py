@@ -1,4 +1,5 @@
 """Test SaaS integration module 5."""
+
 from __future__ import annotations
 
 from enum import Enum
@@ -12,7 +13,8 @@ class SaaSEndpointStatus(Enum):
     DEGRADED = "degraded"
     DOWN = "down"
 
-class SaaSClient: # pragma: allowlist secret
+
+class SaaSClient:  # pragma: allowlist secret
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.status = SaaSEndpointStatus.HEALTHY
@@ -25,11 +27,13 @@ class SaaSClient: # pragma: allowlist secret
             raise Exception("Service down")
         return {"endpoint": endpoint, "status": "ok"}
 
+
 @pytest.mark.asyncio
 async def test_saas_client_5_init():
     """Test SaaS client initialization."""
     client = SaaSClient("test_key_5")
     assert client.api_key == "test_key_5"
+
 
 @pytest.mark.asyncio
 async def test_saas_client_5_health():
@@ -38,6 +42,7 @@ async def test_saas_client_5_health():
     status = await client.health_check()
 
     assert status == SaaSEndpointStatus.HEALTHY
+
 
 @pytest.mark.asyncio
 async def test_saas_client_5_call():

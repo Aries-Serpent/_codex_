@@ -59,7 +59,7 @@ def test_snapshot_config_prunes_reserved_keys() -> None:
 
 
 def _has_omegaconf() -> bool:
-    return importlib.util.find_spec('omegaconf') is not None
+    return importlib.util.find_spec("omegaconf") is not None
 
 
 @pytest.mark.skipif(not _has_omegaconf(), reason="OmegaConf not available")

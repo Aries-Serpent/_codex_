@@ -20,9 +20,9 @@ if str(_SRC_DIR) not in sys.path:
 
 
 # Check if optional dependencies are available
-NLTK_AVAILABLE = importlib.util.find_spec('nltk') is not None
+NLTK_AVAILABLE = importlib.util.find_spec("nltk") is not None
 
-ROUGE_AVAILABLE = importlib.util.find_spec('rouge_score') is not None
+ROUGE_AVAILABLE = importlib.util.find_spec("rouge_score") is not None
 
 
 class TestBLEUMetric:

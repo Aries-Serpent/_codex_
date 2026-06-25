@@ -103,7 +103,8 @@ def check_imports() -> bool:
         print("  ✅ Sanitization module imports successfully")
         return True
     except ImportError as e:
-        print(f"  ❌ Failed to import sanitization module: {e}")
+        error_type = type(e).__name__
+        print(f"  ❌ Failed to import sanitization module: <ERROR_TYPE>")
         return False
 
 
@@ -134,7 +135,8 @@ def run_quick_smoke_tests() -> bool:
         return True
 
     except Exception as e:
-        print(f"  ❌ Smoke test failed: {e}")
+        error_type = type(e).__name__
+        print(f"  ❌ Smoke test failed: <ERROR_TYPE>")
         return False
 
 

@@ -16,30 +16,31 @@ import pytest
 # FIXTURES: Advanced Validation Edge Cases
 # ============================================================================
 
+
 class ValidationFixtures:
     """Fixtures for advanced validation edge cases"""
 
     VALIDATION_VALUES = [
-        (None, False),                  # None is invalid for most types
-        ('', False),                    # Empty string for non-empty
-        (0, True),                      # Zero is valid for numbers
-        (-1, True),                     # Negative is valid
-        (float('inf'), True),           # Infinity is valid number
-        ([], False),                    # Empty list invalid for non-empty
-        ({}, False),                    # Empty dict invalid for non-empty
-        ('valid_string', True),         # Valid string
-        ('very_long_' * 1000, True),   # Very long valid string
-        ('string_with_special_!@#', True),  # Special chars
+        (None, False),  # None is invalid for most types
+        ("", False),  # Empty string for non-empty
+        (0, True),  # Zero is valid for numbers
+        (-1, True),  # Negative is valid
+        (float("inf"), True),  # Infinity is valid number
+        ([], False),  # Empty list invalid for non-empty
+        ({}, False),  # Empty dict invalid for non-empty
+        ("valid_string", True),  # Valid string
+        ("very_long_" * 1000, True),  # Very long valid string
+        ("string_with_special_!@#", True),  # Special chars
     ]
 
     NUMERIC_RANGES = [
-        (0, 100, 0, True),              # Min boundary
-        (0, 100, 100, True),            # Max boundary
-        (0, 100, 50, True),             # Mid range
-        (0, 100, -1, False),            # Below min
-        (0, 100, 101, False),           # Above max
-        (-10, 10, -10, True),           # Negative min
-        (-10, 10, 10, True),            # Negative max
+        (0, 100, 0, True),  # Min boundary
+        (0, 100, 100, True),  # Max boundary
+        (0, 100, 50, True),  # Mid range
+        (0, 100, -1, False),  # Below min
+        (0, 100, 101, False),  # Above max
+        (-10, 10, -10, True),  # Negative min
+        (-10, 10, 10, True),  # Negative max
     ]
 
 
@@ -59,20 +60,22 @@ def numeric_range(request):
 # TESTS: Data Validation Edge Cases
 # ============================================================================
 
+
 class TestDataValidationEdgeCases:
     """Edge cases for data validation"""
 
     def test_validate_email_boundaries(self):
         """Test email validation at boundaries"""
+
         class EmailValidator:
             def validate(self, email):
                 if not email or not isinstance(email, str):
                     return False
 
-                if '@' not in email:
+                if "@" not in email:
                     return False
 
-                parts = email.split('@')
+                parts = email.split("@")
                 if len(parts) != 2:
                     return False
 
@@ -80,7 +83,7 @@ class TestDataValidationEdgeCases:
                 if not local or not domain:
                     return False
 
-                if '.' not in domain:
+                if "." not in domain:
                     return False
 
                 return True
@@ -88,65 +91,71 @@ class TestDataValidationEdgeCases:
         validator = EmailValidator()
 
         # Valid emails
-        assert validator.validate('user@example.com')
+        assert validator.validate("user@example.com")
 
         # Invalid emails
-        assert not validator.validate('')
+        assert not validator.validate("")
         assert not validator.validate(None)
-        assert not validator.validate('invalid')
-        assert not validator.validate('@example.com')
-        assert not validator.validate('user@')
-        assert not validator.validate('user@domain')
+        assert not validator.validate("invalid")
+        assert not validator.validate("@example.com")
+        assert not validator.validate("user@")
+        assert not validator.validate("user@domain")
 
     def test_validate_phone_boundaries(self):
         """Test phone number validation"""
+
         class PhoneValidator:
             def validate(self, phone):
                 if not phone:
                     return False
 
                 # Remove common separators
-                digits = ''.join(c for c in str(phone) if c.isdigit())
+                digits = "".join(c for c in str(phone) if c.isdigit())
 
                 # Valid length (10-15 digits for international)
                 return 10 <= len(digits) <= 15
 
         validator = PhoneValidator()
 
-        assert validator.validate('1234567890')
-        assert validator.validate('+1 234 567 8900')
-        assert not validator.validate('')
-        assert not validator.validate('123')  # Too short
+        assert validator.validate("1234567890")
+        assert validator.validate("+1 234 567 8900")
+        assert not validator.validate("")
+        assert not validator.validate("123")  # Too short
 
     def test_validate_url_boundaries(self):
         """Test URL validation"""
+
         class URLValidator:
             def validate(self, url):
                 if not url or not isinstance(url, str):
                     return False
 
-                if not url.startswith(('http://', 'https://')):
+                if not url.startswith(("http://", "https://")):
                     return False
 
                 return len(url) > 10
 
         validator = URLValidator()
 
-        assert validator.validate('https://example.com')
-        assert not validator.validate('')
+        assert validator.validate("https://example.com")
+        assert not validator.validate("")
         assert not validator.validate(None)
-        assert not validator.validate('not_a_url')
+        assert not validator.validate("not_a_url")
 
-    @pytest.mark.parametrize('min_len,max_len,test_str', [
-        (1, 10, 'x'),           # Min length
-        (1, 10, 'x' * 10),      # Max length
-        (1, 10, 'x' * 11),      # Over max
-        (1, 10, ''),            # Under min
-        (0, 0, ''),             # Empty allowed
-        (0, 1000, 'a' * 500),   # Mid range
-    ])
+    @pytest.mark.parametrize(
+        "min_len,max_len,test_str",
+        [
+            (1, 10, "x"),  # Min length
+            (1, 10, "x" * 10),  # Max length
+            (1, 10, "x" * 11),  # Over max
+            (1, 10, ""),  # Under min
+            (0, 0, ""),  # Empty allowed
+            (0, 1000, "a" * 500),  # Mid range
+        ],
+    )
     def test_string_length_validation(self, min_len, max_len, test_str):
         """Test string length validation"""
+
         class StringValidator:
             def validate(self, s, min_len, max_len):
                 if not isinstance(s, str):
@@ -181,46 +190,48 @@ class TestDataValidationEdgeCases:
 # TESTS: Serialization Edge Cases
 # ============================================================================
 
+
 class TestSerializationEdgeCases:
     """Edge cases for serialization/deserialization"""
 
     def test_serialize_none_value(self):
         """Test serializing None"""
-        data = {'key': None}
+        data = {"key": None}
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
 
-        assert loaded['key'] is None
+        assert loaded["key"] is None
 
     def test_serialize_empty_collections(self):
         """Test serializing empty collections"""
         data = {
-            'empty_list': [],
-            'empty_dict': {},
-            'empty_string': '',
+            "empty_list": [],
+            "empty_dict": {},
+            "empty_string": "",
         }
 
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
 
-        assert loaded['empty_list'] == []
-        assert loaded['empty_dict'] == {}
-        assert loaded['empty_string'] == ''
+        assert loaded["empty_list"] == []
+        assert loaded["empty_dict"] == {}
+        assert loaded["empty_string"] == ""
 
     def test_serialize_special_floats(self):
         """Test that special floats fail JSON serialization"""
+
         class SafeJSONEncoder(json.JSONEncoder):
             def default(self, obj):
                 if isinstance(obj, float):
                     if obj != obj:  # NaN
-                        return 'NaN'
-                    elif obj == float('inf'):
-                        return 'Infinity'
-                    elif obj == float('-inf'):
-                        return '-Infinity'
+                        return "NaN"
+                    elif obj == float("inf"):
+                        return "Infinity"
+                    elif obj == float("-inf"):
+                        return "-Infinity"
                 return super().default(obj)
 
-        data = {'inf': float('inf'), 'nan': float('nan')}
+        data = {"inf": float("inf"), "nan": float("nan")}
 
         # Standard JSON should fail
         with pytest.raises((ValueError, TypeError)):
@@ -228,31 +239,31 @@ class TestSerializationEdgeCases:
 
         # Custom encoder should work
         json_str = json.dumps(data, cls=SafeJSONEncoder)
-        assert 'Infinity' in json_str or 'NaN' in json_str
+        assert "Infinity" in json_str or "NaN" in json_str
 
     def test_serialize_unicode_strings(self):
         """Test serializing unicode strings"""
         data = {
-            'emoji': '🔥⭐',
-            'chinese': '你好',
-            'arabic': 'مرحبا',
-            'mixed': 'hello🔥мир',
+            "emoji": "🔥⭐",
+            "chinese": "你好",
+            "arabic": "مرحبا",
+            "mixed": "hello🔥мир",
         }
 
         json_str = json.dumps(data, ensure_ascii=False)
         loaded = json.loads(json_str)
 
-        assert loaded['emoji'] == '🔥⭐'
-        assert loaded['chinese'] == '你好'
+        assert loaded["emoji"] == "🔥⭐"
+        assert loaded["chinese"] == "你好"
 
     def test_serialize_large_nested_structure(self):
         """Test serializing deeply nested structures"""
         # Create nested dict
-        data = {'level': 0}
+        data = {"level": 0}
         current = data
         for i in range(1, 100):
-            current['nested'] = {'level': i}
-            current = current['nested']
+            current["nested"] = {"level": i}
+            current = current["nested"]
 
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
@@ -260,15 +271,15 @@ class TestSerializationEdgeCases:
         # Navigate to deepest level
         current = loaded
         for _ in range(99):
-            current = current['nested']
+            current = current["nested"]
 
-        assert current['level'] == 99
+        assert current["level"] == 99
 
     def test_serialize_circular_reference_detection(self):
         """Test detection of circular references"""
         # Create circular reference
-        data = {'a': 1}
-        data['self'] = data  # Circular reference
+        data = {"a": 1}
+        data["self"] = data  # Circular reference
 
         # JSON can't serialize circular references
         with pytest.raises((ValueError, TypeError)):
@@ -277,12 +288,12 @@ class TestSerializationEdgeCases:
     def test_deserialize_malformed_json(self):
         """Test deserializing malformed JSON"""
         malformed = [
-            '{invalid json}',
+            "{invalid json}",
             '{"missing": "quote}',
-            '{trailing comma: 1,}',
+            "{trailing comma: 1,}",
             "{'single': 'quotes'}",
-            '',
-            'null',  # Valid but might be edge case
+            "",
+            "null",  # Valid but might be edge case
         ]
 
         for json_str in malformed[:-1]:  # Skip 'null' which is valid
@@ -290,31 +301,35 @@ class TestSerializationEdgeCases:
                 json.loads(json_str)
 
         # Valid edge cases
-        assert json.loads('null') is None
-        assert json.loads('[]') == []
-        assert json.loads('{}') == {}
+        assert json.loads("null") is None
+        assert json.loads("[]") == []
+        assert json.loads("{}") == {}
 
 
 # ============================================================================
 # TESTS: Type Coercion Edge Cases
 # ============================================================================
 
+
 class TestTypeCoercionEdgeCases:
     """Edge cases for type coercion"""
 
-    @pytest.mark.parametrize('value,target_type,should_succeed', [
-        (0, bool, True),                # 0 -> False
-        (1, bool, True),                # 1 -> True
-        ('', bool, True),               # '' -> False
-        ('x', bool, True),              # 'x' -> True
-        ([], bool, True),               # [] -> False
-        ([1], bool, True),              # [1] -> True
-        ('123', int, True),             # '123' -> 123
-        ('not_a_number', int, False),   # Invalid
-        (123.456, int, True),           # 123.456 -> 123
-        (True, int, True),              # True -> 1
-        (False, int, True),             # False -> 0
-    ])
+    @pytest.mark.parametrize(
+        "value,target_type,should_succeed",
+        [
+            (0, bool, True),  # 0 -> False
+            (1, bool, True),  # 1 -> True
+            ("", bool, True),  # '' -> False
+            ("x", bool, True),  # 'x' -> True
+            ([], bool, True),  # [] -> False
+            ([1], bool, True),  # [1] -> True
+            ("123", int, True),  # '123' -> 123
+            ("not_a_number", int, False),  # Invalid
+            (123.456, int, True),  # 123.456 -> 123
+            (True, int, True),  # True -> 1
+            (False, int, True),  # False -> 0
+        ],
+    )
     def test_type_coercion(self, value, target_type, should_succeed):
         """Test type coercion edge cases"""
         try:
@@ -323,10 +338,10 @@ class TestTypeCoercionEdgeCases:
                 assert result is not None
             else:
                 # Should have raised
-                pytest.fail('Expected exception')
+                pytest.fail("Expected exception")
         except (ValueError, TypeError):
             if should_succeed:
-                pytest.fail(f'Unexpected exception for {value} -> {target_type}')
+                pytest.fail(f"Unexpected exception for {value} -> {target_type}")
 
     def test_list_to_tuple_conversion(self):
         """Test list to tuple conversion edge cases"""
@@ -347,10 +362,10 @@ class TestTypeCoercionEdgeCases:
         """Test dict to JSON conversion edge cases"""
         dicts = [
             {},
-            {'a': 1},
-            {'nested': {'key': 'value'}},
-            {'list': [1, 2, 3]},
-            {'mixed': {'a': [1, {'b': 2}]}},
+            {"a": 1},
+            {"nested": {"key": "value"}},
+            {"list": [1, 2, 3]},
+            {"mixed": {"a": [1, {"b": 2}]}},
         ]
 
         for d in dicts:
@@ -363,10 +378,11 @@ class TestTypeCoercionEdgeCases:
 # TESTS: Performance & Scale Boundaries
 # ============================================================================
 
+
 class TestPerformanceBoundaries:
     """Edge cases for performance and scalability"""
 
-    @pytest.mark.parametrize('size', [1, 10, 100, 1000, 10000])
+    @pytest.mark.parametrize("size", [1, 10, 100, 1000, 10000])
     def test_list_creation_scaling(self, size):
         """Test list creation at various scales"""
         lst = list(range(size))
@@ -375,14 +391,14 @@ class TestPerformanceBoundaries:
         if size > 0:
             assert lst[-1] == size - 1
 
-    @pytest.mark.parametrize('size', [1, 10, 100, 1000])
+    @pytest.mark.parametrize("size", [1, 10, 100, 1000])
     def test_dict_creation_scaling(self, size):
         """Test dict creation at various scales"""
-        d = {f'key_{i}': f'value_{i}' for i in range(size)}
+        d = {f"key_{i}": f"value_{i}" for i in range(size)}
         assert len(d) == size
-        assert d['key_0'] == 'value_0'
+        assert d["key_0"] == "value_0"
 
-    @pytest.mark.parametrize('depth', [1, 5, 10, 50])
+    @pytest.mark.parametrize("depth", [1, 5, 10, 50])
     def test_nested_list_access(self, depth):
         """Test accessing deeply nested lists"""
         # Create nested list
@@ -400,44 +416,47 @@ class TestPerformanceBoundaries:
     def test_string_concatenation_scaling(self):
         """Test string concatenation at scale"""
         # Using list join is more efficient than concatenation
-        parts = [f'part_{i}' for i in range(1000)]
-        result = ''.join(parts)
+        parts = [f"part_{i}" for i in range(1000)]
+        result = "".join(parts)
 
         assert len(result) > 0
-        assert 'part_0' in result
-        assert 'part_999' in result
+        assert "part_0" in result
+        assert "part_999" in result
 
     def test_dict_lookup_scaling(self):
         """Test dict lookup performance at scale"""
-        d = {f'key_{i}': i for i in range(10000)}
+        d = {f"key_{i}": i for i in range(10000)}
 
         # Random lookups
-        assert d['key_0'] == 0
-        assert d['key_5000'] == 5000
-        assert d['key_9999'] == 9999
+        assert d["key_0"] == 0
+        assert d["key_5000"] == 5000
+        assert d["key_9999"] == 9999
 
         # Missing key
-        assert d.get('key_missing') is None
+        assert d.get("key_missing") is None
 
 
 # ============================================================================
 # TESTS: Default Value & Fallback Edge Cases
 # ============================================================================
 
+
 class TestDefaultValueEdgeCases:
     """Edge cases for default values and fallbacks"""
 
     def test_default_parameter_none(self):
         """Test function with None default parameter"""
-        def func(value=None):
-            return value if value is not None else 'default'
 
-        assert func() == 'default'
-        assert func(None) == 'default'
-        assert func('provided') == 'provided'
+        def func(value=None):
+            return value if value is not None else "default"
+
+        assert func() == "default"
+        assert func(None) == "default"
+        assert func("provided") == "provided"
 
     def test_default_parameter_falsy(self):
         """Test function with falsy default parameters"""
+
         def func(value=0):
             return value
 
@@ -447,6 +466,7 @@ class TestDefaultValueEdgeCases:
 
     def test_default_parameter_mutable(self):
         """Test mutable default parameters (anti-pattern)"""
+
         def func(items=None):
             if items is None:
                 items = []
@@ -463,33 +483,35 @@ class TestDefaultValueEdgeCases:
 
     def test_kwargs_with_defaults(self):
         """Test kwargs with default values"""
+
         def func(**kwargs):
             return {
-                'a': kwargs.get('a', 'default_a'),
-                'b': kwargs.get('b', 'default_b'),
+                "a": kwargs.get("a", "default_a"),
+                "b": kwargs.get("b", "default_b"),
             }
 
         result = func()
-        assert result['a'] == 'default_a'
+        assert result["a"] == "default_a"
 
-        result = func(a='custom')
-        assert result['a'] == 'custom'
-        assert result['b'] == 'default_b'
+        result = func(a="custom")
+        assert result["a"] == "custom"
+        assert result["b"] == "default_b"
 
     def test_dict_get_with_default(self):
         """Test dict.get() with various defaults"""
-        d = {'key': 'value'}
+        d = {"key": "value"}
 
-        assert d.get('key') == 'value'
-        assert d.get('missing') is None
-        assert d.get('missing', 'default') == 'default'
-        assert d.get('missing', {}) == {}
-        assert d.get('missing', []) == []
+        assert d.get("key") == "value"
+        assert d.get("missing") is None
+        assert d.get("missing", "default") == "default"
+        assert d.get("missing", {}) == {}
+        assert d.get("missing", []) == []
 
 
 # ============================================================================
 # TESTS: Boundary Condition Combinations
 # ============================================================================
+
 
 class TestBoundaryConditionCombinations:
     """Complex combinations of boundary conditions"""
@@ -499,7 +521,7 @@ class TestBoundaryConditionCombinations:
         operations = [
             ([], list),
             ({}, dict),
-            ('', str),
+            ("", str),
             ([], lambda x: [y * 2 for y in x]),  # Map on empty
             ([], lambda x: [y for y in x if y > 0]),  # Filter on empty
         ]
@@ -514,8 +536,8 @@ class TestBoundaryConditionCombinations:
                 assert result == []
             elif inp == {}:
                 assert result == {}
-            elif inp == '':
-                assert result == ''
+            elif inp == "":
+                assert result == ""
 
     def test_single_item_edge_cases(self):
         """Test operations with single item"""
@@ -526,34 +548,35 @@ class TestBoundaryConditionCombinations:
         assert lst[-1] == 1
 
         # Single key in dict
-        d = {'key': 'value'}
+        d = {"key": "value"}
         assert len(d) == 1
-        assert d['key'] == 'value'
+        assert d["key"] == "value"
 
         # Single char string
-        s = 'x'
+        s = "x"
         assert len(s) == 1
-        assert s[0] == 'x'
+        assert s[0] == "x"
 
     def test_boundary_with_none_and_false(self):
         """Test boundaries distinguishing None from False"""
+
         def process(value):
             if value is None:
-                return 'none'
+                return "none"
             elif value is False:
-                return 'false'
+                return "false"
             elif value:
-                return 'truthy'
+                return "truthy"
             else:
-                return 'falsy'
+                return "falsy"
 
-        assert process(None) == 'none'
-        assert process(False) == 'false'
-        assert process(0) == 'falsy'
-        assert process('') == 'falsy'
-        assert process(1) == 'truthy'
-        assert process('x') == 'truthy'
+        assert process(None) == "none"
+        assert process(False) == "false"
+        assert process(0) == "falsy"
+        assert process("") == "falsy"
+        assert process(1) == "truthy"
+        assert process("x") == "truthy"
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '--tb=short'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "--tb=short"])

@@ -57,11 +57,11 @@ class TestInputSanitization:
     def test_xss_event_handler_removal(self):
         """Test XSS prevention by removing event handlers."""
         # Arrange
-        user_input = '<img src=x onerror="alert(\'xss\')">'
+        user_input = "<img src=x onerror=\"alert('xss')\">"
 
         # Act
         has_event_handler = "onerror" in user_input
-        sanitized = user_input.replace('onerror=', '')
+        sanitized = user_input.replace("onerror=", "")
 
         # Assert
         assert has_event_handler, "Should detect event handlers"
@@ -234,11 +234,7 @@ class TestBoundaryValues:
         just_above = 1
 
         # Act
-        comparisons = [
-            zero > just_below,
-            zero < just_above,
-            zero == 0
-        ]
+        comparisons = [zero > just_below, zero < just_above, zero == 0]
 
         # Assert
         assert all(comparisons), "Zero boundary comparisons should work"
@@ -398,8 +394,8 @@ class TestNumericBoundaries:
     def test_float_infinity(self):
         """Test infinity values."""
         # Arrange
-        positive_infinity = float('inf')
-        negative_infinity = float('-inf')
+        positive_infinity = float("inf")
+        negative_infinity = float("-inf")
         normal_float = 1.0
 
         # Act
@@ -413,7 +409,7 @@ class TestNumericBoundaries:
     def test_float_nan_handling(self):
         """Test NaN (Not a Number) handling."""
         # Arrange
-        nan = float('nan')
+        nan = float("nan")
 
         # Act
         is_nan = nan != nan  # NaN is not equal to itself

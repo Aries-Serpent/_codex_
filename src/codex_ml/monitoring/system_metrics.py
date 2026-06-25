@@ -44,7 +44,7 @@ try:  # pragma: no cover - optional dependency
         import psutil
     else:  # pragma: no cover - controlled via feature flag
         psutil = None
-except Exception as exc:  # pragma: no cover - psutil missing
+except (ImportError, AttributeError) as exc:  # pragma: no cover - psutil missing
     logger.debug(
         "psutil import failed; falling back to minimal sampler",
         exc_info=True,
@@ -62,7 +62,7 @@ try:  # pragma: no cover - optional dependency
         import pynvml
     else:  # pragma: no cover - GPU polling disabled via feature flag
         pynvml = None
-except Exception as exc:  # pragma: no cover - pynvml missing
+except (ImportError, AttributeError) as exc:  # pragma: no cover - pynvml missing
     logger.debug(
         "pynvml import failed; GPU metrics disabled",
         exc_info=True,
@@ -77,8 +77,8 @@ except Exception as exc:  # pragma: no cover - pynvml missing
 
 try:  # pragma: no cover - optional dependency
     import resource
-except Exception:  # pragma: no cover - platform dependent
-    resource = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - platform dependent
+    resource = None
 
 
 HAS_PSUTIL = "psutil" in globals() and psutil is not None
@@ -187,7 +187,7 @@ def _minimal_process_sample(ts: float) -> Optional[dict[str, Any]]:
             if rss and not _IS_DARWIN:
                 rss *= 1024.0
             payload["memory_info"] = {"rss": rss}
-        except Exception:  # pragma: no cover - platform specific
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - platform specific
             logger.debug("Suppressed exception in handler", exc_info=True)
     return payload or None
 
@@ -222,27 +222,27 @@ def _sample_cpu_psutil(ts: float) -> dict[str, Any]:
 
     try:
         payload["cpu_percent"] = psutil.cpu_percent(interval=None)
-    except Exception:  # pragma: no cover - psutil call failure
+    except (ValueError, TypeError):  # pragma: no cover - psutil call failure
         payload["cpu_percent"] = None
 
     try:
         payload["cpu_count"] = psutil.cpu_count(logical=True) or _FALLBACK_CPU_COUNT
-    except Exception:  # pragma: no cover - psutil call failure
+    except (ValueError, TypeError):  # pragma: no cover - psutil call failure
         payload["cpu_count"] = _FALLBACK_CPU_COUNT
 
     try:
         payload["memory"] = dict(psutil.virtual_memory()._asdict())
-    except Exception:  # pragma: no cover - platform specific
+    except (ValueError, TypeError):  # pragma: no cover - platform specific
         payload["memory"] = None
 
     try:
         payload["swap"] = dict(psutil.swap_memory()._asdict())
-    except Exception:  # pragma: no cover - platform specific
+    except (ValueError, TypeError):  # pragma: no cover - platform specific
         payload["swap"] = None
 
     try:
         payload["load_avg"] = list(os.getloadavg())
-    except Exception:  # pragma: no cover - platform specific
+    except (ValueError, TypeError):  # pragma: no cover - platform specific
         payload["load_avg"] = None
 
     try:
@@ -251,7 +251,7 @@ def _sample_cpu_psutil(ts: float) -> dict[str, Any]:
             "cpu_percent": proc.cpu_percent(interval=None),
             "memory_info": dict(proc.memory_info()._asdict()),
         }
-    except Exception:  # pragma: no cover - process metrics optional
+    except (ValueError, TypeError):  # pragma: no cover - process metrics optional
         payload["process"] = _minimal_process_sample(ts)
 
     return payload
@@ -269,7 +269,7 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
 
     try:  # pragma: no cover - depends on NVML
         pynvml.nvmlInit()
-    except Exception as exc:  # pragma: no cover - NVML init failure
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - NVML init failure
         logger.warning(
             "NVML initialisation failed; disabling GPU polling",
             extra={
@@ -302,12 +302,12 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
                         handle, getattr(pynvml, "NVML_TEMPERATURE_GPU", 0)
                     )
                 )
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 entry["temp_c"] = None
             try:
                 entry["power_w"] = float(pynvml.nvmlDeviceGetPowerUsage(handle) / 1000.0)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 entry["power_w"] = None
             devices.append(entry)
@@ -317,7 +317,7 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
             "gpus": devices,
             "gpu_util_mean": util_sum / max(len(devices), 1) if devices else None,
         }
-    except Exception as exc:  # pragma: no cover - NVML query failure
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - NVML query failure
         logger.warning(
             "NVML sampling failed; disabling GPU polling",
             extra={
@@ -331,7 +331,7 @@ def _sample_gpu_metrics() -> Optional[dict[str, Any]]:
     finally:  # pragma: no cover - depends on NVML
         try:
             pynvml.nvmlShutdown()
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
 
 
@@ -371,13 +371,13 @@ def system_snapshot() -> dict[str, Any]:
             cpu_payload = _sample_cpu_psutil(ts)
         else:
             cpu_payload = _sample_cpu_minimal(ts)
-    except Exception as exc:  # pragma: no cover - defensive fallback
+    except (ValueError, TypeError) as exc:  # pragma: no cover - defensive fallback
         errors.append({"component": "cpu", "error": repr(exc)})
         cpu_payload = {"ts": ts, "cpu_percent": None, "process": None}
 
     try:
         gpu_payload = _sample_gpu_metrics()
-    except Exception as exc:  # pragma: no cover - defensive fallback
+    except (ValueError, TypeError) as exc:  # pragma: no cover - defensive fallback
         errors.append({"component": "gpu", "error": repr(exc)})
         gpu_payload = None
 
@@ -447,14 +447,14 @@ def start_metrics_logger(
             record = sample_system_metrics()
             try:
                 write_fn(record)
-            except Exception:  # pragma: no cover - sink errors are non-fatal
+            except (IOError, OSError):  # pragma: no cover - sink errors are non-fatal
                 logger.debug("Suppressed exception in handler", exc_info=True)
             if scalar_sink is not None:
                 try:
                     scalars = system_metrics_scalars(record)
                     if scalars:
                         scalar_sink(scalars)
-                except Exception:  # pragma: no cover - sink errors are non-fatal
+                except (IOError, OSError):  # pragma: no cover - sink errors are non-fatal
                     logger.debug("Suppressed exception in handler", exc_info=True)
             event.wait(interval)
 
@@ -496,7 +496,7 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
         while not stop_event.is_set():
             try:
                 _write_record(target, sample_system_metrics())
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Avoid killing the loop due to transient psutil errors.
             stop_event.wait(max(0.1, float(interval)))
@@ -580,7 +580,7 @@ class SystemMetricsLogger:
         while not self._stop.is_set():
             try:
                 _write_record(self._path, sample_system_metrics())
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
             self._stop.wait(self._interval)
 

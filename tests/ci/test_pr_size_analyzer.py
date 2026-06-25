@@ -130,9 +130,7 @@ class TestPRSizeAnalyzer:
         """Test PR size classification with comprehensive test table."""
         size, strategy = calculate_pr_size(files)
         assert size == expected_size, f"Expected {expected_size} for {files} files"
-        assert (
-            strategy == expected_strategy
-        ), f"Expected {expected_strategy} for {files} files"
+        assert strategy == expected_strategy, f"Expected {expected_strategy} for {files} files"
 
 
 class TestValidationStrategyMapping:

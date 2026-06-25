@@ -77,7 +77,7 @@ class TestCodeSmell:
             category=SmellCategory.COMPLEXITY,
             file_path=Path("test.py"),
             line_start=10,
-            line_end=50
+            line_end=50,
         )
 
         assert smell.rule_id == "RULE001"
@@ -101,7 +101,7 @@ class TestCodeSmell:
             file_path=Path("module.py"),
             line_start=5,
             line_end=5,
-            suggestion="Use a more descriptive name"
+            suggestion="Use a more descriptive name",
         )
 
         assert smell.suggestion == "Use a more descriptive name"
@@ -119,7 +119,7 @@ class TestCodeSmell:
             line_start=100,
             line_end=150,
             suggestion="Extract to common function",
-            metadata={"similarity": 0.95}
+            metadata={"similarity": 0.95},
         )
 
         result = smell.to_dict()
@@ -151,7 +151,7 @@ class TestSmellRule:
             description="Detects functions with high cyclomatic complexity",
             severity=SmellSeverity.WARNING,
             category=SmellCategory.COMPLEXITY,
-            detector=dummy_detector
+            detector=dummy_detector,
         )
 
         assert rule.rule_id == "COMPLEX001"
@@ -170,7 +170,7 @@ class TestSmellRule:
             severity=SmellSeverity.INFO,
             category=SmellCategory.STRUCTURE,
             detector=lambda t, p: [],
-            enabled=False
+            enabled=False,
         )
 
         assert rule.enabled is False

@@ -27,6 +27,7 @@ from codex.auth.user_store import UserStore
 # Exception Tests
 # ============================================================================
 
+
 class TestAuthExceptions:
     """Exception handling in auth module."""
 
@@ -72,6 +73,7 @@ class TestAuthExceptions:
 # Integration Scenario Tests
 # ============================================================================
 
+
 class TestAuthenticationIntegration:
     """Complete authentication integration scenarios."""
 
@@ -81,11 +83,7 @@ class TestAuthenticationIntegration:
         store = UserStore()
         tokens = TokenManager(secret_key="integration-test-key")
         mfa = MFAProvider()
-        return Authenticator(
-            user_store=store,
-            token_manager=tokens,
-            mfa_provider=mfa
-        )
+        return Authenticator(user_store=store, token_manager=tokens, mfa_provider=mfa)
 
     def test_signup_login_logout_flow(self, auth_system):
         """Complete user lifecycle."""
@@ -105,11 +103,7 @@ class TestAuthenticationIntegration:
         """Multiple users in system."""
         users = []
         for i in range(10):
-            user = auth_system.register(
-                f"user{i}",
-                f"user{i}@example.com",
-                "Str0ngPass!"
-            )
+            user = auth_system.register(f"user{i}", f"user{i}@example.com", "Str0ngPass!")
             users.append(user)
 
         # Each can login
@@ -161,6 +155,7 @@ class TestAuthenticationIntegration:
 
         # Generate valid code
         import pyotp
+
         totp = pyotp.TOTP(secret.secret)
         code = totp.now()
 
@@ -184,6 +179,7 @@ class TestAuthenticationIntegration:
 # ============================================================================
 # Error Path Tests
 # ============================================================================
+
 
 class TestErrorPaths:
     """Error handling paths."""
@@ -242,6 +238,7 @@ class TestErrorPaths:
 # State Transition Tests
 # ============================================================================
 
+
 class TestStateTransitions:
     """State transitions and consistency."""
 
@@ -284,22 +281,20 @@ class TestStateTransitions:
 
         # All tokens should be valid
         auth_system.token_manager.validate_token(
-            result.access_token,
-            expected_type=TokenType.ACCESS
+            result.access_token, expected_type=TokenType.ACCESS
         )
         auth_system.token_manager.validate_token(
-            result.refresh_token,
-            expected_type=TokenType.REFRESH
+            result.refresh_token, expected_type=TokenType.REFRESH
         )
         auth_system.token_manager.validate_token(
-            result.session_token,
-            expected_type=TokenType.SESSION
+            result.session_token, expected_type=TokenType.SESSION
         )
 
 
 # ============================================================================
 # Concurrent Access Tests
 # ============================================================================
+
 
 class TestConcurrentAccess:
     """Concurrent access patterns."""
@@ -323,7 +318,7 @@ class TestConcurrentAccess:
                 user = auth_system.register(
                     f"user{threading.current_thread().ident}",
                     f"user{threading.current_thread().ident}@example.com",
-                    "Str0ngPass!"
+                    "Str0ngPass!",
                 )
                 users.append(user)
             except Exception as e:
@@ -360,7 +355,7 @@ class TestConcurrentAccess:
             t.join()
 
         # All should succeed
-        assert len([r for r in results if hasattr(r, 'access_token')]) == 10
+        assert len([r for r in results if hasattr(r, "access_token")]) == 10
 
     def test_concurrent_token_operations(self, auth_system):
         import threading
@@ -373,9 +368,9 @@ class TestConcurrentAccess:
         def token_op():
             try:
                 auth_system.token_manager.validate_token(result.access_token)
-                operations.append('validate')
+                operations.append("validate")
             except Exception as _err:
-                operations.append('error')
+                operations.append("error")
 
         threads = [threading.Thread(target=token_op) for _ in range(20)]
         for t in threads:
@@ -390,6 +385,7 @@ class TestConcurrentAccess:
 # Edge Case Combinations
 # ============================================================================
 
+
 class TestEdgeCaseCombinations:
     """Combinations of edge cases."""
 
@@ -402,11 +398,7 @@ class TestEdgeCaseCombinations:
         )
 
     def test_unicode_username_with_special_password(self, auth_system):
-        user = auth_system.register(
-            "用户123",
-            "user@example.com",
-            "Pässwörd123!中文"
-        )
+        user = auth_system.register("用户123", "user@example.com", "Pässwörd123!中文")
         assert user.username == "用户123"
 
         result = auth_system.login("用户123", "Pässwörd123!中文")
@@ -416,11 +408,7 @@ class TestEdgeCaseCombinations:
         long_username = "u" * 200
         long_password = "P" + "a" * 200 + "!"
 
-        user = auth_system.register(
-            long_username,
-            "long@example.com",
-            long_password
-        )
+        user = auth_system.register(long_username, "long@example.com", long_password)
 
         result = auth_system.login(long_username, long_password)
         assert result.user_id == user.user_id
@@ -429,7 +417,7 @@ class TestEdgeCaseCombinations:
         user = auth_system.register(
             "user@example.com",  # Username that looks like email
             "actual@example.com",  # Actual email
-            "Str0ngPass!"
+            "Str0ngPass!",
         )
         assert user.username == "user@example.com"
         assert user.email == "actual@example.com"
@@ -438,11 +426,7 @@ class TestEdgeCaseCombinations:
         assert result.user_id == user.user_id
 
     def test_email_and_password_both_unicode(self, auth_system):
-        user = auth_system.register(
-            "sam",
-            "用户@例え.jp",
-            "密码123!"
-        )
+        user = auth_system.register("sam", "用户@例え.jp", "密码123!")
         assert user.email
         assert user.username == "sam"
 
@@ -463,6 +447,7 @@ class TestEdgeCaseCombinations:
 # ============================================================================
 # Resource Cleanup Tests
 # ============================================================================
+
 
 class TestResourceCleanup:
     """Resource management and cleanup."""
@@ -486,11 +471,8 @@ class TestResourceCleanup:
 
         # Create expired token
         import time
-        token = tm.create_token(
-            "user123",
-            TokenType.ACCESS,
-            expires_in=1
-        )
+
+        token = tm.create_token("user123", TokenType.ACCESS, expires_in=1)
 
         time.sleep(2)
 

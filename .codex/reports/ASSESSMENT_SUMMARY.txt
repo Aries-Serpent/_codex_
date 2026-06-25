@@ -25,12 +25,12 @@ CRITICAL BLOCKERS (ERROR SEVERITY - 3 findings)
    Location: src/codex_ml/plugins/registry.py:90
    Risk: Remote Code Execution (RCE)
    Action: Refactor to eliminate exec() calls
-   
+
 2. Unsafe Code Execution (exec detected)
    Location: tests/test_readme_examples.py:34
    Risk: Remote Code Execution (RCE)
    Action: Refactor to eliminate exec() calls
-   
+
 3. Log Injection Vulnerability
    Location: Multiple files
    Risk: Attacker can manipulate log content

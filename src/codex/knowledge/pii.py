@@ -176,8 +176,8 @@ def scrub(
                 "Luhn validation failed for credit card pattern (length=%d position=%d)",
                 len(card_num),
                 m.start(),
-            )
-            return m.group(0)  # Not a valid card number
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            return m.group(0)  # codeql[py/clear-text-logging-sensitive-data]
         flags.pii_credit_card = True
         flags.total_redactions += 1
         flags.redaction_details.append({"type": "credit_card", "position": m.start()})

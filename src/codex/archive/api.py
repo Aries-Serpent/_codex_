@@ -102,8 +102,8 @@ def store(
     return {
         "tombstone": tomb,
         "sha256": sha,
-        "size": len(bytes_in),  # type: ignore[dict-item]
-        "compressed_size": len(blob),  # type: ignore[dict-item]
+        "size": len(bytes_in),
+        "compressed_size": len(blob),
         "repo": repo,
         "path": path,
     }
@@ -176,7 +176,7 @@ def db_check() -> dict[str, object]:
     try:
         dal = ArchiveDAL.from_env()
         dal.ensure_schema()
-    except Exception as exc:  # pragma: no cover - defensive
+    except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - defensive
         return {"ok": False, "error": repr(exc)}
     return {"ok": True}
 

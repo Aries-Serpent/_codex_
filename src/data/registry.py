@@ -27,8 +27,8 @@ try:  # pragma: no cover - torch is optional
     DataLoader = torch.utils.data.DataLoader
     TensorDataset = torch.utils.data.TensorDataset
     random_split = torch.utils.data.random_split
-except Exception:  # pragma: no cover - fallback stubs when torch is absent
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - fallback stubs when torch is absent
+    torch = None
     DataLoader = None
     TensorDataset = None
     random_split = None
@@ -105,7 +105,7 @@ def _synthetic_classification_dataset(
     if torch is None or DataLoader is None or TensorDataset is None:
         try:
             torch = importlib.import_module("torch")
-        except Exception as exc:  # pragma: no cover - optional dependency guard
+        except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency guard
             raise DatasetRegistryError("torch is required for synthetic datasets") from exc
         torch_utils = getattr(torch, "utils", None)
         data_module = getattr(torch_utils, "data", None)

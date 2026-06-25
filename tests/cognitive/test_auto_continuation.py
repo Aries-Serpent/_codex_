@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 # Add scripts/cognitive to path for import
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'scripts' / 'cognitive'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "cognitive"))
 
 from auto_continuation import (
     extract_session_context,
@@ -30,42 +30,46 @@ class TestLoadActionLog:
 
     def test_loads_valid_entries(self, tmp_path):
         """Test loading valid action log entries."""
-        log_file = tmp_path / 'action_log.ndjson'
+        log_file = tmp_path / "action_log.ndjson"
         entries = [
-            {'timestamp': '2026-02-05T10:00:00Z', 'action': 'created', 'path': 'src/new.py'},
-            {'timestamp': '2026-02-05T10:01:00Z', 'action': 'edited', 'path': 'src/old.py'},
+            {"timestamp": "2026-02-05T10:00:00Z", "action": "created", "path": "src/new.py"},
+            {"timestamp": "2026-02-05T10:01:00Z", "action": "edited", "path": "src/old.py"},
         ]
-        log_file.write_text('\n'.join(json.dumps(e) for e in entries))
+        log_file.write_text("\n".join(json.dumps(e) for e in entries))
 
         result = load_action_log(log_file)
 
         assert len(result) == 2
-        assert result[0]['path'] == 'src/new.py'
+        assert result[0]["path"] == "src/new.py"
 
     def test_filters_by_hours(self, tmp_path):
         """Test filtering entries by hours."""
-        log_file = tmp_path / 'action_log.ndjson'
-        old_time = '2020-01-01T10:00:00Z'
+        log_file = tmp_path / "action_log.ndjson"
+        old_time = "2020-01-01T10:00:00Z"
         entries = [
-            {'timestamp': old_time, 'action': 'created', 'path': 'old.py'},
-            {'timestamp': datetime.now(timezone.utc).isoformat(), 'action': 'created', 'path': 'new.py'},
+            {"timestamp": old_time, "action": "created", "path": "old.py"},
+            {
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "action": "created",
+                "path": "new.py",
+            },
         ]
-        log_file.write_text('\n'.join(json.dumps(e) for e in entries))
+        log_file.write_text("\n".join(json.dumps(e) for e in entries))
 
         result = load_action_log(log_file, hours=1)
 
         assert len(result) == 1
-        assert result[0]['path'] == 'new.py'
+        assert result[0]["path"] == "new.py"
 
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing log file."""
-        log_file = tmp_path / 'nonexistent.ndjson'
+        log_file = tmp_path / "nonexistent.ndjson"
         result = load_action_log(log_file)
         assert result == []
 
     def test_skips_malformed_json(self, tmp_path):
         """Test skipping malformed JSON lines."""
-        log_file = tmp_path / 'action_log.ndjson'
+        log_file = tmp_path / "action_log.ndjson"
         content = '{"action": "created", "path": "valid.py"}\nnot valid json\n{"action": "edited", "path": "another.py"}'
         log_file.write_text(content)
 
@@ -79,13 +83,8 @@ class TestLoadPatternStore:
 
     def test_loads_valid_store(self, tmp_path):
         """Test loading valid pattern store."""
-        store_file = tmp_path / 'pattern_store.json'
-        store = {
-            "patterns": {
-                "test_pattern": {"success_rate": 0.95}
-            },
-            "statistics": {}
-        }
+        store_file = tmp_path / "pattern_store.json"
+        store = {"patterns": {"test_pattern": {"success_rate": 0.95}}, "statistics": {}}
         store_file.write_text(json.dumps(store))
 
         result = load_pattern_store(store_file)
@@ -95,7 +94,7 @@ class TestLoadPatternStore:
 
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing store file."""
-        store_file = tmp_path / 'nonexistent.json'
+        store_file = tmp_path / "nonexistent.json"
         result = load_pattern_store(store_file)
 
         assert result == {"patterns": {}, "statistics": {}}
@@ -107,15 +106,15 @@ class TestExtractSessionContext:
     def test_extracts_file_operations(self):
         """Test extraction of file operations from entries."""
         entries = [
-            {'action': 'created', 'path': 'src/new.py', 'timestamp': '2026-02-05T10:00:00Z'},
-            {'action': 'edited', 'path': 'src/old.py', 'timestamp': '2026-02-05T10:01:00Z'},
+            {"action": "created", "path": "src/new.py", "timestamp": "2026-02-05T10:00:00Z"},
+            {"action": "edited", "path": "src/old.py", "timestamp": "2026-02-05T10:01:00Z"},
         ]
         pattern_store = {"patterns": {}, "learning_log": []}
 
         result = extract_session_context(entries, pattern_store)
 
-        assert 'src/new.py' in result['files_created']
-        assert 'src/old.py' in result['files_modified']
+        assert "src/new.py" in result["files_created"]
+        assert "src/old.py" in result["files_modified"]
 
     def test_extracts_session_info_from_pattern_store(self):
         """Test extraction of session info from pattern store."""
@@ -127,16 +126,16 @@ class TestExtractSessionContext:
                     "session": "test-session",
                     "pr": 1234,
                     "patterns_applied": ["pattern1"],
-                    "patterns_learned": ["pattern2"]
+                    "patterns_learned": ["pattern2"],
                 }
-            ]
+            ],
         }
 
         result = extract_session_context(entries, pattern_store)
 
-        assert result['session_id'] == "test-session"
-        assert result['pr_number'] == 1234
-        assert "pattern1" in result['patterns_applied']
+        assert result["session_id"] == "test-session"
+        assert result["pr_number"] == 1234
+        assert "pattern1" in result["patterns_applied"]
 
 
 class TestGenerateRecommendedActions:
@@ -144,9 +143,7 @@ class TestGenerateRecommendedActions:
 
     def test_includes_pending_task(self):
         """Test that pending tasks are included in recommendations."""
-        context = {
-            "pending_tasks": ["Complete documentation"]
-        }
+        context = {"pending_tasks": ["Complete documentation"]}
         pattern_store = {"patterns": {}}
 
         result = generate_recommended_actions(context, pattern_store)
@@ -169,20 +166,20 @@ class TestGenerateReferences:
     def test_includes_existing_files(self, tmp_path):
         """Test that existing reference files are included."""
         # Create standard paths
-        (tmp_path / '.codex' / 'cognitive_brain').mkdir(parents=True)
-        (tmp_path / '.codex' / 'cognitive_brain' / 'pattern_learning_store.json').write_text('{}')
+        (tmp_path / ".codex" / "cognitive_brain").mkdir(parents=True)
+        (tmp_path / ".codex" / "cognitive_brain" / "pattern_learning_store.json").write_text("{}")
 
         context = {"files_created": []}
         result = generate_references(context, tmp_path)
 
-        assert any('pattern' in ref['name'].lower() for ref in result)
+        assert any("pattern" in ref["name"].lower() for ref in result)
 
     def test_includes_created_files(self, tmp_path):
         """Test that recently created files are included."""
         context = {"files_created": ["src/new_module.py"]}
         result = generate_references(context, tmp_path)
 
-        assert any('new_module' in ref['name'] for ref in result)
+        assert any("new_module" in ref["name"] for ref in result)
 
 
 class TestGenerateMarkdownPrompt:
@@ -203,7 +200,7 @@ class TestGenerateMarkdownPrompt:
             "patterns_applied": [],
             "recommended_actions": ["Action 1"],
             "references": [],
-            "activation_command": "Continue"
+            "activation_command": "Continue",
         }
 
         result = generate_markdown_prompt(context)
@@ -228,7 +225,7 @@ class TestGenerateMarkdownPrompt:
             "patterns_applied": ["p1"],
             "recommended_actions": [],
             "references": [],
-            "activation_command": "Done"
+            "activation_command": "Done",
         }
 
         result = generate_markdown_prompt(context)
@@ -252,7 +249,7 @@ class TestGeneratePrCommentPrompt:
             "files_created": ["a.py"],
             "files_modified": ["b.py"],
             "activation_command": "Continue",
-            "blockers": []
+            "blockers": [],
         }
 
         result = generate_pr_comment_prompt(context)
@@ -273,7 +270,7 @@ class TestGeneratePrCommentPrompt:
             "files_created": [],
             "files_modified": [],
             "activation_command": "Fix blockers",
-            "blockers": ["CI failing", "Awaiting review"]
+            "blockers": ["CI failing", "Awaiting review"],
         }
 
         result = generate_pr_comment_prompt(context)
@@ -304,7 +301,7 @@ class TestGenerateJsonPrompt:
             "recommended_actions": [],
             "references": [],
             "activation_command": "Done",
-            "blockers": []
+            "blockers": [],
         }
 
         result = generate_json_prompt(context)
@@ -332,7 +329,7 @@ class TestGenerateJsonPrompt:
             "recommended_actions": [],
             "references": [],
             "activation_command": "Continue",
-            "blockers": []
+            "blockers": [],
         }
 
         result = generate_json_prompt(context)

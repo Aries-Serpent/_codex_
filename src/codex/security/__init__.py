@@ -198,7 +198,7 @@ def sanitize_url(url: str, allowed_domains: Optional[list[str]] = None) -> bool:
                 return True
 
         return False
-    except Exception:
+    except (ConnectionError, TimeoutError):
         # If URL parsing fails, consider it invalid
         return False
 

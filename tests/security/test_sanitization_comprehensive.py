@@ -20,6 +20,7 @@ from codex.security.sanitization import (
 # HTML Sanitization Tests
 # ============================================================================
 
+
 class TestSanitizeHtmlBasic:
     """Basic HTML sanitization functionality."""
 
@@ -115,7 +116,7 @@ class TestSanitizeHtmlXssAttacks:
 
     def test_onclick_handler_removal(self):
         """Test removal of onclick handlers."""
-        html = '<div onclick="alert(\'xss\')">Click me</div>'
+        html = "<div onclick=\"alert('xss')\">Click me</div>"
         result = sanitize_html(html)
         assert "onclick" not in result
 
@@ -127,13 +128,13 @@ class TestSanitizeHtmlXssAttacks:
 
     def test_onload_handler_removal(self):
         """Test removal of onload handlers."""
-        html = '<body onload="alert(\'xss\')">Hello</body>'
+        html = "<body onload=\"alert('xss')\">Hello</body>"
         result = sanitize_html(html)
         assert "onload" not in result
 
     def test_onmouseover_handler_removal(self):
         """Test removal of onmouseover handlers."""
-        html = '<span onmouseover="alert(\'xss\')">Hover</span>'
+        html = "<span onmouseover=\"alert('xss')\">Hover</span>"
         result = sanitize_html(html)
         assert "onmouseover" not in result
 
@@ -143,25 +144,25 @@ class TestSanitizeHtmlProtocols:
 
     def test_javascript_protocol_removal(self):
         """Test removal of javascript: protocol."""
-        html = '<a href="javascript:alert(\'xss\')">Click</a>'
+        html = "<a href=\"javascript:alert('xss')\">Click</a>"
         result = sanitize_html(html)
         assert "javascript:" not in result
 
     def test_javascript_protocol_case_insensitive(self):
         """Test case-insensitive javascript: removal."""
-        html = '<a href="JavaScript:alert(\'xss\')">Click</a>'
+        html = "<a href=\"JavaScript:alert('xss')\">Click</a>"
         result = sanitize_html(html)
         assert "javascript:" not in result.lower()
 
     def test_data_protocol_removal(self):
         """Test removal of data: protocol."""
-        html = '<img src="data:text/html,<script>alert(\'xss\')</script>">'
+        html = "<img src=\"data:text/html,<script>alert('xss')</script>\">"
         result = sanitize_html(html)
         assert "data:" not in result
 
     def test_vbscript_protocol_removal(self):
         """Test removal of vbscript: protocol."""
-        html = '<a href="vbscript:msgbox(\'xss\')">Click</a>'
+        html = "<a href=\"vbscript:msgbox('xss')\">Click</a>"
         result = sanitize_html(html)
         assert "vbscript:" not in result
 
@@ -197,7 +198,7 @@ class TestSanitizeHtmlEdgeCases:
 
     def test_encoded_event_handlers(self):
         """Test removal of encoded event handlers."""
-        html = '<div on&#99;lick="alert(\'xss\')">Click</div>'
+        html = "<div on&#99;lick=\"alert('xss')\">Click</div>"
         result = sanitize_html(html)
         # Should remove the onclick attribute pattern
         assert result
@@ -225,6 +226,7 @@ class TestSanitizeHtmlEdgeCases:
 # ============================================================================
 # Integer Sanitization Tests
 # ============================================================================
+
 
 class TestSanitizeIntegerBasic:
     """Basic integer sanitization functionality."""
@@ -349,6 +351,7 @@ class TestSanitizeIntegerEdgeCases:
 # ============================================================================
 # String Sanitization Tests
 # ============================================================================
+
 
 class TestSanitizeStringBasic:
     """Basic string sanitization functionality."""
@@ -485,6 +488,7 @@ class TestSanitizeStringEdgeCases:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestSanitizationIntegration:
     """Integration tests for sanitization functions."""

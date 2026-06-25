@@ -245,12 +245,12 @@ defaults:
 model:
   name: "bert-base"
   pretrained: true
-  
+
 training:
   learning_rate: 1e-4
   batch_size: 32
   epochs: 10
-  
+
 data:
   dataset: "wikitext"
   split: [0.8, 0.1, 0.1]

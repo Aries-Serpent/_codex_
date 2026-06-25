@@ -13,12 +13,11 @@ Provides mutually exclusive archive operations:
 from __future__ import annotations
 
 import logging
-import threading
 import time
 from contextlib import contextmanager
 from typing import Any, Callable, Dict, Optional
 
-from .concurrency import ArchiveOperationLock, LockMetrics, log_error, save_metrics
+from .concurrency import ArchiveOperationLock, log_error, save_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -63,12 +62,14 @@ class ThreadSafeArchive:
                 yield
 
         except TimeoutError as e:
-            logger.error(f"Archive timeout for {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Archive timeout for {session_id}: <ERROR_TYPE>")
             log_error(e, f"archive_timeout_{session_id}", self.errors_path)
             raise
 
-        except Exception as e:
-            logger.error(f"Archive error for {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Archive error for {session_id}: <ERROR_TYPE>")
             log_error(e, f"archive_error_{session_id}", self.errors_path)
             raise
 
@@ -80,12 +81,14 @@ class ThreadSafeArchive:
                 yield
 
         except TimeoutError as e:
-            logger.error(f"Retrieve timeout for {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Retrieve timeout for {session_id}: <ERROR_TYPE>")
             log_error(e, f"retrieve_timeout_{session_id}", self.errors_path)
             raise
 
-        except Exception as e:
-            logger.error(f"Retrieve error for {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Retrieve error for {session_id}: <ERROR_TYPE>")
             log_error(e, f"retrieve_error_{session_id}", self.errors_path)
             raise
 
@@ -113,7 +116,7 @@ class ThreadSafeArchive:
             "component": "archive_operations",
             "archive_lock": self._archive_lock.metrics.to_dict(),
         }
-        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
+        save_metrics(metrics_dict, self.metrics_path)
 
     def __enter__(self):
         """Context manager entry."""
@@ -153,8 +156,9 @@ class ArchiveSessionGuard:
             logger.error(f"Archive timeout for {session_id}")
             return None
 
-        except Exception as e:
-            logger.error(f"Archive operation failed for {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Archive operation failed for {session_id}: <ERROR_TYPE>")
             log_error(e, f"archive_guard_error_{session_id}", self.archive.errors_path)
             return None
 
@@ -174,8 +178,9 @@ class ArchiveSessionGuard:
             logger.error(f"Retrieve timeout for {session_id}")
             return None
 
-        except Exception as e:
-            logger.error(f"Retrieve operation failed for {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Retrieve operation failed for {session_id}: <ERROR_TYPE>")
             log_error(e, f"retrieve_guard_error_{session_id}", self.archive.errors_path)
             return None
 
@@ -194,21 +199,21 @@ class ArchiveSessionGuard:
             try:
                 result = self.archive_with_lock(sid, archive_func)
                 return sid, result is not None
-            except Exception as e:
-                logger.error(f"Parallel archive failed for {sid}: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Parallel archive failed for {sid}: <ERROR_TYPE>")
                 return sid, False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {
-                executor.submit(_archive_one, sid): sid for sid in session_ids
-            }
+            futures = {executor.submit(_archive_one, sid): sid for sid in session_ids}
 
             for future in concurrent.futures.as_completed(futures):
                 try:
                     sid, success = future.result()
                     results[sid] = success
-                except Exception as e:
-                    logger.error(f"Parallel archive exception: {e}")
+                except (ValueError, TypeError, RuntimeError) as e:
+                    error_type = type(e).__name__
+                    logger.error(f"Parallel archive exception: <ERROR_TYPE>")
                     results[futures[future]] = False
 
         return results

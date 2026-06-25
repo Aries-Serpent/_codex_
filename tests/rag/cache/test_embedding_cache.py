@@ -2,7 +2,6 @@
 Tests for Embedding Cache Module.
 """
 
-
 import tempfile
 import time
 from pathlib import Path
@@ -268,29 +267,24 @@ class TestEmbeddingCacheDisk:
 # MUTATION KILLING TESTS - DAY 2 REFINEMENT
 # ============================================================================
 
+
 class TestCacheBoundaryConditions:
     """Boundary condition tests to kill comparison operator mutations."""
 
     def test_expiry_exact_boundary(self):
         """Kill: 'time.time() > expires_at' mutations
-        
+
         Ensures exact boundary checking at expiry moment.
         """
         embedding = np.zeros(10)
 
         # Entry that expired exactly 1 second ago
-        entry = EmbeddingEntry(
-            key="expired",
-            embedding=embedding,
-            expires_at=time.time() - 1.0
-        )
+        entry = EmbeddingEntry(key="expired", embedding=embedding, expires_at=time.time() - 1.0)
         assert entry.is_expired is True
 
         # Entry that expires in 1 second
         entry2 = EmbeddingEntry(
-            key="not_expired",
-            embedding=embedding,
-            expires_at=time.time() + 1.0
+            key="not_expired", embedding=embedding, expires_at=time.time() + 1.0
         )
         assert entry2.is_expired is False
 
@@ -315,7 +309,7 @@ class TestCacheBoundaryConditions:
 
     def test_ttl_boundary_exact_comparison(self):
         """Kill: TTL comparison operators
-        
+
         Tests exact time boundary conditions.
         """
         config = EmbeddingCacheConfig(max_entries=10)
@@ -336,7 +330,7 @@ class TestCacheBooleanConditions:
 
     def test_eviction_requires_both_conditions(self):
         """Kill: 'and' → 'or' mutations in eviction logic
-        
+
         Ensures eviction requires both size AND age conditions.
         """
         config = EmbeddingCacheConfig(max_entries=3)
@@ -415,12 +409,13 @@ class TestCacheReturnValues:
 # ============================================================================
 # These tests are specifically designed to kill surviving mutations from Day 2
 
+
 class TestEmbeddingCacheBoundaryMutations:
     """Kill boundary-related mutations (>, >=, <, <=)."""
 
     def test_ttl_boundary_not_expired_at_exact_time(self):
         """Kill: TTL comparison mutations (> vs >=).
-        
+
         Verifies entry is NOT expired exactly at TTL boundary.
         """
         config = EmbeddingCacheConfig(default_ttl=0.1)
@@ -436,7 +431,7 @@ class TestEmbeddingCacheBoundaryMutations:
 
     def test_cache_size_exact_max_entries(self):
         """Kill: Size comparison mutations (> vs >=).
-        
+
         Verifies cache respects exact max_entries boundary.
         """
         config = EmbeddingCacheConfig(max_entries=2)
@@ -459,7 +454,7 @@ class TestEmbeddingCacheBooleanMutations:
 
     def test_contains_exact_true_not_truthy(self):
         """Kill: Return value mutations (True -> 1, None -> False).
-        
+
         Verifies exact boolean True returned.
         """
         config = EmbeddingCacheConfig(max_entries=10)
@@ -494,7 +489,7 @@ class TestEmbeddingCacheReturnValueMutations:
 
     def test_get_returns_ndarray_not_bool(self):
         """Kill: Return type mutation (np.ndarray -> True/False/None).
-        
+
         Verifies get() returns exact array type, not bool or None.
         """
         config = EmbeddingCacheConfig(max_entries=10)
@@ -514,7 +509,7 @@ class TestEmbeddingCacheReturnValueMutations:
 
     def test_get_missing_returns_none_exactly(self):
         """Kill: Return value mutation (None -> False, 0, empty array).
-        
+
         Verifies get() returns exact None for missing keys.
         """
         config = EmbeddingCacheConfig(max_entries=10)
@@ -551,5 +546,3 @@ class TestEmbeddingCacheReturnValueMutations:
         # Exact assertions
         assert result is False, "MUST be exact False"
         assert type(result) is bool, "MUST be bool type"
-
-

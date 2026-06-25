@@ -15,8 +15,8 @@ Your Phase 2.1 (Secret Injection & Token Management) has **successfully complete
 
 | Component | Status | Timeline |
 |-----------|--------|----------|
-| **Agent 1: Token Broker** | ✅ COMPLETE | Completed 2026-06-22 ~10:00 UTC |
-| **Agent 2: Secret Injection** | ✅ COMPLETE | Completed 2026-06-22 ~11:30 UTC |
+| **Agent 1: Token Broker** | ✅ COMPLETE | Completed 2026-06-22 ~10:00 UTC | <!-- pragma: allowlist secret -->
+| **Agent 2: Secret Injection** | ✅ COMPLETE | Completed 2026-06-22 ~11:30 UTC | <!-- pragma: allowlist secret -->
 | **Agent 3: Compliance Framework** | ✅ COMPLETE | Completed 2026-06-22 ~13:50 UTC |
 | **Integration Testing** | ✅ PASS | Verified 2026-06-22 00:15:00Z |
 | **Validation Sweep** | ✅ PASS | Verified 2026-06-22 00:15:00Z |
@@ -133,7 +133,7 @@ Your Phase 2.1 (Secret Injection & Token Management) has **successfully complete
 ### Quality Metrics
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|
-| Token broker classes | 4+ | 5 | ✅ EXCEED |
+| Token broker classes | 4+ | 5 | ✅ EXCEED | <!-- pragma: allowlist secret -->
 | Compliance validators | 6 | 6 | ✅ MEET |
 | Unit tests | 20+ | 30+ | ✅ EXCEED |
 | Backward compatibility | 100% | 100% | ✅ MEET |
@@ -223,4 +223,3 @@ Your Phase 2.1 (Secret Injection & Token Management) has **successfully complete
 **Phase 2.1 Status:** ✅ COMPLETE  
 **Phase 2.2 Status:** 🟡 READY TO START (after 24h monitoring)  
 **Overall Progress:** On track for v0.1.0-final release & Genesis activation ✅
-

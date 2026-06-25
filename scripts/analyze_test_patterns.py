@@ -85,7 +85,8 @@ def analyze_test_directory(test_dir='tests'):
                 tree = ast.parse(f.read())
             analyzer.visit(tree)
         except Exception as e:
-            print(f"Error analyzing {test_file}: {e}")
+            error_type = type(e).__name__
+            print(f"Error analyzing {test_file}: <ERROR_TYPE>")
 
     return analyzer.issues
 

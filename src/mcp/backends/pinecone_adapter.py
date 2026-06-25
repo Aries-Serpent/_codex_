@@ -89,8 +89,9 @@ class PineconeAdapter(BackendAdapter):
             self._client = pinecone
             self._connected = True
             logger.info("Connected to Pinecone index %s", self._index_name)
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (ConnectionError, TimeoutError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.exception("Failed to initialize Pinecone: %s", exc)
             self._connected = False
 
@@ -143,7 +144,7 @@ class PineconeAdapter(BackendAdapter):
         try:
             with Timer("pinecone_upsert_latency"):
                 self._index_upsert(vectors=vectors, namespace=namespace)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone upsert failed")
@@ -177,7 +178,7 @@ class PineconeAdapter(BackendAdapter):
                     filter=filters,
                     namespace=namespace,
                 )
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone query failed")
@@ -197,9 +198,11 @@ class PineconeAdapter(BackendAdapter):
                     {
                         "id": m.get("id"),
                         "score": float(m.get("score", 0.0)),
-                        "content": m.get("metadata", {}).get("content", "")
-                        if isinstance(m.get("metadata", {}), dict)
-                        else "",
+                        "content": (
+                            m.get("metadata", {}).get("content", "")
+                            if isinstance(m.get("metadata", {}), dict)
+                            else ""
+                        ),
                         "metadata": m.get("metadata", {}),
                     }
                 )
@@ -221,7 +224,7 @@ class PineconeAdapter(BackendAdapter):
             with Timer("pinecone_delete_latency"):
                 self._index_delete(ids=[id], namespace=namespace)
             return True
-        except Exception:
+        except (ConnectionError, TimeoutError):
             logger.warning("Exception occurred", exc_info=True)
             increment("pinecone_errors_total")
             logger.exception("Pinecone delete failed")
@@ -235,7 +238,7 @@ class PineconeAdapter(BackendAdapter):
             if self._connected and self._client and hasattr(self._index, "describe_index_stats"):
                 stats = self._index.describe_index_stats()
                 info["stats"] = stats
-        except Exception:
+        except (ConnectionError, TimeoutError):
             logger.warning("Exception occurred", exc_info=True)
             logger.debug("Failed to fetch Pinecone index stats during health_check")
         return info

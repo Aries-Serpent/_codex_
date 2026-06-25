@@ -3,6 +3,7 @@ Tests for date sanitization policy enforcer.
 
 Ensures that actual timestamps are preserved while planning terminology is removed.
 """
+
 import pytest
 
 from scripts.security.date_sanitizer import sanitize_planning_dates

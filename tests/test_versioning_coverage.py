@@ -1,7 +1,7 @@
 """
 Comprehensive tests for mcp.versioning module.
 
-Tests cover version negotiation, validation, and feature support for the 
+Tests cover version negotiation, validation, and feature support for the
 MCP (Model Context Protocol) implementation.
 """
 

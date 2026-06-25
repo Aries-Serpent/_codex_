@@ -93,7 +93,7 @@ concurrency:
 - No production CI/CD jobs affected
 - All test, build, deploy jobs have proper timeouts
 
-**Remediation**: 
+**Remediation**:
 - Standard jobs: `timeout-minutes: 30`
 - Heavy operations: `timeout-minutes: 60`
 - Quick utilities: `timeout-minutes: 10`

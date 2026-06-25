@@ -164,9 +164,10 @@ class NDJSONLogger:
             if src.exists():
                 try:
                     shutil.move(str(src), str(dst))
-                except Exception as e:
-                    logger.debug(f"Exception: {e}")
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                except (IOError, OSError) as e:
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     def write(self, record: dict[str, object]) -> None:
         line = json.dumps(record, ensure_ascii=False)
@@ -180,6 +181,7 @@ class NDJSONLogger:
                 self._rotate()
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(line + "\n")
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)

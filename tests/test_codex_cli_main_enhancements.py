@@ -9,7 +9,7 @@ Comprehensive test coverage for src/codex/cli/main.py focusing on:
 - Integration with ingestion pipeline
 - Help and error output
 - Exit codes and status reporting
-""" # pragma: allowlist secret # pragma: allowlist secret
+"""  # pragma: allowlist secret # pragma: allowlist secret
 
 import json
 from unittest.mock import MagicMock, patch
@@ -19,6 +19,7 @@ import pytest
 try:
     import typer
     from typer.testing import CliRunner
+
     HAS_TYPER = True
 except ImportError:
     HAS_TYPER = False
@@ -26,14 +27,14 @@ except ImportError:
 try:
     # This may fail if typer is not available
     from codex.cli.main import TYPER_AVAILABLE, app
+
     HAS_CODEX_CLI = True
 except ImportError:
     HAS_CODEX_CLI = False
 
 
 pytestmark = pytest.mark.skipif(
-    not (HAS_TYPER and HAS_CODEX_CLI and TYPER_AVAILABLE),
-    reason="Typer CLI not available"
+    not (HAS_TYPER and HAS_CODEX_CLI and TYPER_AVAILABLE), reason="Typer CLI not available"
 )
 
 
@@ -67,11 +68,9 @@ class Calculator:
 def manifest_file(tmp_path):
     """Create a sample manifest file."""
     manifest = tmp_path / "manifest.json"
-    manifest.write_text(json.dumps({
-        "name": "test_project",
-        "version": "1.0.0",
-        "files": ["sample.py"]
-    }))
+    manifest.write_text(
+        json.dumps({"name": "test_project", "version": "1.0.0", "files": ["sample.py"]})
+    )
     return manifest
 
 
@@ -98,15 +97,10 @@ class TestIngestCommand:
         """Test ingest with file source."""
         with patch("codex.ingest.ingest") as mock_ingest:
             mock_ingest.return_value = MagicMock(
-                snapshot_id="snap_123",
-                snapshot_dir=temp_repo_dir,
-                content_hash="abc123def456"
+                snapshot_id="snap_123", snapshot_dir=temp_repo_dir, content_hash="abc123def456"
             )
 
-            result = cli_runner.invoke(
-                app,
-                ["ingest", str(temp_repo_dir / "sample.py")]
-            )
+            result = cli_runner.invoke(app, ["ingest", str(temp_repo_dir / "sample.py")])
             assert result.exit_code == 0
             assert "snap_123" in result.stdout or "snapshot" in result.stdout.lower()
 
@@ -114,18 +108,11 @@ class TestIngestCommand:
         """Test ingest with manifest file."""
         with patch("codex.ingest.ingest") as mock_ingest:
             mock_ingest.return_value = MagicMock(
-                snapshot_id="snap_456",
-                snapshot_dir=temp_repo_dir,
-                content_hash="xyz789"
+                snapshot_id="snap_456", snapshot_dir=temp_repo_dir, content_hash="xyz789"
             )
 
             result = cli_runner.invoke(
-                app,
-                [
-                    "ingest",
-                    str(temp_repo_dir),
-                    "--manifest", str(manifest_file)
-                ]
+                app, ["ingest", str(temp_repo_dir), "--manifest", str(manifest_file)]
             )
             assert result.exit_code == 0
 
@@ -133,37 +120,24 @@ class TestIngestCommand:
         """Test ingest with custom snapshot ID."""
         with patch("codex.ingest.ingest") as mock_ingest:
             mock_ingest.return_value = MagicMock(
-                snapshot_id="custom_snap",
-                snapshot_dir=temp_repo_dir,
-                content_hash="custom_hash"
+                snapshot_id="custom_snap", snapshot_dir=temp_repo_dir, content_hash="custom_hash"
             )
 
             result = cli_runner.invoke(
-                app,
-                [
-                    "ingest",
-                    str(temp_repo_dir),
-                    "--snapshot-id", "custom_snap"
-                ]
+                app, ["ingest", str(temp_repo_dir), "--snapshot-id", "custom_snap"]
             )
             assert result.exit_code == 0
 
     def test_ingest_invalid_source(self, cli_runner):
         """Test ingest with non-existent source."""
         with patch("codex.ingest.ingest", side_effect=FileNotFoundError("Source not found")):
-            result = cli_runner.invoke(
-                app,
-                ["ingest", "/nonexistent/path"]
-            )
+            result = cli_runner.invoke(app, ["ingest", "/nonexistent/path"])
             assert result.exit_code != 0
 
     def test_ingest_permission_error(self, cli_runner, temp_repo_dir):
         """Test ingest with permission error."""
         with patch("codex.ingest.ingest", side_effect=PermissionError("Access denied")):
-            result = cli_runner.invoke(
-                app,
-                ["ingest", str(temp_repo_dir)]
-            )
+            result = cli_runner.invoke(app, ["ingest", str(temp_repo_dir)])
             assert result.exit_code != 0
 
 
@@ -191,36 +165,22 @@ class TestAnalyzeCommand:
             mock_analyze.return_value = {
                 "snapshot_id": "snap_123",
                 "issues": [],
-                "metrics": {"complexity": 5}
+                "metrics": {"complexity": 5},
             }
 
-            result = cli_runner.invoke(
-                app,
-                ["analyze", "snap_123"]
-            )
+            result = cli_runner.invoke(app, ["analyze", "snap_123"])
             assert result.exit_code == 0
 
     def test_analyze_with_options(self, cli_runner):
         """Test analyze with various options."""
         with patch("codex.analyze.analyze"):
-            result = cli_runner.invoke(
-                app,
-                [
-                    "analyze",
-                    "snap_123",
-                    "--full",
-                    "--format", "json"
-                ]
-            )
+            cli_runner.invoke(app, ["analyze", "snap_123", "--full", "--format", "json"])
             # Should accept options
 
     def test_analyze_invalid_snapshot(self, cli_runner):
         """Test analyze with non-existent snapshot."""
         with patch("codex.analyze.analyze", side_effect=FileNotFoundError("Snapshot not found")):
-            result = cli_runner.invoke(
-                app,
-                ["analyze", "nonexistent_snap"]
-            )
+            result = cli_runner.invoke(app, ["analyze", "nonexistent_snap"])
             assert result.exit_code != 0
 
 
@@ -247,31 +207,22 @@ class TestTransformCommand:
         with patch("codex.transform.transform") as mock_transform:
             mock_transform.return_value = {
                 "snapshot_id": "snap_123",
-                "changes": [{"file": "test.py", "type": "refactor"}]
+                "changes": [{"file": "test.py", "type": "refactor"}],
             }
 
-            result = cli_runner.invoke(
-                app,
-                ["transform", "snap_123"]
-            )
+            result = cli_runner.invoke(app, ["transform", "snap_123"])
             assert result.exit_code == 0
 
     def test_transform_with_mode(self, cli_runner):
         """Test transform with mode option."""
         with patch("codex.transform.transform"):
-            result = cli_runner.invoke(
-                app,
-                ["transform", "snap_123", "--mode", "apply"]
-            )
+            cli_runner.invoke(app, ["transform", "snap_123", "--mode", "apply"])
             # Should accept mode option
 
     def test_transform_with_filter(self, cli_runner):
         """Test transform with file filter."""
         with patch("codex.transform.transform"):
-            result = cli_runner.invoke(
-                app,
-                ["transform", "snap_123", "--filter", "*.py"]
-            )
+            cli_runner.invoke(app, ["transform", "snap_123", "--filter", "*.py"])
             # Should accept filter option
 
 
@@ -300,26 +251,18 @@ class TestVerifyCommand:
                 "baseline": "snap_baseline",
                 "patched": "snap_patched",
                 "differences": [],
-                "status": "identical"
+                "status": "identical",
             }
 
             result = cli_runner.invoke(
-                app,
-                ["verify", "snap_baseline", "--patched", "snap_patched"]
+                app, ["verify", "snap_baseline", "--patched", "snap_patched"]
             )
             assert result.exit_code == 0
 
     def test_verify_with_format(self, cli_runner):
         """Test verify with output format."""
         with patch("codex.verify.verify_snapshot"):
-            result = cli_runner.invoke(
-                app,
-                [
-                    "verify",
-                    "snap_123",
-                    "--format", "json"
-                ]
-            )
+            cli_runner.invoke(app, ["verify", "snap_123", "--format", "json"])
             # Should accept format option
 
 
@@ -341,7 +284,7 @@ class TestListCommand:
         with patch("codex.snapshot.list_snapshots") as mock_list:
             mock_list.return_value = [
                 {"id": "snap_1", "name": "project1"},
-                {"id": "snap_2", "name": "project2"}
+                {"id": "snap_2", "name": "project2"},
             ]
 
             result = cli_runner.invoke(app, ["list"])
@@ -350,19 +293,13 @@ class TestListCommand:
     def test_list_with_filter(self, cli_runner):
         """Test list with filter."""
         with patch("codex.snapshot.list_snapshots"):
-            result = cli_runner.invoke(
-                app,
-                ["list", "--filter", "project"]
-            )
+            cli_runner.invoke(app, ["list", "--filter", "project"])
             # Should accept filter option
 
     def test_list_verbose(self, cli_runner):
         """Test list in verbose mode."""
         with patch("codex.snapshot.list_snapshots"):
-            result = cli_runner.invoke(
-                app,
-                ["list", "--verbose"]
-            )
+            cli_runner.invoke(app, ["list", "--verbose"])
             # Should show more details
 
 
@@ -391,7 +328,7 @@ class TestShowCommand:
                 "snapshot_id": "snap_123",
                 "name": "test_project",
                 "files": ["test.py"],
-                "created_at": "2026-01-16T10:00:00Z"
+                "created_at": "2026-01-16T10:00:00Z",
             }
 
             result = cli_runner.invoke(app, ["show", "snap_123"])
@@ -400,19 +337,13 @@ class TestShowCommand:
     def test_show_with_format(self, cli_runner):
         """Test show with different output formats."""
         with patch("codex.snapshot.get_snapshot"):
-            result = cli_runner.invoke(
-                app,
-                ["show", "snap_123", "--format", "json"]
-            )
+            cli_runner.invoke(app, ["show", "snap_123", "--format", "json"])
             # Should handle format option
 
     def test_show_invalid_snapshot(self, cli_runner):
         """Test show with non-existent snapshot."""
         with patch("codex.snapshot.get_snapshot", side_effect=FileNotFoundError("Not found")):
-            result = cli_runner.invoke(
-                app,
-                ["show", "nonexistent"]
-            )
+            result = cli_runner.invoke(app, ["show", "nonexistent"])
             assert result.exit_code != 0
 
 
@@ -453,19 +384,13 @@ class TestCLIErrorHandling:
 
     def test_command_with_invalid_flag(self, cli_runner):
         """Test command with invalid flag."""
-        result = cli_runner.invoke(
-            app,
-            ["ingest", "--invalid-flag", "value"]
-        )
+        result = cli_runner.invoke(app, ["ingest", "--invalid-flag", "value"])
         assert result.exit_code != 0
 
     def test_exception_handling(self, cli_runner):
         """Test exception handling in commands."""
         with patch("codex.ingest.ingest", side_effect=Exception("Unexpected error")):
-            result = cli_runner.invoke(
-                app,
-                ["ingest", "/some/path"]
-            )
+            result = cli_runner.invoke(app, ["ingest", "/some/path"])
             assert result.exit_code != 0
 
 
@@ -480,15 +405,9 @@ class TestOutputFormats:
     def test_analyze_json_output(self, cli_runner):
         """Test analyze JSON output format."""
         with patch("codex.analyze.analyze") as mock_analyze:
-            mock_analyze.return_value = {
-                "issues": [],
-                "metrics": {"complexity": 5}
-            }
+            mock_analyze.return_value = {"issues": [], "metrics": {"complexity": 5}}
 
-            result = cli_runner.invoke(
-                app,
-                ["analyze", "snap_123", "--format", "json"]
-            )
+            cli_runner.invoke(app, ["analyze", "snap_123", "--format", "json"])
             # Should output valid JSON
 
     def test_list_table_output(self, cli_runner):
@@ -517,24 +436,16 @@ class TestCLIIntegration:
         with patch("codex.ingest.ingest") as mock_ingest:
             with patch("codex.analyze.analyze") as mock_analyze:
                 mock_ingest.return_value = MagicMock(
-                    snapshot_id="snap_123",
-                    snapshot_dir=temp_repo_dir,
-                    content_hash="hash123"
+                    snapshot_id="snap_123", snapshot_dir=temp_repo_dir, content_hash="hash123"
                 )
                 mock_analyze.return_value = {"issues": []}
 
                 # Ingest
-                ingest_result = cli_runner.invoke(
-                    app,
-                    ["ingest", str(temp_repo_dir)]
-                )
+                ingest_result = cli_runner.invoke(app, ["ingest", str(temp_repo_dir)])
                 assert ingest_result.exit_code == 0
 
                 # Analyze
-                analyze_result = cli_runner.invoke(
-                    app,
-                    ["analyze", "snap_123"]
-                )
+                analyze_result = cli_runner.invoke(app, ["analyze", "snap_123"])
                 assert analyze_result.exit_code == 0
 
     def test_ingest_transform_verify_workflow(self, cli_runner, temp_repo_dir):
@@ -543,20 +454,11 @@ class TestCLIIntegration:
             with patch("codex.transform.transform"):
                 with patch("codex.verify.verify_snapshot"):
                     # Ingest
-                    ingest = cli_runner.invoke(
-                        app,
-                        ["ingest", str(temp_repo_dir)]
-                    )
+                    cli_runner.invoke(app, ["ingest", str(temp_repo_dir)])
                     # Transform
-                    transform = cli_runner.invoke(
-                        app,
-                        ["transform", "snap_123"]
-                    )
+                    cli_runner.invoke(app, ["transform", "snap_123"])
                     # Verify
-                    verify = cli_runner.invoke(
-                        app,
-                        ["verify", "snap_base"]
-                    )
+                    cli_runner.invoke(app, ["verify", "snap_base"])
 
 
 # ============================================================================
@@ -570,11 +472,13 @@ class TestTyperFallback:
     def test_typer_available(self):
         """Test that Typer is available."""
         from codex.cli.main import TYPER_AVAILABLE
+
         assert TYPER_AVAILABLE is True or TYPER_AVAILABLE is False
 
     def test_app_initialization(self):
         """Test app is properly initialized."""
         from codex.cli.main import app
+
         assert app is not None
 
 
@@ -590,10 +494,7 @@ class TestEdgeCases:
         """Test with very long snapshot ID."""
         long_id = "snap_" + "a" * 1000
         with patch("codex.snapshot.get_snapshot"):
-            result = cli_runner.invoke(
-                app,
-                ["show", long_id]
-            )
+            cli_runner.invoke(app, ["show", long_id])
             # Should handle long IDs
 
     def test_special_characters_in_path(self, cli_runner, tmp_path):
@@ -603,10 +504,7 @@ class TestEdgeCases:
         (special_dir / "test.py").write_text("print('test')")
 
         with patch("codex.ingest.ingest"):
-            result = cli_runner.invoke(
-                app,
-                ["ingest", str(special_dir)]
-            )
+            cli_runner.invoke(app, ["ingest", str(special_dir)])
             # Should handle special characters
 
     def test_unicode_in_path(self, cli_runner, tmp_path):
@@ -616,10 +514,7 @@ class TestEdgeCases:
         (unicode_dir / "测试.py").write_text("# Test")
 
         with patch("codex.ingest.ingest"):
-            result = cli_runner.invoke(
-                app,
-                ["ingest", str(unicode_dir)]
-            )
+            cli_runner.invoke(app, ["ingest", str(unicode_dir)])
             # Should handle unicode paths
 
 

@@ -19,6 +19,7 @@ from codex.auth.user_store import User, UserStore
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def user_store():
     """Create a test user store."""
@@ -44,6 +45,7 @@ def test_user_data():
 # ============================================================================
 # User Creation Tests
 # ============================================================================
+
 
 class TestUserCreation:
     """Test user creation functionality."""
@@ -116,6 +118,7 @@ class TestUserCreation:
 # User Retrieval Tests
 # ============================================================================
 
+
 class TestUserRetrieval:
     """Test user retrieval functionality."""
 
@@ -130,7 +133,7 @@ class TestUserRetrieval:
 
     def test_get_user_by_email(self, user_store):
         """Test retrieving user by email."""
-        created = user_store.create_user("eve", "eve@example.com", "Pass123!")
+        user_store.create_user("eve", "eve@example.com", "Pass123!")
         retrieved = user_store.get_user_by_email("eve@example.com")
 
         assert retrieved is not None
@@ -170,13 +173,14 @@ class TestUserRetrieval:
 # Password Verification Tests
 # ============================================================================
 
+
 class TestPasswordVerification:
     """Test password verification functionality."""
 
     def test_verify_correct_password(self, user_store):
         """Test verifying correct password."""
         password = "CorrectPassword123!"
-        user = user_store.create_user("alice", "alice@example.com", password)
+        user_store.create_user("alice", "alice@example.com", password)
 
         # Verify with user_store method
         verified_user = user_store.get_user_by_username("alice")
@@ -210,6 +214,7 @@ class TestPasswordVerification:
 # ============================================================================
 # User Update Tests
 # ============================================================================
+
 
 class TestUserUpdates:
     """Test user update functionality."""
@@ -255,6 +260,7 @@ class TestUserUpdates:
 # User Deletion Tests
 # ============================================================================
 
+
 class TestUserDeletion:
     """Test user deletion functionality."""
 
@@ -281,6 +287,7 @@ class TestUserDeletion:
 # ============================================================================
 # Password Hashing Tests
 # ============================================================================
+
 
 class TestPasswordHashing:
     """Test password hashing functionality."""
@@ -332,6 +339,7 @@ class TestPasswordHashing:
 # ============================================================================
 # Thread Safety Tests
 # ============================================================================
+
 
 class TestThreadSafety:
     """Test thread-safety of user store."""
@@ -392,6 +400,7 @@ class TestThreadSafety:
 # Edge Cases Tests
 # ============================================================================
 
+
 class TestEdgeCases:
     """Test edge cases."""
 
@@ -443,6 +452,7 @@ class TestEdgeCases:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestUserStoreIntegration:
     """Integration tests for user store."""

@@ -169,10 +169,10 @@ False Positives:       3 (test data, documentation)
 
 **Gate Logic**:
 ```
-IF (critical_vulns == 0 AND 
-    high_severity == 0 AND 
-    exposed_secrets == 0 AND  # pragma: allowlist secret 
-    phase1_baseline_intact == TRUE AND 
+IF (critical_vulns == 0 AND
+    high_severity == 0 AND
+    exposed_secrets == 0 AND  # pragma: allowlist secret
+    phase1_baseline_intact == TRUE AND
     regressions == 0)
 THEN gate = PASS
 ```

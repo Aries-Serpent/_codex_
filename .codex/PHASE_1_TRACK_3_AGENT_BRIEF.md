@@ -85,13 +85,13 @@ For each CodeQL HIGH/MEDIUM finding:
 | CodeQL HIGH | TBD | ≤2 | ⏳ |
 | CodeQL MEDIUM | TBD | <5 | ⏳ |
 | CVE-Impacted Dependencies | TBD | 0 | ⏳ |
-| Secrets Detected | TBD | 0 | ⏳ |
+| Secrets Detected | TBD | 0 | ⏳ | <!-- pragma: allowlist secret -->
 | SBOM Validated | No | Yes | ⏳ |
 
 ## 🔗 INTEGRATION POINTS
 
 **Upstream:** None (independent track)  
-**Downstream:** 
+**Downstream:**
 - All tracks: Security fixes may affect dependencies/testing
 - Track 4 (Documentation): Update security posture docs
 

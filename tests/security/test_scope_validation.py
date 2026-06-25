@@ -101,18 +101,28 @@ class TestScopeValidator:
     def test_has_any_scope_success(self):
         """Test has_any_scope with at least one match."""
         validator = ScopeValidator(["repo:read"])
-        assert validator.has_any_scope([
-            TokenScope.WRITE_REPO,
-            TokenScope.READ_REPO,
-        ]) is True
+        assert (
+            validator.has_any_scope(
+                [
+                    TokenScope.WRITE_REPO,
+                    TokenScope.READ_REPO,
+                ]
+            )
+            is True
+        )
 
     def test_has_any_scope_failure(self):
         """Test has_any_scope with no matches."""
         validator = ScopeValidator(["repo:read"])
-        assert validator.has_any_scope([
-            TokenScope.WRITE_WORKFLOW,
-            TokenScope.ADMIN_REPO,
-        ]) is False
+        assert (
+            validator.has_any_scope(
+                [
+                    TokenScope.WRITE_WORKFLOW,
+                    TokenScope.ADMIN_REPO,
+                ]
+            )
+            is False
+        )
 
     def test_require_scope_success(self):
         """Test require_scope passes with sufficient scope."""
@@ -131,19 +141,23 @@ class TestScopeValidator:
         """Test require_any_scope with sufficient scope."""
         validator = ScopeValidator(["repo:read"])
         # Should not raise
-        validator.require_any_scope([
-            TokenScope.WRITE_REPO,
-            TokenScope.READ_REPO,
-        ])
+        validator.require_any_scope(
+            [
+                TokenScope.WRITE_REPO,
+                TokenScope.READ_REPO,
+            ]
+        )
 
     def test_require_any_scope_failure(self):
         """Test require_any_scope raises with insufficient scope."""
         validator = ScopeValidator(["repo:read"])
         with pytest.raises(InsufficientScopeError):
-            validator.require_any_scope([
-                TokenScope.WRITE_WORKFLOW,
-                TokenScope.ADMIN_REPO,
-            ])
+            validator.require_any_scope(
+                [
+                    TokenScope.WRITE_WORKFLOW,
+                    TokenScope.ADMIN_REPO,
+                ]
+            )
 
     def test_validate_success(self):
         """Test validate returns success result."""
@@ -211,6 +225,7 @@ class TestScopeDecorators:
 
     def test_require_scope_no_validator(self):
         """Test require_scope raises without validator in context."""
+
         @require_scope("repo:read")
         def protected_function():
             return "success"
@@ -256,6 +271,7 @@ class TestScopeDecorators:
 
     def test_optional_scope_without_validator(self):
         """Test optional_scope decorator without validator."""
+
         @optional_scope("repo:read")
         def optional_function():
             return "success"
@@ -266,6 +282,7 @@ class TestScopeDecorators:
 
     def test_decorator_metadata(self):
         """Test scope metadata extraction from decorated functions."""
+
         @require_scope("repo:write", "workflow:read")
         def protected_function():
             pass
@@ -278,6 +295,7 @@ class TestScopeDecorators:
 
     def test_decorator_preserves_function_name(self):
         """Test decorators preserve function metadata."""
+
         @require_scope("repo:read")
         def my_function():
             """My docstring."""

@@ -28,11 +28,11 @@ from dataclasses import dataclass  # noqa: E402
 
 try:
     import libcst as cst  # optional
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     cst = None
 try:
     import parso  # optional
-except Exception:  # pragma: no cover - optional dependency
+except (ValueError, TypeError):  # pragma: no cover - optional dependency
     parso = None
 
 
@@ -55,21 +55,24 @@ def parse_tiered(code: str) -> ParseResult:
     try:
         return ParseResult(mode="ast", ast_tree=ast.parse(code))
     except SyntaxError as e:
-        logger.debug(f"SyntaxError: {e}")
-        logger.warning(f"SyntaxError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"SyntaxError: <ERROR_TYPE>")
+        logger.warning(f"SyntaxError: <ERROR_TYPE>", exc_info=True)
     # Secondary: LibCST (formatting-preserving)
     if cst is not None:
         try:
             return ParseResult(mode="cst", cst_tree=cst.parse_module(code))
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (ValueError, TypeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     # Tertiary: Parso (tolerant/partial)
     if parso is not None:
         try:
             return ParseResult(mode="parso", parso_tree=parso.parse(code))
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (ValueError, TypeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     # Last resort: degraded
     return ParseResult(mode="degraded", degraded=True)

@@ -152,12 +152,12 @@ class TestRetrievalAccuracy:
 
                 if results and len(results) > 1:
                     # Results should have scores
-                    scores = [r.get('score', 0) for r in results if isinstance(r, dict)]
+                    scores = [r.get("score", 0) for r in results if isinstance(r, dict)]
 
                     if scores:
                         # Scores should be in descending order (higher is better)
                         for i in range(len(scores) - 1):
-                            assert scores[i] >= scores[i+1], "Results should be ranked by score"
+                            assert scores[i] >= scores[i + 1], "Results should be ranked by score"
             except Exception as _err:
                 # May not have documents indexed
                 _ = None  # suppressed: no action needed
@@ -195,11 +195,7 @@ class TestRetrievalAccuracy:
             }
 
             try:
-                results = retriever.retrieve(
-                    "test query",
-                    top_k=5,
-                    filters=filters
-                )
+                results = retriever.retrieve("test query", top_k=5, filters=filters)
                 # Should handle filters gracefully
                 assert results is None or isinstance(results, list)
             except TypeError:
@@ -224,7 +220,7 @@ class TestIndexManagement:
 
                 # Verify indexer is initialized
                 assert indexer is not None
-                if hasattr(indexer, 'index_path'):
+                if hasattr(indexer, "index_path"):
                     assert indexer.index_path is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -278,7 +274,7 @@ class TestIndexManagement:
                 indexer1 = CodexIndexer(index_path=str(index_path))
                 indexer1.add_document("doc1", "Test content 1")
 
-                if hasattr(indexer1, 'save'):
+                if hasattr(indexer1, "save"):
                     indexer1.save()
 
                 # Load index in new instance
@@ -301,11 +297,11 @@ class TestIndexManagement:
                 indexer.add_document(f"doc_{i}", f"Content {i}")
 
             # Get statistics
-            if hasattr(indexer, 'get_stats'):
+            if hasattr(indexer, "get_stats"):
                 stats = indexer.get_stats()
                 assert stats is not None
                 assert isinstance(stats, dict)
-            elif hasattr(indexer, 'size'):
+            elif hasattr(indexer, "size"):
                 size = indexer.size()
                 assert isinstance(size, int)
                 assert size >= 0
@@ -353,11 +349,15 @@ class TestRAGPerformance:
             retriever = CodexRetriever()
 
             # Add documents if possible
-            if hasattr(retriever, 'indexer'):
+            if hasattr(retriever, "indexer"):
                 for i in range(100):
                     try:
                         retriever.indexer.add_document(f"doc_{i}", f"Content {i}")
-                    except (AttributeError, OSError, RuntimeError):  # Best-effort document insertion for perf test
+                    except (
+                        AttributeError,
+                        OSError,
+                        RuntimeError,
+                    ):  # Best-effort document insertion for perf test
                         _ = None
 
             # Test retrieval speed
@@ -534,11 +534,7 @@ class TestRAGIntegration:
             }
 
             try:
-                indexer.add_document(
-                    doc_id="meta_doc",
-                    content="Test content",
-                    metadata=metadata
-                )
+                indexer.add_document(doc_id="meta_doc", content="Test content", metadata=metadata)
                 # Should handle metadata
                 assert True
             except TypeError:

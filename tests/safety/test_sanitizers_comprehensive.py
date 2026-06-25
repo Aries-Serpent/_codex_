@@ -18,14 +18,14 @@ try:
         sanitize_output,
         sanitize_prompt,
     )
+
     SANITIZERS_AVAILABLE = True
 except ImportError:
     SANITIZERS_AVAILABLE = False
 
 
 pytestmark = pytest.mark.skipif(
-    not SANITIZERS_AVAILABLE,
-    reason="codex_ml.safety.sanitizers not available"
+    not SANITIZERS_AVAILABLE, reason="codex_ml.safety.sanitizers not available"
 )
 
 
@@ -116,7 +116,9 @@ class TestAdvancedSecretDetection:
 
     def test_secret_redaction_preserves_context(self):
         """Test that redaction preserves surrounding context."""
-        text = "Your API key is sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL for authentication"
+        text = (
+            "Your API key is sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL for authentication"
+        )
         result = sanitize_prompt(text)
 
         assert "Your API key is" in result["text"]

@@ -130,9 +130,9 @@ class QuantumPlugin:
 
             return self._module
 
-        except Exception as exc:
+        except (ImportError, AttributeError) as exc:
             self.state = PluginState.DECOHERENT
-            logger.error(f"Plugin '{self.name}' decoherence: {exc}")
+            logger.error(f"Plugin '{self.name}' decoherence: <ERROR_TYPE>")
             raise
 
     def get_amplitude(self) -> float:
@@ -187,7 +187,7 @@ class QuantumPluginRegistry:
         """
         self.plugins[plugin.name] = plugin
         # add_node now creates edges: dependency → plugin (correct direction)
-        self.dependency_graph.add_node(  # type: ignore[union-attr]
+        self.dependency_graph.add_node(
             plugin.name, dependencies=plugin.dependencies, data={"plugin": plugin}
         )
 
@@ -246,8 +246,8 @@ class QuantumPluginRegistry:
 
         # Get load order using topological sort
         try:
-            load_order = self.dependency_graph.topological_sort()  # type: ignore[union-attr]
-        except Exception:
+            load_order = self.dependency_graph.topological_sort()
+        except (ValueError, TypeError):
             # Fallback: just load the plugin
             load_order = [plugin_name]
 
@@ -261,8 +261,9 @@ class QuantumPluginRegistry:
                 plugin = self.plugins[p_name]
                 try:
                     loaded_modules[p_name] = plugin.observe()
-                except Exception as exc:
-                    logger.warning(f"Failed to load dependency '{p_name}': {exc}")
+                except (ImportError, AttributeError) as exc:
+                    error_type = type(exc).__name__
+                    logger.warning(f"Failed to load dependency '{p_name}': <ERROR_TYPE>")
 
         return loaded_modules.get(plugin_name)
 

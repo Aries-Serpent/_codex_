@@ -53,7 +53,7 @@ Current Status: SECURITY BLOCKS PHASE 9 (12 CVEs) → NO-GO until remediation
 
 **Security Score: 3/5 points** ❌
 
-**Critical Finding**: 
+**Critical Finding**:
 - **12 HIGH/CRITICAL CVEs** identified across 5 production packages
 - All involve **Remote Code Execution (RCE)** via unsafe deserialization
 - Affected packages: MLflow (8 CVEs), DiskCache (1), SQLiteDict (1), Ray (1), Skops (1)
@@ -129,7 +129,7 @@ Current Status: SECURITY BLOCKS PHASE 9 (12 CVEs) → NO-GO until remediation
 
 **Evidence**: `.codex/PHASE8_HEALER_TUNING.md`
 - Healer tuned for Phase 9 canary: `CODEX_MAX_HEALER_RUNS_PER_HOUR = 3` (conservative vs 5 default)
-- Auto-rollback triggers: 
+- Auto-rollback triggers:
   - Trigger 1: Error rate >5% → auto-rollback + SRE alert
   - Trigger 2: p99 latency >10s → auto-rollback + 1-hr pause
   - Trigger 3: Replication lag >30s → auto-rollback + DBA escalation

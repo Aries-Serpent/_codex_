@@ -402,13 +402,12 @@ class TestRotationScenarios:
     def test_scenario_emergency_rotation(self, token_manager, token_metadata):
         """Test emergency rotation on security event."""
         token_manager.register_token(token_metadata)
-        result = token_manager.mark_for_rotation(
-            "token_123",
-            RotationTrigger.SECURITY_EVENT
-        )
+        result = token_manager.mark_for_rotation("token_123", RotationTrigger.SECURITY_EVENT)
         assert result is not None
 
-    def test_scenario_grace_period_during_rotation(self, token_manager, token_metadata, rotation_policy):
+    def test_scenario_grace_period_during_rotation(
+        self, token_manager, token_metadata, rotation_policy
+    ):
         """Test grace period during rotation."""
         token_manager.register_token(token_metadata)
         old_metadata = token_manager.get_token("token_123")
@@ -460,13 +459,16 @@ class TestRotationScenarios:
 # ============================================================================
 
 
-@pytest.mark.parametrize("days_remaining,should_rotate", [
-    (1, True),
-    (7, True),
-    (8, False),
-    (15, False),
-    (0, True),
-])
+@pytest.mark.parametrize(
+    "days_remaining,should_rotate",
+    [
+        (1, True),
+        (7, True),
+        (8, False),
+        (15, False),
+        (0, True),
+    ],
+)
 def test_token_expiry_rotation_parametrized(rotation_policy, days_remaining, should_rotate):
     """Parametrized test for expiry-based rotation."""
     metadata = TokenMetadata(
@@ -481,14 +483,17 @@ def test_token_expiry_rotation_parametrized(rotation_policy, days_remaining, sho
         assert isinstance(should_rotate_result, bool)
 
 
-@pytest.mark.parametrize("provider", [
-    "github",
-    "gitlab",
-    "bitbucket",
-    "azure",
-    "aws",
-    "generic",
-])
+@pytest.mark.parametrize(
+    "provider",
+    [
+        "github",
+        "gitlab",
+        "bitbucket",
+        "azure",
+        "aws",
+        "generic",
+    ],
+)
 def test_token_provider_parametrized(provider):
     """Parametrized test for different providers."""
     metadata = TokenMetadata(
@@ -500,12 +505,15 @@ def test_token_provider_parametrized(provider):
     assert metadata.provider == provider
 
 
-@pytest.mark.parametrize("state", [
-    TokenState.ACTIVE,
-    TokenState.ROTATING,
-    TokenState.REVOKED,
-    TokenState.EXPIRED,
-])
+@pytest.mark.parametrize(
+    "state",
+    [
+        TokenState.ACTIVE,
+        TokenState.ROTATING,
+        TokenState.REVOKED,
+        TokenState.EXPIRED,
+    ],
+)
 def test_token_state_transitions_parametrized(state):
     """Parametrized test for token state transitions."""
     metadata = TokenMetadata(

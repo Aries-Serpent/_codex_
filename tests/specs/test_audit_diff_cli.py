@@ -29,7 +29,7 @@ def test_audit_diff_cli_with_self(tmp_path):
     runner = Path("scripts/space_traversal/audit_runner.py")
     if not runner.exists():
         pytest.skip("audit runner missing")
-    if importlib.util.find_spec('jinja2') is None or importlib.util.find_spec('yaml') is None:
+    if importlib.util.find_spec("jinja2") is None or importlib.util.find_spec("yaml") is None:
         pytest.skip("pyyaml/jinja2 not installed in test env")
 
     # Ensure at least one scoring file exists
@@ -43,6 +43,16 @@ def test_audit_diff_cli_with_self(tmp_path):
     assert out.returncode == 0
 
     scored = Path("audit_artifacts/capabilities_scored.json")
-    cp = _run(["-m", "scripts.space_traversal.audit_runner", "diff", "--old", str(scored), "--new", str(scored)])
+    cp = _run(
+        [
+            "-m",
+            "scripts.space_traversal.audit_runner",
+            "diff",
+            "--old",
+            str(scored),
+            "--new",
+            str(scored),
+        ]
+    )
     assert cp.returncode == 0, cp.stderr
     assert "ID,OLD,NEW,DELTA" in cp.stdout

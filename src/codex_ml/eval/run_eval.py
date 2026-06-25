@@ -37,7 +37,7 @@ def _load_texts(path: str) -> list[str]:
     if p.suffix == ".csv":
         with p.open(newline="", encoding="utf-8") as fh:
             reader = csv.DictReader(fh)
-            column = "text" if "text" in reader.fieldnames else reader.fieldnames[0]  # type: ignore[operator, index]
+            column = "text" if "text" in reader.fieldnames else reader.fieldnames[0]
             return [row[column] for row in reader]
     raise ValueError(f"Unsupported data format: {p.suffix}")
 
@@ -92,7 +92,7 @@ def main(argv: Iterable[str] | None = None) -> None:
     except HFModelUnavailableError as exc:
         # Model not in cache and network unavailable — exit 2 so callers
         # (e.g. tests) can distinguish "model unavailable" from real errors.
-        print(f"SKIP: {exc}", file=sys.stderr)
+        print(f"SKIP: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(2)
     print(json.dumps(metrics))
     if args.metrics_log:

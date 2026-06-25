@@ -332,9 +332,7 @@ class TestWorkflowMetadataCreation:
 
     def test_workflow_metadata_path_conversion(self):
         """Verify file_path converts to Path object."""
-        meta = WorkflowMetadata(
-            name="test-workflow", file_path=".github/workflows/ci.yml"
-        )
+        meta = WorkflowMetadata(name="test-workflow", file_path=".github/workflows/ci.yml")
         assert isinstance(meta.file_path, Path)
 
     def test_workflow_metadata_path_direct_object(self):
@@ -372,9 +370,7 @@ class TestWorkflowMetadataCreation:
 
     def test_workflow_metadata_computed_property_filename(self):
         """Test computed property filename."""
-        meta = WorkflowMetadata(
-            name="test-workflow", file_path=".github/workflows/ci.yml"
-        )
+        meta = WorkflowMetadata(name="test-workflow", file_path=".github/workflows/ci.yml")
         assert meta.filename == "ci.yml"
 
     def test_workflow_metadata_property_has_workflow_dispatch(self):
@@ -605,9 +601,7 @@ class TestSerialization:
 
     def test_workflow_input_model_dump_round_trip(self):
         """Test WorkflowInput serialization round-trip."""
-        original = WorkflowInput(
-            name="test", type=InputType.CHOICE, required=True, default="val"
-        )
+        original = WorkflowInput(name="test", type=InputType.CHOICE, required=True, default="val")
         data = original.model_dump()
         restored = WorkflowInput.model_validate(data)
         assert restored.name == original.name

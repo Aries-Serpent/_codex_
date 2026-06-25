@@ -28,7 +28,7 @@ def test_roundtrip_basic(tmp_path):
         seed=123,
         workers=1,
     )
-    out = None
+    out = None  # Assigned in try block; except branches skip test
     try:
         out = train(cfg)
     except OSError as exc:  # pragma: no cover - env missing sentencepiece
@@ -93,19 +93,21 @@ def test_cli_encode_decode_presence():
         pytest.skip("encode/decode helpers not exposed; skipping round-trip test")
 
     sample = "hello codex"
-    token_ids = None
+    token_ids = None  # Assigned in try block before use; except branches skip test
     try:
         token_ids = encode_fn(sample, max_len=16, pad=True, trunc=True)
     except Exception as exc:
         pytest.skip(f"encode helper unavailable: {exc}")
 
+    # At this point, token_ids is guaranteed to be assigned (except branches skip test)
     assert isinstance(token_ids, (list, tuple)) and token_ids
 
-    decoded = None
+    decoded = None  # Assigned in try block before use; except branches skip test
     try:
         decoded = decode_fn(token_ids)
     except Exception as exc:
         pytest.skip(f"decode helper unavailable: {exc}")
 
+    # At this point, decoded is guaranteed to be assigned (except branches skip test)
     assert isinstance(decoded, str) and decoded.strip()
     assert sample.replace(" ", "").lower() == decoded.replace(" ", "").lower()

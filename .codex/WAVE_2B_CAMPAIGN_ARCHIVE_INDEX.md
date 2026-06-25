@@ -19,7 +19,7 @@
   - Verification report
   - Security scanning results
   - Dependency audit trail
-  
+
 - CVE-2024-5678 (CRITICAL) - FastAPI Auth Bypass
   - Verification report
   - Security scanning results

@@ -19,12 +19,7 @@ class TestDocumentIngestion:
 
     def test_document_loading(self):
         """Test document loading."""
-        doc = {
-            "id": "doc_001",
-            "content": "This is a document",
-            "source": "file",
-            "format": "text"
-        }
+        doc = {"id": "doc_001", "content": "This is a document", "source": "file", "format": "text"}
         assert doc["content"] is not None
 
     def test_document_validation(self):
@@ -34,7 +29,7 @@ class TestDocumentIngestion:
             "check_size": True,
             "max_size_mb": 100,
             "check_encoding": True,
-            "supported_encodings": ["utf-8", "utf-16"]
+            "supported_encodings": ["utf-8", "utf-16"],
         }
         assert validation["max_size_mb"] > 0
 
@@ -44,7 +39,7 @@ class TestDocumentIngestion:
             "pdf": {"parser": "pdfplumber", "enabled": True},
             "docx": {"parser": "python-docx", "enabled": True},
             "txt": {"parser": "utf-8", "enabled": True},
-            "md": {"parser": "markdown", "enabled": True}
+            "md": {"parser": "markdown", "enabled": True},
         }
         assert formats["pdf"]["enabled"]
 
@@ -53,11 +48,11 @@ class TestDocumentIngestion:
         batch = {
             "documents": [
                 {"id": "doc_1", "content": "content1"},
-                {"id": "doc_2", "content": "content2"}
+                {"id": "doc_2", "content": "content2"},
             ],
             "batch_size": 100,
             "parallel": True,
-            "workers": 4
+            "workers": 4,
         }
         assert batch["workers"] > 0
 
@@ -68,7 +63,7 @@ class TestDocumentIngestion:
             "author": "John Doe",
             "date_created": "2024-06-01",
             "tags": ["important", "urgent"],
-            "source": "internal"
+            "source": "internal",
         }
         assert "tags" in metadata
 
@@ -77,7 +72,7 @@ class TestDocumentIngestion:
         versions = {
             "v1": {"created": "2024-01-01", "status": "superseded"},
             "v2": {"created": "2024-03-01", "status": "superseded"},
-            "v3": {"created": "2024-06-01", "status": "current"}
+            "v3": {"created": "2024-06-01", "status": "current"},
         }
         assert len(versions) == 3
 
@@ -91,17 +86,13 @@ class TestDocumentPreprocessing:
             "lowercase": True,
             "remove_special_chars": True,
             "remove_extra_whitespace": True,
-            "normalize_unicode": True
+            "normalize_unicode": True,
         }
         assert normalization["lowercase"]
 
     def test_sentence_segmentation(self):
         """Test sentence segmentation."""
-        segmentation = {
-            "method": "nltk",
-            "language": "english",
-            "preserve_boundaries": True
-        }
+        segmentation = {"method": "nltk", "language": "english", "preserve_boundaries": True}
         assert segmentation["method"] is not None
 
     def test_tokenization(self):
@@ -110,7 +101,7 @@ class TestDocumentPreprocessing:
             "method": "wordpiece",
             "vocab_size": 30000,
             "lower_case": True,
-            "preserve_case": False
+            "preserve_case": False,
         }
         assert tokenization["vocab_size"] > 0
 
@@ -120,7 +111,7 @@ class TestDocumentPreprocessing:
             "enabled": True,
             "language": "english",
             "custom_stops": ["the", "a", "an"],
-            "preserve_semantics": True
+            "preserve_semantics": True,
         }
         assert config["enabled"]
 
@@ -130,7 +121,7 @@ class TestDocumentPreprocessing:
             "enabled": True,
             "method": "wordnet",
             "pos_tagging": True,
-            "language": "english"
+            "language": "english",
         }
         assert lemmatization["enabled"]
 
@@ -140,7 +131,7 @@ class TestDocumentPreprocessing:
             "enabled": True,
             "entity_types": ["PERSON", "ORG", "LOCATION", "DATE"],
             "model": "spacy",
-            "confidence_threshold": 0.7
+            "confidence_threshold": 0.7,
         }
         assert len(extraction["entity_types"]) > 0
 
@@ -150,12 +141,7 @@ class TestChunking:
 
     def test_fixed_size_chunking(self):
         """Test fixed-size chunking."""
-        chunking = {
-            "method": "fixed_size",
-            "chunk_size": 512,
-            "overlap": 50,
-            "stride": 256
-        }
+        chunking = {"method": "fixed_size", "chunk_size": 512, "overlap": 50, "stride": 256}
         assert chunking["overlap"] < chunking["chunk_size"]
 
     def test_sentence_chunking(self):
@@ -164,7 +150,7 @@ class TestChunking:
             "method": "sentence",
             "sentences_per_chunk": 5,
             "overlap_sentences": 1,
-            "preserve_structure": True
+            "preserve_structure": True,
         }
         assert chunking["sentences_per_chunk"] > 0
 
@@ -174,7 +160,7 @@ class TestChunking:
             "method": "semantic",
             "similarity_threshold": 0.7,
             "embedding_model": "sentence-transformers",
-            "chunk_size_estimate": 512
+            "chunk_size_estimate": 512,
         }
         assert chunking["similarity_threshold"] > 0
 
@@ -183,7 +169,7 @@ class TestChunking:
         hierarchy = {
             "levels": ["paragraph", "section", "chapter"],
             "chunk_at_level": "section",
-            "preserve_hierarchy": True
+            "preserve_hierarchy": True,
         }
         assert len(hierarchy["levels"]) == 3
 
@@ -193,7 +179,7 @@ class TestChunking:
             "enabled": True,
             "min_chunk_size": 100,
             "max_chunk_size": 1024,
-            "merge_condition": "size_based"
+            "merge_condition": "size_based",
         }
         assert merging["min_chunk_size"] < merging["max_chunk_size"]
 
@@ -206,7 +192,7 @@ class TestEmbedding:
         models = {
             "default": "sentence-transformers/all-MiniLM-L6-v2",
             "large": "sentence-transformers/all-mpnet-base-v2",
-            "fast": "sentence-transformers/all-distilroberta-v1"
+            "fast": "sentence-transformers/all-distilroberta-v1",
         }
         assert "default" in models
 
@@ -216,7 +202,7 @@ class TestEmbedding:
             "text": "This is a sample text",
             "dimension": 384,
             "dtype": "float32",
-            "normalized": True
+            "normalized": True,
         }
         assert embedding["dimension"] > 0
 
@@ -226,7 +212,7 @@ class TestEmbedding:
             "texts": ["text1", "text2", "text3"],
             "batch_size": 32,
             "normalize": True,
-            "return_tokens": False
+            "return_tokens": False,
         }
         assert len(batch["texts"]) == 3
 
@@ -236,7 +222,7 @@ class TestEmbedding:
             "enabled": True,
             "cache_backend": "redis",
             "ttl_seconds": 86400,
-            "eviction_policy": "lru"
+            "eviction_policy": "lru",
         }
         assert caching["enabled"]
 
@@ -246,7 +232,7 @@ class TestEmbedding:
             "enabled": True,
             "bit_width": 8,
             "compression_ratio": 4.0,
-            "preserve_similarity": True
+            "preserve_similarity": True,
         }
         assert quantization["bit_width"] > 0
 
@@ -261,7 +247,7 @@ class TestIndexing:
             "type": "faiss",
             "metric": "cosine",
             "dimension": 384,
-            "size": 0
+            "size": 0,
         }
         assert index["dimension"] > 0
 
@@ -271,7 +257,7 @@ class TestIndexing:
             "batch_size": 100,
             "workers": 4,
             "progress_tracking": True,
-            "error_handling": "skip_on_error"
+            "error_handling": "skip_on_error",
         }
         assert indexing["workers"] > 0
 
@@ -281,7 +267,7 @@ class TestIndexing:
             "method": "incremental",
             "batch_size": 50,
             "rebuild_frequency": "daily",
-            "backup_before_update": True
+            "backup_before_update": True,
         }
         assert update["backup_before_update"]
 
@@ -291,7 +277,7 @@ class TestIndexing:
             "doc_id": "doc_001",
             "method": "soft_delete",
             "rebuild_after": False,
-            "timestamp": datetime.now()
+            "timestamp": datetime.now(),
         }
         assert deletion["timestamp"] is not None
 
@@ -302,7 +288,7 @@ class TestIndexing:
             "frequency": "daily",
             "location": "s3://backup",
             "retention_days": 30,
-            "compression": True
+            "compression": True,
         }
         assert backup["enabled"]
 
@@ -312,7 +298,7 @@ class TestIndexing:
             "enabled": True,
             "strategy": "hash",
             "num_partitions": 4,
-            "rebalance_threshold": 0.8
+            "rebalance_threshold": 0.8,
         }
         assert partitioning["num_partitions"] > 0
 
@@ -326,7 +312,7 @@ class TestRetrieval:
             "query": "What is machine learning?",
             "top_k": 10,
             "threshold": 0.5,
-            "metric": "cosine"
+            "metric": "cosine",
         }
         assert search["top_k"] > 0
 
@@ -337,7 +323,7 @@ class TestRetrieval:
             "keyword_weight": 0.3,
             "top_k_semantic": 20,
             "top_k_keyword": 10,
-            "final_top_k": 10
+            "final_top_k": 10,
         }
         assert hybrid["semantic_weight"] + hybrid["keyword_weight"] == 1.0
 
@@ -347,7 +333,7 @@ class TestRetrieval:
             "algorithm": "bm25",
             "normalize_scores": True,
             "diversity_penalty": 0.1,
-            "recency_boost": 0.2
+            "recency_boost": 0.2,
         }
         assert ranking["algorithm"] is not None
 
@@ -357,7 +343,7 @@ class TestRetrieval:
             "date_range": {"start": "2024-01-01", "end": "2024-06-30"},
             "category": ["tech", "ai"],
             "source": "internal",
-            "status": "active"
+            "status": "active",
         }
         assert "date_range" in filters
 
@@ -367,7 +353,7 @@ class TestRetrieval:
             "enabled": True,
             "method": "synonym_replacement",
             "max_expansions": 5,
-            "similarity_threshold": 0.8
+            "similarity_threshold": 0.8,
         }
         assert expansion["enabled"]
 
@@ -377,7 +363,7 @@ class TestRetrieval:
             "enabled": True,
             "ttl_seconds": 3600,
             "max_cache_size": 10000,
-            "eviction_policy": "lru"
+            "eviction_policy": "lru",
         }
         assert caching["enabled"]
 
@@ -391,7 +377,7 @@ class TestReranking:
             "enabled": True,
             "model": "cross-encoder/ms-marco-MiniLM-L-12-v2",
             "batch_size": 32,
-            "top_k": 10
+            "top_k": 10,
         }
         assert reranking["batch_size"] > 0
 
@@ -401,7 +387,7 @@ class TestReranking:
             "enabled": True,
             "method": "mmr",
             "diversity_ratio": 0.5,
-            "penalty_multiplier": 1.5
+            "penalty_multiplier": 1.5,
         }
         assert diversity["diversity_ratio"] >= 0 and diversity["diversity_ratio"] <= 1.0
 
@@ -411,7 +397,7 @@ class TestReranking:
             "enabled": True,
             "model_type": "lambdamart",
             "features": ["relevance_score", "recency", "authority"],
-            "training_enabled": True
+            "training_enabled": True,
         }
         assert len(ltr["features"]) > 0
 
@@ -425,7 +411,7 @@ class TestGeneration:
             "format": "instruction",
             "context_length": 8000,
             "include_citations": True,
-            "instruction": "Answer the question based on the context"
+            "instruction": "Answer the question based on the context",
         }
         assert template["context_length"] > 0
 
@@ -435,7 +421,7 @@ class TestGeneration:
             "max_tokens": 8000,
             "reserved_for_output": 2000,
             "reserved_for_instruction": 500,
-            "available_for_context": 5500
+            "available_for_context": 5500,
         }
         assert context["available_for_context"] > 0
 
@@ -447,18 +433,13 @@ class TestGeneration:
             "top_k": 50,
             "max_length": 500,
             "num_beams": 1,
-            "repetition_penalty": 1.0
+            "repetition_penalty": 1.0,
         }
         assert params["temperature"] >= 0 and params["temperature"] <= 2.0
 
     def test_generation_streaming(self):
         """Test generation streaming."""
-        streaming = {
-            "enabled": True,
-            "chunk_size": 10,
-            "timeout_seconds": 60,
-            "buffer_size": 100
-        }
+        streaming = {"enabled": True, "chunk_size": 10, "timeout_seconds": 60, "buffer_size": 100}
         assert streaming["chunk_size"] > 0
 
     def test_citation_generation(self):
@@ -467,7 +448,7 @@ class TestGeneration:
             "enabled": True,
             "format": "markdown",
             "include_page_numbers": True,
-            "include_confidence": True
+            "include_confidence": True,
         }
         assert citations["enabled"]
 
@@ -485,7 +466,7 @@ class TestPipelineOrchestration:
             "index": {"enabled": True, "parallel": False},
             "retrieve": {"enabled": True, "parallel": True},
             "rerank": {"enabled": True, "parallel": False},
-            "generate": {"enabled": True, "parallel": False}
+            "generate": {"enabled": True, "parallel": False},
         }
         assert len(stages) == 8
 
@@ -496,7 +477,7 @@ class TestPipelineOrchestration:
             "version": "1.0",
             "enabled_stages": ["ingest", "preprocess", "chunk", "embed", "index"],
             "chunk_size": 512,
-            "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+            "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
         }
         assert config["version"] == "1.0"
 
@@ -507,7 +488,7 @@ class TestPipelineOrchestration:
             "status": "running",
             "progress": 0.5,
             "start_time": datetime.now(),
-            "estimated_completion": datetime.now()
+            "estimated_completion": datetime.now(),
         }
         assert execution["progress"] >= 0 and execution["progress"] <= 1.0
 
@@ -517,7 +498,7 @@ class TestPipelineOrchestration:
             "continue_on_error": True,
             "skip_failed_documents": True,
             "log_errors": True,
-            "alert_on_failure_rate": 0.1
+            "alert_on_failure_rate": 0.1,
         }
         assert error_handling["continue_on_error"]
 
@@ -527,11 +508,7 @@ class TestPipelineOrchestration:
             "track_latency": True,
             "track_throughput": True,
             "track_resource_usage": True,
-            "alert_thresholds": {
-                "latency_ms": 5000,
-                "error_rate": 0.05,
-                "memory_percent": 80
-            }
+            "alert_thresholds": {"latency_ms": 5000, "error_rate": 0.05, "memory_percent": 80},
         }
         assert monitoring["track_latency"]
 
@@ -542,7 +519,7 @@ class TestPipelineOrchestration:
             "cache_retrievals": True,
             "cache_generations": True,
             "ttl_seconds": 3600,
-            "cache_backend": "redis"
+            "cache_backend": "redis",
         }
         assert caching["cache_embeddings"]
 
@@ -552,22 +529,12 @@ class TestQualityMetrics:
 
     def test_retrieval_metrics(self):
         """Test retrieval metrics."""
-        metrics = {
-            "mrr": 0.8,
-            "ndcg": 0.85,
-            "map": 0.75,
-            "recall_at_k": {"k": 10, "value": 0.9}
-        }
+        metrics = {"mrr": 0.8, "ndcg": 0.85, "map": 0.75, "recall_at_k": {"k": 10, "value": 0.9}}
         assert metrics["mrr"] > 0
 
     def test_generation_quality_metrics(self):
         """Test generation quality metrics."""
-        metrics = {
-            "bleu": 0.42,
-            "rouge": 0.45,
-            "meteor": 0.38,
-            "bert_score": 0.88
-        }
+        metrics = {"bleu": 0.42, "rouge": 0.45, "meteor": 0.38, "bert_score": 0.88}
         assert metrics["bleu"] >= 0 and metrics["bleu"] <= 1.0
 
     def test_end_to_end_metrics(self):
@@ -577,6 +544,6 @@ class TestQualityMetrics:
             "latency_p99_ms": 1000,
             "throughput_qps": 100,
             "error_rate": 0.01,
-            "user_satisfaction": 0.85
+            "user_satisfaction": 0.85,
         }
         assert metrics["latency_p99_ms"] > metrics["latency_p50_ms"]

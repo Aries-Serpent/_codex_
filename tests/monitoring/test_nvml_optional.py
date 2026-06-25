@@ -11,7 +11,7 @@ from numbers import Number
 
 import pytest
 
-_HAS_NVML = importlib.util.find_spec('pynvml') is not None
+_HAS_NVML = importlib.util.find_spec("pynvml") is not None
 
 from codex_ml.monitoring.microhelpers import get_gpu_stats
 

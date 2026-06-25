@@ -8,14 +8,14 @@ graph TB
     A2["Schedule/Workflow Run<br/>(self-approve-pending-runs)"]
     A3["Env Gate Approval<br/>(agent-auth-delegation)"]
     A4["WEC Checkbox<br/>(workflow-execution-gate)"]
-    
+
     HUB["🔄 auto-approve-workflows.yml<br/>(Central Hub)"]
-    
+
     RULES["⚙️ 5-Tier Rule Engine"]
     TOKEN["🔑 Token Chain 4-tier"]
     AUDIT["📋 Audit Trail"]
     METRICS["📊 Metrics"]
-    
+
     A1 --> HUB
     A2 --> HUB
     A3 --> HUB

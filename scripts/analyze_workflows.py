@@ -70,7 +70,8 @@ class WorkflowAnalyzer:
                 if workflow_info:
                     self.workflows.append(workflow_info)
             except Exception as e:
-                print(f"⚠️  Error analyzing {workflow_file.name}: {e}")
+                error_type = type(e).__name__
+                print(f"⚠️  Error analyzing {workflow_file.name}: {error_type}")
 
     def analyze_workflow(self, workflow_file: Path) -> Optional[WorkflowInfo]:
         """Analyze a single workflow file."""
@@ -183,7 +184,8 @@ class WorkflowAnalyzer:
             )
 
         except Exception as e:
-            print(f"❌ Error processing {workflow_file.name}: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Error processing {workflow_file.name}: {error_type}")
             return None
 
     def load_failure_patterns(self) -> None:
@@ -310,11 +312,11 @@ class WorkflowAnalyzer:
         print(f"  ❌ Disabled:  {summary['disabled']}")
         print(f"  📦 Archived:  {summary['archived']}")
         print("\nResources:")
-        print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")
+        print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")  # codeql[py/clear-text-logging-sensitive-data]
         print(f"  🐳 Docker required:     {summary['docker_required']}")
         # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
         _secrets_count: int = int(summary['secrets_used'])
-        print(f"  🔑 Unique secrets:      {_secrets_count}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        print(f"  🔑 Unique secrets:      {_secrets_count}")  # codeql[py/clear-text-logging-sensitive-data]
         print(f"  🔧 Unique actions:      {summary['unique_actions']}")
         print("\nFailure Pattern Categories:")
         for category, patterns in self.failure_patterns.items():

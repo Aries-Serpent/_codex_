@@ -1,6 +1,5 @@
 """Tests for performance benchmarking suite."""
 
-
 import pytest
 
 pytest.importorskip("torch")
@@ -79,7 +78,7 @@ def test_benchmark_training_step():
     model = SimpleModel()
 
     # Check if model is on meta device
-    if hasattr(model.fc1.weight, 'is_meta') and model.fc1.weight.is_meta:
+    if hasattr(model.fc1.weight, "is_meta") and model.fc1.weight.is_meta:
         pytest.skip("Model is on meta device - cannot benchmark")
 
     batch = {

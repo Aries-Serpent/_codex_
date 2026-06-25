@@ -34,7 +34,7 @@ yaml, _HAS_YAML = optional_import("yaml")
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="codex_ml")
     sub = parser.add_subparsers(dest="command")
-    parser.set_defaults(func=lambda *_: parser.print_help() or 0)  # type: ignore[func-returns-value]
+    parser.set_defaults(func=lambda *_: parser.print_help() or 0)
 
     ndjson = sub.add_parser("ndjson-summary", help="Summarize metrics.ndjson shards")
     ndjson.add_argument("--input", required=True, help="Path to metrics.ndjson file or directory")
@@ -372,8 +372,8 @@ if __name__ == "__main__":  # pragma: no cover
 
 
 try:
-    from .codex_cli import app as infer  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - optional CLI wiring
+    from .codex_cli import app as infer
+except (ImportError, AttributeError):  # pragma: no cover - optional CLI wiring
     infer = cli
 
 

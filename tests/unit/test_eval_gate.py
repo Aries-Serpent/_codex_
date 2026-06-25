@@ -31,6 +31,7 @@ from codex_ml.continuous_learning.eval_gate import EvalGate, EvalGateResult
 # Test 1 — EvalGateResult construction and to_dict
 # ---------------------------------------------------------------------------
 
+
 class TestEvalGateResult:
     def test_default_fields(self):
         r = EvalGateResult(passed=True)
@@ -65,6 +66,7 @@ class TestEvalGateResult:
 # Test 2 — no thresholds
 # ---------------------------------------------------------------------------
 
+
 class TestEvalGateNoThresholds:
     def test_always_passes_empty_metrics(self):
         gate = EvalGate()
@@ -81,6 +83,7 @@ class TestEvalGateNoThresholds:
 # ---------------------------------------------------------------------------
 # Tests 3-5 — min_accuracy
 # ---------------------------------------------------------------------------
+
 
 class TestMinAccuracy:
     def test_pass_accuracy_above_threshold(self):
@@ -113,6 +116,7 @@ class TestMinAccuracy:
 # Tests 6-8 — max_loss
 # ---------------------------------------------------------------------------
 
+
 class TestMaxLoss:
     def test_pass_loss_below_threshold(self):
         gate = EvalGate(max_loss=0.5)
@@ -141,6 +145,7 @@ class TestMaxLoss:
 # ---------------------------------------------------------------------------
 # Tests 9-13 — min_improvement_pct
 # ---------------------------------------------------------------------------
+
 
 class TestMinImprovementPct:
     def test_pass_sufficient_improvement(self):
@@ -191,6 +196,7 @@ class TestMinImprovementPct:
 # Tests 14-15 — Combined thresholds
 # ---------------------------------------------------------------------------
 
+
 class TestCombinedThresholds:
     def test_all_thresholds_pass(self):
         gate = EvalGate(min_accuracy=0.80, max_loss=0.5, min_improvement_pct=1.0)
@@ -219,6 +225,7 @@ class TestCombinedThresholds:
 # Test 16 — metrics stored in result is a copy of input
 # ---------------------------------------------------------------------------
 
+
 class TestMetricsCopy:
     def test_result_metrics_is_copy_of_input(self):
         gate = EvalGate()
@@ -238,6 +245,7 @@ class TestMetricsCopy:
 # ---------------------------------------------------------------------------
 # Test — EvalGate stores configuration correctly
 # ---------------------------------------------------------------------------
+
 
 class TestEvalGateConfiguration:
     def test_attributes_stored(self):

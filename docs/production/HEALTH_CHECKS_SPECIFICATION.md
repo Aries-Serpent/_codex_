@@ -287,7 +287,7 @@ def check_message_queue():
         test_id = str(uuid.uuid4())
 
         # Publish test message
-        producer.send("_health_check", 
+        producer.send("_health_check",
                      {"test_id": test_id, "timestamp": time.time()})
 
         latency = (time.time() - start) * 1000

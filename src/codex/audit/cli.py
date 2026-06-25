@@ -36,7 +36,7 @@ def audit_main(_check_dependencies: bool, _check_vulns: bool, format: str, outpu
         )
         if proc.returncode == 0 and proc.stdout:
             pip_audit_result = json.loads(proc.stdout)
-    except Exception:
+    except (ValueError, TypeError):
         logger.debug("Suppressed exception in handler", exc_info=True)
     if pip_audit_result is not None:
         vulns = pip_audit_result.get("vulnerabilities", [])
@@ -58,7 +58,7 @@ def audit_main(_check_dependencies: bool, _check_vulns: bool, format: str, outpu
                     line = line.strip()
                     if line and not line.startswith("#"):
                         packages.append(line.split("==")[0].split(">=")[0].split("<=")[0].strip())
-            except Exception:
+            except (IOError, OSError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
         result["summary"]["scanned_requirements_files"] = len(req_files)
         result["summary"]["total_packages"] = len(packages)

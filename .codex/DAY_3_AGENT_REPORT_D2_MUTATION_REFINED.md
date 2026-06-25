@@ -147,7 +147,7 @@ Day 2:  92% (151/160) ──→ Day 3:  94%+ (155+/160)
 | validators.py | 88% | 91-93% | 93% | ≥86% | ✅ PASS |
 | middleware.py | 90% | 91-92% | 94% | ≥86% | ✅ PASS |
 | sanitizers.py | 91% | 93-94% | 95% | ≥86% | ✅ PASS |
-| token_handler.py | 87% | 89-90% | 91% | ≥86% | ✅ PASS |
+| token_handler.py | 87% | 89-90% | 91% | ≥86% | ✅ PASS | <!-- pragma: allowlist secret -->
 | **AVERAGE** | **88.4%** | **91-92%** | **93%** | **≥86%** | **✅ PASS** |
 
 ---
@@ -603,4 +603,3 @@ Weak Modules:
 *Campaign: Phase 7A Production Readiness*  
 *Authority: @mbaetiong*  
 *Status: ✅ MISSION ACCOMPLISHED*
-

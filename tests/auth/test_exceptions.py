@@ -8,7 +8,7 @@ import sys
 
 import pytest
 
-sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
+sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
 
 from codex.auth.exceptions import (
     APIKeyError,
@@ -204,9 +204,7 @@ class TestOAuthError:
     def test_with_oauth_details(self):
         """Test error with OAuth error details."""
         error = OAuthError(
-            "Auth failed",
-            oauth_error="access_denied",
-            error_description="User denied access"
+            "Auth failed", oauth_error="access_denied", error_description="User denied access"
         )
         assert error.oauth_error == "access_denied"
         assert error.error_description == "User denied access"

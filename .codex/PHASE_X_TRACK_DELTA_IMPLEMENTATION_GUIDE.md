@@ -55,7 +55,7 @@ rag-freshness-scheduler.yml
 rag-quality-nightly.yml
 reference-integrity.yml
 required-actions-enforcer.yml
-secrets-false-positive-healer.yml
+secrets-false-positive-healer.yml  # pragma: allowlist secret
 ```
 
 #### Fix Pattern (Copy-Paste):
@@ -163,23 +163,23 @@ runs:
       shell: bash
       run: |
         # Generate standardized cache key
-        
+
         CACHE_TYPE="${{ inputs.cache-type }}"
         OS="${{ runner.os }}"
         PY_VERSION="${{ inputs.python-version }}"
         WORKFLOW="${{ github.workflow }}"
         JOB_ID="${{ inputs.job-id || github.job }}"
-        
+
         # Primary key with hash
         CACHE_KEY="${CACHE_TYPE}-${OS}-py${PY_VERSION}-${WORKFLOW}-${JOB_ID}"
-        
+
         echo "cache-key=${CACHE_KEY}" >> $GITHUB_OUTPUT
-        
+
         # Restore key hierarchy (3-tier)
         RESTORE_KEYS="${CACHE_TYPE}-${OS}-py${PY_VERSION}-${WORKFLOW}-${JOB_ID}
         ${CACHE_TYPE}-${OS}-py${PY_VERSION}-${WORKFLOW}
         ${CACHE_TYPE}-${OS}-py${PY_VERSION}"
-        
+
         echo "restore-keys=${RESTORE_KEYS}" >> $GITHUB_OUTPUT
 ```
 
@@ -383,4 +383,3 @@ key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml', '**/requirements*.t
 2. Measure impact (end of week)
 3. Deploy Phase 2 (next week)
 4. Scale to all workflows (weeks 3-4)
-

@@ -90,7 +90,7 @@ Multiple conflicting statements about autonomous operations:
 
 **Statement 1** (`.codex/guardrails.md`):
 ```
-"These are policy placeholders for the Genesis Protocol. 
+"These are policy placeholders for the Genesis Protocol.
 Human admin (mbaetiong) must review and finalize before enabling autonomous operations."
 Status: Template - Awaiting Human Review
 ```
@@ -197,7 +197,7 @@ But sometimes these ARE correct analyses, not deferrals!
 #### **ISSUE #5-B: False Positive Risk**
 An agent analyzing a pre-existing issue will trigger the protocol just by naming the fact:
 ```
-"This token expiration is pre-existing (not introduced by my changes)"
+"This token expiration is pre-existing (not introduced by my changes)"  # pragma: allowlist secret
 → Triggers HARD STOP
 → Forces reload of policy
 → Prevents explanation
@@ -422,7 +422,7 @@ Found multiple files with conflicting information about Codespace support:
 | 🟠 HIGH | Deferral Triggers | Trigger phrases too broad, catch legitimate analysis | Agent communication |
 | 🟠 HIGH | Workflow Changes | Policy forbids but CI needs them; no escalation path | CI/CD automation |
 | 🟡 MEDIUM | LFS | Opt-in model not documented in agent capabilities | Large file handling |
-| 🟡 MEDIUM | Codespace | Requires manual secret setup; agent bootstrap missing | Agent provisioning |
+| 🟡 MEDIUM | Codespace | Requires manual secret setup; agent bootstrap missing | Agent provisioning | <!-- pragma: allowlist secret -->
 | 🟡 MEDIUM | Temp Files | Policy too strict; no intermediate processing locations | Agent workflow |
 
 ---
@@ -502,4 +502,3 @@ Found multiple files with conflicting information about Codespace support:
 **Conflicts Identified**: 12  
 **Critical Issues**: 3  
 **Recommendations**: 16  
-

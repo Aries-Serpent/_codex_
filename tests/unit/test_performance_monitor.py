@@ -118,9 +118,7 @@ class TestThroughputDrop:
 
     def test_throughput_alert_contains_details(self) -> None:
         mock_mgr = MagicMock()
-        monitor = _make_monitor(
-            throughput_drop_pct=30.0, min_samples=3, alert_manager=mock_mgr
-        )
+        monitor = _make_monitor(throughput_drop_pct=30.0, min_samples=3, alert_manager=mock_mgr)
         for epoch in range(1, 6):
             monitor.record(PerformanceSnapshot(epoch=epoch, throughput=100.0))
         monitor.record(PerformanceSnapshot(epoch=6, throughput=40.0))

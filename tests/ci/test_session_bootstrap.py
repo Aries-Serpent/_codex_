@@ -11,6 +11,7 @@ Actual dataclass signatures (verified against source):
   GitHubClient.__init__(token, verbose=False)  — no offline param
   extract_urls(text) -> List[(url, kind, repo, id_or_ids)]
 """
+
 from __future__ import annotations
 
 import sys
@@ -44,6 +45,7 @@ except ImportError:
 # ---------------------------------------------------------------------------
 # extract_urls — returns (url, kind, repo, id_or_ids) tuples
 # ---------------------------------------------------------------------------
+
 
 class TestExtractUrls:
     def test_extracts_pr_url(self):
@@ -106,6 +108,7 @@ class TestExtractUrls:
 # FetchedItem / BootstrapReport / TriageResult dataclass construction
 # ---------------------------------------------------------------------------
 
+
 class TestDataclasses:
     def test_fetched_item_creation(self):
         item = FetchedItem(
@@ -163,6 +166,7 @@ class TestDataclasses:
 # GitHubClient — token / auth header logic
 # ---------------------------------------------------------------------------
 
+
 class TestGitHubClient:
     def test_token_stored(self):
         client = GitHubClient(token="testtoken123")
@@ -210,6 +214,7 @@ class TestGitHubClient:
 # ---------------------------------------------------------------------------
 # write_digest — round-trip with monkeypatched paths
 # ---------------------------------------------------------------------------
+
 
 class TestWriteDigest:
     def test_writes_markdown_digest(self, tmp_path, monkeypatch):

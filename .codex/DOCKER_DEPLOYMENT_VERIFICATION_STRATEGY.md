@@ -17,7 +17,7 @@ This document details the comprehensive verification strategy to ensure the comp
 ```
 Docker Packaged Codebase Validation:
   ├─ Build Verification (8 variants)
-  ├─ Image Security (CVE scanning, secrets detection)
+  ├─ Image Security (CVE scanning, secrets detection)  # pragma: allowlist secret
   ├─ Artifact Generation (SBOM, attestations, manifests)
   ├─ Registry Push (DockerHub + GHCR)
   ├─ Runtime Validation (Docker Compose)
@@ -41,21 +41,21 @@ Docker Packaged Codebase Validation:
 1. Docker daemon availability
    - docker ps (verify connectivity)
    - docker version (verify compatibility)
-   
+
 2. BuildKit enablement
    - DOCKER_BUILDKIT=1 (environment variable)
    - docker buildx version (multi-platform support)
-   
+
 3. Disk space validation
    - df -h / (root filesystem space)
    - Required: 50-100GB for 8 variants + layers
    - Action: Fail if <25GB available
-   
+
 4. Registry credentials
    - DockerHub token test
    - GHCR token test
    - docker login verification
-   
+
 5. Build staging directory
    - .codex/docker-build-campaign/builds/ (create)
    - Permissions: 755 for appuser write access
@@ -691,7 +691,7 @@ kubectl delete namespace codex-test
 | Check | Requirement | Status |
 |-------|-------------|--------|
 | CVE Scan (all 8 variants) | 0 CRITICAL, 0 HIGH | ✅ PASS |
-| Secrets Detection | No NEW secrets | ✅ PASS |
+| Secrets Detection | No NEW secrets | ✅ PASS | <!-- pragma: allowlist secret -->
 | Image Signing | All variants signed | ✅ PASS |
 | Layer Verification | Base image digest pinned | ✅ PASS |
 | Non-root User | All variants use non-root | ✅ PASS |

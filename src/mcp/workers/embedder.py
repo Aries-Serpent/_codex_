@@ -155,7 +155,7 @@ class EmbeddingWorker:
                 ):
                     await self._save_checkpoint()
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error("Processing error: %s", e)
                 self._error_count += 1
                 batch = []  # Clear batch on error
@@ -173,11 +173,11 @@ class EmbeddingWorker:
                     self._results[task.id] = [r.embedding for r in results]
                 else:
                     # Placeholder for testing
-                    self._results[task.id] = [[0.0] * 384 for _ in task.texts]  # type: ignore[misc]
+                    self._results[task.id] = [[0.0] * 384 for _ in task.texts]
 
                 self._processed_count += 1
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error("Task failed: %s - %s", task.id, e)
                 self._error_count += 1
 
@@ -204,7 +204,7 @@ class EmbeddingWorker:
 
     def get_result(self, task_id: str) -> list[list[float]] | None:
         """Get results for a completed task."""
-        return self._results.get(task_id)  # type: ignore[return-value]
+        return self._results.get(task_id)
 
     def get_stats(self) -> dict[str, Any]:
         """Get worker statistics."""

@@ -69,11 +69,13 @@ class TestRAGBuildQueryWorkflow:
 
         for doc_file in doc_files:
             doc_data = json.loads(doc_file.read_text())
-            index["documents"].append({
-                "id": doc_data["id"],
-                "content": doc_data["content"],
-                "embedding": [0.1] * 10,  # Mock embedding
-            })
+            index["documents"].append(
+                {
+                    "id": doc_data["id"],
+                    "content": doc_data["content"],
+                    "embedding": [0.1] * 10,  # Mock embedding
+                }
+            )
 
         index_file = index_dir / "index.json"
         index_file.write_text(json.dumps(index))
@@ -131,12 +133,7 @@ class TestRAGBuildQueryWorkflow:
 
     def test_rag_multi_query_batch(self, temp_workspace):
         """Verify batch query processing."""
-        index = {
-            "documents": [
-                {"id": f"doc{i}", "content": f"Content {i}"}
-                for i in range(10)
-            ]
-        }
+        index = {"documents": [{"id": f"doc{i}", "content": f"Content {i}"} for i in range(10)]}
 
         queries = ["query1", "query2", "query3"]
         results = []
@@ -157,9 +154,7 @@ class TestTokenizationTrainingPipeline:
     def test_tokenizer_initialization(self, temp_workspace):
         """Verify tokenizer initialization."""
         try:
-            from codex_ml.tokenization import (
-                load_tokenizer as load_tokenizer,
-            )
+            from codex_ml.tokenization import load_tokenizer as load_tokenizer
 
             # Should be able to initialize tokenizer
             # (will skip if dependencies not available)
@@ -332,11 +327,7 @@ class TestPlugin:
 
     def test_plugin_initialization(self, temp_workspace):
         """Verify plugin initialization."""
-        plugin_config = {
-            "name": "test_plugin",
-            "enabled": True,
-            "config": {"option": "value"}
-        }
+        plugin_config = {"name": "test_plugin", "enabled": True, "config": {"option": "value"}}
 
         # Simulate initialization
         initialized = plugin_config["enabled"]
@@ -422,6 +413,7 @@ class TestErrorPropagation:
 
     def test_error_propagation_chain(self, temp_workspace):
         """Verify error propagates through call chain."""
+
         def module_a():
             raise ValueError("Error in module A")
 
@@ -504,6 +496,7 @@ class TestDataFlowIntegration:
 
     def test_streaming_data_flow(self, temp_workspace):
         """Verify streaming data flow."""
+
         def data_generator():
             for i in range(10):
                 yield {"id": i, "data": f"item_{i}"}
@@ -545,6 +538,7 @@ class TestConfigurationPropagation:
         monkeypatch.setenv("CODEX_DEBUG", "true")
 
         import os
+
         debug_enabled = os.getenv("CODEX_DEBUG") == "true"
 
         assert debug_enabled is True

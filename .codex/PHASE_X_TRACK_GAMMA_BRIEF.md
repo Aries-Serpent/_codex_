@@ -20,7 +20,7 @@
    - `actions/checkout@v3` (deprecated, should use v4)
    - `actions/setup-python@v3` (should use v4 or v5)
    - `actions/cache@v2` (should use v3)
-   
+
 2. **Workflow Syntax Issues** (35% of failures)
    - Missing `shell: bash` specifications
    - Incorrect `run:` field formatting (no pipe `|` for multi-line)

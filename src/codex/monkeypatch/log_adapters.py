@@ -23,8 +23,7 @@ def _resolve_path(db_path: Path | None) -> Path:
 def _ensure_table(db_path: Path) -> None:
     conn = sqlite3.connect(str(db_path))
     cur = conn.cursor()
-    cur.execute(
-        """
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS app_log(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ts REAL NOT NULL,
@@ -32,8 +31,7 @@ def _ensure_table(db_path: Path) -> None:
             message TEXT,
             meta TEXT
         );
-        """
-    )
+        """)
     conn.commit()
     cur.close()
     if os.getenv("CODEX_SQLITE_POOL", "0") not in ("1", "true", "TRUE", "yes", "YES"):

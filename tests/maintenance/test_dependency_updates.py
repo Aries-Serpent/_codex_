@@ -111,7 +111,9 @@ class TestSecurityUpdates:
         security_workflows = []
         for workflow in workflows_dir.glob("*.yml"):
             content = workflow.read_text(encoding="utf-8")
-            if any(term in content.lower() for term in ["security", "audit", "vulnerability", "cve"]):
+            if any(
+                term in content.lower() for term in ["security", "audit", "vulnerability", "cve"]
+            ):
                 security_workflows.append(workflow.name)
 
         assert len(security_workflows) >= 1, "Should have security-related workflows"

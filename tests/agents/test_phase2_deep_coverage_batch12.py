@@ -12,7 +12,6 @@ Systematically addresses final coverage gaps:
 Target: Final push toward 95% coverage (75% → 95%+)
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")

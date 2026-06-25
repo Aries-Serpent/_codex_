@@ -158,7 +158,7 @@
 5. 🧠 Team: 87/100 → **must complete** (1 week)
 6. **Phase 8 Re-Validation Gate**: Must pass ≥85/100
 
-**Expected Timeline**: 
+**Expected Timeline**:
 - Week 1: Quick wins (CI/CD, infrastructure, team)
 - Weeks 2-4: Coverage sprint
 - Week 4: Gate re-check (target: 88-92/100) → **FULL GO**

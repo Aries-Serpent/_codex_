@@ -30,6 +30,7 @@ from cognitive_brain.quantum.superposition import Decision, SuperpositionEngine
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_assessor(lightweight: bool = True) -> QuantumComplianceAssessor:
     """Return a ready-to-use assessor (quantum-enabled)."""
     config = QuantumConfig.from_env()
@@ -56,6 +57,7 @@ def _make_audit(**kwargs) -> AuditResult:
 # ===========================================================================
 # 1. Error Handling / Graceful Degradation
 # ===========================================================================
+
 
 class TestErrorHandling:
     """Scoring functions degrade gracefully on unexpected inputs."""
@@ -87,9 +89,11 @@ class TestErrorHandling:
     def test_graceful_degradation_returns_assessment(self, monkeypatch):
         """When superposition raises, assess_compliance falls back to classical."""
         assessor = _make_assessor(lightweight=False)
+
         # Force superposition path to raise
         def _raise(_):
             raise RuntimeError("simulated quantum hardware fault")
+
         monkeypatch.setattr(assessor, "_assess_with_superposition", _raise)
 
         audit = _make_audit()
@@ -102,6 +106,7 @@ class TestErrorHandling:
 # ===========================================================================
 # 2. Input Validation / Security
 # ===========================================================================
+
 
 class TestInputValidation:
     """assess_compliance() sanitises adversarial inputs before scoring.
@@ -165,6 +170,7 @@ class TestInputValidation:
 # 3. Quantum Noise Simulation
 # ===========================================================================
 
+
 class TestQuantumNoiseConfig:
     """QuantumConfig validates and stores noise parameters correctly."""
 
@@ -221,6 +227,7 @@ class TestQuantumNoiseApplication:
 
     def test_apply_noise_changes_scores(self):
         import random
+
         random.seed(0)
         engine = self._engine_with_noise()
         original = [0.9, 0.3, 0.2, 0.1]
@@ -236,6 +243,7 @@ class TestQuantumNoiseApplication:
 
     def test_apply_noise_clamps_to_unit_interval(self):
         import random
+
         random.seed(42)
         engine = self._engine_with_noise(gate_err=0.5, meas_err=0.5)
         original = [0.0, 0.5, 1.0, 0.99]
@@ -245,6 +253,7 @@ class TestQuantumNoiseApplication:
     def test_5pct_noise_preserves_winner_mostly(self):
         """At 5% noise, winner should remain correct in ≥90% of random trials."""
         import random
+
         engine = self._engine_with_noise(gate_err=0.05, meas_err=0.05)
         scores = [0.9, 0.3, 0.2, 0.1]  # Winner is index 0 by a large margin
         wins = 0
@@ -259,6 +268,7 @@ class TestQuantumNoiseApplication:
     def test_10pct_noise_1000_scenarios_preserves_winner(self):
         """Extended noise validation: at 10% gate error, winner preserved ≥90% of 1000 trials."""
         import random
+
         engine = self._engine_with_noise(gate_err=0.10, meas_err=0.05)
         # Winner has a decisive lead (0.9 vs 0.3, 0.2, 0.1) — robust to 10% gate noise
         scores = [0.9, 0.3, 0.2, 0.1]
@@ -309,6 +319,7 @@ class TestApplyQuantumNoisePublic:
     def test_t2_decay_reduces_coherence(self):
         """T2 dephasing decays coherence by exp(-dt/T2) with dt=100µs."""
         import math
+
         config = QuantumConfig(noise_enabled=True, t2_decoherence_us=50.0)
         engine = SuperpositionEngine(config)
         state = engine.create_superposition([self._decision()])
@@ -357,6 +368,7 @@ class TestApplyQuantumNoisePublic:
 # ===========================================================================
 # 4. Bias Detection
 # ===========================================================================
+
 
 class TestBiasDetector:
     """BiasDetector flags protected-attribute + adverse-outcome combinations."""
@@ -422,6 +434,7 @@ class TestBiasDetector:
 # ===========================================================================
 # 5. Audit Trail
 # ===========================================================================
+
 
 class TestQuantumAuditTrail:
     """QuantumAuditTrail logs immutable, queryable entries."""
@@ -581,14 +594,15 @@ class TestQuantumAuditTrail:
         trail_tampered.log(_make_audit(audit_id="TAMPERED"), a)
         e2_tampered = trail_tampered.log(audit2, a)
 
-        assert e2_orig.chain_hash != e2_tampered.chain_hash, (
-            "Chain hash must differ when first entry is tampered"
-        )
+        assert (
+            e2_orig.chain_hash != e2_tampered.chain_hash
+        ), "Chain hash must differ when first entry is tampered"
 
 
 # ===========================================================================
 # 6. End-to-End Phase 3 Integration
 # ===========================================================================
+
 
 class TestPhase3Integration:
     """Full path: sanitize → assess → detect bias → log audit trail."""
@@ -620,6 +634,7 @@ class TestPhase3Integration:
         assessor = QuantumComplianceAssessor(config, monitor, repo)
 
         import random
+
         random.seed(42)
         audit = _make_audit()
         result = assessor.assess_compliance(audit)
@@ -631,6 +646,7 @@ class TestPhase3Integration:
         from cognitive_brain.experiments.exp1b_revalidation import (
             run_exp1b_revalidation,
         )
+
         # Use default 100 scenarios + seed=42 — same configuration used to validate
         # Phase 1+2 targets; all 110 ground-truth scenarios covered.
         # use_verified_labels=False preserves the original Phase 2 benchmark scenario

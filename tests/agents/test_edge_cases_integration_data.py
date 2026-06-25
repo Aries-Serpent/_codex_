@@ -112,7 +112,7 @@ class TestMemoryContextFrameIntegration:
             assert retrieved is not None
 
             # Simulate tracking in context frame
-            frame = ContextFrame(
+            ContextFrame(
                 frame_id=f"frame_{i}",
                 task_description="task",
                 start_time=datetime.now(UTC).isoformat(),
@@ -248,9 +248,7 @@ class TestPatternLibraryMemoryIntegration:
 class TestMemoryDataMigration:
     """Test data migration and consistency."""
 
-    def test_memory_migration_from_one_database_to_another(
-        self, tmp_path: Path
-    ) -> None:
+    def test_memory_migration_from_one_database_to_another(self, tmp_path: Path) -> None:
         """Test migrating memories from one database to another."""
         old_db = tmp_path / "old.db"
         new_db = tmp_path / "new.db"
@@ -306,6 +304,7 @@ class TestMemoryDataMigration:
 
         # Backup by copying database
         import shutil
+
         shutil.copy(original_db, backup_db)
 
         # Restore from backup
@@ -458,9 +457,7 @@ class TestBatchOperationsAtomicity:
 class TestCrossComponentDataConsistency:
     """Test data consistency across components."""
 
-    def test_memory_context_frame_pattern_consistency(
-        self, tmp_path: Path
-    ) -> None:
+    def test_memory_context_frame_pattern_consistency(self, tmp_path: Path) -> None:
         """Test consistency across Memory, ContextFrame, and PatternLibrary."""
         db_path = tmp_path / "cross_component.db"
         memory = AgentMemory(db_path=db_path)
@@ -521,13 +518,9 @@ class TestCrossComponentDataConsistency:
             category="complex",
             content="Complex content",
             context={
-                "nested": {
-                    "deep": {
-                        "value": "important"
-                    }
-                },
+                "nested": {"deep": {"value": "important"}},
                 "list": [1, 2, 3, 4, 5],
-                "mixed": [{"key": "value"}, 123, "string"]
+                "mixed": [{"key": "value"}, 123, "string"],
             },
             tags=["complex", "nested", "deep"],
             related_memories=["memory_1", "memory_2", "memory_3"],
@@ -583,9 +576,7 @@ class TestDataIntegrityEdgeCases:
         assert "mem_b" in retrieved_a.related_memories
         assert "mem_a" in retrieved_b.related_memories
 
-    def test_memory_reference_integrity_with_deletion(
-        self, tmp_path: Path
-    ) -> None:
+    def test_memory_reference_integrity_with_deletion(self, tmp_path: Path) -> None:
         """Test reference integrity when related memory is deleted."""
         db_path = tmp_path / "reference_integrity.db"
         memory = AgentMemory(db_path=db_path)

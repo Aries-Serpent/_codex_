@@ -12,7 +12,6 @@ Systematically applies advanced physics-guided patterns:
 Target: +12-15% coverage gain (34% → 48%)
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -66,9 +65,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
         # run_optimization takes (fitness_fn, bounds, max_iterations)
         bounds = [(-10.0, 10.0), (-10.0, 10.0)]
-        result = swarm.run_optimization(
-            lambda x: -sum(xi**2 for xi in x), bounds, max_iterations=5
-        )
+        result = swarm.run_optimization(lambda x: -sum(xi**2 for xi in x), bounds, max_iterations=5)
         assert result is not None
 
 
@@ -147,9 +144,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         red_state = StrategyState("red", np.array([0.6, 0.4]))
 
         # Use entanglement_strength instead of entangled
-        entangled_state = QuantumGameState(
-            blue_state, red_state, entanglement_strength=0.5
-        )
+        entangled_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
         assert entangled_state.entangled
 
     def test_measurement_collapse(self):
@@ -628,9 +623,7 @@ class TestPhase2_Integration_AdvancedPatterns:
         memory.store_memory(key="concept_node", value=str(node.node_id))
 
         retrieved = memory.retrieve_memory("concept_node")
-        assert (
-            retrieved is not None or retrieved is None
-        )  # May not find if not persisted
+        assert retrieved is not None or retrieved is None  # May not find if not persisted
 
 
 class TestPhase2_ErrorPaths_AdvancedCases:
@@ -651,9 +644,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         from agents.physics_orchestrator import ActionPath, ActionType
 
         # Negative energy should be handled - use valid parameter names
-        path = ActionPath(
-            action_type=ActionType.RESEARCH, description="test", energy=-10.0
-        )
+        path = ActionPath(action_type=ActionType.RESEARCH, description="test", energy=-10.0)
         assert path is not None
 
     def test_empty_strategy_array(self):

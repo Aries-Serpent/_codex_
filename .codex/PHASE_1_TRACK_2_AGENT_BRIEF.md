@@ -89,7 +89,7 @@ tests/
 ## 🔗 INTEGRATION POINTS
 
 **Upstream:** Track 1 (CI Stability) — Stable CI enables reliable test runs  
-**Downstream:** 
+**Downstream:**
 - Track 4 (Documentation): Document coverage roadmap
 - Track 5 (Tests): Test quality enhancements
 

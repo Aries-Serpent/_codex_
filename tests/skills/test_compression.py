@@ -39,6 +39,7 @@ class TestCompressSkill:
 
         # Patch _find_skill_dir to return our temp dir
         from unittest.mock import patch
+
         with patch("codex.skills.compression._find_skill_dir", return_value=skill_dir):
             with patch("codex.skills.compression._7Z_BIN", None):  # force zip fallback
                 result = compress_skill("test.compress.skill", out_dir=out_dir)
@@ -54,6 +55,7 @@ class TestCompressSkill:
         out_dir = tmp_path / "dist"
 
         from unittest.mock import patch
+
         with patch("codex.skills.compression._find_skill_dir", return_value=skill_dir):
             with patch("codex.skills.compression._7Z_BIN", None):
                 result = compress_skill("my.test.skill", out_dir=out_dir)
@@ -63,6 +65,7 @@ class TestCompressSkill:
 
     def test_compress_missing_skill_raises(self, tmp_path):
         from unittest.mock import patch
+
         with patch("codex.skills.compression._find_skill_dir", return_value=None):
             with pytest.raises(FileNotFoundError, match="Skill directory not found"):
                 compress_skill("nonexistent.skill", out_dir=tmp_path)
@@ -72,9 +75,12 @@ class TestCompressSkill:
         out_dir = tmp_path / "dist"
 
         from unittest.mock import patch
+
         with patch("codex.skills.compression._find_skill_dir", return_value=skill_dir):
             with patch("codex.skills.compression._7Z_BIN", None):
-                result = compress_skill("test.manifest.update", out_dir=out_dir, record_metrics=True)
+                result = compress_skill(
+                    "test.manifest.update", out_dir=out_dir, record_metrics=True
+                )
 
         manifest_data = yaml.safe_load((skill_dir / "manifest.yaml").read_text())
         assert manifest_data["compression"]["size_before"] == result.size_before

@@ -75,13 +75,13 @@ LOG_FILE="/tmp/resolver_debug_${TIMESTAMP}.log"
 if ! timeout 120 pip install --dry-run -r requirements.txt > /dev/null 2>&1; then
   # Timeout occurred - escalate
   echo "[HIGH] TRIGGER: Resolver timeout detected at $(date)" | tee -a "$LOG_FILE"
-  
+
   # Get debug output
   pip install -vv --dry-run -r requirements.txt 2>&1 | tee -a "$LOG_FILE"
-  
+
   # Get dependency tree
   pipdeptree --graph-output png > /tmp/depgraph_${TIMESTAMP}.png 2>&1 || true
-  
+
   # Send escalation notification
   mail -s "[HIGH] WAVE 2B Batch 3 - Resolver Timeout" mbaetiong@example.com \
     < "$LOG_FILE"
@@ -143,13 +143,13 @@ TIMESTAMP=$(date +%s)
 # Detect circular dependency
 if pipdeptree --warn fail 2>&1 | grep -i "circular" > /tmp/circular_${TIMESTAMP}.txt; then
   echo "[CRITICAL] TRIGGER: Circular dependency detected!" | tee -a /tmp/circular_${TIMESTAMP}.txt
-  
+
   # Generate graph for visualization
   pipdeptree --graph-output png > /tmp/depgraph_circular_${TIMESTAMP}.png 2>&1 || true
-  
+
   # Extract circular chain
   pipdeptree 2>&1 | grep -A 5 -B 5 "circular" >> /tmp/circular_${TIMESTAMP}.txt
-  
+
   # BLOCK DEPLOYMENT
   echo "DEPLOYMENT BLOCKED - Manual intervention required"
   exit 1
@@ -221,19 +221,19 @@ pip install -vv --dry-run -r requirements.txt 2>&1 | tee "$LOG_FILE" | \
 
 if [ -s /tmp/conflict_${TIMESTAMP}.txt ]; then
   echo "[CRITICAL] TRIGGER: Unresolvable constraints detected!" | tee -a "$LOG_FILE"
-  
+
   # Extract conflict details
   CONFLICT=$(cat /tmp/conflict_${TIMESTAMP}.txt | head -1)
   echo "Conflict: $CONFLICT" | tee -a "$LOG_FILE"
-  
+
   # Try to identify packages involved
   PACKAGES=$(echo "$CONFLICT" | grep -oE "[a-z0-9_-]+" | sort -u)
   echo "Packages involved: $PACKAGES" | tee -a "$LOG_FILE"
-  
+
   # Escalate
   mail -s "[CRITICAL] WAVE 2B Batch 3 - Unresolvable Constraints" mbaetiong@example.com \
     < "$LOG_FILE"
-  
+
   exit 1
 fi
 ```
@@ -304,14 +304,14 @@ CRITICAL_CVES=$(jq '.vulnerabilities[] | select(.severity == "HIGH" or .severity
 if [ ! -z "$CRITICAL_CVES" ]; then
   echo "[CRITICAL] TRIGGER: Security CVE(s) detected!" > /tmp/cve_${TIMESTAMP}.txt
   echo "$CRITICAL_CVES" | jq -r '.id + ": " + .description' >> /tmp/cve_${TIMESTAMP}.txt
-  
+
   # Escalate
   mail -s "[CRITICAL] WAVE 2B Batch 3 - Security CVE Detected" mbaetiong@example.com \
     < /tmp/cve_${TIMESTAMP}.txt
-  
+
   # Include audit report
   attachment -a "$AUDIT_FILE"
-  
+
   exit 1
 fi
 ```
@@ -394,18 +394,18 @@ TOTAL=$((PASSED + FAILED))
 
 if [ $TOTAL -gt 0 ]; then
   PASS_RATE=$(echo "scale=2; $PASSED / $TOTAL" | bc)
-  
+
   if (( $(echo "$PASS_RATE < $BASELINE_PASS_RATE" | bc -l) )); then
     echo "[HIGH] TRIGGER: Test failure regression detected!" | tee -a "$LOG_FILE"
     echo "Pass rate: $PASS_RATE < $BASELINE_PASS_RATE" | tee -a "$LOG_FILE"
-    
+
     # Get failing test details
     grep "FAILED\|ERROR" "$LOG_FILE" | tee -a "$LOG_FILE"
-    
+
     # Escalate
     mail -s "[HIGH] WAVE 2B Batch 3 - Test Failure Regression" team-lead@example.com \
       < "$LOG_FILE"
-    
+
     exit 1
   fi
 fi
@@ -476,16 +476,16 @@ pytest --cov --cov-report=json > /dev/null 2>&1
 if [ -f "$COVERAGE_FILE" ]; then
   COVERAGE=$(jq '.totals.percent_covered' "$COVERAGE_FILE")
   REGRESSION=$(echo "$BASELINE - $COVERAGE" | bc)
-  
+
   if (( $(echo "$REGRESSION > $THRESHOLD" | bc -l) )); then
     echo "[MEDIUM] TRIGGER: Coverage regression detected!" > /tmp/coverage_${TIMESTAMP}.txt
     echo "Current: $COVERAGE%, Baseline: $BASELINE%, Regression: $REGRESSION%" \
       >> /tmp/coverage_${TIMESTAMP}.txt
-    
+
     # Get coverage details
     jq '.files[] | select(.summary.percent_covered < 50)' "$COVERAGE_FILE" \
       >> /tmp/coverage_${TIMESTAMP}.txt
-    
+
     # Escalate
     mail -s "[MEDIUM] WAVE 2B Batch 3 - Coverage Regression" mbaetiong@example.com \
       < /tmp/coverage_${TIMESTAMP}.txt

@@ -28,6 +28,7 @@ from codex.cognitive.context_compressor import (
 # Enums
 # ---------------------------------------------------------------------------
 
+
 class TestEnums:
     def test_compression_strategy_values(self):
         assert CompressionStrategy.EXTRACTIVE.value == "extractive"
@@ -42,6 +43,7 @@ class TestEnums:
 # ---------------------------------------------------------------------------
 # CompressedContext
 # ---------------------------------------------------------------------------
+
 
 class TestCompressedContext:
     @pytest.fixture()
@@ -79,6 +81,7 @@ class TestCompressedContext:
 # TokenEstimator
 # ---------------------------------------------------------------------------
 
+
 class TestTokenEstimator:
     def test_estimate_tokens(self):
         result = TokenEstimator.estimate_tokens("Hello world test string")
@@ -97,6 +100,7 @@ class TestTokenEstimator:
 # ---------------------------------------------------------------------------
 # KeyPointExtractor
 # ---------------------------------------------------------------------------
+
 
 class TestKeyPointExtractor:
     @pytest.fixture()
@@ -130,15 +134,14 @@ class TestKeyPointExtractor:
 # SentenceScorer
 # ---------------------------------------------------------------------------
 
+
 class TestSentenceScorer:
     @pytest.fixture()
     def scorer(self):
         return SentenceScorer()
 
     def test_high_importance_words(self, scorer):
-        score_important = scorer.score(
-            "Critical security fix resolved the blocking issue"
-        )
+        score_important = scorer.score("Critical security fix resolved the blocking issue")
         score_mundane = scorer.score("updated the readme file today")
         assert score_important > score_mundane
 
@@ -149,6 +152,7 @@ class TestSentenceScorer:
 # ---------------------------------------------------------------------------
 # ExtractiveSummarizer
 # ---------------------------------------------------------------------------
+
 
 class TestExtractiveSummarizer:
     @pytest.fixture()
@@ -179,27 +183,22 @@ class TestExtractiveSummarizer:
 # ContextPrioritizer
 # ---------------------------------------------------------------------------
 
+
 class TestContextPrioritizer:
     @pytest.fixture()
     def prioritizer(self):
         return ContextPrioritizer(decay_factor=0.95)
 
     def test_recent_higher_relevance(self, prioritizer):
-        recent = prioritizer.calculate_relevance(
-            datetime.now(timezone.utc), access_count=0
-        )
+        recent = prioritizer.calculate_relevance(datetime.now(timezone.utc), access_count=0)
         old = prioritizer.calculate_relevance(
             datetime.now(timezone.utc) - timedelta(days=30), access_count=0
         )
         assert recent > old
 
     def test_access_count_boost(self, prioritizer):
-        no_access = prioritizer.calculate_relevance(
-            datetime.now(timezone.utc), access_count=0
-        )
-        with_access = prioritizer.calculate_relevance(
-            datetime.now(timezone.utc), access_count=10
-        )
+        no_access = prioritizer.calculate_relevance(datetime.now(timezone.utc), access_count=0)
+        with_access = prioritizer.calculate_relevance(datetime.now(timezone.utc), access_count=10)
         assert with_access > no_access
 
     def test_prioritize_list(self, prioritizer):
@@ -228,6 +227,7 @@ class TestContextPrioritizer:
 # ---------------------------------------------------------------------------
 # ContextIndex
 # ---------------------------------------------------------------------------
+
 
 class TestContextIndex:
     @pytest.fixture()
@@ -291,6 +291,7 @@ class TestContextIndex:
 # ---------------------------------------------------------------------------
 # ContextCompressor
 # ---------------------------------------------------------------------------
+
 
 class TestContextCompressor:
     @pytest.fixture()

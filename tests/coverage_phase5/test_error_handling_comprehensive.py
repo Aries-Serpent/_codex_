@@ -1,4 +1,5 @@
 """Comprehensive error handling tests."""
+
 from __future__ import annotations
 
 from enum import Enum
@@ -56,7 +57,7 @@ def test_invalid_params_error():
     error = JsonRpcError(
         ErrorCode.INVALID_PARAMS.value,
         "Invalid parameters",
-        data={"param": "x", "expected": "string", "got": "number"}
+        data={"param": "x", "expected": "string", "got": "number"},
     )
 
     assert error.code == -32602

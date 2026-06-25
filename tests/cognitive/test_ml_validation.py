@@ -35,6 +35,7 @@ from codex.cognitive.ml.validation import (
 # ValidationMetrics Tests
 # =============================================================================
 
+
 class TestValidationMetrics:
     """Tests for ValidationMetrics dataclass."""
 
@@ -75,6 +76,7 @@ class TestValidationMetrics:
 # =============================================================================
 # ModelValidator Tests
 # =============================================================================
+
 
 class TestModelValidator:
     """Tests for ModelValidator class."""
@@ -144,6 +146,7 @@ class TestModelValidator:
 # HyperparameterTuner Tests
 # =============================================================================
 
+
 class TestHyperparameterTuner:
     """Tests for HyperparameterTuner class."""
 
@@ -159,6 +162,7 @@ class TestHyperparameterTuner:
 
     def test_grid_search(self):
         """Test grid search."""
+
         def model_factory(alpha=1.0, beta=1.0):
             model = MagicMock()
             model.alpha = alpha
@@ -170,11 +174,7 @@ class TestHyperparameterTuner:
         X = [[1, 2], [3, 4], [5, 6], [7, 8]]
         y = ["a", "b", "a", "b"]
 
-        result = tuner.grid_search(
-            model_factory,
-            {"alpha": [0.1, 1.0], "beta": [0.5, 1.0]},
-            X, y
-        )
+        result = tuner.grid_search(model_factory, {"alpha": [0.1, 1.0], "beta": [0.5, 1.0]}, X, y)
 
         assert isinstance(result, TuningResult)
         assert result.search_method == "grid"
@@ -182,6 +182,7 @@ class TestHyperparameterTuner:
 
     def test_random_search(self):
         """Test random search."""
+
         def model_factory(alpha=1.0):
             model = MagicMock()
             model.predict.return_value = ["a"]
@@ -192,10 +193,7 @@ class TestHyperparameterTuner:
         y = ["a", "b"]
 
         result = tuner.random_search(
-            model_factory,
-            {"alpha": [0.1, 0.5, 1.0]},
-            X, y,
-            n_iterations=5
+            model_factory, {"alpha": [0.1, 0.5, 1.0]}, X, y, n_iterations=5
         )
 
         assert result.search_method == "random"
@@ -204,10 +202,7 @@ class TestHyperparameterTuner:
     def test_generate_combinations(self):
         """Test parameter combination generation."""
         tuner = HyperparameterTuner()
-        combinations = tuner._generate_combinations(
-            ["a", "b"],
-            [[1, 2], [3, 4]]
-        )
+        combinations = tuner._generate_combinations(["a", "b"], [[1, 2], [3, 4]])
         assert len(combinations) == 4
 
     def test_get_metric_value(self):
@@ -225,6 +220,7 @@ class TestHyperparameterTuner:
 # =============================================================================
 # PerformanceTracker Tests
 # =============================================================================
+
 
 class TestPerformanceTracker:
     """Tests for PerformanceTracker class."""
@@ -307,6 +303,7 @@ class TestPerformanceTracker:
 # =============================================================================
 # ModelRegistry Tests
 # =============================================================================
+
 
 class TestModelRegistry:
     """Tests for ModelRegistry class."""
@@ -417,6 +414,7 @@ class TestModelRegistry:
 # TuningPipeline Tests
 # =============================================================================
 
+
 class TestTuningPipeline:
     """Tests for TuningPipeline class."""
 
@@ -428,6 +426,7 @@ class TestTuningPipeline:
 
     def test_run_tuning_pipeline(self):
         """Test running tuning pipeline."""
+
         def model_factory(alpha=1.0):
             model = MagicMock()
             model.predict.return_value = ["a", "b"]
@@ -438,10 +437,7 @@ class TestTuningPipeline:
         y = ["a", "b", "a", "b"]
 
         result = pipeline.run_tuning_pipeline(
-            model_factory,
-            "test_model",
-            {"alpha": [0.1, 1.0]},
-            X, y
+            model_factory, "test_model", {"alpha": [0.1, 1.0]}, X, y
         )
 
         assert "version" in result
@@ -457,9 +453,7 @@ class TestTuningPipeline:
         X = [[1, 2], [3, 4], [5, 6], [7, 8]]
         y = ["a", "b", "a", "b"]
 
-        version = pipeline.validate_and_register(
-            model, "test_model", X, y
-        )
+        version = pipeline.validate_and_register(model, "test_model", X, y)
 
         assert isinstance(version, ModelVersion)
 
@@ -468,10 +462,7 @@ class TestTuningPipeline:
         pipeline = TuningPipeline()
 
         # Register a good model
-        pipeline.registry.register(
-            "v1.0", "classifier",
-            ValidationMetrics(accuracy=0.85)
-        )
+        pipeline.registry.register("v1.0", "classifier", ValidationMetrics(accuracy=0.85))
 
         result = pipeline.auto_promote(threshold=0.8)
         assert result is True
@@ -481,10 +472,7 @@ class TestTuningPipeline:
         """Test auto-promotion below threshold."""
         pipeline = TuningPipeline()
 
-        pipeline.registry.register(
-            "v1.0", "classifier",
-            ValidationMetrics(accuracy=0.7)
-        )
+        pipeline.registry.register("v1.0", "classifier", ValidationMetrics(accuracy=0.7))
 
         result = pipeline.auto_promote(threshold=0.8)
         assert result is False
@@ -504,6 +492,7 @@ class TestTuningPipeline:
 # =============================================================================
 # Convenience Function Tests
 # =============================================================================
+
 
 class TestConvenienceFunctions:
     """Tests for convenience functions."""

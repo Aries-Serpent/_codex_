@@ -241,7 +241,7 @@ class TestMetricsRegistry:
             # This might raise an error or overwrite
             registry.register("metric", metric2)
             assert True  # Both registration styles are valid
-        except Exception as _err:
+        except (IOError, OSError) as _err:
             pass  # Error on duplicate is also valid
 
 

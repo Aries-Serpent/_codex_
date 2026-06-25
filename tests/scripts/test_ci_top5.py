@@ -29,6 +29,7 @@ if str(REPO_ROOT) not in sys.path:
 # 1. check_cross_references.py
 # ---------------------------------------------------------------------------
 
+
 class TestCheckCrossReferences:
     @pytest.fixture
     def mod(self):
@@ -114,6 +115,7 @@ class TestCheckCrossReferences:
 # 2. check_deferral_language.py
 # ---------------------------------------------------------------------------
 
+
 class TestCheckDeferralLanguage:
     @pytest.fixture
     def mod(self):
@@ -187,10 +189,12 @@ class TestCheckDeferralLanguage:
 # 3. batch_scan_integration.py
 # ---------------------------------------------------------------------------
 
+
 class TestBatchScanIntegration:
     @pytest.fixture
     def mod(self):
         import importlib.util
+
         _sys = sys
         spec = importlib.util.spec_from_file_location(
             "batch_scan_integration",
@@ -204,16 +208,30 @@ class TestBatchScanIntegration:
 
     def test_batch_scan_result_construction(self, mod):
         result = mod.BatchScanResult(
-            group="quick", ok=True, passed=5, failed=0, errors=0,
-            skipped=0, duration_s=1.0, failures=[], batches_run=1,
+            group="quick",
+            ok=True,
+            passed=5,
+            failed=0,
+            errors=0,
+            skipped=0,
+            duration_s=1.0,
+            failures=[],
+            batches_run=1,
         )
         assert result.ok is True
         assert result.failures == []
 
     def test_batch_scan_result_failure(self, mod):
         result = mod.BatchScanResult(
-            group="quick", ok=False, passed=0, failed=1, errors=0,
-            skipped=0, duration_s=0.5, failures=["test::failed"], batches_run=1,
+            group="quick",
+            ok=False,
+            passed=0,
+            failed=1,
+            errors=0,
+            skipped=0,
+            duration_s=0.5,
+            failures=["test::failed"],
+            batches_run=1,
         )
         assert not result.ok
         assert "test::failed" in result.failures
@@ -241,10 +259,12 @@ class TestBatchScanIntegration:
 # 4. ci_pattern_pipeline.py
 # ---------------------------------------------------------------------------
 
+
 class TestCiPatternPipeline:
     @pytest.fixture
     def mod(self):
         import importlib.util
+
         spec = importlib.util.spec_from_file_location(
             "ci_pattern_pipeline",
             CI_DIR / "ci_pattern_pipeline.py",
@@ -259,6 +279,7 @@ class TestCiPatternPipeline:
         mod._write_artefact(str(artefact), report, recorded=0, pipeline_status="ok")
         assert artefact.exists()
         import json
+
         loaded = json.loads(artefact.read_text())
         assert loaded["pipeline_status"] == "ok"
 
@@ -279,10 +300,12 @@ class TestCiPatternPipeline:
 # 5. check_pr_comments.py
 # ---------------------------------------------------------------------------
 
+
 class TestCheckPrComments:
     @pytest.fixture
     def mod(self):
         import importlib.util
+
         spec = importlib.util.spec_from_file_location(
             "check_pr_comments",
             CI_DIR / "check_pr_comments.py",

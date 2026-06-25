@@ -113,8 +113,8 @@ class _DatasetRegistry:
         for group in self._ENTRY_POINT_GROUPS:
             try:
                 entry_points = importlib.metadata.entry_points(group=group)
-            except Exception:  # pragma: no cover - metadata backend failure
-                entry_points = ()  # type: ignore[assignment]
+            except (ImportError, AttributeError):  # pragma: no cover - metadata backend failure
+                entry_points = ()
 
             for entry_point in entry_points:
                 key = self._normalise(entry_point.name)
@@ -122,7 +122,7 @@ class _DatasetRegistry:
                     continue
                 try:
                     value = entry_point.load()
-                except Exception as exc:  # pragma: no cover - plugin failure
+                except (ValueError, TypeError) as exc:  # pragma: no cover - plugin failure
                     self._failed_entry_points[key] = exc
                     continue
                 self._items[key] = value

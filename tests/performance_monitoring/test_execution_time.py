@@ -151,10 +151,10 @@ class TestSlowTestIdentification:
         ]
 
         buckets = {
-            "fast": [],      # < 1s
-            "medium": [],    # 1-5s
-            "slow": [],      # 5-10s
-            "very_slow": [], # > 10s
+            "fast": [],  # < 1s
+            "medium": [],  # 1-5s
+            "slow": [],  # 5-10s
+            "very_slow": [],  # > 10s
         }
 
         for test in test_results:
@@ -211,7 +211,7 @@ class TestDurationTrends:
 
         moving_averages = []
         for i in range(len(daily_durations) - window_size + 1):
-            window = daily_durations[i:i + window_size]
+            window = daily_durations[i : i + window_size]
             avg = sum(window) / window_size
             moving_averages.append(round(avg, 2))
 

@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-pytest.importorskip('torch')
+pytest.importorskip("torch")
 
 from codex.rag.postprocess import OutputProcessor, postprocess_output
 from codex.rag.utils import ProvenanceMetadata, safe_model_load
@@ -15,6 +15,7 @@ from codex.rag.utils import ProvenanceMetadata, safe_model_load
 # Check for PyTorch 2.x + Python 3.12 isinstance bug
 try:
     import torch
+
     _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
 except ImportError:
     _TORCH_312_BUG = False
@@ -49,7 +50,7 @@ class TestOutputProcessor:
 
         rules = [
             {"pattern": r"\w+@\w+\.\w+", "replacement": "[EMAIL]"},
-            {"pattern": r"password: \w+", "replacement": "password: [REDACTED]"}
+            {"pattern": r"password: \w+", "replacement": "password: [REDACTED]"},
         ]
 
         result = processor.scrub_output(text, redaction_rules=rules)
@@ -77,7 +78,7 @@ class TestOutputProcessor:
             {
                 "content": "Python is a programming language",
                 "score": 0.9,
-                "metadata": {"source_id": "python.txt", "chunk_id": 0}
+                "metadata": {"source_id": "python.txt", "chunk_id": 0},
             }
         ]
 
@@ -94,7 +95,7 @@ class TestOutputProcessor:
             {
                 "content": "Python is a programming language",
                 "score": 0.9,
-                "metadata": {"source_id": "python.txt"}
+                "metadata": {"source_id": "python.txt"},
             }
         ]
 
@@ -112,7 +113,7 @@ class TestOutputProcessor:
             {
                 "content": "Python is great for development. It has many libraries.",
                 "score": 0.95,
-                "metadata": {"source_id": "intro.py", "chunk_id": 1}
+                "metadata": {"source_id": "intro.py", "chunk_id": 1},
             }
         ]
 
@@ -128,9 +129,7 @@ class TestOutputProcessor:
         processor = OutputProcessor()
 
         output = "Test output"
-        retrieved_docs = [
-            {"content": "Short", "score": 0.9, "metadata": {}}
-        ]
+        retrieved_docs = [{"content": "Short", "score": 0.9, "metadata": {}}]
 
         evidence = processor.extract_evidence_tags(output, retrieved_docs)
 
@@ -144,7 +143,7 @@ class TestOutputProcessor:
         output = "This is some content."
         evidence = [
             {"source_id": "file1.py", "score": 0.9},
-            {"source_id": "file2.py", "score": 0.8}
+            {"source_id": "file2.py", "score": 0.8},
         ]
 
         result = processor.add_citations(output, evidence, citation_style="inline")
@@ -160,7 +159,7 @@ class TestOutputProcessor:
         output = "This is some content."
         evidence = [
             {"source_id": "file1.py", "score": 0.9},
-            {"source_id": "file2.py", "score": 0.8}
+            {"source_id": "file2.py", "score": 0.8},
         ]
 
         result = processor.add_citations(output, evidence, citation_style="footnote")
@@ -194,11 +193,7 @@ class TestOutputProcessor:
         processor = OutputProcessor()
 
         output = "Content"
-        evidence = [
-            {"source_id": "file1.py"},
-            {"source_id": "file1.py"},
-            {"source_id": "file2.py"}
-        ]
+        evidence = [{"source_id": "file1.py"}, {"source_id": "file1.py"}, {"source_id": "file2.py"}]
 
         result = processor.add_citations(output, evidence, citation_style="inline")
 
@@ -226,14 +221,11 @@ class TestPostprocessOutputFunction:
             {
                 "content": "Python is a language used for programming",
                 "score": 0.9,
-                "metadata": {"source_id": "python.txt"}
+                "metadata": {"source_id": "python.txt"},
             }
         ]
 
-        processed, _evidence = postprocess_output(
-            output,
-            retrieved_docs=retrieved_docs
-        )
+        processed, _evidence = postprocess_output(output, retrieved_docs=retrieved_docs)
 
         assert "Python" in processed
         # Evidence may be extracted if overlap detected
@@ -241,14 +233,9 @@ class TestPostprocessOutputFunction:
     def test_postprocess_output_with_redaction(self):
         """Test post-processing with redaction rules."""
         output = "User email: test@example.com"
-        redaction_rules = [
-            {"pattern": r"\w+@\w+\.\w+", "replacement": "[EMAIL]"}
-        ]
+        redaction_rules = [{"pattern": r"\w+@\w+\.\w+", "replacement": "[EMAIL]"}]
 
-        processed, _evidence = postprocess_output(
-            output,
-            redaction_rules=redaction_rules
-        )
+        processed, _evidence = postprocess_output(output, redaction_rules=redaction_rules)
 
         assert "[EMAIL]" in processed
         assert "test@example.com" not in processed
@@ -260,15 +247,12 @@ class TestPostprocessOutputFunction:
             {
                 "content": "Python is great for data science. It has NumPy and Pandas.",
                 "score": 0.95,
-                "metadata": {"source_id": "python_guide.md", "chunk_id": 0}
+                "metadata": {"source_id": "python_guide.md", "chunk_id": 0},
             }
         ]
 
         processed, evidence = postprocess_output(
-            output,
-            retrieved_docs=retrieved_docs,
-            include_citations=True,
-            citation_style="inline"
+            output, retrieved_docs=retrieved_docs, include_citations=True, citation_style="inline"
         )
 
         # If evidence found, should include source
@@ -279,17 +263,11 @@ class TestPostprocessOutputFunction:
         """Test post-processing without citations."""
         output = "Test content"
         retrieved_docs = [
-            {
-                "content": "Test content",
-                "score": 0.9,
-                "metadata": {"source_id": "test.py"}
-            }
+            {"content": "Test content", "score": 0.9, "metadata": {"source_id": "test.py"}}
         ]
 
         processed, _evidence = postprocess_output(
-            output,
-            retrieved_docs=retrieved_docs,
-            include_citations=False
+            output, retrieved_docs=retrieved_docs, include_citations=False
         )
 
         # Should not include citations
@@ -307,7 +285,7 @@ class TestProvenanceMetadata:
             chunk_id="chunk_123",
             indexed_at=datetime.now(),
             embedding_model="all-MiniLM-L6-v2",
-            retrieval_score=0.85
+            retrieval_score=0.85,
         )
 
         assert prov.source_file == Path("test.py")
@@ -325,7 +303,7 @@ class TestProvenanceMetadata:
             embedding_model="model",
             retrieval_score=0.5,
             char_range=(0, 100),
-            metadata={"key": "value"}
+            metadata={"key": "value"},
         )
 
         assert prov.char_range == (0, 100)
@@ -342,7 +320,7 @@ class TestProvenanceMetadata:
             embedding_model="test-model",
             retrieval_score=0.95,
             char_range=(50, 150),
-            metadata={"extra": "info"}
+            metadata={"extra": "info"},
         )
 
         result = prov.to_dict()
@@ -365,7 +343,7 @@ class TestProvenanceMetadata:
             "embedding_model": "model-v1",
             "retrieval_score": 0.88,
             "char_range": [100, 200],
-            "metadata": {"test": "data"}
+            "metadata": {"test": "data"},
         }
 
         prov = ProvenanceMetadata.from_dict(data)
@@ -379,7 +357,9 @@ class TestProvenanceMetadata:
 class TestSafeModelLoad:
     """Test suite for safe_model_load utility."""
 
-    @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
+    @pytest.mark.skipif(
+        _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
+    )
     def test_safe_model_load_no_meta_tensors(self):
         """Test safe loading when model has no meta tensors."""
         mock_model = MagicMock()
@@ -391,7 +371,9 @@ class TestSafeModelLoad:
         # Should call to() method
         mock_model.to.assert_called_with("cpu")
 
-    @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
+    @pytest.mark.skipif(
+        _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
+    )
     def test_safe_model_load_with_meta_tensors(self):
         """Test safe loading when model has meta tensors."""
         mock_param = MagicMock()
@@ -409,7 +391,9 @@ class TestSafeModelLoad:
         # Should call to_empty() when meta tensors detected
         mock_model.to_empty.assert_called_with(device="cpu")
 
-    @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
+    @pytest.mark.skipif(
+        _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
+    )
     def test_safe_model_load_handles_errors(self):
         """Test that safe_model_load handles errors gracefully."""
         mock_model = MagicMock()
@@ -420,7 +404,9 @@ class TestSafeModelLoad:
 
         assert result is mock_model
 
-    @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
+    @pytest.mark.skipif(
+        _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
+    )
     def test_safe_model_load_no_modules(self):
         """Test safe loading when model has no named_modules."""
         mock_model = MagicMock(spec=[])  # No named_modules attribute
@@ -430,7 +416,9 @@ class TestSafeModelLoad:
         # Should return model as-is
         assert result is mock_model
 
-    @pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
+    @pytest.mark.skipif(
+        _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
+    )
     def test_safe_model_load_with_device_attribute(self):
         """Test safe loading with direct device attribute."""
         mock_model = MagicMock(spec=["device", "to_empty"])

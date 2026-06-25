@@ -574,8 +574,8 @@ def cmd_ff(
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("fast_forward_safe_files", _FF_SCRIPT)
-    ff_mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
-    spec.loader.exec_module(ff_mod)  # type: ignore[union-attr]
+    ff_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ff_mod)
 
     if not repo:
         typer.echo("--repo is required (or set GITHUB_REPOSITORY)", err=True)

@@ -47,7 +47,7 @@ from codex_ml.safety import (
 )
 from codex_ml.training.dataloader_utils import make_generator, seed_worker
 from codex_ml.training.eval import evaluate
-from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
+from codex_ml.utils.checkpointing import (
     load_training_checkpoint,
     save_checkpoint,
 )
@@ -81,21 +81,21 @@ def _torch_manual_training_available(torch_module: Any) -> bool:
 
 try:  # pragma: no cover - optional dependency in tests
     from omegaconf import DictConfig, OmegaConf
-except Exception as exc:  # pragma: no cover - OmegaConf optional
+except (ImportError, AttributeError) as exc:  # pragma: no cover - OmegaConf optional
     logger.debug("OmegaConf unavailable: %s", exc)
-    DictConfig = None  # type: ignore[assignment,misc]
-    OmegaConf = None  # type: ignore[assignment,misc]
+    DictConfig = None
+    OmegaConf = None
 
 try:  # pragma: no cover - guard should never raise fatally
     from codex_ml.tracking.mlflow_guard import (
         bootstrap_offline_tracking as _bootstrap_offline_tracking,
     )
-except Exception:  # pragma: no cover - guard import optional
+except (ImportError, AttributeError):  # pragma: no cover - guard import optional
     pass
 else:
     try:
         _bootstrap_offline_tracking()
-    except Exception:  # pragma: no cover - best-effort
+    except (ImportError, AttributeError):  # pragma: no cover - best-effort
         logger.debug("MLflow guard initialization failed", exc_info=True)
 
 __all__ = [
@@ -206,8 +206,9 @@ def _listify_texts(value: Any) -> list[str]:
     try:
         return [str(item) for item in list(value)]
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
         return [str(value)]
 
 
@@ -496,19 +497,19 @@ def _resolve_system_metrics_path(cfg: TrainingRunConfig, base_dir: Path) -> Opti
 def _start_system_metrics_logger(path: Path, interval: float):
     try:
         from codex_ml.monitoring.system_metrics import SystemMetricsLogger
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger.start()
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     return metrics_logger
@@ -521,9 +522,10 @@ def _stop_system_metrics_logger(logger: Any) -> None:
     if callable(stopper):
         try:
             stopper()
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
@@ -575,7 +577,7 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
                 return False
         try:
             return bool(int(raw))
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return bool(raw)
 
@@ -663,17 +665,17 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
             lora_enable = _coerce_bool_value(lora_section.get("enable"), lora_enable)
         if lora_section.get("r") is not None:
             try:
-                lora_r_value = int(lora_section.get("r"))  # type: ignore[arg-type]
+                lora_r_value = int(lora_section.get("r"))
             except (TypeError, ValueError):
                 lora_r_value = base.lora_r
         if lora_section.get("alpha") is not None:
             try:
-                lora_alpha_value = int(lora_section.get("alpha"))  # type: ignore[arg-type]
+                lora_alpha_value = int(lora_section.get("alpha"))
             except (TypeError, ValueError):
                 lora_alpha_value = base.lora_alpha
         if lora_section.get("dropout") is not None:
             try:
-                lora_dropout_value = float(lora_section.get("dropout"))  # type: ignore[arg-type]
+                lora_dropout_value = float(lora_section.get("dropout"))
             except (TypeError, ValueError):
                 lora_dropout_value = base.lora_dropout
 
@@ -887,7 +889,8 @@ def run_functional_training(
                         sanitized_text, stage=stage, bypass=safety_cfg.bypass
                     )
                 except SafetyViolation as exc:
-                    logger.debug(f"SafetyViolation: {exc}")
+                    error_type = type(exc).__name__
+                    logger.debug(f"SafetyViolation: <ERROR_TYPE>")
                     match_ids: list[str] = []
                     for match in exc.decision.matches:
                         if isinstance(match, dict):
@@ -909,7 +912,8 @@ def run_functional_training(
                 try:
                     moderation_decision = moderation_adapter.enforce(sanitized_text, stage=stage)
                 except ModerationRejection as exc:
-                    logger.debug(f"ModerationRejection: {exc}")
+                    error_type = type(exc).__name__
+                    logger.debug(f"ModerationRejection: <ERROR_TYPE>")
                     context = json.dumps(
                         {
                             "stage": stage,
@@ -948,9 +952,9 @@ def run_functional_training(
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
 
     try:
-        from datasets import Dataset  # type: ignore[attr-defined]
+        from datasets import Dataset
         from transformers import AutoTokenizer
-    except Exception:  # pragma: no cover - optional dependencies
+    except (IOError, OSError):  # pragma: no cover - optional dependencies
         # Track failed optional dependencies
         if "datasets" not in missing_optional:
             missing_optional = list(missing_optional) + ["datasets"]
@@ -964,7 +968,7 @@ def run_functional_training(
         try:
             import torch
             from torch.utils.data import DataLoader
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             return _fallback_metrics_result(cfg, train_texts)
         if not _torch_manual_training_available(torch):
@@ -1238,7 +1242,7 @@ def run_functional_training(
         from transformers import DataCollatorWithPadding  # type: ignore
 
         data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-    except Exception as exc:  # pragma: no cover - optional path
+    except (IOError, OSError) as exc:  # pragma: no cover - optional path
         logger.debug("DataCollatorWithPadding unavailable: %s", exc)
         data_collator = None
 
@@ -1329,13 +1333,13 @@ def run_functional_training(
             return Dataset.from_list(records)
 
         features: dict[str, list[list[int]]] = {}
-        labels: list[list[int]] = []  # type: ignore[no-redef]
+        labels: list[list[int]] = []
         for record in encodings:
             ids = list(record.get("input_ids", []))
             mask = list(record.get("attention_mask", [1] * len(ids)))
             ids = _pad_sequence(ids, int(pad_token_id), int(pad_to))
             mask = _pad_sequence(mask, 0, int(pad_to))
-            labels.append([token if attn else -100 for token, attn in zip(ids, mask, strict=False)])  # type: ignore[arg-type]
+            labels.append([token if attn else -100 for token, attn in zip(ids, mask, strict=False)])
             features.setdefault("input_ids", []).append(ids)
             features.setdefault("attention_mask", []).append(mask)
             for key, value in record.items():
@@ -1528,7 +1532,7 @@ def build_dataloader(
 
     try:
         from torch.utils.data import DataLoader
-    except Exception:  # pragma: no cover - torch optional dependency
+    except (ImportError, AttributeError):  # pragma: no cover - torch optional dependency
         return iter(dataset)
 
     def _lookup(key: str, default: Any) -> Any:
@@ -1564,13 +1568,13 @@ def _evaluate_model(
 
     try:
         from torch.utils.data import DataLoader
-    except Exception:  # pragma: no cover - torch optional
+    except (ImportError, AttributeError):  # pragma: no cover - torch optional
         return {}
 
     try:
         if len(dataset) == 0:
             return {}
-    except Exception:  # pragma: no cover - len may not be defined
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - len may not be defined
         logger.debug("Suppressed exception in handler", exc_info=True)
     torch_dataset = dataset
     if hasattr(dataset, "with_format"):
@@ -1578,7 +1582,7 @@ def _evaluate_model(
             formatted = dataset.with_format("torch")
             if formatted is not None:
                 torch_dataset = formatted
-        except Exception:  # pragma: no cover - fallback to raw dataset
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - fallback to raw dataset
             logger.debug("Suppressed exception in handler", exc_info=True)
     loader = DataLoader(torch_dataset, batch_size=batch_size)
 
@@ -1588,7 +1592,7 @@ def _evaluate_model(
             first_param = next(model.parameters())
         except StopIteration:
             first_param = None
-        except Exception:  # pragma: no cover - non-module models
+        except (ImportError, AttributeError):  # pragma: no cover - non-module models
             first_param = None
         if first_param is not None:
             device = getattr(first_param, "device", None)
@@ -1644,8 +1648,9 @@ def _evaluate_model(
         try:
             result["val_perplexity"] = float(math.exp(result["val_loss"]))
         except OverflowError as e:
-            logger.debug(f"OverflowError: {e}")
-            logger.warning(f"OverflowError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"OverflowError: <ERROR_TYPE>")
+            logger.warning(f"OverflowError: <ERROR_TYPE>", exc_info=True)
             result["val_perplexity"] = float("inf")
     if "token_accuracy" in metrics:
         result["val_token_accuracy"] = float(metrics["token_accuracy"])
@@ -1657,7 +1662,8 @@ def _evaluate_model(
     try:
         result.setdefault("num_batches", float(len(loader)))
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
 
     return result

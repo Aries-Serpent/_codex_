@@ -104,7 +104,7 @@ PRODUCTION READY: YES ✅
 - Commit 5: SBOM generation + compliance documentation
 
 ### 4. SBOM Artifact ✅
-**Files:** 
+**Files:**
 - `SBOM.json` (CycloneDX 1.4)
 - `SBOM.spdx.json` (SPDX 2.3)
 

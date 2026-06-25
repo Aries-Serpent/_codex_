@@ -148,7 +148,7 @@ Authentication Tests         █████████████████
 Authorization Tests          ████████████████████  8/8    ✅ PASS
 Input Sanitization           ████████████████████  10/10  ✅ PASS
 API Security Headers         ████████████████████  6/6    ✅ PASS
-Cryptography/Secrets         ████████████████████  4/4    ✅ PASS
+Cryptography/Secrets         ████████████████████  4/4    ✅ PASS  # pragma: allowlist secret
 CORS/CSRF Protection         ████████████████████  2/2    ✅ PASS
 ──────────────────────────────────────────────────
 TOTAL                        ████████████████████  42/42  ✅ PASS
@@ -224,7 +224,7 @@ TOTAL                        █████████████████
 ### Final Risk Score Methodology
 
 ```
-risk_score = (cvss_weight × cvss_score +
+risk_score = (cvss_weight × cvss_score +  # pragma: allowlist secret
               entropy_weight × entropy_score +
               context_weight × context_score) / sum_weights
 
@@ -239,7 +239,7 @@ where:
 | Component | Score | Weight | Contribution | Notes |
 |-----------|-------|--------|--------------|-------|
 | **CVSS Score** | 1.5/10 | 0.50 | 0.75 | 1 remaining HIGH issue (non-critical) |
-| **Entropy Score** | 0.2/10 | 0.30 | 0.06 | No secrets detected in last 100 commits |
+| **Entropy Score** | 0.2/10 | 0.30 | 0.06 | No secrets detected in last 100 commits | <!-- pragma: allowlist secret -->
 | **Context Score** | 0.3/10 | 0.20 | 0.06 | Low-risk operational impact |
 | | | | **0.87** | **Sum (normalized to 1.0)** |
 | | | | **0.6/10** | **Final Risk Score** |
@@ -263,7 +263,7 @@ Improvement:      91.7%   ✅ EXCELLENT
 |---|---|---|
 | **Vulnerability Density** | 0.11 findings/100 LOC (low) | ✅ Acceptable |
 | **Critical Path Exposure** | Admin-only function with controls | ✅ Mitigated |
-| **Data Exposure Risk** | Zero secrets in code/logs | ✅ Secure |
+| **Data Exposure Risk** | Zero secrets in code/logs | ✅ Secure | <!-- pragma: allowlist secret -->
 | **Dependency Risk** | Zero known CVEs | ✅ Safe |
 | **Operational Risk** | Comprehensive monitoring enabled | ✅ Monitored |
 
@@ -325,7 +325,7 @@ Improvement:      91.7%   ✅ EXCELLENT
 
 1. **Pre-Deployment:** Verify secret management is configured in production environment
 2. **Post-Deployment:** Enable security monitoring and alerting
-3. **Phase 8 Tasks:** 
+3. **Phase 8 Tasks:**
    - Schedule hardening of admin-only functions (CWE-78 mitigation)
    - Plan post-deployment security audit (30 days)
    - Review and update security runbooks

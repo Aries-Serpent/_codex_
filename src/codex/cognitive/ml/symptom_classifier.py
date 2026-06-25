@@ -313,7 +313,7 @@ class NaiveBayesClassifier:
         predictions = []
 
         for proba in probas:
-            best_class = max(proba, key=proba.get)  # type: ignore[arg-type]
+            best_class = max(proba, key=proba.get)
             predictions.append(best_class)
 
         return predictions

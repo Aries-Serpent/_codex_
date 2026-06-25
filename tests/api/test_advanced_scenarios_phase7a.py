@@ -26,7 +26,7 @@ class TestAdvancedAuthenticationScenarios:
     def test_different_auth_token_types(self, token_type):
         """Test different authentication token types"""
         app = FastAPI()
-        client = TestClient(app)
+        TestClient(app)
 
         @app.get("/protected")
         def protected_endpoint(authorization: Optional[str] = None):
@@ -70,7 +70,7 @@ class TestAdvancedAuthenticationScenarios:
     def test_role_based_access_control(self, privilege_level):
         """Test role-based access control"""
         app = FastAPI()
-        client = TestClient(app)
+        TestClient(app)
 
         @app.get("/admin")
         def admin_endpoint(role: str = "guest"):
@@ -103,7 +103,7 @@ class TestAdvancedAuthenticationScenarios:
                 sessions[session_id] = {
                     "user_id": user_id,
                     "created_at": datetime.now(),
-                    "last_activity": datetime.now()
+                    "last_activity": datetime.now(),
                 }
                 return session_id
 
@@ -121,14 +121,14 @@ class TestAdvancedAuthenticationScenarios:
 
     def test_permission_inheritance_chains(self):
         """Test permission inheritance in role hierarchies"""
-        app = FastAPI()
+        FastAPI()
 
         class RoleHierarchy:
             PERMISSIONS = {
                 "super_admin": ["read", "write", "delete", "admin"],
                 "admin": ["read", "write", "delete"],
                 "user": ["read", "write"],
-                "guest": ["read"]
+                "guest": ["read"],
             }
 
             @staticmethod
@@ -140,6 +140,7 @@ class TestAdvancedAuthenticationScenarios:
 
     def test_login_attempt_rate_limiting(self):
         """Test login attempt rate limiting"""
+
         class LoginRateLimiter:
             def __init__(self, max_attempts: int = 5, window_seconds: int = 300):
                 self.max_attempts = max_attempts
@@ -153,8 +154,7 @@ class TestAdvancedAuthenticationScenarios:
 
                 # Remove old attempts outside window
                 self.attempts[username] = [
-                    t for t in self.attempts[username]
-                    if now - t < self.window
+                    t for t in self.attempts[username] if now - t < self.window
                 ]
 
                 if len(self.attempts[username]) >= self.max_attempts:
@@ -196,13 +196,14 @@ class TestComplexRequestResponseScenarios:
                 "total": total,
                 "page": page,
                 "page_size": page_size,
-                "total_pages": total_pages
+                "total_pages": total_pages,
             }
 
         assert app is not None
 
     def test_nested_object_validation(self):
         """Test nested object request/response validation"""
+
         class Address(BaseModel):
             street: str
             city: str
@@ -218,13 +219,13 @@ class TestComplexRequestResponseScenarios:
             name="John Doe",
             email="john@example.com",
             address=Address(street="123 Main St", city="Boston", zip_code="02101"),
-            phones=["+1234567890"]
+            phones=["+1234567890"],
         )
         assert profile.name == "John Doe"
 
     def test_polymorphic_response_handling(self):
         """Test polymorphic response types"""
-        app = FastAPI()
+        FastAPI()
 
         class SuccessResponse(BaseModel):
             status: str = "success"
@@ -247,6 +248,7 @@ class TestComplexRequestResponseScenarios:
             def generate():
                 for i in range(100):
                     yield f"data: {i}\n"
+
             return generate()
 
         assert app is not None
@@ -269,16 +271,13 @@ class TestComplexRequestResponseScenarios:
             for op in request.operations:
                 results.append({"id": op.get("id"), "status": "processed"})
 
-            return {
-                "results": results,
-                "successful": len(results),
-                "failed": 0
-            }
+            return {"results": results, "successful": len(results), "failed": 0}
 
         assert app is not None
 
     def test_conditional_response_fields(self):
         """Test conditional response fields"""
+
         class ConditionalResponse(BaseModel):
             status: str
             data: Optional[Dict[str, Any]] = None
@@ -287,9 +286,7 @@ class TestComplexRequestResponseScenarios:
 
         # Success case
         success = ConditionalResponse(
-            status="success",
-            data={"key": "value"},
-            timestamp=datetime.now()
+            status="success", data={"key": "value"}, timestamp=datetime.now()
         )
         assert success.data is not None
         assert success.error is None
@@ -347,7 +344,7 @@ class TestNetworkFailureRecoveryPatterns:
                 self.max_retries = max_retries
 
             def get_delay(self, attempt: int) -> float:
-                delay = self.base_delay * (2 ** attempt)
+                delay = self.base_delay * (2**attempt)
                 jitter = random.uniform(0, delay * 0.1)
                 return min(delay + jitter, 300)  # Cap at 5 minutes
 
@@ -358,6 +355,7 @@ class TestNetworkFailureRecoveryPatterns:
 
     def test_circuit_breaker_state_transitions(self):
         """Test circuit breaker state transitions"""
+
         class CircuitBreaker:
             STATE_CLOSED = "closed"
             STATE_OPEN = "open"
@@ -403,11 +401,10 @@ class TestNetworkFailureRecoveryPatterns:
 
     def test_bulkhead_pattern_isolation(self):
         """Test bulkhead pattern for resource isolation"""
+
         class BulkheadExecutor:
             def __init__(self, thread_pool_size: int = 10):
-                self.executor = concurrent.futures.ThreadPoolExecutor(
-                    max_workers=thread_pool_size
-                )
+                self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=thread_pool_size)
 
             def execute(self, func, *args, **kwargs):
                 return self.executor.submit(func, *args, **kwargs)
@@ -427,6 +424,7 @@ class TestNetworkFailureRecoveryPatterns:
 
     def test_timeout_handling_at_different_levels(self):
         """Test timeout handling at connection, read, and write levels"""
+
         class TimeoutConfig:
             CONNECTION_TIMEOUT = 5.0
             READ_TIMEOUT = 30.0
@@ -439,6 +437,7 @@ class TestNetworkFailureRecoveryPatterns:
 
     def test_partial_failure_graceful_degradation(self):
         """Test graceful degradation on partial failures"""
+
         class Service:
             def __init__(self):
                 self.cache = {}
@@ -463,6 +462,7 @@ class TestNetworkFailureRecoveryPatterns:
 
     def test_fallback_chain_execution(self):
         """Test fallback chain execution"""
+
         class FallbackChain:
             def __init__(self):
                 self.fallbacks = []
@@ -483,7 +483,7 @@ class TestNetworkFailureRecoveryPatterns:
         chain.add_fallback(lambda: "fallback1")
         chain.add_fallback(lambda: "fallback2")
 
-        result = chain.execute(lambda: 1/0)  # Primary fails
+        result = chain.execute(lambda: 1 / 0)  # Primary fails
         assert result == "fallback1"
 
 
@@ -520,19 +520,19 @@ class TestEdgeCasesAndCornerCases:
 
     def test_boundary_value_conditions(self):
         """Test boundary value conditions"""
-        app = FastAPI()
+        FastAPI()
 
         class BoundedModel(BaseModel):
             value: int  # typically 0 to 100
 
         test_values = [
-            -1,      # Below minimum
-            0,       # Minimum
-            1,       # Minimum + 1
-            50,      # Midpoint
-            99,      # Maximum - 1
-            100,     # Maximum
-            101,     # Above maximum
+            -1,  # Below minimum
+            0,  # Minimum
+            1,  # Minimum + 1
+            50,  # Midpoint
+            99,  # Maximum - 1
+            100,  # Maximum
+            101,  # Above maximum
             2147483647,  # Max int32
         ]
 
@@ -542,7 +542,7 @@ class TestEdgeCasesAndCornerCases:
 
     def test_precision_loss_in_numeric_operations(self):
         """Test precision loss in numeric operations"""
-        app = FastAPI()
+        FastAPI()
 
         class FloatModel(BaseModel):
             value: float
@@ -551,11 +551,11 @@ class TestEdgeCasesAndCornerCases:
             0.1 + 0.2,  # Classic floating point issue
             1e-10,
             1e10,
-            float('inf'),
+            float("inf"),
         ]
 
         for val in test_values:
-            if val != float('inf'):  # Skip infinity
+            if val != float("inf"):  # Skip infinity
                 model = FloatModel(value=val)
                 assert model.value is not None
 
@@ -564,20 +564,20 @@ class TestEdgeCasesAndCornerCases:
         import unicodedata
 
         test_strings = [
-            "café",           # é as single character
-            "cafe\u0301",    # café as e + combining accent
-            "🎉🎊",          # Emoji
-            "中文",           # Chinese
-            "العربية",       # Arabic
+            "café",  # é as single character
+            "cafe\u0301",  # café as e + combining accent
+            "🎉🎊",  # Emoji
+            "中文",  # Chinese
+            "العربية",  # Arabic
         ]
 
         for s in test_strings:
-            normalized = unicodedata.normalize('NFC', s)
+            normalized = unicodedata.normalize("NFC", s)
             assert len(normalized) > 0
 
     def test_array_bounds_and_empty_collections(self):
         """Test array bounds and empty collections"""
-        app = FastAPI()
+        FastAPI()
 
         class CollectionModel(BaseModel):
             items: List[str] = []
@@ -590,7 +590,7 @@ class TestEdgeCasesAndCornerCases:
         # Large collections
         model2 = CollectionModel(
             items=[f"item_{i}" for i in range(10000)],
-            mapping={f"key_{i}": f"val_{i}" for i in range(1000)}
+            mapping={f"key_{i}": f"val_{i}" for i in range(1000)},
         )
         assert len(model2.items) == 10000
 

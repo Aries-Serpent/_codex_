@@ -58,7 +58,7 @@ def render_scorecard(
 
     policy_section = ""
     if policy_map:
-        ra_rules: dict[str, Any] = policy_map.get("ra_rules", {})  # type: ignore[assignment]
+        ra_rules: dict[str, Any] = policy_map.get("ra_rules", {})
         policy_lines = ["## RA Policy Reference"]
         for ra_id, desc in sorted(ra_rules.items()):
             policy_lines.append(f"- **{ra_id}**: {desc}")

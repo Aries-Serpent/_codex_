@@ -48,7 +48,7 @@ def _discover_epoch_dirs(root: Path) -> list[Path]:
             continue
         try:
             epoch = int(m.group(1))
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             continue
         out.append((epoch, p))
@@ -63,7 +63,7 @@ def _read_latest_epoch(root: Path) -> Optional[int]:
     try:
         data = json.loads(latest.read_text())
         return int(data.get("epoch"))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -155,7 +155,7 @@ def prune_checkpoints(
     pruned: list[int] = []
     kept: list[int] = []
     epoch_to_path = {
-        int(EPOCH_DIR_RE.match(p.name).group(1)): p  # type: ignore[union-attr]
+        int(EPOCH_DIR_RE.match(p.name).group(1)): p
         for p in epoch_dirs
         if EPOCH_DIR_RE.match(p.name)
     }
@@ -172,7 +172,7 @@ def prune_checkpoints(
             path = epoch_to_path[e]
             try:
                 shutil.rmtree(path)
-            except Exception as ex:
+            except (IOError, OSError) as ex:
                 logger.warning("Failed to delete checkpoint dir %s: %s", path, ex)
 
     return {

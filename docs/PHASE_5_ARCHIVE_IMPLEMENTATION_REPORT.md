@@ -82,7 +82,7 @@ Log deletion in retention_log.json
 #### New Fields in `sessions` Table
 
 ```sql
-ALTER TABLE sessions ADD COLUMN archive_status TEXT DEFAULT 'active' 
+ALTER TABLE sessions ADD COLUMN archive_status TEXT DEFAULT 'active'
     CHECK (archive_status IN ('active', 'archived', 'deleted'));
 ALTER TABLE sessions ADD COLUMN archive_location TEXT;
 ALTER TABLE sessions ADD COLUMN archive_timestamp TEXT;

@@ -27,6 +27,7 @@ import pytest
 @dataclass
 class RAGBenchmarkResult:
     """Result of a RAG benchmark run."""
+
     name: str
     duration_ms: float
     iterations: int
@@ -52,6 +53,7 @@ def get_memory_mb() -> float:
     """Get current memory usage in MB."""
     try:
         import psutil
+
         return psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024
     except ImportError:
         return 0.0
@@ -76,6 +78,7 @@ class TestIndexingBenchmarks:
 
     def test_text_chunking_throughput(self) -> None:
         """Benchmark text chunking throughput."""
+
         def chunk_text(text: str, chunk_size: int = 512, overlap: int = 50) -> list[str]:
             chunks = []
             start = 0
@@ -103,7 +106,9 @@ class TestIndexingBenchmarks:
 
         def generate_embedding(text: str) -> list[float]:
             # Simulate embedding generation
-            hash_val = int(hashlib.md5(text.encode(), usedforsecurity=False).hexdigest()[:8], 16)  # nosec B324 - Not for security, test data generation only
+            hash_val = int(
+                hashlib.md5(text.encode(), usedforsecurity=False).hexdigest()[:8], 16
+            )  # nosec B324 - Not for security, test data generation only
             return [(hash_val + i) % 1000 / 1000.0 for i in range(embedding_dim)]
 
         texts = [f"Sample document number {i}" for i in range(100)]
@@ -126,8 +131,7 @@ class TestIndexingBenchmarks:
         def insert_to_index(doc_id: str, embedding: list[float]) -> None:
             index[doc_id] = embedding
 
-        embeddings = [[0.01 * (i + j) for j in range(embedding_dim)]
-                      for i in range(1000)]
+        embeddings = [[0.01 * (i + j) for j in range(embedding_dim)] for i in range(1000)]
 
         start = time.perf_counter()
         for i, emb in enumerate(embeddings):
@@ -151,8 +155,10 @@ class TestIndexingBenchmarks:
         num_batches = 10
 
         batches = [
-            [(f"doc_{b}_{i}", [0.01 * (b + i + j) for j in range(embedding_dim)])
-             for i in range(batch_size)]
+            [
+                (f"doc_{b}_{i}", [0.01 * (b + i + j) for j in range(embedding_dim)])
+                for i in range(batch_size)
+            ]
             for b in range(num_batches)
         ]
 
@@ -167,6 +173,7 @@ class TestIndexingBenchmarks:
 
     def test_index_building_latency(self) -> None:
         """Benchmark complete index building latency."""
+
         def build_index(num_docs: int) -> dict[str, Any]:
             index = {
                 "documents": {},
@@ -201,17 +208,15 @@ class TestRetrievalBenchmarks:
     def sample_index(self) -> dict[str, list[float]]:
         """Create a sample index for testing."""
         embedding_dim = 128
-        return {
-            f"doc_{i}": [0.01 * (i + j) for j in range(embedding_dim)]
-            for i in range(1000)
-        }
+        return {f"doc_{i}": [0.01 * (i + j) for j in range(embedding_dim)] for i in range(1000)}
 
     def test_similarity_search_throughput(self, sample_index: dict[str, list[float]]) -> None:
         """Benchmark similarity search throughput."""
+
         def cosine_similarity(a: list[float], b: list[float]) -> float:
             dot = sum(x * y for x, y in zip(a, b))
-            norm_a = sum(x ** 2 for x in a) ** 0.5
-            norm_b = sum(x ** 2 for x in b) ** 0.5
+            norm_a = sum(x**2 for x in a) ** 0.5
+            norm_b = sum(x**2 for x in b) ** 0.5
             return dot / (norm_a * norm_b) if norm_a > 0 and norm_b > 0 else 0
 
         def search(query_embedding: list[float], top_k: int = 10) -> list[tuple[str, float]]:
@@ -235,6 +240,7 @@ class TestRetrievalBenchmarks:
 
     def test_top_k_retrieval_latency(self, sample_index: dict[str, list[float]]) -> None:
         """Benchmark top-k retrieval latency."""
+
         def retrieve_top_k(query: list[float], k: int) -> list[str]:
             # Simplified scoring
             scores = {
@@ -260,11 +266,7 @@ class TestRetrievalBenchmarks:
         """Benchmark filtered retrieval throughput."""
         metadata = {doc_id: {"category": i % 5} for i, doc_id in enumerate(sample_index.keys())}
 
-        def filtered_search(
-            query: list[float],
-            filter_fn: Any,
-            top_k: int = 10
-        ) -> list[str]:
+        def filtered_search(query: list[float], filter_fn: Any, top_k: int = 10) -> list[str]:
             filtered_docs = {
                 doc_id: emb
                 for doc_id, emb in sample_index.items()
@@ -278,6 +280,7 @@ class TestRetrievalBenchmarks:
             return [doc_id for doc_id, _ in sorted_docs[:top_k]]
 
         query = [0.1] * 128
+
         def filter_fn(m):
             return m.get("category", -1) == 1
 
@@ -292,6 +295,7 @@ class TestRetrievalBenchmarks:
 
     def test_reranking_latency(self) -> None:
         """Benchmark reranking latency."""
+
         def rerank(query: str, documents: list[str]) -> list[tuple[str, float]]:
             # Simulate reranking with simple scoring
             scores = []
@@ -305,8 +309,9 @@ class TestRetrievalBenchmarks:
             return scores
 
         query = "sample query about machine learning"
-        documents = [f"Document {i} about various topics including machine learning"
-                     for i in range(100)]
+        documents = [
+            f"Document {i} about various topics including machine learning" for i in range(100)
+        ]
 
         latencies = []
         for _ in range(50):
@@ -328,6 +333,7 @@ class TestEndToEndRAGBenchmarks:
 
     def test_full_rag_pipeline_latency(self) -> None:
         """Benchmark complete RAG pipeline latency."""
+
         # Simulated components
         def embed_query(query: str) -> list[float]:
             return [0.1 * len(query)] * 128
@@ -365,7 +371,9 @@ class TestEndToEndRAGBenchmarks:
         def cached_rag(query: str) -> str:
             nonlocal cache_hits, cache_misses
 
-            cache_key = hashlib.md5(query.encode(), usedforsecurity=False).hexdigest()  # nosec B324 - Not for security, cache key only
+            cache_key = hashlib.md5(
+                query.encode(), usedforsecurity=False
+            ).hexdigest()  # nosec B324 - Not for security, cache key only
             if cache_key in cache:
                 cache_hits += 1
                 return cache[cache_key]
@@ -385,14 +393,15 @@ class TestEndToEndRAGBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         avg_latency = sum(latencies) / len(latencies)
-        hit_rate = cache_hits / (cache_hits + cache_misses) if (cache_hits + cache_misses) > 0 else 0
+        hit_rate = (
+            cache_hits / (cache_hits + cache_misses) if (cache_hits + cache_misses) > 0 else 0
+        )
 
         assert avg_latency < 5  # Very fast with caching
         assert hit_rate > 0.8  # High cache hit rate
 
     @pytest.mark.skipif(
-        os.getenv("CI") == "true",
-        reason="Performance timing tests unreliable in CI environments"
+        os.getenv("CI") == "true", reason="Performance timing tests unreliable in CI environments"
     )
     def test_concurrent_rag_requests(self) -> None:
         """Benchmark concurrent RAG request handling."""
@@ -421,11 +430,12 @@ class TestEndToEndRAGBenchmarks:
 
     def test_streaming_response_latency(self) -> None:
         """Benchmark streaming response generation."""
+
         def stream_response(query: str, chunk_size: int = 10) -> list[str]:
             response = f"This is a detailed response to the query: {query}. " * 10
             chunks = []
             for i in range(0, len(response), chunk_size):
-                chunks.append(response[i:i+chunk_size])
+                chunks.append(response[i : i + chunk_size])
             return chunks
 
         latencies = []
@@ -502,8 +512,7 @@ class TestRAGMemoryBenchmarks:
                 for i in range(10)
             ],
             "conversation_history": [
-                {"role": "user" if i % 2 == 0 else "assistant",
-                 "content": f"Message {i} " * 50}
+                {"role": "user" if i % 2 == 0 else "assistant", "content": f"Message {i} " * 50}
                 for i in range(10)
             ],
         }

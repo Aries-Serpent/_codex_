@@ -24,7 +24,7 @@ try:
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
     _CRYPTO_AVAILABLE = True
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     _CRYPTO_AVAILABLE = False
 
 

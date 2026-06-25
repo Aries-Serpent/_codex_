@@ -188,7 +188,7 @@ engine = DelegationEngine()
 # Queue agents (non-blocking, returns immediately)
 t1 = engine.queue_agent("unified-coverage-agent", {"phase": "2.1"}, priority="high")
 t2 = engine.queue_agent("ci-auto-healer-agent", {"issues": 5})
-t3 = engine.queue_agent("workflow-health-monitor", {}, 
+t3 = engine.queue_agent("workflow-health-monitor", {},
                         retry_fallback=["ci-testing-agent"])
 
 print(f"✅ Queued 3 agents: {t1}, {t2}, {t3}")
@@ -202,7 +202,7 @@ results = engine.collect_results(wait_for_all=False)
 print(f"Completed: {results.completed_tasks}")
 
 # Handle failures with adaptive retry
-for task in results.task_results:
+for task in results.task_results:  # pragma: allowlist secret
     if task.status == TaskStatus.FAILED and task.fallback_agents:
         print(f"Retrying {task.agent_id} with fallback: {task.fallback_agents}")
         for fallback in task.fallback_agents:

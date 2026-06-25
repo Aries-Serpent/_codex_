@@ -363,4 +363,3 @@ Once Phase 2.2 completes (expected 2026-06-25):
 **Generated:** 2026-06-22T00:55:15Z  
 **For:** Post-merge agent session  
 **Status:** READY  
-

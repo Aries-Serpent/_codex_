@@ -9,7 +9,7 @@ These tests provide additional comprehensive coverage for:
 """
 
 import json
-from datetime import datetime, timedelta # pragma: allowlist secret # pragma: allowlist secret
+from datetime import datetime, timedelta  # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestBridgeProtocol:
@@ -27,7 +27,7 @@ class TestBridgeProtocol:
             "type": "QUERY",
             "id": "msg_001",
             "timestamp": datetime.now().isoformat(),
-            "payload": {"question": "test"}
+            "payload": {"question": "test"},
         }
         serialized = json.dumps(message)
         deserialized = json.loads(serialized)
@@ -48,7 +48,7 @@ class TestBridgeProtocol:
             "client_id": "client_001",
             "protocol_version": "2.0",
             "capabilities": ["query", "streaming", "auth"],
-            "timeout": 30
+            "timeout": 30,
         }
         assert "protocol_version" in handshake
         assert len(handshake["capabilities"]) >= 2
@@ -67,7 +67,7 @@ class TestBridgeProtocol:
             "code": 400,
             "message": "Invalid query",
             "details": {"field": "query", "reason": "empty"},
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
         assert error["code"] == 400
         assert "message" in error
@@ -78,7 +78,7 @@ class TestBridgeProtocol:
             {"step": 1, "action": "send_credentials"},
             {"step": 2, "action": "validate_credentials"},
             {"step": 3, "action": "issue_token"},
-            {"step": 4, "action": "verify_token"}
+            {"step": 4, "action": "verify_token"},
         ]
         assert len(auth_steps) == 4
 
@@ -100,7 +100,7 @@ class TestRAGPipeline:
         documents = [
             {"id": 1, "content": "Document 1", "embedding": [0.1] * 128},
             {"id": 2, "content": "Document 2", "embedding": [0.2] * 128},
-            {"id": 3, "content": "Document 3", "embedding": [0.3] * 128}
+            {"id": 3, "content": "Document 3", "embedding": [0.3] * 128},
         ]
         assert len(documents) == 3
         assert all("embedding" in doc for doc in documents)
@@ -111,8 +111,8 @@ class TestRAGPipeline:
         doc_embedding = [0.99] * 128
         # Cosine similarity
         dot_product = sum(q * d for q, d in zip(query_embedding, doc_embedding))
-        magnitude_q = (sum(x**2 for x in query_embedding))**0.5
-        magnitude_d = (sum(x**2 for x in doc_embedding))**0.5
+        magnitude_q = (sum(x**2 for x in query_embedding)) ** 0.5
+        magnitude_d = (sum(x**2 for x in doc_embedding)) ** 0.5
         similarity = dot_product / (magnitude_q * magnitude_d)
         assert 0 < similarity <= 1.0
 
@@ -121,7 +121,7 @@ class TestRAGPipeline:
         retrieved_docs = [
             {"id": 1, "score": 0.95},
             {"id": 2, "score": 0.87},
-            {"id": 3, "score": 0.72}
+            {"id": 3, "score": 0.72},
         ]
         sorted_docs = sorted(retrieved_docs, key=lambda x: x["score"], reverse=True)
         assert sorted_docs[0]["score"] > sorted_docs[1]["score"]
@@ -151,7 +151,7 @@ class TestRAGPipeline:
             {"id": 1, "score": 0.95},
             {"id": 2, "score": 0.75},
             {"id": 3, "score": 0.5},
-            {"id": 4, "score": 0.8}
+            {"id": 4, "score": 0.8},
         ]
         relevant = [d for d in retrieved if d["score"] >= threshold]
         assert len(relevant) == 3
@@ -160,11 +160,7 @@ class TestRAGPipeline:
         """Test embedding dimension consistency."""
         embedding_dim = 768
         query_embedding = [0.5] * embedding_dim
-        doc_embeddings = [
-            [0.1] * embedding_dim,
-            [0.2] * embedding_dim,
-            [0.3] * embedding_dim
-        ]
+        doc_embeddings = [[0.1] * embedding_dim, [0.2] * embedding_dim, [0.3] * embedding_dim]
         for doc_emb in doc_embeddings:
             assert len(doc_emb) == len(query_embedding)
 
@@ -177,11 +173,11 @@ class TestSecurityValidation:
         malicious_inputs = [
             "<script>alert('xss')</script>",
             "'; DROP TABLE users; --",
-            "../../../etc/passwd"
+            "../../../etc/passwd",
         ]
         for inp in malicious_inputs:
             # Sanitization would remove special chars
-            sanitized = ''.join(c for c in inp if c.isalnum() or c in ' ')
+            sanitized = "".join(c for c in inp if c.isalnum() or c in " ")
             assert len(sanitized) < len(inp)
 
     def test_sql_injection_prevention(self):
@@ -216,7 +212,7 @@ class TestSecurityValidation:
         acl = {
             "user_123": ["read", "write"],
             "user_456": ["read"],
-            "admin_001": ["read", "write", "delete"]
+            "admin_001": ["read", "write", "delete"],
         }
         user = "user_123"
         can_read = "read" in acl.get(user, [])
@@ -260,11 +256,7 @@ class TestDataProcessing:
 
     def test_data_type_conversion(self):
         """Test data type conversion."""
-        conversions = [
-            ("42", int, 42),
-            ("3.14", float, 3.14),
-            ("true", bool, True)
-        ]
+        conversions = [("42", int, 42), ("3.14", float, 3.14), ("true", bool, True)]
         for string_val, target_type, expected in conversions[:2]:
             result = target_type(string_val)
             assert abs(result - expected) < 0.01
@@ -282,7 +274,7 @@ class TestDataProcessing:
         """Test outlier detection."""
         values = [10, 12, 11, 13, 100, 12, 11]  # 100 is outlier
         mean = sum(values) / len(values)
-        std = (sum((x - mean)**2 for x in values) / len(values))**0.5
+        std = (sum((x - mean) ** 2 for x in values) / len(values)) ** 0.5
         outliers = [v for v in values if abs(v - mean) > 2 * std]
         assert len(outliers) > 0
 
@@ -300,7 +292,7 @@ class TestDataProcessing:
         data = [
             {"category": "A", "value": 10},
             {"category": "A", "value": 20},
-            {"category": "B", "value": 15}
+            {"category": "B", "value": 15},
         ]
         grouped = {}
         for item in data:
@@ -334,12 +326,13 @@ class TestCachingAndPerformance:
     def test_memoization(self):
         """Test memoization pattern."""
         memo = {}
+
         def fibonacci(n):
             if n in memo:
                 return memo[n]
             if n <= 1:
                 return n
-            result = fibonacci(n-1) + fibonacci(n-2)
+            result = fibonacci(n - 1) + fibonacci(n - 2)
             memo[n] = result
             return result
 
@@ -354,6 +347,7 @@ class TestCachingAndPerformance:
 
     def test_lazy_loading(self):
         """Test lazy loading pattern."""
+
         class LazyResource:
             def __init__(self):
                 self._data = None
@@ -410,7 +404,7 @@ class TestMonitoringAndLogging:
         metrics = [
             {"timestamp": 1, "value": 100},
             {"timestamp": 2, "value": 110},
-            {"timestamp": 3, "value": 105}
+            {"timestamp": 3, "value": 105},
         ]
         avg = sum(m["value"] for m in metrics) / len(metrics)
         assert 100 < avg < 110
@@ -419,7 +413,6 @@ class TestMonitoringAndLogging:
         """Test alert threshold logic."""
         current_value = 45  # Below threshold triggers alert
         warning_threshold = 80
-        error_threshold = 50
         alert_triggered = current_value < warning_threshold
         assert alert_triggered
 

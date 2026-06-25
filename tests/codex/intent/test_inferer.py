@@ -71,9 +71,7 @@ class TestIntentSpec:
         from codex.intent.inferer import IntentSpec
 
         spec = IntentSpec(
-            snapshot_id="snap_123",
-            timestamp=datetime.now(timezone.utc),
-            goal="Process input data"
+            snapshot_id="snap_123", timestamp=datetime.now(timezone.utc), goal="Process input data"
         )
 
         assert spec.snapshot_id == "snap_123"
@@ -86,9 +84,7 @@ class TestIntentSpec:
         from codex.intent.inferer import IntentSpec
 
         spec = IntentSpec(
-            snapshot_id="snap_123",
-            timestamp=datetime.now(timezone.utc),
-            goal="Test goal"
+            snapshot_id="snap_123", timestamp=datetime.now(timezone.utc), goal="Test goal"
         )
 
         assert spec.actors == []
@@ -110,7 +106,7 @@ class TestIntentSpec:
             timestamp=datetime.now(timezone.utc),
             goal="Transform data",
             inputs=inputs,
-            outputs=outputs
+            outputs=outputs,
         )
 
         assert len(spec.inputs) == 1
@@ -127,7 +123,7 @@ class TestIntentSpec:
                 snapshot_id="snap",
                 timestamp=datetime.now(timezone.utc),
                 goal="Test",
-                inference_method=method
+                inference_method=method,
             )
             assert spec.inference_method == method
 
@@ -137,19 +133,13 @@ class TestIntentSpec:
 
         # Low confidence
         spec_low = IntentSpec(
-            snapshot_id="snap",
-            timestamp=datetime.now(timezone.utc),
-            goal="Test",
-            confidence=0.1
+            snapshot_id="snap", timestamp=datetime.now(timezone.utc), goal="Test", confidence=0.1
         )
         assert spec_low.confidence == 0.1
 
         # High confidence
         spec_high = IntentSpec(
-            snapshot_id="snap",
-            timestamp=datetime.now(timezone.utc),
-            goal="Test",
-            confidence=0.95
+            snapshot_id="snap", timestamp=datetime.now(timezone.utc), goal="Test", confidence=0.95
         )
         assert spec_high.confidence == 0.95
 
@@ -162,7 +152,7 @@ class TestIntentSpec:
             timestamp=datetime.now(timezone.utc),
             goal="Test",
             inference_method="llm",
-            llm_provenance_ref="prov_abc123"
+            llm_provenance_ref="prov_abc123",
         )
 
         assert spec.llm_provenance_ref == "prov_abc123"
@@ -183,7 +173,7 @@ class TestIntentSpec:
             side_effects=["Logs to file"],
             confidence=0.8,
             inference_method="hybrid",
-            assumptions=["Input is UTF-8 encoded"]
+            assumptions=["Input is UTF-8 encoded"],
         )
 
         result = spec.to_dict()

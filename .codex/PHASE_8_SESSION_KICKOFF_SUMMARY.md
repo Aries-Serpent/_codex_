@@ -88,10 +88,10 @@ Based on Discussion #4872 Comments #17373172-17373173 (Automation Analysis), I'v
 ```
 Phase 8A (6-7 hours):     2026-06-20 15:00 - 22:00 UTC
   └─ All 3 lanes parallel (no blocking)
-  
+
 Phase 8B (12-15 hours):   2026-06-21 00:00 - 15:00 UTC
   └─ Both tracks parallel (no blocking)
-  
+
 Phase 8C (10-12 hours):   2026-06-21 16:00 - 04:00 UTC
   └─ Both tracks parallel + Cognitive Brain
 
@@ -166,7 +166,7 @@ Track B: Release (5-6h)        ←─ Agents from 8A Lanes 2-3
 
 ### Phase 8C: 2 Parallel Tracks with Cognitive Brain
 ```
-Track C: Secrets/Monitoring (8-10h)  ←─ Agents from 8B Track A
+Track C: Secrets/Monitoring (8-10h)  ←─ Agents from 8B Track A  # pragma: allowlist secret
 Track D: Infrastructure IaC (5-7h)   ←─ Agents from 8B Track B
 ```
 
@@ -178,7 +178,7 @@ Track D: Infrastructure IaC (5-7h)   ←─ Agents from 8B Track B
 |---------|--------|--------|-----------|
 | Coverage <20% | 🟡 Medium | Deployment readiness | Attempt closure; document roadmap if needed |
 | Mutation <85% | 🟡 Medium | Quality gates | Investigate weak tests; escalate if unresolvable |
-| Credentials (Blocker #1) | 🔴 High | Secrets/registry automation | Maintain manually OR @mbaetiong provides credentials |
+| Credentials (Blocker #1) | 🔴 High | Secrets/registry automation | Maintain manually OR @mbaetiong provides credentials | <!-- pragma: allowlist secret -->
 | Observability (Blocker #5) | 🔴 High | Monitoring setup | Defer OR @mbaetiong provides PagerDuty/Opsgenie keys |
 
 ---
@@ -191,7 +191,7 @@ Ready to execute Phase 8A immediately upon approval:
   - Comprehensive implementation plan (450+ lines)
   - Real-time execution dashboard
   - Cognitive Brain integration patterns
-  
+
 - [x] **Agents Available & Assigned**
   - Lane 1: unified-coverage-agent ✅
   - Lane 2: mutation-testing-agent ✅

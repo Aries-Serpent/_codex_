@@ -21,17 +21,17 @@ try:
     FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
     FASTAPI_AVAILABLE = False
-    FastAPI = None  # type: ignore[misc,assignment]
-    HTTPException = Exception  # type: ignore[misc,assignment]
-    BaseModel = object  # type: ignore[misc,assignment]
-    APIKeyHeader = None  # type: ignore[misc,assignment]
-    Security = None  # type: ignore[assignment]
-    TrustedHostMiddleware = None  # type: ignore[misc,assignment]
+    FastAPI = None
+    HTTPException = Exception
+    BaseModel = object
+    APIKeyHeader = None
+    Security = None
+    TrustedHostMiddleware = None
 
-    def Field(*a: Any, **k: Any) -> None:  # type: ignore[no-redef]
+    def Field(*a: Any, **k: Any) -> None:
         return None
 
-    Request = object  # type: ignore[misc,assignment]
+    Request = object
 
 logger = logging.getLogger(__name__)
 
@@ -145,11 +145,13 @@ class AuthManager:
 
             return jwt.decode(token, self.jwt_secret, algorithms=[self.jwt_algorithm])
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise AuthenticationError("python-jose not installed for JWT support") from e
         except JWTError as e:
-            logger.debug(f"JWTError: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"JWTError: <ERROR_TYPE>")
             raise AuthenticationError(f"Invalid JWT token: {e}") from e
 
     @staticmethod
@@ -241,8 +243,9 @@ class ModelServer:
             self.circuit_breaker = CircuitBreaker(CircuitBreakerConfig(failure_threshold=5))
             logger.info("Circuit breaker enabled")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             self.circuit_breaker = None
             logger.warning("Circuit breaker not available (resilience module not found)")
 
@@ -262,8 +265,9 @@ class ModelServer:
                     "path": self.config.model_path,
                 }
             return self.model
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             self.load_errors.append(str(exc))
             raise
 
@@ -326,7 +330,7 @@ class ModelServer:
             import math
             import random
 
-            embeddings: list[list[float]] = []  # type: ignore[no-redef]
+            embeddings: list[list[float]] = []
             for text in texts:
                 seed = abs(hash(text)) % _MAX_EMBEDDING_SEED
                 rng = random.Random(seed)  # nosec B311 — non-cryptographic ML sampling/shuffling
@@ -438,7 +442,7 @@ if FASTAPI_AVAILABLE:
         # Load the model early so integration tests hit a ready server.
         try:
             server.load_model()
-        except Exception as exc:  # pragma: no cover - surfaced via API if needed
+        except (IOError, OSError) as exc:  # pragma: no cover - surfaced via API if needed
             logger.warning("Model preload failed: %s", exc)
 
         # Setup dependencies based on auth config
@@ -517,7 +521,7 @@ if FASTAPI_AVAILABLE:
         )
         def predict(request: PredictionRequest, http_request: Request):
             client_key = (
-                http_request.client.host if getattr(http_request, "client", None) else "global"  # type: ignore[union-attr]
+                http_request.client.host if getattr(http_request, "client", None) else "global"
             )
             if not limiter.is_allowed(client_key):
                 raise HTTPException(status_code=429, detail="Rate limit exceeded")
@@ -534,8 +538,9 @@ if FASTAPI_AVAILABLE:
                 preds = server.predict_with_circuit_breaker(request.inputs)
             except RuntimeError as e:
                 raise HTTPException(status_code=500, detail=str(e)) from e
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (ConnectionError, TimeoutError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 if "Circuit breaker" in str(e):
                     raise HTTPException(status_code=503, detail=str(e)) from e
                 raise
@@ -573,7 +578,7 @@ if FASTAPI_AVAILABLE:
             try:
                 vecs = server.embed(request.texts)
                 embeddings = vecs.tolist() if hasattr(vecs, "tolist") else [list(v) for v in vecs]
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 raise HTTPException(status_code=500, detail=str(e)) from e
             return EmbedResponse(
                 embeddings=embeddings,

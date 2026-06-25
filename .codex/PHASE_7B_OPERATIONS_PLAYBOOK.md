@@ -54,10 +54,10 @@ Before proceeding with deployment:
   ```bash
   # Backup production database
   pg_dump codex_prod > /backups/codex_prod_$(date +%Y%m%d_%H%M%S).sql
-  
+
   # Backup configuration
   cp -r /etc/codex /backups/codex_config_$(date +%Y%m%d_%H%M%S)
-  
+
   # Backup current installation
   cp -r /opt/codex /backups/codex_current_$(date +%Y%m%d_%H%M%S)
   ```
@@ -66,10 +66,10 @@ Before proceeding with deployment:
   ```bash
   # Check disk space (50GB minimum)
   df -h / | grep -E '/(Avail|^/'
-  
+
   # Check memory (8GB minimum)
   free -h
-  
+
   # Check CPU availability
   nproc
   ```
@@ -78,10 +78,10 @@ Before proceeding with deployment:
   ```bash
   # Test GitHub API access
   curl -I https://api.github.com
-  
+
   # Test package repository
   curl -I https://pypi.org/project/codex/
-  
+
   # Test DNS resolution
   nslookup github.com
   ```
@@ -213,13 +213,13 @@ spec:
       - name: codex
         image: ghcr.io/aries-serpent/codex:v0.1.0-final
         imagePullPolicy: IfNotPresent
-        
+
         # Port configuration
         ports:
         - name: http
           containerPort: 8080
           protocol: TCP
-        
+
         # Environment variables
         env:
         - name: CODEX_LOG_LEVEL
@@ -228,7 +228,7 @@ spec:
           value: "true"
         - name: CODEX_SECURITY_MODE
           value: "strict"
-        
+
         # Resource limits
         resources:
           requests:
@@ -237,7 +237,7 @@ spec:
           limits:
             cpu: 2000m
             memory: 2Gi
-        
+
         # Health checks
         livenessProbe:
           httpGet:
@@ -247,7 +247,7 @@ spec:
           periodSeconds: 30
           timeoutSeconds: 5
           failureThreshold: 3
-        
+
         readinessProbe:
           httpGet:
             path: /ready
@@ -256,7 +256,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
-        
+
         # Security context
         securityContext:
           runAsNonRoot: true
@@ -265,7 +265,7 @@ spec:
           capabilities:
             drop:
             - ALL
-      
+
       # Pod disruption budget
       affinity:
         podAntiAffinity:
@@ -329,7 +329,7 @@ services:
     image: ghcr.io/aries-serpent/codex:v0.1.0-final
     container_name: codex
     restart: unless-stopped
-    
+
     environment:
       CODEX_LOG_LEVEL: INFO
       CODEX_METRICS_ENABLED: "true"
@@ -339,45 +339,45 @@ services:
       POSTGRES_DB: codex
       POSTGRES_USER: codex
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-    
+
     ports:
       - "8080:8080"
-    
+
     volumes:
       - ./config:/etc/codex:ro
       - ./data:/var/lib/codex
       - ./logs:/var/log/codex
-    
+
     depends_on:
       db:
         condition: service_healthy
-    
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
-    
+
     logging:
       driver: "json-file"
       options:
         max-size: "100m"
         max-file: "10"
-  
+
   db:
     image: postgres:14-alpine
     container_name: codex-db
     restart: unless-stopped
-    
+
     environment:
       POSTGRES_DB: codex
       POSTGRES_USER: codex
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-    
+
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
-    
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U codex"]
       interval: 10s
@@ -510,7 +510,7 @@ scrape_configs:
       - targets: ['localhost:8080']
     metrics_path: '/metrics'
     scrape_interval: 10s
-    
+
   - job_name: 'codex-detailed'
     static_configs:
       - targets: ['localhost:8080']
@@ -556,7 +556,7 @@ Tests:
 groups:
   - name: codex_v0.1.0_final
     rules:
-      
+
       # Critical alerts
       - alert: CodexServiceDown
         expr: up{job="codex"} == 0
@@ -565,7 +565,7 @@ groups:
           severity: critical
         annotations:
           summary: "Codex service down"
-      
+
       - alert: HighErrorRate
         expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.01
         for: 5m
@@ -573,7 +573,7 @@ groups:
           severity: critical
         annotations:
           summary: "High error rate detected"
-      
+
       # High priority alerts
       - alert: HighCPUUsage
         expr: process_cpu_seconds_total > 80
@@ -582,7 +582,7 @@ groups:
           severity: high
         annotations:
           summary: "High CPU usage"
-      
+
       - alert: HighMemoryUsage
         expr: process_resident_memory_bytes / 1024 / 1024 > 1500
         for: 10m
@@ -590,7 +590,7 @@ groups:
           severity: high
         annotations:
           summary: "High memory usage"
-      
+
       # Medium priority alerts
       - alert: SlowResponseTime
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.2
@@ -950,13 +950,13 @@ roles:
       - delete
       - configure
       - deploy
-  
+
   operator:
     permissions:
       - read
       - write
       - restart
-  
+
   viewer:
     permissions:
       - read
@@ -964,10 +964,10 @@ roles:
 users:
   devops_team:
     role: admin
-  
+
   sre_team:
     role: operator
-  
+
   management:
     role: viewer
 ```

@@ -2,7 +2,6 @@
 Tests for MLOps integration bridge.
 """
 
-
 import logging
 import time
 

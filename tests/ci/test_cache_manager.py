@@ -20,9 +20,19 @@ class TestCacheType:
     def test_cache_types_exist(self):
         """Test that all expected cache types exist."""
         expected_types = [
-            "pip", "nox", "uv", "gh", "huggingface",
-            "transformers", "pre-commit", "mypy", "pytest",
-            "docker-buildx", "yarn", "cargo", "custom"
+            "pip",
+            "nox",
+            "uv",
+            "gh",
+            "huggingface",
+            "transformers",
+            "pre-commit",
+            "mypy",
+            "pytest",
+            "docker-buildx",
+            "yarn",
+            "cargo",
+            "custom",
         ]
 
         actual_types = [ct.value for ct in CacheType]

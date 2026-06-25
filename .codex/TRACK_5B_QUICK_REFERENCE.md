@@ -25,7 +25,7 @@ sqlite3 .codex/monitoring_data.db \
 
 # 📈 Success rate calculation
 sqlite3 .codex/monitoring_data.db \
-  "SELECT 
+  "SELECT
     COUNT(*) as total,
     SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) as passed,
     ROUND(100.0 * SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) / COUNT(*), 1) as success_rate_pct
@@ -33,8 +33,8 @@ sqlite3 .codex/monitoring_data.db \
 
 # 🚨 Check for critical failures
 sqlite3 .codex/monitoring_data.db \
-  "SELECT workflow_name, COUNT(*) as failure_count 
-   FROM failures 
+  "SELECT workflow_name, COUNT(*) as failure_count
+   FROM failures
    WHERE category = 'Regression'
    GROUP BY workflow_name
    ORDER BY failure_count DESC;"
@@ -140,7 +140,7 @@ grep -i "error\|exception\|failed" monitor.log | tail -20
 ### "What's the success rate right now?"
 ```bash
 sqlite3 .codex/monitoring_data.db \
-  "SELECT 
+  "SELECT
     COUNT(*) as total_runs,
     SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) as successful,
     ROUND(100.0 * SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) / COUNT(*), 1) as success_pct
@@ -150,39 +150,39 @@ sqlite3 .codex/monitoring_data.db \
 ### "Which workflows are failing most?"
 ```bash
 sqlite3 .codex/monitoring_data.db \
-  "SELECT workflow_name, COUNT(*) as failure_count 
-   FROM failures 
-   GROUP BY workflow_name 
+  "SELECT workflow_name, COUNT(*) as failure_count
+   FROM failures
+   GROUP BY workflow_name
    ORDER BY failure_count DESC LIMIT 10;"
 ```
 
 ### "Are there any regression failures?"
 ```bash
 sqlite3 .codex/monitoring_data.db \
-  "SELECT workflow_name, COUNT(*) as regressions 
-   FROM failures 
+  "SELECT workflow_name, COUNT(*) as regressions
+   FROM failures
    WHERE category = 'Regression'
-   GROUP BY workflow_name 
+   GROUP BY workflow_name
    ORDER BY regressions DESC;"
 ```
 
 ### "What's the breakdown by failure category?"
 ```bash
 sqlite3 .codex/monitoring_data.db \
-  "SELECT 
+  "SELECT
     category,
     COUNT(*) as count,
     ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM failures), 1) as pct
-   FROM failures 
-   GROUP BY category 
+   FROM failures
+   GROUP BY category
    ORDER BY count DESC;"
 ```
 
 ### "How many workflows are still in progress?"
 ```bash
 sqlite3 .codex/monitoring_data.db \
-  "SELECT COUNT(*) as in_progress 
-   FROM workflow_runs 
+  "SELECT COUNT(*) as in_progress
+   FROM workflow_runs
    WHERE status = 'in_progress';"
 ```
 

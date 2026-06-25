@@ -16,8 +16,9 @@ try:
 
     to_absolute_path = hydra.utils.to_absolute_path
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     try:
         import config_legacy as hydra
 
@@ -43,9 +44,9 @@ from codex_ml.utils import repro
 try:
     from omegaconf import DictConfig, ListConfig, OmegaConf
 except ImportError:  # pragma: no cover — omegaconf optional in lightweight envs
-    DictConfig = Any  # type: ignore[assignment,misc]
-    ListConfig = Any  # type: ignore[assignment,misc]
-    OmegaConf = None  # type: ignore[assignment,misc]
+    DictConfig = Any
+    ListConfig = Any
+    OmegaConf = None
 
 _ = (ArgparseJSONParser, run_cmd)
 
@@ -98,7 +99,7 @@ def _sanitize_prompt_sequence(values: list[Any]) -> tuple[list[Any], bool]:
 
     try:
         from codex_ml.safety import SafetyConfig, sanitize_prompt
-    except Exception:  # pragma: no cover - safety module optional
+    except (ImportError, AttributeError):  # pragma: no cover - safety module optional
         return list(values), False
 
     cfg = SafetyConfig()
@@ -145,7 +146,7 @@ def _apply_prompt_sanitization(
     for key in keys:
         try:
             raw = config_obj.get(key) if hasattr(config_obj, "get") else getattr(config_obj, key)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             raw = None
         sequence = _coerce_sequence(raw)
@@ -160,9 +161,10 @@ def _apply_prompt_sanitization(
         try:
             if isinstance(config_obj, (DictConfig, dict)):
                 config_obj[key] = sanitised
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     return total
 
 
@@ -301,9 +303,10 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
     try:
         if sample_rate is not None:
             os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     scheduler_cfg = _cfg_to_dict(cfg.get("scheduler"))
 
@@ -332,15 +335,16 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
         seed = 0
     try:
         repro.set_seed(seed)
-    except Exception as exc:  # pragma: no cover - defensive log path
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive log path
         LOGGER.warning("Failed to set reproducibility seed %s: %s", seed, exc)
     if isinstance(cfg, DictConfig):
         cfg.seed = seed
         try:
             cfg.reproducibility["seed"] = seed
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     reproducibility_cfg.setdefault("seed", seed)
 
     grad_accum = cfg.get("grad_accum", 1)

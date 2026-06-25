@@ -30,14 +30,14 @@ Usage:
   decision_logger export --format csv --output audit_trail.csv
 """
 
+import argparse
 import json
 import sqlite3
 import uuid
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass
-import argparse
+from typing import Any, Dict, List, Optional
 
 
 @dataclass

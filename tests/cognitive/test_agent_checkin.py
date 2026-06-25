@@ -5,6 +5,7 @@ Validates the hardened 2x-per-session check-in protocol without network calls.
 All tests run in offline mode (no CODEX_MASTER_KEY set) to keep CI fast and
 hermetic.
 """
+
 from __future__ import annotations
 
 import sys
@@ -23,6 +24,7 @@ import agent_checkin as _mod
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _offline(monkeypatch: pytest.MonkeyPatch) -> None:
     """Remove all GitHub tokens so tests run offline."""
     monkeypatch.delenv("CODEX_MASTER_KEY", raising=False)
@@ -33,6 +35,7 @@ def _offline(monkeypatch: pytest.MonkeyPatch) -> None:
 # ---------------------------------------------------------------------------
 # _build_research_comment
 # ---------------------------------------------------------------------------
+
 
 class TestBuildResearchComment:
     def test_contains_all_five_topics(self):
@@ -65,9 +68,7 @@ class TestBuildResearchComment:
 
     def test_rag_topics_content_is_current(self):
         """RAG topic should no longer say '90%' as a target — it's at 95% already."""
-        rag_topic = next(
-            t for t in _mod.RESEARCH_TOPICS if "RAG" in t["title"]
-        )
+        rag_topic = next(t for t in _mod.RESEARCH_TOPICS if "RAG" in t["title"])
         # Must NOT say "path to 95%" (old stale phrasing)
         assert "path to 95%" not in rag_topic["summary"]
         # Must say 95% is achieved
@@ -77,6 +78,7 @@ class TestBuildResearchComment:
 # ---------------------------------------------------------------------------
 # _build_open_checkin_comment
 # ---------------------------------------------------------------------------
+
 
 class TestBuildOpenCheckinComment:
     def _make(self, **kwargs):
@@ -144,6 +146,7 @@ class TestBuildOpenCheckinComment:
 # _build_close_checkin_comment
 # ---------------------------------------------------------------------------
 
+
 class TestBuildCloseCheckinComment:
     def _make(self, answered=None, unanswered=None, aftermath=""):
         return _mod._build_close_checkin_comment(
@@ -178,6 +181,7 @@ class TestBuildCloseCheckinComment:
 # action_open (offline mode)
 # ---------------------------------------------------------------------------
 
+
 class TestActionOpen:
     def test_offline_returns_zero(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
@@ -206,6 +210,7 @@ class TestActionOpen:
 # ---------------------------------------------------------------------------
 # action_close (offline mode)
 # ---------------------------------------------------------------------------
+
 
 class TestActionClose:
     def test_offline_returns_zero_with_no_block(self, monkeypatch: pytest.MonkeyPatch):
@@ -238,6 +243,7 @@ class TestActionClose:
 # action_post_research (offline mode)
 # ---------------------------------------------------------------------------
 
+
 class TestActionPostResearch:
     def test_offline_returns_zero(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
@@ -267,6 +273,7 @@ class TestActionPostResearch:
 # main() CLI integration
 # ---------------------------------------------------------------------------
 
+
 class TestMain:
     def test_no_args_returns_zero(self):
         """main() with no action flags prints help and returns 0."""
@@ -275,42 +282,61 @@ class TestMain:
 
     def test_open_offline(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
-        rc = _mod.main([
-            "--check-in", "open",
-            "--session-id", "S215-cli",
-            "--sha", "abc123def456",  # pragma: allowlist secret
-            "--no-block",
-        ])
+        rc = _mod.main(
+            [
+                "--check-in",
+                "open",
+                "--session-id",
+                "S215-cli",
+                "--sha",
+                "abc123def456",  # pragma: allowlist secret
+                "--no-block",
+            ]
+        )
         assert rc == 0
 
     def test_close_offline(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
-        rc = _mod.main([
-            "--check-in", "close",
-            "--session-id", "S215-cli",
-            "--sha", "abc123def456",  # pragma: allowlist secret
-            "--no-block",
-        ])
+        rc = _mod.main(
+            [
+                "--check-in",
+                "close",
+                "--session-id",
+                "S215-cli",
+                "--sha",
+                "abc123def456",  # pragma: allowlist secret
+                "--no-block",
+            ]
+        )
         assert rc == 0
 
     def test_post_research_offline(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
-        rc = _mod.main([
-            "--post-research",
-            "--session-id", "S215-cli",
-            "--sha", "abc123def456",  # pragma: allowlist secret
-        ])
+        rc = _mod.main(
+            [
+                "--post-research",
+                "--session-id",
+                "S215-cli",
+                "--sha",
+                "abc123def456",  # pragma: allowlist secret
+            ]
+        )
         assert rc == 0
 
     def test_open_and_research_combined(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
-        rc = _mod.main([
-            "--check-in", "open",
-            "--post-research",
-            "--session-id", "S215-combined",
-            "--sha", "abc123def456",  # pragma: allowlist secret
-            "--no-block",
-        ])
+        rc = _mod.main(
+            [
+                "--check-in",
+                "open",
+                "--post-research",
+                "--session-id",
+                "S215-combined",
+                "--sha",
+                "abc123def456",  # pragma: allowlist secret
+                "--no-block",
+            ]
+        )
         assert rc == 0
 
     def test_invalid_checkin_phase_raises(self):
@@ -321,6 +347,7 @@ class TestMain:
 # ---------------------------------------------------------------------------
 # Response detection robustness
 # ---------------------------------------------------------------------------
+
 
 class TestResponseDetection:
     """

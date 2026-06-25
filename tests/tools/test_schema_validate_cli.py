@@ -16,9 +16,7 @@ TOOL = Path("tools/schema_validate.py")
 
 
 @pytest.mark.skipif(not TOOL.exists(), reason="schema_validate tool missing")
-@pytest.mark.skipif(
-    not SCHEMA.exists() or not DATA.exists(), reason="schema or example missing"
-)
+@pytest.mark.skipif(not SCHEMA.exists() or not DATA.exists(), reason="schema or example missing")
 def test_cli_passes_on_example(tmp_path):
     proc = subprocess.run(
         [sys.executable, str(TOOL), "--data", str(DATA), "--schema", str(SCHEMA)],

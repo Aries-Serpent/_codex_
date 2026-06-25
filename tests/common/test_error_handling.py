@@ -10,6 +10,7 @@ import pytest
 
 # ==================== Import Tests ====================
 
+
 class TestModuleImports:
     """Tests for module imports."""
 
@@ -17,6 +18,7 @@ class TestModuleImports:
         """Test that error_handling module can be imported."""
         try:
             from common import error_handling
+
             assert error_handling is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -25,6 +27,7 @@ class TestModuleImports:
         """Test safe_execute decorator import."""
         try:
             from common.error_handling import safe_execute
+
             assert safe_execute is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -33,6 +36,7 @@ class TestModuleImports:
         """Test safe_call function import."""
         try:
             from common.error_handling import safe_call
+
             assert safe_call is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -41,12 +45,14 @@ class TestModuleImports:
         """Test that logger is configured."""
         try:
             from common.error_handling import logger
+
             assert logger is not None
         except ImportError:
             pytest.skip("Module not available")
 
 
 # ==================== safe_execute Decorator Tests ====================
+
 
 class TestSafeExecuteDecorator:
     """Tests for safe_execute decorator - Decoherence Pattern."""
@@ -152,6 +158,7 @@ class TestSafeExecuteDecorator:
 
 # ==================== safe_call Function Tests ====================
 
+
 class TestSafeCallFunction:
     """Tests for safe_call function - Measurement Pattern."""
 
@@ -202,11 +209,7 @@ class TestSafeCallFunction:
             def risky():
                 raise ValueError("risky")
 
-            result = safe_call(
-                risky,
-                operation_name="risky operation",
-                default_return="safe"
-            )
+            result = safe_call(risky, operation_name="risky operation", default_return="safe")
             assert result == "safe"
         except ImportError:
             pytest.skip("Module not available")
@@ -219,11 +222,7 @@ class TestSafeCallFunction:
             def value_error():
                 raise ValueError("value")
 
-            result = safe_call(
-                value_error,
-                exception_types=(ValueError,),
-                default_return="caught"
-            )
+            result = safe_call(value_error, exception_types=(ValueError,), default_return="caught")
             assert result == "caught"
         except ImportError:
             pytest.skip("Module not available")
@@ -237,15 +236,13 @@ class TestSafeCallFunction:
                 raise TypeError("type")
 
             with pytest.raises(TypeError):
-                safe_call(
-                    type_error,
-                    exception_types=(ValueError,)
-                )
+                safe_call(type_error, exception_types=(ValueError,))
         except ImportError:
             pytest.skip("Module not available")
 
 
 # ==================== Edge Cases ====================
+
 
 class TestEdgeCases:
     """Edge case tests - Tunneling Pattern."""
@@ -260,6 +257,7 @@ class TestEdgeCases:
                 @safe_execute("inner", default_return="inner_default")
                 def inner():
                     raise ValueError("inner error")
+
                 return inner()
 
             result = outer()
@@ -272,10 +270,7 @@ class TestEdgeCases:
         try:
             from common.error_handling import safe_call
 
-            result = safe_call(
-                lambda x: x * 2,
-                5
-            )
+            result = safe_call(lambda x: x * 2, 5)
             assert result == 10
         except ImportError:
             pytest.skip("Module not available")

@@ -41,9 +41,10 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
             logger.debug("Ignoring env_file because pydantic_settings is unavailable")
         # Filter out any keys that ConfigDict doesn't support to avoid TypeErrors
         try:
-            return ConfigDict(**config)  # type: ignore[typeddict-item]
+            return ConfigDict(**config)
         except TypeError as exc:
-            logger.debug(f"TypeError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"TypeError: <ERROR_TYPE>")
             # If ConfigDict rejects unknown keys, filter to known parameters
             valid_keys = {"extra", "arbitrary_types_allowed", "validate_assignment"}
             filtered = {k: v for k, v in config.items() if k in valid_keys}
@@ -52,7 +53,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
                 UserWarning,
                 stacklevel=2,
             )
-            return ConfigDict(**filtered)  # type: ignore[typeddict-item]
+            return ConfigDict(**filtered)
 
 
 __all__ = ["AppSettings", "EvalRow", "eval_row_schema", "get_settings"]

@@ -152,6 +152,7 @@ class TestAgentMemoryPathTraversal:
         """Test valid path in current directory."""
         # Change to temp directory
         import os
+
         old_cwd = os.getcwd()
         try:
             os.chdir(tmp_path)
@@ -262,7 +263,7 @@ class TestPatternLibraryExceptions:
 
         # Test with invalid success rate values
         for invalid_rate in [-0.1, 1.1, -1.0]:
-            matches = lib.match_patterns("trigger", min_success_rate=invalid_rate)
+            lib.match_patterns("trigger", min_success_rate=invalid_rate)
             # Should handle gracefully
 
     def test_record_usage_nonexistent_pattern(self) -> None:

@@ -25,7 +25,8 @@ logger = logging.getLogger(__name__)
 # Re-export all public symbols from codex_exec
 # Note: codex_exec does not define __all__, so we import selectively
 try:
-    from .codex_exec import CodexExecutor, execute_codex  # type: ignore[attr-defined]
+    from .codex_exec import CodexExecutor, execute_codex
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)  # Module may not have these exports
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)  # Module may not have these exports

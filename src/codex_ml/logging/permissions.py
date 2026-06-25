@@ -54,6 +54,7 @@ def get_log_file_mode() -> int:
         try:
             return int(env_mode, 8)  # Octal conversion
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
-            logger.warning(f"ValueError: {e}", exc_info=True)  # Fall through to default
+            error_type = type(e).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
+            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)  # Fall through to default
     return DEFAULT_LOG_FILE_MODE

@@ -23,14 +23,14 @@ try:
         DependencyMonitor,
         get_sample_cve_database,
     )
+
     CVE_MONITOR_AVAILABLE = True
 except ImportError:
     CVE_MONITOR_AVAILABLE = False
 
 
 pytestmark = pytest.mark.skipif(
-    not CVE_MONITOR_AVAILABLE,
-    reason="codex_ml.security.cve_monitor not available"
+    not CVE_MONITOR_AVAILABLE, reason="codex_ml.security.cve_monitor not available"
 )
 
 
@@ -479,9 +479,7 @@ class TestDependencyMonitor:
         scan_results = {
             "vulnerable_packages": 2,
             "total_vulnerabilities": 3,
-            "critical": [
-                {"package": "pkg1", "cve": "CVE-2024-0001", "fixed_in": "1.0.1"}
-            ],
+            "critical": [{"package": "pkg1", "cve": "CVE-2024-0001", "fixed_in": "1.0.1"}],
             "high": [
                 {"package": "pkg2", "cve": "CVE-2024-0002", "fixed_in": "2.0.1"},
                 {"package": "pkg2", "cve": "CVE-2024-0003", "fixed_in": "2.0.2"},
@@ -507,9 +505,7 @@ class TestDependencyMonitor:
         scan_results = {
             "vulnerable_packages": 1,
             "total_vulnerabilities": 1,
-            "critical": [
-                {"package": "vuln-pkg", "cve": "CVE-2024-TEST", "fixed_in": "2.0.0"}
-            ],
+            "critical": [{"package": "vuln-pkg", "cve": "CVE-2024-TEST", "fixed_in": "2.0.0"}],
             "high": [],
             "medium": [],
             "low": [],
@@ -545,31 +541,35 @@ class TestIntegrationScenarios:
         db = CVEDatabase()
 
         # Add realistic CVEs
-        db.add_cve(CVEEntry(
-            cve_id="CVE-2023-45853",
-            severity="HIGH",
-            package="zipp",
-            affected_versions=["3.15.0", "3.16.0"],
-            fixed_in="3.17.0",
-            description="Path traversal vulnerability",
-        ))
+        db.add_cve(
+            CVEEntry(
+                cve_id="CVE-2023-45853",
+                severity="HIGH",
+                package="zipp",
+                affected_versions=["3.15.0", "3.16.0"],
+                fixed_in="3.17.0",
+                description="Path traversal vulnerability",
+            )
+        )
 
-        db.add_cve(CVEEntry(
-            cve_id="CVE-2023-43804",
-            severity="MEDIUM",
-            package="urllib3",
-            affected_versions=["2.0.0", "2.0.1"],
-            fixed_in="2.0.7",
-            description="Cookie request header leak",
-        ))
+        db.add_cve(
+            CVEEntry(
+                cve_id="CVE-2023-43804",
+                severity="MEDIUM",
+                package="urllib3",
+                affected_versions=["2.0.0", "2.0.1"],
+                fixed_in="2.0.7",
+                description="Cookie request header leak",
+            )
+        )
 
         # Create monitor
         monitor = DependencyMonitor(db)
 
         # Scan project dependencies
         project_deps = {
-            "zipp": "3.15.0",      # Vulnerable
-            "urllib3": "2.0.7",    # Fixed
+            "zipp": "3.15.0",  # Vulnerable
+            "urllib3": "2.0.7",  # Fixed
             "requests": "2.31.0",  # Not in database
         }
 
@@ -591,23 +591,27 @@ class TestIntegrationScenarios:
         initial_checksum = db.checksum
 
         # First batch of CVEs
-        db.add_cve(CVEEntry(
-            cve_id="CVE-2024-0001",
-            severity="HIGH",
-            package="old-vuln",
-            affected_versions=["1.0.0"],
-        ))
+        db.add_cve(
+            CVEEntry(
+                cve_id="CVE-2024-0001",
+                severity="HIGH",
+                package="old-vuln",
+                affected_versions=["1.0.0"],
+            )
+        )
 
         checksum_after_first = db.checksum
         assert checksum_after_first != initial_checksum
 
         # Second batch (simulating update)
-        db.add_cve(CVEEntry(
-            cve_id="CVE-2024-0002",
-            severity="CRITICAL",
-            package="new-vuln",
-            affected_versions=["2.0.0"],
-        ))
+        db.add_cve(
+            CVEEntry(
+                cve_id="CVE-2024-0002",
+                severity="CRITICAL",
+                package="new-vuln",
+                affected_versions=["2.0.0"],
+            )
+        )
 
         checksum_after_second = db.checksum
         assert checksum_after_second != checksum_after_first
@@ -618,12 +622,14 @@ class TestIntegrationScenarios:
 
         # Add 50 CVEs
         for i in range(50):
-            db.add_cve(CVEEntry(
-                cve_id=f"CVE-2024-{i:04d}",
-                severity=["LOW", "MEDIUM", "HIGH", "CRITICAL"][i % 4],
-                package=f"pkg-{i}",
-                affected_versions=["1.0.0"],
-            ))
+            db.add_cve(
+                CVEEntry(
+                    cve_id=f"CVE-2024-{i:04d}",
+                    severity=["LOW", "MEDIUM", "HIGH", "CRITICAL"][i % 4],
+                    package=f"pkg-{i}",
+                    affected_versions=["1.0.0"],
+                )
+            )
 
         monitor = DependencyMonitor(db)
 
@@ -644,14 +650,16 @@ class TestIntegrationScenarios:
         """Test scenario where CVE has no fix available."""
         db = CVEDatabase()
 
-        db.add_cve(CVEEntry(
-            cve_id="CVE-2024-NOFIX",
-            severity="CRITICAL",
-            package="zero-day",
-            affected_versions=["1.0.0", "1.0.1", "1.0.2"],
-            fixed_in=None,  # No fix available
-            description="Zero-day vulnerability",
-        ))
+        db.add_cve(
+            CVEEntry(
+                cve_id="CVE-2024-NOFIX",
+                severity="CRITICAL",
+                package="zero-day",
+                affected_versions=["1.0.0", "1.0.1", "1.0.2"],
+                fixed_in=None,  # No fix available
+                description="Zero-day vulnerability",
+            )
+        )
 
         monitor = DependencyMonitor(db)
         deps = {"zero-day": "1.0.1"}
@@ -665,22 +673,24 @@ class TestIntegrationScenarios:
         """Test database persistence to file system."""
         db1 = CVEDatabase()
 
-        db1.add_cve(CVEEntry(
-            cve_id="CVE-2024-FILE",
-            severity="HIGH",
-            package="file-test",
-            affected_versions=["1.0.0"],
-            fixed_in="1.0.1",
-        ))
+        db1.add_cve(
+            CVEEntry(
+                cve_id="CVE-2024-FILE",
+                severity="HIGH",
+                package="file-test",
+                affected_versions=["1.0.0"],
+                fixed_in="1.0.1",
+            )
+        )
 
         # Save to temporary file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(db1.to_dict(), f)
             temp_path = f.name
 
         try:
             # Load from file
-            with open(temp_path, 'r') as f:
+            with open(temp_path, "r") as f:
                 data = json.load(f)
 
             db2 = CVEDatabase.from_dict(data)

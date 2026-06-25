@@ -17,7 +17,7 @@ from typing import Optional
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except Exception:  # pragma: no cover - final fallback
+except (IOError, OSError):  # pragma: no cover - final fallback
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 logger = logging.getLogger(__name__)
@@ -25,10 +25,8 @@ logger = logging.getLogger(__name__)
 # --- Codex patch: enable sqlite pragmas from environment (best-effort)
 try:
     # use fully-qualified package import
-    from codex.db.sqlite_patch import (
-        auto_enable_from_env as _codex_auto_enable_from_env,
-    )
-except Exception:  # pragma: no cover - best-effort fallback
+    from codex.db.sqlite_patch import auto_enable_from_env as _codex_auto_enable_from_env
+except (ImportError, AttributeError):  # pragma: no cover - best-effort fallback
 
     def _codex_auto_enable_from_env() -> None:
         return None
@@ -54,19 +52,22 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
 
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (ConnectionError, TimeoutError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 @contextlib.contextmanager

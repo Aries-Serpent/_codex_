@@ -40,9 +40,19 @@ class TestAuditRecord:
         )
         d = rec.to_dict()
         required = {
-            "ts", "surface_id", "mode", "actor", "event_type",
-            "token_source", "runner_class", "mutation_class",
-            "prompt_id", "decision", "policy_reason", "target", "run_id",
+            "ts",
+            "surface_id",
+            "mode",
+            "actor",
+            "event_type",
+            "token_source",
+            "runner_class",
+            "mutation_class",
+            "prompt_id",
+            "decision",
+            "policy_reason",
+            "target",
+            "run_id",
         }
         assert required.issubset(d.keys())
 
@@ -75,12 +85,14 @@ class TestAuditLogger:
 
     def test_metrics_update_on_record(self, tmp_path):
         al = _logger(tmp_path)
-        al.record(AuditRecord(
-            surface_id="AUT-007",
-            mode=AutonomyMode.SAFE_AUTO,
-            decision="allow",
-            mutation_class="ADVISORY_WRITE",
-        ))
+        al.record(
+            AuditRecord(
+                surface_id="AUT-007",
+                mode=AutonomyMode.SAFE_AUTO,
+                decision="allow",
+                mutation_class="ADVISORY_WRITE",
+            )
+        )
         m = al.metrics
         assert m.total_records == 1
         assert m.surface_invocation_count["AUT-007"] == 1
@@ -137,7 +149,7 @@ class TestAuditLogger:
             metrics_log_path=str(tmp_path / "metrics.ndjson"),
         )
         al = AuditLogger(registry=reg)
-        al.record(AuditRecord())   # should not raise
+        al.record(AuditRecord())  # should not raise
 
 
 class TestMetricsSnapshot:

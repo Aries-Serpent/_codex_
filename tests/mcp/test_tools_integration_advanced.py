@@ -443,8 +443,10 @@ def test_tool_dynamic_registration():
     # Dynamically create and register tools
     for i in range(5):
         tool_name = f"dynamic_{i}"
+
         def handler(params, idx=i):
             return {"index": idx, "data": params}
+
         registry.register_tool(tool_name, handler)
 
     tools = registry.list_tools()

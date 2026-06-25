@@ -132,8 +132,9 @@ class SessionLogger:
                 path.unlink()
                 removed.append(path)
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"OSError: <ERROR_TYPE>")
+                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
                 continue
 
         return removed

@@ -5,7 +5,6 @@ This module contains tests for configuration helpers.
 """
 
 
-
 class TestCoerceBool:
     """Tests for _coerce_bool function."""
 

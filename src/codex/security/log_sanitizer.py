@@ -179,24 +179,28 @@ def sanitize_dict_for_log(data: dict, max_length: int = 500, mask_secrets: bool 
             result[key] = sanitize_dict_for_log(value, max_length, mask_secrets)
         elif isinstance(value, (list, tuple)):
             if mask_secrets:
-                result[key] = [  # type: ignore[assignment]
-                    mask_sensitive(sanitize_log(str(item), max_length))
-                    if not isinstance(item, dict)
-                    else sanitize_dict_for_log(item, max_length, mask_secrets)
+                result[key] = [
+                    (
+                        mask_sensitive(sanitize_log(str(item), max_length))
+                        if not isinstance(item, dict)
+                        else sanitize_dict_for_log(item, max_length, mask_secrets)
+                    )
                     for item in value
                 ]
             else:
-                result[key] = [  # type: ignore[assignment]
-                    sanitize_log(str(item), max_length)
-                    if not isinstance(item, dict)
-                    else sanitize_dict_for_log(item, max_length, mask_secrets)
+                result[key] = [
+                    (
+                        sanitize_log(str(item), max_length)
+                        if not isinstance(item, dict)
+                        else sanitize_dict_for_log(item, max_length, mask_secrets)
+                    )
                     for item in value
                 ]
         else:
             str_value = sanitize_log(value, max_length)
             if mask_secrets:
                 str_value = mask_sensitive(str_value)
-            result[key] = str_value  # type: ignore[assignment]
+            result[key] = str_value
     return result
 
 

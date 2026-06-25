@@ -20,22 +20,22 @@ class TestRedactSensitiveValue:
     def test_redact_simple_value(self):
         """Test basic redaction of sensitive value."""
         result = redact_sensitive_value("my-secret-key-12345")
-        assert result == '[REDACTED]'
+        assert result == "[REDACTED]"
 
     def test_redact_empty_value(self):
         """Test redaction of empty value."""
         result = redact_sensitive_value("")
-        assert result == '[EMPTY]'
+        assert result == "[EMPTY]"
 
     def test_redact_none_value(self):
         """Test redaction of None value."""
         result = redact_sensitive_value(None)
-        assert result == '[EMPTY]'
+        assert result == "[EMPTY]"
 
     def test_redact_with_preview_disabled(self):
         """Test that preview is disabled by default (production safety)."""
         result = redact_sensitive_value("my-secret-key-12345", show_preview=False)
-        assert result == '[REDACTED]'
+        assert result == "[REDACTED]"
         assert "my-s" not in result
         assert "2345" not in result
 
@@ -49,7 +49,7 @@ class TestRedactSensitiveValue:
     def test_redact_with_preview_short_value(self):
         """Test preview mode with short value (< 8 chars)."""
         result = redact_sensitive_value("short", show_preview=True)
-        assert result == '[REDACTED]'  # Too short for preview
+        assert result == "[REDACTED]"  # Too short for preview
 
 
 class TestRedactSecretName:
@@ -58,7 +58,7 @@ class TestRedactSecretName:
     def test_redact_generic_secret_name(self):
         """Test redaction of generic secret name."""
         result = redact_secret_name("API_KEY")
-        assert result == '[REDACTED_SECRET_NAME]'
+        assert result == "[REDACTED_SECRET_NAME]"
 
     def test_redact_sensitive_secret_name(self):
         """Test full redaction of sensitive secret names."""
@@ -66,21 +66,21 @@ class TestRedactSecretName:
             "PROD_DATABASE_PASSWORD",
             "AWS_SECRET_ACCESS_KEY",
             "PRIVATE_KEY",
-            "JWT_SECRET"
+            "JWT_SECRET",
         ]
         for name in sensitive_names:
             result = redact_secret_name(name)
-            assert result == '[REDACTED_SECRET_NAME]'
+            assert result == "[REDACTED_SECRET_NAME]"
 
     def test_redact_empty_secret_name(self):
         """Test redaction of empty secret name."""
         result = redact_secret_name("")
-        assert result == '[UNNAMED_SECRET]'
+        assert result == "[UNNAMED_SECRET]"
 
     def test_redact_none_secret_name(self):
         """Test redaction of None secret name."""
         result = redact_secret_name(None)
-        assert result == '[UNNAMED_SECRET]'
+        assert result == "[UNNAMED_SECRET]"
 
 
 class TestRedactDictWithSecretKeys:
@@ -91,7 +91,7 @@ class TestRedactDictWithSecretKeys:
         data = {
             "GITHUB_TOKEN": "ghp_1234567890",
             "API_KEY": "sk-1234567890",
-            "DATABASE_URL": "postgresql://user:pass@host/db"
+            "DATABASE_URL": "postgresql://user:pass@host/db",
         }
         result = redact_dict_with_secret_keys(data)
 
@@ -120,7 +120,7 @@ class TestRedactDictWithSecretKeys:
             "SECRET_2": "value2",
             "SECRET_3": "value3",
             "SECRET_4": "value4",
-            "SECRET_5": "value5"
+            "SECRET_5": "value5",
         }
         result = redact_dict_with_secret_keys(data)
         assert len(result) == 5
@@ -207,7 +207,7 @@ class TestSecurityUtilsIntegration:
         secrets_data = {
             "GITHUB_TOKEN": "ghp_1234567890",
             "CODEX_MASTER_KEY": "abc123def456",
-            "GOOGLE_CLIENT_SECRET": "GOCSPX-secret123"
+            "GOOGLE_CLIENT_SECRET": "GOCSPX-secret123",
         }
 
         # Redact dictionary keys
@@ -233,7 +233,7 @@ class TestSecurityUtilsIntegration:
             "secret1": "value1",
             "secret2": "value2",
             "secret3": "value3",
-            "secret4": "value4"
+            "secret4": "value4",
         }
 
         # Apply redaction (as fixed in the codebase)
@@ -261,7 +261,7 @@ class TestSecurityUtilsIntegration:
         assert "2345" not in result
 
         # Verify the default is safe for production
-        assert result == '[REDACTED]'
+        assert result == "[REDACTED]"
 
 
 class TestEdgeCases:
@@ -270,13 +270,13 @@ class TestEdgeCases:
     def test_unicode_in_secret_value(self):
         """Test redaction of unicode characters in secret."""
         result = redact_sensitive_value("🔑secret🔐key🗝️")
-        assert result == '[REDACTED]'
+        assert result == "[REDACTED]"
 
     def test_very_long_secret_value(self):
         """Test redaction of very long secret (> 1000 chars)."""
         long_secret = "a" * 10000
         result = redact_sensitive_value(long_secret)
-        assert result == '[REDACTED]'
+        assert result == "[REDACTED]"
 
     def test_special_characters_in_secret_name(self):
         """Test redaction of secret name with special characters."""
@@ -285,11 +285,7 @@ class TestEdgeCases:
 
     def test_nested_dict_with_secrets(self):
         """Test that nested dicts are handled (current impl is flat)."""
-        data = {
-            "outer": {
-                "inner": "secret_value"
-            }
-        }
+        data = {"outer": {"inner": "secret_value"}}
         result = redact_dict_with_secret_keys(data)
         # Current implementation handles flat dicts
         # Nested values are preserved but keys are redacted

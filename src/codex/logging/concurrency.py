@@ -16,7 +16,6 @@ import logging
 import sqlite3
 import threading
 import time
-from collections import defaultdict
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -194,7 +193,8 @@ class SQLiteConnectionPool:
             conn.close()
             logger.info(f"WAL mode enabled for {self.db_path}")
         except sqlite3.Error as e:
-            logger.warning(f"Failed to enable WAL mode: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Failed to enable WAL mode: <ERROR_TYPE>")
 
     def get_connection(self) -> sqlite3.Connection:
         """Get thread-local connection (creates if needed)."""
@@ -204,9 +204,7 @@ class SQLiteConnectionPool:
         with self._lock:
             if thread_id not in self._connections:
                 if len(self._connections) >= self.max_connections:
-                    raise RuntimeError(
-                        f"Connection pool exhausted ({self.max_connections} max)"
-                    )
+                    raise RuntimeError(f"Connection pool exhausted ({self.max_connections} max)")
                 conn = sqlite3.connect(self.db_path, timeout=self.timeout)
                 conn.row_factory = sqlite3.Row
                 conn.execute("PRAGMA foreign_keys = ON")
@@ -232,7 +230,8 @@ class SQLiteConnectionPool:
                     conn.close()
                     logger.debug(f"Closed connection for thread {thread_id}")
                 except sqlite3.Error as e:
-                    logger.warning(f"Error closing connection: {e}")
+                    error_type = type(e).__name__
+                    logger.warning(f"Error closing connection: <ERROR_TYPE>")
                 finally:
                     del self._connections[thread_id]
                     self._thread_ids.discard(thread_id)
@@ -299,7 +298,7 @@ class ArchiveOperationLock:
                             f"Archive lock timeout after {self.max_retries} retries "
                             f"({self.timeout}s each)"
                         )
-                    time.sleep(min(2 ** retries, 10))  # Exponential backoff
+                    time.sleep(min(2**retries, 10))  # Exponential backoff
                     continue
 
                 self.metrics.lock_held_count += 1
@@ -311,8 +310,9 @@ class ArchiveOperationLock:
                     self.metrics.add_wait_time(wait_ms)
                 break
 
-            except Exception as e:
-                logger.error(f"Archive lock error for {session_id}: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Archive lock error for {session_id}: <ERROR_TYPE>")
                 raise
 
 
@@ -335,10 +335,9 @@ class DeadlockRecovery:
                 if "database is locked" in str(e) or "locked" in str(e).lower():
                     last_error = e
                     if attempt < max_retries - 1:
-                        wait_time = base_delay * (2 ** attempt)
+                        wait_time = base_delay * (2**attempt)
                         logger.warning(
-                            f"Database locked, retry {attempt + 1}/{max_retries} "
-                            f"after {wait_time}s"
+                            f"Database locked, retry {attempt + 1}/{max_retries} after {wait_time}s"
                         )
                         time.sleep(wait_time)
                     else:
@@ -363,8 +362,9 @@ def save_metrics(
         with open(output_file, "w") as f:
             json.dump(metrics_dict, f, indent=2, default=str)
         logger.info(f"Metrics saved to {output_path}")
-    except Exception as e:
-        logger.error(f"Failed to save metrics: {e}")
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        logger.error(f"Failed to save metrics: <ERROR_TYPE>")
 
 
 def log_error(
@@ -380,5 +380,6 @@ def log_error(
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         with open(error_file, "a") as f:
             f.write(f"[{timestamp}] {context}: {error}\n")
-    except Exception as e:
-        logger.error(f"Failed to log error: {e}")
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        logger.error(f"Failed to log error: <ERROR_TYPE>")

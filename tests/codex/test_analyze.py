@@ -23,13 +23,16 @@ class TestStaticAnalyzer:
         source_dir = tmp_path / "source"
         source_dir.mkdir()
 
-        (source_dir / "simple.py").write_text("""
+        (source_dir / "simple.py").write_text(
+            """
 def hello():
     print("Hello, World!")
 
 if __name__ == "__main__":
     hello()
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         report = analyze(source_dir, "test-snapshot", run_lint=False, run_security=False)
 
@@ -62,12 +65,15 @@ if __name__ == "__main__":
         source_dir = tmp_path / "source"
         source_dir.mkdir()
 
-        (source_dir / "imports.py").write_text("""
+        (source_dir / "imports.py").write_text(
+            """
 import os
 import sys
 from pathlib import Path
 from typing import List, Dict
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         report = analyze(source_dir, "test-snapshot", run_lint=False, run_security=False)
 
@@ -84,7 +90,8 @@ from typing import List, Dict
         source_dir = tmp_path / "source"
         source_dir.mkdir()
 
-        (source_dir / "exports.py").write_text("""
+        (source_dir / "exports.py").write_text(
+            """
 __all__ = ["public_func", "PublicClass"]
 
 def public_func():
@@ -98,7 +105,9 @@ class PublicClass:
 
 class _PrivateClass:
     pass
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         report = analyze(source_dir, "test-snapshot", run_lint=False, run_security=False)
 
@@ -113,7 +122,8 @@ class _PrivateClass:
         source_dir = tmp_path / "source"
         source_dir.mkdir()
 
-        (source_dir / "complex.py").write_text("""
+        (source_dir / "complex.py").write_text(
+            """
 def complex_function(x, y, z):
     if x > 0:
         if y > 0:
@@ -129,7 +139,9 @@ def complex_function(x, y, z):
         except ZeroDivisionError:
             result = 0
     return x + y + z
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         report = analyze(source_dir, "test-snapshot", run_lint=False, run_security=False)
 
@@ -144,11 +156,14 @@ def complex_function(x, y, z):
         source_dir = tmp_path / "source"
         source_dir.mkdir()
 
-        (source_dir / "broken.py").write_text("""
+        (source_dir / "broken.py").write_text(
+            """
 def broken(
     # Missing closing parenthesis
     print("oops")
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         report = analyze(source_dir, "test-snapshot", run_lint=False, run_security=False)
 

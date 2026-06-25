@@ -33,6 +33,7 @@ from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlans
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_api(tmp_path: Path, agent_id: str = "copilot-coding-agent") -> AgentBrainAPI:
     """Build an AgentBrainAPI with an in-memory planset dir."""
     d = tmp_path / "plans"
@@ -74,6 +75,7 @@ def _make_brain(tmp_path: Path) -> CognitiveBrain:
 # AgentSessionContext
 # ---------------------------------------------------------------------------
 
+
 class TestAgentSessionContext:
     def test_to_dict_contains_all_keys(self):
         ctx = AgentSessionContext(
@@ -92,9 +94,12 @@ class TestAgentSessionContext:
 
     def test_to_json_valid(self):
         ctx = AgentSessionContext(
-            session_id="s2", agent_id="a",
-            next_actions=[], continuation_from="",
-            active_patterns=[], capabilities=[],
+            session_id="s2",
+            agent_id="a",
+            next_actions=[],
+            continuation_from="",
+            active_patterns=[],
+            capabilities=[],
             continuation_prompt="x",
         )
         data = json.loads(ctx.to_json())
@@ -104,6 +109,7 @@ class TestAgentSessionContext:
 # ---------------------------------------------------------------------------
 # CompletionReport
 # ---------------------------------------------------------------------------
+
 
 class TestCompletionReport:
     def test_to_dict(self):
@@ -124,6 +130,7 @@ class TestCompletionReport:
 # ---------------------------------------------------------------------------
 # AgentBrainAPI
 # ---------------------------------------------------------------------------
+
 
 class TestAgentBrainAPI:
     def test_get_session_context_returns_context(self, tmp_path: Path):
@@ -191,9 +198,7 @@ class TestAgentBrainAPI:
 
     def test_session_context_with_context_signals(self, tmp_path: Path):
         api = _make_api(tmp_path)
-        ctx = api.get_session_context(
-            session_context={"open_alerts": 120, "coverage_pct": 40}
-        )
+        ctx = api.get_session_context(session_context={"open_alerts": 120, "coverage_pct": 40})
         assert ctx is not None
 
     def test_active_patterns_is_list(self, tmp_path: Path):
@@ -217,6 +222,7 @@ class TestAgentBrainAPI:
 # AGENT_CAPABILITIES map
 # ---------------------------------------------------------------------------
 
+
 class TestAgentCapabilitiesMap:
     def test_all_areas_covered(self):
         mapped = set()
@@ -228,25 +234,26 @@ class TestAgentCapabilitiesMap:
     def test_all_values_are_improvement_areas(self):
         for agent, caps in AGENT_CAPABILITIES.items():
             for c in caps:
-                assert isinstance(c, ImprovementArea), \
-                    f"{agent} has invalid capability {c}"
+                assert isinstance(c, ImprovementArea), f"{agent} has invalid capability {c}"
 
     def test_copilot_coding_agent_has_all_areas(self):
         caps = AGENT_CAPABILITIES["copilot-coding-agent"]
         assert set(caps) == set(ImprovementArea)
 
     def test_codeql_agent_covers_security(self):
-        assert ImprovementArea.SECURITY_REMEDIATION in \
-               AGENT_CAPABILITIES["codeql-alert-resolution-agent"]
+        assert (
+            ImprovementArea.SECURITY_REMEDIATION
+            in AGENT_CAPABILITIES["codeql-alert-resolution-agent"]
+        )
 
     def test_qi_agent_covers_qi_testing(self):
-        assert ImprovementArea.QI_TESTING in \
-               AGENT_CAPABILITIES["quantum-compliance-tuning-agent"]
+        assert ImprovementArea.QI_TESTING in AGENT_CAPABILITIES["quantum-compliance-tuning-agent"]
 
 
 # ---------------------------------------------------------------------------
 # CognitiveBrain singleton
 # ---------------------------------------------------------------------------
+
 
 class TestCognitiveBrain:
     def test_for_agent_returns_api(self, tmp_path: Path):
@@ -270,6 +277,7 @@ class TestCognitiveBrain:
         result = cb.next()
         # Either a PromptSet or None (all done)
         from codex.cognitive.planset_orchestrator import PromptSet
+
         assert result is None or isinstance(result, PromptSet)
 
     def test_advance_returns_report(self, tmp_path: Path):
@@ -365,27 +373,33 @@ class TestCognitiveBrain:
 # Module-level brain singleton
 # ---------------------------------------------------------------------------
 
+
 class TestBrainSingleton:
     def test_brain_importable(self):
         from codex.cognitive import brain
+
         assert isinstance(brain, CognitiveBrain)
 
     def test_brain_has_help(self):
         from codex.cognitive import brain
+
         assert callable(brain.help)
 
     def test_brain_has_discover(self):
         from codex.cognitive import brain
+
         d = brain.discover()
         assert "improvement_areas" in d
 
     def test_brain_has_health(self):
         from codex.cognitive import brain
+
         h = brain.health()
         assert "status" in h
 
     def test_brain_for_agent_works(self):
         from codex.cognitive import brain
+
         api = brain.for_agent("copilot-coding-agent")
         assert isinstance(api, AgentBrainAPI)
 
@@ -394,5 +408,6 @@ class TestBrainSingleton:
             CognitiveBrain,
             brain,
         )
+
         assert brain is not None
         assert issubclass(CognitiveBrain, object)

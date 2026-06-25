@@ -154,7 +154,7 @@ Phase 2: Link Health Cleanup has been successfully completed, achieving a perfec
 - id: validate-internal-links
   name: Validate Internal Doc Links
   entry: python .github/scripts/validate-links.py --fail-on-errors
-  
+
 - id: validate-doc-anchors
   name: Validate Documentation Anchors
   entry: python .github/scripts/validate_doc_anchors.py --directory docs
@@ -232,7 +232,7 @@ Phase 2: Link Health Cleanup has been successfully completed, achieving a perfec
 def extract_headings(file_path) -> Set[str]:
     # Pattern: /^#+\s+(.+?)(?:\s*{#(.+?)})?$/
     # Returns: set of valid heading IDs
-    
+
 # 2. Generate GitHub-flavored IDs
 def generate_heading_id(text) -> str:
     # Lowercase
@@ -240,7 +240,7 @@ def generate_heading_id(text) -> str:
     # Remove special characters
     # Deduplicate hyphens
     # Trim leading/trailing hyphens
-    
+
 # 3. Validate anchor links
 def validate_anchor_links(file_path) -> None:
     # Find all anchor patterns: [text](#id) or [text](file.md#id)

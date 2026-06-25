@@ -347,7 +347,7 @@ class CuckooHashTable(Generic[K, V]):
         """
         # Try table 1
         idx1 = self._hash1(key)
-        if self.table1[idx1] is None or self.table1[idx1][0] == key:  # type: ignore[index]
+        if self.table1[idx1] is None or self.table1[idx1][0] == key:
             self.table1[idx1] = (key, value)
             if self.table1[idx1][0] != key:  # type: ignore[index]  # New insertion
                 self.size += 1
@@ -355,7 +355,7 @@ class CuckooHashTable(Generic[K, V]):
 
         # Try table 2
         idx2 = self._hash2(key)
-        if self.table2[idx2] is None or self.table2[idx2][0] == key:  # type: ignore[index]
+        if self.table2[idx2] is None or self.table2[idx2][0] == key:
             self.table2[idx2] = (key, value)
             if self.table2[idx2][0] != key:  # type: ignore[index]  # New insertion
                 self.size += 1
@@ -378,9 +378,9 @@ class CuckooHashTable(Generic[K, V]):
 
             # Try to place evicted in table 2
             idx2 = self._hash2(current_key)
-            if self.table2[idx2] is None or self.table2[idx2][0] == current_key:  # type: ignore[index]
+            if self.table2[idx2] is None or self.table2[idx2][0] == current_key:
                 self.table2[idx2] = (current_key, current_value)
-                if self.table2[idx2][0] != current_key:  # type: ignore[index]
+                if self.table2[idx2][0] != current_key:
                     self.size += 1
                 return
 
@@ -388,7 +388,7 @@ class CuckooHashTable(Generic[K, V]):
             evicted = self.table2[idx2]
             self.table2[idx2] = (current_key, current_value)
             self.total_evictions += 1
-            current_key, current_value = evicted  # type: ignore[misc]
+            current_key, current_value = evicted
 
         # Too many evictions - resize and retry
         self._resize()

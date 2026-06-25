@@ -45,6 +45,7 @@ class TestPython312Integration:
         # Try importing tomllib (Python 3.11+)
         try:
             import tomllib
+
             assert tomllib is not None
         except ImportError:
             pytest.fail("tomllib should be available on Python 3.12")
@@ -60,6 +61,7 @@ class TestPython312Integration:
 
             try:
                 import codex_ml.evaluation  # noqa: F401
+
                 optional_imports.append("evaluation")
             except ImportError:
                 # Optional module not available, skip
@@ -67,6 +69,7 @@ class TestPython312Integration:
 
             try:
                 import codex_ml.data  # noqa: F401
+
                 optional_imports.append("data")
             except ImportError:
                 # Optional module not available, skip
@@ -74,6 +77,7 @@ class TestPython312Integration:
 
             try:
                 import codex_ml.models  # noqa: F401
+
                 optional_imports.append("models")
             except ImportError:
                 # Optional module not available, skip
@@ -299,11 +303,7 @@ python_files = ["test_*.py"]
             data = f.read()
 
         # Transform
-        processed_lines = [
-            line.strip().upper()
-            for line in data.split("\n")
-            if line.strip()
-        ]
+        processed_lines = [line.strip().upper() for line in data.split("\n") if line.strip()]
 
         assert len(processed_lines) == 100
         assert all("LINE" in line for line in processed_lines)
@@ -338,6 +338,7 @@ class TestFullSystemIntegration:
 
         try:
             import tomllib
+
             with open(pyproject_path, "rb") as f:
                 data = tomllib.load(f)
 
@@ -376,6 +377,7 @@ class TestBackwardCompatibility:
 
     def test_future_annotations_work(self):
         """Test that __future__ annotations work."""
+
         # This file uses __future__ annotations
         def test_func(x: str) -> str:
             return x.upper()

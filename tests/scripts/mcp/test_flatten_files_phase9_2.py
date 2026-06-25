@@ -91,9 +91,7 @@ class TestSHA256Computation:
 
         # Assert
         assert len(sha256) == 64
-        assert (
-            sha256 == "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"
-        )
+        assert sha256 == "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"
 
     def test_compute_sha256_empty(self) -> None:
         """Test computing SHA256 of empty content."""
@@ -105,9 +103,7 @@ class TestSHA256Computation:
 
         # Assert
         assert len(sha256) == 64
-        assert (
-            sha256 == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        )
+        assert sha256 == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
     def test_compute_sha256_large(self) -> None:
         """Test computing SHA256 of large content."""

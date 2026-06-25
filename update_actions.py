@@ -15,4 +15,3 @@ result = subprocess.run(
     cwd="."
 )
 sys.exit(result.returncode)
-

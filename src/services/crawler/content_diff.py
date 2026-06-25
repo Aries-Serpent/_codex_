@@ -46,12 +46,12 @@ class DiffSegment:
         """Serialize to dictionary."""
         return {
             "change_type": self.change_type,
-            "old_content_preview": self.old_content[:100] + "..."
-            if len(self.old_content) > 100
-            else self.old_content,
-            "new_content_preview": self.new_content[:100] + "..."
-            if len(self.new_content) > 100
-            else self.new_content,
+            "old_content_preview": (
+                self.old_content[:100] + "..." if len(self.old_content) > 100 else self.old_content
+            ),
+            "new_content_preview": (
+                self.new_content[:100] + "..." if len(self.new_content) > 100 else self.new_content
+            ),
             "line_start": self.line_start,
             "line_end": self.line_end,
         }
@@ -515,8 +515,9 @@ class SemanticDiffer:
 
             return float(similarity)
 
-        except Exception as e:
-            logger.error(f"Semantic similarity computation failed: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Semantic similarity computation failed: <ERROR_TYPE>")
             # Fallback to basic similarity
             return self._basic_similarity(text1, text2)
 
@@ -552,9 +553,9 @@ class SemanticDiffer:
             # scikit-learn is not available; fall back to SequenceMatcher
             matcher = difflib.SequenceMatcher(None, text1, text2)
             return matcher.ratio()
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             # Any unexpected failure in TF-IDF computation: log and fall back
-            logger.error(f"TF-IDF similarity computation failed: {e}")
+            logger.error(f"TF-IDF similarity computation failed: <ERROR_TYPE>")
             matcher = difflib.SequenceMatcher(None, text1, text2)
             return matcher.ratio()
 

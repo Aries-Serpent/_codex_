@@ -160,7 +160,7 @@ def _get_git_commit() -> Optional[str]:
             .decode()
             .strip()
         )
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -187,7 +187,7 @@ def _to_jsonable(obj: Any) -> Any:
     if isinstance(obj, (list, tuple, set)):
         return [_to_jsonable(v) for v in obj]
     if is_dataclass(obj):
-        return _to_jsonable(asdict(obj))  # type: ignore[arg-type]
+        return _to_jsonable(asdict(obj))
     if hasattr(obj, "__dict__"):
         return _to_jsonable({k: v for k, v in vars(obj).items() if not k.startswith("_")})
     try:
@@ -293,7 +293,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         if callable(getter):
             try:
                 converted = getter()
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 continue
             if isinstance(converted, Mapping):
@@ -324,7 +324,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     summary_path = run_dir / "tracking_summary.ndjson"
 
     if getattr(tracking_cfg, "tensorboard", False):
-        writers.append(TensorBoardWriter(run_dir / "tb", summary_path=summary_path))
+        writers.append(TensorBoardWriter(run_dir / "tb", summary_path=summary_path))  # type: ignore
 
     mlflow_enabled = _bool_env("CODEX_MLFLOW_ENABLE", getattr(tracking_cfg, "mlflow", False))
     if mlflow_enabled:
@@ -381,7 +381,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
         from omegaconf import DictConfig, OmegaConf
 
         resolved = OmegaConf.to_container(cfg, resolve=True) if isinstance(cfg, DictConfig) else cfg
-    except Exception:  # pragma: no cover - OmegaConf missing
+    except (ValueError, TypeError):  # pragma: no cover - OmegaConf missing
         resolved = cfg
     serialised = _to_jsonable(resolved)
     if isinstance(serialised, Mapping):

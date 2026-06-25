@@ -16,6 +16,7 @@ import pytest
 
 class SessionState(Enum):
     """MCP session states."""
+
     DISCONNECTED = auto()
     CONNECTING = auto()
     INITIALIZING = auto()
@@ -26,6 +27,7 @@ class SessionState(Enum):
 @dataclass
 class SessionInfo:
     """Session information."""
+
     session_id: str
     state: SessionState
     server_info: Optional[dict[str, Any]] = None
@@ -37,10 +39,7 @@ class TestSessionLifecycle:
 
     def test_session_creation(self):
         """Session is created with initial state."""
-        session = SessionInfo(
-            session_id="sess-1",
-            state=SessionState.DISCONNECTED
-        )
+        session = SessionInfo(session_id="sess-1", state=SessionState.DISCONNECTED)
 
         assert session.session_id == "sess-1"
         assert session.state == SessionState.DISCONNECTED
@@ -66,6 +65,7 @@ class TestSessionLifecycle:
 
     def test_session_ready_check(self):
         """Session ready check returns correct status."""
+
         class Session:
             def __init__(self):
                 self.state = SessionState.DISCONNECTED
@@ -133,6 +133,7 @@ class TestSessionPool:
 
     def test_session_pool_acquisition(self):
         """Sessions can be acquired from pool."""
+
         class SessionPool:
             def __init__(self, max_size=10):
                 self.max_size = max_size
@@ -169,6 +170,7 @@ class TestSessionPool:
 
     def test_session_pool_health_check(self):
         """Pool performs health checks on sessions."""
+
         class SessionPool:
             def __init__(self):
                 self.sessions = []
@@ -220,6 +222,7 @@ class TestSessionTimeout:
 
     def test_session_keepalive(self):
         """Keepalive messages prevent timeout."""
+
         class Session:
             def __init__(self):
                 self.keepalive_count = 0
@@ -245,6 +248,7 @@ class TestSessionReconnection:
 
     def test_reconnection_backoff(self):
         """Reconnection uses exponential backoff."""
+
         class ReconnectionPolicy:
             def __init__(self, base_delay=1.0, max_delay=60.0, max_attempts=5):
                 self.base_delay = base_delay
@@ -255,7 +259,7 @@ class TestSessionReconnection:
             def next_delay(self):
                 if self.attempts >= self.max_attempts:
                     return None  # Give up
-                delay = min(self.base_delay * (2 ** self.attempts), self.max_delay)
+                delay = min(self.base_delay * (2**self.attempts), self.max_delay)
                 self.attempts += 1
                 return delay
 
@@ -264,15 +268,16 @@ class TestSessionReconnection:
 
         policy = ReconnectionPolicy(base_delay=1.0, max_delay=30.0, max_attempts=5)
 
-        assert policy.next_delay() == 1.0   # Attempt 0
-        assert policy.next_delay() == 2.0   # Attempt 1
-        assert policy.next_delay() == 4.0   # Attempt 2
-        assert policy.next_delay() == 8.0   # Attempt 3
+        assert policy.next_delay() == 1.0  # Attempt 0
+        assert policy.next_delay() == 2.0  # Attempt 1
+        assert policy.next_delay() == 4.0  # Attempt 2
+        assert policy.next_delay() == 8.0  # Attempt 3
         assert policy.next_delay() == 16.0  # Attempt 4
         assert policy.next_delay() is None  # Max attempts reached
 
     def test_session_state_recovery(self):
         """Session state is recovered after reconnection."""
+
         class SessionState:
             def __init__(self):
                 self.subscriptions = set()
@@ -281,7 +286,7 @@ class TestSessionReconnection:
             def save_state(self):
                 return {
                     "subscriptions": list(self.subscriptions),
-                    "pending_request_ids": list(self.pending_requests.keys())
+                    "pending_request_ids": list(self.pending_requests.keys()),
                 }
 
             def restore_state(self, state):

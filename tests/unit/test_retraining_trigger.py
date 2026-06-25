@@ -39,6 +39,7 @@ _FIXED_TS_ISO = "2024-06-01T12:00:00+00:00"
 # Test 1-4 — Construction and defaults
 # ---------------------------------------------------------------------------
 
+
 class TestRetrainingTriggerConstruction:
     def test_required_fields_only(self):
         t = RetrainingTrigger(reason="data_drift_psi", drift_score=0.42)
@@ -76,6 +77,7 @@ class TestRetrainingTriggerConstruction:
 # Tests 5-8 — to_dict
 # ---------------------------------------------------------------------------
 
+
 class TestRetrainingTriggerToDict:
     def test_keys_present(self):
         t = RetrainingTrigger(reason="data_drift_psi", drift_score=0.3, timestamp=_FIXED_TS)
@@ -104,7 +106,9 @@ class TestRetrainingTriggerToDict:
 
     def test_config_snapshot_is_copy(self):
         t = RetrainingTrigger(
-            reason="r", drift_score=0.1, timestamp=_FIXED_TS,
+            reason="r",
+            drift_score=0.1,
+            timestamp=_FIXED_TS,
             config_snapshot={"key": "value"},
         )
         d = t.to_dict()
@@ -115,6 +119,7 @@ class TestRetrainingTriggerToDict:
 # ---------------------------------------------------------------------------
 # Tests 9-12 — from_dict
 # ---------------------------------------------------------------------------
+
 
 class TestRetrainingTriggerFromDict:
     def test_round_trip(self):
@@ -180,6 +185,7 @@ class TestRetrainingTriggerFromDict:
 # Tests 13-15 — Equality and identity
 # ---------------------------------------------------------------------------
 
+
 class TestRetrainingTriggerEquality:
     def test_equal_triggers(self):
         t1 = RetrainingTrigger(reason="r", drift_score=0.5, timestamp=_FIXED_TS)
@@ -200,6 +206,7 @@ class TestRetrainingTriggerEquality:
 # ---------------------------------------------------------------------------
 # Test — config_snapshot default does not share mutable state across instances
 # ---------------------------------------------------------------------------
+
 
 class TestMutableDefaultSafety:
     def test_each_instance_gets_own_config_snapshot(self):

@@ -12,6 +12,7 @@ class TestSecurityScannerImports:
         """Test that the module can be imported."""
         try:
             from src.codex.security import scanner
+
             assert scanner is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -24,7 +25,8 @@ class TestSecurityScannerOperations:
         """Test scanner creation."""
         try:
             from src.codex.security import scanner
-            if hasattr(scanner, 'SecurityScanner'):
+
+            if hasattr(scanner, "SecurityScanner"):
                 s = scanner.SecurityScanner()
                 assert s is not None
         except (ImportError, AttributeError):
@@ -34,8 +36,9 @@ class TestSecurityScannerOperations:
         """Test file scanning."""
         try:
             from src.codex.security import scanner
-            if hasattr(scanner, 'scan_file'):
-                with patch.object(scanner, 'scan_file') as mock_scan:
+
+            if hasattr(scanner, "scan_file"):
+                with patch.object(scanner, "scan_file") as mock_scan:
                     mock_scan.return_value = {"vulnerabilities": []}
                     result = scanner.scan_file("/test/file.py")
                     assert "vulnerabilities" in result
@@ -46,8 +49,9 @@ class TestSecurityScannerOperations:
         """Test directory scanning."""
         try:
             from src.codex.security import scanner
-            if hasattr(scanner, 'scan_directory'):
-                with patch.object(scanner, 'scan_directory') as mock_scan:
+
+            if hasattr(scanner, "scan_directory"):
+                with patch.object(scanner, "scan_directory") as mock_scan:
                     mock_scan.return_value = {"files_scanned": 10, "issues": 2}
                     result = scanner.scan_directory("/test/dir")
                     assert result["files_scanned"] == 10
@@ -62,8 +66,9 @@ class TestSecurityScannerRules:
         """Test loading rules."""
         try:
             from src.codex.security import scanner
-            if hasattr(scanner, 'load_rules'):
-                with patch.object(scanner, 'load_rules') as mock_load:
+
+            if hasattr(scanner, "load_rules"):
+                with patch.object(scanner, "load_rules") as mock_load:
                     mock_load.return_value = [{"id": "R001"}]
                     rules = scanner.load_rules("/rules.yaml")
                     assert len(rules) == 1
@@ -74,9 +79,10 @@ class TestSecurityScannerRules:
         """Test adding custom rule."""
         try:
             from src.codex.security import scanner
-            if hasattr(scanner, 'SecurityScanner'):
+
+            if hasattr(scanner, "SecurityScanner"):
                 s = scanner.SecurityScanner()
-                if hasattr(s, 'add_rule'):
+                if hasattr(s, "add_rule"):
                     s.add_rule({"id": "custom", "pattern": ".*"})
                     assert True
         except (ImportError, AttributeError):

@@ -24,13 +24,13 @@
 
 **Failure Chain**:
 ```
-accelerate → transformers → boto3 → OpenSSL.crypto → 
+accelerate → transformers → boto3 → OpenSSL.crypto →
 cryptography mismatch → _lib.GEN_EMAIL missing
 ```
 
 **Resolution**: Added 37 affected test modules to `collect_ignore` in `conftest.py`
 
-**Impact**: 
+**Impact**:
 - ✅ Resolved 44 test collection errors
 - ✅ Allows pytest to skip problematic modules safely at collection time
 - ✅ No need to modify system packages or force reinstallation
@@ -198,7 +198,7 @@ python -c "import OpenSSL; print(__import__('OpenSSL').__file__)"
 # MUST contain site-packages, not /usr/lib
 ```
 
-**Resolution**: 
+**Resolution**:
 - Added `collect_ignore` entries in conftest.py
 - Pre-emptive import loading in conftest patches
 - Environment variable PYTHONPATH ensures src/ takes precedence
@@ -228,7 +228,7 @@ python -c "import OpenSSL; print(__import__('OpenSSL').__file__)"
 ### Commit 1: Test Infrastructure Fixes
 ```
 Hash: 3987466
-Message: Fix test failures: add update_user method, fix coverage threshold, 
+Message: Fix test failures: add update_user method, fix coverage threshold,
          add missing repository methods, fix sqlite fixture
 
 Changed Files:

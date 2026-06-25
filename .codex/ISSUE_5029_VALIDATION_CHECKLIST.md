@@ -134,7 +134,7 @@ gh run view <RUN_ID> --log | grep -E "CodeQL|Semgrep|Dependency" | head -20
 # Query cache statistics
 gh run list --workflow security-scanning-suite.yml --limit 50 --json conclusion,duration \
   | jq '[.[] | select(.conclusion == "success")] | length as $total | {
-    success: ., 
+    success: .,
     rate: ($total / length)
   }'
 ```

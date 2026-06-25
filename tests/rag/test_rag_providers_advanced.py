@@ -7,7 +7,6 @@ Comprehensive testing for all RAG embedding providers:
 - Provider switching and fallback
 """
 
-
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -29,7 +28,7 @@ class TestTFIDFProvider:
             assert provider is not None
 
             # Verify provider has required methods
-            assert hasattr(provider, 'encode')
+            assert hasattr(provider, "encode")
             assert callable(provider.encode)
         except ImportError:
             pytest.skip("Module not available")
@@ -104,7 +103,7 @@ class TestTFIDFProvider:
             # May need to fit first
             provider.encode(["test document"])
 
-            if hasattr(provider, 'get_dimension'):
+            if hasattr(provider, "get_dimension"):
                 dim = provider.get_dimension()
                 assert isinstance(dim, int)
                 assert dim > 0
@@ -194,10 +193,10 @@ class TestLocalSentenceTransformerProvider:
                 provider = LocalSentenceTransformerProvider()
 
                 # Should be on CPU
-                if hasattr(provider, 'model'):
+                if hasattr(provider, "model"):
                     # Check model device - device attribute returns string directly
-                    if hasattr(provider.model, 'device'):
-                        assert str(provider.model.device) == 'cpu'
+                    if hasattr(provider.model, "device"):
+                        assert str(provider.model.device) == "cpu"
             except (ImportError, OSError):
                 pytest.skip("Model or PyTorch not available")
         except ImportError:
@@ -221,7 +220,7 @@ class TestOpenAIProvider:
         except ImportError:
             pytest.skip("Module not available")
 
-    @patch('codex.rag.embeddings.OpenAI')
+    @patch("codex.rag.embeddings.OpenAI")
     def test_openai_provider_with_mock(self, mock_openai):
         """Test OpenAI provider with mocked API."""
         try:
@@ -259,7 +258,7 @@ class TestOpenAIProvider:
             try:
                 provider = OpenAIEmbeddingProvider()
 
-                if hasattr(provider, 'get_dimension'):
+                if hasattr(provider, "get_dimension"):
                     dim = provider.get_dimension()
                     # OpenAI text-embedding-ada-002 is 1536 dimensions
                     assert dim > 0
@@ -282,7 +281,7 @@ class TestProviderSwitching:
             assert provider is not None
 
             # Should have encode method
-            assert hasattr(provider, 'encode')
+            assert hasattr(provider, "encode")
             assert callable(provider.encode)
         except (ImportError, AttributeError):
             pytest.skip("Function not available")
@@ -293,7 +292,7 @@ class TestProviderSwitching:
             from codex.rag.embeddings import get_embedding_provider
 
             # Try different provider names
-            provider_names = ['tfidf', 'local', 'openai']
+            provider_names = ["tfidf", "local", "openai"]
 
             for name in provider_names:
                 try:
@@ -312,10 +311,10 @@ class TestProviderSwitching:
 
             # Try to get preferred provider, should fallback if not available
             try:
-                provider = get_embedding_provider(provider_type='openai')
+                provider = get_embedding_provider(provider_type="openai")
             except Exception as _err:
                 # Should fallback to TF-IDF
-                provider = get_embedding_provider(provider_type='tfidf')
+                provider = get_embedding_provider(provider_type="tfidf")
 
             assert provider is not None
         except (ImportError, AttributeError):
@@ -332,16 +331,16 @@ class TestProviderCompatibility:
 
             # Get all provider classes
             provider_classes = [
-                'TfidfEmbeddingProvider',
-                'LocalSentenceTransformerProvider',
-                'OpenAIEmbeddingProvider',
+                "TfidfEmbeddingProvider",
+                "LocalSentenceTransformerProvider",
+                "OpenAIEmbeddingProvider",
             ]
 
             for class_name in provider_classes:
                 if hasattr(embeddings, class_name):
                     cls = getattr(embeddings, class_name)
                     # Check class has encode method
-                    assert hasattr(cls, 'encode') or 'encode' in dir(cls)
+                    assert hasattr(cls, "encode") or "encode" in dir(cls)
         except ImportError:
             pytest.skip("Module not available")
 
@@ -400,8 +399,8 @@ class TestProviderEnvironmentConfig:
             from codex.rag.embeddings import get_embedding_provider
 
             # Set environment variable
-            old_value = os.environ.get('RAG_EMBEDDING_PROVIDER')
-            os.environ['RAG_EMBEDDING_PROVIDER'] = 'tfidf'
+            old_value = os.environ.get("RAG_EMBEDDING_PROVIDER")
+            os.environ["RAG_EMBEDDING_PROVIDER"] = "tfidf"
 
             try:
                 provider = get_embedding_provider()
@@ -410,9 +409,9 @@ class TestProviderEnvironmentConfig:
             finally:
                 # Restore original value
                 if old_value is not None:
-                    os.environ['RAG_EMBEDDING_PROVIDER'] = old_value
+                    os.environ["RAG_EMBEDDING_PROVIDER"] = old_value
                 else:
-                    os.environ.pop('RAG_EMBEDDING_PROVIDER', None)
+                    os.environ.pop("RAG_EMBEDDING_PROVIDER", None)
         except (ImportError, AttributeError):
             pytest.skip("Function not available")
 
@@ -424,8 +423,8 @@ class TestProviderEnvironmentConfig:
             from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             # Set mock HF token
-            old_value = os.environ.get('HF_TOKEN')
-            os.environ['HF_TOKEN'] = 'test_token_12345'
+            old_value = os.environ.get("HF_TOKEN")
+            os.environ["HF_TOKEN"] = "test_token_12345"
 
             try:
                 provider = LocalSentenceTransformerProvider()
@@ -436,8 +435,8 @@ class TestProviderEnvironmentConfig:
             finally:
                 # Restore original value
                 if old_value is not None:
-                    os.environ['HF_TOKEN'] = old_value
+                    os.environ["HF_TOKEN"] = old_value
                 else:
-                    os.environ.pop('HF_TOKEN', None)
+                    os.environ.pop("HF_TOKEN", None)
         except ImportError:
             pytest.skip("Module not available")

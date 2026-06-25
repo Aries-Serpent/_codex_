@@ -25,9 +25,7 @@ class TestPhysicsOrchestratorProperties:
         """Test force vector at 90 degrees (straight up)."""
         from agents.physics_orchestrator import ForceVector
 
-        force = ForceVector(
-            name="up", magnitude=1.0, direction=math.pi / 2, priority=1.0
-        )
+        force = ForceVector(name="up", magnitude=1.0, direction=math.pi / 2, priority=1.0)
         x, y = force.get_components()
 
         assert abs(x) < 0.001  # Should be ~0

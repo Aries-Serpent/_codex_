@@ -54,8 +54,9 @@ class RetrievalEngine:
                 store.load()
                 logger.info(f"Loaded index for tenant {tenant_id}, index {index_name}")
             except FileNotFoundError as e:
-                logger.debug(f"FileNotFoundError: {e}")
-                logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+                logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
                 logger.warning(f"No index found for tenant {tenant_id}, index {index_name}")
 
             self.tenant_stores[store_key] = store

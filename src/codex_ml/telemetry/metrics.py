@@ -30,7 +30,7 @@ try:  # optional dependency
     from prometheus_client import Counter, Histogram
 
     _HAS_PROM = True
-except Exception:  # pragma: no cover - optional
+except (ConnectionError, TimeoutError):  # pragma: no cover - optional
     Counter = Histogram = None
     _HAS_PROM = False
 

@@ -267,7 +267,7 @@ Flow:
      - CodeQL (15-20 min)
      - Security Scan (10-15 min)
      - Test Summary (2-3 min, triggers after tests)
-  
+
   Result:
     ✓ All checks must PASS
     ✓ Merge blocked until all pass
@@ -291,14 +291,14 @@ Conditions:
   - Major production incident
   - Documented in PR description
   - Explicit admin approval
-  
+
 Process:
   1. Admin temporarily disables branch protection
   2. Merge PR with failing checks (justified)
   3. IMMEDIATELY create hotfix PR to fix tests
   4. Post-mortem within 24 hours
   5. Document incident in .codex/change_log.md
-  
+
 Note: ⚠️ DISCOURAGED - Use only for critical production issues
 ```
 
@@ -356,16 +356,16 @@ Note: ⚠️ DISCOURAGED - Use only for critical production issues
 ```
 Gate Dependencies:
   Test Summary ← Comprehensive Tests (waits for all tests)
-  
+
 Gate Conflicts:
   None detected ✅
-  
+
 Gate Parallelization:
   ├── Comprehensive Tests ══════════> (38 min)
   ├── CodeQL ════════════════════════> (18 min)
   ├── Security Scan ════════════════=> (12 min)
   └── Test Summary ─────────────────> (2.5 min) [waits for tests]
-  
+
 Total Time: 38 min (parallel execution) ✅
 ```
 

@@ -237,13 +237,13 @@ mkdir -p $BACKUP_DIR
 # Backup each database with WAL checkpoint
 for db in /var/data/codex_*.db; do
     db_name=$(basename $db)
-    
+
     # Checkpoint WAL
     sqlite3 $db "PRAGMA wal_checkpoint(TRUNCATE);"
-    
+
     # Copy database
     cp $db $BACKUP_DIR/${db_name}.backup.$TIMESTAMP
-    
+
     # Verify backup
     sqlite3 $BACKUP_DIR/${db_name}.backup.$TIMESTAMP "PRAGMA integrity_check;" > /tmp/check_$TIMESTAMP.txt
     if ! grep -q "ok" /tmp/check_$TIMESTAMP.txt; then
@@ -445,7 +445,7 @@ echo
 for db in /var/data/codex_*.db; do
     db_name=$(basename $db)
     echo "Checking $db_name..."
-    
+
     # Integrity check
     integrity=$(sqlite3 $db "PRAGMA integrity_check;")
     if [[ $integrity == "ok" ]]; then
@@ -453,11 +453,11 @@ for db in /var/data/codex_*.db; do
     else
         echo "  ❌ Integrity: FAIL - $integrity"
     fi
-    
+
     # Size check
     size=$(du -h $db | cut -f1)
     echo "  📊 Size: $size"
-    
+
     echo
 done
 
@@ -498,4 +498,3 @@ SELECT * FROM users;
 PRAGMA index_list(users);
 PRAGMA index_info(idx_users_email);
 ```
-

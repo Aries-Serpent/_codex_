@@ -238,44 +238,44 @@ END_TIME=$(($(date +%s) + HEALTH_CHECK_DURATION))
 
 while [ $(date +%s) -lt $END_TIME ]; do
   TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-  
+
   echo "=== Health Check @ $TIMESTAMP ==="
-  
+
   # 1. Pod Health
   RUNNING_PODS=$(kubectl get pods -l app=codex-ml -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}' | wc -w)
   TOTAL_PODS=$(kubectl get pods -l app=codex-ml -o jsonpath='{.items[*].metadata.name}' | wc -w)
   echo "Pods: $RUNNING_PODS/$TOTAL_PODS running"
-  
+
   if [ $RUNNING_PODS -lt $TOTAL_PODS ]; then
     echo "⚠️  WARNING: Not all pods running"
     kubectl get pods -l app=codex-ml
   fi
-  
+
   # 2. Error Rate
   ERROR_RATE=$(curl -s 'http://prometheus:9090/api/v1/query?query=rate(http_requests_total{status=~"5.."}[5m])' | \
     jq '.data.result[0].value[1]' | tr -d '"' | awk '{printf "%.2f", $1*100}')
   echo "Error Rate: ${ERROR_RATE}%"
-  
+
   if (( $(echo "$ERROR_RATE > 1" | bc -l) )); then
     echo "⚠️  WARNING: Error rate > 1%"
   fi
-  
+
   # 3. Database Latency
   DB_LATENCY=$(curl -s 'http://prometheus:9090/api/v1/query?query=histogram_quantile(0.95,rate(db_query_duration_seconds_bucket[5m]))' | \
     jq '.data.result[0].value[1]' | tr -d '"')
   echo "DB P95 Latency: ${DB_LATENCY}s"
-  
+
   # 4. Memory Usage
   MEM_USAGE=$(kubectl top pod -l app=codex-ml --no-headers | awk '{s+=$2} END {print s}')
   echo "Memory Usage: ${MEM_USAGE}Mi"
-  
+
   # 5. Cache Performance
   CACHE_HIT=$(curl -s 'http://prometheus:9090/api/v1/query?query=cache_hit_ratio' | \
     jq '.data.result[0].value[1]' | tr -d '"' | awk '{printf "%.1f", $1*100}')
   echo "Cache Hit Ratio: ${CACHE_HIT}%"
-  
+
   echo ""
-  
+
   sleep $HEALTH_CHECK_INTERVAL
 done
 ```
@@ -299,9 +299,9 @@ kubectl logs -l app=codex-ml --tail=50 | grep -i error
 
 # T+30: Verify database performance
 psql $DB_NAME << SQL
-  SELECT query, calls, total_time, mean_time 
-  FROM pg_stat_statements 
-  WHERE mean_time > 100 
+  SELECT query, calls, total_time, mean_time
+  FROM pg_stat_statements
+  WHERE mean_time > 100
   ORDER BY mean_time DESC LIMIT 5;
 SQL
 
@@ -328,33 +328,33 @@ curl -I https://api.example.com/health
 for hour in {1..24}; do
   TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
   echo "=== Hour $hour: $TIMESTAMP ==="
-  
+
   # Key metrics
   UPTIME=$(curl -s 'http://prometheus:9090/api/v1/query?query=up{job="codex-ml"}' | \
     jq '[.data.result[].value[1]] | map(tonumber) | map(select(. == 1)) | length' | \
     awk -v total=$(curl -s 'http://prometheus:9090/api/v1/query?query=up{job="codex-ml"}' | jq '.data.result | length') '{printf "%.1f", $1/total*100}')
-  
+
   ERROR_COUNT=$(curl -s 'http://prometheus:9090/api/v1/query?query=increase(http_requests_total{status=~"5.."}[1h])' | \
     jq '.data.result[0].value[1]' | tr -d '"')
-  
+
   REQUEST_COUNT=$(curl -s 'http://prometheus:9090/api/v1/query?query=increase(http_requests_total[1h])' | \
     jq '.data.result[0].value[1]' | tr -d '"')
-  
+
   ERROR_RATE=$(echo "scale=2; $ERROR_COUNT / $REQUEST_COUNT * 100" | bc)
-  
+
   echo "Uptime: ${UPTIME}%"
   echo "Error Rate: ${ERROR_RATE}%"
   echo "Total Requests: $REQUEST_COUNT"
-  
+
   # Alert conditions
   if (( $(echo "$UPTIME < 99" | bc -l) )); then
     echo "⚠️  WARNING: Uptime < 99%"
   fi
-  
+
   if (( $(echo "$ERROR_RATE > 0.5" | bc -l) )); then
     echo "⚠️  WARNING: Error rate > 0.5%"
   fi
-  
+
   sleep 3600
 done
 ```
@@ -371,7 +371,7 @@ baseline_metrics:
   memory_avg: 2.5GB    # Allows up to 6GB
   cache_hit: 85%       # Must be > 75%
   db_connections: 25   # Max 100
-  
+
   # Business metrics
   predictions_generated: 10000+
   average_confidence: 0.92
@@ -538,12 +538,12 @@ echo "✓ Data batch submitted: $BATCH_ID"
 for i in {1..30}; do
   STATUS=$(curl -s http://codex-ml/api/v1/data/$BATCH_ID/status | jq -r '.status')
   echo "Status: $STATUS"
-  
+
   if [ "$STATUS" = "completed" ]; then
     echo "✓ Processing completed"
     break
   fi
-  
+
   sleep 2
 done
 

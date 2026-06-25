@@ -40,7 +40,7 @@ class BatchTokenizer(Protocol):
 torch: Any
 try:  # pragma: no cover - optional dependency guard
     import torch as _torch_mod
-except Exception:  # pragma: no cover - allow repository usage without torch
+except (ImportError, AttributeError):  # pragma: no cover - allow repository usage without torch
     torch = None
 else:
     torch = _torch_mod
@@ -50,10 +50,10 @@ try:  # pragma: no cover - guard for environments without torch data utilities
     from torch.utils.data import Dataset as TorchDataset
     from torch.utils.data import TensorDataset as TorchTensorDataset
     from torch.utils.data import random_split as torch_random_split
-except Exception:  # pragma: no cover - provide graceful degradation
-    TorchDataLoader = cast(Any, None)  # type: ignore[misc]
-    TorchDataset = cast(Any, None)  # type: ignore[misc]
-    TorchTensorDataset = cast(Any, None)  # type: ignore[misc]
+except (ImportError, AttributeError):  # pragma: no cover - provide graceful degradation
+    TorchDataLoader = cast(Any, None)
+    TorchDataset = cast(Any, None)
+    TorchTensorDataset = cast(Any, None)
     torch_random_split = cast(Any, None)
 
 BaseDataset: type[Any]
@@ -132,16 +132,18 @@ class TextClassificationDataset(BaseDataset):
                     try:
                         text, label = line.split("\t", maxsplit=1)
                         self.samples.append((text, int(label)))
-                    except Exception as exc:
-                        logger.debug(f"Exception: {exc}")
+                    except (IOError, OSError) as exc:
+                        error_type = type(exc).__name__
+                        logger.debug(f"Exception: <ERROR_TYPE>")
                         append_error(
                             "3.5",
                             "dataset parse",
                             str(exc),
                             f"path={self.file_path} line={line_number}",
                         )
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             append_error("3.5", "dataset load", str(exc), str(self.file_path))
             raise
         if not self.samples:
@@ -171,8 +173,9 @@ def _collate_text_batch(
             max_length=max_length,
             return_tensors="pt",
         )
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (ValueError, TypeError, RuntimeError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         append_error("3.5", "tokenize batch", str(exc), f"texts={len(texts)}")
         raise
     input_ids = encodings.get("input_ids")
@@ -240,7 +243,7 @@ def _build_dataloaders_from_config(
             )
 
     def collate(batch: Iterable[tuple[str, int]]) -> tuple[Any, Any]:
-        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)  # type: ignore[return-value]
+        return _collate_text_batch(batch_encode, batch, max_length=config.max_length)
 
     train_loader = TorchDataLoader(
         train_set,

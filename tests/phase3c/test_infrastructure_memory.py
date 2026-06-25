@@ -159,7 +159,7 @@ class TestMemoryProtocol:
             content="Test content",
             agent_id="test-agent",
             session_id="test-session",
-            metadata={"key": "value"}
+            metadata={"key": "value"},
         )
         assert entry.content == "Test content"
         assert entry.agent_id == "test-agent"
@@ -170,9 +170,7 @@ class TestMemoryProtocol:
     def test_memory_entry_to_dict(self):
         """Test converting MemoryEntry to dictionary."""
         entry = MemoryEntry(
-            content="Test content",
-            agent_id="test-agent",
-            session_id="test-session"
+            content="Test content", agent_id="test-agent", session_id="test-session"
         )
         entry_dict = entry.to_dict()
         assert isinstance(entry_dict, dict)
@@ -183,6 +181,7 @@ class TestMemoryProtocol:
     def test_memory_entry_from_dict(self):
         """Test creating MemoryEntry from dictionary."""
         import uuid
+
         test_uuid = str(uuid.uuid4())
         data = {
             "id": test_uuid,
@@ -190,7 +189,7 @@ class TestMemoryProtocol:
             "agent_id": "test-agent",
             "session_id": "test-session",
             "metadata": {"key": "value"},
-            "timestamp": "2024-01-01T00:00:00Z"
+            "timestamp": "2024-01-01T00:00:00Z",
         }
         entry = MemoryEntry.from_dict(data)
         assert entry.content == "Test content"
@@ -199,10 +198,7 @@ class TestMemoryProtocol:
     def test_memory_query_creation(self):
         """Test creating a MemoryQuery."""
         query = MemoryQuery(
-            text="search text",
-            agent_id="test-agent",
-            session_id="test-session",
-            limit=10
+            text="search text", agent_id="test-agent", session_id="test-session", limit=10
         )
         assert query.text == "search text"
         assert query.agent_id == "test-agent"
@@ -224,9 +220,7 @@ class TestJSONLBackend:
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "memories.jsonl")
             entry = MemoryEntry(
-                content="Test content",
-                agent_id="test-agent",
-                session_id="test-session"
+                content="Test content", agent_id="test-agent", session_id="test-session"
             )
             backend.store(entry)
 
@@ -240,9 +234,7 @@ class TestJSONLBackend:
             backend = JSONLMemoryBackend(Path(tmpdir) / "memories.jsonl")
             for i in range(5):
                 entry = MemoryEntry(
-                    content=f"Memory {i}",
-                    agent_id="test-agent",
-                    session_id="test-session"
+                    content=f"Memory {i}", agent_id="test-agent", session_id="test-session"
                 )
                 backend.store(entry)
 
@@ -328,25 +320,14 @@ class TestMemoryEdgeCases:
     def test_store_complex_nested_dict(self):
         """Test storing complex nested dictionary."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
-        complex_content = {
-            "level1": {
-                "level2": {
-                    "level3": [1, 2, 3],
-                    "data": "nested"
-                }
-            }
-        }
+        complex_content = {"level1": {"level2": {"level3": [1, 2, 3], "data": "nested"}}}
         entry = manager.store(complex_content)
         assert entry.content == complex_content
 
     def test_store_with_special_characters_in_metadata(self):
         """Test storing with special characters in metadata."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
-        metadata = {
-            "special": "!@#$%^&*()",
-            "unicode": "你好世界🌍",
-            "quotes": 'He said "hello"'
-        }
+        metadata = {"special": "!@#$%^&*()", "unicode": "你好世界🌍", "quotes": 'He said "hello"'}
         entry = manager.store("Test", metadata=metadata)
         assert entry.metadata == metadata
 

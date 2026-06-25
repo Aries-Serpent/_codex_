@@ -450,7 +450,7 @@ class TestWriteJsonlWithCrc:
         output_path = temp_dir / "output.jsonl"
         write_jsonl_with_crc(output_path, sample_records)
 
-        crc_path = output_path.with_suffix(".jsonl.crc32")
+        output_path.with_suffix(".jsonl.crc32")
         # Implementation may vary - file might not exist if crc32_file not mocked
 
     def test_write_empty_records(self, temp_dir):
@@ -479,8 +479,7 @@ class TestWriteJsonlWithCrc:
     def test_write_large_records(self, temp_dir):
         """Test writing large records."""
         large_records = [
-            {"id": i, "text": "x" * 10000, "data": list(range(1000))}
-            for i in range(10)
+            {"id": i, "text": "x" * 10000, "data": list(range(1000))} for i in range(10)
         ]
         output_path = temp_dir / "large.jsonl"
         write_jsonl_with_crc(output_path, large_records)
@@ -529,9 +528,7 @@ class TestEdgeCases:
 
     def test_stable_fold_numeric_precision(self):
         """Test stable fold with various numeric strings."""
-        folds = [
-            stable_fold(str(i)) for i in range(100)
-        ]
+        folds = [stable_fold(str(i)) for i in range(100)]
         assert min(folds) >= 0
         assert max(folds) <= 99
 

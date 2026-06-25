@@ -19,12 +19,7 @@ class TestMessageSerialization:
 
     def test_simple_message_serialization(self):
         """Test simple message serialization."""
-        message = {
-            "type": "request",
-            "id": 1,
-            "method": "get_user",
-            "params": {"user_id": 123}
-        }
+        message = {"type": "request", "id": 1, "method": "get_user", "params": {"user_id": 123}}
         serialized = message
         assert serialized["type"] == "request"
 
@@ -33,14 +28,8 @@ class TestMessageSerialization:
         message = {
             "type": "response",
             "id": 1,
-            "result": {
-                "user": {
-                    "id": 123,
-                    "name": "Alice",
-                    "permissions": ["read", "write"]
-                }
-            },
-            "timestamp": datetime.now().isoformat()
+            "result": {"user": {"id": 123, "name": "Alice", "permissions": ["read", "write"]}},
+            "timestamp": datetime.now().isoformat(),
         }
         assert "result" in message
         assert "timestamp" in message
@@ -51,7 +40,7 @@ class TestMessageSerialization:
             "enabled": True,
             "method": "gzip",
             "min_size_bytes": 1024,
-            "compression_level": 6
+            "compression_level": 6,
         }
         assert compression["compression_level"] > 0
 
@@ -61,7 +50,7 @@ class TestMessageSerialization:
             "type": "binary_data",
             "encoding": "base64",
             "data": "iVBORw0KGgoAAAANSUhEUgAAAA==",
-            "size": 32
+            "size": 32,
         }
         assert binary_msg["size"] > 0
 
@@ -72,8 +61,8 @@ class TestMessageSerialization:
             "messages": [
                 {"id": 1, "method": "method1"},
                 {"id": 2, "method": "method2"},
-                {"id": 3, "method": "method3"}
-            ]
+                {"id": 3, "method": "method3"},
+            ],
         }
         assert len(batch["messages"]) == 3
 
@@ -83,17 +72,13 @@ class TestMessageSerialization:
             "type": "stream",
             "stream_id": "stream_123",
             "chunk_size": 8192,
-            "total_chunks": 10
+            "total_chunks": 10,
         }
         assert stream["chunk_size"] > 0
 
     def test_message_versioning(self):
         """Test message format versioning."""
-        message = {
-            "version": "1.0",
-            "type": "request",
-            "content": {}
-        }
+        message = {"version": "1.0", "type": "request", "content": {}}
         assert message["version"] is not None
 
 
@@ -110,10 +95,7 @@ class TestMessageDeserialization:
         """Test nested message deserialization."""
         raw = {
             "type": "response",
-            "data": {
-                "user": {"id": 1, "name": "Alice"},
-                "metadata": {"version": "v1"}
-            }
+            "data": {"user": {"id": 1, "name": "Alice"}, "metadata": {"version": "v1"}},
         }
         assert raw["data"]["user"]["name"] == "Alice"
 
@@ -123,7 +105,7 @@ class TestMessageDeserialization:
             "check_required_fields": True,
             "check_types": True,
             "check_ranges": True,
-            "strict_mode": False
+            "strict_mode": False,
         }
         assert validation["check_required_fields"]
 
@@ -133,7 +115,7 @@ class TestMessageDeserialization:
             "type": "error",
             "code": "E001",
             "message": "Internal server error",
-            "details": {"timestamp": datetime.now().isoformat()}
+            "details": {"timestamp": datetime.now().isoformat()},
         }
         assert error_msg["code"] is not None
 
@@ -147,7 +129,7 @@ class TestProtocolNegotiation:
             "step": 1,
             "client_version": "1.0",
             "server_version": "1.0",
-            "supported_features": ["compression", "encryption", "streaming"]
+            "supported_features": ["compression", "encryption", "streaming"],
         }
         assert handshake["client_version"] == handshake["server_version"]
 
@@ -157,7 +139,7 @@ class TestProtocolNegotiation:
             "client_version": "1.0",
             "server_version": "1.1",
             "compatible": True,
-            "requires_upgrade": False
+            "requires_upgrade": False,
         }
         assert compatibility["compatible"]
 
@@ -166,17 +148,13 @@ class TestProtocolNegotiation:
         negotiation = {
             "client_features": ["compression", "encryption"],
             "server_features": ["compression", "encryption", "streaming"],
-            "agreed_features": ["compression", "encryption"]
+            "agreed_features": ["compression", "encryption"],
         }
         assert len(negotiation["agreed_features"]) > 0
 
     def test_timeout_during_negotiation(self):
         """Test timeout during negotiation."""
-        timeout = {
-            "timeout_seconds": 30,
-            "retries": 3,
-            "backoff_seconds": 5
-        }
+        timeout = {"timeout_seconds": 30, "retries": 3, "backoff_seconds": 5}
         assert timeout["timeout_seconds"] > 0
 
     def test_protocol_fallback(self):
@@ -184,7 +162,7 @@ class TestProtocolNegotiation:
         fallback = {
             "primary_protocol": "http2",
             "fallback_protocol": "http1.1",
-            "auto_fallback": True
+            "auto_fallback": True,
         }
         assert fallback["fallback_protocol"] is not None
 
@@ -198,7 +176,7 @@ class TestConnectionManagement:
             "id": "conn_123",
             "status": "established",
             "created_at": datetime.now(),
-            "remote_addr": "192.168.1.1"
+            "remote_addr": "192.168.1.1",
         }
         assert connection["status"] == "established"
 
@@ -208,17 +186,13 @@ class TestConnectionManagement:
             "enabled": True,
             "interval_seconds": 30,
             "timeout_seconds": 60,
-            "ping_payload": "ping"
+            "ping_payload": "ping",
         }
         assert keep_alive["enabled"]
 
     def test_connection_multiplexing(self):
         """Test connection multiplexing."""
-        multiplexing = {
-            "enabled": True,
-            "max_streams": 100,
-            "flow_control": True
-        }
+        multiplexing = {"enabled": True, "max_streams": 100, "flow_control": True}
         assert multiplexing["max_streams"] > 0
 
     def test_connection_pooling(self):
@@ -227,7 +201,7 @@ class TestConnectionManagement:
             "min_connections": 5,
             "max_connections": 20,
             "idle_timeout_seconds": 300,
-            "current_size": 8
+            "current_size": 8,
         }
         assert pool["current_size"] >= pool["min_connections"]
 
@@ -237,7 +211,7 @@ class TestConnectionManagement:
             "type": "graceful",
             "timeout_seconds": 10,
             "flush_messages": True,
-            "notify_peer": True
+            "notify_peer": True,
         }
         assert closure["flush_messages"]
 
@@ -247,7 +221,7 @@ class TestConnectionManagement:
             "initial_delay_ms": 100,
             "max_delay_ms": 30000,
             "exponential_base": 2,
-            "max_retries": 10
+            "max_retries": 10,
         }
         assert backoff["max_retries"] > 0
 
@@ -262,7 +236,7 @@ class TestErrorHandling:
             "E002": {"description": "Authentication failed", "http_code": 401},
             "E003": {"description": "Authorization failed", "http_code": 403},
             "E004": {"description": "Not found", "http_code": 404},
-            "E005": {"description": "Server error", "http_code": 500}
+            "E005": {"description": "Server error", "http_code": 500},
         }
         assert errors["E001"]["http_code"] == 400
 
@@ -271,7 +245,7 @@ class TestErrorHandling:
         error_chain = {
             "original_error": "Connection refused",
             "wrapped_error": "Failed to establish connection",
-            "user_error": "Service unavailable"
+            "user_error": "Service unavailable",
         }
         assert error_chain["original_error"] is not None
 
@@ -281,7 +255,7 @@ class TestErrorHandling:
             "enabled": True,
             "max_attempts": 5,
             "backoff_strategy": "exponential",
-            "jitter": True
+            "jitter": True,
         }
         assert retry["max_attempts"] > 1
 
@@ -291,7 +265,7 @@ class TestErrorHandling:
             "state": "closed",
             "failure_threshold": 5,
             "success_threshold": 2,
-            "timeout_seconds": 60
+            "timeout_seconds": 60,
         }
         assert breaker["state"] in ["open", "closed", "half-open"]
 
@@ -301,7 +275,7 @@ class TestErrorHandling:
             "enabled": True,
             "handler": "default_response",
             "cache_result": True,
-            "ttl_seconds": 300
+            "ttl_seconds": 300,
         }
         assert fallback["enabled"]
 
@@ -311,7 +285,7 @@ class TestErrorHandling:
             "log_errors": True,
             "track_metrics": True,
             "alert_on_critical": True,
-            "error_rate_threshold": 0.01
+            "error_rate_threshold": 0.01,
         }
         assert monitoring["log_errors"]
 
@@ -326,7 +300,7 @@ class TestEncryptionAndSecurity:
             "version": "1.3",
             "cipher_suites": ["ECDHE-ECDSA-AES256-GCM-SHA384"],
             "certificate": "/etc/ssl/cert.pem",
-            "key": "/etc/ssl/key.pem"
+            "key": "/etc/ssl/key.pem",
         }
         assert tls["enabled"]
 
@@ -336,7 +310,7 @@ class TestEncryptionAndSecurity:
             "enabled": True,
             "algorithm": "HMAC-SHA256",
             "key": "secret_key",
-            "verify_on_receive": True
+            "verify_on_receive": True,
         }
         assert signing["verify_on_receive"]
 
@@ -346,7 +320,7 @@ class TestEncryptionAndSecurity:
             "enabled": True,
             "algorithm": "AES-256-GCM",
             "key_derivation": "PBKDF2",
-            "iv_size": 12
+            "iv_size": 12,
         }
         assert encryption["iv_size"] > 0
 
@@ -356,7 +330,7 @@ class TestEncryptionAndSecurity:
             "validate_cert": True,
             "validate_hostname": True,
             "trusted_ca_certs": "/etc/ssl/certs",
-            "crl_check": False
+            "crl_check": False,
         }
         assert validation["validate_cert"]
 
@@ -370,7 +344,7 @@ class TestFlowControl:
             "enabled": True,
             "messages_per_second": 1000,
             "burst_size": 2000,
-            "enforcement": "drop"
+            "enforcement": "drop",
         }
         assert rate_limit["messages_per_second"] > 0
 
@@ -380,7 +354,7 @@ class TestFlowControl:
             "enabled": True,
             "initial_window_size": 65535,
             "min_window_size": 1024,
-            "auto_adjust": True
+            "auto_adjust": True,
         }
         assert flow_control["initial_window_size"] > 0
 
@@ -390,7 +364,7 @@ class TestFlowControl:
             "enabled": True,
             "queue_size": 1000,
             "pause_threshold": 0.8,
-            "resume_threshold": 0.5
+            "resume_threshold": 0.5,
         }
         assert backpressure["pause_threshold"] > backpressure["resume_threshold"]
 
@@ -404,7 +378,7 @@ class TestLoadBalancing:
             "algorithm": "round_robin",
             "servers": ["server1", "server2", "server3"],
             "health_check_interval": 10,
-            "connection_timeout": 5
+            "connection_timeout": 5,
         }
         assert len(strategy["servers"]) == 3
 
@@ -414,17 +388,13 @@ class TestLoadBalancing:
             "enabled": True,
             "method": "cookie",
             "cookie_name": "JSESSIONID",
-            "ttl_seconds": 3600
+            "ttl_seconds": 3600,
         }
         assert sticky["enabled"]
 
     def test_server_weight_configuration(self):
         """Test server weight configuration."""
-        weights = {
-            "powerful_server": 3,
-            "normal_server": 2,
-            "weak_server": 1
-        }
+        weights = {"powerful_server": 3, "normal_server": 2, "weak_server": 1}
         total_weight = sum(weights.values())
         assert total_weight == 6
 
@@ -434,11 +404,7 @@ class TestProtocolExtensions:
 
     def test_custom_header_support(self):
         """Test custom header support."""
-        headers = {
-            "x-request-id": "req_123",
-            "x-client-version": "1.0",
-            "x-compression": "gzip"
-        }
+        headers = {"x-request-id": "req_123", "x-client-version": "1.0", "x-compression": "gzip"}
         assert "x-request-id" in headers
 
     def test_metadata_propagation(self):
@@ -446,7 +412,7 @@ class TestProtocolExtensions:
         metadata = {
             "trace_id": "trace_abc",
             "span_id": "span_xyz",
-            "baggage": {"user_id": "user_123"}
+            "baggage": {"user_id": "user_123"},
         }
         assert metadata["trace_id"] is not None
 
@@ -456,7 +422,7 @@ class TestProtocolExtensions:
             "on_connect": "handle_connect",
             "on_disconnect": "handle_disconnect",
             "on_message": "handle_message",
-            "on_error": "handle_error"
+            "on_error": "handle_error",
         }
         assert len(callbacks) == 4
 
@@ -466,12 +432,7 @@ class TestPerformanceOptimization:
 
     def test_message_batching(self):
         """Test message batching."""
-        batching = {
-            "enabled": True,
-            "batch_size": 100,
-            "max_delay_ms": 50,
-            "compression": True
-        }
+        batching = {"enabled": True, "batch_size": 100, "max_delay_ms": 50, "compression": True}
         assert batching["batch_size"] > 0
 
     def test_caching_strategy(self):
@@ -480,16 +441,11 @@ class TestPerformanceOptimization:
             "enabled": True,
             "ttl_seconds": 300,
             "max_entries": 10000,
-            "eviction_policy": "lru"
+            "eviction_policy": "lru",
         }
         assert caching["enabled"]
 
     def test_connection_reuse(self):
         """Test connection reuse."""
-        reuse = {
-            "enabled": True,
-            "pool_size": 20,
-            "idle_timeout_seconds": 300,
-            "metrics": True
-        }
+        reuse = {"enabled": True, "pool_size": 20, "idle_timeout_seconds": 300, "metrics": True}
         assert reuse["pool_size"] > 0

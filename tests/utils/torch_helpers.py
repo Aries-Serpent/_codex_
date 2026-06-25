@@ -23,14 +23,14 @@ def skip_if_torch_stub(torch_module):
         >>> skip_if_torch_stub(torch)
     """
     # Check if torch has essential attributes
-    if not hasattr(torch_module, 'nn'):
+    if not hasattr(torch_module, "nn"):
         pytest.skip("PyTorch is not fully functional (missing nn module)", allow_module_level=True)
 
-    if not hasattr(torch_module.nn, 'Linear'):
+    if not hasattr(torch_module.nn, "Linear"):
         pytest.skip("PyTorch is not fully functional (missing nn.Linear)", allow_module_level=True)
 
     # Check if it's the stub by looking for IS_CODEX_STUB marker
-    if hasattr(torch_module, 'IS_CODEX_STUB') and torch_module.IS_CODEX_STUB:
+    if hasattr(torch_module, "IS_CODEX_STUB") and torch_module.IS_CODEX_STUB:
         pytest.skip("PyTorch stub module detected", allow_module_level=True)
 
 
@@ -119,6 +119,5 @@ def skip_if_any_missing(*module_names: str):
 
     if missing:
         pytest.skip(
-            f"Required modules not available: {', '.join(missing)}",
-            allow_module_level=True
+            f"Required modules not available: {', '.join(missing)}", allow_module_level=True
         )

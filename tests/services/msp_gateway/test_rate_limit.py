@@ -19,6 +19,7 @@ from services.msp_gateway.middleware.rate_limit import (
 # TokenBucket
 # ---------------------------------------------------------------------------
 
+
 class TestTokenBucket:
     def _make_bucket(self, capacity: int = 10, tokens: float | None = None) -> TokenBucket:
         return TokenBucket(
@@ -86,12 +87,14 @@ class TestTokenBucket:
 # RateLimiter
 # ---------------------------------------------------------------------------
 
+
 class TestRateLimiter:
     def _make_limiter(self) -> RateLimiter:
         return RateLimiter()
 
     def test_request_limit_disabled(self, monkeypatch):
         from services.msp_gateway.middleware.rate_limit import settings as rl_settings
+
         monkeypatch.setattr(rl_settings, "rate_limit_enabled", False)
         limiter = self._make_limiter()
         # Disabled → always allowed
@@ -100,6 +103,7 @@ class TestRateLimiter:
 
     def test_request_limit_enabled_respects_capacity(self, monkeypatch):
         from services.msp_gateway.middleware.rate_limit import settings as rl_settings
+
         monkeypatch.setattr(rl_settings, "rate_limit_enabled", True)
         monkeypatch.setattr(rl_settings, "rate_limit_requests_per_minute", 3)
         limiter = self._make_limiter()
@@ -109,12 +113,14 @@ class TestRateLimiter:
 
     def test_token_limit_disabled(self, monkeypatch):
         from services.msp_gateway.middleware.rate_limit import settings as rl_settings
+
         monkeypatch.setattr(rl_settings, "rate_limit_enabled", False)
         limiter = self._make_limiter()
         assert limiter.check_token_limit("t2", 5000) is True
 
     def test_token_limit_quota_override(self, monkeypatch):
         from services.msp_gateway.middleware.rate_limit import settings as rl_settings
+
         monkeypatch.setattr(rl_settings, "rate_limit_enabled", True)
         monkeypatch.setattr(rl_settings, "rate_limit_tokens_per_minute", 100)
         limiter = self._make_limiter()
@@ -125,6 +131,7 @@ class TestRateLimiter:
 
     def test_token_limit_drains_bucket_on_failure(self, monkeypatch):
         from services.msp_gateway.middleware.rate_limit import settings as rl_settings
+
         monkeypatch.setattr(rl_settings, "rate_limit_enabled", True)
         monkeypatch.setattr(rl_settings, "rate_limit_tokens_per_minute", 5)
         limiter = self._make_limiter()
@@ -137,6 +144,7 @@ class TestRateLimiter:
 
     def test_get_or_create_bucket_idempotent(self, monkeypatch):
         from services.msp_gateway.middleware.rate_limit import settings as rl_settings
+
         monkeypatch.setattr(rl_settings, "rate_limit_enabled", True)
         monkeypatch.setattr(rl_settings, "rate_limit_requests_per_minute", 60)
         limiter = self._make_limiter()
@@ -146,6 +154,7 @@ class TestRateLimiter:
 
     def test_separate_buckets_per_tenant(self, monkeypatch):
         from services.msp_gateway.middleware.rate_limit import settings as rl_settings
+
         monkeypatch.setattr(rl_settings, "rate_limit_enabled", True)
         monkeypatch.setattr(rl_settings, "rate_limit_requests_per_minute", 60)
         limiter = self._make_limiter()
@@ -157,6 +166,7 @@ class TestRateLimiter:
 # ---------------------------------------------------------------------------
 # RateLimitMiddleware._extract_requested_tokens
 # ---------------------------------------------------------------------------
+
 
 class TestExtractRequestedTokens:
     def test_empty_body_returns_default(self):
@@ -201,6 +211,7 @@ class TestExtractRequestedTokens:
 # ---------------------------------------------------------------------------
 # RateLimitMiddleware.dispatch (async integration via ASGI)
 # ---------------------------------------------------------------------------
+
 
 @pytest.mark.asyncio
 async def test_dispatch_skips_health_endpoint(monkeypatch):
@@ -259,6 +270,7 @@ async def test_dispatch_rate_limited_request(monkeypatch):
 
     # Plant a depleted request bucket
     from services.msp_gateway.middleware.rate_limit import rate_limiter as global_rl
+
     global_rl.request_buckets["tenant_depleted"] = TokenBucket(
         capacity=1, tokens=0.0, last_refill=time.time(), refill_rate=0.0
     )

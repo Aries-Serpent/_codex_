@@ -38,6 +38,7 @@ class TestVersionDetection:
 
     def test_compare_versions(self):
         """Test comparing version numbers."""
+
         def compare_versions(v1: str, v2: str) -> int:
             parts1 = [int(x) for x in v1.split(".")]
             parts2 = [int(x) for x in v2.split(".")]
@@ -71,11 +72,13 @@ class TestVersionDetection:
         for pkg, current in current_versions.items():
             latest = latest_versions.get(pkg, current)
             if current != latest:
-                outdated.append({
-                    "package": pkg,
-                    "current": current,
-                    "latest": latest,
-                })
+                outdated.append(
+                    {
+                        "package": pkg,
+                        "current": current,
+                        "latest": latest,
+                    }
+                )
 
         assert len(outdated) == 2
         assert outdated[0]["package"] == "package_a"
@@ -146,10 +149,12 @@ class TestCompatibilityChecks:
             if len(specs) > 1:
                 # Check if specs are compatible (simplified check)
                 if any("<2.0" in s for _, s in specs) and any(">=2.0" in s for _, s in specs):
-                    conflicts.append({
-                        "dependency": dep,
-                        "conflicting_specs": specs,
-                    })
+                    conflicts.append(
+                        {
+                            "dependency": dep,
+                            "conflicting_specs": specs,
+                        }
+                    )
 
         assert len(conflicts) == 1
         assert conflicts[0]["dependency"] == "common_lib"
@@ -201,11 +206,13 @@ class TestCompatibilityChecks:
                     if "<" in advisory["vulnerable_versions"]:
                         max_vulnerable = advisory["vulnerable_versions"].replace("<", "")
                         if version < max_vulnerable:
-                            vulnerable.append({
-                                "package": pkg,
-                                "version": version,
-                                "advisory": advisory,
-                            })
+                            vulnerable.append(
+                                {
+                                    "package": pkg,
+                                    "version": version,
+                                    "advisory": advisory,
+                                }
+                            )
 
         assert len(vulnerable) == 1
         assert vulnerable[0]["package"] == "package_a"
@@ -225,11 +232,13 @@ class TestCompatibilityChecks:
         for pkg, new_version in upgrade_target.items():
             old_version = current_deps.get(pkg)
             if old_version != new_version:
-                result["changes"].append({
-                    "package": pkg,
-                    "from": old_version,
-                    "to": new_version,
-                })
+                result["changes"].append(
+                    {
+                        "package": pkg,
+                        "from": old_version,
+                        "to": new_version,
+                    }
+                )
 
         assert len(result["changes"]) == 1
         assert result["after"]["pkg_a"] == "1.1.0"

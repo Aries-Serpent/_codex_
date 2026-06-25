@@ -29,10 +29,10 @@ Comprehensive dead code analysis completed across **4 scope directories** (src/,
 ### Scanner Configuration
 
 - **Tool:** vulture (Python dead code detector)
-- **Confidence Thresholds:** 
+- **Confidence Thresholds:**
   - 100% confidence = definite dead code (auto-safe for removal)
   - 60-99% confidence = probable dead code (requires review)
-- **Scan Paths:** 
+- **Scan Paths:**
   - `src/` - Production code
   - `scripts/` - Operational & CI scripts
   - `.github/scripts/` - GitHub Actions scripts
@@ -461,8 +461,8 @@ Total Dead Code Items:      1,766
 DEFAULT_EXCLUDE_NAMES = frozenset([
     "HF_AutoModel",
     "HF_AutoModelForCausalLM",
-    "HF_AutoTokenizer",
-    "HF_PreTrainedTokenizerBase",
+    "HF_AutoTokenizer",  # pragma: allowlist secret
+    "HF_PreTrainedTokenizerBase",  # pragma: allowlist secret
     "HF_PreTrainedModel",
     "tmp_path",
     "capsys",

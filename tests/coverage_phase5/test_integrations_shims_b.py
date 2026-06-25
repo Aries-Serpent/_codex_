@@ -1,4 +1,5 @@
 """Test integration shims module 1."""
+
 from __future__ import annotations
 
 from typing import Any, Dict
@@ -24,11 +25,13 @@ class ExternalServiceShim:
         self.initialized = False
         return True
 
+
 @pytest.mark.asyncio
 async def test_shim_1_init():
     """Test shim initialization."""
     shim = ExternalServiceShim("service_1")
     assert shim.service_name == "service_1"
+
 
 @pytest.mark.asyncio
 async def test_shim_1_activate():
@@ -39,6 +42,7 @@ async def test_shim_1_activate():
     assert result is True
     assert shim.initialized is True
 
+
 @pytest.mark.asyncio
 async def test_shim_1_call():
     """Test shim service call."""
@@ -47,6 +51,7 @@ async def test_shim_1_call():
 
     result = await shim.call_service("test_method", param="value")
     assert result["result"] == "success"
+
 
 @pytest.mark.asyncio
 async def test_shim_1_shutdown():

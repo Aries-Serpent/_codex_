@@ -288,12 +288,13 @@ class TestMetricExport:
 
     def test_prometheus_format(self):
         """Test Prometheus format export."""
-        metric = "http_requests_total{method=\"GET\"} 100"
+        metric = 'http_requests_total{method="GET"} 100'
         assert "http_requests_total" in metric
 
     def test_json_format(self):
         """Test JSON format export."""
         import json
+
         metric = {"name": "http_requests", "value": 100}
         exported = json.dumps(metric)
         assert isinstance(exported, str)
@@ -331,6 +332,7 @@ class TestMetricExport:
     def test_compressed_export(self):
         """Test compressed metric export."""
         import gzip
+
         data = b"metric data"
         compressed = gzip.compress(data)
         assert len(compressed) <= len(data) + 20  # Allow for gzip overhead

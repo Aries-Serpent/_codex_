@@ -3,6 +3,7 @@ Unit tests for codex_ml.checkpointing module.
 
 Tests checkpoint save/load, versioning, and metadata handling.
 """
+
 import importlib.util
 import json
 import tempfile
@@ -14,7 +15,7 @@ import pytest
 # Helper function
 def _torch_available():
     """Check if PyTorch is available."""
-    return importlib.util.find_spec('torch') is not None
+    return importlib.util.find_spec("torch") is not None
 
 
 class TestCheckpointCore:
@@ -60,10 +61,7 @@ class TestCheckpointCore:
 class TestSaveCheckpoint:
     """Test save_checkpoint functionality."""
 
-    @pytest.mark.skipif(
-        not _torch_available(),
-        reason="PyTorch required for checkpoint tests"
-    )
+    @pytest.mark.skipif(not _torch_available(), reason="PyTorch required for checkpoint tests")
     def test_save_checkpoint_requires_torch(self):
         """Test save_checkpoint requires PyTorch."""
         from codex_ml.checkpointing.checkpoint_core import save_checkpoint
@@ -71,11 +69,7 @@ class TestSaveCheckpoint:
         # Should either work or raise RuntimeError if torch unavailable
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
-                save_checkpoint(
-                    tmpdir,
-                    state={"param": 1},
-                    meta={"epoch": 1}
-                )
+                save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
             except RuntimeError as e:
                 assert "PyTorch" in str(e)
 
@@ -90,11 +84,7 @@ class TestSaveCheckpoint:
             out_dir = Path(tmpdir) / "new_checkpoint"
 
             try:
-                save_checkpoint(
-                    str(out_dir),
-                    state={"param": 1},
-                    meta={"epoch": 1}
-                )
+                save_checkpoint(str(out_dir), state={"param": 1}, meta={"epoch": 1})
                 assert out_dir.exists()
             except RuntimeError:
                 pytest.skip("PyTorch not available")
@@ -108,11 +98,7 @@ class TestSaveCheckpoint:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
-                save_checkpoint(
-                    tmpdir,
-                    state={"param": 1},
-                    meta={"epoch": 1}
-                )
+                save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
                 weights_file = Path(tmpdir) / "weights.pt"
                 assert weights_file.exists()
             except RuntimeError:
@@ -127,11 +113,7 @@ class TestSaveCheckpoint:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
-                save_checkpoint(
-                    tmpdir,
-                    state={"param": 1},
-                    meta={"epoch": 1, "step": 100}
-                )
+                save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1, "step": 100})
                 metadata_file = Path(tmpdir) / "metadata.json"
                 assert metadata_file.exists()
 
@@ -168,11 +150,7 @@ class TestLoadCheckpoint:
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
                 # Save first
-                save_checkpoint(
-                    tmpdir,
-                    state={"param": 42},
-                    meta={"epoch": 5}
-                )
+                save_checkpoint(tmpdir, state={"param": 42}, meta={"epoch": 5})
 
                 # Load
                 state, _meta = load_checkpoint(tmpdir)
@@ -224,11 +202,7 @@ class TestCheckpointSchema:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
-                save_checkpoint(
-                    tmpdir,
-                    state={"param": 1},
-                    meta={"epoch": 1}
-                )
+                save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
 
                 metadata_file = Path(tmpdir) / "metadata.json"
                 with open(metadata_file) as f:
@@ -246,11 +220,7 @@ class TestCheckpointSchema:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
-                save_checkpoint(
-                    tmpdir,
-                    state={"param": 1},
-                    meta={"epoch": 1}
-                )
+                save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
 
                 metadata_file = Path(tmpdir) / "metadata.json"
                 with open(metadata_file) as f:
@@ -277,6 +247,6 @@ class TestCheckpointCompat:
             from codex_ml.checkpointing import compat
 
             # Should have some compatibility functions
-            assert hasattr(compat, '__name__')
+            assert hasattr(compat, "__name__")
         except ImportError:
             pytest.skip("Compat module structure may vary")

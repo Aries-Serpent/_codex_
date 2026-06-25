@@ -27,6 +27,8 @@ def test_logging_write_and_read_ndjson(tmp_path: Path):
     with log.open("w", encoding="utf-8") as fh:
         for e in events:
             fh.write(json.dumps(e, sort_keys=True) + "\n")
-    lines = [json.loads(line) for line in log.read_text(encoding="utf-8").splitlines() if line.strip()]
+    lines = [
+        json.loads(line) for line in log.read_text(encoding="utf-8").splitlines() if line.strip()
+    ]
     assert len(lines) == 2
     assert all({"ts", "level", "msg"} <= set(e) for e in lines)

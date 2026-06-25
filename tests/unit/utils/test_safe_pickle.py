@@ -27,6 +27,7 @@ class DummyBlockedClass:
 
 def test_restricted_unpickler_find_class():
     import io
+
     unpickler = RestrictedUnpickler(io.BytesIO(b""))
 
     # Test allowed (use a real class)
@@ -87,7 +88,7 @@ def test_safe_pickle_load_restricted_blocked(tmp_path):
 
         with pytest.raises(pickle.UnpicklingError):
             safe_pickle_load(str(file_path), use_restricted_unpickler=True)
-    except Exception as _err:
+    except (IOError, OSError) as _err:
         # Depending on OS, EvilClass might not be picklable in test scope easily
         # Let's just create a custom pickle stream that references os.system
         pass
@@ -191,6 +192,7 @@ def test_split_signed_pickle_errors():
     with pytest.raises(ValueError, match="File too small to contain a signed pickle payload"):
         _split_signed_pickle(b"short")
 
+
 def test_split_signed_pickle_legacy():
     pickled_data = b"some_legacy_pickled_data"
     signature = b"x" * 32
@@ -200,11 +202,12 @@ def test_split_signed_pickle_legacy():
     assert extracted_data == pickled_data
     assert extracted_signature == signature
 
+
 def test_safe_pickle_dump_without_explicit_key(tmp_path):
     with patch.dict(os.environ, {"PICKLE_SECRET_KEY": "env_secret"}):  # pragma: allowlist secret
         file_path = tmp_path / "test_implicit_key.pkl"
-        safe_pickle_dump([1,2,3], str(file_path), add_signature=True)
+        safe_pickle_dump([1, 2, 3], str(file_path), add_signature=True)
 
         # Verify it can be loaded
         loaded_data = safe_pickle_load(str(file_path), verify_signature=True)
-        assert loaded_data == [1,2,3]
+        assert loaded_data == [1, 2, 3]

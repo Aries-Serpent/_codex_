@@ -98,16 +98,16 @@ Enhance `.github/workflows/copilot-setup-steps.yml` to pre-load aggregated conte
 # Load aggregated session context (Component 5)
 if [ -f ".codex/session_context_manifest.json" ]; then
   MANIFEST=".codex/session_context_manifest.json"
-  
+
   # Parse manifest
   PHASE=$(python3 -c "import json; print(json.load(open('$MANIFEST')).get('phase_state', {}).get('current_phase', 'unknown'))" 2>/dev/null || echo "unknown")
   AGENTS=$(python3 -c "import json; print(len(json.load(open('$MANIFEST')).get('in_flight_agents', [])))" 2>/dev/null || echo "0")
   PATTERNS=$(python3 -c "import json; print(len(json.load(open('$MANIFEST')).get('recent_patterns', [])))" 2>/dev/null || echo "0")
-  
+
   echo "export SESSION_CONTEXT_PHASE='$PHASE'" >> $GITHUB_ENV
   echo "export SESSION_CONTEXT_AGENTS_COUNT=$AGENTS" >> $GITHUB_ENV
   echo "export SESSION_CONTEXT_PATTERNS=$PATTERNS" >> $GITHUB_ENV
-  
+
   echo "✅ Context pre-loaded: $PHASE | $AGENTS agents | $PATTERNS patterns"
 else
   echo "ℹ️ Manifest not found (.codex/session_context_manifest.json)"

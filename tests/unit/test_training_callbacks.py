@@ -64,10 +64,8 @@ class TestEarlyStoppingBasics:
         # Act & Assert
         for i, metric in enumerate(metrics):
             should_stop = es.step(metric)
-            assert should_stop is False, \
-                f"Should not stop on improving metric {metric} at step {i}"
-            assert es.bad == 0, \
-                "Bad counter should reset on improvement"
+            assert should_stop is False, f"Should not stop on improving metric {metric} at step {i}"
+            assert es.bad == 0, "Bad counter should reset on improvement"
 
     def test_early_stopping_detects_improvement_max_mode(self):
         """Verify improvement detection works in max mode."""
@@ -80,10 +78,8 @@ class TestEarlyStoppingBasics:
         # Act & Assert
         for i, metric in enumerate(metrics):
             should_stop = es.step(metric)
-            assert should_stop is False, \
-                f"Should not stop on improving metric {metric} at step {i}"
-            assert es.bad == 0, \
-                "Bad counter should reset on improvement"
+            assert should_stop is False, f"Should not stop on improving metric {metric} at step {i}"
+            assert es.bad == 0, "Bad counter should reset on improvement"
 
     def test_early_stopping_with_min_delta_threshold(self):
         """Verify min_delta threshold is respected for improvements."""
@@ -127,14 +123,11 @@ class TestEarlyStoppingPlateauDetection:
                 assert should_stop is False, "Should not stop on first metric"
             elif i < 3:
                 # Not yet at patience limit
-                assert should_stop is False, \
-                    f"Should not stop before patience at step {i}"
-                assert es.bad < es.patience, \
-                    "Bad counter should be less than patience"
+                assert should_stop is False, f"Should not stop before patience at step {i}"
+                assert es.bad < es.patience, "Bad counter should be less than patience"
             else:
                 # Exceeded patience
-                assert should_stop is True, \
-                    f"Should stop after patience exceeded at step {i}"
+                assert should_stop is True, f"Should stop after patience exceeded at step {i}"
 
     def test_early_stopping_resets_counter_on_improvement(self):
         """Verify bad counter resets when improvement occurs."""
@@ -151,10 +144,8 @@ class TestEarlyStoppingPlateauDetection:
 
         # Reset with improvement
         es.step(0.4)  # Improvement
-        assert es.bad == 0, \
-            "Bad counter should reset to 0 on improvement"
-        assert es.best == 0.4, \
-            "Best should update to new lower value"
+        assert es.bad == 0, "Bad counter should reset to 0 on improvement"
+        assert es.best == 0.4, "Best should update to new lower value"
 
     def test_early_stopping_max_mode_plateau_detection(self):
         """Verify plateau detection works in max mode (increasing metrics)."""
@@ -176,8 +167,7 @@ class TestEarlyStoppingPlateauDetection:
         assert es.bad == 1, "Bad counter should be 1"
 
         should_stop = es.step(0.54)  # Still no improvement
-        assert should_stop is True, \
-            "Should stop when patience exhausted"
+        assert should_stop is True, "Should stop when patience exhausted"
 
 
 class TestEarlyStoppingEdgeCases:
@@ -195,8 +185,7 @@ class TestEarlyStoppingEdgeCases:
         assert es.bad == 0, "Initial step should not increment bad counter"
 
         should_stop = es.step(0.5)  # No improvement
-        assert should_stop is True, \
-            "Should stop immediately on any plateau with patience=0"
+        assert should_stop is True, "Should stop immediately on any plateau with patience=0"
 
     def test_early_stopping_with_large_patience(self):
         """Verify behavior with large patience value."""
@@ -214,8 +203,7 @@ class TestEarlyStoppingEdgeCases:
 
         # Assert
         assert es.bad == 50, "Bad counter should be 50 after 50 no-improvement steps"
-        assert should_stop is False, \
-            "Should not stop with 50 bad steps when patience=100"
+        assert should_stop is False, "Should not stop with 50 bad steps when patience=100"
 
     def test_early_stopping_with_very_small_min_delta(self):
         """Verify min_delta discrimination with tiny threshold."""
@@ -230,14 +218,12 @@ class TestEarlyStoppingEdgeCases:
         # Improvement by 1e-11 (less than min_delta)
         should_stop = es.step(0.5 - 1e-11)
         assert should_stop is False, "Should not stop yet"
-        assert es.bad == 1, \
-            "Should count as no improvement when delta < min_delta"
+        assert es.bad == 1, "Should count as no improvement when delta < min_delta"
 
         # Improvement by 1e-9 (more than min_delta)
         should_stop = es.step(0.5 - 1e-9)
         assert should_stop is False, "Should continue on valid improvement"
-        assert es.bad == 0, \
-            "Should reset bad counter for improvement > min_delta"
+        assert es.bad == 0, "Should reset bad counter for improvement > min_delta"
 
     def test_early_stopping_negative_metrics(self):
         """Verify handling of negative metric values."""
@@ -270,11 +256,9 @@ class TestEarlyStoppingEdgeCases:
                 assert es.bad == 0, "First step should have bad=0"
             elif i <= 2:
                 # Not yet at patience (patience=2, so stop when bad >= 2)
-                assert should_stop is False, \
-                    f"Should not stop at step {i} (bad={es.bad})"
+                assert should_stop is False, f"Should not stop at step {i} (bad={es.bad})"
             else:
-                assert should_stop is True, \
-                    "Should stop when plateau reaches patience"
+                assert should_stop is True, "Should stop when plateau reaches patience"
 
 
 class TestEarlyStoppingIntegration:
@@ -289,12 +273,12 @@ class TestEarlyStoppingIntegration:
 
         # Simulated training losses
         losses = [
-            0.5,      # Step 0: initial
-            0.45,     # Step 1: improvement (0.05)
-            0.44,     # Step 2: small improvement (<0.05)
-            0.445,    # Step 3: degradation
-            0.446,    # Step 4: degradation
-            0.447,    # Step 5: degradation (should stop)
+            0.5,  # Step 0: initial
+            0.45,  # Step 1: improvement (0.05)
+            0.44,  # Step 2: small improvement (<0.05)
+            0.445,  # Step 3: degradation
+            0.446,  # Step 4: degradation
+            0.447,  # Step 5: degradation (should stop)
         ]
 
         stopped_at = None
@@ -307,8 +291,7 @@ class TestEarlyStoppingIntegration:
 
         # Assert
         assert stopped_at is not None, "Training should have stopped"
-        assert stopped_at == 5, \
-            f"Should have stopped after patience exhausted at step {stopped_at}"
+        assert stopped_at == 5, f"Should have stopped after patience exhausted at step {stopped_at}"
 
     def test_early_stopping_recovery_sequence(self):
         """Test that significant improvements reset stop counter."""

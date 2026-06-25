@@ -40,7 +40,7 @@ def detector_experiment_summary(
 
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return DetectorResult(
             name="experiment_summary",

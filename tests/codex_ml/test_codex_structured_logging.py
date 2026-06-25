@@ -63,6 +63,7 @@ class TestJsonSafe:
 
     def test_custom_object_to_string(self) -> None:
         """Test custom objects are converted to string."""
+
         class CustomClass:
             def __str__(self) -> str:
                 return "custom_value"
@@ -224,6 +225,7 @@ class TestJsonFormatter:
             raise ValueError("Test error")
         except ValueError:
             import sys
+
             exc_info = sys.exc_info()
 
         record = logging.LogRecord(
@@ -301,13 +303,7 @@ class TestEdgeCases:
 
     def test_json_safe_with_nested_complex(self) -> None:
         """Test _json_safe with deeply nested structure."""
-        input_data = {
-            "level1": {
-                "level2": {
-                    "level3": ["a", "b", {"c": 1}]
-                }
-            }
-        }
+        input_data = {"level1": {"level2": {"level3": ["a", "b", {"c": 1}]}}}
         result = _json_safe(input_data)
 
         assert result["level1"]["level2"]["level3"][2]["c"] == 1

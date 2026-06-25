@@ -20,7 +20,7 @@ This audit identifies and categorizes remaining **4% documentation gaps** (appro
 - **1,354 orphaned documentation files** not referenced in navigation or index structures
 - **~2.8% gap efficiency**: ~66 critical issues preventing 2-point alignment gain
 
-**Closure Strategy**: 
+**Closure Strategy**:
 Implement a **3-phase remediation approach**:
 1. **Phase 1 (High Impact)**: Fix broken links and orphaned docs (565 + 1,354 = 1,919 items)
 2. **Phase 2 (Medium Impact)**: Add missing critical content and frontmatter (1,646 + 7 = 1,653 items)
@@ -240,7 +240,7 @@ Implement a **3-phase remediation approach**:
 | **API Documentation** | 53% (8/15 target files) | 100% | 🔴 7 critical files missing |
 | **Architecture Diagrams** | 80% (16/20 target) | ≥95% | ⚠️ 4+ diagrams needed |
 
-**Overall Assessment**: 
+**Overall Assessment**:
 - ✅ **2 metrics at target** (Content areas, Freshness approaching)
 - ⚠️ **4 metrics near target** (1-2 points below, fixable in 2-3 sprints)
 - 🔴 **2 metrics below target** (Link health, Frontmatter coverage; critical blockers)

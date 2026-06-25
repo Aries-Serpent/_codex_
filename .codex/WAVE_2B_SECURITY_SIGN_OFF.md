@@ -357,12 +357,12 @@ Security Posture IMPROVED:
   - 2 CRITICAL CVEs eliminated (100%)
   - 5+ HIGH-severity CVEs reduced (62.5%)
   - 5 MEDIUM-severity CVEs patched
-  
+
 Security Audits PASSED:
   - CodeQL analysis: No regressions
   - Semgrep SAST: No regressions
   - GHAS scan: 0 new vulnerabilities
-  
+
 Code Quality MAINTAINED:
   - Baseline parity on all code-level security metrics
   - No new patterns or vulnerabilities introduced

@@ -14,6 +14,7 @@ class TestSafeFloat:
         """Test converting number to float."""
         try:
             from codex_ml.training.eval import _safe_float
+
             assert _safe_float(42) == 42.0
             assert _safe_float(3.14) == 3.14
         except ImportError as exc:
@@ -23,6 +24,7 @@ class TestSafeFloat:
         """Test safe_float with invalid input returns 0.0."""
         try:
             from codex_ml.training.eval import _safe_float
+
             result = _safe_float(object())
             assert result == 0.0
         except ImportError as exc:
@@ -36,6 +38,7 @@ class TestMoveBatchToDevice:
         """Test move_batch with None device returns same batch."""
         try:
             from codex_ml.training.eval import _move_batch_to_device
+
             batch = {"input": [1, 2, 3], "target": [4, 5, 6]}
             result = _move_batch_to_device(batch, None)
             assert result == batch
@@ -46,6 +49,7 @@ class TestMoveBatchToDevice:
         """Test move_batch with values without .to() method."""
         try:
             from codex_ml.training.eval import _move_batch_to_device
+
             batch = {"value": 42}
             result = _move_batch_to_device(batch, "cpu")
             assert result["value"] == 42
@@ -66,10 +70,13 @@ class TestEvaluate:
 
             class DummyModel:
                 training = True
+
                 def eval(self):
                     self.training = False
+
                 def train(self, mode):
                     self.training = mode
+
                 def __call__(self, **kwargs):
                     return {}
 
@@ -89,10 +96,13 @@ class TestEvaluate:
 
             class DummyModel:
                 training = True
+
                 def eval(self):
                     self.training = False
+
                 def train(self, mode):
                     self.training = mode
+
                 def __call__(self, **kwargs):
                     return {"logits": [0.5]}
 

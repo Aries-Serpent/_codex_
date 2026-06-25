@@ -79,9 +79,10 @@ class WandBLogger:
             )
 
             logger.info(f"✓ W&B initialized (mode={mode}, project={self.project})")
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to initialize W&B: {e}. Using fallback.")
+        except (ValueError, TypeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to initialize W&B: <ERROR_TYPE>. Using fallback.")
             self.wandb_available = False
             self._init_fallback()
 
@@ -109,9 +110,10 @@ class WandBLogger:
                 import wandb
 
                 wandb.log(metrics, step=step)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"W&B logging failed: {e}")
+            except (ImportError, AttributeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"W&B logging failed: <ERROR_TYPE>")
                 self._log_fallback(metrics, step)
         else:
             self._log_fallback(metrics, step)
@@ -120,7 +122,7 @@ class WandBLogger:
         """Write metrics to NDJSON fallback."""
         entry = {"metrics": metrics}
         if step is not None:
-            entry["step"] = step  # type: ignore[assignment]
+            entry["step"] = step
 
         with open(self.fallback_log, "a", encoding="utf-8") as f:
             json.dump(entry, f)
@@ -134,9 +136,10 @@ class WandBLogger:
 
                 wandb.finish()
                 logger.info("✓ W&B session finished")
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Failed to finish W&B: {e}")
+            except (ImportError, AttributeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Failed to finish W&B: <ERROR_TYPE>")
 
 
 def init_wandb(

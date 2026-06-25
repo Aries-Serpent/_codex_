@@ -24,19 +24,19 @@ class AlertSeverity(StrEnum):
     ERROR = "error"
     CRITICAL = "critical"
 
-    def __le__(self, other: "AlertSeverity") -> bool:  # type: ignore[override]
+    def __le__(self, other: "AlertSeverity") -> bool:
         _order = list(AlertSeverity)
         return _order.index(self) <= _order.index(other)
 
-    def __lt__(self, other: "AlertSeverity") -> bool:  # type: ignore[override]
+    def __lt__(self, other: "AlertSeverity") -> bool:
         _order = list(AlertSeverity)
         return _order.index(self) < _order.index(other)
 
-    def __ge__(self, other: "AlertSeverity") -> bool:  # type: ignore[override]
+    def __ge__(self, other: "AlertSeverity") -> bool:
         _order = list(AlertSeverity)
         return _order.index(self) >= _order.index(other)
 
-    def __gt__(self, other: "AlertSeverity") -> bool:  # type: ignore[override]
+    def __gt__(self, other: "AlertSeverity") -> bool:
         _order = list(AlertSeverity)
         return _order.index(self) > _order.index(other)
 

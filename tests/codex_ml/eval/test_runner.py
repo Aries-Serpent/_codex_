@@ -374,6 +374,7 @@ class TestSafeOperation:
 
     def test_exception_is_reraised(self) -> None:
         """Test exception is re-raised after logging."""
+
         def failing_op() -> None:
             raise ValueError("test error")
 

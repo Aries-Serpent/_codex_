@@ -34,9 +34,7 @@ def test_python_file_relocation_has_required_sections() -> None:
         "## Rollback Procedure",
         "## Customization Guide",
     ]:
-        assert heading in contents, (
-            f"Missing heading '{heading}' in relocation template"
-        )
+        assert heading in contents, f"Missing heading '{heading}' in relocation template"
 
 
 @pytest.mark.templates
@@ -53,9 +51,7 @@ def test_cli_hardening_has_required_sections() -> None:
         "## Final Checklist",
         "## Customization Guide",
     ]:
-        assert heading in contents, (
-            f"Missing heading '{heading}' in CLI hardening template"
-        )
+        assert heading in contents, f"Missing heading '{heading}' in CLI hardening template"
 
 
 @pytest.mark.templates
@@ -96,9 +92,7 @@ def test_intent_plan_has_examples() -> None:
 def test_intent_plan_has_customization_guide() -> None:
     contents = read("Planning_IntentValidation.md")
     assert "## Customization Guide" in contents
-    assert "[PLACEHOLDER:" in contents, (
-        "Customization guide should describe placeholders"
-    )
+    assert "[PLACEHOLDER:" in contents, "Customization guide should describe placeholders"
 
 
 @pytest.mark.templates
@@ -109,6 +103,4 @@ def test_templates_have_version_metadata() -> None:
         "Planning_IntentValidation.md",
     ]:
         contents = read(filename)
-        assert "Version:** v1.0.0" in contents, (
-            f"Version metadata missing in {filename}"
-        )
+        assert "Version:** v1.0.0" in contents, f"Version metadata missing in {filename}"

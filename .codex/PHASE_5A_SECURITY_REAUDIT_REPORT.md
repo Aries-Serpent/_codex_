@@ -123,7 +123,7 @@ defusedxml.defuse_stdlib()  # Monkey-patches all stdlib XML modules
 
 ### Dangerous Functions Scan
 ```
-Searched for:  pickle.loads(), yaml.load(), exec(), eval(), 
+Searched for:  pickle.loads(), yaml.load(), exec(), eval(),
                os.popen(), subprocess.call(shell=True)
 Result:        ✅ NONE FOUND in production code
 ```

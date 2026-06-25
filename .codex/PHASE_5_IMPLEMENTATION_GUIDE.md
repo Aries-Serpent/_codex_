@@ -40,14 +40,14 @@ Eliminate all **HIGH severity findings (P1)** to achieve zero high-risk vulnerab
 #### Affected Files (14 total)
 ```
 scripts/catalog_workflows.py              3 issues
-scripts/security/verify_token_scope.py    5 issues
-scripts/github_secrets_sync.py            2 issues
-scripts/ops/codex_mint_tokens_per_run.py  2 issues
+scripts/security/verify_token_scope.py    5 issues  # pragma: allowlist secret
+scripts/github_secrets_sync.py            2 issues  # pragma: allowlist secret
+scripts/ops/codex_mint_tokens_per_run.py  2 issues  # pragma: allowlist secret
 .github/agents/admin-automation-agent/src/agent.py    4 issues
 src/codex/knowledge/pii.py                2 issues
 src/security/providers/github_provider.py 2 issues
 scripts/fix_security_issues.py            2 issues
-scripts/decode_workflow_secrets.py        1 issue
+scripts/decode_workflow_secrets.py        1 issue  # pragma: allowlist secret
 scripts/ops/codex_repo_admin_bootstrap.py 1 issue
 scripts/analyze_workflows.py              1 issue
 .github/agents/github-security-validator-agent/src/agent.py 2 issues
@@ -66,7 +66,7 @@ cat src/security/logging.py
 **Step 2: Import Security Functions**
 ```python
 # In each affected file
-from src.security.logging import redact_token, redact_password, redact_email
+from src.security.logging import redact_token, redact_password, redact_email  # pragma: allowlist secret
 ```
 
 **Step 3: Fix Logging Statements**
@@ -74,59 +74,59 @@ from src.security.logging import redact_token, redact_password, redact_email
 Example patterns and fixes:
 
 ```python
-# PATTERN 1: Logging API tokens
+# PATTERN 1: Logging API tokens  # pragma: allowlist secret
 # ❌ BEFORE
-logger.debug(f"GitHub token: {github_token}")
-logger.debug(f"API Key: {api_key}")
+logger.debug(f"GitHub token: {github_token}")  # pragma: allowlist secret
+logger.debug(f"API Key: {api_key}")  # pragma: allowlist secret
 
 # ✅ AFTER
-from src.security.logging import redact_token
-logger.debug(f"GitHub token: {redact_token(github_token)}")
-logger.debug(f"API Key: {redact_token(api_key)}")
+from src.security.logging import redact_token  # pragma: allowlist secret
+logger.debug(f"GitHub token: {redact_token(github_token)}")  # pragma: allowlist secret
+logger.debug(f"API Key: {redact_token(api_key)}")  # pragma: allowlist secret
 
 
-# PATTERN 2: Logging passwords
+# PATTERN 2: Logging passwords  # pragma: allowlist secret
 # ❌ BEFORE
-logger.debug(f"User password: {password}")
+logger.debug(f"User password: {password}")  # pragma: allowlist secret
 
 # ✅ AFTER
-from src.security.logging import redact_password
-logger.debug(f"User password: {redact_password(password)}")
+from src.security.logging import redact_password  # pragma: allowlist secret
+logger.debug(f"User password: {redact_password(password)}")  # pragma: allowlist secret
 
 
-# PATTERN 3: Logging multiple secrets in dict
+# PATTERN 3: Logging multiple secrets in dict  # pragma: allowlist secret
 # ❌ BEFORE
-logger.debug(f"Credentials: {creds_dict}")  # {token: 'ghp_...', pwd: 'secret'}
+logger.debug(f"Credentials: {creds_dict}")  # {token: 'ghp_...', pwd: 'secret'}  # pragma: allowlist secret
 
 # ✅ AFTER
-from src.security.logging import redact_token, redact_password
-logger.debug(f"Credentials: token={redact_token(creds_dict['token'])}, ******'pwd'])}")
+from src.security.logging import redact_token, redact_password  # pragma: allowlist secret
+logger.debug(f"Credentials: token={redact_token(creds_dict['token'])}, ******'pwd'])}")  # pragma: allowlist secret
 
 
-# PATTERN 4: Using hash for token identification
+# PATTERN 4: Using hash for token identification  # pragma: allowlist secret
 # ✅ BEST PRACTICE
-from src.security.logging import hash_token
-logger.info(f"Token {hash_token(token)} authenticated successfully")
+from src.security.logging import hash_token  # pragma: allowlist secret
+logger.info(f"Token {hash_token(token)} authenticated successfully")  # pragma: allowlist secret
 ```
 
 **Step 4: Add Unit Tests**
 ```python
 # In test file
 import logging
-from src.security.logging import redact_token
+from src.security.logging import redact_token  # pragma: allowlist secret
 
-def test_token_not_logged_in_plaintext():
-    """Verify tokens are redacted, not logged plaintext."""
+def test_token_not_logged_in_plaintext():  # pragma: allowlist secret
+    """Verify tokens are redacted, not logged plaintext."""  # pragma: allowlist secret
     logger = logging.getLogger(__name__)
-    
+
     # Capture log output
     with caplog.at_level(logging.DEBUG):
-        token = "ghp_1234567890abcdefghij1234567890"
-        logger.debug(f"Token: {redact_token(token)}")
-    
-    # Verify plaintext token NOT in logs
-    assert token not in caplog.text
-    assert "ghp_****" in caplog.text  # Redacted version present
+        token = "ghp_1234567890abcdefghij1234567890"  # pragma: allowlist secret
+        logger.debug(f"Token: {redact_token(token)}")  # pragma: allowlist secret
+
+    # Verify plaintext token NOT in logs  # pragma: allowlist secret
+    assert token not in caplog.text  # pragma: allowlist secret
+    assert "ghp_****" in caplog.text  # Redacted version present  # pragma: allowlist secret
 ```
 
 **Step 5: Validate Changes**
@@ -160,23 +160,23 @@ pytest tests/integration/test_admin_automation_agent.py -v
 ```
 scripts/catalog_workflows.py           3 issues
 .github/scripts/workflow_analyzer.py   4 issues
-scripts/github_secrets_sync.py         2 issues
-scripts/ops/codex_mint_tokens_per_run.py  3 issues
+scripts/github_secrets_sync.py         2 issues  # pragma: allowlist secret
+scripts/ops/codex_mint_tokens_per_run.py  3 issues  # pragma: allowlist secret
 ```
 
 #### Implementation Strategy
 
 **Option 1: Use Environment Variables (Recommended for CI/CD)**
 ```python
-# ❌ BEFORE: Secrets stored in dict
-secrets_dict = {
-    "github_token": "ghp_...",
+# ❌ BEFORE: Secrets stored in dict  # pragma: allowlist secret
+secrets_dict = {  # pragma: allowlist secret
+    "github_token": "ghp_...",  # pragma: allowlist secret
     "slack_webhook": "https://...",
 }
 
 # ✅ AFTER: Use environment variables
 import os
-github_token = os.environ["GITHUB_TOKEN"]
+github_token = os.environ["GITHUB_TOKEN"]  # pragma: allowlist secret
 slack_webhook = os.environ["SLACK_WEBHOOK"]
 ```
 
@@ -185,10 +185,10 @@ slack_webhook = os.environ["SLACK_WEBHOOK"]
 from src.security.vault import SecureVault
 
 vault = SecureVault()
-vault.store_secret("github_token", github_token, encrypt=True)
+vault.store_secret("github_token", github_token, encrypt=True)  # pragma: allowlist secret
 
 # Later retrieval
-token = vault.get_secret("github_token", decrypt=True)
+token = vault.get_secret("github_token", decrypt=True)  # pragma: allowlist secret
 ```
 
 **Option 3: File-based encryption (For local development)**
@@ -200,14 +200,14 @@ key = Fernet.generate_key()
 cipher = Fernet(key)
 
 # Encrypt and store
-encrypted_token = cipher.encrypt(token.encode())
-with open(".secrets.encrypted", "wb") as f:
-    f.write(encrypted_token)
+encrypted_token = cipher.encrypt(token.encode())  # pragma: allowlist secret
+with open(".secrets.encrypted", "wb") as f:  # pragma: allowlist secret
+    f.write(encrypted_token)  # pragma: allowlist secret
 
 # Decrypt and use
-with open(".secrets.encrypted", "rb") as f:
+with open(".secrets.encrypted", "rb") as f:  # pragma: allowlist secret
     encrypted = f.read()
-token = cipher.decrypt(encrypted).decode()
+token = cipher.decrypt(encrypted).decode()  # pragma: allowlist secret
 ```
 
 #### Implementation Steps
@@ -446,11 +446,11 @@ codeql database analyze codeql-db --format=sarif-latest --output=results.sarif
 ### Import Security Functions
 ```python
 from src.security.logging import (
-    redact_token,
-    redact_password,
+    redact_token,  # pragma: allowlist secret
+    redact_password,  # pragma: allowlist secret
     redact_email,
     redact_pii,
-    hash_token,
+    hash_token,  # pragma: allowlist secret
     sanitize_for_logging,
     create_log_filter,
     setup_secure_logging,
@@ -459,14 +459,14 @@ from src.security.logging import (
 
 ### Common Patterns
 ```python
-# Logging tokens
-logger.debug(f"Token: {redact_token(token)}")
+# Logging tokens  # pragma: allowlist secret
+logger.debug(f"Token: {redact_token(token)}")  # pragma: allowlist secret
 
-# Logging passwords
-logger.debug(f"Password: {redact_password(password)}")
+# Logging passwords  # pragma: allowlist secret
+logger.debug(f"Password: {redact_password(password)}")  # pragma: allowlist secret
 
-# Using token hash for identification
-logger.info(f"Token {hash_token(token)} authenticated")
+# Using token hash for identification  # pragma: allowlist secret
+logger.info(f"Token {hash_token(token)} authenticated")  # pragma: allowlist secret
 
 # Sanitizing user input
 logger.info(f"User action: {sanitize_for_logging(user_input)}")
@@ -477,10 +477,10 @@ setup_secure_logging(logger)
 
 ### Testing
 ```python
-# Verify no secrets in logs
-def test_secrets_not_logged(caplog):
-    logger.debug(f"Token: {redact_token(token)}")
-    assert token not in caplog.text
+# Verify no secrets in logs  # pragma: allowlist secret
+def test_secrets_not_logged(caplog):  # pragma: allowlist secret
+    logger.debug(f"Token: {redact_token(token)}")  # pragma: allowlist secret
+    assert token not in caplog.text  # pragma: allowlist secret
     assert "****" in caplog.text
 ```
 

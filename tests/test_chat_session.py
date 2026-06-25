@@ -58,7 +58,7 @@ def _load_chatsession():
     for p in root.rglob("*.py"):
         try:
             t = p.read_text(encoding="utf-8", errors="ignore")
-        except Exception as _err:
+        except (IOError, OSError) as _err:
             continue
         if re.search(r"\bclass\s+ChatSession\b", t):
             spec = importlib.util.spec_from_file_location("cs_mod", str(p))
@@ -67,7 +67,7 @@ def _load_chatsession():
                 spec.loader.exec_module(mod)  # type: ignore
                 if hasattr(mod, "ChatSession"):
                     return mod.ChatSession
-            except Exception as _err:
+            except (ValueError, TypeError) as _err:
                 continue
     return None
 

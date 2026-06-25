@@ -108,7 +108,7 @@ Phase 7 Lane 4 security validation successfully completed across all three missi
 **Immediate Actions (P1):**
 ```
 1. Update pyjwt from 2.7.0 → 2.13.0 (fixes both RFC and algorithm confusion)
-2. Update urllib3 from 2.0.7 → 2.7.0+ 
+2. Update urllib3 from 2.0.7 → 2.7.0+
 3. Update wheel from 0.42.0 → 0.46.2+
 4. Verify jinja2 is at 3.1.6+ with all security patches
 ```
@@ -192,12 +192,12 @@ All checked dependencies are actively maintained and receive security updates:
 ✅  4. Base64HighEntropyString (threshold: 4.5)
 ✅  5. BasicAuthDetector
 ✅  6. CloudantDetector
-✅  7. DiscordBotTokenDetector
-✅  8. GitHubTokenDetector
+✅  7. DiscordBotTokenDetector  # pragma: allowlist secret
+✅  8. GitHubTokenDetector  # pragma: allowlist secret
 ✅  9. HexHighEntropyString (threshold: 3.0)
 ✅ 10. IbmCloudIamDetector
 ✅ 11. IbmCosHmacDetector
-✅ 12. JwtTokenDetector
+✅ 12. JwtTokenDetector  # pragma: allowlist secret
 ✅ 13. KeywordDetector
 ✅ 14. MailchimpDetector
 ✅ 15. NpmDetector
@@ -206,7 +206,7 @@ All checked dependencies are actively maintained and receive security updates:
 ✅ 18. SlackDetector
 ✅ 19. StripeDetector
 ✅ 20. TwilioKeyDetector
-✅ 21. TwitchApiTokenDetector
+✅ 21. TwitchApiTokenDetector  # pragma: allowlist secret
 ✅ 22. Generic High-Entropy Pattern Detector
 ```
 
@@ -230,10 +230,10 @@ All checked dependencies are actively maintained and receive security updates:
 ✅ *.pem           (SSH keys)
 ✅ *.key           (Private keys)
 ✅ .env*           (Environment files)
-✅ .secrets*       (Secrets files)
-✅ secrets.json    (Secret configs)
+✅ .secrets*       (Secrets files)  # pragma: allowlist secret
+✅ secrets.json    (Secret configs)  # pragma: allowlist secret
 ✅ credentials.py  (Credential files)
-✅ config*.yml     (Configuration with secrets)
+✅ config*.yml     (Configuration with secrets)  # pragma: allowlist secret
 ```
 
 **Coverage:** 100% of common sensitive patterns
@@ -256,7 +256,7 @@ All checked dependencies are actively maintained and receive security updates:
 |-------------------|---------|----------|--------|
 | **A1: Injection** | No direct injection in code | CodeQL | ✅ PASS |
 | **A2: Broken Auth** | JWT validation in process | Scanner | ⚠️ REMEDIATION |
-| **A3: Sensitive Data** | No hardcoded secrets | Baseline | ✅ PASS |
+| **A3: Sensitive Data** | No hardcoded secrets | Baseline | ✅ PASS | <!-- pragma: allowlist secret -->
 | **A4: XXE** | N/A (no XML parsing) | — | ✅ N/A |
 | **A5: Broken Access** | RBAC framework valid | Review | ✅ PASS |
 | **A6: Misconfiguration** | Security headers set | Config | ✅ PASS |
@@ -286,7 +286,7 @@ All checked dependencies are actively maintained and receive security updates:
 │                                                         │
 │  Code Quality Score:           95/100     ✅ EXCELLENT │
 │  Dependency Security:          78/100     ⚠️  GOOD     │
-│  Secrets Protection:          100/100     ✅ PERFECT   │
+│  Secrets Protection:          100/100     ✅ PERFECT   │  # pragma: allowlist secret
 │  Compliance Status:            92/100     ✅ EXCELLENT │
 │                                                         │
 │  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  │
@@ -355,7 +355,7 @@ All checked dependencies are actively maintained and receive security updates:
 ║                                                           ║
 ║  • Code security: ✅ PASS                                ║
 ║  • Dependency audit: ✅ PASS (with remediation plan)     ║
-║  • Secrets protection: ✅ PASS                           ║
+║  • Secrets protection: ✅ PASS                           ║  # pragma: allowlist secret
 ║  • Compliance verification: ✅ PASS                      ║
 ║  • Regression testing: ✅ PASS                           ║
 ║                                                           ║

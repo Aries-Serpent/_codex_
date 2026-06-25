@@ -37,7 +37,10 @@ Status = vir.Status
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-def _fake_issue(*, state: str = "open", title: str = "Bug report", labels: list[str] | None = None) -> dict:
+
+def _fake_issue(
+    *, state: str = "open", title: str = "Bug report", labels: list[str] | None = None
+) -> dict:
     return {
         "number": 3951,
         "title": title,
@@ -84,9 +87,7 @@ def _fake_run(*, status: str = "completed", conclusion: str = "success") -> dict
 
 
 def test_parse_issue_url():
-    owner, repo, kind, num = vir.parse_url(
-        "https://github.com/Aries-Serpent/_codex_/issues/3951"
-    )
+    owner, repo, kind, num = vir.parse_url("https://github.com/Aries-Serpent/_codex_/issues/3951")
     assert owner == "Aries-Serpent"
     assert repo == "_codex_"
     assert kind == "issue"
@@ -94,9 +95,7 @@ def test_parse_issue_url():
 
 
 def test_parse_pr_url():
-    _owner, _repo, kind, num = vir.parse_url(
-        "https://github.com/Aries-Serpent/_codex_/pull/3954"
-    )
+    _owner, _repo, kind, num = vir.parse_url("https://github.com/Aries-Serpent/_codex_/pull/3954")
     assert kind == "pr"
     assert num == "3954"
 
@@ -126,7 +125,7 @@ def test_verify_issue_closed():
     with patch.object(vir, "_api_safe") as mock_api:
         mock_api.side_effect = [
             _fake_issue(state="closed"),  # get issue
-            [],                            # events
+            [],  # events
         ]
         result = vir.verify_issue("Aries-Serpent", "_codex_", 3951, token=None)
 
@@ -136,8 +135,10 @@ def test_verify_issue_closed():
 
 
 def test_verify_issue_open_no_fix():
-    with patch.object(vir, "_api_safe") as mock_api, \
-         patch.object(vir, "_paginated", return_value=[]):
+    with (
+        patch.object(vir, "_api_safe") as mock_api,
+        patch.object(vir, "_paginated", return_value=[]),
+    ):
         mock_api.return_value = _fake_issue(state="open")
         result = vir.verify_issue("Aries-Serpent", "_codex_", 3951, token=None)
 
@@ -158,8 +159,10 @@ def test_verify_issue_open_with_merged_linked_pr():
             },
         }
     ]
-    with patch.object(vir, "_api_safe", return_value=_fake_issue(state="open")), \
-         patch.object(vir, "_paginated", return_value=events):
+    with (
+        patch.object(vir, "_api_safe", return_value=_fake_issue(state="open")),
+        patch.object(vir, "_paginated", return_value=events),
+    ):
         result = vir.verify_issue("Aries-Serpent", "_codex_", 3951, token=None)
 
     assert result.status == Status.RESOLVED
@@ -177,8 +180,10 @@ def test_verify_issue_api_error_returns_unknown():
 
 
 def test_verify_pr_merged():
-    with patch.object(vir, "_api_safe", return_value=_fake_pr(merged=True)), \
-         patch.object(vir, "_check_required_ci", return_value=None):
+    with (
+        patch.object(vir, "_api_safe", return_value=_fake_pr(merged=True)),
+        patch.object(vir, "_check_required_ci", return_value=None),
+    ):
         result = vir.verify_pr("Aries-Serpent", "_codex_", 3954, token=None)
 
     assert result.status == Status.RESOLVED
@@ -195,8 +200,14 @@ def test_verify_pr_conflict():
 
 def test_verify_pr_blocked_by_ci():
     ci_summary = {
-        "total": 5, "passed": 3, "failed": 2, "pending": 0, "skipped": 0,
-        "all_pass": False, "any_fail": True, "any_pending": False,
+        "total": 5,
+        "passed": 3,
+        "failed": 2,
+        "pending": 0,
+        "skipped": 0,
+        "all_pass": False,
+        "any_fail": True,
+        "any_pending": False,
         "details": ["  ❌ validate.yml — failure"],
     }
     with patch.object(vir, "_api_safe", return_value=_fake_pr()):
@@ -209,8 +220,14 @@ def test_verify_pr_blocked_by_ci():
 
 def test_verify_pr_clean_all_pass():
     ci_summary = {
-        "total": 5, "passed": 5, "failed": 0, "pending": 0, "skipped": 0,
-        "all_pass": True, "any_fail": False, "any_pending": False,
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "pending": 0,
+        "skipped": 0,
+        "all_pass": True,
+        "any_fail": False,
+        "any_pending": False,
         "details": [],
     }
     with patch.object(vir, "_api_safe", return_value=_fake_pr(mergeable_state="clean")):
@@ -223,8 +240,14 @@ def test_verify_pr_clean_all_pass():
 
 def test_verify_pr_pending_ci():
     ci_summary = {
-        "total": 5, "passed": 3, "failed": 0, "pending": 2, "skipped": 0,
-        "all_pass": False, "any_fail": False, "any_pending": True,
+        "total": 5,
+        "passed": 3,
+        "failed": 0,
+        "pending": 2,
+        "skipped": 0,
+        "all_pass": False,
+        "any_fail": False,
+        "any_pending": True,
         "details": ["  ⏳ validate.yml — in_progress"],
     }
     with patch.object(vir, "_api_safe", return_value=_fake_pr()):
@@ -255,7 +278,9 @@ def test_verify_run_failure():
 
 
 def test_verify_run_in_progress():
-    with patch.object(vir, "_api_safe", return_value=_fake_run(status="in_progress", conclusion="")):
+    with patch.object(
+        vir, "_api_safe", return_value=_fake_run(status="in_progress", conclusion="")
+    ):
         result = vir.verify_run("Aries-Serpent", "_codex_", 12345, token=None)
 
     assert result.status == Status.IN_PROGRESS
@@ -273,19 +298,23 @@ def test_verify_run_action_required():
 
 
 def test_verify_all_mixed_urls():
-    issue_data  = _fake_issue(state="closed")
-    pr_data     = _fake_pr(merged=True)
+    issue_data = _fake_issue(state="closed")
+    pr_data = _fake_pr(merged=True)
 
-    with patch.object(vir, "_api_safe") as mock_api, \
-         patch.object(vir, "_paginated", return_value=[]):
+    with (
+        patch.object(vir, "_api_safe") as mock_api,
+        patch.object(vir, "_paginated", return_value=[]),
+    ):
         mock_api.side_effect = [
-            issue_data,   # issue fetch
-            pr_data,      # PR fetch
+            issue_data,  # issue fetch
+            pr_data,  # PR fetch
         ]
-        results = vir.verify_all([
-            "https://github.com/Aries-Serpent/_codex_/issues/3951",
-            "https://github.com/Aries-Serpent/_codex_/pull/3954",
-        ])
+        results = vir.verify_all(
+            [
+                "https://github.com/Aries-Serpent/_codex_/issues/3951",
+                "https://github.com/Aries-Serpent/_codex_/pull/3954",
+            ]
+        )
 
     assert len(results) == 2
     assert all(r.resolved for r in results)
@@ -343,7 +372,7 @@ def test_format_markdown_contains_table():
         )
     ]
     md = vir.format_markdown(results)
-    assert "|" in md                   # has a table
+    assert "|" in md  # has a table
     assert "RESOLVED" in md
     assert "All issues verified resolved" in md
 
@@ -379,33 +408,51 @@ def test_cli_no_args_exits_nonzero():
 
 
 def test_cli_resolved_issue_exits_0():
-    with patch.object(vir, "_api_safe", return_value=_fake_issue(state="closed")), \
-         patch.object(vir, "_paginated", return_value=[]):
-        rc = vir.main([
-            "--issues", "3951",
-            "--repo", "Aries-Serpent/_codex_",
-        ])
+    with (
+        patch.object(vir, "_api_safe", return_value=_fake_issue(state="closed")),
+        patch.object(vir, "_paginated", return_value=[]),
+    ):
+        rc = vir.main(
+            [
+                "--issues",
+                "3951",
+                "--repo",
+                "Aries-Serpent/_codex_",
+            ]
+        )
     assert rc == 0
 
 
 def test_cli_unresolved_issue_exits_1():
-    with patch.object(vir, "_api_safe", return_value=_fake_issue(state="open")), \
-         patch.object(vir, "_paginated", return_value=[]):
-        rc = vir.main([
-            "--issues", "9999",
-            "--repo", "Aries-Serpent/_codex_",
-        ])
+    with (
+        patch.object(vir, "_api_safe", return_value=_fake_issue(state="open")),
+        patch.object(vir, "_paginated", return_value=[]),
+    ):
+        rc = vir.main(
+            [
+                "--issues",
+                "9999",
+                "--repo",
+                "Aries-Serpent/_codex_",
+            ]
+        )
     assert rc == 1
 
 
 def test_cli_json_output(capsys):
-    with patch.object(vir, "_api_safe", return_value=_fake_issue(state="closed")), \
-         patch.object(vir, "_paginated", return_value=[]):
-        rc = vir.main([
-            "--issues", "3951",
-            "--repo", "Aries-Serpent/_codex_",
-            "--json",
-        ])
+    with (
+        patch.object(vir, "_api_safe", return_value=_fake_issue(state="closed")),
+        patch.object(vir, "_paginated", return_value=[]),
+    ):
+        rc = vir.main(
+            [
+                "--issues",
+                "3951",
+                "--repo",
+                "Aries-Serpent/_codex_",
+                "--json",
+            ]
+        )
     captured = capsys.readouterr()
     data = json.loads(captured.out)
     assert isinstance(data, list)
@@ -417,9 +464,13 @@ def test_cli_allow_in_progress():
     """--allow-in-progress should make IN_PROGRESS count as resolved."""
     run_data = _fake_run(status="in_progress", conclusion="")
     with patch.object(vir, "_api_safe", return_value=run_data):
-        rc = vir.main([
-            "--runs", "12345",
-            "--repo", "Aries-Serpent/_codex_",
-            "--allow-in-progress",
-        ])
+        rc = vir.main(
+            [
+                "--runs",
+                "12345",
+                "--repo",
+                "Aries-Serpent/_codex_",
+                "--allow-in-progress",
+            ]
+        )
     assert rc == 0

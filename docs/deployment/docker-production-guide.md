@@ -413,7 +413,7 @@ spec:
     image: codex-ml:latest
     ports:
     - containerPort: 8000
-    
+
     # Liveness probe: restart if unhealthy
     livenessProbe:
       httpGet:
@@ -423,7 +423,7 @@ spec:
       periodSeconds: 10
       timeoutSeconds: 5
       failureThreshold: 3
-    
+
     # Readiness probe: remove from service if not ready
     readinessProbe:
       httpGet:
@@ -433,7 +433,7 @@ spec:
       periodSeconds: 5
       timeoutSeconds: 3
       failureThreshold: 2
-    
+
     # Startup probe: allow time for initialization
     startupProbe:
       httpGet:

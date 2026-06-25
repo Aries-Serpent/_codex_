@@ -142,7 +142,7 @@ Critical Mutations to Catch:
 - Configuration validation failures
 
 ### Priority 4: Advanced Structures
-**Files**: 
+**Files**:
 - `test_edge_cases_queues_async_api.py` (27 tests)
 - `test_edge_cases_validation_serialization.py` (28 tests)
 
@@ -276,16 +276,16 @@ mutmut run --tests tests/test_edge_cases*.py \
 
 tests/test_edge_cases_phase7b_track_b2.py
   - Core edge case foundation (49 tests)
-  
+
 tests/test_edge_cases_ml_modules.py
   - ML-specific edge cases (30 tests)
-  
+
 tests/test_edge_cases_cli_auth_cache.py
   - Infrastructure edge cases (24 tests)
-  
+
 tests/test_edge_cases_queues_async_api.py
   - Data structure edge cases (27 tests)
-  
+
 tests/test_edge_cases_validation_serialization.py
   - Validation & serialization (28 tests)
 ```

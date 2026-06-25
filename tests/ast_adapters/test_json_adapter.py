@@ -36,7 +36,7 @@ class TestJSONASTAdapter:
 
     def test_parse_nested_object(self, adapter):
         """Test parsing nested objects"""
-        json_source = '''
+        json_source = """
         {
             "database": {
                 "host": "localhost",
@@ -47,7 +47,7 @@ class TestJSONASTAdapter:
                 }
             }
         }
-        '''
+        """
         adapter.parse(json_source)
 
         # Navigate to nested structure
@@ -67,7 +67,7 @@ class TestJSONASTAdapter:
 
     def test_parse_mixed_types(self, adapter):
         """Test parsing various primitive types"""
-        json_source = '''
+        json_source = """
         {
             "string": "hello",
             "integer": 42,
@@ -75,7 +75,7 @@ class TestJSONASTAdapter:
             "boolean": true,
             "null_value": null
         }
-        '''
+        """
         adapter.parse(json_source)
 
         primitives = adapter.find_nodes_by_type("primitive")
@@ -91,7 +91,7 @@ class TestJSONASTAdapter:
 
     def test_parse_empty_object(self, adapter):
         """Test parsing empty JSON object"""
-        json_source = '{}'
+        json_source = "{}"
         root = adapter.parse(json_source)
 
         assert root.node_type == "document"
@@ -129,7 +129,7 @@ class TestJSONASTAdapter:
 
     def test_get_value_at_path_nested(self, adapter):
         """Test path-based value retrieval for deeply nested paths"""
-        json_source = '''
+        json_source = """
         {
             "app": {
                 "database": {
@@ -139,7 +139,7 @@ class TestJSONASTAdapter:
                 }
             }
         }
-        '''
+        """
         adapter.parse(json_source)
 
         host = adapter.get_value_at_path("app.database.connection.host")
@@ -155,7 +155,7 @@ class TestJSONASTAdapter:
 
     def test_find_nodes_by_type(self, adapter):
         """Test finding nodes by type"""
-        json_source = '''
+        json_source = """
         {
             "users": [
                 {"name": "Alice", "age": 30},
@@ -163,7 +163,7 @@ class TestJSONASTAdapter:
             ],
             "settings": {"theme": "dark"}
         }
-        '''
+        """
         adapter.parse(json_source)
 
         objects = adapter.find_nodes_by_type("object")
@@ -177,13 +177,13 @@ class TestJSONASTAdapter:
 
     def test_get_stats(self, adapter):
         """Test AST statistics generation"""
-        json_source = '''
+        json_source = """
         {
             "data": {
                 "items": [1, 2, 3]
             }
         }
-        '''
+        """
         adapter.parse(json_source)
         stats = adapter.get_stats()
 
@@ -235,14 +235,14 @@ class TestJSONASTAdapter:
 
     def test_array_indexing_in_path(self, adapter):
         """Test path navigation with array indices"""
-        json_source = '''
+        json_source = """
         {
             "users": [
                 {"name": "Alice", "age": 30},
                 {"name": "Bob", "age": 25}
             ]
         }
-        '''
+        """
         adapter.parse(json_source)
 
         # Test array index access
@@ -291,7 +291,7 @@ class TestJSONASTAdapter:
 
     def test_deeply_nested_json(self, adapter):
         """Test parsing very deeply nested JSON (10+ levels)"""
-        json_source = '''
+        json_source = """
         {
             "level1": {
                 "level2": {
@@ -313,11 +313,13 @@ class TestJSONASTAdapter:
                 }
             }
         }
-        '''
+        """
         root = adapter.parse(json_source)
 
         # Verify we can navigate deep
-        value = adapter.get_value_at_path("level1.level2.level3.level4.level5.level6.level7.level8.level9.level10")
+        value = adapter.get_value_at_path(
+            "level1.level2.level3.level4.level5.level6.level7.level8.level9.level10"
+        )
         assert value == "deep_value"
 
         # Count depth
@@ -330,6 +332,7 @@ class TestJSONASTAdapter:
         # Create a large array with 1000 items
         items = [{"id": i, "value": f"item_{i}"} for i in range(1000)]
         import json
+
         json_source = json.dumps({"items": items})
 
         root = adapter.parse(json_source)
@@ -351,7 +354,7 @@ class TestJSONASTAdapter:
 
     def test_special_json_values(self, adapter):
         """Test parsing special JSON values"""
-        json_source = '''
+        json_source = """
         {
             "null_value": null,
             "empty_string": "",
@@ -362,7 +365,7 @@ class TestJSONASTAdapter:
             "true_val": true,
             "false_val": false
         }
-        '''
+        """
         adapter.parse(json_source)
 
         # Test retrieval of special values
@@ -375,13 +378,13 @@ class TestJSONASTAdapter:
 
     def test_unicode_and_escapes(self, adapter):
         """Test parsing JSON with Unicode and escape sequences"""
-        json_source = '''
+        json_source = """
         {
             "unicode": "Hello 世界 🌍",
             "escaped": "Line1\\nLine2\\tTabbed",
             "quote": "She said \\"hello\\""
         }
-        '''
+        """
         adapter.parse(json_source)
 
         unicode_val = adapter.get_value_at_path("unicode")
@@ -393,7 +396,7 @@ class TestJSONASTAdapter:
 
     def test_complex_mixed_structure(self, adapter):
         """Test parsing complex mixed data structures"""
-        json_source = '''
+        json_source = """
         {
             "config": {
                 "name": "MyApp",
@@ -409,7 +412,7 @@ class TestJSONASTAdapter:
                 }
             }
         }
-        '''
+        """
         root = adapter.parse(json_source)
 
         # Verify structure

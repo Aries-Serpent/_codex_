@@ -48,16 +48,14 @@ class TestModelServing:
         hypotheses = [
             {"text": "hello world", "score": 0.95},
             {"text": "hello earth", "score": 0.87},
-            {"text": "hi world", "score": 0.82}
+            {"text": "hi world", "score": 0.82},
         ]
         best = sorted(hypotheses, key=lambda x: x["score"], reverse=True)[0]
         assert best["text"] == "hello world"
 
     def test_response_streaming(self):
         """Test response streaming."""
-        response_tokens = [
-            "The", " cat", " sat", " on", " the", " mat"
-        ]
+        response_tokens = ["The", " cat", " sat", " on", " the", " mat"]
         chunks = response_tokens
         full_response = "".join(chunks)
         assert full_response.startswith("The")
@@ -86,7 +84,7 @@ class TestDatabaseOperations:
         transaction_state = {
             "started": True,
             "changes": [{"table": "users", "action": "insert"}],
-            "rolled_back": False
+            "rolled_back": False,
         }
         transaction_state["rolled_back"] = True
         assert transaction_state["rolled_back"]
@@ -95,7 +93,6 @@ class TestDatabaseOperations:
         """Test connection pool exhaustion."""
         pool_size = 10
         active = 10
-        waiting = 5
         can_connect = active < pool_size
         assert not can_connect
 
@@ -129,13 +126,13 @@ class TestDatabaseOperations:
         """Test deadlock detection."""
         locks = {
             "thread_1": {"acquired": ["table_a"], "waiting": ["table_b"]},
-            "thread_2": {"acquired": ["table_b"], "waiting": ["table_a"]}
+            "thread_2": {"acquired": ["table_b"], "waiting": ["table_a"]},
         }
         deadlock = (
-            "table_b" in locks["thread_1"]["waiting"] and
-            "table_a" in locks["thread_2"]["waiting"] and
-            "table_b" in locks["thread_2"]["acquired"] and
-            "table_a" in locks["thread_1"]["acquired"]
+            "table_b" in locks["thread_1"]["waiting"]
+            and "table_a" in locks["thread_2"]["waiting"]
+            and "table_b" in locks["thread_2"]["acquired"]
+            and "table_a" in locks["thread_1"]["acquired"]
         )
         assert deadlock
 
@@ -144,7 +141,7 @@ class TestDatabaseOperations:
         migrations = [
             {"version": "001", "description": "create_users_table"},
             {"version": "002", "description": "add_email_column"},
-            {"version": "003", "description": "create_posts_table"}
+            {"version": "003", "description": "create_posts_table"},
         ]
         current_version = "002"
         pending = [m for m in migrations if m["version"] > current_version]
@@ -168,7 +165,7 @@ class TestAPIEndpoints:
             ("POST", "/users"): "create_user",
             ("GET", "/users/123"): "get_user",
             ("PUT", "/users/123"): "update_user",
-            ("DELETE", "/users/123"): "delete_user"
+            ("DELETE", "/users/123"): "delete_user",
         }
         assert endpoints[("GET", "/users")] == "list_users"
 
@@ -187,7 +184,7 @@ class TestAPIEndpoints:
             "bad_request": 400,
             "unauthorized": 401,
             "not_found": 404,
-            "server_error": 500
+            "server_error": 500,
         }
         assert status_codes["created"] == 201
 
@@ -218,7 +215,7 @@ class TestAPIEndpoints:
         headers = {
             "X-RateLimit-Limit": "100",
             "X-RateLimit-Remaining": "50",
-            "X-RateLimit-Reset": "1640000000"
+            "X-RateLimit-Reset": "1640000000",
         }
         remaining = int(headers["X-RateLimit-Remaining"])
         assert remaining == 50
@@ -239,9 +236,8 @@ class TestWorkflowOrchestration:
         tasks = {
             "task_1": {"depends": []},
             "task_2": {"depends": ["task_1"]},
-            "task_3": {"depends": ["task_1", "task_2"]}
+            "task_3": {"depends": ["task_1", "task_2"]},
         }
-        execution_order = []
         available = [t for t, info in tasks.items() if not info["depends"]]
         assert "task_1" in available
 
@@ -258,17 +254,13 @@ class TestWorkflowOrchestration:
             "id": "wf_001",
             "status": "running",
             "completed_tasks": ["task_1", "task_2"],
-            "current_task": "task_3"
+            "current_task": "task_3",
         }
         assert workflow_state["status"] == "running"
 
     def test_error_propagation_in_workflow(self):
         """Test error propagation."""
-        task_statuses = {
-            "task_1": "success",
-            "task_2": "failed",
-            "task_3": "skipped"
-        }
+        task_statuses = {"task_1": "success", "task_2": "failed", "task_3": "skipped"}
         has_errors = any(v == "failed" for v in task_statuses.values())
         assert has_errors
 
@@ -294,7 +286,7 @@ class TestWorkflowOrchestration:
         events = [
             {"type": "workflow_started", "timestamp": datetime.now()},
             {"type": "task_completed", "timestamp": datetime.now()},
-            {"type": "workflow_completed", "timestamp": datetime.now()}
+            {"type": "workflow_completed", "timestamp": datetime.now()},
         ]
         assert len(events) == 3
 
@@ -327,6 +319,7 @@ class TestCoreLogic:
     def test_string_matching_pattern(self):
         """Test pattern matching."""
         import re
+
         pattern = r"^[A-Z][a-z]+$"
         valid_names = ["John", "Jane", "Alice"]
         for name in valid_names:

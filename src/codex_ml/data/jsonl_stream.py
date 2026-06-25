@@ -53,8 +53,9 @@ def iter_jsonl(path: str | Path, *, strict: bool = True) -> Iterator[dict[str, o
                 continue
             try:
                 obj = json.loads(stripped)
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (IOError, OSError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 if strict:
                     raise ValueError(
                         f"Invalid JSON on line {line_number} in {file_path}: {exc}"

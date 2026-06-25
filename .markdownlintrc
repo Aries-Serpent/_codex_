@@ -1,9 +1,9 @@
 {
   "default": true,
   "extends": ["markdownlint/style/prettier"],
-  
+
   "comments": "Comprehensive consistency, accessibility, and terminology rules for _codex_ documentation",
-  
+
   "line-length": {
     "line_length": 120,
     "heading_line_length": 120,
@@ -12,7 +12,7 @@
     "code_fence": false,
     "tables": false
   },
-  
+
   "no-hard-tabs": true,
   "no-trailing-spaces": true,
   "no-multiple-spaces": false,
@@ -23,14 +23,14 @@
   "blanks-around-headings": true,
   "blanks-around-lists": true,
   "list-marker-space": true,
-  
+
   "heading-style": {
     "style": "atx"
   },
   "heading-increment": true,
   "first-heading-h1": true,
   "first-line-heading": true,
-  
+
   "ul-indent": {
     "indent": 2
   },
@@ -40,7 +40,7 @@
   "emphasis-style": {
     "style": "asterisk"
   },
-  
+
   "terminology": {
     "enabled": true,
     "rules": [
@@ -95,7 +95,7 @@
       }
     ]
   },
-  
+
   "terminology-hints": {
     "enabled": true,
     "rules": [
@@ -117,7 +117,7 @@
       }
     ]
   },
-  
+
   "no-emphasis-as-heading": true,
   "no-inline-html": false,
   "no-bare-urls": false,
@@ -162,7 +162,7 @@
       "Azure"
     ]
   },
-  
+
   "rules": {
     "MD003": {
       "style": "consistent"
@@ -200,21 +200,21 @@
       "front_matter_title": false
     }
   },
-  
+
   "mermaid-diagrams": {
     "enabled": true,
     "comment": "Support Mermaid diagrams in code fences"
   },
-  
+
   "image-alt-text": {
     "enabled": true,
     "comment": "Require alt text for accessibility (MD045 alt-text)"
   },
-  
+
   "link-validation": {
     "enabled": true,
     "comment": "Validate links exist (external links checked if possible)"
   },
-  
+
   "ignore_custom_rules": []
 }

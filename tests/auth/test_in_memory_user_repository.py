@@ -45,7 +45,7 @@ class TestInMemoryUserRepository:
     def test_repository_initialization(self, repository):
         """Test repository initialization."""
         assert repository is not None
-        assert hasattr(repository, 'users') or hasattr(repository, '_users')
+        assert hasattr(repository, "users") or hasattr(repository, "_users")
 
     def test_create_user(self, repository, test_user):
         """Test creating a user."""

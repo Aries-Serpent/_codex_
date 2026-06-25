@@ -203,7 +203,7 @@ class SuperpositionEngine:
                 try:
                     score = decision.evaluate()
                     scores.append(max(score, 0.0))
-                except Exception:
+                except (IOError, OSError):
                     scores.append(0.0)
         else:
             # Parallel evaluation
@@ -221,14 +221,12 @@ class SuperpositionEngine:
                     idx = future_to_idx[future]
                     try:
                         score = future.result()
-                        results[idx] = max(  # type: ignore[call-overload]
-                            score, 0.0
-                        )  # Ensure non-negative  # type: ignore[call-overload]
+                        results[idx] = max(score, 0.0)  # Ensure non-negative
                     except Exception:
                         # Fallback to zero score on error
-                        results[idx] = 0.0  # type: ignore[call-overload]
+                        results[idx] = 0.0
 
-                scores = results  # type: ignore[assignment]
+                scores = results
 
         # Phase 3: Apply quantum noise simulation if configured
         # Models gate depolarization and measurement errors per IEEE quantum standard
@@ -349,7 +347,7 @@ class SuperpositionEngine:
     def evaluate_superposition(
         self,
         decisions: list[tuple[str, Callable[..., Any]]],
-        context: dict[str, Any] = None,  # type: ignore[assignment]
+        context: dict[str, Any] = None,
     ) -> dict[str, Any]:
         """
         Convenience method to evaluate decisions in superposition.
@@ -401,7 +399,7 @@ class SuperpositionEngine:
                             return float(val)
                     return 0.0
                 try:
-                    return float(result)  # type: ignore[arg-type]
+                    return float(result)
                 except (TypeError, ValueError):
                     return 0.0
 
@@ -419,7 +417,7 @@ class SuperpositionEngine:
         scores = self.evaluate_parallel(state)
 
         # Update state with scores
-        state.scores = scores  # type: ignore[attr-defined]
+        state.scores = scores
         state.evaluated = True
 
         # Calculate coherence from softmax probabilities (non-uniform → higher coherence)
@@ -688,7 +686,7 @@ def quantum_superposition(
                 # Return that result directly — no second invocation of func.
                 return _captured[0] if _captured else func(*args, **kwargs)
 
-            except Exception:
+            except (IOError, OSError):
                 # Quantum infrastructure unavailable or raised → classical fallback.
                 # If _classical_decision already ran, reuse its captured result to
                 # avoid a second invocation of func (prevents duplicate side effects).

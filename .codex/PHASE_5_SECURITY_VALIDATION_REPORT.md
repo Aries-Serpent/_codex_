@@ -15,7 +15,7 @@ Phase 5 Security Validation audit has been **successfully executed** across all 
 |--------|--------|----------|----------|------|-----------------|
 | **CodeQL Alerts** | ✅ Analyzed | 107 total | 0 | 42 | Proceed to Phase 1 remediation (38-54 hrs) |
 | **Dependency CVEs** | ✅ SECURE | 0 vulnerabilities | 0 | 0 | **PRODUCTION READY** ✅ |
-| **Secrets/Compliance** | ✅ SECURE | 0 active leaks | 0 | 0 | **PRODUCTION READY** ✅ |
+| **Secrets/Compliance** | ✅ SECURE | 0 active leaks | 0 | 0 | **PRODUCTION READY** ✅ | <!-- pragma: allowlist secret -->
 | **Coverage Validation** | ⚠️ BELOW TARGET | 47 modules | 11 untested | 0 | Action required before Phase 7A |
 
 ---
@@ -27,7 +27,7 @@ Phase 5 Security Validation audit has been **successfully executed** across all 
 ```
 CodeQL (Static Analysis)      ░░░░░░░░░░ 7.7/10  (107 findings, 42 HIGH, 0 CRITICAL)
 Dependency Security           ░░░░░░░░░░ 10/10   (0 vulnerabilities, all secure)
-Secrets Compliance            ░░░░░░░░░░ 10/10   (0 active leaks detected)
+Secrets Compliance            ░░░░░░░░░░ 10/10   (0 active leaks detected)  # pragma: allowlist secret
 Coverage Validation           ░░░░░░░░░░ 6.2/10  (17.57% < 20% baseline)
 ────────────────────────────────────────────────────────────────────
 COMPOSITE SCORE               ░░░░░░░░░░ 8.2/10
@@ -187,7 +187,7 @@ COMPOSITE SCORE               ░░░░░░░░░░ 8.2/10
 #### Key Metrics
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| **Active Secret Leaks** | 0 | 0 | ✅ PASS |
+| **Active Secret Leaks** | 0 | 0 | ✅ PASS | <!-- pragma: allowlist secret -->
 | **False Positives** | 15 | <50 | ✅ PASS |
 | **Files Scanned** | 13,661 | N/A | ✅ Complete |
 | **High-Entropy Strings Found** | 32,329 | N/A | ✅ Analyzed |
@@ -409,4 +409,3 @@ All findings have been documented, remediation plans provided with time estimate
 **Report Generated:** 2026-06-19T07:45Z  
 **Authority:** Unified Security Scanner v1.0  
 **Next Review:** After Phase 1 completion (38-54 hours)
-

@@ -39,20 +39,22 @@ import sys  # noqa: E402
 try:
     from codex.db.sqlite_patch import auto_enable_from_env
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
 else:
     try:  # pragma: no cover - best effort
         auto_enable_from_env()
-    except Exception as exc:  # pragma: no cover
-        print(f"SQLite patch disabled: {exc}", file=sys.stderr)
+    except (IOError, OSError) as exc:  # pragma: no cover
+        error_type = type(exc).__name__
+        print(f"SQLite patch disabled: <ERROR_TYPE>", file=sys.stderr)
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except Exception:  # pragma: no cover - fallback for direct execution
+except (IOError, OSError):  # pragma: no cover - fallback for direct execution
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 from .db_utils import get_columns, list_tables, resolve_db_path  # noqa: E402
@@ -204,8 +206,9 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
     try:
         return datetime.fromisoformat(value).isoformat(sep=" ", timespec="seconds")
     except ValueError as e:
-        logger.debug(f"ValueError: {e}")
-        logger.warning(f"ValueError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
+        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
         return value
 
 
@@ -225,7 +228,7 @@ def build_query(
     if not all([table, sid_col, ts_col, msg_col]):
         raise ValueError("Schema must define table, sid, ts, and msg columns")
     identifiers = [table, sid_col, ts_col, msg_col]
-    if not all(re.fullmatch(r"[A-Za-z0-9_]+", i) for i in identifiers):  # type: ignore[arg-type]
+    if not all(re.fullmatch(r"[A-Za-z0-9_]+", i) for i in identifiers):
         raise ValueError("Invalid characters in schema identifiers")
     where = [f"{sid_col} = ?"]
     args: list[Any] = []
@@ -283,9 +286,10 @@ def main(argv: Optional[list[str]] = None) -> int:
                 prefix = f"[{lvl}] " if lvl else ""
                 print(f"{ts} {prefix}{msg}")
         return 0
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
-        print(f"ERROR: {exc}", file=sys.stderr)
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        print(f"ERROR: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

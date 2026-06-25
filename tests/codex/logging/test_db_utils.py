@@ -26,6 +26,7 @@ class TestOpenDb:
     def open_db(self):
         """Import open_db function."""
         from codex.logging.db_utils import open_db
+
         return open_db
 
     @pytest.fixture
@@ -79,6 +80,7 @@ class TestSanitizeTable:
     def sanitize(self):
         """Import _sanitize_table function."""
         from codex.logging.db_utils import _sanitize_table
+
         return _sanitize_table
 
     def test_valid_simple_name(self, sanitize):
@@ -125,6 +127,7 @@ class TestListTables:
     def list_tables(self):
         """Import list_tables function."""
         from codex.logging.db_utils import list_tables
+
         return list_tables
 
     def test_list_tables_empty_db(self, list_tables):
@@ -155,6 +158,7 @@ class TestGetColumns:
     def get_columns(self):
         """Import get_columns function."""
         from codex.logging.db_utils import get_columns
+
         return get_columns
 
     def test_get_columns_basic(self, get_columns):
@@ -189,6 +193,7 @@ class TestInferProbableTable:
     def infer_table(self):
         """Import infer_probable_table function."""
         from codex.logging.db_utils import infer_probable_table
+
         return infer_probable_table
 
     def test_infer_empty_db(self, infer_table):
@@ -248,6 +253,7 @@ class TestInferColumns:
     def infer_columns(self):
         """Import infer_columns function."""
         from codex.logging.db_utils import infer_columns
+
         return infer_columns
 
     def test_infer_columns_basic(self, infer_columns):
@@ -297,6 +303,7 @@ class TestResolveDbPath:
     def resolve_db_path(self):
         """Import resolve_db_path function."""
         from codex.logging.db_utils import resolve_db_path
+
         return resolve_db_path
 
     def test_resolve_path_object(self, resolve_db_path, tmp_path):

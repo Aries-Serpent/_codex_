@@ -33,8 +33,8 @@ from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import torch
-except Exception:  # pragma: no cover - environments without torch
-    torch = None  # type: ignore[assignment]
+except (IOError, OSError):  # pragma: no cover - environments without torch
+    torch = None
 
 
 def _to_flat_list(values: Any) -> list[Any]:
@@ -181,8 +181,9 @@ class F1Score(MetricBase):
                 try:
                     idx = labels.index(positive)
                 except ValueError as e:
-                    logger.debug(f"ValueError: {e}")
-                    logger.warning(f"ValueError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"ValueError: <ERROR_TYPE>")
+                    logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
                     return {self.name: 0.0}
                 return {self.name: f1_scores[idx]}
             case _:
@@ -229,8 +230,9 @@ class RecallScore(MetricBase):
                 try:
                     idx = labels.index(positive)
                 except ValueError as e:
-                    logger.debug(f"ValueError: {e}")
-                    logger.warning(f"ValueError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"ValueError: <ERROR_TYPE>")
+                    logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
                     score = 0.0
                 else:
                     score = recalls[idx]

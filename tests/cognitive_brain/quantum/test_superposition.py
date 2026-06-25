@@ -124,9 +124,7 @@ class TestSuperpositionState:
 
     def test_empty_decisions_raises_error(self):
         """Test that empty decisions list raises error."""
-        with pytest.raises(
-            ValueError, match="Cannot create superposition with zero decisions"
-        ):
+        with pytest.raises(ValueError, match="Cannot create superposition with zero decisions"):
             SuperpositionState(decisions=[])
 
     def test_get_decision_by_id(self):
@@ -174,9 +172,7 @@ class TestSuperpositionEngine:
 
     def test_create_empty_superposition_raises_error(self, engine):
         """Test that empty decisions raises error."""
-        with pytest.raises(
-            ValueError, match="Cannot create superposition with empty decisions"
-        ):
+        with pytest.raises(ValueError, match="Cannot create superposition with empty decisions"):
             engine.create_superposition([])
 
     def test_evaluate_parallel(self, engine):

@@ -18,7 +18,7 @@ def test_import_error_fallback_hf_adapter():
     # We need to test the fallback path where codex_ml.tokenization.adapter is unavailable
 
     # Mock the import to fail
-    with patch.dict('sys.modules', {'codex_ml.tokenization.adapter': None}):
+    with patch.dict("sys.modules", {"codex_ml.tokenization.adapter": None}):
         # Force reimport to trigger fallback
 
         # We can't easily force the fallback in the already-imported module,
@@ -78,9 +78,9 @@ def test_legacy_proxy_call_with_warning():
     proxy = _LegacyTokenizerProxy()
 
     # Mock _CanonicalLegacyTokenizer to be available
-    mock_tokenizer_class = type('MockTokenizer', (), {'__init__': lambda self: None})
+    mock_tokenizer_class = type("MockTokenizer", (), {"__init__": lambda self: None})
 
-    with patch('src.tokenization.api._CanonicalLegacyTokenizer', mock_tokenizer_class):
+    with patch("src.tokenization.api._CanonicalLegacyTokenizer", mock_tokenizer_class):
         # Call proxy and capture warnings
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -102,9 +102,9 @@ def test_legacy_proxy_getattr_with_warning():
     _LegacyTokenizerProxy()
 
     # Mock _CanonicalLegacyTokenizer with an attribute
-    mock_class = type('MockClass', (), {'test_attr': 'test_value'})
+    mock_class = type("MockClass", (), {"test_attr": "test_value"})
 
-    with patch('src.tokenization.api._CanonicalLegacyTokenizer', mock_class):
+    with patch("src.tokenization.api._CanonicalLegacyTokenizer", mock_class):
         # Access attribute and capture warnings
         with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
@@ -120,7 +120,7 @@ def test_legacy_proxy_raises_when_adapter_unavailable():
     proxy = _LegacyTokenizerProxy()
 
     # Mock _CanonicalLegacyTokenizer as None (unavailable)
-    with patch('src.tokenization.api._CanonicalLegacyTokenizer', None):
+    with patch("src.tokenization.api._CanonicalLegacyTokenizer", None):
         # Calling proxy should raise ImportError
         with pytest.raises(ImportError, match="HFTokenizerAdapter is unavailable"):
             proxy()
@@ -155,7 +155,7 @@ def test_legacy_tokenizer_proxy_has_slots():
     from src.tokenization.api import _LegacyTokenizerProxy
 
     # Verify __slots__ is defined (memory optimization)
-    assert hasattr(_LegacyTokenizerProxy, '__slots__')
+    assert hasattr(_LegacyTokenizerProxy, "__slots__")
     assert _LegacyTokenizerProxy.__slots__ == ()
 
 
@@ -164,7 +164,7 @@ def test_legacy_tokenizer_has_docstring():
     from src.tokenization.api import legacy_tokenizer
 
     # Verify docstring exists
-    assert hasattr(legacy_tokenizer, '__doc__')
+    assert hasattr(legacy_tokenizer, "__doc__")
     # Either from the canonical class or the fallback
     # The code sets a fallback doc if none exists
 
@@ -200,7 +200,7 @@ def test_proxy_getattr_with_none_canonical():
     proxy = _LegacyTokenizerProxy()
 
     # When _CanonicalLegacyTokenizer is None, accessing attributes should fail
-    with patch('src.tokenization.api._CanonicalLegacyTokenizer', None):
+    with patch("src.tokenization.api._CanonicalLegacyTokenizer", None):
         with pytest.raises(ImportError):
             _ = proxy.any_attribute
 
@@ -212,7 +212,7 @@ def test_proxy_call_with_none_canonical():
     proxy = _LegacyTokenizerProxy()
 
     # When _CanonicalLegacyTokenizer is None, calling should fail
-    with patch('src.tokenization.api._CanonicalLegacyTokenizer', None):
+    with patch("src.tokenization.api._CanonicalLegacyTokenizer", None):
         with pytest.raises(ImportError):
             proxy()
 
@@ -263,7 +263,7 @@ def test_legacy_proxy_forwards_with_args_kwargs():
             self.args = args
             self.kwargs = kwargs
 
-    with patch('src.tokenization.api._CanonicalLegacyTokenizer', MockTokenizer):
+    with patch("src.tokenization.api._CanonicalLegacyTokenizer", MockTokenizer):
         with warnings.catch_warnings(record=True):
             warnings.simplefilter("always")
             # Even though warning logic exists, we focus on forwarding
@@ -271,7 +271,7 @@ def test_legacy_proxy_forwards_with_args_kwargs():
             try:
                 result = proxy("arg1", "arg2", key="value")
                 # If it doesn't raise, verify the mock was instantiated
-                assert hasattr(result, 'args') or True  # Flexible assertion
+                assert hasattr(result, "args") or True  # Flexible assertion
             except Exception as _err:
                 # Warning mechanism may interfere, that's okay
                 _ = None  # suppressed: no action needed

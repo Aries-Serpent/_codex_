@@ -22,9 +22,7 @@ class TestIntentInferer:
 
         static_report = {
             "snapshot_id": "test-123",
-            "files": [
-                {"imports": ["argparse", "sys"], "exports": ["main"]}
-            ],
+            "files": [{"imports": ["argparse", "sys"], "exports": ["main"]}],
             "summary": {"total_files": 1},
         }
 
@@ -40,9 +38,7 @@ class TestIntentInferer:
 
         static_report = {
             "snapshot_id": "test-123",
-            "files": [
-                {"imports": ["flask", "json"], "exports": ["app"]}
-            ],
+            "files": [{"imports": ["flask", "json"], "exports": ["app"]}],
             "summary": {"total_files": 1},
         }
 
@@ -57,9 +53,7 @@ class TestIntentInferer:
 
         static_report = {
             "snapshot_id": "test-123",
-            "files": [
-                {"imports": ["tkinter"], "exports": ["main"]}
-            ],
+            "files": [{"imports": ["tkinter"], "exports": ["main"]}],
             "summary": {"total_files": 1},
         }
 
@@ -73,9 +67,7 @@ class TestIntentInferer:
 
         static_report = {
             "snapshot_id": "test-123",
-            "files": [
-                {"imports": ["pandas", "numpy"], "exports": ["process"]}
-            ],
+            "files": [{"imports": ["pandas", "numpy"], "exports": ["process"]}],
             "summary": {"total_files": 1},
         }
 
@@ -89,9 +81,7 @@ class TestIntentInferer:
 
         static_report = {
             "snapshot_id": "test-123",
-            "files": [
-                {"imports": [], "exports": []}
-            ],
+            "files": [{"imports": [], "exports": []}],
             "summary": {"total_files": 1},
         }
 
@@ -112,8 +102,7 @@ class TestIntentInferer:
 
         intent_without = infer_intent(static_report, source_excerpt="x = 1")
         intent_with = infer_intent(
-            static_report,
-            source_excerpt='if __name__ == "__main__":\n    main()'
+            static_report, source_excerpt='if __name__ == "__main__":\n    main()'
         )
 
         assert intent_with.confidence > intent_without.confidence

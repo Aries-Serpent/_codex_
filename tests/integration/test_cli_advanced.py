@@ -3,6 +3,7 @@ Integration tests for advanced CLI commands.
 
 Tests profile, analyze, and report generation commands.
 """
+
 import tempfile
 from pathlib import Path
 
@@ -44,8 +45,8 @@ class TestCLIProfile:
         """Test memory profiling functionality."""
         memory_snapshot = {
             "before": 100,  # MB
-            "after": 150,   # MB
-            "peak": 180,    # MB
+            "after": 150,  # MB
+            "peak": 180,  # MB
         }
 
         memory_used = memory_snapshot["after"] - memory_snapshot["before"]
@@ -85,7 +86,7 @@ class TestCLIAnalyze:
         from codex import cli
 
         # CLI should exist
-        assert hasattr(cli, '__name__')
+        assert hasattr(cli, "__name__")
 
     def test_analyze_metrics_collection(self):
         """Test metrics collection in analyze."""
@@ -197,6 +198,7 @@ class TestCLIReport:
             report_file = Path(tmpdir) / "report.json"
 
             import json
+
             report = {"title": "Test Report", "data": [1, 2, 3]}
 
             report_file.write_text(json.dumps(report))

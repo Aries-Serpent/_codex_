@@ -1,7 +1,7 @@
 """
 Comprehensive tests for codex.archive.detect module.
 
-Tests cover file detection, MIME type detection, language detection, 
+Tests cover file detection, MIME type detection, language detection,
 and source lines of code (SLoC) counting.
 """
 

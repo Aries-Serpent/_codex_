@@ -53,7 +53,7 @@ def append_error(step_number: str, description: str, message: str, context: str)
         _ERROR_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
         with _ERROR_LOG_PATH.open("a", encoding="utf-8") as handle:
             handle.write(entry)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # The error log must never raise a secondary exception; downstream
         # callers still need the original error to propagate.
@@ -95,7 +95,7 @@ def log_error(
     try:
         with log_path.open("a", encoding="utf-8") as f:
             f.write(log_entry)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Failed to write to error log", exc_info=True)
 
 
@@ -115,5 +115,5 @@ def append_error_to_file(message: str, file_path: str) -> None:
     try:
         with log_path.open("a", encoding="utf-8") as f:
             f.write(f"{message}\n")
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Failed to append error to file", exc_info=True)

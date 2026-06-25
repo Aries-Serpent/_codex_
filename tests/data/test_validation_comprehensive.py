@@ -24,12 +24,15 @@ def sample_dataframe():
     """Create sample DataFrame for testing."""
     try:
         import pandas as pd
-        return pd.DataFrame({
-            "id": [1, 2, 3, 4, 5],
-            "name": ["Alice", "Bob", "Charlie", "David", "Eve"],
-            "age": [25, 30, 35, 40, 45],
-            "score": [85.5, 90.0, 78.5, 95.0, 88.0],
-        })
+
+        return pd.DataFrame(
+            {
+                "id": [1, 2, 3, 4, 5],
+                "name": ["Alice", "Bob", "Charlie", "David", "Eve"],
+                "age": [25, 30, 35, 40, 45],
+                "score": [85.5, 90.0, 78.5, 95.0, 88.0],
+            }
+        )
     except ImportError:
         pytest.skip("pandas not available")
         return None
@@ -87,6 +90,7 @@ class TestValidationRule:
 
     def test_validation_rule_subclass_must_implement_validate(self):
         """Test subclass must implement validate method."""
+
         class IncompleteRule(validation.ValidationRule):
             pass
 
@@ -145,10 +149,13 @@ class TestNullCheckRule:
         if hasattr(validation, "NullCheckRule"):
             try:
                 import pandas as pd
-                df = pd.DataFrame({
-                    "id": [1, 2, None],
-                    "name": ["Alice", "Bob", "Charlie"],
-                })
+
+                df = pd.DataFrame(
+                    {
+                        "id": [1, 2, None],
+                        "name": ["Alice", "Bob", "Charlie"],
+                    }
+                )
                 rule = validation.NullCheckRule(["id"])
                 result = rule.validate(df)
                 assert result.is_valid is False
@@ -178,10 +185,13 @@ class TestDataTypeRule:
         if hasattr(validation, "DataTypeRule"):
             try:
                 import pandas as pd
-                df = pd.DataFrame({
-                    "id": ["1", "2", "3"],  # strings instead of ints
-                    "name": ["Alice", "Bob", "Charlie"],
-                })
+
+                df = pd.DataFrame(
+                    {
+                        "id": ["1", "2", "3"],  # strings instead of ints
+                        "name": ["Alice", "Bob", "Charlie"],
+                    }
+                )
                 rule = validation.DataTypeRule({"id": int})
                 result = rule.validate(df)
                 # Result depends on pandas type inference
@@ -235,10 +245,13 @@ class TestUniqueCheckRule:
         if hasattr(validation, "UniqueCheckRule"):
             try:
                 import pandas as pd
-                df = pd.DataFrame({
-                    "id": [1, 2, 2, 3],  # Duplicate 2
-                    "name": ["Alice", "Bob", "Charlie", "David"],
-                })
+
+                df = pd.DataFrame(
+                    {
+                        "id": [1, 2, 2, 3],  # Duplicate 2
+                        "name": ["Alice", "Bob", "Charlie", "David"],
+                    }
+                )
                 rule = validation.UniqueCheckRule("id")
                 result = rule.validate(df)
                 assert result.is_valid is False

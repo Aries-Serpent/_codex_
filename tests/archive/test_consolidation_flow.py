@@ -54,10 +54,7 @@ def test_consolidation_end_to_end(tmp_path: Path, monkeypatch) -> None:
     assert clusters, "expected consolidation clusters"
     duplicate_rel = duplicate.relative_to(root).as_posix()
     assert any(
-        any(
-            d.get("path") in {duplicate.as_posix(), duplicate_rel}
-            for d in c.get("duplicates", [])
-        )
+        any(d.get("path") in {duplicate.as_posix(), duplicate_rel} for d in c.get("duplicates", []))
         for c in clusters
     ), "duplicate should be present in plan"
 
@@ -76,11 +73,7 @@ def test_consolidation_end_to_end(tmp_path: Path, monkeypatch) -> None:
     payload = json.loads(res_apply.stdout)
     applied = payload.get("applied", [])
     rec = next(
-        (
-            item
-            for item in applied
-            if item.get("path") in {duplicate.as_posix(), duplicate_rel}
-        ),
+        (item for item in applied if item.get("path") in {duplicate.as_posix(), duplicate_rel}),
         None,
     )
     assert rec is not None

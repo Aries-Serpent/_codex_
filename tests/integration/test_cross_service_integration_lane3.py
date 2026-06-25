@@ -7,6 +7,7 @@ This module contains integration tests for validating:
 - Failure scenario handling
 - End-to-end workflow validation
 """
+
 from unittest.mock import Mock
 
 import pytest
@@ -19,7 +20,7 @@ class TestCrossServiceIntegration:
     def test_service_chain_data_flow(self):
         """
         Validate data flows correctly through service chain.
-        
+
         Service A -> Service B -> Service C -> Persistence
         """
         # Setup: Mock service chain
@@ -56,7 +57,7 @@ class TestCrossServiceIntegration:
     def test_data_consistency_validation(self):
         """
         Validate data consistency across services.
-        
+
         Verify data is not modified unexpectedly during transit.
         """
         # Test data
@@ -64,7 +65,7 @@ class TestCrossServiceIntegration:
             "user_id": "user_123",
             "transaction_id": "tx_456",
             "amount": 100.50,
-            "timestamp": "2026-06-21T10:00:00Z"
+            "timestamp": "2026-06-21T10:00:00Z",
         }
 
         service_gateway = Mock()
@@ -91,14 +92,14 @@ class TestCrossServiceIntegration:
     def test_failure_cascade_recovery(self):
         """
         Validate system recovers from cascading failures.
-        
+
         When Service B fails, Service A should:
         1. Detect the failure
         2. Attempt retry
         3. Fall back to alternative
         4. Recover gracefully
         """
-        service_a = Mock()
+        Mock()
         service_b_primary = Mock()
         service_b_fallback = Mock()
 
@@ -123,10 +124,10 @@ class TestCrossServiceIntegration:
     def test_transaction_handling_edge_case(self):
         """
         Validate transaction handling in edge cases.
-        
+
         Test partial transaction rollback and consistency.
         """
-        db_service = Mock()
+        Mock()
         transaction = Mock()
 
         # Setup: Simulate transaction
@@ -148,7 +149,7 @@ class TestCrossServiceIntegration:
     def test_partial_transaction_rollback(self):
         """
         Validate partial transaction rollback on error.
-        
+
         Ensure data consistency when middle operation fails.
         """
         transaction = Mock()
@@ -161,15 +162,15 @@ class TestCrossServiceIntegration:
         transaction.rollback.return_value = True
 
         # Action: Attempt transaction with failure
-        tx_started = transaction.begin()
-        op1_result = operation_1()
+        transaction.begin()
+        operation_1()
 
         try:
-            op2_result = operation_2()
-            op3_result = operation_3()
+            operation_2()
+            operation_3()
         except RuntimeError:
             # Rollback on failure
-            rolled_back = transaction.rollback()
+            transaction.rollback()
 
         # Assert: Rollback occurred
         assert transaction.begin.called
@@ -186,7 +187,7 @@ class TestDataPipelineIntegration:
     def test_data_ingestion_pipeline(self):
         """
         Test complete data ingestion pipeline.
-        
+
         Source -> Parser -> Validator -> Storage
         """
         data_source = Mock()
@@ -217,24 +218,21 @@ class TestDataPipelineIntegration:
     def test_data_transformation_pipeline(self):
         """
         Test data transformation pipeline.
-        
+
         Input -> Transform Step 1 -> Transform Step 2 -> Output
         """
         input_data = {"age": "25", "score": "98.5"}
 
         def transform_step_1(data):
             """Convert string values to appropriate types."""
-            return {
-                "age": int(data["age"]),
-                "score": float(data["score"])
-            }
+            return {"age": int(data["age"]), "score": float(data["score"])}
 
         def transform_step_2(data):
             """Add computed fields."""
             return {
                 **data,
                 "adult": data["age"] >= 18,
-                "grade": "A" if data["score"] >= 90 else "B"
+                "grade": "A" if data["score"] >= 90 else "B",
             }
 
         # Action: Execute transformation
@@ -251,7 +249,7 @@ class TestDataPipelineIntegration:
     def test_data_recovery_from_cache_miss(self):
         """
         Test data recovery when cache miss occurs.
-        
+
         Try cache -> miss -> fetch from DB -> store in cache
         """
         cache = Mock()
@@ -285,7 +283,7 @@ class TestEndToEndWorkflows:
     def test_complete_training_pipeline(self):
         """
         Test complete ML training pipeline.
-        
+
         Data Load -> Preprocessing -> Training -> Validation -> Export
         """
         data_loader = Mock()
@@ -319,7 +317,7 @@ class TestEndToEndWorkflows:
     def test_model_inference_workflow(self):
         """
         Test model inference workflow.
-        
+
         Input -> Preprocessing -> Model -> Postprocessing -> Output
         """
         model_loader = Mock()
@@ -334,7 +332,7 @@ class TestEndToEndWorkflows:
         postprocessor.format.return_value = {"prediction": "class_1", "confidence": 0.9}
 
         # Action: Execute inference
-        loaded_model = model_loader.load()
+        model_loader.load()
         preprocessed_input = preprocessor.prepare({"input": "data"})
         raw_prediction = model.predict(preprocessed_input)
         final_output = postprocessor.format(raw_prediction)
@@ -350,7 +348,7 @@ class TestEndToEndWorkflows:
     def test_result_persistence_workflow(self):
         """
         Test result persistence workflow.
-        
+
         Compute -> Serialize -> Validate -> Store -> Confirm
         """
         calculator = Mock()
@@ -384,7 +382,7 @@ class TestCircuitBreaker:
     def test_circuit_breaker_activation(self):
         """
         Validate circuit breaker activates after threshold failures.
-        
+
         Track consecutive failures and break circuit when threshold reached.
         """
         circuit_breaker = {

@@ -25,6 +25,7 @@ try:
         SchedulerSettings,
         TrainingRunConfig,
     )
+
     LEGACY_AVAILABLE = True
 except ImportError:
     LEGACY_AVAILABLE = False
@@ -83,11 +84,7 @@ def test_safety_settings_default():
 
 def test_safety_settings_custom():
     """Test SafetySettings with custom values."""
-    settings = SafetySettings(
-        enabled=False,
-        policy_path="/path/to/policy.json",
-        bypass=True
-    )
+    settings = SafetySettings(enabled=False, policy_path="/path/to/policy.json", bypass=True)
     assert settings.enabled is False
     assert settings.policy_path == "/path/to/policy.json"
     assert settings.bypass is True
@@ -115,12 +112,7 @@ def test_optimizer_settings_default():
 
 def test_optimizer_settings_custom():
     """Test OptimizerSettings with custom values."""
-    settings = OptimizerSettings(
-        name="sgd",
-        weight_decay=0.001,
-        betas=(0.95, 0.9995),
-        eps=1e-6
-    )
+    settings = OptimizerSettings(name="sgd", weight_decay=0.001, betas=(0.95, 0.9995), eps=1e-6)
     assert settings.name == "sgd"
     assert settings.weight_decay == 0.001
     assert settings.betas == (0.95, 0.9995)
@@ -316,11 +308,7 @@ def test_build_dataloader_basic(mock_load_jsonl):
             {"text": "sample2"},
         ]
 
-        loader = build_dataloader(
-            data_path="test.jsonl",
-            batch_size=2,
-            shuffle=True
-        )
+        loader = build_dataloader(data_path="test.jsonl", batch_size=2, shuffle=True)
         assert loader is not None
     except (ImportError, AttributeError):
         pytest.skip("build_dataloader not exposed")
@@ -371,10 +359,7 @@ def test_optimizer_settings_serialization():
 
 def test_safety_settings_policy_loading():
     """Test SafetySettings can reference external policy."""
-    settings = SafetySettings(
-        policy_path="/etc/safety/policy.json",
-        enabled=True
-    )
+    settings = SafetySettings(policy_path="/etc/safety/policy.json", enabled=True)
     assert Path(settings.policy_path).name == "policy.json"
 
 

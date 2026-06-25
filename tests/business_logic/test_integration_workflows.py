@@ -19,30 +19,21 @@ class TestEndToEndTrainingWorkflow:
 
         # Stage 1: Data loading
         pipeline_state["stage"] = "loading_data"
-        data_size = 1000
 
         # Stage 2: Training
         pipeline_state["stage"] = "training"
-        epochs = 10
 
         # Stage 3: Validation
         pipeline_state["stage"] = "validating"
-        val_accuracy = 0.87
 
         # Stage 4: Checkpointing
         pipeline_state["stage"] = "checkpointing"
-        checkpoint_path = "/models/model.pt"
 
         assert pipeline_state["stage"] == "checkpointing"
 
     def test_data_to_model_training(self):
         """Test workflow from raw data to trained model."""
-        workflow = {
-            "raw_data": 10000,
-            "preprocessed_data": 9500,
-            "batches": 297,
-            "epochs": 10
-        }
+        workflow = {"raw_data": 10000, "preprocessed_data": 9500, "batches": 297, "epochs": 10}
 
         total_training_steps = workflow["batches"] * workflow["epochs"]
 
@@ -68,7 +59,7 @@ class TestEndToEndTrainingWorkflow:
             "preprocess": {"valid": 950, "time": 5},
             "train": {"loss": 0.35, "accuracy": 0.87, "time": 120},
             "validate": {"accuracy": 0.85, "loss": 0.38, "time": 20},
-            "save": {"checkpoint_size": 500, "time": 5}
+            "save": {"checkpoint_size": 500, "time": 5},
         }
 
         total_time = sum(m["time"] for m in metrics.values())
@@ -97,16 +88,9 @@ class TestCrossModuleIntegration:
 
     def test_data_pipeline_to_training(self):
         """Test data pipeline feeding into training."""
-        data_pipeline = {
-            "batches": [],
-            "num_batches": 100,
-            "batch_size": 32
-        }
+        data_pipeline = {"batches": [], "num_batches": 100, "batch_size": 32}
 
-        training = {
-            "batches_processed": 0,
-            "total_samples": 0
-        }
+        training = {"batches_processed": 0, "total_samples": 0}
 
         for batch_idx in range(data_pipeline["num_batches"]):
             training["batches_processed"] += 1
@@ -119,7 +103,7 @@ class TestCrossModuleIntegration:
         training_outputs = {
             "model_path": "/models/checkpoint.pt",
             "metrics": {"accuracy": 0.87},
-            "version": "1.0"
+            "version": "1.0",
         }
 
         registry = {}
@@ -132,12 +116,12 @@ class TestCrossModuleIntegration:
         checkpoint = {
             "epoch": 10,
             "model_state": {"layer1": [1, 2, 3]},
-            "metrics": {"accuracy": 0.87}
+            "metrics": {"accuracy": 0.87},
         }
 
         eval_context = {
             "model": checkpoint["model_state"],
-            "baseline_metrics": checkpoint["metrics"]
+            "baseline_metrics": checkpoint["metrics"],
         }
 
         assert eval_context["baseline_metrics"]["accuracy"] == 0.87
@@ -243,12 +227,7 @@ class TestConfigurationIntegration:
 
     def test_config_application_across_stages(self):
         """Test applying configuration across workflow stages."""
-        config = {
-            "batch_size": 32,
-            "learning_rate": 0.001,
-            "epochs": 10,
-            "checkpoint_interval": 5
-        }
+        config = {"batch_size": 32, "learning_rate": 0.001, "epochs": 10, "checkpoint_interval": 5}
 
         applied_config = config.copy()
 
@@ -282,11 +261,7 @@ class TestDataPipelineIntegration:
 
     def test_multi_source_data_aggregation(self):
         """Test aggregating data from multiple sources."""
-        data_sources = {
-            "source_1": 1000,
-            "source_2": 800,
-            "source_3": 600
-        }
+        data_sources = {"source_1": 1000, "source_2": 800, "source_3": 600}
 
         total_data = sum(data_sources.values())
 
@@ -299,7 +274,7 @@ class TestDataPipelineIntegration:
             "cleaned": 980,
             "tokenized": 980,
             "encoded": 980,
-            "batched": 30  # 980 / 32 batch_size
+            "batched": 30,  # 980 / 32 batch_size
         }
 
         assert data_stages["raw"] > data_stages["cleaned"]
@@ -336,7 +311,7 @@ class TestResourceManagement:
             "data_loading": 256,
             "preprocessing": 512,
             "training": 2048,
-            "validation": 1024
+            "validation": 1024,
         }
 
         peak_memory = max(memory_usage.values())
@@ -345,11 +320,7 @@ class TestResourceManagement:
 
     def test_compute_resource_allocation(self):
         """Test allocating compute resources."""
-        resources = {
-            "gpus": 2,
-            "cpus": 8,
-            "memory_gb": 16
-        }
+        resources = {"gpus": 2, "cpus": 8, "memory_gb": 16}
 
         assert resources["gpus"] == 2
 
@@ -368,12 +339,7 @@ class TestTimingAndPerformance:
 
     def test_stage_timing(self):
         """Test timing individual stages."""
-        timings = {
-            "data_load": 10,
-            "preprocessing": 5,
-            "training": 120,
-            "validation": 15
-        }
+        timings = {"data_load": 10, "preprocessing": 5, "training": 120, "validation": 15}
 
         total_time = sum(timings.values())
 
@@ -390,12 +356,7 @@ class TestTimingAndPerformance:
 
     def test_bottleneck_identification(self):
         """Test identifying workflow bottleneck."""
-        stage_times = {
-            "load": 10,
-            "preprocess": 50,  # Slowest
-            "train": 30,
-            "validate": 20
-        }
+        stage_times = {"load": 10, "preprocess": 50, "train": 30, "validate": 20}  # Slowest
 
         bottleneck = max(stage_times, key=stage_times.get)
 

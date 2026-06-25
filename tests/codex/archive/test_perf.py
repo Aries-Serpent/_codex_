@@ -14,10 +14,7 @@ class TestTimingMetrics:
         """Test TimingMetrics basic creation."""
         from codex.archive.perf import TimingMetrics
 
-        metrics = TimingMetrics(
-            name="test_op",
-            started_ns=time.perf_counter_ns()
-        )
+        metrics = TimingMetrics(name="test_op", started_ns=time.perf_counter_ns())
 
         assert metrics.name == "test_op"
         assert metrics.started_ns > 0
@@ -27,10 +24,7 @@ class TestTimingMetrics:
         """Test duration_ms returns value before stop."""
         from codex.archive.perf import TimingMetrics
 
-        metrics = TimingMetrics(
-            name="test",
-            started_ns=time.perf_counter_ns()
-        )
+        metrics = TimingMetrics(name="test", started_ns=time.perf_counter_ns())
 
         # Sleep a tiny bit to ensure some time passes
         time.sleep(0.001)
@@ -43,10 +37,7 @@ class TestTimingMetrics:
         """Test stop method sets finished_ns."""
         from codex.archive.perf import TimingMetrics
 
-        metrics = TimingMetrics(
-            name="test",
-            started_ns=time.perf_counter_ns()
-        )
+        metrics = TimingMetrics(name="test", started_ns=time.perf_counter_ns())
 
         assert metrics.finished_ns is None
 
@@ -76,10 +67,7 @@ class TestTimingMetrics:
         """Test to_dict method."""
         from codex.archive.perf import TimingMetrics
 
-        metrics = TimingMetrics(
-            name="operation",
-            started_ns=time.perf_counter_ns()
-        )
+        metrics = TimingMetrics(name="operation", started_ns=time.perf_counter_ns())
         metrics.stop()
 
         result = metrics.to_dict()
@@ -155,7 +143,7 @@ class TestMeasureDecompression:
         result = test_func()
 
         assert result == "done"
-        assert hasattr(test_func, 'last_metrics')
+        assert hasattr(test_func, "last_metrics")
         assert test_func.last_metrics is not None
         assert test_func.last_metrics.duration_ms > 0
 

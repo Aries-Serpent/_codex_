@@ -95,7 +95,8 @@ class LinkValidator:
                     self.issues.append(issue)
 
         except Exception as e:
-            print(f"⚠️  Error reading {md_file}: {e}")
+            error_type = type(e).__name__
+            print(f"⚠️  Error reading {md_file}: <ERROR_TYPE>")
 
         return self.issues
 
@@ -258,7 +259,8 @@ Suggestion: {issue.suggestion}
                     print(f"✅ Fixed {fixed_count} links in {file_path}")
 
             except Exception as e:
-                print(f"❌ Error fixing {file_path}: {e}")
+                error_type = type(e).__name__
+                print(f"❌ Error fixing {file_path}: <ERROR_TYPE>")
 
         return fixed_count
 

@@ -33,7 +33,7 @@ def init_wandb_offline(project: str = "codex"):
     except ImportError:
         logger.warning("wandb not installed; skipping W&B init (pip install wandb)")
         return None
-    except Exception:
+    except AttributeError:
         logger.warning("Unexpected error importing wandb", exc_info=True)
         return None
     if not callable(getattr(wandb, "init", None)):
@@ -52,7 +52,7 @@ def init_mlflow_local():
         return None
     try:
         from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
-    except Exception:
+    except (ConnectionError, TimeoutError):
         logger.warning("Unexpected error importing mlflow", exc_info=True)
         return None
 

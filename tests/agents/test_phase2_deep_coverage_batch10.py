@@ -12,7 +12,6 @@ Systematically covers edge cases and boundary conditions:
 Target: +3-4% coverage gain (66% → 70%)
 """
 
-
 import math
 
 import pytest

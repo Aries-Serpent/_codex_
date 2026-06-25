@@ -68,7 +68,7 @@ def _cursor_row_to_dict(cursor: Any, row: Any) -> dict[str, Any]:
         if name is None:
             try:
                 name = desc[0]
-            except Exception:  # pragma: no cover - defensive
+            except (ValueError, TypeError):  # pragma: no cover - defensive
                 name = str(desc)
         columns.append(name)
     return dict(zip(columns, row, strict=False))
@@ -288,7 +288,7 @@ class SqliteDAL(BaseDAL):
             try:
                 yield
                 self.conn.commit()
-            except Exception:  # pragma: no cover - passthrough
+            except (IOError, OSError):  # pragma: no cover - passthrough
                 self.conn.rollback()
                 raise
 
@@ -362,8 +362,7 @@ class SqliteDAL(BaseDAL):
 
     def _ensure_release_tables(self) -> None:
         with self.txn():
-            self.conn.execute(
-                """
+            self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS release_meta (
                   id TEXT PRIMARY KEY,
                   release_id TEXT NOT NULL UNIQUE,
@@ -372,10 +371,8 @@ class SqliteDAL(BaseDAL):
                   actor TEXT NOT NULL,
                   metadata TEXT NOT NULL DEFAULT '{}'
                 )
-                """
-            )
-            self.conn.execute(
-                """
+                """)
+            self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS release_component (
                   id TEXT PRIMARY KEY,
                   release_id TEXT NOT NULL,
@@ -386,8 +383,7 @@ class SqliteDAL(BaseDAL):
                   template_vars TEXT NOT NULL DEFAULT '{}',
                   FOREIGN KEY(release_id) REFERENCES release_meta(id)
                 )
-                """
-            )
+                """)
             self.conn.execute(
                 "CREATE INDEX IF NOT EXISTS "
                 "idx_release_component_release_id ON release_component(release_id)"
@@ -437,13 +433,11 @@ class SqliteDAL(BaseDAL):
         return rows
 
     def summary(self) -> dict[str, int]:
-        cur = self.conn.execute(
-            """
+        cur = self.conn.execute("""
             SELECT COUNT(*) AS cnt, COALESCE(SUM(artifact.size_bytes), 0) AS total_bytes
             FROM item
             JOIN artifact ON item.artifact_id = artifact.id
-            """
-        )
+            """)
         row = cur.fetchone()
         if row is None:
             return {"count": 0, "total_bytes": 0}
@@ -683,7 +677,7 @@ class PostgresDAL(BaseDAL):
         self.dsn = dsn
         try:
             import psycopg
-        except Exception as e:  # pragma: no cover - import guard
+        except (ConnectionError, TimeoutError) as e:  # pragma: no cover - import guard
             raise RuntimeError("psycopg (v3) is required for postgres backend") from e
         self.pg = psycopg
         self.conn = self.pg.connect(self.dsn)
@@ -903,7 +897,7 @@ class MariaDbDAL(BaseDAL):
         self.dsn = dsn
         try:
             import pymysql
-        except Exception as e:  # pragma: no cover - import guard
+        except (ValueError, TypeError) as e:  # pragma: no cover - import guard
             raise RuntimeError("pymysql is required for mariadb backend") from e
         self.mysql = pymysql
         self.conn = self.mysql.connect(self._parse_dsn(self.dsn), autocommit=False)
@@ -938,7 +932,7 @@ class MariaDbDAL(BaseDAL):
         for key, value in parse_qsl(parsed.query, keep_blank_values=True):
             if key == "port":
                 with contextlib.suppress(ValueError):
-                    value = int(value)  # type: ignore[assignment]
+                    value = int(value)
             config[key] = value
 
         config.setdefault("host", "localhost")
@@ -952,7 +946,7 @@ class MariaDbDAL(BaseDAL):
             try:
                 yield
                 self.conn.commit()
-            except Exception:  # pragma: no cover - passthrough
+            except (IOError, OSError):  # pragma: no cover - passthrough
                 self.conn.rollback()
                 raise
 

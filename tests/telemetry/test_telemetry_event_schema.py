@@ -25,6 +25,7 @@ if train_loop_module.instantiate_model is None:  # pragma: no cover - optional d
 _TORCH_312_BUG = False
 try:
     import torch as _torch_mod
+
     _torch_ver = tuple(int(x) for x in _torch_mod.__version__.split(".")[:2])
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_ver < (2, 2)
 except (ImportError, AttributeError, ValueError):
@@ -42,7 +43,9 @@ SCHEMA = {
 }
 
 
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types")
+@pytest.mark.skipif(
+    _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
+)
 def test_telemetry_events_json_and_ndjson(tmp_path: Path):
     run_training = train_loop_module.run_training
 

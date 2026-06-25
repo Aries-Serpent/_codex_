@@ -159,9 +159,10 @@ class DistributedManager:
             )
             return True
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to initialize distributed training: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to initialize distributed training: <ERROR_TYPE>")
             self._initialized = False
             return False
 
@@ -172,7 +173,7 @@ class DistributedManager:
             self._initialized = False
             logger.info("Distributed training cleaned up")
 
-    def wrap_model(self, model: torch.nn.Module) -> torch.nn.Module | DDP:  # type: ignore[valid-type]
+    def wrap_model(self, model: torch.nn.Module) -> torch.nn.Module | DDP:
         """Wrap model for distributed training.
 
         Args:
@@ -233,7 +234,7 @@ class DistributedManager:
     def all_reduce(
         self,
         tensor: torch.Tensor,
-        op: dist.ReduceOp = dist.ReduceOp.SUM,  # type: ignore[name-defined]
+        op: dist.ReduceOp = dist.ReduceOp.SUM,
     ) -> torch.Tensor:
         """All-reduce tensor across processes.
 

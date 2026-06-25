@@ -87,9 +87,7 @@ class TestAccuracyFunction:
 
     def test_accuracy_torch_tensors(self, sample_numpy_data):
         """Test accuracy with torch tensors."""
-        acc_torch = accuracy(
-            sample_numpy_data["torch_preds"], sample_numpy_data["torch_labels"]
-        )
+        acc_torch = accuracy(sample_numpy_data["torch_preds"], sample_numpy_data["torch_labels"])
         acc_numpy = accuracy(sample_numpy_data["preds"], sample_numpy_data["labels"])
         assert acc_torch == acc_numpy
 
@@ -539,9 +537,7 @@ class TestErrorHandling:
     def test_registry_compute_unknown_metric(self, metric_registry):
         """Test registry compute with unknown metric name."""
         # This should handle gracefully or raise
-        result = metric_registry.compute(
-            ["unknown"], labels=[1, 0], predictions=[1, 0]
-        )
+        metric_registry.compute(["unknown"], labels=[1, 0], predictions=[1, 0])
         # Implementation dependent - just test it doesn't crash
 
 
@@ -564,6 +560,7 @@ class TestPerformance:
         else:
             # Just ensure it completes quickly
             import time
+
             start = time.time()
             accuracy(preds, labels)
             elapsed = time.time() - start
@@ -573,6 +570,7 @@ class TestPerformance:
         """Test streaming accuracy performance with many batches."""
         metric = StreamingAccuracy()
         import time
+
         start = time.time()
         for _ in range(1000):
             preds = np.random.randint(0, 2, 100)

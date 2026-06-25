@@ -44,8 +44,12 @@ def test_tenant_registry_sqlite_crud(tmp_path: Path, monkeypatch: pytest.MonkeyP
 
 def test_tenant_registry_memory_listing() -> None:
     registry = TenantRegistry(backend="memory")
-    registry.create_tenant("t1", "T1", "k1", quota={"requests_per_minute": 1, "tokens_per_minute": 2})
-    registry.create_tenant("t2", "T2", "k2", quota={"requests_per_minute": 3, "tokens_per_minute": 4})
+    registry.create_tenant(
+        "t1", "T1", "k1", quota={"requests_per_minute": 1, "tokens_per_minute": 2}
+    )
+    registry.create_tenant(
+        "t2", "T2", "k2", quota={"requests_per_minute": 3, "tokens_per_minute": 4}
+    )
     tenant_ids = {item["tenant_id"] for item in registry.list_tenants()}
     assert tenant_ids == {"t1", "t2"}
 

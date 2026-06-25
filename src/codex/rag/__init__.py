@@ -39,20 +39,16 @@ except ImportError:
 
 # Ingestion pipeline components
 try:
-    from .ingestion import (
+    from .ingestion import (  # Chunker; Preprocessor; Validator; Pipeline
         BatchIngestionResult,
         Chunk,
-        # Chunker
         Chunker,
         ChunkingConfig,
         ChunkingStrategy,
         DocumentFormat,
-        # Preprocessor
         DocumentPreprocessor,
-        # Validator
         DocumentValidator,
         IngestionConfig,
-        # Pipeline
         IngestionPipeline,
         IngestionResult,
         PreprocessingConfig,

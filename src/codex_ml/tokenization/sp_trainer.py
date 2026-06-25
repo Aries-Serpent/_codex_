@@ -18,13 +18,13 @@ from codex_ml.interfaces.tokenizer import TrainableTokenizerProtocol  # noqa: E4
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
-except Exception:  # pragma: no cover - optional dependency
-    spm = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
+    spm = None
 
 __all__ = ["SPTokenizer"]
 
 
-def _require_sentencepiece() -> spm:  # type: ignore[valid-type]
+def _require_sentencepiece() -> spm:
     if spm is None:  # pragma: no cover - runtime guard
         raise ImportError(
             "sentencepiece is required for SPTokenizer; install 'sentencepiece' to use the trainer"
@@ -38,7 +38,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
     def __init__(self, model_file: str):
         module = _require_sentencepiece()
         self._model_path = Path(model_file)
-        self._sp = module.SentencePieceProcessor(model_file=str(self._model_path))  # type: ignore[attr-defined]
+        self._sp = module.SentencePieceProcessor(model_file=str(self._model_path))
 
     # ------------------------------------------------------------------
     # Encoding helpers
@@ -72,7 +72,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         return ids
 
     def batch_encode(self, texts: Iterable[str], **kwargs: object) -> list[list[int]]:
-        return [self.encode(text, **kwargs) for text in texts]  # type: ignore[arg-type]
+        return [self.encode(text, **kwargs) for text in texts]
 
     def decode(
         self,
@@ -97,7 +97,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
         batch_ids: Iterable[Iterable[int]],
         **kwargs: object,
     ) -> list[str]:
-        return [self.decode(ids, **kwargs) for ids in batch_ids]  # type: ignore[arg-type]
+        return [self.decode(ids, **kwargs) for ids in batch_ids]
 
     # ------------------------------------------------------------------
     # Persistence helpers
@@ -173,7 +173,7 @@ class SPTokenizer(TrainableTokenizerProtocol):
             "user_defined_symbols": list(dict.fromkeys(extra_symbols)),
         }
 
-        module.SentencePieceTrainer.train(**trainer_args)  # type: ignore[attr-defined]
+        module.SentencePieceTrainer.train(**trainer_args)
         model_file = f"{model_prefix}.model"
         pointer_path = out_dir / "tokenizer.pointer"
         pointer_path.write_text(model_file)

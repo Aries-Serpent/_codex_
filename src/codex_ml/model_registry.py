@@ -129,7 +129,7 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
     if callable(load_adapter):
         try:
             adapter_name = load_adapter(adapter_path)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
         else:
             set_active = getattr(model, "set_active_adapters", None)
@@ -137,12 +137,13 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                 try:
                     set_active(adapter_name)
                     return
-                except Exception as e:
-                    logger.debug(f"Exception: {e}")
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                except (IOError, OSError) as e:
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     try:
         model.lora_adapter_path = adapter_path
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Silently ignore failures; attaching metadata is best effort.
 
@@ -160,7 +161,7 @@ def _to_bool(value: Any, default: bool) -> bool:
             return False
     try:
         return bool(value)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return default
 
@@ -168,7 +169,7 @@ def _to_bool(value: Any, default: bool) -> bool:
 def _to_int(value: Any, default: int) -> int:
     try:
         return int(value)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return default
 
@@ -176,7 +177,7 @@ def _to_int(value: Any, default: int) -> int:
 def _to_float(value: Any, default: float) -> float:
     try:
         return float(value)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return default
 
@@ -313,16 +314,18 @@ def get_model(
         if torch_dtype is not None:
             try:
                 model = model.to(dtype=torch_dtype)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     normalised_device = _normalise_device(device)
     if isinstance(normalised_device, str):
         try:
             model = model.to(device=normalised_device)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     if lora_adapter:
         _activate_lora_adapter(model, lora_adapter)
@@ -346,7 +349,7 @@ def get_model(
             lora=lora_request,
             config=config,
         )
-    except Exception:
+    except (ConnectionError, TimeoutError):
         logger.warning("Exception occurred", exc_info=True)
         # Attaching metadata is best-effort only.
 

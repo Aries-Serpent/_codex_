@@ -14,10 +14,9 @@ Output:
 """
 
 import json
-import os
-from pathlib import Path
 from datetime import datetime, timezone
-from typing import Dict, List, Any, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 class SessionIndexBackfiller:
@@ -305,18 +304,18 @@ class SessionIndexBackfiller:
         print("📊 SESSION INDEX BACKFILL REPORT")
         print("=" * 70)
 
-        print(f"\n✅ PROCESSING STATS:")
+        print("\n✅ PROCESSING STATS:")
         print(f"  Total entries processed: {self.stats['total_processed']}")
         print(f"  Valid sessions extracted: {self.stats['total_valid']}")
         print(f"  Sessions with markdown: {self.stats['sessions_with_markdown']}")
         print(f"  Data validation errors: {self.stats['data_validation_errors']}")
 
-        print(f"\n📋 SESSION INDEX:")
+        print("\n📋 SESSION INDEX:")
         print(f"  Output file: {self.output_path}")
         print(f"  Total sessions in index: {len(self.sessions)}")
 
         if self.sessions:
-            print(f"\n🔍 SAMPLE ENTRIES (First 3):")
+            print("\n🔍 SAMPLE ENTRIES (First 3):")
             for i, session in enumerate(self.sessions[:3], 1):
                 print(f"\n  Session {i}: {session['session_id']}")
                 print(f"    - PR: #{session['pr_number']}")
@@ -338,11 +337,11 @@ class SessionIndexBackfiller:
                 if len(critical_errors) > 5:
                     print(f"  ... and {len(critical_errors) - 5} more errors")
             else:
-                print(f"\n✅ No critical errors (some timestamp normalization warnings only)")
+                print("\n✅ No critical errors (some timestamp normalization warnings only)")
 
-        print(f"\n✨ DATA INTEGRITY:")
+        print("\n✨ DATA INTEGRITY:")
         if self.stats['data_validation_errors'] == 0:
-            print(f"  ✅ No validation errors (0 data loss)")
+            print("  ✅ No validation errors (0 data loss)")
         else:
             print(f"  ⚠️  {self.stats['data_validation_errors']} validation errors")
 

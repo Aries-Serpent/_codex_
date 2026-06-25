@@ -254,13 +254,13 @@ class TestTrainingEngineMLflowConfiguration:
 
     def test_mlflow_module_none_when_disabled(self):
         """Test mlflow module is None when disabled."""
-        engine = TrainingEngine(enable_mlflow=False)
+        TrainingEngine(enable_mlflow=False)
         # Should not have mlflow configured
         # Implementation may vary
 
     def test_mlflow_error_when_module_unavailable(self):
         """Test error handling when mlflow module unavailable."""
-        engine = TrainingEngine(enable_mlflow=True, _mlflow_module=None)
+        TrainingEngine(enable_mlflow=True, _mlflow_module=None)
         # Should handle gracefully
         # Implementation may set _mlflow_error
 
@@ -296,7 +296,7 @@ class TestTrainingEngineIntegration:
 
     def test_engine_with_sample_params(self, sample_params):
         """Test engine can store sample parameters."""
-        engine = TrainingEngine(enable_mlflow=False)
+        TrainingEngine(enable_mlflow=False)
         normalized = _normalize_params(sample_params)
         assert len(normalized) > 0
 
@@ -420,6 +420,7 @@ class TestErrorHandling:
 
     def test_normalize_callable_in_params(self):
         """Test normalizing callable objects in parameters."""
+
         def dummy_func():
             pass
 
@@ -446,7 +447,7 @@ class TestWithMocks:
     @patch("codex_ml.training.engine.TrainingEngine._configure_mlflow")
     def test_engine_configure_mlflow_called_when_enabled(self, mock_configure):
         """Test _configure_mlflow is called when enabled."""
-        engine = TrainingEngine(enable_mlflow=True)
+        TrainingEngine(enable_mlflow=True)
         # _configure_mlflow should have been called during __post_init__
 
     def test_engine_with_mocked_mlflow_module(self):

@@ -22,34 +22,42 @@ class TestSessionLoggerImports:
 
     def test_import_module(self) -> None:
         from codex.logging import session_logger
+
         assert session_logger is not None
 
     def test_import_session_logger_class(self) -> None:
         from codex.logging.session_logger import SessionLogger
+
         assert SessionLogger is not None
 
     def test_import_log_message(self) -> None:
         from codex.logging.session_logger import log_message
+
         assert callable(log_message)
 
     def test_import_log_event(self) -> None:
         from codex.logging.session_logger import log_event
+
         assert callable(log_event)
 
     def test_import_init_db(self) -> None:
         from codex.logging.session_logger import init_db
+
         assert callable(init_db)
 
     def test_import_get_session_id(self) -> None:
         from codex.logging.session_logger import get_session_id
+
         assert callable(get_session_id)
 
     def test_import_fetch_messages(self) -> None:
         from codex.logging.session_logger import fetch_messages
+
         assert callable(fetch_messages)
 
     def test_import_migrate_legacy_events(self) -> None:
         from codex.logging.session_logger import migrate_legacy_events
+
         assert callable(migrate_legacy_events)
 
 
@@ -58,30 +66,37 @@ class TestAllowedRoles:
 
     def test_allowed_roles_exist(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
+
         assert isinstance(_ALLOWED_ROLES, set)
 
     def test_allowed_roles_contains_system(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
+
         assert "system" in _ALLOWED_ROLES
 
     def test_allowed_roles_contains_user(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
+
         assert "user" in _ALLOWED_ROLES
 
     def test_allowed_roles_contains_assistant(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
+
         assert "assistant" in _ALLOWED_ROLES
 
     def test_allowed_roles_contains_tool(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
+
         assert "tool" in _ALLOWED_ROLES
 
     def test_allowed_roles_contains_info(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
+
         assert "INFO" in _ALLOWED_ROLES
 
     def test_allowed_roles_contains_warn(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
+
         assert "WARN" in _ALLOWED_ROLES
 
 
@@ -345,7 +360,7 @@ class TestMigrateLegacyEvents:
             conn = sqlite3.connect(db_path)
             conn.execute(
                 "INSERT INTO session_events (ts, session_id, role, message) VALUES (?, ?, ?, ?)",
-                (time.time(), "legacy-session", "user", "Legacy message")
+                (time.time(), "legacy-session", "user", "Legacy message"),
             )
             conn.commit()
             conn.close()
@@ -356,8 +371,7 @@ class TestMigrateLegacyEvents:
             # Check seq is now set
             conn = sqlite3.connect(db_path)
             cursor = conn.execute(
-                "SELECT seq FROM session_events WHERE session_id = ?",
-                ("legacy-session",)
+                "SELECT seq FROM session_events WHERE session_id = ?", ("legacy-session",)
             )
             rows = cursor.fetchall()
             conn.close()
@@ -404,13 +418,16 @@ class TestConnectionPooling:
 
     def test_pool_environment_variable(self) -> None:
         from codex.logging.session_logger import USE_POOL
+
         # USE_POOL is determined at import time by CODEX_SQLITE_POOL env var
         assert isinstance(USE_POOL, bool)
 
     def test_conn_pool_is_dict(self) -> None:
         from codex.logging.session_logger import CONN_POOL
+
         assert isinstance(CONN_POOL, dict)
 
     def test_initialized_paths_is_set(self) -> None:
         from codex.logging.session_logger import INITIALIZED_PATHS
+
         assert isinstance(INITIALIZED_PATHS, set)

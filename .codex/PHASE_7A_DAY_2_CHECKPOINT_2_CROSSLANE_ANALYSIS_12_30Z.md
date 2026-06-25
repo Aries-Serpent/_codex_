@@ -147,12 +147,12 @@ MemoryEntry(
 # ContextFrame (14 fields, 8 with defaults)
 ContextFrame(
   frame_id: str,
-  task_description: str,
+  task_description: str,  # pragma: allowlist secret
   start_time: str,
   status: str = 'active',
   repository: Optional[str] = None,
   branch: Optional[str] = None,
-  tokens_used: int = 0,
+  tokens_used: int = 0,  # pragma: allowlist secret
   errors_encountered: int = 0
   # + 6 more tracking fields
 )
@@ -358,4 +358,3 @@ name, magnitude, direction, priority, x, y, z
 *Report Generated: 2026-06-20 12:30Z*  
 *Cross-Lane Coordination Analysis: Both Agents Delivered*  
 *Status: READY FOR CHECKPOINT 2 RE-RUN CYCLE (14:00Z)*
-

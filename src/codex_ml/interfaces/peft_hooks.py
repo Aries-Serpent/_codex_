@@ -11,7 +11,7 @@ from typing import Any  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     from peft import LoraConfig, PeftModel, TaskType, get_peft_model
-except Exception:  # pragma: no cover - gracefully degrade when peft unavailable
+except (ImportError, AttributeError):  # pragma: no cover - gracefully degrade when peft unavailable
     LoraConfig = None
     PeftModel = None
     TaskType = None
@@ -66,9 +66,10 @@ def enable_peft(model: Any, peft_cfg: Any, adapter_name: str = "lora") -> Any:
     adapted = get_peft_model(model, peft_cfg, adapter_name=adapter_name)
     try:  # pragma: no cover - optional diagnostics
         adapted.print_trainable_parameters()
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     return adapted
 
 

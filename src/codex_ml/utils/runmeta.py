@@ -25,7 +25,7 @@ def _git_rev_parse() -> str | None:
             stderr=subprocess.DEVNULL,
             timeout=2,
         )
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     return out.decode("utf-8").strip()
@@ -37,7 +37,7 @@ def _git_read_head(repo: Path) -> str | None:
         return None
     try:
         ref = head.read_text(encoding="utf-8").strip()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     if ref.startswith("ref:"):
@@ -46,7 +46,7 @@ def _git_read_head(repo: Path) -> str | None:
         if ref_file.exists():
             try:
                 return ref_file.read_text(encoding="utf-8").strip()
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 return None
         return None
@@ -78,7 +78,7 @@ def _sha256_file(path: Path) -> str | None:
             for chunk in iter(lambda: handle.read(1 << 16), b""):
                 hasher.update(chunk)
         return hasher.hexdigest()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 

@@ -101,7 +101,7 @@ Production Environment
 
 **Flow**:
 ```
-Application → Log Buffer (in-memory) 
+Application → Log Buffer (in-memory)
   ↓
 JSON Formatter (sync with sampling)
   ↓
@@ -124,7 +124,7 @@ formatters:
     rename_fields:
       timestamp: "@timestamp"
       level: "log.level"
-  
+
   structured:
     class: structlog.processors.JSONRenderer
     ensure_ascii: false
@@ -403,21 +403,21 @@ alerts:
     window: 5m
     severity: CRITICAL
     escalation: "PagerDuty + Slack + Email"
-    
+
   - name: response_latency_critical
     condition: "p99_latency > 2 seconds"
     threshold: 2000ms
     window: 5m
     severity: CRITICAL
     escalation: "PagerDuty + Slack"
-    
+
   - name: health_check_failed
     condition: "3+ consecutive failures"
     threshold: 3
     window: 1m
     severity: CRITICAL
     escalation: "PagerDuty + Slack + Email"
-    
+
   - name: resource_exhaustion
     condition: "CPU > 95% OR Memory > 95%"
     threshold: 0.95
@@ -435,14 +435,14 @@ alerts:
     window: 10m
     severity: WARNING
     escalation: "Slack + Email"
-    
+
   - name: error_rate_elevated
     condition: "error_rate > 1% over 10 minutes"
     threshold: 0.01
     window: 10m
     severity: WARNING
     escalation: "Slack + Email"
-    
+
   - name: resource_warning
     condition: "CPU > 80% OR Memory > 85%"
     threshold: 0.80
@@ -458,7 +458,7 @@ alerts:
     condition: "deployment started/completed"
     severity: INFO
     escalation: "Log + Slack (optional)"
-    
+
   - name: config_drift
     condition: "configuration differs from expected"
     severity: INFO
@@ -496,12 +496,12 @@ Notify Director of Engineering
 deduplication:
   window: 1m  # Look for duplicates in last 1 minute
   key: [alert_name, dimensions]  # Dedup by alert + key labels
-  
+
 cooldown:
   CRITICAL: 5m   # Wait 5 min before alerting again
   WARNING: 30m   # Wait 30 min before alerting again
   INFO: 60m      # Wait 60 min before alerting again
-  
+
 grouping:
   CRITICAL: alert on first, then group subsequent
   WARNING: wait 5m, then group and send single notification
@@ -521,77 +521,77 @@ dashboard:
   name: "Production Monitoring - Primary"
   layout: 3-column
   refresh: 30s
-  
+
   panels:
     # Top Row - Critical Metrics (Red on failure)
     - name: "System Status"
       type: "status_card"
       metrics: [health_status, uptime_percentage, last_alert]
       span: 1
-      
+
     - name: "Error Rate"
       type: "gauge"
       metric: error_rate
       thresholds: [0, 0.01, 0.05]  # OK, WARNING, CRITICAL
       unit: "%"
       span: 1
-      
+
     - name: "Response Time (p99)"
       type: "gauge"
       metric: response_latency_p99
       thresholds: [0, 500, 2000]
       unit: "ms"
       span: 1
-    
+
     # Second Row - Latency Distribution
     - name: "Request Latency Distribution"
       type: "histogram"
       metric: request_latency_ms
       percentiles: [p50, p95, p99]
       span: 2
-      
+
     - name: "Throughput (req/s)"
       type: "timeseries"
       metric: request_throughput
       span: 1
-    
+
     # Third Row - Resource Utilization
     - name: "CPU Utilization"
       type: "timeseries"
       metric: cpu_percent
       thresholds: [80, 95]
       span: 1
-      
+
     - name: "Memory Utilization"
       type: "timeseries"
       metric: memory_percent
       thresholds: [80, 95]
       span: 1
-      
+
     - name: "Disk Utilization"
       type: "timeseries"
       metric: disk_percent
       thresholds: [80, 95]
       span: 1
-    
+
     # Fourth Row - Dependency Health
     - name: "Database Connection Pool"
       type: "timeseries"
       metrics: [pool_utilization, pool_connections]
       span: 1
-      
+
     - name: "Cache Hit Ratio"
       type: "gauge"
       metric: cache_hit_ratio
       unit: "%"
       span: 1
-      
+
     - name: "Message Queue Lag"
       type: "timeseries"
       metric: queue_lag_seconds
       thresholds: [10, 60]
       span: 1
-    
+
     # Fifth Row - Alerts
     - name: "Recent Alerts"
       type: "alert_list"
@@ -605,23 +605,23 @@ dashboard:
 dashboard:
   name: "Service Health Details"
   refresh: 60s
-  
+
   panels:
     - name: "Service Status Overview"
       type: "status_grid"
       services: [api-gateway, auth-service, user-service, order-service, payment-service]
       span: 3
-    
+
     - name: "API Gateway - Latency"
       type: "timeseries"
       metric: "api_gateway.request_latency"
       span: 1
-    
+
     - name: "Auth Service - Error Rate"
       type: "timeseries"
       metric: "auth_service.error_rate"
       span: 1
-    
+
     - name: "User Service - Throughput"
       type: "timeseries"
       metric: "user_service.throughput"
@@ -634,23 +634,23 @@ dashboard:
 dashboard:
   name: "Incident Response"
   refresh: 10s  # Fast refresh during incidents
-  
+
   panels:
     - name: "Active Incidents"
       type: "alert_list"
       state: "firing"
       span: 3
-    
+
     - name: "Error Log Tail"
       type: "log_viewer"
       filter: 'level="ERROR" OR level="CRITICAL"'
       span: 2
-    
+
     - name: "Trace Analysis"
       type: "trace_list"
       filter: 'has_error=true'
       span: 1
-    
+
     - name: "System Resource Contention"
       type: "heatmap"
       metric: "resource_contention"
@@ -664,23 +664,23 @@ dashboard:
   name: "Historical Trends"
   refresh: 300s
   timerange: "7d"  # Default to 7 days
-  
+
   panels:
     - name: "Error Rate Trend"
       type: "timeseries"
       metric: "error_rate"
       span: 2
-    
+
     - name: "Latency Trend (p50, p95, p99)"
       type: "timeseries"
       metrics: [p50_latency, p95_latency, p99_latency]
       span: 1
-    
+
     - name: "Throughput Trend"
       type: "timeseries"
       metric: "throughput"
       span: 1
-    
+
     - name: "Resource Utilization Trend"
       type: "timeseries"
       metrics: [cpu_percent, memory_percent, disk_percent]

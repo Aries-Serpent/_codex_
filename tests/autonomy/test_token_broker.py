@@ -53,8 +53,12 @@ class TestTokenBroker:
         assert result.available  # dry-run still counts as "available"
 
     def test_no_env_vars_returns_none_token(self, monkeypatch):
-        for var in ("GITHUB_APP_TOKEN", "CODEX_SCOPED_PAT", "CODEX_MASTER_KEY",
-                    "ACTIONS_ID_TOKEN_REQUEST_URL"):
+        for var in (
+            "GITHUB_APP_TOKEN",
+            "CODEX_SCOPED_PAT",
+            "CODEX_MASTER_KEY",
+            "ACTIONS_ID_TOKEN_REQUEST_URL",
+        ):
             monkeypatch.delenv(var, raising=False)
         broker = TokenBroker(registry=_reg())
         result = broker.resolve(ControlClass.READ_ONLY)
@@ -81,8 +85,12 @@ class TestTokenBroker:
         assert result.token == "master_key_token"
 
     def test_require_raises_when_no_token(self, monkeypatch):
-        for var in ("GITHUB_APP_TOKEN", "CODEX_SCOPED_PAT", "CODEX_MASTER_KEY",
-                    "ACTIONS_ID_TOKEN_REQUEST_URL"):
+        for var in (
+            "GITHUB_APP_TOKEN",
+            "CODEX_SCOPED_PAT",
+            "CODEX_MASTER_KEY",
+            "ACTIONS_ID_TOKEN_REQUEST_URL",
+        ):
             monkeypatch.delenv(var, raising=False)
         broker = TokenBroker(registry=_reg())
         with pytest.raises(TokenBrokerError):

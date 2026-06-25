@@ -21,12 +21,13 @@ import pytest
 # CODE INGESTION TESTS (20 tests)
 # ============================================================================
 
+
 class TestCodeIngestion:
     """Tests for code ingestion and parsing"""
 
     def test_ingest_python_file_valid(self):
         """Test ingesting valid Python file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write("def hello():\n    return 'world'")
             f.flush()
 
@@ -37,7 +38,7 @@ class TestCodeIngestion:
 
     def test_ingest_empty_file(self):
         """Test ingesting empty file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write("")
             f.flush()
             content = Path(f.name).read_text()
@@ -46,7 +47,7 @@ class TestCodeIngestion:
 
     def test_ingest_large_file(self):
         """Test ingesting large file (>100KB)"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             for i in range(10000):
                 f.write(f"def func_{i}():\n    pass\n")
             f.flush()
@@ -56,29 +57,31 @@ class TestCodeIngestion:
 
     def test_ingest_binary_file(self):
         """Test detecting binary files"""
-        with tempfile.NamedTemporaryFile(mode='wb', suffix='.pyc', delete=False) as f:
-            f.write(b'\x00\x01\x02\x03')
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=".pyc", delete=False) as f:
+            f.write(b"\x00\x01\x02\x03")
             f.flush()
             content = Path(f.name).read_bytes()
-            assert content == b'\x00\x01\x02\x03'
+            assert content == b"\x00\x01\x02\x03"
             Path(f.name).unlink()
 
     def test_ingest_unicode_content(self):
         """Test ingesting file with Unicode"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, encoding='utf-8') as f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".py", delete=False, encoding="utf-8"
+        ) as f:
             f.write("def greet():\n    return '你好世界'\n")
             f.flush()
-            content = Path(f.name).read_text(encoding='utf-8')
-            assert '你好世界' in content
+            content = Path(f.name).read_text(encoding="utf-8")
+            assert "你好世界" in content
             Path(f.name).unlink()
 
     def test_ingest_javascript_file(self):
         """Test ingesting JavaScript file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.js', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".js", delete=False) as f:
             f.write('console.log("JavaScript");')
             f.flush()
             content = Path(f.name).read_text()
-            assert 'console.log' in content
+            assert "console.log" in content
             Path(f.name).unlink()
 
     def test_ingest_path_normalization(self):
@@ -114,7 +117,7 @@ class TestCodeIngestion:
 
     def test_ingest_multiple_extensions(self):
         """Test ingesting various file extensions"""
-        exts = ['.py', '.js', '.java', '.go', '.rs', '.cpp']
+        exts = [".py", ".js", ".java", ".go", ".rs", ".cpp"]
         with tempfile.TemporaryDirectory() as tmpdir:
             for ext in exts:
                 filepath = Path(tmpdir) / f"test{ext}"
@@ -132,7 +135,7 @@ class TestCodeIngestion:
 
     def test_ingest_readonly_file(self):
         """Test reading readonly file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write("# readonly")
             f.flush()
             filepath = Path(f.name)
@@ -148,7 +151,7 @@ class TestCodeIngestion:
             hidden = Path(tmpdir) / ".hidden.py"
             hidden.write_text("# hidden")
             assert hidden.exists()
-            assert hidden.name.startswith('.')
+            assert hidden.name.startswith(".")
 
     def test_ingest_no_extension(self):
         """Test ingesting file without extension"""
@@ -160,7 +163,7 @@ class TestCodeIngestion:
 
     def test_ingest_multiline_content(self):
         """Test ingesting multiline content"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write("line1\nline2\nline3\n")
             f.flush()
             lines = Path(f.name).read_text().splitlines()
@@ -169,11 +172,11 @@ class TestCodeIngestion:
 
     def test_ingest_whitespace_handling(self):
         """Test handling various whitespace"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write("  \t  spaces  \t  \n")
             f.flush()
             content = Path(f.name).read_text()
-            assert '\t' in content
+            assert "\t" in content
             Path(f.name).unlink()
 
     def test_ingest_empty_directory(self):
@@ -187,7 +190,7 @@ class TestCodeIngestion:
 
     def test_ingest_concurrent_access(self):
         """Test file doesn't change during read"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write("original")
             f.flush()
             content1 = Path(f.name).read_text()
@@ -197,20 +200,20 @@ class TestCodeIngestion:
 
     def test_ingest_null_bytes(self):
         """Test handling null bytes in file"""
-        with tempfile.NamedTemporaryFile(mode='wb', suffix='.bin', delete=False) as f:
-            f.write(b'data\x00more')
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=".bin", delete=False) as f:
+            f.write(b"data\x00more")
             f.flush()
             content = Path(f.name).read_bytes()
-            assert b'\x00' in content
+            assert b"\x00" in content
             Path(f.name).unlink()
 
     def test_ingest_trailing_newlines(self):
         """Test handling trailing newlines"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
             f.write("code\n\n\n")
             f.flush()
             content = Path(f.name).read_text()
-            assert content.endswith('\n\n\n')
+            assert content.endswith("\n\n\n")
             Path(f.name).unlink()
 
 
@@ -218,24 +221,28 @@ class TestCodeIngestion:
 # AST TRANSFORMATION TESTS (20 tests)
 # ============================================================================
 
+
 class TestASTTransformation:
     """Tests for AST transformation"""
 
     def test_ast_parse_valid(self):
         """Test parsing valid Python"""
         import ast
+
         tree = ast.parse("x = 1 + 2")
         assert isinstance(tree, ast.Module)
 
     def test_ast_syntax_error(self):
         """Test syntax error handling"""
         import ast
+
         with pytest.raises(SyntaxError):
             ast.parse("def incomplete(")
 
     def test_ast_node_traversal(self):
         """Test traversing AST nodes"""
         import ast
+
         tree = ast.parse("def f():\n    return 1")
         nodes = list(ast.walk(tree))
         assert len(nodes) > 0
@@ -243,6 +250,7 @@ class TestASTTransformation:
     def test_ast_function_extraction(self):
         """Test extracting functions"""
         import ast
+
         tree = ast.parse("def f1(): pass\ndef f2(): pass")
         funcs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
         assert len(funcs) == 2
@@ -250,6 +258,7 @@ class TestASTTransformation:
     def test_ast_class_extraction(self):
         """Test extracting classes"""
         import ast
+
         tree = ast.parse("class C:\n    pass")
         classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
         assert len(classes) == 1
@@ -257,21 +266,23 @@ class TestASTTransformation:
     def test_ast_import_detection(self):
         """Test detecting imports"""
         import ast
+
         tree = ast.parse("import os\nfrom pathlib import Path")
-        imports = [n for n in ast.walk(tree)
-                   if isinstance(n, (ast.Import, ast.ImportFrom))]
+        imports = [n for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))]
         assert len(imports) == 2
 
     def test_ast_variable_names(self):
         """Test extracting variable names"""
         import ast
+
         tree = ast.parse("x = 1\ny = 2")
         names = [n.id for n in ast.walk(tree) if isinstance(n, ast.Name)]
-        assert 'x' in names or 'y' in names
+        assert "x" in names or "y" in names
 
     def test_ast_docstring(self):
         """Test extracting docstrings"""
         import ast
+
         tree = ast.parse('def f():\n    """doc"""\n    pass')
         func = tree.body[0]
         doc = ast.get_docstring(func)
@@ -280,22 +291,24 @@ class TestASTTransformation:
     def test_ast_line_numbers(self):
         """Test line number tracking"""
         import ast
+
         tree = ast.parse("x = 1\ny = 2")
         assigns = [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]
-        assert all(hasattr(a, 'lineno') for a in assigns)
+        assert all(hasattr(a, "lineno") for a in assigns)
 
     def test_ast_complexity(self):
         """Test complexity calculation"""
         import ast
+
         code = "if x:\n    for i in range(10):\n        pass"
         tree = ast.parse(code)
-        controls = [n for n in ast.walk(tree)
-                    if isinstance(n, (ast.If, ast.For, ast.While))]
+        controls = [n for n in ast.walk(tree) if isinstance(n, (ast.If, ast.For, ast.While))]
         assert len(controls) >= 1
 
     def test_ast_nested_functions(self):
         """Test nested function detection"""
         import ast
+
         code = "def outer():\n    def inner(): pass"
         tree = ast.parse(code)
         funcs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
@@ -304,6 +317,7 @@ class TestASTTransformation:
     def test_ast_decorator_detection(self):
         """Test detecting decorators"""
         import ast
+
         code = "@decorator\ndef f(): pass"
         tree = ast.parse(code)
         func = tree.body[0]
@@ -312,6 +326,7 @@ class TestASTTransformation:
     def test_ast_async_functions(self):
         """Test async function detection"""
         import ast
+
         code = "async def f(): pass"
         tree = ast.parse(code)
         funcs = [n for n in ast.walk(tree) if isinstance(n, ast.AsyncFunctionDef)]
@@ -320,6 +335,7 @@ class TestASTTransformation:
     def test_ast_comprehensions(self):
         """Test list comprehension detection"""
         import ast
+
         code = "[x for x in range(10)]"
         tree = ast.parse(code)
         comps = [n for n in ast.walk(tree) if isinstance(n, ast.ListComp)]
@@ -328,6 +344,7 @@ class TestASTTransformation:
     def test_ast_lambda(self):
         """Test lambda detection"""
         import ast
+
         code = "f = lambda x: x + 1"
         tree = ast.parse(code)
         lambdas = [n for n in ast.walk(tree) if isinstance(n, ast.Lambda)]
@@ -336,6 +353,7 @@ class TestASTTransformation:
     def test_ast_exception_handlers(self):
         """Test exception handler detection"""
         import ast
+
         code = "try:\n    pass\nexcept:\n    pass"
         tree = ast.parse(code)
         handlers = [n for n in ast.walk(tree) if isinstance(n, ast.ExceptHandler)]
@@ -344,6 +362,7 @@ class TestASTTransformation:
     def test_ast_with_statement(self):
         """Test with statement detection"""
         import ast
+
         code = "with open('f') as f:\n    pass"
         tree = ast.parse(code)
         withs = [n for n in ast.walk(tree) if isinstance(n, ast.With)]
@@ -352,6 +371,7 @@ class TestASTTransformation:
     def test_ast_global_statement(self):
         """Test global statement detection"""
         import ast
+
         code = "def f():\n    global x\n    x = 1"
         tree = ast.parse(code)
         globals_ = [n for n in ast.walk(tree) if isinstance(n, ast.Global)]
@@ -360,6 +380,7 @@ class TestASTTransformation:
     def test_ast_assert_statement(self):
         """Test assert statement detection"""
         import ast
+
         code = "assert x == 1"
         tree = ast.parse(code)
         asserts = [n for n in ast.walk(tree) if isinstance(n, ast.Assert)]
@@ -368,6 +389,7 @@ class TestASTTransformation:
     def test_ast_empty_module(self):
         """Test parsing empty module"""
         import ast
+
         tree = ast.parse("")
         assert isinstance(tree, ast.Module)
         assert len(tree.body) == 0
@@ -376,6 +398,7 @@ class TestASTTransformation:
 # ============================================================================
 # RAG RETRIEVAL TESTS (10 tests)
 # ============================================================================
+
 
 class TestRAGRetrieval:
     """Tests for RAG retrieval system"""
@@ -440,12 +463,13 @@ class TestRAGRetrieval:
 # CONFIGURATION TESTS (30 tests)
 # ============================================================================
 
+
 class TestConfiguration:
     """Tests for configuration management"""
 
     def test_config_load_json(self):
         """Test loading JSON config"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump({"key": "value"}, f)
             f.flush()
             filepath = Path(f.name)
@@ -457,7 +481,7 @@ class TestConfiguration:
 
     def test_config_invalid_json(self):
         """Test invalid JSON"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write("{invalid}")
             f.flush()
             filepath = Path(f.name)
@@ -473,7 +497,7 @@ class TestConfiguration:
 
     def test_config_empty_file(self):
         """Test empty config file"""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             f.write("")
             f.flush()
             filepath = Path(f.name)
@@ -502,6 +526,7 @@ class TestConfiguration:
     def test_config_env_override(self):
         """Test environment override"""
         import os
+
         os.environ["TEST_VAR"] = "value"
         assert os.environ.get("TEST_VAR") == "value"
         del os.environ["TEST_VAR"]
@@ -636,6 +661,7 @@ class TestConfiguration:
 # ERROR PATH TESTS (20 tests)
 # ============================================================================
 
+
 class TestErrorPaths:
     """Tests for error handling"""
 
@@ -745,8 +771,10 @@ class TestErrorPaths:
 
     def test_error_custom_exception(self):
         """Test custom exception"""
+
         class CustomError(Exception):
             pass
+
         with pytest.raises(CustomError):
             raise CustomError("custom")
 
@@ -758,7 +786,7 @@ class TestErrorPaths:
     def test_error_import_error(self):
         """Test ImportError"""
         with pytest.raises(ImportError):
-            importlib.import_module('nonexistent_module_xyz_12345')
+            importlib.import_module("nonexistent_module_xyz_12345")
 
     def test_error_runtime_error(self):
         """Test RuntimeError"""

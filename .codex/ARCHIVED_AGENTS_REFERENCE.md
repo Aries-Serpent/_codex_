@@ -248,4 +248,3 @@ A: See specific migration guides above for each agent family.
 - **Archive Date:** 2026-06-20
 - **Deprecation Deadline:** 2026-08-20
 - **Maintainer:** @mbaetiong
-

@@ -3,6 +3,7 @@ Integration tests for error paths and exception handling.
 
 Tests exception propagation, graceful degradation, and recovery mechanisms.
 """
+
 import importlib.util
 import tempfile
 from pathlib import Path
@@ -12,6 +13,8 @@ import pytest
 
 # Skip entire module if torch is not available or unloadable
 pytest.importorskip("torch", reason="PyTorch required for tests")
+
+
 class TestTrainingErrorPaths:
     """Test training error paths."""
 
@@ -49,20 +52,16 @@ class TestCheckpointErrorPaths:
         """Test save_checkpoint without PyTorch installed."""
         from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
-        with patch('codex_ml.checkpointing.checkpoint_core.torch', None):
+        with patch("codex_ml.checkpointing.checkpoint_core.torch", None):
             with tempfile.TemporaryDirectory() as tmpdir:
                 with pytest.raises(RuntimeError, match="PyTorch required"):
-                    save_checkpoint(
-                        tmpdir,
-                        state={"param": 1},
-                        meta={"epoch": 1}
-                    )
+                    save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
 
     def test_load_checkpoint_without_torch(self):
         """Test load_checkpoint without PyTorch installed."""
         from codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
-        with patch('codex_ml.checkpointing.checkpoint_core.torch', None):
+        with patch("codex_ml.checkpointing.checkpoint_core.torch", None):
             with pytest.raises(RuntimeError, match="PyTorch required"):
                 load_checkpoint("/some/path")
 
@@ -79,11 +78,7 @@ class TestCheckpointErrorPaths:
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
                 # Save valid checkpoint
-                save_checkpoint(
-                    tmpdir,
-                    state={"param": 1},
-                    meta={"epoch": 1}
-                )
+                save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
 
                 # Corrupt metadata file
                 metadata_file = Path(tmpdir) / "metadata.json"
@@ -139,7 +134,7 @@ class TestDALErrorPaths:
                         mime="text/plain",
                         blob=b"test content",
                         compression="zlib",
-                        storage_driver="db"
+                        storage_driver="db",
                     )
                     artifact_id = artifact["id"]
                     tombstone_id = str(uuid.uuid4())
@@ -151,7 +146,7 @@ class TestDALErrorPaths:
                         kind="function",
                         reason="test",
                         artifact_id=artifact_id,
-                        tombstone_id=tombstone_id
+                        tombstone_id=tombstone_id,
                     )
 
                 # Should all succeed
@@ -169,8 +164,10 @@ class TestRAGErrorPaths:
         try:
             from codex.rag.retriever import Retriever
 
-            with patch('codex.rag.retriever.SentenceTransformer', None):
-                with pytest.raises(ImportError, match="(?:sentence-transformers|faiss-cpu) not installed"):
+            with patch("codex.rag.retriever.SentenceTransformer", None):
+                with pytest.raises(
+                    ImportError, match="(?:sentence-transformers|faiss-cpu) not installed"
+                ):
                     Retriever()
         except ImportError:
             pytest.skip("Retriever not available")
@@ -249,7 +246,7 @@ class TestConfigErrorPaths:
         try:
             from codex.config.config_loader import EnvVarConfig
 
-            with patch.dict('os.environ', {"TEST_VAR": "not_a_number"}):
+            with patch.dict("os.environ", {"TEST_VAR": "not_a_number"}):
                 config = EnvVarConfig()
 
                 # Should handle gracefully
@@ -282,4 +279,4 @@ class TestEvaluationErrorPaths:
 # Helper
 def _torch_available():
     """Check if PyTorch is available."""
-    return importlib.util.find_spec('torch') is not None
+    return importlib.util.find_spec("torch") is not None

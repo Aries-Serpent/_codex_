@@ -250,17 +250,17 @@ Agent 1 (codeql-alert-resolution-agent):
   Task: Author patches for cryptography, pyjwt, urllib3, jinja2, pip
   Input: Wave 1 conflict matrix, CVE list, safe versions
   Output: Patch commits, test results
-  
+
 Agent 2 (code-scanning-remediation-agent):
   Task: Validate patches with CodeQL/Semgrep/GHAS
   Input: Patch artifacts from Agent 1
   Output: Security scan reports, remediation verification
-  
+
 Agent 3 (dependency-conflict-agent):
   Task: Monitor real-time conflict resolution
   Input: Upgrade sequence from conflict matrix
   Output: Conflict logs, resolution documentation
-  
+
 Agent 4 (dependency-vulnerability-scanner):
   Task: Post-patch CVE scanning
   Input: Updated dependencies from Agent 1

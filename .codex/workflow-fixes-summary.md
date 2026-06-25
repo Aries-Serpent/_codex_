@@ -64,7 +64,7 @@ concurrency:
   - Kept the canonical compliant section
   - Removed hardcoded `fast-forward-` prefix
   - Now uses standard workflow + branch reference pattern
-  
+
 **Before (lines 95-107):**
 ```yaml
 concurrency:

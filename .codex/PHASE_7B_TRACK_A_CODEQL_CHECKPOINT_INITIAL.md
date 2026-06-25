@@ -20,7 +20,7 @@
 ### HIGH Findings Breakdown by Rule
 | Rule ID | Count | Top Files | Severity |
 |---------|-------|-----------|----------|
-| `py/clear-text-logging-sensitive-data` | 30 | admin-automation-agent, catalog_workflows, verify_token_scope | HIGH |
+| `py/clear-text-logging-sensitive-data` | 30 | admin-automation-agent, catalog_workflows, verify_token_scope | HIGH | <!-- pragma: allowlist secret -->
 | `py/clear-text-storage-sensitive-data` | 12 | workflow_analyzer, catalog_workflows | HIGH |
 
 ### MEDIUM Findings Breakdown
@@ -160,4 +160,3 @@ logger.info(f"Metadata: {masked_value}")
 **Status:** 🟡 IN PROGRESS - Phase 1 (Baseline) Complete, Phase 2 (Suppressions) Starting
 **Checkpoint Filed:** 2026-06-20T08:15Z UTC
 **Next Checkpoint:** 2026-06-20T10:00Z UTC (pre-validation)
-

@@ -136,7 +136,7 @@ class LoopGuardrail:
                 violation_type="consecutive_repeat",
                 message=f"Action repeated {self._consecutive_count} times without new artifacts",
                 action_history=[r.action_type for r in list(self._history)[-5:]],
-                recommended_action=self._recovery_callback(None),  # type: ignore[arg-type]
+                recommended_action=self._recovery_callback(None),
             )
             self._violations.append(violation)
             self._consecutive_count = 0  # Reset after violation

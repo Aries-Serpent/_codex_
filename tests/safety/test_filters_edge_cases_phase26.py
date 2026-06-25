@@ -86,6 +86,7 @@ class TestSafetyFiltersEdgeCases:
         # Potential catastrophic backtracking patterns
         text = "a" * 1000 + "!"
         import time
+
         start = time.time()
         result = sanitize_prompt(text, filters=filters)
         duration = time.time() - start
@@ -173,7 +174,7 @@ class TestPolicyRuleEdgeCases:
 class TestClassifierIntegrationEdgeCases:
     """Edge case tests for external classifier integration."""
 
-    @patch.dict('os.environ', {'CODEX_SAFETY_CLASSIFIER': 'mock.classifier.check'})
+    @patch.dict("os.environ", {"CODEX_SAFETY_CLASSIFIER": "mock.classifier.check"})
     def test_classifier_not_available(self):
         """Test graceful handling when classifier module not available."""
         filters = SafetyFilters.from_defaults()
@@ -182,7 +183,7 @@ class TestClassifierIntegrationEdgeCases:
         result = sanitize_prompt(text, filters=filters)
         assert result.sanitized_text is not None
 
-    @patch('codex_ml.safety.filters.importlib.import_module')
+    @patch("codex_ml.safety.filters.importlib.import_module")
     def test_classifier_import_error(self, mock_import):
         """Test handling of classifier import errors."""
         mock_import.side_effect = ImportError("Module not found")
@@ -191,7 +192,7 @@ class TestClassifierIntegrationEdgeCases:
         result = sanitize_prompt(text, filters=filters)
         assert result.sanitized_text is not None
 
-    @patch('codex_ml.safety.filters.importlib.import_module')
+    @patch("codex_ml.safety.filters.importlib.import_module")
     def test_classifier_exception_handling(self, mock_import):
         """Test handling of classifier runtime exceptions."""
         mock_classifier = Mock()
@@ -200,7 +201,7 @@ class TestClassifierIntegrationEdgeCases:
         mock_module.check = mock_classifier.check
         mock_import.return_value = mock_module
 
-        with patch.dict('os.environ', {'CODEX_SAFETY_CLASSIFIER': 'mock.classifier.check'}):
+        with patch.dict("os.environ", {"CODEX_SAFETY_CLASSIFIER": "mock.classifier.check"}):
             filters = SafetyFilters.from_defaults()
             text = "test input"
             # Should handle exception gracefully
@@ -211,7 +212,7 @@ class TestClassifierIntegrationEdgeCases:
 class TestBypassMechanismEdgeCases:
     """Edge case tests for policy bypass mechanisms."""
 
-    @patch.dict('os.environ', {'CODEX_SAFETY_BYPASS': '1'})
+    @patch.dict("os.environ", {"CODEX_SAFETY_BYPASS": "1"})
     def test_bypass_with_dangerous_input(self):
         """Test bypass allows dangerous input through."""
         filters = SafetyFilters.from_defaults()
@@ -220,7 +221,7 @@ class TestBypassMechanismEdgeCases:
         # Bypass should allow anything
         assert result.allowed is True
 
-    @patch.dict('os.environ', {'CODEX_SAFETY_BYPASS': 'true'})
+    @patch.dict("os.environ", {"CODEX_SAFETY_BYPASS": "true"})
     def test_bypass_various_truthy_values(self):
         """Test bypass recognizes various truthy env values."""
         filters = SafetyFilters.from_defaults()
@@ -228,7 +229,7 @@ class TestBypassMechanismEdgeCases:
         result = sanitize_prompt(text, filters=filters)
         assert result.allowed is True
 
-    @patch.dict('os.environ', {}, clear=True)
+    @patch.dict("os.environ", {}, clear=True)
     def test_no_bypass_by_default(self):
         """Test bypass is not active by default."""
         filters = SafetyFilters.from_defaults()
@@ -284,6 +285,7 @@ class TestPerformanceEdgeCases:
         # Generate text with many potential matches
         text = " ".join([f"key{i}=val{i}" for i in range(1000)])
         import time
+
         start = time.time()
         result = sanitize_prompt(text, filters=filters)
         duration = time.time() - start
@@ -324,6 +326,7 @@ class TestConcurrencyEdgeCases:
         import threading
 
         results = []
+
         def worker(text):
             result = sanitize_prompt(text, filters=filters)
             results.append(result)

@@ -393,15 +393,15 @@ routing_rules:
   - pattern: "cognitive workflow trigger test-*"
     agent: autonomous-test-healer-agent
     priority: HIGH
-  
+
   - pattern: "cognitive workflow trigger security-*"
     agent: security-audit-agent
     priority: HIGH
-  
+
   - pattern: "cognitive workflow trigger deploy-*"
     agent: unified-deployment.yml
     priority: CRITICAL
-  
+
   - pattern: "cognitive workflow trigger doc-*"
     agent: unified-doc-agent
     priority: MEDIUM
@@ -449,7 +449,7 @@ on:
         required: false
         type: boolean
         default: false
-      
+
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -586,7 +586,7 @@ cognitive workflow trigger dependency-audit --check-type vulnerability
 | branch-cleanup.yml | Maintenance | 3 | `branch-ops --operation` | repository-hygiene-agent |
 | discussion-cleanup.yml | Maintenance | 3 | `discussion-ops --operation` | github-guru-agent |
 | repository-health-monitoring.yml | Operations | 3 | `repo-health --metric` | codebase-health-guardian |
-| token-expiry-monitor.yml | Operations | 3 | `token-health --check` | security-alert-verification-agent |
+| token-expiry-monitor.yml | Operations | 3 | `token-health --check` | security-alert-verification-agent | <!-- pragma: allowlist secret -->
 | workflow-expiry-enforcer.yml | Operations | 3 | `workflow-ops --operation` | workflow-health-monitor |
 
 **... (25-55 additional workflows in tiers 2-3)**

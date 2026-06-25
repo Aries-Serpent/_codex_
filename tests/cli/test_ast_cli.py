@@ -118,8 +118,7 @@ class TestStatsCommand:
         """Test getting statistics for a Python file."""
         test_file = tmp_path / "test.py"
         test_file.write_text(
-            "def hello():\n    pass\n\n"
-            "class MyClass:\n    def method(self):\n        pass\n"
+            "def hello():\n    pass\n\n" "class MyClass:\n    def method(self):\n        pass\n"
         )
 
         exit_code = main(["stats", str(test_file), "-l", "python"])
@@ -162,8 +161,7 @@ class TestStatsCommand:
         """Test getting statistics for a SQL file."""
         test_file = tmp_path / "test.sql"
         test_file.write_text(
-            "CREATE TABLE users (id INT, name VARCHAR(100));\n"
-            "SELECT * FROM users;\n"
+            "CREATE TABLE users (id INT, name VARCHAR(100));\n" "SELECT * FROM users;\n"
         )
 
         exit_code = main(["stats", str(test_file), "-l", "sql"])
@@ -180,10 +178,7 @@ class TestQueryCommand:
     def test_query_python_functions(self, tmp_path, capsys):
         """Test querying for Python functions."""
         test_file = tmp_path / "test.py"
-        test_file.write_text(
-            "def hello():\n    pass\n\n"
-            "def world():\n    pass\n"
-        )
+        test_file.write_text("def hello():\n    pass\n\n" "def world():\n    pass\n")
 
         exit_code = main(["query", str(test_file), "-l", "python", "-t", "function"])
 

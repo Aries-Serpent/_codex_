@@ -235,12 +235,16 @@ class TestLoadDataset:
 
     def test_load_with_max_samples(self) -> None:
         """Test max_samples parameter."""
-        bundle = load_dataset("toy_copy_task", max_samples=1)  # nosec B615 - Test code with known preset dataset
+        bundle = load_dataset(
+            "toy_copy_task", max_samples=1
+        )  # nosec B615 - Test code with known preset dataset
         assert len(bundle) == 1
 
     def test_load_with_zero_max_samples(self) -> None:
         """Test max_samples=0 returns empty bundle."""
-        bundle = load_dataset("toy_copy_task", max_samples=0)  # nosec B615 - Test code with known preset dataset
+        bundle = load_dataset(
+            "toy_copy_task", max_samples=0
+        )  # nosec B615 - Test code with known preset dataset
         assert len(bundle) == 0
 
     def test_load_jsonl_file(self) -> None:
@@ -333,7 +337,9 @@ class TestLoadDatasetEdgeCases:
 
     def test_negative_max_samples_treated_as_zero(self) -> None:
         """Test negative max_samples is treated as 0."""
-        bundle = load_dataset("toy_copy_task", max_samples=-5)  # nosec B615 - Test code with known preset dataset
+        bundle = load_dataset(
+            "toy_copy_task", max_samples=-5
+        )  # nosec B615 - Test code with known preset dataset
         assert len(bundle) == 0
 
 

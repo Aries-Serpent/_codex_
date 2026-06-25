@@ -19,6 +19,7 @@ if str(_REPO_ROOT) not in sys.path:
 # Extend services.__path__ to include both src/services and root services/
 try:
     import services as _svc_pkg
+
     if hasattr(_svc_pkg, "__path__") and _ROOT_SERVICES not in _svc_pkg.__path__:
         _svc_pkg.__path__.append(_ROOT_SERVICES)
 except ImportError:
@@ -31,6 +32,7 @@ from fastapi.testclient import TestClient
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _reload_api(monkeypatch: pytest.MonkeyPatch, *, auth_enabled: bool = False):
     """Reload services.api.main for an isolated test.
@@ -58,6 +60,7 @@ def _reload_api(monkeypatch: pytest.MonkeyPatch, *, auth_enabled: bool = False):
     # shim condition is satisfied → _fake_tensor is installed every time.
     sys.modules.pop("services.api.main", None)
     import torch as _t
+
     if hasattr(_t, "as_tensor"):
         monkeypatch.delattr(_t, "as_tensor")
 
@@ -108,6 +111,7 @@ def _make_client(monkeypatch: pytest.MonkeyPatch) -> tuple[Any, TestClient]:
 # /health
 # ---------------------------------------------------------------------------
 
+
 class TestHealthEndpoint:
     def test_health_returns_200(self, monkeypatch):
         mod = _reload_api(monkeypatch)
@@ -129,6 +133,7 @@ class TestHealthEndpoint:
 # ---------------------------------------------------------------------------
 # /ready
 # ---------------------------------------------------------------------------
+
 
 class TestReadinessEndpoint:
     def test_ready_before_model_load_503(self, monkeypatch):
@@ -156,6 +161,7 @@ class TestReadinessEndpoint:
 # /status
 # ---------------------------------------------------------------------------
 
+
 class TestStatusEndpoint:
     def test_status_returns_200(self, monkeypatch):
         mod = _reload_api(monkeypatch)
@@ -171,6 +177,7 @@ class TestStatusEndpoint:
 # ---------------------------------------------------------------------------
 # /evaluate
 # ---------------------------------------------------------------------------
+
 
 class TestEvaluateEndpoint:
     def test_evaluate_basic(self, monkeypatch):
@@ -195,6 +202,7 @@ class TestEvaluateEndpoint:
 # ---------------------------------------------------------------------------
 # /train
 # ---------------------------------------------------------------------------
+
 
 class TestTrainEndpoint:
     def test_train_enqueues_job(self, monkeypatch):
@@ -222,6 +230,7 @@ class TestTrainEndpoint:
 # ---------------------------------------------------------------------------
 # /infer
 # ---------------------------------------------------------------------------
+
 
 class TestInferEndpoint:
     def test_infer_basic(self, monkeypatch):
@@ -271,6 +280,7 @@ class TestInferEndpoint:
 # _mask_secrets
 # ---------------------------------------------------------------------------
 
+
 class TestMaskSecrets:
     def _get_fn(self, monkeypatch):
         monkeypatch.delenv("DISABLE_SECRET_FILTER", raising=False)
@@ -303,6 +313,7 @@ class TestMaskSecrets:
 # _coerce_positive_int
 # ---------------------------------------------------------------------------
 
+
 class TestCoercePositiveInt:
     def _fn(self, monkeypatch):
         return _reload_api(monkeypatch)._coerce_positive_int
@@ -333,6 +344,7 @@ class TestCoercePositiveInt:
 # _parse_env_context_limit
 # ---------------------------------------------------------------------------
 
+
 class TestParseEnvContextLimit:
     def _fn(self, monkeypatch):
         return _reload_api(monkeypatch)._parse_env_context_limit
@@ -360,6 +372,7 @@ class TestParseEnvContextLimit:
 # ---------------------------------------------------------------------------
 # _resolve_context_limit
 # ---------------------------------------------------------------------------
+
 
 class TestResolveContextLimit:
     def test_env_overrides_model(self, monkeypatch):
@@ -392,6 +405,7 @@ class TestResolveContextLimit:
 # _get_model_vocab_size
 # ---------------------------------------------------------------------------
 
+
 class TestGetModelVocabSize:
     def test_from_config_vocab_size(self, monkeypatch):
         mod = _reload_api(monkeypatch)
@@ -415,6 +429,7 @@ class TestGetModelVocabSize:
 # ---------------------------------------------------------------------------
 # API key middleware
 # ---------------------------------------------------------------------------
+
 
 class TestApiKeyMiddleware:
     def test_no_api_key_configured_passes(self, monkeypatch):
@@ -444,6 +459,7 @@ class TestApiKeyMiddleware:
 # ---------------------------------------------------------------------------
 # _EchoModel
 # ---------------------------------------------------------------------------
+
 
 class TestEchoModel:
     def test_echo_model_returns_logits(self, monkeypatch):

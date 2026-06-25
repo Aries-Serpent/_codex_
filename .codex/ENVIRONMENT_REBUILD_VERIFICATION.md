@@ -26,7 +26,7 @@
 | setuptools | 68.1.2 | 78.1.1 | 1 CRITICAL |
 | requests | 2.31.0 | 2.32.4 | 8 HIGH |
 
-**Total Vulnerabilities Blocked**: 
+**Total Vulnerabilities Blocked**:
 - **20 CRITICAL CVEs**
 - **8 HIGH CVEs**
 

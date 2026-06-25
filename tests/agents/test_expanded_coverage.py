@@ -147,9 +147,7 @@ class TestQuantumGameTheoryExpanded:
             )
 
             assert engine is not None
-            assert hasattr(engine, "compute_nash_equilibrium") or hasattr(
-                engine, "calculate"
-            )
+            assert hasattr(engine, "compute_nash_equilibrium") or hasattr(engine, "calculate")
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"ClassicalGameEngine initialization failed: {e}")
 

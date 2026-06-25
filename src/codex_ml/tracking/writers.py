@@ -196,7 +196,8 @@ class _SummaryRotator:
                 try:
                     size = self.path.stat().st_size
                 except FileNotFoundError as e:
-                    logger.debug(f"FileNotFoundError: {e}")
+                    error_type = type(e).__name__
+                    logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
                     size = 0
                 if size > 0:
                     self._rotate()
@@ -208,7 +209,8 @@ class _SummaryRotator:
         try:
             size = self.path.stat().st_size
         except FileNotFoundError as e:
-            logger.debug(f"FileNotFoundError: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
             return
         if size + incoming_bytes <= self.max_bytes:
             return
@@ -302,7 +304,7 @@ def _collect_dependency_flags() -> dict[str, Any]:
 
         psutil_available = bool(getattr(system_metrics, "HAS_PSUTIL", False))
         nvml_available = bool(getattr(system_metrics, "HAS_NVML", False))
-    except Exception:
+    except (ImportError, AttributeError):
         psutil_available = False
         nvml_available = False
     return {
@@ -333,9 +335,9 @@ def _emit_summary(
     )
     extras = dict(extra or {})
     if extras:
-        payload["extra"] = _normalise_summary_extra(extras)  # type: ignore[assignment]
+        payload["extra"] = _normalise_summary_extra(extras)
     else:
-        payload["extra"] = OrderedDict()  # type: ignore[assignment]
+        payload["extra"] = OrderedDict()
     _write_deterministic_json(summary_path, payload)
 
 
@@ -515,12 +517,12 @@ class NdjsonWriter(BaseWriter):
     def close(self) -> None:
         if getattr(self, "_manifest_logger", None) is not None:
             try:
-                self._manifest_logger.close()  # type: ignore[union-attr]
-            except Exception:  # pragma: no cover
+                self._manifest_logger.close()
+            except (ValueError, TypeError, RuntimeError):  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
         try:
             self._logger.close()
-        except Exception:  # pragma: no cover
+        except (IOError, OSError):  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
 
 
@@ -538,7 +540,7 @@ class TensorBoardWriter(BaseWriter):
                 "enabled",
                 extra={"dependencies": _collect_dependency_flags()},
             )
-        except Exception as exc:  # pragma: no cover - optional
+        except (IOError, OSError) as exc:  # pragma: no cover - optional
             logger.debug("TensorBoard writer disabled", exc_info=exc)
             self._writer = None
             if isinstance(exc, ImportError):
@@ -569,7 +571,7 @@ class TensorBoardWriter(BaseWriter):
             try:
                 self._writer.flush()
                 self._writer.close()
-            except Exception:  # pragma: no cover
+            except (IOError, OSError):  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
@@ -633,7 +635,7 @@ class MLflowWriter(BaseWriter):
                 "enabled",
                 extra=summary_extra,
             )
-        except Exception as exc:  # pragma: no cover - optional
+        except (IOError, OSError) as exc:  # pragma: no cover - optional
             self._mlflow = None
             self._run = None
             logger.debug("MLflow writer disabled", exc_info=exc)
@@ -663,7 +665,7 @@ class MLflowWriter(BaseWriter):
         if self._mlflow is not None:
             try:
                 self._mlflow.end_run()
-            except Exception:  # pragma: no cover
+            except (IOError, OSError):  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
@@ -701,7 +703,7 @@ class WandbWriter(BaseWriter):
                     "mode": mode,
                 },
             )
-        except Exception as exc:  # pragma: no cover - optional
+        except (IOError, OSError) as exc:  # pragma: no cover - optional
             self._run = None
             logger.debug("Weights & Biases writer disabled", exc_info=exc)
             if isinstance(exc, ImportError):
@@ -734,7 +736,7 @@ class WandbWriter(BaseWriter):
         if self._run is not None:
             try:
                 self._run.finish()
-            except Exception:  # pragma: no cover
+            except (IOError, OSError):  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
@@ -753,7 +755,7 @@ class CompositeWriter(BaseWriter):
             if callable(status_getter):
                 try:
                     reason = status_getter()
-                except Exception:  # pragma: no cover - defensive
+                except (IOError, OSError):  # pragma: no cover - defensive
                     reason = getattr(writer, "_disabled_reason", None)
             else:
                 reason = getattr(writer, "_disabled_reason", None)
@@ -771,14 +773,14 @@ class CompositeWriter(BaseWriter):
         for w in self._writers:
             try:
                 w.log(row)
-            except Exception as exc:  # pragma: no cover - robustness
+            except (IOError, OSError) as exc:  # pragma: no cover - robustness
                 logger.debug("Writer log error", exc_info=exc)
 
     def close(self) -> None:
         for w in self._writers:
             try:
                 w.close()
-            except Exception as exc:  # pragma: no cover - robustness
+            except (IOError, OSError) as exc:  # pragma: no cover - robustness
                 logger.debug("Writer close error", exc_info=exc)
 
     @property
@@ -792,7 +794,8 @@ try:
 
     MLFLOW_CLIENT_AVAILABLE = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
     MlflowClient = None
     MLFLOW_CLIENT_AVAILABLE = False
 
@@ -838,9 +841,10 @@ class MLflowMetricWriter:
             self._client = MlflowClient(self.tracking_uri)
             self._initialized = True
             logger.info(f"MLflow initialized: {self.tracking_uri}")
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to initialize MLflow: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to initialize MLflow: <ERROR_TYPE>")
             self._initialized = False
 
     def write(self, metrics: dict[str, float], step: int = 0) -> bool:
@@ -866,9 +870,10 @@ class MLflowMetricWriter:
 
             mlflow.log_metrics(metrics, step=step)
             return True
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log metrics to MLflow: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log metrics to MLflow: <ERROR_TYPE>")
             return False
 
     def write_metric(self, key: str, value: float, step: int = 0) -> bool:
@@ -917,9 +922,10 @@ class MLflowParamWriter:
             str_params = {k: str(v) for k, v in params.items()}
             mlflow.log_params(str_params)
             return True
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log params: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log params: <ERROR_TYPE>")
             return False
 
     def write_config(self, config: dict[str, Any], prefix: str = "") -> bool:
@@ -985,9 +991,10 @@ class MLflowArtifactWriter:
 
             mlflow.log_artifact(str(local_path), artifact_path)
             return True
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log artifact: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log artifact: <ERROR_TYPE>")
             return False
 
     def log_dict(
@@ -1008,9 +1015,10 @@ class MLflowArtifactWriter:
 
             mlflow.log_dict(data, filename)
             return True
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log dict artifact: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log dict artifact: <ERROR_TYPE>")
             return False
 
     def log_model(
@@ -1056,7 +1064,8 @@ class MLflowArtifactWriter:
 
                     mlflow.pytorch.log_model(model, artifact_path)
                 except ImportError as e:
-                    logger.debug(f"ImportError: {e}")
+                    error_type = type(e).__name__
+                    logger.debug(f"ImportError: <ERROR_TYPE>")
                     logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
                     return False
             else:
@@ -1067,7 +1076,8 @@ class MLflowArtifactWriter:
 
                     is_sklearn = isinstance(model, BaseEstimator)
                 except ImportError as e:
-                    logger.debug(f"ImportError: {e}")
+                    error_type = type(e).__name__
+                    logger.debug(f"ImportError: <ERROR_TYPE>")
                     # Fallback: check characteristic methods (may have false positives)
                     model_module = getattr(type(model), "__module__", "")
                     has_fit = callable(getattr(model, "fit", None))
@@ -1081,7 +1091,8 @@ class MLflowArtifactWriter:
 
                         mlflow.sklearn.log_model(model, artifact_path)
                     except ImportError as e:
-                        logger.debug(f"ImportError: {e}")
+                        error_type = type(e).__name__
+                        logger.debug(f"ImportError: <ERROR_TYPE>")
                         logger.warning(
                             "mlflow.sklearn is not available; cannot log scikit-learn model."
                         )
@@ -1090,9 +1101,10 @@ class MLflowArtifactWriter:
                     logger.warning(f"Unsupported model type for MLflow logging: {type(model)}")
                     return False
             return True
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log model: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log model: <ERROR_TYPE>")
             return False
 
 
@@ -1127,9 +1139,10 @@ class MLflowRunManager:
 
             self._run = mlflow.start_run(run_name=self.run_name, tags=self.tags)
             self._run.__enter__()
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to start MLflow run: {e}")
+        except (ImportError, AttributeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to start MLflow run: <ERROR_TYPE>")
 
         return self
 
@@ -1138,9 +1151,10 @@ class MLflowRunManager:
         if self._run is not None:
             try:
                 self._run.__exit__(exc_type, exc_val, exc_tb)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Failed to end MLflow run: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Failed to end MLflow run: <ERROR_TYPE>")
             finally:
                 self._run = None
         return False
@@ -1151,7 +1165,7 @@ class MLflowRunManager:
         if self._run is not None:
             try:
                 return self._run.info.run_id
-            except Exception:
+            except (IOError, OSError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
         return None
 

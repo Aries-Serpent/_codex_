@@ -183,9 +183,7 @@ class TestTokenRotationManager:
 
     def test_rotation_throttling(self):
         """Test rotation throttling prevents storms."""
-        manager = TokenRotationManager(
-            policy=RotationPolicy(min_rotation_interval_hours=1)
-        )
+        manager = TokenRotationManager(policy=RotationPolicy(min_rotation_interval_hours=1))
 
         expires = datetime.now(UTC) + timedelta(days=90)
         manager.register_token("test-token", "token-value", expires)
@@ -213,11 +211,13 @@ class TestTokenRotationManager:
 
         # Register tokens with different expiries
         manager.register_token(
-            "token-1", "xxx",
+            "token-1",
+            "xxx",
             datetime.now(UTC) + timedelta(days=10),
         )
         manager.register_token(
-            "token-2", "yyy",
+            "token-2",
+            "yyy",
             datetime.now(UTC) + timedelta(days=60),
         )
 
@@ -237,7 +237,8 @@ class TestSecurityEventHandling:
         manager = TokenRotationManager()
 
         manager.register_token(
-            "exposed-token", "xxx",
+            "exposed-token",
+            "xxx",
             datetime.now(UTC) + timedelta(days=90),
         )
 
@@ -252,12 +253,11 @@ class TestSecurityEventHandling:
 
     def test_disabled_auto_rotation(self):
         """Test that disabled auto-rotation is respected."""
-        manager = TokenRotationManager(
-            policy=RotationPolicy(auto_rotate_on_exposure=False)
-        )
+        manager = TokenRotationManager(policy=RotationPolicy(auto_rotate_on_exposure=False))
 
         manager.register_token(
-            "token", "xxx",
+            "token",
+            "xxx",
             datetime.now(UTC) + timedelta(days=90),
         )
 

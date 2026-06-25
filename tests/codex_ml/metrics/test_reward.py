@@ -108,7 +108,7 @@ class TestRewardSuccessRate:
         predictions = [-1.0, 0.0, 1.0]
         result = reward_success_rate(predictions)
         # 0.0 and 1.0 are >= 0.0
-        assert abs(result - 2/3) < 1e-6
+        assert abs(result - 2 / 3) < 1e-6
 
     def test_with_dict_payloads(self) -> None:
         predictions = [
@@ -118,13 +118,13 @@ class TestRewardSuccessRate:
         ]
         result = reward_success_rate(predictions, threshold=5.0)
         # 5.0 and 10.0 are >= 5.0
-        assert abs(result - 2/3) < 1e-6
+        assert abs(result - 2 / 3) < 1e-6
 
     def test_exact_threshold_match(self) -> None:
         predictions = [1.0, 2.0, 3.0]
         result = reward_success_rate(predictions, threshold=2.0)
         # 2.0 and 3.0 are >= 2.0
-        assert abs(result - 2/3) < 1e-6
+        assert abs(result - 2 / 3) < 1e-6
 
     def test_negative_threshold(self) -> None:
         predictions = [-2.0, -1.0, 0.0, 1.0]

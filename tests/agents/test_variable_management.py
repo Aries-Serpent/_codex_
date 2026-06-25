@@ -29,11 +29,11 @@ from variable_manager import (
 # Token resolution tests
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestResolveToken(unittest.TestCase):
 
     def _clear_tokens(self):
-        for k in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY",
-                   "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"):
+        for k in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "AGENT_GITHUB_TOKEN", "GITHUB_TOKEN"):
             os.environ.pop(k, None)
 
     def test_priority_order_master_key_first(self):
@@ -82,6 +82,7 @@ class TestResolveToken(unittest.TestCase):
 # VariableManager — repo variables
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestRepoVariables(unittest.TestCase):
     """Tests use direct urllib fallback (mocked) — no server required."""
 
@@ -99,19 +100,24 @@ class TestRepoVariables(unittest.TestCase):
 
     @patch("variable_manager._gh_request")
     def test_list_repo_vars_success(self, mock_req):
-        mock_req.return_value = (200, {
-            "total_count": 2,
-            "variables": [
-                {"name": "VAR_A", "value": "alpha", "created_at": "...", "updated_at": "..."},
-                {"name": "VAR_B", "value": "beta",  "created_at": "...", "updated_at": "..."},
-            ],
-        })
+        mock_req.return_value = (
+            200,
+            {
+                "total_count": 2,
+                "variables": [
+                    {"name": "VAR_A", "value": "alpha", "created_at": "...", "updated_at": "..."},
+                    {"name": "VAR_B", "value": "beta", "created_at": "...", "updated_at": "..."},
+                ],
+            },
+        )
         result = self.vm.list_repo_vars(self.OWNER, self.REPO)
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]["name"], "VAR_A")
         mock_req.assert_called_once_with(
-            "GET", f"/repos/{self.OWNER}/{self.REPO}/actions/variables",
-            token="test_master_token", brain=None,
+            "GET",
+            f"/repos/{self.OWNER}/{self.REPO}/actions/variables",
+            token="test_master_token",
+            brain=None,
         )
 
     @patch("variable_manager._gh_request")
@@ -131,9 +137,10 @@ class TestRepoVariables(unittest.TestCase):
 
     @patch("variable_manager._gh_request")
     def test_get_repo_var_success(self, mock_req):
-        mock_req.return_value = (200, {
-            "name": "MY_VAR", "value": "hello", "created_at": "...", "updated_at": "..."
-        })
+        mock_req.return_value = (
+            200,
+            {"name": "MY_VAR", "value": "hello", "created_at": "...", "updated_at": "..."},
+        )
         result = self.vm.get_repo_var(self.OWNER, self.REPO, "MY_VAR")
         self.assertEqual(result["value"], "hello")
 
@@ -198,6 +205,7 @@ class TestRepoVariables(unittest.TestCase):
 # ─────────────────────────────────────────────────────────────────────────────
 # VariableManager — environment variables
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestEnvironmentVariables(unittest.TestCase):
 
@@ -264,6 +272,7 @@ class TestEnvironmentVariables(unittest.TestCase):
 # VariableManager — organization variables
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestOrgVariables(unittest.TestCase):
 
     ORG = "Aries-Serpent"
@@ -281,8 +290,10 @@ class TestOrgVariables(unittest.TestCase):
         result = self.vm.list_org_vars(self.ORG)
         self.assertEqual(result[0]["name"], "ORG_V")
         mock_req.assert_called_with(
-            "GET", f"/orgs/{self.ORG}/actions/variables",
-            token="test_master_token", brain=None,
+            "GET",
+            f"/orgs/{self.ORG}/actions/variables",
+            token="test_master_token",
+            brain=None,
         )
 
     @patch("variable_manager._gh_request")
@@ -290,24 +301,30 @@ class TestOrgVariables(unittest.TestCase):
         mock_req.return_value = (201, None)
         self.vm.create_org_var(self.ORG, "O_VAR", "o_val")
         mock_req.assert_called_with(
-            "POST", f"/orgs/{self.ORG}/actions/variables",
+            "POST",
+            f"/orgs/{self.ORG}/actions/variables",
             body={"name": "O_VAR", "value": "o_val", "visibility": "all"},
-            token="test_master_token", brain=None,
+            token="test_master_token",
+            brain=None,
         )
 
     @patch("variable_manager._gh_request")
     def test_create_org_var_selected_repos(self, mock_req):
         mock_req.return_value = (201, None)
-        self.vm.create_org_var(self.ORG, "O_SEL", "val",
-                                visibility="selected",
-                                selected_repository_ids=[123, 456])
+        self.vm.create_org_var(
+            self.ORG, "O_SEL", "val", visibility="selected", selected_repository_ids=[123, 456]
+        )
         mock_req.assert_called_with(
-            "POST", f"/orgs/{self.ORG}/actions/variables",
+            "POST",
+            f"/orgs/{self.ORG}/actions/variables",
             body={
-                "name": "O_SEL", "value": "val", "visibility": "selected",
+                "name": "O_SEL",
+                "value": "val",
+                "visibility": "selected",
                 "selected_repository_ids": [123, 456],
             },
-            token="test_master_token", brain=None,
+            token="test_master_token",
+            brain=None,
         )
 
     @patch("variable_manager._gh_request")
@@ -315,14 +332,17 @@ class TestOrgVariables(unittest.TestCase):
         mock_req.return_value = (204, None)
         self.vm.delete_org_var(self.ORG, "O_OLD")
         mock_req.assert_called_with(
-            "DELETE", f"/orgs/{self.ORG}/actions/variables/O_OLD",
-            token="test_master_token", brain=None,
+            "DELETE",
+            f"/orgs/{self.ORG}/actions/variables/O_OLD",
+            token="test_master_token",
+            brain=None,
         )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # BrainClient secondary mechanism
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestBrainClientMechanism(unittest.TestCase):
     """Verify that _gh_request prefers BrainClient when a brain is supplied."""
@@ -346,12 +366,15 @@ class TestBrainClientMechanism(unittest.TestCase):
     def test_falls_back_to_urllib_on_brain_error(self):
         """BrainClientError causes fallback to urllib."""
         import importlib
+
         tools_vm = importlib.import_module("variable_manager")
 
         mock_brain = MagicMock()
-        mock_brain.proxy_request.side_effect = tools_vm.BrainClientError("server down") \
-            if hasattr(tools_vm, "BrainClientError") \
+        mock_brain.proxy_request.side_effect = (
+            tools_vm.BrainClientError("server down")
+            if hasattr(tools_vm, "BrainClientError")
             else Exception("server down")
+        )
 
         with patch("variable_manager.urllib.request.urlopen") as mock_urlopen:
             mock_response = MagicMock()
@@ -376,6 +399,7 @@ class TestBrainClientMechanism(unittest.TestCase):
 # run_live_test dry-run (all mocked)
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestLiveTestDryRun(unittest.TestCase):
     """Simulate the full create→verify→update→verify→delete cycle via mocks."""
 
@@ -393,6 +417,7 @@ class TestLiveTestDryRun(unittest.TestCase):
 
         # Override get_repo_var calls in sequence
         call_count = {"get": 0}
+
         def side_effect_v2(method, path, body=None, token=None, brain=None):
             _ = brain
             if method == "GET" and "variables" in path and VAR not in path:

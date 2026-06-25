@@ -172,8 +172,9 @@ class LifecycleManager:
             await self.transition_to(ServerState.READY)
             self._logger.info("Server initialized successfully")
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             self._logger.error("Initialization failed: %s", e)
             await self.transition_to(ServerState.ERROR)
             raise
@@ -212,8 +213,9 @@ class LifecycleManager:
         for hook in self._shutdown_hooks:
             try:
                 hook()
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 self._logger.error("Shutdown hook failed: %s", e)
 
         await self.transition_to(ServerState.STOPPED)
@@ -267,8 +269,9 @@ class LifecycleManager:
                 if not result.healthy:
                     all_healthy = False
                     messages.append(result.message)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 all_healthy = False
                 details[f"check_{i}"] = {"healthy": False, "error": str(e)}
                 messages.append(f"Check {i} failed: {e}")
@@ -291,7 +294,7 @@ class LifecycleManager:
             # Capture sig in lambda to avoid closure issue
             loop.add_signal_handler(
                 sig,
-                lambda s=sig: asyncio.create_task(self.shutdown(graceful=True)),  # type: ignore[misc]
+                lambda s=sig: asyncio.create_task(self.shutdown(graceful=True)),
             )
 
         self._logger.info("Signal handlers configured")

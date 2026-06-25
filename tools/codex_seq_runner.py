@@ -155,7 +155,7 @@ def patch_tokenizer_ids(path: Path):
 def patch_functional_training(path: Path):
     pattern = r"except Exception:\n\s*pass"
     replacement = (
-        'except Exception as exc:\n            print(f"[monitoring-error] {exc}", file=sys.stderr)'
+        'except Exception as exc:\n            print(f"[monitoring-error] <ERROR_TYPE>", file=sys.stderr)'
     )
     changed, msg = apply_unified_patch(path, [(pattern, replacement)])
     if changed:
@@ -340,5 +340,6 @@ if __name__ == "__main__":
         sys.exit(main())
     except Exception as e:
         record_rq("PH0", "Runner crash", str(e), "Top-level exception")
-        print(f"[fatal] {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"[fatal] <ERROR_TYPE>", file=sys.stderr)
         sys.exit(1)

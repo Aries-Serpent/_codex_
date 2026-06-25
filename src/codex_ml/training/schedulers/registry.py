@@ -28,11 +28,12 @@ try:
     import torch
 
     # Verify torch is functional
-    _ = torch.Tensor
+    _ = torch.Tensor  # type: ignore
     TORCH_AVAILABLE = True
 except (ImportError, AttributeError) as e:
-    logger.debug(f"Failed to import or verify torch: {e}")
-    logger.warning(f"Failed to import or verify torch: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"Failed to import or verify torch: <ERROR_TYPE>")
+    logger.warning(f"Failed to import or verify torch: <ERROR_TYPE>", exc_info=True)
     TORCH_AVAILABLE = False
     from types import ModuleType
 

@@ -25,6 +25,7 @@ def _validate(payload: dict[str, Any]) -> None:
 
 def test_train_probe_json_output() -> None:
     import os
+
     command = (
         "import codex_ml.cli.hydra_main as H; "
         "import sys; "

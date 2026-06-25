@@ -707,9 +707,7 @@ class TestAuditLogsAPI:
             "https://testcompany.zendesk.com/api/v2/audit_logs.json",
             json={"audit_logs": [{"id": 1, "action": "update"}]},
             status=200,
-            match=[
-                matchers.query_param_matcher({"per_page": "100", "filter[action]": "update"})
-            ],
+            match=[matchers.query_param_matcher({"per_page": "100", "filter[action]": "update"})],
         )
 
         result = api_client.list_audit_logs(filter_type="update")

@@ -50,7 +50,7 @@ def _session_log_dir() -> Path:
     if raw:
         try:
             return Path(raw).expanduser()
-        except Exception:  # pragma: no cover - defensive fallback
+        except (IOError, OSError):  # pragma: no cover - defensive fallback
             return DEFAULT_LOG_DIR
     return DEFAULT_LOG_DIR
 
@@ -75,8 +75,9 @@ def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str
     try:
         _session_logger_ctx.set(SessionLogger(resolved, directory))
     except OSError as e:
-        logger.debug(f"OSError: {e}")
-        logger.warning(f"OSError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"OSError: <ERROR_TYPE>")
+        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
         _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
     return resolved
 
@@ -209,12 +210,12 @@ def log_event(logger: logging.Logger, event: str, **fields: Any) -> None:
     rec.setdefault("session.id", get_session_id())
     try:
         session_logger = get_session_logger()
-    except Exception:  # pragma: no cover - defensive
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
         pass
     else:
         try:
             session_logger.log_event(event, _prepare_session_payload(rec))
-        except Exception:  # pragma: no cover - defensive
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
             logger.debug("Suppressed exception in handler", exc_info=True)
     logger.info(rec)
 
@@ -303,7 +304,7 @@ class ArgparseJSONParser(argparse.ArgumentParser):
         self._logger = logging.getLogger("codex")
         super().__init__(*a, **k)
 
-    def error(self, message: str) -> None:  # type: ignore[override]
+    def error(self, message: str) -> None:
         usage = self.format_usage().strip()
         log_event(
             self._logger,
@@ -423,7 +424,7 @@ def capture_exceptions(
                 return 0
             try:
                 return int(result)
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 resolved_logger.warning("Exception occurred", exc_info=True)
                 return 0
 

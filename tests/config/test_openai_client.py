@@ -36,9 +36,7 @@ class TestCodexOpenAIClient:
         """Create a client with a mock API key."""
         from src.config.openai_client import CodexOpenAIClient
 
-        with patch.dict(
-            os.environ, {"OPENAI_API_KEY": "sk-test-fake-key-for-unit-testing-only"}
-        ):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "sk-test-fake-key-for-unit-testing-only"}):
             return CodexOpenAIClient()
 
     def test_client_initialization_dry_run(self, client):
@@ -293,9 +291,7 @@ class TestAPIKeyValidation:
         assert _validate_api_key(None) is False
         assert _validate_api_key("invalid-key") is False
         assert _validate_api_key("sk-short") is False  # Too short
-        assert (
-            _validate_api_key("pk-12345678901234567890123456789012") is False
-        )  # Wrong prefix
+        assert _validate_api_key("pk-12345678901234567890123456789012") is False  # Wrong prefix
 
     def test_validate_api_key_too_long(self):
         """Test validation rejects excessively long keys."""

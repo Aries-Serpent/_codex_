@@ -199,9 +199,10 @@ class ModelLoader:
             logger.info(f"Model loaded successfully in {load_time:.2f}s")
             return model_data
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to load model: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to load model: <ERROR_TYPE>")
             raise RuntimeError(f"Model loading failed: {e}") from e
 
     def _load_from_source(self, config: ModelConfig) -> dict[str, Any]:
@@ -265,15 +266,12 @@ class ModelLoader:
             from transformers import (
                 AutoConfig,
             )
-            from transformers import (
-                AutoModel as AutoModel,
-            )
-            from transformers import (
-                AutoTokenizer as AutoTokenizer,
-            )
+            from transformers import AutoModel as AutoModel
+            from transformers import AutoTokenizer as AutoTokenizer
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError(
                 "transformers is required for HuggingFace models. "
                 "Install with: pip install transformers"
@@ -350,8 +348,9 @@ class ModelLoader:
             }
             return dtype_map.get(dtype_str)
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             logger.warning("torch not available, ignoring dtype specification")
             return None
 
@@ -424,9 +423,10 @@ class ModelLoader:
             try:
                 with open(path, "rb") as f:
                     f.read(1)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Cannot read checkpoint file: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Cannot read checkpoint file: <ERROR_TYPE>")
                 return False
 
         logger.info(f"Checkpoint validation passed: {path}")

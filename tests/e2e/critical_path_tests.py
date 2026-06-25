@@ -31,10 +31,6 @@ class TestAuthenticationCriticalPath:
 
     def test_oauth_code_exchange_format(self):
         """Verify OAuth code exchange uses correct format."""
-        request = {
-            "code": "github_code_123",
-            "state": "state_token_abc",
-        }
         response = {
             "access_token": "token_xyz789",
             "token_type": "Bearer",
@@ -81,12 +77,14 @@ class TestMCPAPICriticalPath:
 
     def test_jsonrpc_request_parsing(self):
         """Verify JSON-RPC requests are parsed correctly."""
-        raw_request = json.dumps({
-            "jsonrpc": "2.0",
-            "method": "mcp.process",
-            "params": {"query": "test query"},
-            "id": 1,
-        })
+        raw_request = json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "method": "mcp.process",
+                "params": {"query": "test query"},
+                "id": 1,
+            }
+        )
         parsed = json.loads(raw_request)
         assert parsed["jsonrpc"] == "2.0"
         assert parsed["method"] == "mcp.process"
@@ -94,12 +92,6 @@ class TestMCPAPICriticalPath:
 
     def test_request_validation_flow(self):
         """Verify request validation follows correct flow."""
-        request = {
-            "jsonrpc": "2.0",
-            "method": "test.method",
-            "params": {},
-            "id": 1,
-        }
         validation_result = {
             "valid": True,
             "errors": [],
@@ -109,7 +101,6 @@ class TestMCPAPICriticalPath:
 
     def test_adapter_routing_logic(self):
         """Verify requests are routed to correct adapter."""
-        request = {"method": "mcp.query"}
         routing = {
             "adapter": "zendesk_adapter",
             "method": "query",
@@ -202,11 +193,6 @@ class TestDataPersistenceCriticalPath:
 
     def test_data_validation_before_store(self):
         """Verify data is validated before storage."""
-        data = {
-            "id": "data_123",
-            "content": "test content",
-            "type": "string",
-        }
         validation = {
             "valid": True,
             "required_fields_present": True,
@@ -278,10 +264,6 @@ class TestVectorRetrievalCriticalPath:
 
     def test_vector_store_query(self):
         """Verify vector store query works."""
-        vector_query = {
-            "query_embedding": [0.1, 0.2, 0.3],
-            "top_k": 5,
-        }
         results = {
             "matches": [
                 {"id": "doc_1", "score": 0.95},
@@ -357,7 +339,6 @@ class TestErrorRecoveryCriticalPath:
 
     def test_retry_decision_logic(self):
         """Verify retry decision logic works."""
-        error = {"code": "TIMEOUT"}
         retry_policy = {
             "retryable": True,
             "max_retries": 3,
@@ -397,7 +378,6 @@ class TestCriticalPathIntegration:
     def test_api_with_error_recovery(self):
         """Test API request with error recovery."""
         # 1. First request fails
-        error = {"code": "TIMEOUT"}
         # 2. Retry
         retry_response = {"result": "success"}
         assert retry_response["result"] == "success"
@@ -405,12 +385,12 @@ class TestCriticalPathIntegration:
     def test_health_check_during_operations(self):
         """Test health checks during active operations."""
         # 1. Start operation
-        operation_start = time.time()
+        time.time()
         # 2. Check health
         health = {"status": "ok"}
         assert health["status"] == "ok"
         # 3. Complete operation
-        operation_end = time.time()
+        time.time()
 
     def test_end_to_end_critical_path(self):
         """Test complete end-to-end critical path."""

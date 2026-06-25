@@ -199,7 +199,7 @@ Phase 9 implementation has **18% overall test coverage** vs. **70% required** by
   - Update: urllib3 2.6.3+, pyjwt 2.13.0+, pip 26.1.2+, jinja2 3.1.6+, certifi 2024.7.4+
   - Update pyproject.toml version constraints
   - Run full test suite for regressions
-  
+
 - [ ] Merge security patch to main
 - [ ] Tag release candidate (v0.1.0-rc.1)
 - [ ] Plan production deployment (T+24h)
@@ -208,11 +208,11 @@ Phase 9 implementation has **18% overall test coverage** vs. **70% required** by
 - [ ] Activate unified-coverage-agent for Phase 9.2 gap-fill
   - Create: `tests/integration/test_phase_9_2_cascade.py` (100+ tests)
   - Cover: All 8 auto-fix patterns, false positives, agent dispatch
-  
+
 - [ ] Activate unified-coverage-agent for Phase 9.3 gap-fill
   - Create: `tests/unit/test_phase_9_3_routing.py` (180+ tests)
   - Cover: FAISS routing, filtering, queue management, load balancing
-  
+
 - [ ] Update Phase 9.1 edge cases (2026-07-03)
   - Extend: `tests/unit/test_phase_9_1_decisions.py` (10-15 additional tests)
 

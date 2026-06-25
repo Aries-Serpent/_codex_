@@ -34,7 +34,8 @@ def apply_anchor_fix(file_path: Path, line_num: int, old_anchor: str, new_anchor
         with open(file_path, encoding='utf-8') as f:
             content = f.read()
     except Exception as e:
-        print(f"   ❌ Error reading {file_path}: {e}")
+        error_type = type(e).__name__
+        print(f"   ❌ Error reading {file_path}: <ERROR_TYPE>")
         return False
 
     original_content = content
@@ -62,7 +63,8 @@ def apply_anchor_fix(file_path: Path, line_num: int, old_anchor: str, new_anchor
             f.write(content)
         return True
     except Exception as e:
-        print(f"   ❌ Error writing {file_path}: {e}")
+        error_type = type(e).__name__
+        print(f"   ❌ Error writing {file_path}: <ERROR_TYPE>")
         return False
 
 

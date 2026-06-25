@@ -77,7 +77,7 @@ class TestStabilityMetrics:
     def test_calculate_availability(self):
         """Test calculation of test suite availability."""
         mttf = 38.4  # Mean time to failure
-        mttr = 3.2   # Mean time to recovery
+        mttr = 3.2  # Mean time to recovery
 
         availability = mttf / (mttf + mttr)
 
@@ -110,14 +110,16 @@ class TestTrendAnalysis:
         # Check for significant drops
         regressions = []
         for i in range(1, len(daily_stability)):
-            drop = daily_stability[i-1] - daily_stability[i]
+            drop = daily_stability[i - 1] - daily_stability[i]
             if drop > threshold:
-                regressions.append({
-                    "day": i,
-                    "drop": drop,
-                    "from": daily_stability[i-1],
-                    "to": daily_stability[i],
-                })
+                regressions.append(
+                    {
+                        "day": i,
+                        "drop": drop,
+                        "from": daily_stability[i - 1],
+                        "to": daily_stability[i],
+                    }
+                )
 
         assert len(regressions) == 1
         assert regressions[0]["drop"] == pytest.approx(2.8)
@@ -129,7 +131,7 @@ class TestTrendAnalysis:
 
         moving_averages = []
         for i in range(len(daily_values) - window_size + 1):
-            window = daily_values[i:i + window_size]
+            window = daily_values[i : i + window_size]
             avg = sum(window) / window_size
             moving_averages.append(round(avg, 2))
 
@@ -185,10 +187,12 @@ class TestDashboardVisualization:
         chart_data = {
             "type": "line",
             "labels": dates,
-            "datasets": [{
-                "label": "Stability %",
-                "data": stability,
-            }],
+            "datasets": [
+                {
+                    "label": "Stability %",
+                    "data": stability,
+                }
+            ],
         }
 
         assert chart_data["type"] == "line"
@@ -221,11 +225,13 @@ class TestDashboardVisualization:
             for hour in range(24):
                 # Simulate failure pattern (more failures during work hours)
                 failures = 2 if 9 <= hour <= 17 else 0
-                heatmap.append({
-                    "day": day,
-                    "hour": hour,
-                    "failures": failures,
-                })
+                heatmap.append(
+                    {
+                        "day": day,
+                        "hour": hour,
+                        "failures": failures,
+                    }
+                )
 
         assert len(heatmap) == 7 * 24
         work_hour_failures = sum(h["failures"] for h in heatmap if 9 <= h["hour"] <= 17)
@@ -406,13 +412,15 @@ class TestDashboardIntegration:
         payload = {
             "channel": "#ci-alerts",
             "text": "Test Stability Alert",
-            "attachments": [{
-                "color": "warning",
-                "fields": [
-                    {"title": "Stability", "value": "94.5%", "short": True},
-                    {"title": "Threshold", "value": "95.0%", "short": True},
-                ],
-            }],
+            "attachments": [
+                {
+                    "color": "warning",
+                    "fields": [
+                        {"title": "Stability", "value": "94.5%", "short": True},
+                        {"title": "Threshold", "value": "95.0%", "short": True},
+                    ],
+                }
+            ],
         }
 
         assert payload["channel"] == "#ci-alerts"

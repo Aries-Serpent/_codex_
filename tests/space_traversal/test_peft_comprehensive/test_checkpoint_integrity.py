@@ -23,7 +23,12 @@ from codex_ml.utils.checkpoint_core import (
 def test_roundtrip_and_integrity(tmp_path: Path):
     state = {"weights": [1, 2, 3], "epoch": 1}
     ckpt_path, _meta = save_checkpoint(
-        tmp_path, state, metric_value=0.321, metric_key="val_loss", mode="min", top_k=3,
+        tmp_path,
+        state,
+        metric_value=0.321,
+        metric_key="val_loss",
+        mode="min",
+        top_k=3,
         include_rng=False,
     )
     assert ckpt_path.exists()

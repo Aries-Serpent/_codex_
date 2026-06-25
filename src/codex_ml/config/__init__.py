@@ -13,9 +13,9 @@ from typing import Any
 
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
-except Exception:  # pragma: no cover - optional dependency
-    DictConfig = Any  # type: ignore
-    OmegaConf = None  # type: ignore
+except (IOError, OSError):  # pragma: no cover - optional dependency
+    DictConfig = Any
+    OmegaConf = None
 
 __all__ = [
     "ConfigError",
@@ -114,7 +114,7 @@ class OptimizerConfig:
             raise ConfigError(path + ".weight_decay", "must be non-negative", self.weight_decay)
         try:
             beta1, beta2 = (float(self.betas[0]), float(self.betas[1]))
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             raise ConfigError(path + ".betas", "must be a pair of floats", self.betas) from exc
         if not (0.0 <= beta1 < 1 and 0.0 <= beta2 < 1):
             raise ConfigError(path + ".betas", "beta values must be in [0, 1)", self.betas)
@@ -597,7 +597,7 @@ def override_dict(overrides: Sequence[str] | None) -> DictConfig:
         return OmegaConf.create()
     try:
         return OmegaConf.from_dotlist(list(overrides))
-    except Exception as exc:  # pragma: no cover - OmegaConf raises specific errors
+    except (IOError, OSError) as exc:  # pragma: no cover - OmegaConf raises specific errors
         raise ConfigError("overrides", f"Invalid override: {exc}") from exc
 
 
@@ -626,10 +626,12 @@ def load_app_config(
     try:
         file_cfg = OmegaConf.load(str(config_path))
     except FileNotFoundError as exc:
-        logger.debug(f"FileNotFoundError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
         raise ConfigError("config", f"configuration file not found: {config_path}") from exc
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
 
     def _to_plain(mapping: Mapping[str, Any]) -> dict[str, Any]:
@@ -641,7 +643,7 @@ def load_app_config(
         cfg = OmegaConf.merge(schema, file_cfg, override_dict(overrides))
         try:
             obj = OmegaConf.to_object(cfg)
-        except Exception as exc:  # pragma: no cover - defensive against OmegaConf issues
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive against OmegaConf issues
             raise ConfigError("config", f"failed to materialise dataclass: {exc}") from exc
         if not isinstance(obj, CodexConfig):  # pragma: no cover - structured config guarantees type
             raise ConfigError("config", "unexpected configuration object", type(obj).__name__)
@@ -711,20 +713,23 @@ def load_app_config(
                                 return int(text)
                             if isinstance(current, float):
                                 return float(text)
-                        except Exception as e:
-                            logger.debug(f"Exception: {e}")
-                            logger.warning(f"Exception: {e}", exc_info=True)
+                        except (ValueError, TypeError, RuntimeError) as e:
+                            error_type = type(e).__name__
+                            logger.debug(f"Exception: <ERROR_TYPE>")
+                            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
                     return new_value
 
                 coerced = _coerce(current_value, value)
                 setattr(instance, key, coerced)
             return instance
         except ConfigError as e:
-            logger.debug(f"ConfigError: {e}")
-            logger.warning(f"ConfigError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ConfigError: <ERROR_TYPE>")
+            logger.warning(f"ConfigError: <ERROR_TYPE>", exc_info=True)
             raise
         except ValueError as exc:
-            logger.debug(f"ValueError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
             parts: list[str] = []
             for chunk in str(exc).split(";"):
                 chunk = chunk.strip()
@@ -810,8 +815,8 @@ try:  # pragma: no cover - optional dependency
         get_settings,
     )
 except ModuleNotFoundError:  # pragma: no cover - provide graceful fallback when pydantic missing
-    AppSettings = None  # type: ignore[assignment, misc]
-    EvalRow = None  # type: ignore[assignment, misc]
+    AppSettings = None
+    EvalRow = None
 
     def eval_row_schema() -> dict:
         raise ModuleNotFoundError(
@@ -853,7 +858,8 @@ def get_config(
     try:
         import hydra
     except ImportError as exc:
-        logger.debug(f"ImportError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
         raise ImportError(
             "hydra-core is required for unified config loading. "
             "Install with: pip install hydra-core"

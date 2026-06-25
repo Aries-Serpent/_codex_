@@ -3,7 +3,6 @@ Day 2 Gap-Filling Tests: codex - Core
 Focus: Core codex functionality and integration
 """
 
-
 import pytest
 
 
@@ -50,5 +49,5 @@ class TestCodexCorePatterns:
         pass
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

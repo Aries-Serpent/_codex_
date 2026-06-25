@@ -181,7 +181,7 @@ class TestValidateInput:
 
     def test_validate_input_xss_event_handler(self):
         """Test event handler detection."""
-        result = validate_input('<img src=x onerror=alert()>')
+        result = validate_input("<img src=x onerror=alert()>")
         assert result is False
 
     def test_validate_input_json_prototype_pollution(self):
@@ -498,14 +498,8 @@ class TestHmacCompare:
         # This is a security property - should take similar time
         import timeit
 
-        t1 = timeit.timeit(
-            lambda: hmac_compare("a" * 100, "a" * 100),
-            number=100
-        )
-        t2 = timeit.timeit(
-            lambda: hmac_compare("a" * 100, "b" * 100),
-            number=100
-        )
+        t1 = timeit.timeit(lambda: hmac_compare("a" * 100, "a" * 100), number=100)
+        t2 = timeit.timeit(lambda: hmac_compare("a" * 100, "b" * 100), number=100)
         # Times should be similar (within 10x range due to variance)
         assert abs(t1 - t2) < max(t1, t2)
 
@@ -688,10 +682,7 @@ class TestLogSecurityEvent:
     def test_log_security_event_with_details(self, mock_logger):
         """Test logging with additional details."""
         result = log_security_event(
-            "login",
-            "user123",
-            "success",
-            details={"ip": "192.168.1.1", "method": "password"}
+            "login", "user123", "success", details={"ip": "192.168.1.1", "method": "password"}
         )
         assert result is None or isinstance(result, dict)
 
@@ -720,10 +711,7 @@ class TestLogSecurityEvent:
     def test_log_security_event_with_context(self, mock_logger):
         """Test logging with context."""
         result = log_security_event(
-            "login",
-            "user123",
-            "success",
-            context={"app": "codex", "version": "1.0"}
+            "login", "user123", "success", context={"app": "codex", "version": "1.0"}
         )
         assert result is None or isinstance(result, dict)
 
@@ -791,26 +779,32 @@ class TestCheckPermissions:
 # ============================================================================
 
 
-@pytest.mark.parametrize("malicious_input,expected", [
-    ("'; DROP TABLE;", False),
-    ("1' OR '1'='1", False),
-    ("test@example.com", True),
-    ("normal text", True),
-    ("", True),
-])
+@pytest.mark.parametrize(
+    "malicious_input,expected",
+    [
+        ("'; DROP TABLE;", False),
+        ("1' OR '1'='1", False),
+        ("test@example.com", True),
+        ("normal text", True),
+        ("", True),
+    ],
+)
 def test_validate_input_parametrized(malicious_input, expected):
     """Parametrized test for validate_input."""
     result = validate_input(malicious_input)
     assert result == expected
 
 
-@pytest.mark.parametrize("value,max_len,should_truncate", [
-    ("short", 100, False),
-    ("A" * 50, 100, False),
-    ("A" * 500, 100, True),
-    ("test", 4, False),
-    ("test", 3, True),
-])
+@pytest.mark.parametrize(
+    "value,max_len,should_truncate",
+    [
+        ("short", 100, False),
+        ("A" * 50, 100, False),
+        ("A" * 500, 100, True),
+        ("test", 4, False),
+        ("test", 3, True),
+    ],
+)
 def test_sanitize_for_logging_parametrized(value, max_len, should_truncate):
     """Parametrized test for sanitize_for_logging."""
     result = sanitize_for_logging(value, max_length=max_len)
@@ -820,13 +814,16 @@ def test_sanitize_for_logging_parametrized(value, max_len, should_truncate):
         assert len(result) <= max_len
 
 
-@pytest.mark.parametrize("path,should_be_absolute", [
-    ("/home/user/file.txt", True),
-    ("relative/path", False),
-    ("./file.txt", False),
-    ("../parent", False),
-    ("/usr/local/bin", True),
-])
+@pytest.mark.parametrize(
+    "path,should_be_absolute",
+    [
+        ("/home/user/file.txt", True),
+        ("relative/path", False),
+        ("./file.txt", False),
+        ("../parent", False),
+        ("/usr/local/bin", True),
+    ],
+)
 def test_enforce_absolute_path_parametrized(path, should_be_absolute):
     """Parametrized test for enforce_absolute_path."""
     if should_be_absolute:

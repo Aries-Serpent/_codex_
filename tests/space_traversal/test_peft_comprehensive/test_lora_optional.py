@@ -3,12 +3,12 @@ Test Lora Optional
 
 Test module for lora optional.
 """
+
 import importlib.util
 
 import pytest
 
 pytest.importorskip("numpy", reason="numpy required")
-
 
 
 from codex.training import TrainCfg, run_custom_trainer
@@ -24,7 +24,7 @@ class _Tok:
 
 
 def _has_peft() -> bool:  # pragma: no cover - optional dependency
-    return importlib.util.find_spec('peft') is not None
+    return importlib.util.find_spec("peft") is not None
 
 
 @pytest.mark.skipif(not _has_peft(), reason="peft not installed")
@@ -49,8 +49,7 @@ def test_lora_parameters_trainable(tmp_path) -> None:
     has_lora = any("lora" in n.lower() for n in trainable)
     if has_lora:
         assert any(
-            "lora" not in n.lower() and not p.requires_grad
-            for n, p in model.named_parameters()
+            "lora" not in n.lower() and not p.requires_grad for n, p in model.named_parameters()
         )
     else:
         # If peft couldn't apply LoRA to MiniLM (no matching target_modules),

@@ -30,7 +30,7 @@ from .sanitizers import SafetyConfig, sanitize_output, sanitize_prompt
 # graceful stubs if unavailable so importing `codex_ml.safety` does not fail.
 try:  # pragma: no cover - platform dependent
     from .sandbox import docker_available, firejail_available, run_in_sandbox
-except Exception:  # pragma: no cover - fallback for non-POSIX
+except (ImportError, AttributeError):  # pragma: no cover - fallback for non-POSIX
 
     def docker_available() -> bool:
         return False
@@ -38,7 +38,7 @@ except Exception:  # pragma: no cover - fallback for non-POSIX
     def firejail_available() -> bool:
         return False
 
-    def run_in_sandbox(*args, **kwargs):  # type: ignore[misc]
+    def run_in_sandbox(*args, **kwargs):
         raise RuntimeError("Sandbox is not available on this platform; run_in_sandbox disabled")
 
 

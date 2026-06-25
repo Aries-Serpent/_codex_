@@ -1,7 +1,5 @@
 """Comprehensive tests for RAG prompt assembly module."""
 
-
-
 from codex.rag.prompt import (
     PromptConfig,
     PromptTemplate,
@@ -22,8 +20,10 @@ class TestTokenHelpers:
 
     def test_count_tokens_with_tokenizer(self):
         """Test counting tokens with custom tokenizer."""
+
         def tokenizer(text):
             return list(range(10))  # Returns 10 tokens
+
         count = _count_tokens("any text", tokenizer=tokenizer)
         assert count == 10
 
@@ -61,8 +61,10 @@ class TestTokenHelpers:
 
     def test_truncate_to_tokens_with_tokenizer(self):
         """Test truncation using custom tokenizer."""
+
         def tokenizer(text):
             return list(range(len(text.split())))
+
         text = "One two three four five"
 
         result = _truncate_to_tokens(text, max_tokens=3, tokenizer=tokenizer)
@@ -88,7 +90,7 @@ class TestPromptConfig:
             max_context_tokens=4000,
             max_snippet_tokens=1000,
             include_sources=False,
-            use_legacy_delimiters=False
+            use_legacy_delimiters=False,
         )
 
         assert config.max_context_tokens == 4000
@@ -110,6 +112,7 @@ class TestPromptTemplate:
     def test_template_initialization_custom(self):
         """Test template initialization with custom config."""
         config = PromptConfig(max_context_tokens=1000)
+
         def tokenizer(x):
             return [1, 2, 3]
 
@@ -126,8 +129,7 @@ class TestPromptTemplate:
         ]
 
         prompt = template.assemble_rag_prompt(
-            query="What is Python?",
-            retrieved_docs=retrieved_docs
+            query="What is Python?", retrieved_docs=retrieved_docs
         )
 
         assert "What is Python?" in prompt
@@ -138,9 +140,7 @@ class TestPromptTemplate:
         template = PromptTemplate()
 
         prompt = template.assemble_rag_prompt(
-            query="Test",
-            system_prompt="You are a helpful assistant.",
-            retrieved_docs=[]
+            query="Test", system_prompt="You are a helpful assistant.", retrieved_docs=[]
         )
 
         assert "You are a helpful assistant" in prompt
@@ -150,18 +150,14 @@ class TestPromptTemplate:
         """Test RAG prompt with no documents."""
         template = PromptTemplate()
 
-        prompt = template.assemble_rag_prompt(
-            query="Test query",
-            retrieved_docs=[]
-        )
+        prompt = template.assemble_rag_prompt(query="Test query", retrieved_docs=[])
 
         assert "Test query" in prompt
 
     def test_assemble_simple_prompt(self):
         """Test assembling simple (non-RAG) prompt."""
         prompt = PromptTemplate.assemble_simple_prompt(
-            query="What is 2+2?",
-            system_prompt="You are a math tutor."
+            query="What is 2+2?", system_prompt="You are a math tutor."
         )
 
         assert "What is 2+2?" in prompt
@@ -178,10 +174,7 @@ class TestBuildPromptFunction:
             {"content": "Context 2", "metadata": {"source_id": "file2.py"}},
         ]
 
-        prompt = build_prompt(
-            query="What is RAG?",
-            retrieved_docs=retrieved_docs
-        )
+        prompt = build_prompt(query="What is RAG?", retrieved_docs=retrieved_docs)
 
         assert "What is RAG?" in prompt
         assert "Context 1" in prompt or "Document 1" in prompt
@@ -189,9 +182,7 @@ class TestBuildPromptFunction:
     def test_build_prompt_with_system(self):
         """Test prompt with system prompt."""
         prompt = build_prompt(
-            query="Test",
-            system_prompt="You are an AI assistant.",
-            retrieved_docs=[]
+            query="Test", system_prompt="You are an AI assistant.", retrieved_docs=[]
         )
 
         assert "You are an AI assistant" in prompt
@@ -199,10 +190,7 @@ class TestBuildPromptFunction:
 
     def test_build_prompt_without_rag(self):
         """Test simple prompt without RAG."""
-        prompt = build_prompt(
-            query="Simple question",
-            use_rag=False
-        )
+        prompt = build_prompt(query="Simple question", use_rag=False)
 
         assert "Simple question" in prompt
 
@@ -210,20 +198,13 @@ class TestBuildPromptFunction:
         """Test prompt with custom configuration."""
         config = PromptConfig(max_context_tokens=100)
 
-        prompt = build_prompt(
-            query="Query",
-            retrieved_docs=[],
-            config=config
-        )
+        prompt = build_prompt(query="Query", retrieved_docs=[], config=config)
 
         assert prompt is not None
 
     def test_build_prompt_no_docs(self):
         """Test prompt building with no documents."""
-        prompt = build_prompt(
-            query="Test query",
-            retrieved_docs=None
-        )
+        prompt = build_prompt(query="Test query", retrieved_docs=None)
 
         assert "Test query" in prompt
 

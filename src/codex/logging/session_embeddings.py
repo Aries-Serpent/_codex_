@@ -21,7 +21,7 @@ import json
 import logging
 import threading
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 
@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 # Optional imports with graceful fallback
 try:
     import faiss
+
     HAS_FAISS = True
 except ImportError:
     HAS_FAISS = False
@@ -37,6 +38,7 @@ except ImportError:
 
 try:
     from sentence_transformers import SentenceTransformer
+
     HAS_SENTENCE_TRANSFORMERS = True
 except ImportError:
     HAS_SENTENCE_TRANSFORMERS = False
@@ -94,8 +96,9 @@ class SessionEmbeddings:
             try:
                 self._model = SentenceTransformer(self.MODEL_NAME)
                 logger.info(f"Loaded model: {self.MODEL_NAME}")
-            except Exception as e:
-                logger.warning(f"Failed to load model: {e}; using mock embeddings")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Failed to load model: <ERROR_TYPE>; using mock embeddings")
                 self._model = None
         else:
             logger.info("Using mock embeddings (sentence-transformers not available)")
@@ -138,8 +141,9 @@ class SessionEmbeddings:
             # Real embedding
             try:
                 embedding = self._model.encode(text, convert_to_numpy=True)
-            except Exception as e:
-                logger.error(f"Embedding failed for '{text[:50]}': {e}")
+            except (ValueError, TypeError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Embedding failed for '{text[:50]}': <ERROR_TYPE>")
                 raise
 
         embedding = embedding.astype(np.float32)
@@ -156,7 +160,7 @@ class SessionEmbeddings:
             self._embeddings = faiss.IndexFlatL2(self.DIMENSION)
         else:
             # Mock index using numpy
-            self._embeddings = []  # type: ignore[assignment]
+            self._embeddings = []
 
     def _load_index(self) -> None:
         """Load embeddings from disk or create new."""
@@ -164,8 +168,9 @@ class SessionEmbeddings:
             if self.embeddings_path.exists() and self.metadata_path.exists():
                 try:
                     self._load_from_disk()
-                except Exception as e:
-                    logger.warning(f"Failed to load index: {e}; creating new index")
+                except (IOError, OSError) as e:
+                    error_type = type(e).__name__
+                    logger.warning(f"Failed to load index: <ERROR_TYPE>; creating new index")
                     self._create_index()
                     self._metadata = {}
             else:
@@ -190,15 +195,16 @@ class SessionEmbeddings:
                 self._create_index()
         else:
             # For testing without Faiss: reconstruct embeddings from disk
-            self._embeddings = []  # type: ignore[assignment]
+            self._embeddings = []
             if self.embeddings_path.exists():
                 # Try to load pickled embeddings as fallback
                 import pickle
+
                 try:
                     with open(self.embeddings_path, "rb") as f:
-                        self._embeddings = pickle.load(f)
-                except Exception:
-                    self._embeddings = []  # type: ignore[assignment]
+                        self._embeddings = pickle.load(f)  # nosec B301 - trusted data only
+                except (IOError, OSError):
+                    self._embeddings = []
 
     def save_index(self) -> None:
         """Save embeddings to disk.
@@ -218,6 +224,7 @@ class SessionEmbeddings:
                 else:
                     # Save embeddings as pickle for fallback
                     import pickle
+
                     with open(self.embeddings_path, "wb") as f:
                         pickle.dump(self._embeddings, f)
 
@@ -236,9 +243,7 @@ class SessionEmbeddings:
                 json.dump(metadata_dict, f, indent=2)
             temp_path.replace(self.metadata_path)
 
-            logger.info(
-                f"Saved index: {len(self._metadata)} sessions to {self.metadata_path}"
-            )
+            logger.info(f"Saved index: {len(self._metadata)} sessions to {self.metadata_path}")
 
     def add_session(
         self,
@@ -277,9 +282,9 @@ class SessionEmbeddings:
 
                 # Add to index
                 if HAS_FAISS:
-                    self._embeddings.add(np.array([embedding]))  # type: ignore[attr-defined]
+                    self._embeddings.add(np.array([embedding]))
                 else:
-                    self._embeddings.append(embedding)  # type: ignore[attr-defined]
+                    self._embeddings.append(embedding)
 
                 # Update metadata
                 index = len(self._metadata)
@@ -293,13 +298,12 @@ class SessionEmbeddings:
                 logger.debug(f"Added session {session_id} (index {index})")
                 return True
 
-            except Exception as e:
-                logger.error(f"Failed to add session {session_id}: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Failed to add session {session_id}: <ERROR_TYPE>")
                 return False
 
-    def find_similar(
-        self, session_id: str, k: int = 5
-    ) -> list[tuple[str, float]]:
+    def find_similar(self, session_id: str, k: int = 5) -> list[tuple[str, float]]:
         """Find k sessions most similar to given session.
 
         Args:
@@ -319,9 +323,9 @@ class SessionEmbeddings:
 
             # Get embedding
             if HAS_FAISS:
-                embedding = self._embeddings.reconstruct(index)  # type: ignore[attr-defined]
+                embedding = self._embeddings.reconstruct(index)
             else:
-                embedding = self._embeddings[index]  # type: ignore[index]
+                embedding = self._embeddings[index]
 
             return self._search(embedding, k, exclude_index=index)
 
@@ -339,8 +343,9 @@ class SessionEmbeddings:
             try:
                 embedding = self._generate_embedding(query_text)
                 return self._search(embedding, k)
-            except Exception as e:
-                logger.error(f"Failed to search: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Failed to search: <ERROR_TYPE>")
                 return []
 
     def _search(
@@ -364,7 +369,7 @@ class SessionEmbeddings:
 
         # Perform search
         if HAS_FAISS:
-            distances, indices = self._embeddings.search(  # type: ignore[attr-defined]
+            distances, indices = self._embeddings.search(
                 np.array([query_embedding]), k + (1 if exclude_index is not None else 0)
             )
             distances = distances[0]
@@ -443,8 +448,9 @@ class SessionEmbeddings:
                 logger.info(f"Rebuilt index with {len(self._metadata)} sessions")
                 return True
 
-            except Exception as e:
-                logger.error(f"Rebuild failed: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Rebuild failed: <ERROR_TYPE>")
                 self._metadata = old_metadata
                 return False
 

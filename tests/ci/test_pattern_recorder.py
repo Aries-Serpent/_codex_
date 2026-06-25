@@ -87,19 +87,31 @@ class TestOpenDb:
 class TestInsertPattern:
     def test_basic_insert(self, conn):
         row_id = pr._insert_pattern(
-            conn, pattern_id=18, pattern_name="Duplicate Kwargs",
-            file_path="src/foo.py", line_number=42,
+            conn,
+            pattern_id=18,
+            pattern_name="Duplicate Kwargs",
+            file_path="src/foo.py",
+            line_number=42,
             description="Duplicate 'x' removed",
-            auto_fixable=True, fixed=True, session="PR#3740", git_sha="abc123",
+            auto_fixable=True,
+            fixed=True,
+            session="PR#3740",
+            git_sha="abc123",
         )
         assert row_id >= 1
 
     def test_row_values_stored_correctly(self, conn):
         pr._insert_pattern(
-            conn, pattern_id=1, pattern_name="Unused Imports",
-            file_path="tests/test_foo.py", line_number=5,
+            conn,
+            pattern_id=1,
+            pattern_name="Unused Imports",
+            file_path="tests/test_foo.py",
+            line_number=5,
             description="Import 'Mock' unused",
-            auto_fixable=True, fixed=False, session="S186", git_sha=None,
+            auto_fixable=True,
+            fixed=False,
+            session="S186",
+            git_sha=None,
         )
         row = conn.execute("SELECT * FROM patterns WHERE pattern_id=1").fetchone()
         assert row["pattern_name"] == "Unused Imports"
@@ -110,10 +122,16 @@ class TestInsertPattern:
 
     def test_null_file_and_line_allowed(self, conn):
         row_id = pr._insert_pattern(
-            conn, pattern_id=4, pattern_name="Coverage Thresholds",
-            file_path=None, line_number=None,
+            conn,
+            pattern_id=4,
+            pattern_name="Coverage Thresholds",
+            file_path=None,
+            line_number=None,
             description="Coverage standardised",
-            auto_fixable=True, fixed=True, session=None, git_sha=None,
+            auto_fixable=True,
+            fixed=True,
+            session=None,
+            git_sha=None,
         )
         row = conn.execute("SELECT * FROM patterns WHERE id=?", (row_id,)).fetchone()
         assert row["file_path"] is None
@@ -122,47 +140,81 @@ class TestInsertPattern:
     def test_multiple_inserts_same_pattern(self, conn):
         for i in range(5):
             pr._insert_pattern(
-                conn, pattern_id=18, pattern_name="Duplicate Kwargs",
-                file_path=f"src/f{i}.py", line_number=i,
-                description="dup", auto_fixable=True, fixed=True,
-                session=None, git_sha=None,
+                conn,
+                pattern_id=18,
+                pattern_name="Duplicate Kwargs",
+                file_path=f"src/f{i}.py",
+                line_number=i,
+                description="dup",
+                auto_fixable=True,
+                fixed=True,
+                session=None,
+                git_sha=None,
             )
-        count = conn.execute(
-            "SELECT COUNT(*) FROM patterns WHERE pattern_id=18"
-        ).fetchone()[0]
+        count = conn.execute("SELECT COUNT(*) FROM patterns WHERE pattern_id=18").fetchone()[0]
         assert count == 5
 
 
 class TestRecordFromReport:
     def test_records_all_issues(self, conn, tmp_path):
         issues = [
-            {"pattern": 18, "pattern_name": "Duplicate Kwargs", "file": "a.py",
-             "line": 1, "message": "dup", "auto_fix_available": True},
-            {"pattern": 1, "pattern_name": "Unused Imports", "file": "b.py",
-             "line": 2, "message": "import", "auto_fix_available": True},
+            {
+                "pattern": 18,
+                "pattern_name": "Duplicate Kwargs",
+                "file": "a.py",
+                "line": 1,
+                "message": "dup",
+                "auto_fix_available": True,
+            },
+            {
+                "pattern": 1,
+                "pattern_name": "Unused Imports",
+                "file": "b.py",
+                "line": 2,
+                "message": "import",
+                "auto_fix_available": True,
+            },
         ]
         n = pr.record_from_report(
             _make_report(tmp_path, issues, {"Duplicate Kwargs": 1, "Unused Imports": 1}),
-            conn, session="S186", git_sha="abc",
+            conn,
+            session="S186",
+            git_sha="abc",
         )
         assert n == 2
         assert conn.execute("SELECT COUNT(*) FROM patterns").fetchone()[0] == 2
 
     def test_fixed_flag_from_fixes_applied(self, conn, tmp_path):
-        issues = [{"pattern": 18, "pattern_name": "Duplicate Kwargs",
-                   "file": "a.py", "line": 1, "message": "dup",
-                   "auto_fix_available": True}]
+        issues = [
+            {
+                "pattern": 18,
+                "pattern_name": "Duplicate Kwargs",
+                "file": "a.py",
+                "line": 1,
+                "message": "dup",
+                "auto_fix_available": True,
+            }
+        ]
         pr.record_from_report(
             _make_report(tmp_path, issues, {"Duplicate Kwargs": 1}),
-            conn, session=None, git_sha=None,
+            conn,
+            session=None,
+            git_sha=None,
         )
         row = conn.execute("SELECT fixed FROM patterns").fetchone()
         assert row["fixed"] == 1
 
     def test_unfixed_when_no_fixes_applied(self, conn, tmp_path):
-        issues = [{"pattern": 2, "pattern_name": "Unused Variables",
-                   "file": "a.py", "line": 5, "message": "unused",
-                   "auto_fix_available": False}]
+        issues = [
+            {
+                "pattern": 2,
+                "pattern_name": "Unused Variables",
+                "file": "a.py",
+                "line": 5,
+                "message": "unused",
+                "auto_fix_available": False,
+            }
+        ]
         pr.record_from_report(_make_report(tmp_path, issues), conn, None, None)
         assert conn.execute("SELECT fixed FROM patterns").fetchone()["fixed"] == 0
 
@@ -177,25 +229,31 @@ class TestHighRecurrence:
     def _seed(self, conn, name, pid, count, fixed_count):
         for i in range(count):
             pr._insert_pattern(
-                conn, pattern_id=pid, pattern_name=name,
-                file_path=f"f{i}.py", line_number=i,
-                description="test", auto_fixable=True,
-                fixed=(i < fixed_count), session=None, git_sha=None,
+                conn,
+                pattern_id=pid,
+                pattern_name=name,
+                file_path=f"f{i}.py",
+                line_number=i,
+                description="test",
+                auto_fixable=True,
+                fixed=(i < fixed_count),
+                session=None,
+                git_sha=None,
             )
 
     def test_returns_qualifying_patterns(self, conn):
-        self._seed(conn, "Duplicate Kwargs", 18, 5, 4)   # 80% fix-rate
+        self._seed(conn, "Duplicate Kwargs", 18, 5, 4)  # 80% fix-rate
         result = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.5)
         names = [r["pattern_name"] for r in result]
         assert "Duplicate Kwargs" in names
 
     def test_excludes_below_threshold(self, conn):
-        self._seed(conn, "Duplicate Kwargs", 18, 2, 2)   # only 2 occurrences
+        self._seed(conn, "Duplicate Kwargs", 18, 2, 2)  # only 2 occurrences
         result = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.5)
         assert not result
 
     def test_excludes_low_fix_rate(self, conn):
-        self._seed(conn, "Duplicate Kwargs", 18, 5, 0)   # 0% fix-rate
+        self._seed(conn, "Duplicate Kwargs", 18, 5, 0)  # 0% fix-rate
         result = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.5)
         assert not result
 
@@ -203,9 +261,16 @@ class TestHighRecurrence:
 class TestExportJson:
     def test_exports_all_rows(self, conn, tmp_path):
         pr._insert_pattern(
-            conn, pattern_id=18, pattern_name="Duplicate Kwargs",
-            file_path="a.py", line_number=1, description="dup",
-            auto_fixable=True, fixed=True, session=None, git_sha=None,
+            conn,
+            pattern_id=18,
+            pattern_name="Duplicate Kwargs",
+            file_path="a.py",
+            line_number=1,
+            description="dup",
+            auto_fixable=True,
+            fixed=True,
+            session=None,
+            git_sha=None,
         )
         data = pr.export_json(conn)
         assert data["total"] == 1
@@ -213,9 +278,16 @@ class TestExportJson:
 
     def test_writes_file_when_path_given(self, conn, tmp_path):
         pr._insert_pattern(
-            conn, pattern_id=1, pattern_name="Unused Imports",
-            file_path="a.py", line_number=1, description="unused",
-            auto_fixable=True, fixed=True, session=None, git_sha=None,
+            conn,
+            pattern_id=1,
+            pattern_name="Unused Imports",
+            file_path="a.py",
+            line_number=1,
+            description="unused",
+            auto_fixable=True,
+            fixed=True,
+            session=None,
+            git_sha=None,
         )
         out = tmp_path / "export.json"
         pr.export_json(conn, output_path=out)
@@ -226,9 +298,16 @@ class TestExportJson:
     def test_summary_included(self, conn):
         for i in range(3):
             pr._insert_pattern(
-                conn, pattern_id=18, pattern_name="Duplicate Kwargs",
-                file_path=f"f{i}.py", line_number=i, description="dup",
-                auto_fixable=True, fixed=(i < 2), session=None, git_sha=None,
+                conn,
+                pattern_id=18,
+                pattern_name="Duplicate Kwargs",
+                file_path=f"f{i}.py",
+                line_number=i,
+                description="dup",
+                auto_fixable=True,
+                fixed=(i < 2),
+                session=None,
+                git_sha=None,
             )
         data = pr.export_json(conn)
         assert "summary" in data
@@ -245,9 +324,21 @@ class TestPatternRecorderCli:
         assert "No pattern occurrences" in capsys.readouterr().out
 
     def test_insert_and_query(self, tmp_db, capsys):
-        pr.main(["--db", tmp_db, "insert",
-                 "--pattern-id", "18", "--pattern-name", "Duplicate Kwargs",
-                 "--description", "dup removed", "--auto-fixable", "--fixed"])
+        pr.main(
+            [
+                "--db",
+                tmp_db,
+                "insert",
+                "--pattern-id",
+                "18",
+                "--pattern-name",
+                "Duplicate Kwargs",
+                "--description",
+                "dup removed",
+                "--auto-fixable",
+                "--fixed",
+            ]
+        )
         pr.main(["--db", tmp_db, "query", "--limit", "5"])
         out = capsys.readouterr().out
         assert "Duplicate Kwargs" in out
@@ -255,9 +346,18 @@ class TestPatternRecorderCli:
     def test_high_recurrence_json(self, tmp_db, capsys):
         conn = pr._open_db(tmp_db)
         for i in range(4):
-            pr._insert_pattern(conn, pattern_id=18, pattern_name="Duplicate Kwargs",
-                                file_path=f"f{i}.py", line_number=i, description="dup",
-                                auto_fixable=True, fixed=True, session=None, git_sha=None)
+            pr._insert_pattern(
+                conn,
+                pattern_id=18,
+                pattern_name="Duplicate Kwargs",
+                file_path=f"f{i}.py",
+                line_number=i,
+                description="dup",
+                auto_fixable=True,
+                fixed=True,
+                session=None,
+                git_sha=None,
+            )
         conn.close()
         pr.main(["--db", tmp_db, "high-recurrence", "--json"])
         out = capsys.readouterr().out
@@ -266,9 +366,18 @@ class TestPatternRecorderCli:
 
     def test_export_stdout(self, tmp_db, capsys):
         conn = pr._open_db(tmp_db)
-        pr._insert_pattern(conn, pattern_id=1, pattern_name="Unused Imports",
-                            file_path="a.py", line_number=1, description="unused",
-                            auto_fixable=True, fixed=True, session=None, git_sha=None)
+        pr._insert_pattern(
+            conn,
+            pattern_id=1,
+            pattern_name="Unused Imports",
+            file_path="a.py",
+            line_number=1,
+            description="unused",
+            auto_fixable=True,
+            fixed=True,
+            session=None,
+            git_sha=None,
+        )
         conn.close()
         pr.main(["--db", tmp_db, "export"])
         out = capsys.readouterr().out
@@ -276,9 +385,16 @@ class TestPatternRecorderCli:
         assert data["total"] == 1
 
     def test_record_from_report_cli(self, tmp_db, tmp_path, capsys):
-        issues = [{"pattern": 18, "pattern_name": "Duplicate Kwargs",
-                   "file": "src/foo.py", "line": 3, "message": "dup",
-                   "auto_fix_available": True}]
+        issues = [
+            {
+                "pattern": 18,
+                "pattern_name": "Duplicate Kwargs",
+                "file": "src/foo.py",
+                "line": 3,
+                "message": "dup",
+                "auto_fix_available": True,
+            }
+        ]
         report = _make_report(tmp_path, issues, {"Duplicate Kwargs": 1})
         pr.main(["--db", tmp_db, "record", "--report", str(report)])
         assert "Recorded 1" in capsys.readouterr().out
@@ -300,13 +416,22 @@ class TestPatternRecorderCli:
     def test_trend_counts_today(self, tmp_db, capsys):
         """trend counts today's insertion in the last day slot."""
         conn = pr._open_db(tmp_db)
-        pr._insert_pattern(conn, pattern_id=1, pattern_name="Unused Imports",
-                           file_path="a.py", line_number=1, description="u",
-                           auto_fixable=True, fixed=True, session=None, git_sha=None)
+        pr._insert_pattern(
+            conn,
+            pattern_id=1,
+            pattern_name="Unused Imports",
+            file_path="a.py",
+            line_number=1,
+            description="u",
+            auto_fixable=True,
+            fixed=True,
+            session=None,
+            git_sha=None,
+        )
         conn.close()
         pr.main(["--db", tmp_db, "trend", "--days", "3", "--json"])
         rows = json.loads(capsys.readouterr().out)
-        assert rows[-1]["count"] == 1   # today's slot
+        assert rows[-1]["count"] == 1  # today's slot
 
 
 # ===========================================================================
@@ -446,8 +571,7 @@ def _compute_merge_readiness_score():
         "score": 100,
         "total": 100,
     }
-""".strip()
-            + "\n",
+""".strip() + "\n",
             encoding="utf-8",
         )
 
@@ -482,8 +606,12 @@ def _compute_merge_readiness_score():
 
         fixer.run_all_patterns()
 
-        assert "fix_unused_imports" in called, "Pattern 1 (fix_unused_imports) should have been called"
-        assert "fix_merge_readiness_dims" not in called, "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
+        assert (
+            "fix_unused_imports" in called
+        ), "Pattern 1 (fix_unused_imports) should have been called"
+        assert (
+            "fix_merge_readiness_dims" not in called
+        ), "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
 
     def test_pattern_30_skips_auto_fix_self_reference_dimension(self, tmp_path):
         """S178: Pattern 30 must NOT report the ``auto_fix`` self-reference
@@ -509,8 +637,7 @@ def _compute_merge_readiness_score():
         "score": 85,
         "total": 100,
     }
-""".strip()
-            + "\n",
+""".strip() + "\n",
             encoding="utf-8",
         )
 
@@ -544,8 +671,7 @@ def _compute_merge_readiness_score():
 def fix_pda_entry_today(pr_number, sha, run_url, dry_run):
     Path(__file__).with_name("pda_called.txt").write_text("called", encoding="utf-8")
     return True
-""".strip()
-            + "\n",
+""".strip() + "\n",
             encoding="utf-8",
         )
 
@@ -568,11 +694,16 @@ class TestResolveAcctDiffBase:
         # name avoids a github-code-quality false-positive that would
         # otherwise flag this call against the project wrapper's signature.
         import os
+
         merged = os.environ.copy()
         merged.update(env or {})
         return subprocess.run(  # nosec B603 - args are constants under our control
-            ["git", *args], cwd=cwd, capture_output=True, text=True,
-            check=True, env=merged,
+            ["git", *args],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            check=True,
+            env=merged,
         ).stdout
 
     def _mkrepo(self, tmp_path: Path) -> Path:
@@ -615,12 +746,16 @@ class TestResolveAcctDiffBase:
         self._commit(repo, "init: bootstrap", "human", "v0\n")
         self._commit(repo, "feat: agent work", "copilot-swe-agent[bot]", "v1\n")
         self._commit(
-            repo, "chore: auto-merge 1 automated commit(s) from main [skip ci]",
-            "github-actions[bot]", "v2\n",
+            repo,
+            "chore: auto-merge 1 automated commit(s) from main [skip ci]",
+            "github-actions[bot]",
+            "v2\n",
         )
         self._commit(
-            repo, "chore: Generate follow-up prompt for PR #99",
-            "github-actions[bot]", "v3\n",
+            repo,
+            "chore: Generate follow-up prompt for PR #99",
+            "github-actions[bot]",
+            "v3\n",
         )
         # HEAD     = follow-up prompt (infra)
         # HEAD~1   = auto-merge (infra)
@@ -648,12 +783,16 @@ class TestResolveAcctDiffBase:
         mod = _load_auto_fix()
         repo = self._mkrepo(tmp_path)
         self._commit(
-            repo, "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]",
-            "github-actions[bot]", "v0\n",
+            repo,
+            "chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci]",
+            "github-actions[bot]",
+            "v0\n",
         )
         self._commit(
-            repo, "chore: auto-merge from main [skip ci]",
-            "github-actions[bot]", "v1\n",
+            repo,
+            "chore: auto-merge from main [skip ci]",
+            "github-actions[bot]",
+            "v1\n",
         )
         # No agent commit found within the lookback window.
         assert mod._resolve_acct_diff_base(repo) is None
@@ -670,8 +809,10 @@ class TestResolveAcctDiffBase:
         self._commit(repo, "feat: agent work", "copilot-swe-agent[bot]", "v1\n")
         # Dependabot rebase commit — subject matches new _INFRA_COMMIT_MARKERS entry.
         self._commit(
-            repo, "Rebase on main",
-            "github-actions[bot]", "v2\n",
+            repo,
+            "Rebase on main",
+            "github-actions[bot]",
+            "v2\n",
         )
         # HEAD     = dependabot rebase (infra via subject marker)
         # HEAD~1   = agent work        ← first non-infra commit
@@ -690,8 +831,10 @@ class TestResolveAcctDiffBase:
         self._commit(repo, "init: bootstrap", "human", "v0\n")
         self._commit(repo, "feat: agent work", "copilot-swe-agent[bot]", "v1\n")
         self._commit(
-            repo, "chore(deps): bump requests from 2.28.0 to 2.32.3",
-            "dependabot[bot]", "v2\n",
+            repo,
+            "chore(deps): bump requests from 2.28.0 to 2.32.3",
+            "dependabot[bot]",
+            "v2\n",
         )
         # HEAD     = dependabot deps bump (infra via subject marker)
         # HEAD~1   = agent work        ← first non-infra commit
@@ -710,6 +853,7 @@ class TestFindKwargRemovalSpan:
     def _make_kw(self, line: str, name: str, value_src: str):
         """Build an ast.keyword for *name=value_src* within *line*."""
         import ast
+
         # Parse value to get a real AST node with offsets
         tree = ast.parse(f"f({line.strip()})", mode="eval")
         call = tree.body  # type: ignore[attr-defined]
@@ -721,6 +865,7 @@ class TestFindKwargRemovalSpan:
     def test_simple_kwarg(self):
         fixer = self._make_fixer()
         import ast
+
         src = "f(x=1, x=2)"
         tree = ast.parse(src, mode="eval")
         call = tree.body  # type: ignore[attr-defined]
@@ -760,7 +905,7 @@ class TestFindKwargRemovalSpan:
             lineno = 1
 
         class FakeKw:
-            arg = "zzz"   # name doesn't match what's in the line
+            arg = "zzz"  # name doesn't match what's in the line
             value = FakeValue()
 
         span = fixer._find_kwarg_removal_span("f(x=1)", FakeKw())  # type: ignore[arg-type]
@@ -790,7 +935,8 @@ class TestCiPatternPipeline:
     def test_help(self):
         result = subprocess.run(
             [sys.executable, str(_ROOT / "scripts" / "ci" / "ci_pattern_pipeline.py"), "--help"],
-            capture_output=True, text=True,
+            capture_output=True,
+            text=True,
         )
         assert result.returncode == 0
         assert "detect" in result.stdout.lower() or "pipeline" in result.stdout.lower()
@@ -805,9 +951,13 @@ class TestCiPatternPipeline:
                 str(_ROOT / "scripts" / "ci" / "ci_pattern_pipeline.py"),
                 "--check-only",
                 "--no-record",
-                "--db", tmp_db,
+                "--db",
+                tmp_db,
             ],
-            capture_output=True, text=True, cwd=_ROOT, timeout=240,
+            capture_output=True,
+            text=True,
+            cwd=_ROOT,
+            timeout=240,
         )
         # Should exit 0 (clean) or 1 (issues found — acceptable in a live repo)
         assert result.returncode in (0, 1)
@@ -822,10 +972,15 @@ class TestCiPatternPipeline:
                 str(_ROOT / "scripts" / "ci" / "ci_pattern_pipeline.py"),
                 "--check-only",
                 "--no-record",
-                "--db", tmp_db,
-                "--artefact", artefact,
+                "--db",
+                tmp_db,
+                "--artefact",
+                artefact,
             ],
-            capture_output=True, text=True, cwd=_ROOT, timeout=240,
+            capture_output=True,
+            text=True,
+            cwd=_ROOT,
+            timeout=240,
         )
         assert result.returncode in (0, 1)
         assert Path(artefact).exists(), "Artefact file not created"

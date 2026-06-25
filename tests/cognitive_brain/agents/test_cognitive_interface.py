@@ -22,33 +22,46 @@ from cognitive_brain.agents.cognitive_interface import (
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_brain(enable_memory: bool = True) -> CognitiveBrain:
     return CognitiveBrain.create(enable_memory=enable_memory)
 
 
 def _approve_inputs() -> dict:
-    return {"score": 0.92, "risk_level": "low", "remediation_cost": 1500.0,
-            "business_impact": 0.8}
+    return {"score": 0.92, "risk_level": "low", "remediation_cost": 1500.0, "business_impact": 0.8}
 
 
 def _monitor_inputs() -> dict:
-    return {"score": 0.82, "risk_level": "medium", "remediation_cost": 8000.0,
-            "business_impact": 0.6}
+    return {
+        "score": 0.82,
+        "risk_level": "medium",
+        "remediation_cost": 8000.0,
+        "business_impact": 0.6,
+    }
 
 
 def _reject_inputs() -> dict:
-    return {"score": 0.40, "risk_level": "high", "remediation_cost": 20000.0,
-            "business_impact": 0.3}
+    return {
+        "score": 0.40,
+        "risk_level": "high",
+        "remediation_cost": 20000.0,
+        "business_impact": 0.3,
+    }
 
 
 def _conditional_inputs() -> dict:
-    return {"score": 0.65, "risk_level": "medium", "remediation_cost": 5500.0,
-            "business_impact": 0.5}
+    return {
+        "score": 0.65,
+        "risk_level": "medium",
+        "remediation_cost": 5500.0,
+        "business_impact": 0.5,
+    }
 
 
 # ---------------------------------------------------------------------------
 # TestCognitiveBrainCreate
 # ---------------------------------------------------------------------------
+
 
 class TestCognitiveBrainCreate:
     def test_create_returns_brain(self):
@@ -68,6 +81,7 @@ class TestCognitiveBrainCreate:
 # TestCognitiveBrainDecide
 # ---------------------------------------------------------------------------
 
+
 class TestCognitiveBrainDecide:
     def test_decide_returns_cognitive_decision(self):
         brain = _make_brain()
@@ -78,7 +92,10 @@ class TestCognitiveBrainDecide:
         brain = _make_brain()
         result = brain.decide("compliance_audit", _approve_inputs())
         assert result.decision in {
-            "approve", "approve_with_monitoring", "reject", "conditional_approval"
+            "approve",
+            "approve_with_monitoring",
+            "reject",
+            "conditional_approval",
         }
 
     def test_decide_confidence_in_range(self):
@@ -134,6 +151,7 @@ class TestCognitiveBrainDecide:
 # TestCognitiveBrainGetState
 # ---------------------------------------------------------------------------
 
+
 class TestCognitiveBrainGetState:
     def test_get_state_returns_dict_after_decide(self):
         brain = _make_brain()
@@ -155,6 +173,7 @@ class TestCognitiveBrainGetState:
 # ---------------------------------------------------------------------------
 # TestCognitiveBrainHealth
 # ---------------------------------------------------------------------------
+
 
 class TestCognitiveBrainHealth:
     def test_health_returns_snapshot(self):
@@ -181,9 +200,11 @@ class TestCognitiveBrainHealth:
 # TestCognitiveBrainExplain
 # ---------------------------------------------------------------------------
 
+
 class TestCognitiveBrainExplain:
     def test_explain_agent_returns_json(self):
         import json
+
         brain = _make_brain()
         decision = brain.decide("compliance_audit", _approve_inputs())
         explanation = brain.explain(decision, audience="agent")
@@ -202,6 +223,7 @@ class TestCognitiveBrainExplain:
 # TestAgentHints
 # ---------------------------------------------------------------------------
 
+
 class TestAgentHints:
     """Verify agent hint content for each decision branch."""
 
@@ -214,6 +236,7 @@ class TestAgentHints:
             reasoning = "test"
             used_superposition = False
             evaluation_time_ms = 5.0
+
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
         assert hints["next_action"] == "escalate_to_human_reviewer"
 
@@ -225,6 +248,7 @@ class TestAgentHints:
             reasoning = "test"
             used_superposition = True
             evaluation_time_ms = 5.0
+
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
         assert hints["next_action"] == "setup_monitoring_alerts"
         assert hints["auto_approve_allowed"] == "no"
@@ -237,6 +261,7 @@ class TestAgentHints:
             reasoning = "test"
             used_superposition = False
             evaluation_time_ms = 5.0
+
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
         assert hints["next_action"] == "request_additional_evidence"
 
@@ -248,6 +273,7 @@ class TestAgentHints:
             reasoning = "test"
             used_superposition = True
             evaluation_time_ms = 4.0
+
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
         assert hints["next_action"] == "finalize_approval"
         assert hints["auto_approve_allowed"] == "yes"
@@ -260,6 +286,7 @@ class TestAgentHints:
             reasoning = "test"
             used_superposition = False
             evaluation_time_ms = 5.0
+
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
         assert hints.get("health_warning") == "coherence_below_threshold"
 
@@ -267,6 +294,7 @@ class TestAgentHints:
 # ---------------------------------------------------------------------------
 # TestPatternDetection
 # ---------------------------------------------------------------------------
+
 
 class TestPatternDetection:
     def test_pattern_h_high_score(self):

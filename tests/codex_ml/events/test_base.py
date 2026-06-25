@@ -233,16 +233,20 @@ class TestEventBus:
         bus.subscribe(EventType.MODEL_TRAINING_COMPLETED, training_events.append)
         bus.subscribe(EventType.MODEL_DEPLOYED, deployment_events.append)
 
-        bus.publish(Event(
-            event_type=EventType.MODEL_TRAINING_COMPLETED,
-            source="trainer",
-            data={},
-        ))
-        bus.publish(Event(
-            event_type=EventType.MODEL_DEPLOYED,
-            source="deployer",
-            data={},
-        ))
+        bus.publish(
+            Event(
+                event_type=EventType.MODEL_TRAINING_COMPLETED,
+                source="trainer",
+                data={},
+            )
+        )
+        bus.publish(
+            Event(
+                event_type=EventType.MODEL_DEPLOYED,
+                source="deployer",
+                data={},
+            )
+        )
 
         assert len(training_events) == 1
         assert len(deployment_events) == 1
@@ -254,11 +258,13 @@ class TestEventBus:
         bus.subscribe(EventType.DRIFT_DETECTED, received_events.append)
         bus.unsubscribe(EventType.DRIFT_DETECTED)
 
-        bus.publish(Event(
-            event_type=EventType.DRIFT_DETECTED,
-            source="monitor",
-            data={},
-        ))
+        bus.publish(
+            Event(
+                event_type=EventType.DRIFT_DETECTED,
+                source="monitor",
+                data={},
+            )
+        )
 
         assert len(received_events) == 0
 
@@ -358,23 +364,29 @@ class TestEventBusIntegration:
             bus.subscribe(event_type, workflow_events.append)
 
         # Simulate training workflow
-        bus.publish(Event(
-            event_type=EventType.MODEL_TRAINING_STARTED,
-            source="trainer",
-            data={"model_name": "my_model", "epochs": 10},
-        ))
+        bus.publish(
+            Event(
+                event_type=EventType.MODEL_TRAINING_STARTED,
+                source="trainer",
+                data={"model_name": "my_model", "epochs": 10},
+            )
+        )
 
-        bus.publish(Event(
-            event_type=EventType.MODEL_TRAINING_COMPLETED,
-            source="trainer",
-            data={"final_accuracy": 0.92, "duration": 3600},
-        ))
+        bus.publish(
+            Event(
+                event_type=EventType.MODEL_TRAINING_COMPLETED,
+                source="trainer",
+                data={"final_accuracy": 0.92, "duration": 3600},
+            )
+        )
 
-        bus.publish(Event(
-            event_type=EventType.MODEL_REGISTERED,
-            source="registry",
-            data={"model_version": "1.0.0"},
-        ))
+        bus.publish(
+            Event(
+                event_type=EventType.MODEL_REGISTERED,
+                source="registry",
+                data={"model_version": "1.0.0"},
+            )
+        )
 
         assert len(workflow_events) == 3
         assert workflow_events[0].event_type == EventType.MODEL_TRAINING_STARTED

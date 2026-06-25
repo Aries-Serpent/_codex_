@@ -30,7 +30,7 @@ _torch_spec = importlib.util.find_spec("torch")
 if _torch_spec is not None:
     import torch as _torch
 else:  # pragma: no cover
-    _torch = None  # type: ignore[assignment]
+    _torch = None
 
 
 @dataclass
@@ -61,7 +61,7 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
     if _np is not None:  # pragma: no cover - optional dep
         try:
             _np.random.seed(seed)
-        except Exception:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
     if _torch is not None:  # pragma: no cover - optional dep
         try:
@@ -69,9 +69,9 @@ def set_global_seed(seed: int, *, set_env: bool = True) -> SeedConfig:
             if hasattr(_torch, "cuda"):
                 try:
                     _torch.cuda.manual_seed_all(seed)
-                except Exception:  # pragma: no cover
+                except (ValueError, TypeError, RuntimeError):  # pragma: no cover
                     logger.debug("Suppressed exception in handler", exc_info=True)
-        except Exception:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
     if set_env:
         os.environ["CODEX_GLOBAL_SEED"] = str(seed)

@@ -30,11 +30,11 @@ from typing import Optional
 try:  # Optional dependency: prefer full validation when pydantic is available
     from pydantic import ValidationError
 except ModuleNotFoundError:  # pragma: no cover - pydantic missing
-    ValidationError = None  # type: ignore
+    ValidationError = None
 
 try:
     from codex_ml.config_schema import TrainConfig, validate_config_file
-except Exception:  # pragma: no cover - schema validation optional
+except (IOError, OSError):  # pragma: no cover - schema validation optional
     TrainConfig = None
     validate_config_file = None
 
@@ -79,7 +79,7 @@ def _format_validation_error(exc: ValidationError | None) -> str:
         if TrainConfig is not None:
             try:
                 known = set(getattr(TrainConfig, "model_fields", {}).keys())
-            except Exception:  # pragma: no cover - defensive
+            except (ImportError, AttributeError):  # pragma: no cover - defensive
                 known = set()
             hints: list[str] = []
             for key in extra_keys:
@@ -106,17 +106,17 @@ def _fallback_validate_config(config_path: Path) -> tuple[str, int]:
     if not isinstance(data, dict):
         raise ValueError("Configuration must be a mapping of keys to values")
     training = data.get("training") if isinstance(data.get("training"), dict) else data
-    lr = training.get("learning_rate") or training.get("lr")  # type: ignore[union-attr]
+    lr = training.get("learning_rate") or training.get("lr")
     if lr is None:
         raise ValueError("learning_rate is required")
     if float(lr) <= 0:
         raise ValueError("learning_rate must be positive")
-    epochs = training.get("epochs")  # type: ignore[union-attr]
+    epochs = training.get("epochs")
     if epochs is None:
         raise ValueError("epochs is required")
     if int(epochs) <= 0:
         raise ValueError("epochs must be positive")
-    model_name = training.get("model") or training.get("model_name") or data.get("model_name")  # type: ignore[union-attr]
+    model_name = training.get("model") or training.get("model_name") or data.get("model_name")
     model_name = str(model_name or "unknown")
     return model_name, int(epochs)
 
@@ -130,7 +130,7 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
             raise exit_cls(code=0)
         except exit_cls:
             raise
-        except Exception as exc:  # pragma: no cover - simple fallback
+        except (IOError, OSError) as exc:  # pragma: no cover - simple fallback
             echo(f"Invalid configuration:\n{exc}", err=True)
             raise exit_cls(code=2) from exc
 
@@ -141,10 +141,11 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
     except exit_cls:
         raise
     except ValidationError as exc:
-        logger.debug(f"ValidationError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ValidationError: <ERROR_TYPE>")
         echo("Invalid configuration:\n" + _format_validation_error(exc), err=True)
         raise exit_cls(code=2) from exc
-    except Exception as exc:  # pragma: no cover - defensive fallback
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive fallback
         echo(f"Validation error: {exc}", err=True)
         raise exit_cls(code=2) from exc
 

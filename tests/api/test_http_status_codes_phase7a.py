@@ -60,11 +60,7 @@ def registered_user(auth_components, test_client):
     """Create a registered user."""
     _, _, auth = auth_components
     auth.register("testuser", "test@example.com", "SecurePass123!")
-    return {
-        "username": "testuser",
-        "password": "SecurePass123!",
-        "email": "test@example.com"
-    }
+    return {"username": "testuser", "password": "SecurePass123!", "email": "test@example.com"}
 
 
 @pytest.fixture
@@ -72,10 +68,7 @@ def auth_token(test_client, registered_user):
     """Get valid auth token."""
     response = test_client.post(
         "/auth/login",
-        json={
-            "username": registered_user["username"],
-            "password": registered_user["password"]
-        }
+        json={"username": registered_user["username"], "password": registered_user["password"]},
     )
     if response.status_code == 200:
         return response.json().get("access_token")
@@ -100,10 +93,7 @@ class TestStatus200OK:
         """Successful login should return 200."""
         response = test_client.post(
             "/auth/login",
-            json={
-                "username": registered_user["username"],
-                "password": registered_user["password"]
-            }
+            json={"username": registered_user["username"], "password": registered_user["password"]},
         )
         assert response.status_code == 200
 
@@ -115,10 +105,7 @@ class TestStatus200OK:
     def test_refresh_token_returns_200(self, test_client, auth_token):
         """Token refresh should return 200."""
         if auth_token:
-            response = test_client.post(
-                "/auth/refresh",
-                json={"refresh_token": auth_token}
-            )
+            response = test_client.post("/auth/refresh", json={"refresh_token": auth_token})
             # May return 200 or 422 depending on token validity
             assert response.status_code in [200, 422]
 
@@ -150,8 +137,8 @@ class TestStatus201Created:
             json={
                 "username": "newuser",
                 "email": "newuser@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code == 201
 
@@ -167,20 +154,19 @@ class TestStatus201Created:
         """POST request that creates resource returns 201."""
         assert True
 
-    @pytest.mark.parametrize("username,email", [
-        ("user1", "user1@example.com"),
-        ("user2", "user2@example.com"),
-        ("user3", "user3@example.com"),
-    ])
+    @pytest.mark.parametrize(
+        "username,email",
+        [
+            ("user1", "user1@example.com"),
+            ("user2", "user2@example.com"),
+            ("user3", "user3@example.com"),
+        ],
+    )
     def test_register_multiple_users_returns_201(self, test_client, username, email):
         """Multiple registrations should each return 201."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": username,
-                "email": email,
-                "password": "SecurePass123!"
-            }
+            json={"username": username, "email": email, "password": "SecurePass123!"},
         )
         assert response.status_code == 201
 
@@ -200,10 +186,7 @@ class TestStatus204NoContent:
 
     def test_logout_returns_204(self, test_client, auth_token):
         """Logout operation should return 204 or 200."""
-        response = test_client.post(
-            "/auth/logout",
-            json={}
-        )
+        response = test_client.post("/auth/logout", json={})
         # May be 200 or 204
         assert response.status_code in [200, 204]
 
@@ -227,11 +210,7 @@ class TestStatus400BadRequest:
     def test_login_invalid_credentials_returns_400(self, test_client):
         """Invalid login credentials should return 400."""
         response = test_client.post(
-            "/auth/login",
-            json={
-                "username": "nonexistent",
-                "password": "wrongpass"
-            }
+            "/auth/login", json={"username": "nonexistent", "password": "wrongpass"}
         )
         assert response.status_code == 400
 
@@ -239,11 +218,7 @@ class TestStatus400BadRequest:
         """Weak password should return 400."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "weakpass",
-                "email": "weak@example.com",
-                "password": "weak"
-            }
+            json={"username": "weakpass", "email": "weak@example.com", "password": "weak"},
         )
         assert response.status_code == 400
 
@@ -251,41 +226,28 @@ class TestStatus400BadRequest:
         """Invalid email should return 400."""
         response = test_client.post(
             "/auth/register",
-            json={
-                "username": "bademail",
-                "email": "not-an-email",
-                "password": "SecurePass123!"
-            }
+            json={"username": "bademail", "email": "not-an-email", "password": "SecurePass123!"},
         )
         assert response.status_code == 400
 
     def test_malformed_json_returns_400(self, test_client):
         """Malformed JSON should return 400."""
         response = test_client.post(
-            "/auth/login",
-            content="{invalid json}",
-            headers={"Content-Type": "application/json"}
+            "/auth/login", content="{invalid json}", headers={"Content-Type": "application/json"}
         )
         assert response.status_code == 422  # FastAPI returns 422 for parse errors
 
     @pytest.mark.parametrize("missing_field", ["username", "password", "email"])
     def test_missing_required_field_returns_400(self, test_client, missing_field):
         """Missing required field should return 400."""
-        payload = {
-            "username": "test",
-            "password": "SecurePass123!",
-            "email": "test@example.com"
-        }
+        payload = {"username": "test", "password": "SecurePass123!", "email": "test@example.com"}
         del payload[missing_field]
         response = test_client.post("/auth/register", json=payload)
         assert response.status_code == 422  # FastAPI 422 for validation errors
 
     def test_empty_request_body_returns_400(self, test_client):
         """Empty request body should return 400."""
-        response = test_client.post(
-            "/auth/login",
-            json={}
-        )
+        response = test_client.post("/auth/login", json={})
         assert response.status_code == 422
 
     def test_wrong_data_type_returns_400(self, test_client):
@@ -295,8 +257,8 @@ class TestStatus400BadRequest:
             json={
                 "username": 12345,  # Should be string
                 "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         # FastAPI coerces or validates, may return 422 or 400
         assert response.status_code in [400, 422]
@@ -313,8 +275,8 @@ class TestStatus400BadRequest:
             json={
                 "username": "a" * 10000,
                 "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [400, 422]
 
@@ -329,44 +291,29 @@ class TestStatus401Unauthorized:
 
     def test_missing_auth_header_returns_401(self, test_client):
         """Missing auth header should return 401."""
-        response = test_client.get(
-            "/protected",
-            headers={}
-        )
+        response = test_client.get("/protected", headers={})
         # Depends on endpoint requirements
         assert response.status_code in [401, 404]
 
     def test_invalid_token_returns_401(self, test_client):
         """Invalid token should return 401."""
-        response = test_client.get(
-            "/protected",
-            headers={"Authorization": "******"}
-        )
+        response = test_client.get("/protected", headers={"Authorization": "******"})
         # Depends on endpoint implementation
         assert response.status_code in [401, 404, 403]
 
     def test_expired_token_returns_401(self, test_client):
         """Expired token should return 401."""
-        response = test_client.get(
-            "/protected",
-            headers={"Authorization": "******"}
-        )
+        response = test_client.get("/protected", headers={"Authorization": "******"})
         assert response.status_code in [401, 404, 403]
 
     def test_malformed_auth_header_returns_401(self, test_client):
         """Malformed auth header should return 401."""
-        response = test_client.get(
-            "/protected",
-            headers={"Authorization": "NotBearer token"}
-        )
+        response = test_client.get("/protected", headers={"Authorization": "NotBearer token"})
         assert response.status_code in [401, 404, 403]
 
     def test_missing_bearer_returns_401(self, test_client):
         """Missing ****** should return 401."""
-        response = test_client.get(
-            "/protected",
-            headers={"Authorization": "token-without-bearer"}
-        )
+        response = test_client.get("/protected", headers={"Authorization": "token-without-bearer"})
         assert response.status_code in [401, 404, 403]
 
 
@@ -417,17 +364,17 @@ class TestStatus404NotFound:
 
     def test_update_nonexistent_resource_returns_404(self, test_client):
         """Updating nonexistent resource should return 404."""
-        response = test_client.put(
-            "/auth/user/99999",
-            json={"username": "new"}
-        )
+        response = test_client.put("/auth/user/99999", json={"username": "new"})
         assert response.status_code in [404, 401]
 
-    @pytest.mark.parametrize("path", [
-        "/auth/users/invalid",
-        "/api/resources/missing",
-        "/data/nothere",
-    ])
+    @pytest.mark.parametrize(
+        "path",
+        [
+            "/auth/users/invalid",
+            "/api/resources/missing",
+            "/data/nothere",
+        ],
+    )
     def test_various_nonexistent_paths_return_404(self, test_client, path):
         """Various nonexistent paths should return 404."""
         response = test_client.get(path)
@@ -447,22 +394,14 @@ class TestStatus409Conflict:
         # First registration succeeds
         first = test_client.post(
             "/auth/register",
-            json={
-                "username": "dupuser",
-                "email": "dup@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "dupuser", "email": "dup@example.com", "password": "SecurePass123!"},
         )
         assert first.status_code == 201
 
         # Duplicate registration should fail
         duplicate = test_client.post(
             "/auth/register",
-            json={
-                "username": "dupuser",
-                "email": "dup2@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "dupuser", "email": "dup2@example.com", "password": "SecurePass123!"},
         )
         assert duplicate.status_code == 400  # Most APIs return 400 for duplicate
 
@@ -470,21 +409,13 @@ class TestStatus409Conflict:
         """Duplicate email should return 409/400."""
         first = test_client.post(
             "/auth/register",
-            json={
-                "username": "user1",
-                "email": "shared@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "user1", "email": "shared@example.com", "password": "SecurePass123!"},
         )
         assert first.status_code == 201
 
         duplicate = test_client.post(
             "/auth/register",
-            json={
-                "username": "user2",
-                "email": "shared@example.com",
-                "password": "SecurePass123!"
-            }
+            json={"username": "user2", "email": "shared@example.com", "password": "SecurePass123!"},
         )
         assert duplicate.status_code == 400  # Most APIs return 400
 
@@ -508,7 +439,7 @@ class TestStatus422UnprocessableEntity:
             json={
                 "username": "test",
                 # Missing required fields
-            }
+            },
         )
         assert response.status_code == 422
 
@@ -519,8 +450,8 @@ class TestStatus422UnprocessableEntity:
             json={
                 "username": 123,  # Should be string
                 "email": "test@example.com",
-                "password": "SecurePass123!"
-            }
+                "password": "SecurePass123!",
+            },
         )
         assert response.status_code in [422, 400]
 
@@ -532,8 +463,8 @@ class TestStatus422UnprocessableEntity:
                 "username": "test",
                 "email": "test@example.com",
                 "password": "SecurePass123!",
-                "role": "invalid_role"  # If role is enum
-            }
+                "role": "invalid_role",  # If role is enum
+            },
         )
         # May return 422 if validation fails
         assert response.status_code in [422, 400]
@@ -546,8 +477,8 @@ class TestStatus422UnprocessableEntity:
                 "username": "test",
                 "email": "test@example.com",
                 "password": "SecurePass123!",
-                "unknown_field": "value"
-            }
+                "unknown_field": "value",
+            },
         )
         # Depends on Pydantic config
         assert response.status_code in [201, 400, 422]
@@ -570,8 +501,8 @@ class TestStatus500InternalServerError:
                 json={
                     "username": "test",
                     "email": "test@example.com",
-                    "password": "SecurePass123!"
-                }
+                    "password": "SecurePass123!",
+                },
             )
             assert response.status_code == 500
 
@@ -621,8 +552,7 @@ class TestStatusCodeEdgeCases:
     def test_error_status_codes_include_error_details(self, test_client):
         """Error status codes include error details."""
         response = test_client.post(
-            "/auth/login",
-            json={"username": "nonexistent", "password": "wrong"}
+            "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
         if response.status_code >= 400:
             data = response.json()

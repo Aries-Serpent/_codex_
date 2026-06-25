@@ -17,8 +17,8 @@ Identify and remediate **28 hardcoded secrets** blocking production deployment o
 
 | Metric | Result | Status |
 |--------|--------|--------|
-| **Hardcoded Secrets Identified** | 28 | ✅ Complete |
-| **CRITICAL Secrets Removed** | 2 | ✅ Remediated |
+| **Hardcoded Secrets Identified** | 28 | ✅ Complete | <!-- pragma: allowlist secret -->
+| **CRITICAL Secrets Removed** | 2 | ✅ Remediated | <!-- pragma: allowlist secret -->
 | **Code Verified** | 100% | ✅ Verified |
 | **Environment Variables** | Configured | ✅ Ready |
 | **Pre-commit Hooks** | Not yet installed | ⏳ Next step |
@@ -36,7 +36,7 @@ Identify and remediate **28 hardcoded secrets** blocking production deployment o
 - **CRITICAL** (hardcoded in source code): 2
   - `codex-auth-change-me-in-production` in `src/codex/api/auth_routes.py:180`
   - `codex-dev-secret-key-change-in-production` in `src/codex/auth/middleware.py:100`
-  
+
 - **HIGH** (weak defaults, env var misconfigurations): 26
   - API Keys: 7 instances
   - Database Credentials: 7 instances  
@@ -96,11 +96,11 @@ All remediation verified through:
 
 4. **Test Results**
    ```
-   TEST 1: _get_default_secret() function ✅ PASS
+   TEST 1: _get_default_secret() function ✅ PASS  # pragma: allowlist secret
    TEST 2: middleware.py hardcoded removal ✅ PASS
    TEST 3: .env.example configuration ✅ PASS
-   TEST 4: Source code scan for secrets ✅ PASS
-   
+   TEST 4: Source code scan for secrets ✅ PASS  # pragma: allowlist secret
+
    Overall: 4/4 Tests Passed ✅
    ```
 
@@ -176,17 +176,17 @@ Complete environment configuration template with:
 
 ### Before Remediation
 ```
-❌ 2 hardcoded secrets in source code
+❌ 2 hardcoded secrets in source code  # pragma: allowlist secret
 ❌ No environment variable templates  
 ❌ Weak default values
-❌ No secret detection in pre-commit
+❌ No secret detection in pre-commit  # pragma: allowlist secret
 ❌ No rotation procedures documented
 ❌ Risk of production deployment with exposed credentials
 ```
 
 ### After Remediation
 ```
-✅ 0 hardcoded secrets in source code
+✅ 0 hardcoded secrets in source code  # pragma: allowlist secret
 ✅ Comprehensive .env.example template
 ✅ Secure random generation for defaults
 ✅ Pre-commit hook configuration ready
@@ -198,7 +198,7 @@ Complete environment configuration template with:
 
 | Standard | Requirement | Status |
 |----------|-------------|--------|
-| **OWASP A02:2021** | Cryptographic Failures — no hardcoded secrets | ✅ COMPLIANT |
+| **OWASP A02:2021** | Cryptographic Failures — no hardcoded secrets | ✅ COMPLIANT | <!-- pragma: allowlist secret -->
 | **CWE-798** | Use of Hardcoded Credentials | ✅ COMPLIANT |
 | **NIST SP 800-53** | SI-7 Information System Monitoring | ✅ READY |
 | **PCI-DSS 3.2.1** | Don't store sensitive data in source | ✅ COMPLIANT |
@@ -275,7 +275,7 @@ Complete environment configuration template with:
 
 | Phase | Task | Duration | Status |
 |-------|------|----------|--------|
-| **0-1h** | Identify 28 secrets | ✅ COMPLETE | |
+| **0-1h** | Identify 28 secrets | ✅ COMPLETE | | <!-- pragma: allowlist secret -->
 | **1-3h** | Remove hardcoded values, add env vars | ✅ COMPLETE | |
 | **3-4h** | Verify remediation | ✅ COMPLETE | |
 | **4-8h** | Rotate credentials in production | ⏳ PENDING | |

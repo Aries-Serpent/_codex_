@@ -67,10 +67,10 @@ class TestToolHandlers:
                 "type": "object",
                 "properties": {
                     "query": {"type": "string"},
-                    "limit": {"type": "integer", "default": 10}
+                    "limit": {"type": "integer", "default": 10},
                 },
-                "required": ["query"]
-            }
+                "required": ["query"],
+            },
         }
 
         def validate_tool_input(schema, inputs):
@@ -106,6 +106,7 @@ class TestPromptHandlers:
 
     def test_prompts_get_handler(self):
         """prompts/get returns prompt details."""
+
         def handle_prompts_get(params):
             prompt_name = params.get("name")
             arguments = params.get("arguments", {})
@@ -120,7 +121,9 @@ class TestPromptHandlers:
 
             raise ValueError(f"Unknown prompt: {prompt_name}")
 
-        result = handle_prompts_get({"name": "summarize", "arguments": {"text": "Long document..."}})
+        result = handle_prompts_get(
+            {"name": "summarize", "arguments": {"text": "Long document..."}}
+        )
 
         assert "messages" in result
         assert result["messages"][0]["role"] == "user"
@@ -171,6 +174,7 @@ class TestCompletionHandlers:
 
     def test_completion_complete_handler(self):
         """completion/complete returns completions."""
+
         def handle_completion(params):
             ref = params.get("ref", {})
             argument = params.get("argument", {})
@@ -193,10 +197,9 @@ class TestCompletionHandlers:
 
             return {"completion": {"values": filtered, "hasMore": False}}
 
-        result = handle_completion({
-            "ref": {"type": "ref/prompt"},
-            "argument": {"name": "text", "value": "H"}
-        })
+        result = handle_completion(
+            {"ref": {"type": "ref/prompt"}, "argument": {"name": "text", "value": "H"}}
+        )
 
         assert "completion" in result
         assert len(result["completion"]["values"]) == 2
@@ -214,11 +217,7 @@ class TestNotificationHandlers:
             progress = params.get("progress")
             total = params.get("total")
 
-            progress_updates.append({
-                "token": token,
-                "progress": progress,
-                "total": total
-            })
+            progress_updates.append({"token": token, "progress": progress, "total": total})
 
         handle_progress({"progressToken": "op-1", "progress": 50, "total": 100})
 

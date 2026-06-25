@@ -21,6 +21,10 @@ on:
         type: boolean
         default: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 env:
   VERIFICATION_DIR: .codex/verification-results
 
@@ -71,6 +75,7 @@ jobs:
 
   verify-service-startup:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: setup
     steps:
       - name: Checkout
@@ -101,6 +106,7 @@ jobs:
 
   health-checks:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs: setup
     outputs:
       health_status: ${{ steps.health.outputs.health_status }}
@@ -225,6 +231,7 @@ jobs:
 
   generate-report:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [setup, health-checks, smoke-tests, critical-path-tests]
     if: always()
     steps:
@@ -340,6 +347,7 @@ jobs:
 
   slack-notification:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [setup, generate-report]
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
@@ -384,6 +392,7 @@ jobs:
 
   create-issue-on-failure:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [generate-report]
     if: failure()
     steps:
@@ -398,4 +407,3 @@ jobs:
               body: 'Post-deployment verification failed. Check workflow run for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
               labels: ['deployment', 'verification-failed']
             });
-

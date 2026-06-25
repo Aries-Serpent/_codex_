@@ -3,6 +3,7 @@ Unit tests for metrics aggregation and statistical analysis.
 
 Tests metric computation, aggregation strategies, and statistical analysis.
 """
+
 import math
 
 import pytest
@@ -40,8 +41,8 @@ class TestMetricComputation:
             metric.add_batch([1, 2, 3], [1, 2, 2])
             result = metric.compute()
 
-            assert 'accuracy' in result
-            assert abs(result['accuracy'] - 0.6667) < 0.01
+            assert "accuracy" in result
+            assert abs(result["accuracy"] - 0.6667) < 0.01
         except ImportError:
             pytest.skip("AccuracyMetric not available")
 
@@ -55,8 +56,8 @@ class TestMetricComputation:
             result = metric.compute()
 
             # Either it returns 0.0 accuracy or the result has accuracy key
-            if 'accuracy' in result:
-                assert isinstance(result['accuracy'], (int, float))
+            if "accuracy" in result:
+                assert isinstance(result["accuracy"], (int, float))
         except ImportError:
             pytest.skip("AccuracyMetric not available")
         except (ValueError, ZeroDivisionError):
@@ -212,7 +213,7 @@ class TestStatisticalAnalysis:
 
         moving_avgs = []
         for i in range(len(values) - window + 1):
-            window_avg = sum(values[i:i+window]) / window
+            window_avg = sum(values[i : i + window]) / window
             moving_avgs.append(window_avg)
 
         assert len(moving_avgs) == 8
@@ -282,7 +283,7 @@ class TestAggregationStrategies:
         values = [2.0, 4.0, 8.0]
 
         n = len(values)
-        harmonic_mean = n / sum(1/v for v in values)
+        harmonic_mean = n / sum(1 / v for v in values)
 
         assert abs(harmonic_mean - 3.4286) < 0.001
 

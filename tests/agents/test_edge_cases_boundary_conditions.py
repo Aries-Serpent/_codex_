@@ -659,13 +659,7 @@ class TestMemoryEntryToFromDictBoundaries:
 
     def test_roundtrip_preserves_complex_context(self) -> None:
         """Test roundtrip preserves complex nested context."""
-        context = {
-            "level1": {
-                "level2": {
-                    "level3": [1, 2, 3, {"nested": "value"}]
-                }
-            }
-        }
+        context = {"level1": {"level2": {"level3": [1, 2, 3, {"nested": "value"}]}}}
         entry = MemoryEntry(
             memory_id="test",
             category="test",

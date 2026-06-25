@@ -189,9 +189,7 @@ class TestWorkflowNavigatorGetWorkflowStatus:
         nav.create_workflow("status_test", steps=[step])
         status = nav.get_workflow_status("STATUS_TEST")
         total = status["total_steps"]
-        assert (
-            status["completed_steps"] + status["failed_steps"] + status["pending_steps"] <= total
-        )
+        assert status["completed_steps"] + status["failed_steps"] + status["pending_steps"] <= total
 
 
 class TestWorkflowNavigatorNavigation:
@@ -281,7 +279,8 @@ class TestWorkflowNavigatorNavigation:
         )
         assert any(
             record.levelname == "WARNING"
-            and record.message == "Step index 99 out of bounds for workflow IDX_LOGGING with 2 steps."
+            and record.message
+            == "Step index 99 out of bounds for workflow IDX_LOGGING with 2 steps."
             for record in caplog.records
         )
 
@@ -540,9 +539,17 @@ class TestMentalMappingModelToDict:
     def test_to_dict_has_required_keys(self) -> None:
         mm = MentalMappingModel(agent_id="agent_test")
         d = mm.to_dict()
-        for key in ("map_id", "agent_id", "created_at", "nodes", "edges",
-                    "learning_history", "appraisal_metrics", "pattern_library",
-                    "nodes_needing_review"):
+        for key in (
+            "map_id",
+            "agent_id",
+            "created_at",
+            "nodes",
+            "edges",
+            "learning_history",
+            "appraisal_metrics",
+            "pattern_library",
+            "nodes_needing_review",
+        ):
             assert key in d, f"Missing key: {key}"
 
     def test_to_dict_agent_id_matches(self) -> None:
@@ -559,7 +566,14 @@ class TestMentalMappingModelToDict:
 
     def test_to_dict_nodes_contain_node_dicts(self) -> None:
         mm = MentalMappingModel(agent_id="a")
-        mm.add_node(MentalNode(node_id="n1", node_type=NodeType.OBSERVATION, content="obs", timestamp=get_timestamp()))
+        mm.add_node(
+            MentalNode(
+                node_id="n1",
+                node_type=NodeType.OBSERVATION,
+                content="obs",
+                timestamp=get_timestamp(),
+            )
+        )
         nodes = mm.to_dict()["nodes"]
         assert "n1" in nodes
         assert isinstance(nodes["n1"], dict)
@@ -575,14 +589,29 @@ class TestMentalMappingModelGetSummary:
     def test_summary_has_required_keys(self) -> None:
         mm = MentalMappingModel(agent_id="summary_agent")
         s = mm.get_mental_map_summary()
-        for key in ("map_id", "agent_id", "created_at", "total_nodes", "total_edges",
-                    "nodes_by_type", "nodes_needing_review", "learning_history_size",
-                    "appraisal_metrics"):
+        for key in (
+            "map_id",
+            "agent_id",
+            "created_at",
+            "total_nodes",
+            "total_edges",
+            "nodes_by_type",
+            "nodes_needing_review",
+            "learning_history_size",
+            "appraisal_metrics",
+        ):
             assert key in s, f"Missing key in summary: {key}"
 
     def test_summary_counts_match(self) -> None:
         mm = MentalMappingModel(agent_id="count_check")
-        mm.add_node(MentalNode(node_id="x1", node_type=NodeType.OBSERVATION, content="obs", timestamp=get_timestamp()))
+        mm.add_node(
+            MentalNode(
+                node_id="x1",
+                node_type=NodeType.OBSERVATION,
+                content="obs",
+                timestamp=get_timestamp(),
+            )
+        )
         s = mm.get_mental_map_summary()
         assert s["total_nodes"] == len(mm.nodes)
         assert s["total_edges"] == len(mm.edges)

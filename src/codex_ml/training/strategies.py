@@ -115,8 +115,9 @@ class FunctionalStrategy:
         for cb in callbacks:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
-            except Exception as e:
-                logger.warning(f"Exception: {e}", exc_info=True)
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
         functional_overrides: dict[str, Any] = {}
         if isinstance(getattr(config, "extra", None), dict):
@@ -187,14 +188,15 @@ class FunctionalStrategy:
                 extra_payload["trained"] = True
             else:
                 extra_payload["trained"] = False
-        except Exception as exc:  # pragma: no cover - defensive
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
             status = "error"
             extra_payload["exception"] = repr(exc)
             for cb in callbacks:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
-                except Exception as e:
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                except (ValueError, TypeError, RuntimeError) as e:
+                    error_type = type(e).__name__
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         else:
             for cb in callbacks:
                 try:
@@ -203,8 +205,9 @@ class FunctionalStrategy:
                         {"status": 1.0},
                         {"metrics": metrics or {}, "trained": bool(train_texts)},
                     )
-                except Exception as e:
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                except (ValueError, TypeError, RuntimeError) as e:
+                    error_type = type(e).__name__
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
         if functional_overrides:
             extra_payload["unused_overrides"] = functional_overrides
@@ -239,8 +242,9 @@ class LegacyStrategy:
         for cb in callbacks:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
-            except Exception as e:
-                logger.warning(f"Exception: {e}", exc_info=True)
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         try:
             _legacy(
                 epochs=config.epochs,
@@ -250,13 +254,14 @@ class LegacyStrategy:
                 model_name=config.model_name,
             )
             status = "ok"
-        except Exception as exc:  # pragma: no cover
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
             status = "error"
             for cb in callbacks:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
-                except Exception as e:
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                except (ValueError, TypeError, RuntimeError) as e:
+                    error_type = type(e).__name__
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         return TrainingResult(
             status=status,
             backend=self.backend_name,
@@ -325,8 +330,9 @@ class ContinualReplayStrategy:
             try:
                 payload = target_path.read_text(encoding="utf-8")
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"OSError: <ERROR_TYPE>")
+                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
                 return [], []
             texts = [line.strip() for line in payload.splitlines() if line.strip()]
             return texts, []
@@ -356,13 +362,14 @@ class ContinualReplayStrategy:
             if isinstance(phase, dict):
                 resolved.append(dict(phase))
             elif is_dataclass(phase):
-                resolved.append(asdict(phase))  # type: ignore[arg-type]
+                resolved.append(asdict(phase))
             else:
                 try:
                     resolved.append(dict(phase))
                 except TypeError as e:
-                    logger.debug(f"TypeError: {e}")
-                    logger.warning(f"TypeError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"TypeError: <ERROR_TYPE>")
+                    logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
                     resolved.append(dict(vars(phase)))
         return resolved
 
@@ -499,7 +506,7 @@ def resolve_strategy(name: str | None) -> BackendStrategy:
         name = "functional"
     normalised = str(name).lower().strip()
     try:
-        return STRATEGY_REGISTRY[normalised]  # type: ignore[return-value]
+        return STRATEGY_REGISTRY[normalised]
     except KeyError as err:
         raise ValueError(
             f"Unknown backend strategy: {name!r}. Choices={list(STRATEGY_REGISTRY)}"

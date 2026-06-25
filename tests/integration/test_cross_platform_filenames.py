@@ -3,6 +3,7 @@ Integration tests for cross-platform filename compatibility.
 
 Ensures no Windows-incompatible filenames are generated during operations.
 """
+
 import tempfile
 from pathlib import Path
 
@@ -20,8 +21,9 @@ def test_timestamp_functions_produce_safe_filenames():
         timestamp = windows_safe_timestamp(fmt=fmt)
 
         for char in WINDOWS_ILLEGAL_CHARS:
-            assert char not in timestamp, \
-                f"Format '{fmt}' produced illegal character '{char}': {timestamp}"
+            assert (
+                char not in timestamp
+            ), f"Format '{fmt}' produced illegal character '{char}': {timestamp}"
 
 
 def test_existing_reports_directory_compliance():
@@ -40,8 +42,8 @@ def test_existing_reports_directory_compliance():
 
     if violations:
         pytest.fail(
-            f"Found {len(violations)} file(s) with Windows-incompatible names:\n" +
-            "\n".join(f"  - {v}" for v in violations)
+            f"Found {len(violations)} file(s) with Windows-incompatible names:\n"
+            + "\n".join(f"  - {v}" for v in violations)
         )
 
 
@@ -91,7 +93,9 @@ def test_sanitize_filename_comprehensive():
 
     for input_name, expected in test_cases:
         result = sanitize_filename(input_name)
-        assert result == expected, f"sanitize_filename({input_name!r}) = {result!r}, expected {expected!r}"
+        assert (
+            result == expected
+        ), f"sanitize_filename({input_name!r}) = {result!r}, expected {expected!r}"
 
         # Verify no illegal characters remain
         for char in WINDOWS_ILLEGAL_CHARS:
@@ -115,5 +119,4 @@ def test_windows_safe_timestamp_formats_match_patterns():
 
     for fmt, pattern in patterns.items():
         result = windows_safe_timestamp(dt, fmt=fmt)
-        assert re.match(pattern, result), \
-            f"Format {fmt} doesn't match pattern {pattern}: {result}"
+        assert re.match(pattern, result), f"Format {fmt} doesn't match pattern {pattern}: {result}"

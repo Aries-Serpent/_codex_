@@ -23,6 +23,7 @@ from codex.auth.user_store import UserStore
 # Injection Attack Prevention Tests
 # ============================================================================
 
+
 class TestInjectionPrevention:
     """Prevent injection attacks."""
 
@@ -52,7 +53,6 @@ class TestInjectionPrevention:
 
     def test_command_injection_prevention(self, auth_system):
         """Prevent command injection."""
-        injection = "; rm -rf /"
 
         # Should safely handle
         user = auth_system.register("user2", "user2@example.com", "Str0ngPass!")
@@ -77,6 +77,7 @@ class TestInjectionPrevention:
 # ============================================================================
 # Cryptographic Security Tests
 # ============================================================================
+
 
 class TestCryptographicSecurity:
     """Cryptographic security tests."""
@@ -134,6 +135,7 @@ class TestCryptographicSecurity:
 # Timing Attack Prevention Tests
 # ============================================================================
 
+
 class TestTimingAttackPrevention:
     """Prevent timing attacks."""
 
@@ -181,7 +183,7 @@ class TestTimingAttackPrevention:
         start = time.time()
         try:
             auth_system.token_manager.validate_token("invalid.token.format")
-        except:
+        except (AttributeError, OSError, RuntimeError):
             pass
         time_invalid = time.time() - start
 
@@ -193,6 +195,7 @@ class TestTimingAttackPrevention:
 # ============================================================================
 # Resource Exhaustion Prevention Tests
 # ============================================================================
+
 
 class TestResourceExhaustion:
     """Prevent resource exhaustion attacks."""
@@ -227,12 +230,8 @@ class TestResourceExhaustion:
         # Many reset attempts
         for i in range(20):
             try:
-                auth_system.change_password(
-                    user.user_id,
-                    "Str0ngPass!",
-                    f"NewPass{i}!"
-                )
-            except:
+                auth_system.change_password(user.user_id, "Str0ngPass!", f"NewPass{i}!")
+            except (AttributeError, OSError, RuntimeError):
                 pass
 
     def test_very_large_token_payload(self, auth_system):
@@ -260,6 +259,7 @@ class TestResourceExhaustion:
 # ============================================================================
 # Boundary Condition Tests
 # ============================================================================
+
 
 class TestBoundaryConditions:
     """Boundary condition testing."""
@@ -321,6 +321,7 @@ class TestBoundaryConditions:
 # Race Condition Tests
 # ============================================================================
 
+
 class TestRaceConditions:
     """Race condition testing."""
 
@@ -344,10 +345,7 @@ class TestRaceConditions:
             except Exception as e:
                 errors.append(e)
 
-        threads = [
-            threading.Thread(target=change_password, args=(f"Pass{i}!",))
-            for i in range(10)
-        ]
+        threads = [threading.Thread(target=change_password, args=(f"Pass{i}!",)) for i in range(10)]
 
         for t in threads:
             t.start()
@@ -368,9 +366,7 @@ class TestRaceConditions:
 
         def refresh():
             try:
-                new_token = auth_system.token_manager.refresh_token(
-                    result.refresh_token
-                )
+                new_token = auth_system.token_manager.refresh_token(result.refresh_token)
                 refresh_tokens.append(new_token)
             except Exception as e:
                 errors.append(e)
@@ -406,6 +402,7 @@ class TestRaceConditions:
 # ============================================================================
 # Privilege Escalation Tests
 # ============================================================================
+
 
 class TestPrivilegeEscalation:
     """Prevent privilege escalation."""
@@ -448,6 +445,7 @@ class TestPrivilegeEscalation:
 # ============================================================================
 # Session Security Tests
 # ============================================================================
+
 
 class TestSessionSecurity:
     """Session security tests."""
@@ -498,6 +496,7 @@ class TestSessionSecurity:
 # Data Integrity Tests
 # ============================================================================
 
+
 class TestDataIntegrity:
     """Data integrity tests."""
 
@@ -511,11 +510,7 @@ class TestDataIntegrity:
 
     def test_user_data_consistency(self, auth_system):
         """User data should remain consistent."""
-        original = auth_system.register(
-            "consistent",
-            "consistent@example.com",
-            "Str0ngPass!"
-        )
+        original = auth_system.register("consistent", "consistent@example.com", "Str0ngPass!")
 
         # Retrieve and verify consistency
         retrieved = auth_system.user_store.get_by_user_id(original.user_id)

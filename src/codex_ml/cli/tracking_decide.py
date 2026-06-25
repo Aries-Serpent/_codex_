@@ -141,7 +141,7 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
         env_overrides = _parse_env_overrides(list(env or ()))
         try:
             decision = decide(uri, force=force, env_overrides=env_overrides)
-        except Exception as exc:  # pragma: no cover - defensive fallback
+        except (ValueError, TypeError) as exc:  # pragma: no cover - defensive fallback
             typer.echo(f"error: {exc}", err=True)
             raise typer.Exit(code=1) from exc
         payload = asdict(decision)

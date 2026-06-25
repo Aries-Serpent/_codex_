@@ -16,6 +16,7 @@ from time import time
 
 class CircuitState(Enum):
     """Circuit breaker states."""
+
     CLOSED = "closed"
     OPEN = "open"
     HALF_OPEN = "half_open"
@@ -26,21 +27,13 @@ class TestCircuitBreaker:
 
     def test_circuit_breaker_initial_state(self):
         """Test circuit breaker starts in closed state."""
-        breaker = {
-            "state": CircuitState.CLOSED,
-            "failure_count": 0,
-            "threshold": 5
-        }
+        breaker = {"state": CircuitState.CLOSED, "failure_count": 0, "threshold": 5}
 
         assert breaker["state"] == CircuitState.CLOSED
 
     def test_circuit_breaker_tracks_failures(self):
         """Test circuit breaker tracks consecutive failures."""
-        breaker = {
-            "state": CircuitState.CLOSED,
-            "failure_count": 0,
-            "threshold": 3
-        }
+        breaker = {"state": CircuitState.CLOSED, "failure_count": 0, "threshold": 3}
 
         # Record failures
         for _ in range(3):
@@ -50,11 +43,7 @@ class TestCircuitBreaker:
 
     def test_circuit_breaker_opens_on_threshold(self):
         """Test circuit breaker opens when threshold exceeded."""
-        breaker = {
-            "state": CircuitState.CLOSED,
-            "failure_count": 0,
-            "threshold": 3
-        }
+        breaker = {"state": CircuitState.CLOSED, "failure_count": 0, "threshold": 3}
 
         breaker["failure_count"] = 3
         if breaker["failure_count"] >= breaker["threshold"]:
@@ -72,11 +61,7 @@ class TestCircuitBreaker:
 
     def test_circuit_breaker_half_open_retry(self):
         """Test circuit breaker transitions to half-open for retry."""
-        breaker = {
-            "state": CircuitState.OPEN,
-            "retry_timeout": 5,
-            "last_failure_time": time()
-        }
+        breaker = {"state": CircuitState.OPEN, "retry_timeout": 5, "last_failure_time": time()}
 
         # Simulate retry timeout
         current_time = breaker["last_failure_time"] + 6
@@ -87,10 +72,7 @@ class TestCircuitBreaker:
 
     def test_circuit_breaker_reset_on_success(self):
         """Test circuit breaker resets on successful call in half-open state."""
-        breaker = {
-            "state": CircuitState.HALF_OPEN,
-            "failure_count": 3
-        }
+        breaker = {"state": CircuitState.HALF_OPEN, "failure_count": 3}
 
         # Success - reset
         if breaker["state"] == CircuitState.HALF_OPEN:
@@ -102,10 +84,7 @@ class TestCircuitBreaker:
 
     def test_circuit_breaker_reopens_on_half_open_failure(self):
         """Test circuit breaker reopens on failure in half-open state."""
-        breaker = {
-            "state": CircuitState.HALF_OPEN,
-            "threshold": 3
-        }
+        breaker = {"state": CircuitState.HALF_OPEN, "threshold": 3}
 
         # Failure in half-open
         breaker["state"] = CircuitState.OPEN
@@ -120,7 +99,6 @@ class TestRetryLogic:
         """Test retry with fixed backoff delay."""
         attempt = 0
         max_attempts = 3
-        backoff_delay = 1.0
 
         attempts = []
         while attempt < max_attempts:
@@ -138,7 +116,7 @@ class TestRetryLogic:
 
         delays = []
         while attempt < max_attempts:
-            delay = base_delay * (2 ** attempt)
+            delay = base_delay * (2**attempt)
             delays.append(delay)
             attempt += 1
 
@@ -151,7 +129,7 @@ class TestRetryLogic:
         base_delay = 1.0
         delays = []
         for attempt in range(3):
-            delay = base_delay * (2 ** attempt)
+            delay = base_delay * (2**attempt)
             jittered = delay + random.uniform(0, 0.1 * delay)
             delays.append(jittered)
 
@@ -173,7 +151,7 @@ class TestRetryLogic:
         original_error = {
             "type": "TimeoutError",
             "message": "Request timed out",
-            "timestamp": "2024-01-01T00:00:00Z"
+            "timestamp": "2024-01-01T00:00:00Z",
         }
 
         attempt = 1
@@ -229,11 +207,12 @@ class TestFallbackMechanisms:
             "primary": None,
             "secondary": None,
             "tertiary": {"value": 123},
-            "default": {"value": 0}
+            "default": {"value": 0},
         }
 
-        result = (sources["primary"] or sources["secondary"] or
-                  sources["tertiary"] or sources["default"])
+        result = (
+            sources["primary"] or sources["secondary"] or sources["tertiary"] or sources["default"]
+        )
 
         assert result == {"value": 123}
 
@@ -269,7 +248,6 @@ class TestFailureRecovery:
     def test_recovery_with_state_restoration(self):
         """Test recovery restores previous state."""
         checkpoint = {"step": 100, "loss": 0.35}
-        failed_step = 105
 
         # Recovery
         current_state = checkpoint.copy()
@@ -283,11 +261,9 @@ class TestFailureRecovery:
         try:
             raise ValueError("Operation failed")
         except ValueError as e:
-            failures.append({
-                "error_type": type(e).__name__,
-                "message": str(e),
-                "timestamp": time()
-            })
+            failures.append(
+                {"error_type": type(e).__name__, "message": str(e), "timestamp": time()}
+            )
 
         assert len(failures) == 1
         assert failures[0]["error_type"] == "ValueError"
@@ -317,6 +293,7 @@ class TestIdempotency:
 
     def test_idempotent_operation_single_execution(self):
         """Test idempotent operation produces same result."""
+
         def idempotent_op(value):
             return value * 2
 
@@ -373,7 +350,7 @@ class TestTimeoutHandling:
 
     def test_timeout_detection(self):
         """Test detecting operation timeout."""
-        start = time()
+        time()
         timeout = 1.0
 
         # Simulate timeout
@@ -384,7 +361,7 @@ class TestTimeoutHandling:
 
     def test_timeout_with_cancellation(self):
         """Test cancelling operation on timeout."""
-        start = time()
+        time()
         timeout = 1.0
         operation_result = None
         cancelled = False

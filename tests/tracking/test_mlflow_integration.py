@@ -100,7 +100,7 @@ class TestMLflowWriter:
                 assert writer is not None
 
                 writer.close()
-            except Exception as e:
+            except (IOError, OSError) as e:
                 # If MLflow not available or other issues, that's ok
                 pytest.skip(f"MLflow writer initialization failed: {e}")
 
@@ -281,7 +281,7 @@ class TestMlflowIntegration:
                 mlruns_dir = Path(tmpdir) / "mlruns"
                 assert mlruns_dir.exists(), "mlruns directory should be created"
 
-            except Exception as e:
+            except (IOError, OSError) as e:
                 pytest.skip(f"MLflow integration test failed: {e}")
 
     @pytest.mark.skipif(

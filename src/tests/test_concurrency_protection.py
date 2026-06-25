@@ -110,7 +110,7 @@ class TestReadWriteLock:
         for f in reader_futures:
             try:
                 f.result(timeout=1.0)
-            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity
+            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity  # noqa: E501
                 pass
 
         assert not test_timeout, "Writer should not timeout"
@@ -174,7 +174,7 @@ class TestSQLiteConnectionPool:
                 result = cursor.fetchone()[0]
                 results.append(result)
                 return True
-            except Exception:
+            except (IOError, OSError):
                 results.append(None)
                 return False
 
@@ -223,11 +223,13 @@ class TestThreadSafeSessionDB:
 
         # Insert initial sessions
         for i in range(10):
-            db.insert_session({
-                "session_id": f"S{i:04d}",
-                "status": "pending",
-                "timestamp": time.strftime("%Y-%m-%d"),
-            })
+            db.insert_session(
+                {
+                    "session_id": f"S{i:04d}",
+                    "status": "pending",
+                    "timestamp": time.strftime("%Y-%m-%d"),
+                }
+            )
 
         errors = []
 
@@ -239,38 +241,35 @@ class TestThreadSafeSessionDB:
                         errors.append(f"Reader {thread_id}: No sessions found")
                     time.sleep(0.001)
                 return True
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(f"Reader {thread_id}: {e}")
                 return False
 
         def writer(thread_id: int):
             try:
                 for i in range(10):
-                    db.insert_session({
-                        "session_id": f"W{thread_id}_{i}",
-                        "status": "complete",
-                        "timestamp": time.strftime("%Y-%m-%d"),
-                    })
+                    db.insert_session(
+                        {
+                            "session_id": f"W{thread_id}_{i}",
+                            "status": "complete",
+                            "timestamp": time.strftime("%Y-%m-%d"),
+                        }
+                    )
                     time.sleep(0.001)
                 return True
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(f"Writer {thread_id}: {e}")
                 return False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             # Start readers
-            reader_futures = [
-                executor.submit(reader, i) for i in range(5)
-            ]
+            reader_futures = [executor.submit(reader, i) for i in range(5)]
             # Start writers
-            writer_futures = [
-                executor.submit(writer, i) for i in range(2)
-            ]
+            writer_futures = [executor.submit(writer, i) for i in range(2)]
 
-            all_results = (
-                [f.result() for f in concurrent.futures.as_completed(reader_futures)] +
-                [f.result() for f in concurrent.futures.as_completed(writer_futures)]
-            )
+            all_results = [f.result() for f in concurrent.futures.as_completed(reader_futures)] + [
+                f.result() for f in concurrent.futures.as_completed(writer_futures)
+            ]
 
         assert all(all_results), f"All operations should succeed. Errors: {errors}"
         db.cleanup()
@@ -281,11 +280,13 @@ class TestThreadSafeSessionDB:
         db = ThreadSafeSessionDB(db_path)
 
         # Insert a session
-        db.insert_session({
-            "session_id": "TEST_SESSION",
-            "status": "pending",
-            "timestamp": time.strftime("%Y-%m-%d"),
-        })
+        db.insert_session(
+            {
+                "session_id": "TEST_SESSION",
+                "status": "pending",
+                "timestamp": time.strftime("%Y-%m-%d"),
+            }
+        )
 
         status_results = []
 
@@ -299,10 +300,7 @@ class TestThreadSafeSessionDB:
         statuses = ["in-progress", "complete", "failed"]
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            futures = [
-                executor.submit(update_status, status)
-                for status in statuses
-            ]
+            futures = [executor.submit(update_status, status) for status in statuses]
             [f.result() for f in concurrent.futures.as_completed(futures)]
 
         # Final status should be one of the updated values
@@ -327,22 +325,19 @@ class TestThreadSafeArchive:
                 with archive.archive_session(session_id):
                     with lock:
                         operation_times[op_id] = {
-                            'start': time.time(),
-                            'session': session_id,
+                            "start": time.time(),
+                            "session": session_id,
                         }
                     time.sleep(0.05)  # Simulate operation
                     with lock:
-                        operation_times[op_id]['end'] = time.time()
+                        operation_times[op_id]["end"] = time.time()
                         operation_order.append(op_id)
                 return True
-            except Exception:
+            except (IOError, OSError):
                 return False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-            futures = [
-                executor.submit(archive_op, "SESSION_1", i)
-                for i in range(5)
-            ]
+            futures = [executor.submit(archive_op, "SESSION_1", i) for i in range(5)]
             results = [f.result() for f in concurrent.futures.as_completed(futures)]
 
         assert all(results), "All archive operations should succeed"
@@ -350,12 +345,12 @@ class TestThreadSafeArchive:
         # Verify operations don't overlap for same session
         times = list(operation_times.values())
         for i, op1 in enumerate(times):
-            for op2 in times[i+1:]:
-                if op1['session'] == op2['session']:
+            for op2 in times[i + 1 :]:
+                if op1["session"] == op2["session"]:
                     # Operations should not overlap
-                    assert (op1['end'] <= op2['start'] or
-                            op2['end'] <= op1['start']), \
+                    assert op1["end"] <= op2["start"] or op2["end"] <= op1["start"], (
                         "Operations on same session should not overlap"
+                    )
 
     def test_archive_timeout_retry(self):
         """Test archive timeout triggers retry."""
@@ -374,7 +369,7 @@ class TestThreadSafeArchive:
                 if not acquired:
                     success_count[0] += 1
                 return True
-            except Exception:
+            except (IOError, OSError):
                 return False
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
@@ -391,7 +386,7 @@ class TestThreadSafeArchive:
 
             try:
                 blocker_future.result(timeout=1.0)
-            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity
+            except Exception:  # swallow timeout/cancellation errors during test cleanup; they do not affect test validity  # noqa: E501
                 pass
 
 
@@ -417,11 +412,13 @@ class TestStressScenarios:
                     operation_counts["reads"] += 1
 
                 elif op_type == 1:  # Write
-                    db.insert_session({
-                        "session_id": session_id,
-                        "status": "complete",
-                        "timestamp": time.strftime("%Y-%m-%d"),
-                    })
+                    db.insert_session(
+                        {
+                            "session_id": session_id,
+                            "status": "complete",
+                            "timestamp": time.strftime("%Y-%m-%d"),
+                        }
+                    )
                     operation_counts["writes"] += 1
 
                 else:  # Archive
@@ -430,7 +427,7 @@ class TestStressScenarios:
 
                 return True
 
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(str(e))
                 return False
 

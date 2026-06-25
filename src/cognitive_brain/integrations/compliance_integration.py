@@ -595,7 +595,7 @@ class QuantumComplianceAssessor:
                     with open(path, encoding="utf-8") as fh:
                         self._tuning_rules_cache = json.load(fh)
                     return self._tuning_rules_cache
-                except Exception:
+                except (IOError, OSError):
                     logger.debug("Suppressed exception in handler", exc_info=True)
         self._tuning_rules_cache = {}
         return self._tuning_rules_cache
@@ -721,7 +721,7 @@ class QuantumComplianceAssessor:
                             if fuzzy_norm in decision_names:
                                 idx = decision_names.index(fuzzy_norm)
                                 tuned[idx] = min(1.0, tuned[idx] * 1.15)
-                    except Exception:
+                    except (ValueError, TypeError, RuntimeError):
                         logger.debug("Suppressed exception in handler", exc_info=True)
             # Renormalise so probabilities sum to 1
             total = sum(tuned)

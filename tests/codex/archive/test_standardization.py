@@ -30,10 +30,7 @@ class TestStandardizationMetadata:
         from codex.archive.standardization import StandardizationMetadata
 
         metadata = StandardizationMetadata(
-            schema_version="3.0",
-            slsa_level="L4",
-            signature="sig_abc123",
-            issuer="sigstore.dev"
+            schema_version="3.0", slsa_level="L4", signature="sig_abc123", issuer="sigstore.dev"
         )
 
         assert metadata.schema_version == "3.0"
@@ -45,10 +42,7 @@ class TestStandardizationMetadata:
         """Test to_dict method omits None values."""
         from codex.archive.standardization import StandardizationMetadata
 
-        metadata = StandardizationMetadata(
-            signature="sig_123",
-            issuer="test_issuer"
-        )
+        metadata = StandardizationMetadata(signature="sig_123", issuer="test_issuer")
 
         result = metadata.to_dict()
 
@@ -64,9 +58,9 @@ class TestStandardizationMetadata:
 class TestStandardizationManager:
     """Tests for StandardizationManager class."""
 
-    @patch('codex.archive.standardization.SignstoreClient')
-    @patch('codex.archive.standardization.EvidenceSchemaValidator')
-    @patch.dict('os.environ', {'CODEX_ENABLE_SIGNING': 'false'})
+    @patch("codex.archive.standardization.SignstoreClient")
+    @patch("codex.archive.standardization.EvidenceSchemaValidator")
+    @patch.dict("os.environ", {"CODEX_ENABLE_SIGNING": "false"})
     def test_init_signing_disabled(self, MockValidator, MockClient):
         """Test initialization with signing disabled."""
         from codex.archive.standardization import StandardizationManager
@@ -76,8 +70,8 @@ class TestStandardizationManager:
         assert manager.enable_signing is False
         assert manager.sigstore_client is None
 
-    @patch('codex.archive.standardization.SignstoreClient')
-    @patch('codex.archive.standardization.EvidenceSchemaValidator')
+    @patch("codex.archive.standardization.SignstoreClient")
+    @patch("codex.archive.standardization.EvidenceSchemaValidator")
     def test_init_verify_only(self, MockValidator, MockClient):
         """Test initialization in verify-only mode."""
         from codex.archive.standardization import StandardizationManager
@@ -88,8 +82,8 @@ class TestStandardizationManager:
 
         assert manager.enable_signing is True
 
-    @patch('codex.archive.standardization.SignstoreClient')
-    @patch('codex.archive.standardization.EvidenceSchemaValidator')
+    @patch("codex.archive.standardization.SignstoreClient")
+    @patch("codex.archive.standardization.EvidenceSchemaValidator")
     def test_has_schema_validator(self, MockValidator, MockClient):
         """Test manager has schema validator."""
         from codex.archive.standardization import StandardizationManager

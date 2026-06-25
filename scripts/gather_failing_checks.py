@@ -76,7 +76,8 @@ class GitHubAPIClient:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logger.error(f"API request failed for {endpoint}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"API request failed for {endpoint}: <ERROR_TYPE>")
             if hasattr(e, 'response') and e.response is not None:
                 logger.error(f"Response status: {e.response.status_code}")
                 logger.error(f"Response body: {e.response.text[:500]}")
@@ -379,7 +380,8 @@ def main():
         return 0
 
     except Exception as e:
-        logger.error(f"Unexpected error: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.error(f"Unexpected error: <ERROR_TYPE>", exc_info=True)
         # Still try to generate partial report if we have results
         if 'results' in locals():
             generate_markdown_report(owner, repo, args.pr, results, output_path)

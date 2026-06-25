@@ -228,7 +228,7 @@ concurrency:
   cancel-in-progress: true
 ```
 
-**Effect**: 
+**Effect**:
 - Prevents duplicate runs on the same branch
 - Cancels in-progress runs when new push arrives
 - Reduces resource contention
@@ -255,7 +255,7 @@ concurrency:
 | agent-auth-delegation | 50 min | job-level | ✅ OK |
 | workflow-execution-gate | 40 min | job-level | ✅ OK |
 
-**Assessment**: 
+**Assessment**:
 - All timeouts within GitHub Actions limits (360 minutes)
 - Appropriate for job complexity
 - No timeout-related failures expected ✅

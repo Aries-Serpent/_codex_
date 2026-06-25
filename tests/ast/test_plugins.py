@@ -51,8 +51,8 @@ class TestPluginLoader:
         loader.discover_plugins()
 
         plugins = loader.list_plugins()
-        assert 'ast_plugins' in plugins
-        assert 'analysis_plugins' in plugins
+        assert "ast_plugins" in plugins
+        assert "analysis_plugins" in plugins
 
     def test_get_plugin_for_python_file(self):
         """Test getting plugin for Python file."""

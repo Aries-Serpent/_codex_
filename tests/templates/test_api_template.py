@@ -175,9 +175,7 @@ class TestAPIResponse:
 
     def test_response_contains_required_fields(self, api_client) -> None:
         """Test API response contains required fields."""
-        api_client.get.return_value = MagicMock(
-            status_code=200, json={"status": "ok", "data": []}
-        )
+        api_client.get.return_value = MagicMock(status_code=200, json={"status": "ok", "data": []})
         response = api_client.get("/api/v1/data")
         assert "status" in response.json
         assert "data" in response.json
@@ -187,18 +185,14 @@ class TestAPIResponse:
         import json
 
         payload = {"result": "success"}
-        api_client.get.return_value = MagicMock(
-            status_code=200, data=json.dumps(payload).encode()
-        )
+        api_client.get.return_value = MagicMock(status_code=200, data=json.dumps(payload).encode())
         response = api_client.get("/api/v1/data")
         parsed = json.loads(response.data)
         assert parsed["result"] == "success"
 
     def test_error_response_has_error_message(self, api_client) -> None:
         """Test error response contains error message."""
-        api_client.get.return_value = MagicMock(
-            status_code=404, json={"error": "Not found"}
-        )
+        api_client.get.return_value = MagicMock(status_code=404, json={"error": "Not found"})
         response = api_client.get("/api/v1/nonexistent")
         assert response.status_code == 404
         assert "error" in response.json or "message" in response.json
@@ -344,8 +338,6 @@ def test_api_endpoints_return_expected_status(
     api_client, endpoint: str, method: str, expected_status: int
 ) -> None:
     """Test API endpoints return expected status codes."""
-    getattr(api_client, method.lower()).return_value = MagicMock(
-        status_code=expected_status
-    )
+    getattr(api_client, method.lower()).return_value = MagicMock(status_code=expected_status)
     response = getattr(api_client, method.lower())(endpoint)
     assert response.status_code == expected_status

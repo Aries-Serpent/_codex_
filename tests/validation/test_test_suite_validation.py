@@ -17,6 +17,7 @@ from pathlib import Path
 # Test Suite Discovery
 # =============================================================================
 
+
 class TestTestSuiteDiscovery:
     """Tests for test suite discovery and organization."""
 
@@ -50,7 +51,12 @@ class TestTestSuiteDiscovery:
                 continue
             if not test_file.name.startswith("test_"):
                 # Allow conftest and helper files
-                if test_file.name not in ["conftest.py", "conftest_shared.py", "fixtures.py", "helpers.py"]:
+                if test_file.name not in [
+                    "conftest.py",
+                    "conftest_shared.py",
+                    "fixtures.py",
+                    "helpers.py",
+                ]:
                     invalid_files.append(str(test_file))
 
         assert len(invalid_files) == 0, f"Files not following test_*.py convention: {invalid_files}"
@@ -87,6 +93,7 @@ class TestTestSuiteDiscovery:
 # Test Function Validation
 # =============================================================================
 
+
 class TestTestFunctionValidation:
     """Tests for validating test function structure."""
 
@@ -113,9 +120,9 @@ class TestTestFunctionValidation:
                 continue
 
         # Allow some files without docstrings
-        assert len(files_without_docstrings) <= 10, (
-            f"Too many test files with functions missing docstrings: {files_without_docstrings[:5]}"
-        )
+        assert (
+            len(files_without_docstrings) <= 10
+        ), f"Too many test files with functions missing docstrings: {files_without_docstrings[:5]}"
 
     def test_test_class_naming_convention(self) -> None:
         """Test that test classes follow Test* naming convention."""
@@ -148,9 +155,7 @@ class TestTestFunctionValidation:
 
                 # Check for assertion patterns
                 has_assert = (
-                    "assert " in content or
-                    "pytest.raises" in content or
-                    "with raises" in content
+                    "assert " in content or "pytest.raises" in content or "with raises" in content
                 )
 
                 if not has_assert:
@@ -158,14 +163,15 @@ class TestTestFunctionValidation:
             except OSError:
                 continue
 
-        assert len(files_without_asserts) == 0, (
-            f"Test files without assertions: {files_without_asserts}"
-        )
+        assert (
+            len(files_without_asserts) == 0
+        ), f"Test files without assertions: {files_without_asserts}"
 
 
 # =============================================================================
 # Test Isolation Validation
 # =============================================================================
+
 
 class TestTestIsolation:
     """Tests for validating test isolation."""
@@ -193,9 +199,9 @@ class TestTestIsolation:
                 continue
 
         # Allow some files with controlled state modification
-        assert len(files_with_issues) <= 5, (
-            f"Files with potential global state issues: {files_with_issues}"
-        )
+        assert (
+            len(files_with_issues) <= 5
+        ), f"Files with potential global state issues: {files_with_issues}"
 
     def test_fixtures_used_for_setup(self) -> None:
         """Test that fixtures are used for common setup."""
@@ -222,20 +228,21 @@ class TestTestIsolation:
                 for pattern in suspicious_patterns:
                     if re.search(pattern, content):
                         # Allow if in comments
-                        if not re.search(r'#.*' + pattern, content):
+                        if not re.search(r"#.*" + pattern, content):
                             files_with_hardcoded_paths.append(str(test_file))
                             break
             except OSError:
                 continue
 
-        assert len(files_with_hardcoded_paths) == 0, (
-            f"Files with hardcoded paths: {files_with_hardcoded_paths}"
-        )
+        assert (
+            len(files_with_hardcoded_paths) == 0
+        ), f"Files with hardcoded paths: {files_with_hardcoded_paths}"
 
 
 # =============================================================================
 # Test Markers Validation
 # =============================================================================
+
 
 class TestTestMarkers:
     """Tests for validating pytest markers usage."""
@@ -270,14 +277,13 @@ class TestTestMarkers:
                 continue
 
         # Should have some parametrized tests
-        assert len(files_with_parametrize) >= 5, (
-            "Expected at least 5 files with parametrized tests"
-        )
+        assert len(files_with_parametrize) >= 5, "Expected at least 5 files with parametrized tests"
 
 
 # =============================================================================
 # Coverage Validation
 # =============================================================================
+
 
 class TestCoverageValidation:
     """Tests for validating coverage configuration."""
@@ -314,6 +320,7 @@ class TestCoverageValidation:
 # CI Validation
 # =============================================================================
 
+
 class TestCIValidation:
     """Tests for validating CI configuration."""
 
@@ -348,6 +355,7 @@ class TestCIValidation:
 # Documentation Validation
 # =============================================================================
 
+
 class TestDocumentationValidation:
     """Tests for validating documentation."""
 
@@ -371,6 +379,4 @@ class TestDocumentationValidation:
         # Allow if coverage docs exist in any form
         docs_dir = Path("docs")
         coverage_docs = list(docs_dir.rglob("*COVERAGE*"))
-        assert len(coverage_docs) >= 1 or roadmap.exists(), (
-            "Should have coverage documentation"
-        )
+        assert len(coverage_docs) >= 1 or roadmap.exists(), "Should have coverage documentation"

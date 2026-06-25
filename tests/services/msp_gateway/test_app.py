@@ -20,7 +20,9 @@ def test_create_app_health_and_root() -> None:
     assert root.json()["name"] == "MSP Gateway"
 
 
-def test_create_app_production_requires_non_placeholder_cors(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_create_app_production_requires_non_placeholder_cors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     module = importlib.import_module("services.msp_gateway.app")
     monkeypatch.delenv("CORS_ORIGINS", raising=False)
     monkeypatch.delenv("CORS_ALLOW_PLACEHOLDER_OVERRIDE", raising=False)
@@ -42,7 +44,9 @@ def test_create_app_production_override_allows_placeholder(monkeypatch: pytest.M
     assert response.status_code == 200
 
 
-def test_global_exception_handler_uses_offline_detail_toggle(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_global_exception_handler_uses_offline_detail_toggle(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     app_module = importlib.import_module("services.msp_gateway.app")
     app = app_module.create_app()
 

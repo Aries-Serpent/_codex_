@@ -9,7 +9,6 @@ Coverage targets:
 Target coverage: 33.40% → 85%+
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -87,9 +86,9 @@ class TestClassicalGameEngine:
         assert np.isclose(classical_engine.pi_red.sum(), 1.0)
 
         # Probabilities should have changed (unless at equilibrium)
-        assert not np.array_equal(
-            classical_engine.pi_blue, initial_blue
-        ) or not np.array_equal(classical_engine.pi_red, initial_red)
+        assert not np.array_equal(classical_engine.pi_blue, initial_blue) or not np.array_equal(
+            classical_engine.pi_red, initial_red
+        )
 
     def test_run_dynamics_convergence(self, classical_engine):
         """Test that dynamics converge over multiple steps."""

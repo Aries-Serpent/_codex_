@@ -35,7 +35,7 @@ for _site_path in site.getsitepackages():
 try:
     gx = import_module("great_expectations")
 except ImportError:
-    gx = None  # type: ignore[assignment]
+    gx = None
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +60,8 @@ def _fallback_validate(clean_csv: Path) -> tuple[bool, Path]:
             try:
                 value = int(row["value"])
             except ValueError as exc:
-                logger.debug(f"ValueError: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"ValueError: <ERROR_TYPE>")
                 raise RuntimeError("GE validation failed for cleaned dataset.") from exc
             if not 0 <= value <= 2:
                 raise RuntimeError("GE validation failed for cleaned dataset.")
@@ -84,7 +85,7 @@ def run_clean_checkpoint(
     context = gx.get_context()
     try:
         suite = context.get_expectation_suite(suite_name)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         suite = context.add_or_update_expectation_suite(suite_name)
 
@@ -115,8 +116,9 @@ def run_clean_checkpoint(
     try:
         success_flag = results.success
     except AttributeError as e:
-        logger.debug(f"AttributeError: {e}")
-        logger.warning(f"AttributeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"AttributeError: <ERROR_TYPE>")
+        logger.warning(f"AttributeError: <ERROR_TYPE>", exc_info=True)
         try:
             success_flag = results["success"]
         except (TypeError, KeyError) as exc:  # pragma: no cover - defensive guard

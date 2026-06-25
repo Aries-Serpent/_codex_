@@ -21,10 +21,10 @@ Model: Haiku 4.5
 
 ### 2. unified-security-scanner
 ```
-Task: Security scanning (SAST + deps + secrets)
+Task: Security scanning (SAST + deps + secrets)  # pragma: allowlist secret
 Usage: 40+ times/month
 Command: @copilot use unified-security-scanner
-Mode: sast, dependency, secrets, full-audit
+Mode: sast, dependency, secrets, full-audit  # pragma: allowlist secret
 Time: 20-45 min
 Cost: ~$0.20
 Model: Sonnet 4.6
@@ -178,7 +178,7 @@ Model: Haiku 4.5
 |------|-------|------|-------|
 | Quick lint | policy-coach-agent | <1 min | Haiku |
 | PR analysis | github-guru-agent | 3 min | Haiku |
-| Secret scan | secret-detection-agent | 3 min | Haiku |
+| Secret scan | secret-detection-agent | 3 min | Haiku | <!-- pragma: allowlist secret -->
 | Code analysis | code-analysis-agent | 5 min | Haiku |
 | CI fix | ci-failure-resolution-agent | 8 min | Sonnet |
 | Coverage analysis | unified-coverage-agent | 10 min | Haiku |
@@ -204,7 +204,7 @@ Model: Haiku 4.5
 ### Workflow 1: Every Commit (2 min)
 ```
 1. policy-coach-agent
-2. secret-detection-agent
+2. secret-detection-agent  # pragma: allowlist secret
 3. link-validator (basic)
 Cost: <$0.01
 ```
@@ -331,4 +331,3 @@ Task: "Analyze PR #5000 for code quality, testing, and architecture"
 - **Quick Reference Format:** One-page reference card
 - **Authority:** @mbaetiong
 - **Next Update:** 2026-07-20
-

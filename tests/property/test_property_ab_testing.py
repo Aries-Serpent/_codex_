@@ -49,14 +49,14 @@ class TestWinnerProperty:
 
     @given(_metric_group, _metric_group)
     @settings(max_examples=50)
-    def test_winner_is_valid_label(
-        self, control: list[float], treatment: list[float]
-    ) -> None:
+    def test_winner_is_valid_label(self, control: list[float], treatment: list[float]) -> None:
         """ABTestResult.winner must be 'control', 'treatment', or 'inconclusive'."""
         result = run_ab_test(control, treatment)
-        assert result.winner in {"control", "treatment", "inconclusive"}, (
-            f"Unexpected winner: {result.winner!r}"
-        )
+        assert result.winner in {
+            "control",
+            "treatment",
+            "inconclusive",
+        }, f"Unexpected winner: {result.winner!r}"
 
     @given(
         st.lists(
@@ -69,9 +69,9 @@ class TestWinnerProperty:
     def test_identical_samples_never_significant(self, data: list[float]) -> None:
         """Identical control and treatment data must never yield significant=True."""
         result = run_ab_test(data, data)
-        assert result.significant is False, (
-            "Identical samples cannot produce a statistically significant result"
-        )
+        assert (
+            result.significant is False
+        ), "Identical samples cannot produce a statistically significant result"
 
     @given(
         st.lists(
@@ -84,9 +84,9 @@ class TestWinnerProperty:
     def test_identical_samples_winner_is_inconclusive(self, data: list[float]) -> None:
         """Identical samples must produce winner='inconclusive'."""
         result = run_ab_test(data, data)
-        assert result.winner == "inconclusive", (
-            f"Identical samples must be inconclusive, got {result.winner!r}"
-        )
+        assert (
+            result.winner == "inconclusive"
+        ), f"Identical samples must be inconclusive, got {result.winner!r}"
 
 
 # ---------------------------------------------------------------------------
@@ -99,14 +99,12 @@ class TestEffectSizeProperty:
 
     @given(_metric_group, _metric_group)
     @settings(max_examples=50)
-    def test_effect_size_is_finite(
-        self, control: list[float], treatment: list[float]
-    ) -> None:
+    def test_effect_size_is_finite(self, control: list[float], treatment: list[float]) -> None:
         """Cohen's d effect_size must be finite for any valid numeric inputs."""
         result = run_ab_test(control, treatment)
-        assert math.isfinite(result.effect_size), (
-            f"effect_size must be finite, got {result.effect_size}"
-        )
+        assert math.isfinite(
+            result.effect_size
+        ), f"effect_size must be finite, got {result.effect_size}"
 
     @given(_metric_group, _metric_group)
     @settings(max_examples=50)
@@ -117,13 +115,13 @@ class TestEffectSizeProperty:
         result = run_ab_test(control, treatment)
         if result.winner == "treatment":
             # treatment mean > control mean → Cohen's d = (trt - ctrl) / pooled_std ≥ 0
-            assert result.effect_size >= 0.0, (
-                f"effect_size should be >= 0 when treatment wins, got {result.effect_size}"
-            )
+            assert (
+                result.effect_size >= 0.0
+            ), f"effect_size should be >= 0 when treatment wins, got {result.effect_size}"
         elif result.winner == "control":
-            assert result.effect_size <= 0.0, (
-                f"effect_size should be <= 0 when control wins, got {result.effect_size}"
-            )
+            assert (
+                result.effect_size <= 0.0
+            ), f"effect_size should be <= 0 when control wins, got {result.effect_size}"
 
 
 # ---------------------------------------------------------------------------
@@ -142,9 +140,7 @@ class TestConfidenceIntervalProperty:
         """confidence_interval[0] must be <= confidence_interval[1]."""
         result = run_ab_test(control, treatment)
         lo, hi = result.confidence_interval
-        assert lo <= hi, (
-            f"CI lower bound {lo} must be <= upper bound {hi}"
-        )
+        assert lo <= hi, f"CI lower bound {lo} must be <= upper bound {hi}"
 
     @given(_metric_group, _metric_group)
     @settings(max_examples=50)
@@ -168,14 +164,10 @@ class TestPValueProperty:
 
     @given(_metric_group, _metric_group)
     @settings(max_examples=50)
-    def test_p_value_in_unit_interval(
-        self, control: list[float], treatment: list[float]
-    ) -> None:
+    def test_p_value_in_unit_interval(self, control: list[float], treatment: list[float]) -> None:
         """p_value must always be in [0, 1]."""
         result = run_ab_test(control, treatment)
-        assert 0.0 <= result.p_value <= 1.0, (
-            f"p_value must be in [0, 1], got {result.p_value}"
-        )
+        assert 0.0 <= result.p_value <= 1.0, f"p_value must be in [0, 1], got {result.p_value}"
 
     @given(_metric_group, _metric_group, _alpha_strategy)
     @settings(max_examples=50)
@@ -202,6 +194,5 @@ class TestPValueProperty:
         result = run_ab_test(control, treatment)
         if not result.significant:
             assert result.winner == "inconclusive", (
-                f"winner must be 'inconclusive' when not significant, "
-                f"got {result.winner!r}"
+                f"winner must be 'inconclusive' when not significant, " f"got {result.winner!r}"
             )

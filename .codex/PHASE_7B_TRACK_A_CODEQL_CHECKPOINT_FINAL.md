@@ -33,10 +33,10 @@ Modern code scan reveals that existing suppressions are in place and properly fo
 #### Phase 3: Code Review & Validation ✅ COMPLETE
 **Verification Performed:**
 ```
-✅ scripts/github_secrets_sync.py:128 - Suppressed (print secret rotation)
-✅ scripts/github_secrets_sync.py:162 - Suppressed (print secret status)
+✅ scripts/github_secrets_sync.py:128 - Suppressed (print secret rotation)  # pragma: allowlist secret
+✅ scripts/github_secrets_sync.py:162 - Suppressed (print secret status)  # pragma: allowlist secret
 ✅ .github/agents/admin-automation-agent/src/agent.py:163-169 - Suppressed (4 logger calls)
-✅ scripts/security/verify_token_scope.py:168, 180, 208, 288-297 - Suppressed (8+ calls)
+✅ scripts/security/verify_token_scope.py:168, 180, 208, 288-297 - Suppressed (8+ calls)  # pragma: allowlist secret
 ✅ scripts/ci/auto_fix_common_issues.py:2322, 2428, 2506, etc. - Suppressed (10+ calls)
 ✅ All other credential-logging code paths - Properly suppressed
 ```
@@ -92,11 +92,11 @@ Suppression: Prevents false alarms on intentional masked-logging patterns
 #### 2. Clear-Text Storage Suppressions (12 findings)
 ```
 ✅ JUSTIFIED: Storage contains operational metadata, not credentials
-- Workflow analysis metadata: `{"workflow": "name", "uses_secrets": ["NAME1", "NAME2"]}`
+- Workflow analysis metadata: `{"workflow": "name", "uses_secrets": ["NAME1", "NAME2"]}`  # pragma: allowlist secret
 - Security event logs: `{"event": "verification_failed", "scope_count": 5}`
-- JSON export: `{"secrets": [{"name": "secret_ref", "status": "valid"}]}`
+- JSON export: `{"secrets": [{"name": "secret_ref", "status": "valid"}]}`  # pragma: allowlist secret
 
-Conclusion: No actual secret values are stored in JSON/YAML
+Conclusion: No actual secret values are stored in JSON/YAML  # pragma: allowlist secret
 Suppression: Prevents false alarms on intentional metadata persistence
 ```
 
@@ -129,8 +129,8 @@ Suppression: Documents the intentional security control
 logger.info(f"Safe masked value: {fingerprint}")
 
 # Examples found:
-✅ scripts/github_secrets_sync.py:112 - Proper format
-✅ scripts/security/verify_token_scope.py:168 - Proper format
+✅ scripts/github_secrets_sync.py:112 - Proper format  # pragma: allowlist secret
+✅ scripts/security/verify_token_scope.py:168 - Proper format  # pragma: allowlist secret
 ✅ .github/agents/admin-automation-agent/src/agent.py:163 - Proper format
 ```
 
@@ -262,4 +262,3 @@ Status:                APPROVED FOR RELEASE
 **Authority:** @mbaetiong  
 **Mission ID:** phase7b-codeql-final  
 **Checkpoint:** 2026-06-20T09:30Z UTC
-

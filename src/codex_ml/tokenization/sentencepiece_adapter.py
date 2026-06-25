@@ -59,7 +59,7 @@ def _get_sentencepiece():
             )
         spm = sentencepiece_module
         return sentencepiece_module
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         # Provide a lightweight stub that satisfies smoke tests when the
         # native sentencepiece bindings are unavailable.
@@ -92,7 +92,7 @@ def _get_sentencepiece():
                     try:
                         data = json.loads(Path(model_file).read_text(encoding="utf-8"))
                         self.vocab = list(data.get("vocab", []))
-                    except Exception:
+                    except (IOError, OSError):
                         logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 
@@ -198,8 +198,9 @@ class SentencePieceAdapter:
         try:
             proc = cls(model_file=str(self.model_path))
         except TypeError as e:
-            logger.debug(f"TypeError: {e}")
-            logger.warning(f"TypeError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"TypeError: <ERROR_TYPE>")
+            logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
             proc = cls()
             loader = getattr(proc, "Load", None) or getattr(proc, "load", None)
             if loader is None:  # pragma: no cover - defensive
@@ -248,7 +249,7 @@ class SentencePieceAdapter:
                 f"SentencePieceAdapter.encode requires a str input, got {type(text).__name__}"
             )
 
-        encoded = list(self.sp.encode(text, out_type=int))  # type: ignore[attr-defined]
+        encoded = list(self.sp.encode(text, out_type=int))
 
         # Apply padding if requested
         if padding and max_length is not None:
@@ -273,7 +274,7 @@ class SentencePieceAdapter:
         ids_list = list(ids)
         if any(not isinstance(i, int) for i in ids_list):
             raise ValueError("SentencePieceAdapter.decode requires int ids")
-        return self.sp.decode(ids_list)  # type: ignore[attr-defined]
+        return self.sp.decode(ids_list)
 
     def batch_encode(
         self,

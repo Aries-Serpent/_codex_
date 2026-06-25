@@ -82,9 +82,7 @@ class TestContractCompliance:
             for item in result:
                 # list_plan_documents() is annotated to return list[Path]; assert
                 # isinstance so PosixPath/WindowsPath (stdlib subclasses) also pass.
-                assert isinstance(item, Path), (
-                    f"Item {item} should be Path, got {type(item)}"
-                )
+                assert isinstance(item, Path), f"Item {item} should be Path, got {type(item)}"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -105,6 +103,7 @@ class TestAPIStability:
         """Test that function can be imported directly."""
         try:
             from src.codex_plans import list_plan_documents
+
             assert list_plan_documents is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -113,6 +112,7 @@ class TestAPIStability:
         """Test that module has docstring."""
         try:
             from src import codex_plans as _codex_plans_mod
+
             assert _codex_plans_mod.__doc__ is not None
             assert len(_codex_plans_mod.__doc__.strip()) > 0
         except ImportError:

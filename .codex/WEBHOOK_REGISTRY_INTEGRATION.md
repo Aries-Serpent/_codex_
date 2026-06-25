@@ -113,14 +113,14 @@ X-Webhook-Signature: sha256=<hmac-sha256-signature>
 import hashlib
 import hmac
 
-def verify_signature(payload_json, signature, secret):
+def verify_signature(payload_json, signature, secret):  # pragma: allowlist secret
     # Extract signature from header: "sha256=<hex>"
     expected_sig = "sha256=" + hmac.new(
-        secret.encode(),
+        secret.encode(),  # pragma: allowlist secret
         payload_json.encode(),
         hashlib.sha256
     ).hexdigest()
-    
+
     return hmac.compare_digest(signature, expected_sig)
 ```
 
@@ -149,10 +149,10 @@ def verify_signature(payload_json, signature, secret):
 def handle_webhook():
     signature = request.headers.get('X-Webhook-Signature')
     payload = request.get_data()
-    
-    if not verify_signature(payload, signature, WEBHOOK_SECRET):
+
+    if not verify_signature(payload, signature, WEBHOOK_SECRET):  # pragma: allowlist secret
         abort(401)  # Unauthorized
-    
+
     # Process webhook
     data = json.loads(payload)
     return "OK", 200

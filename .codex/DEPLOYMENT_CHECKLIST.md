@@ -221,7 +221,7 @@ curl https://api.codex.example.com/health
 - Rotation procedures: `CREDENTIAL_ROTATION_PLAN.md`
 - Inventory: `SECRETS_INVENTORY.json`
 
-**Issue during deployment?** 
+**Issue during deployment?**
 1. Check logs: `kubectl logs deployment/codex-api`
 2. Review: `CREDENTIAL_ROTATION_PLAN.md` Section "Incident Response"
 3. Escalate to: Security Lead + DevOps Lead

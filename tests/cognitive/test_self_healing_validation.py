@@ -8,6 +8,7 @@ Covers:
   last-10 window enforcement, workflow/action_type isolation
 * _load_history() / _save_to_history(): persistence, 1000-entry cap
 """
+
 from __future__ import annotations
 
 import importlib.util

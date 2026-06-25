@@ -169,9 +169,7 @@ def test_create_reproducibility_manifest_with_config(tmp_path: Path):
 
 
 def test_create_reproducibility_manifest_with_dataset_hash(tmp_path: Path):
-    manifest = create_reproducibility_manifest(
-        seed=1, output_dir=tmp_path, dataset_hash="abc123"
-    )
+    manifest = create_reproducibility_manifest(seed=1, output_dir=tmp_path, dataset_hash="abc123")
     assert manifest.get("dataset_hash") == "abc123"
 
 

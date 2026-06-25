@@ -16,7 +16,8 @@ def main():
     try:
         import sentencepiece as spm  # optional
     except Exception as exc:  # pragma: no cover
-        print(f"[skip] sentencepiece unavailable: {exc}")
+        error_type = type(exc).__name__
+        print(f"[skip] sentencepiece unavailable: <ERROR_TYPE>")
         return 0
 
     root = pathlib.Path(__file__).resolve().parents[1]

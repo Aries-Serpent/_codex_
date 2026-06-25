@@ -43,7 +43,7 @@ def load_image(path: str | Path) -> np.ndarray:
         import imageio.v3 as iio
 
         img = iio.imread(str(path))
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         raise ValueError(f"Cannot read image '{path}': {exc}") from exc
 
     img = _normalise(img)

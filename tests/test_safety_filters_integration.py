@@ -94,9 +94,8 @@ def test_training_invokes_prompt_sanitizer(monkeypatch: pytest.MonkeyPatch, tmp_
 
         _msg = str(exc).lower()
         _OFFLINE_PATTERNS = ("unavailable", "commit hash", "hf_revision")
-        if (
-            isinstance(exc, (HFModelUnavailableError, ValueError))
-            and any(p in _msg for p in _OFFLINE_PATTERNS)
+        if isinstance(exc, (HFModelUnavailableError, ValueError)) and any(
+            p in _msg for p in _OFFLINE_PATTERNS
         ):
             pytest.skip(f"Model unavailable in offline CI: {exc}")
         raise

@@ -1,6 +1,5 @@
 """Comprehensive tests for RAG embeddings module."""
 
-
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -50,14 +49,18 @@ class TestLocalSentenceTransformerProvider:
 
     def test_initialization_default_model(self, mock_sentence_transformer):
         """Test initialization with default model."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider()
             assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2"
             assert provider.model is not None
 
     def test_initialization_custom_model(self, mock_sentence_transformer):
         """Test initialization with custom model."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider(
                 model_name="sentence-transformers/paraphrase-MiniLM-L6-v2"
             )
@@ -65,13 +68,17 @@ class TestLocalSentenceTransformerProvider:
 
     def test_initialization_with_cache_dir(self, mock_sentence_transformer, temp_cache_dir):
         """Test initialization with custom cache directory."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider(cache_dir=temp_cache_dir)
             assert provider.cache_dir == temp_cache_dir
 
     def test_encode_texts(self, mock_sentence_transformer):
         """Test encoding texts to embeddings."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider()
             texts = ["Hello world", "Test text", "Another example"]
             embeddings = provider.encode(texts)
@@ -82,40 +89,50 @@ class TestLocalSentenceTransformerProvider:
 
     def test_encode_with_batch_size(self, mock_sentence_transformer):
         """Test encoding with custom batch size."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider()
             texts = ["Text 1", "Text 2", "Text 3"]
             provider.encode(texts, batch_size=2)
 
             call_kwargs = mock_sentence_transformer.encode.call_args[1]
-            assert call_kwargs['batch_size'] == 2
+            assert call_kwargs["batch_size"] == 2
 
     def test_encode_with_progress(self, mock_sentence_transformer):
         """Test encoding with progress bar."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider()
             texts = ["Text 1", "Text 2"]
             provider.encode(texts, show_progress=True)
 
             call_kwargs = mock_sentence_transformer.encode.call_args[1]
-            assert call_kwargs['show_progress_bar'] is True
+            assert call_kwargs["show_progress_bar"] is True
 
     def test_get_dimension(self, mock_sentence_transformer):
         """Test getting embedding dimension."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider()
             dimension = provider.get_dimension()
             assert dimension == 384
 
     def test_encode_without_model_raises_error(self):
         """Test encoding without loaded model raises error."""
-        with patch('sentence_transformers.SentenceTransformer', side_effect=ImportError("Not installed")):
+        with patch(
+            "sentence_transformers.SentenceTransformer", side_effect=ImportError("Not installed")
+        ):
             with pytest.raises(ImportError):
                 LocalSentenceTransformerProvider()
 
     def test_model_not_loaded_encode_error(self, mock_sentence_transformer):
         """Test encoding when model is not loaded."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider()
             provider.model = None
 
@@ -124,7 +141,9 @@ class TestLocalSentenceTransformerProvider:
 
     def test_model_not_loaded_dimension_error(self, mock_sentence_transformer):
         """Test getting dimension when model is not loaded."""
-        with patch('sentence_transformers.SentenceTransformer', return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = LocalSentenceTransformerProvider()
             provider.model = None
 
@@ -138,7 +157,7 @@ class TestOpenAIEmbeddingProvider:
     def test_initialization_with_api_key(self):
         """Test initialization with API key."""
         mock_client = MagicMock()
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key-123")
             assert provider.model_name == "text-embedding-3-small"
             assert provider.client is not None
@@ -146,8 +165,8 @@ class TestOpenAIEmbeddingProvider:
     def test_initialization_with_env_var(self):
         """Test initialization with environment variable."""
         mock_client = MagicMock()
-        with patch.dict(os.environ, {'OPENAI_API_KEY': 'env-key-456'}):  # pragma: allowlist secret
-            with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key-456"}):  # pragma: allowlist secret
+            with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
                 provider = OpenAIEmbeddingProvider()
                 assert provider.client is not None
 
@@ -160,10 +179,9 @@ class TestOpenAIEmbeddingProvider:
     def test_initialization_custom_model(self):
         """Test initialization with custom model."""
         mock_client = MagicMock()
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
-                model_name="text-embedding-3-large",
-                api_key="test-key"  # pragma: allowlist secret
+                model_name="text-embedding-3-large", api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.model_name == "text-embedding-3-large"
 
@@ -178,7 +196,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client = MagicMock()
         mock_client.embeddings.create.return_value = mock_response
 
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
             texts = ["Hello world", "Test text"]
             embeddings = provider.encode(texts)
@@ -195,7 +213,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client = MagicMock()
         mock_client.embeddings.create.return_value = mock_response
 
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
             texts = ["Text " + str(i) for i in range(5)]
             provider.encode(texts, batch_size=3)
@@ -208,7 +226,7 @@ class TestOpenAIEmbeddingProvider:
         mock_client = MagicMock()
         mock_client.embeddings.create.side_effect = Exception("API Error")
 
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
 
             with pytest.raises(Exception, match="API Error"):
@@ -217,47 +235,43 @@ class TestOpenAIEmbeddingProvider:
     def test_get_dimension_small_model(self):
         """Test getting dimension for small model."""
         mock_client = MagicMock()
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
-                model_name="text-embedding-3-small",
-                api_key="test-key"  # pragma: allowlist secret
+                model_name="text-embedding-3-small", api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 1536
 
     def test_get_dimension_large_model(self):
         """Test getting dimension for large model."""
         mock_client = MagicMock()
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
-                model_name="text-embedding-3-large",
-                api_key="test-key"  # pragma: allowlist secret
+                model_name="text-embedding-3-large", api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 3072
 
     def test_get_dimension_ada_model(self):
         """Test getting dimension for Ada model."""
         mock_client = MagicMock()
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
-                model_name="text-embedding-ada-002",
-                api_key="test-key"  # pragma: allowlist secret
+                model_name="text-embedding-ada-002", api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 1536
 
     def test_get_dimension_unknown_model_defaults(self):
         """Test getting dimension for unknown model defaults to 1536."""
         mock_client = MagicMock()
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(
-                model_name="unknown-model",
-                api_key="test-key"  # pragma: allowlist secret
+                model_name="unknown-model", api_key="test-key"  # pragma: allowlist secret
             )
             assert provider.get_dimension() == 1536
 
     def test_encode_without_client_raises_error(self):
         """Test encoding without initialized client raises error."""
         mock_client = MagicMock()
-        with patch('codex.rag.embeddings.OpenAI', return_value=mock_client):
+        with patch("codex.rag.embeddings.OpenAI", return_value=mock_client):
             provider = OpenAIEmbeddingProvider(api_key="test-key")  # pragma: allowlist secret
             provider.client = None
 
@@ -456,7 +470,9 @@ class TestEmbeddingModel:
 
     def test_encode_triggers_lazy_loading(self, mock_sentence_transformer):
         """Test that encode lazy-loads the underlying provider."""
-        with patch("sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             model = EmbeddingModel()
             assert model._provider is None
             result = model.encode(["hello"])
@@ -465,7 +481,9 @@ class TestEmbeddingModel:
 
     def test_encode_reuses_provider(self, mock_sentence_transformer):
         """Test that multiple encode calls reuse the same provider instance."""
-        with patch("sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             model = EmbeddingModel()
             model.encode(["first call"])
             provider_first = model._provider
@@ -474,7 +492,9 @@ class TestEmbeddingModel:
 
     def test_get_dimension_triggers_loading(self, mock_sentence_transformer):
         """Test that get_dimension also triggers provider loading."""
-        with patch("sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             model = EmbeddingModel()
             dim = model.get_dimension()
             assert dim == 384
@@ -486,23 +506,30 @@ class TestCreateEmbeddingProvider:
 
     def test_auto_selects_sentence_transformers(self, mock_sentence_transformer):
         """Test auto mode successfully uses sentence-transformers."""
-        with patch("sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = create_embedding_provider(provider_type="auto", use_cache=False)
             from codex.rag.embeddings import LocalSentenceTransformerProvider
+
             assert isinstance(provider, LocalSentenceTransformerProvider)
 
     def test_auto_uses_ollama_when_st_fails(self):
         """Test auto mode reaches Ollama branch when sentence-transformers fails (lines 410-425)."""
         import sys
+
         mock_ollama_instance = MagicMock()
         mock_ollama_instance._check_health.return_value = True
         mock_ollama_class = MagicMock(return_value=mock_ollama_instance)
         mock_ollama_module = MagicMock()
         mock_ollama_module.OllamaEmbeddingProvider = mock_ollama_class
-        with patch(
-            "codex.rag.embeddings.LocalSentenceTransformerProvider",
-            side_effect=RuntimeError("no model"),
-        ), patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}):
+        with (
+            patch(
+                "codex.rag.embeddings.LocalSentenceTransformerProvider",
+                side_effect=RuntimeError("no model"),
+            ),
+            patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}),
+        ):
             provider = create_embedding_provider(provider_type="auto", use_cache=False)
         assert provider is mock_ollama_instance
 
@@ -510,15 +537,19 @@ class TestCreateEmbeddingProvider:
         """Test auto mode skips Ollama when health check fails (covers lines 422-425)."""
         pytest.importorskip("sklearn")
         import sys
+
         mock_ollama_instance = MagicMock()
         mock_ollama_instance._check_health.return_value = False
         mock_ollama_class = MagicMock(return_value=mock_ollama_instance)
         mock_ollama_module = MagicMock()
         mock_ollama_module.OllamaEmbeddingProvider = mock_ollama_class
-        with patch(
-            "codex.rag.embeddings.LocalSentenceTransformerProvider",
-            side_effect=RuntimeError("no model"),
-        ), patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}):
+        with (
+            patch(
+                "codex.rag.embeddings.LocalSentenceTransformerProvider",
+                side_effect=RuntimeError("no model"),
+            ),
+            patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}),
+        ):
             provider = create_embedding_provider(provider_type="auto", use_cache=False)
         # Ollama skipped (health check failed) → falls through to TF-IDF
         assert provider is not None
@@ -527,19 +558,26 @@ class TestCreateEmbeddingProvider:
     def test_auto_uses_llamacpp_when_st_and_ollama_fail(self):
         """Test auto mode reaches llamacpp branch (lines 427-439)."""
         import sys
+
         mock_llamacpp_instance = MagicMock()
         mock_llamacpp_class = MagicMock(return_value=mock_llamacpp_instance)
         mock_llamacpp_module = MagicMock()
         mock_llamacpp_module.LlamaCppEmbeddingProvider = mock_llamacpp_class
         mock_ollama_module = MagicMock()
         mock_ollama_module.OllamaEmbeddingProvider = MagicMock(side_effect=RuntimeError("ollama"))
-        with patch(
-            "codex.rag.embeddings.LocalSentenceTransformerProvider",
-            side_effect=RuntimeError("no model"),
-        ), patch.dict(sys.modules, {
-            "codex.rag.providers.ollama_provider": mock_ollama_module,
-            "codex.rag.providers.llamacpp_provider": mock_llamacpp_module,
-        }):
+        with (
+            patch(
+                "codex.rag.embeddings.LocalSentenceTransformerProvider",
+                side_effect=RuntimeError("no model"),
+            ),
+            patch.dict(
+                sys.modules,
+                {
+                    "codex.rag.providers.ollama_provider": mock_ollama_module,
+                    "codex.rag.providers.llamacpp_provider": mock_llamacpp_module,
+                },
+            ),
+        ):
             provider = create_embedding_provider(
                 provider_type="auto", use_cache=False, model_path="/tmp/model.gguf"
             )
@@ -549,19 +587,26 @@ class TestCreateEmbeddingProvider:
         """Test auto mode reaches GPT4All branch (lines 441-453)."""
         pytest.importorskip("sklearn")
         import sys
+
         mock_gpt4all_instance = MagicMock()
         mock_gpt4all_class = MagicMock(return_value=mock_gpt4all_instance)
         mock_gpt4all_module = MagicMock()
         mock_gpt4all_module.GPT4AllEmbeddingProvider = mock_gpt4all_class
         mock_ollama_module = MagicMock()
         mock_ollama_module.OllamaEmbeddingProvider = MagicMock(side_effect=RuntimeError("ollama"))
-        with patch(
-            "codex.rag.embeddings.LocalSentenceTransformerProvider",
-            side_effect=RuntimeError("no model"),
-        ), patch.dict(sys.modules, {
-            "codex.rag.providers.ollama_provider": mock_ollama_module,
-            "codex.rag.providers.gpt4all_provider": mock_gpt4all_module,
-        }):
+        with (
+            patch(
+                "codex.rag.embeddings.LocalSentenceTransformerProvider",
+                side_effect=RuntimeError("no model"),
+            ),
+            patch.dict(
+                sys.modules,
+                {
+                    "codex.rag.providers.ollama_provider": mock_ollama_module,
+                    "codex.rag.providers.gpt4all_provider": mock_gpt4all_module,
+                },
+            ),
+        ):
             provider = create_embedding_provider(provider_type="auto", use_cache=False)
         assert provider is mock_gpt4all_instance
 
@@ -578,7 +623,9 @@ class TestCreateEmbeddingProvider:
 
     def test_auto_with_cache_wraps_in_cached_provider(self, mock_sentence_transformer, tmp_path):
         """Test auto mode with use_cache=True wraps result in CachedEmbeddingProvider."""
-        with patch("sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = create_embedding_provider(
                 provider_type="auto", use_cache=True, cache_dir=str(tmp_path)
             )
@@ -586,7 +633,9 @@ class TestCreateEmbeddingProvider:
 
     def test_explicit_local_provider(self, mock_sentence_transformer):
         """Test explicit 'local' provider type."""
-        with patch("sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer):
+        with patch(
+            "sentence_transformers.SentenceTransformer", return_value=mock_sentence_transformer
+        ):
             provider = create_embedding_provider(provider_type="local", use_cache=False)
             assert isinstance(provider, LocalSentenceTransformerProvider)
 
@@ -611,6 +660,7 @@ class TestCreateEmbeddingProvider:
         mock_ollama_module = MagicMock()
         mock_ollama_module.OllamaEmbeddingProvider = mock_ollama_class
         import sys
+
         with patch.dict(sys.modules, {"codex.rag.providers.ollama_provider": mock_ollama_module}):
             provider = create_embedding_provider(
                 provider_type="ollama", use_cache=False, model_name="nomic-embed-text"
@@ -621,21 +671,27 @@ class TestCreateEmbeddingProvider:
     def test_explicit_llamacpp_provider_without_model_path(self):
         """Test explicit 'llamacpp' provider type requires model_path."""
         import sys
+
         mock_llamacpp_class = MagicMock()
         mock_llamacpp_module = MagicMock()
         mock_llamacpp_module.LlamaCppEmbeddingProvider = mock_llamacpp_class
-        with patch.dict(sys.modules, {"codex.rag.providers.llamacpp_provider": mock_llamacpp_module}):
+        with patch.dict(
+            sys.modules, {"codex.rag.providers.llamacpp_provider": mock_llamacpp_module}
+        ):
             with pytest.raises(ValueError, match="model_path"):
                 create_embedding_provider(provider_type="llamacpp", use_cache=False)
 
     def test_explicit_llamacpp_provider_with_model_path(self):
         """Test explicit 'llamacpp' provider type succeeds with model_path."""
         import sys
+
         mock_llamacpp_instance = MagicMock()
         mock_llamacpp_class = MagicMock(return_value=mock_llamacpp_instance)
         mock_llamacpp_module = MagicMock()
         mock_llamacpp_module.LlamaCppEmbeddingProvider = mock_llamacpp_class
-        with patch.dict(sys.modules, {"codex.rag.providers.llamacpp_provider": mock_llamacpp_module}):
+        with patch.dict(
+            sys.modules, {"codex.rag.providers.llamacpp_provider": mock_llamacpp_module}
+        ):
             provider = create_embedding_provider(
                 provider_type="llamacpp", use_cache=False, model_path="/tmp/model.gguf"
             )
@@ -644,6 +700,7 @@ class TestCreateEmbeddingProvider:
     def test_explicit_gpt4all_provider(self):
         """Test explicit 'gpt4all' provider type instantiates GPT4AllEmbeddingProvider."""
         import sys
+
         mock_gpt4all_instance = MagicMock()
         mock_gpt4all_class = MagicMock(return_value=mock_gpt4all_instance)
         mock_gpt4all_module = MagicMock()
@@ -658,13 +715,12 @@ class TestCreateEmbeddingProvider:
     def test_explicit_openai_provider_without_key_raises(self):
         """Test 'openai' without API key raises ValueError."""
         # Clear both OpenAI key env vars so the provider sees no key
-        env_override = {k: v for k, v in os.environ.items()
-                        if k not in ("RAG_OPENAI_KEY", "OPENAI_API_KEY")}
+        env_override = {
+            k: v for k, v in os.environ.items() if k not in ("RAG_OPENAI_KEY", "OPENAI_API_KEY")
+        }
         with patch.dict(os.environ, env_override, clear=True):
             with pytest.raises(ValueError, match="API key"):
-                create_embedding_provider(
-                    provider_type="openai", use_cache=False
-                )
+                create_embedding_provider(provider_type="openai", use_cache=False)
 
     def test_unknown_provider_type_raises(self):
         """Test unknown provider type raises ValueError."""
@@ -700,6 +756,7 @@ class TestCachedEmbeddingProviderClearCache:
         cache = CachedEmbeddingProvider(mock_provider, cache_dir=str(cache_dir))
         # Remove the directory created by __init__
         import shutil
+
         shutil.rmtree(cache_dir, ignore_errors=True)
 
         # Should not raise

@@ -75,6 +75,7 @@ def client(server_app):
 # SQLiteMemory unit tests
 # ---------------------------------------------------------------------------
 
+
 class TestSQLiteMemoryRetrieve:
     """Unit tests for SQLiteMemory — specifically the access_count increment."""
 
@@ -171,6 +172,7 @@ class TestSQLiteMemoryRetrieve:
 # POST /api/memory/consolidate endpoint tests
 # ---------------------------------------------------------------------------
 
+
 class TestMemoryConsolidateEndpoint:
     """Tests for the Sprint 11 POST /api/memory/consolidate endpoint."""
 
@@ -221,18 +223,14 @@ class TestMemoryConsolidateEndpoint:
         assert "error" not in body
 
         # hot1 and hot2 must have been removed from STM
-        remaining_stm = srv._db.execute(
-            "SELECT key FROM stm_entries"
-        ).fetchall()
+        remaining_stm = srv._db.execute("SELECT key FROM stm_entries").fetchall()
         remaining_keys = {r["key"] for r in remaining_stm}
         assert "hot1" not in remaining_keys
         assert "hot2" not in remaining_keys
         assert "cold" in remaining_keys
 
         # hot1 and hot2 must be in LTM
-        ltm_keys = {
-            r["key"] for r in srv._db.execute("SELECT key FROM ltm_entries").fetchall()
-        }
+        ltm_keys = {r["key"] for r in srv._db.execute("SELECT key FROM ltm_entries").fetchall()}
         assert "hot1" in ltm_keys
         assert "hot2" in ltm_keys
 
@@ -288,6 +286,7 @@ class TestMemoryConsolidateEndpoint:
 # ---------------------------------------------------------------------------
 # GET /api/memory/state (existing endpoint — verify access_count is surfaced)
 # ---------------------------------------------------------------------------
+
 
 class TestMemoryStateEndpoint:
     def _auth_headers(self, key: str) -> dict:
@@ -373,6 +372,7 @@ class TestMemoryStateEndpoint:
 # Agent registry promotion checks (memory-sync-agent & telemetry-classifier)
 # ---------------------------------------------------------------------------
 
+
 class TestAgentRegistryReadiness:
     """Verify AGENT_REGISTRY.yaml is updated to production + has_tests: true."""
 
@@ -403,41 +403,38 @@ class TestAgentRegistryReadiness:
 
     def test_memory_sync_agent_is_production(self):
         agent = self._get_agent("memory-sync-agent")
-        assert agent.get("maturity") == "production", (
-            f"memory-sync-agent maturity should be 'production', got {agent.get('maturity')!r}"
-        )
+        assert (
+            agent.get("maturity") == "production"
+        ), f"memory-sync-agent maturity should be 'production', got {agent.get('maturity')!r}"
 
     def test_memory_sync_agent_has_tests(self):
         agent = self._get_agent("memory-sync-agent")
-        assert agent.get("has_tests") is True, (
-            f"memory-sync-agent has_tests should be True, got {agent.get('has_tests')!r}"
-        )
+        assert (
+            agent.get("has_tests") is True
+        ), f"memory-sync-agent has_tests should be True, got {agent.get('has_tests')!r}"
 
     def test_telemetry_classifier_agent_is_production(self):
         agent = self._get_agent("telemetry-classifier-agent")
-        assert agent.get("maturity") == "production", (
-            f"telemetry-classifier-agent maturity should be 'production', got {agent.get('maturity')!r}"
-        )
+        assert (
+            agent.get("maturity") == "production"
+        ), f"telemetry-classifier-agent maturity should be 'production', got {agent.get('maturity')!r}"
 
     def test_telemetry_classifier_agent_has_tests(self):
         agent = self._get_agent("telemetry-classifier-agent")
-        assert agent.get("has_tests") is True, (
-            f"telemetry-classifier-agent has_tests should be True, got {agent.get('has_tests')!r}"
-        )
+        assert (
+            agent.get("has_tests") is True
+        ), f"telemetry-classifier-agent has_tests should be True, got {agent.get('has_tests')!r}"
 
 
 # ---------------------------------------------------------------------------
 # .env.example check
 # ---------------------------------------------------------------------------
 
+
 class TestEnvExample:
     def test_codex_cli_api_url_in_env_example(self):
-        env_example = (
-            Path(__file__).resolve().parents[2]
-            / "cognitive_app"
-            / ".env.example"
-        )
+        env_example = Path(__file__).resolve().parents[2] / "cognitive_app" / ".env.example"
         content = env_example.read_text()
-        assert "CODEX_CLI_API_URL" in content, (
-            "CODEX_CLI_API_URL must be documented in cognitive_app/.env.example"
-        )
+        assert (
+            "CODEX_CLI_API_URL" in content
+        ), "CODEX_CLI_API_URL must be documented in cognitive_app/.env.example"

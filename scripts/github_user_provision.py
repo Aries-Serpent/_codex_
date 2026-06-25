@@ -44,7 +44,8 @@ try:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
     from codex.auth import MFAProvider
 except ImportError as e:
-    print(f"Error: {e}. Install: pip install PyGithub && pip install -e .")
+    error_type = type(e).__name__
+    print(f"Error: <ERROR_TYPE>. Install: pip install PyGithub && pip install -e .")
     sys.exit(1)
 
 class GitHubUserProvisioner:
@@ -87,7 +88,8 @@ class GitHubUserProvisioner:
                 result = self.provision_user(user['username'], user['email'])
                 results.append(result)
             except Exception as e:
-                print(f"✗ Failed {user['username']}: {e}")
+                error_type = type(e).__name__
+                print(f"✗ Failed {user['username']}: <ERROR_TYPE>")
                 results.append({'username': user['username'], 'error': str(e)})
 
         # Save results

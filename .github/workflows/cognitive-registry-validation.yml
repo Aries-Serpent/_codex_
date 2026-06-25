@@ -33,6 +33,10 @@ permissions:
   checks: write
   pull-requests: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate_registry_configuration:
     name: 'Validate Registry Configuration'
@@ -100,6 +104,7 @@ jobs:
   test_registry_connectivity:
     name: 'Test Registry Connectivity'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: validate_registry_configuration
     if: ${{ needs.validate_registry_configuration.outputs.validation_valid == 'True' }}
     outputs:
@@ -150,6 +155,7 @@ jobs:
   approval_gate:
     name: 'Approval Gate for Credential Injection'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     needs:
       - validate_registry_configuration
       - test_registry_connectivity
@@ -178,6 +184,7 @@ jobs:
   store_repository_variables:
     name: 'Store Registry Metadata in Repository Variables'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs:
       - validate_registry_configuration
       - test_registry_connectivity
@@ -205,6 +212,7 @@ jobs:
   webhook_notification:
     name: 'Trigger Webhook to Cognitive Brain'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs:
       - validate_registry_configuration
       - test_registry_connectivity
@@ -245,6 +253,7 @@ jobs:
   workflow_summary:
     name: 'Workflow Summary'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs:
       - validate_registry_configuration
       - test_registry_connectivity

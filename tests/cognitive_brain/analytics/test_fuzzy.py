@@ -21,6 +21,7 @@ from cognitive_brain.analytics.fuzzy import (
 # Membership functions
 # ---------------------------------------------------------------------------
 
+
 class TestMembershipFunctions:
     def test_trimf_peak(self):
         assert trimf(0.5, 0.0, 0.5, 1.0) == pytest.approx(1.0)
@@ -58,6 +59,7 @@ class TestMembershipFunctions:
 # ---------------------------------------------------------------------------
 # FuzzyEngine.evaluate()
 # ---------------------------------------------------------------------------
+
 
 class TestFuzzyEngine:
     def setup_method(self):
@@ -108,8 +110,7 @@ class TestFuzzyEngine:
         result = self.engine.evaluate(score=0.68, business_impact=0.65, remediation_cost=5000.0)
         # At least two decisions should have non-zero membership (boundary ambiguity)
         non_zero = sum(
-            1 for v in [result.approve, result.monitor, result.conditional, result.reject]
-            if v > 0
+            1 for v in [result.approve, result.monitor, result.conditional, result.reject] if v > 0
         )
         assert non_zero >= 1
 
@@ -117,6 +118,7 @@ class TestFuzzyEngine:
 # ---------------------------------------------------------------------------
 # FuzzyEngine.fuzzy_blend()
 # ---------------------------------------------------------------------------
+
 
 class TestFuzzyBlend:
     def setup_method(self):

@@ -10,6 +10,7 @@ import pytest
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 
+
 @pytest.fixture
 def orch_workspace(tmp_path):
     workspace = tmp_path / "orch"
@@ -17,6 +18,7 @@ def orch_workspace(tmp_path):
     for d in ["components", "shared", "logs"]:
         (workspace / d).mkdir()
     return workspace
+
 
 class TestMultiComponentInit:
     """Multi-component initialization (6 tests)."""
@@ -52,6 +54,7 @@ class TestMultiComponentInit:
         for comp in components:
             (orch_workspace / "components" / f"{comp}.json").write_text(json.dumps({"name": comp}))
         assert len(list((orch_workspace / "components").glob("*.json"))) == 4
+
 
 class TestStateSharing:
     """State sharing between components (7 tests)."""
@@ -98,6 +101,7 @@ class TestStateSharing:
         for key, val in shared_data.items():
             (orch_workspace / "shared" / f"{key}.json").write_text(json.dumps(val))
         assert len(list((orch_workspace / "shared").glob("*.json"))) == 3
+
 
 class TestResourceManagement:
     """Resource management across components (7 tests)."""

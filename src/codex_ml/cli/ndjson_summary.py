@@ -91,8 +91,9 @@ def _load_rows(run_dir: Path, *, pattern: Optional[str] = None) -> list[dict[str
                     if isinstance(payload, dict):
                         rows.append(payload)
         except FileNotFoundError as e:
-            logger.debug(f"FileNotFoundError: {e}")
-            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             continue
     return rows
 
@@ -252,7 +253,7 @@ def _write_csv(dest: Path, rows: Sequence[dict[str, Any]]) -> Path:
 def _write_parquet(dest: Path, rows: Sequence[dict[str, Any]]) -> Path:
     try:
         import pandas as pd
-    except Exception as exc:  # pragma: no cover - optional dependency
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency
         raise SystemExit("pandas with parquet support is required for Parquet output") from exc
 
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -351,7 +352,8 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
     try:
         rows = _load_rows(inp, pattern=pattern if inp.is_dir() else None)
     except FileNotFoundError as exc:
-        logger.debug(f"FileNotFoundError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
         raise SystemExit(str(exc)) from exc
     summary_rows = _summarise_rows(rows)
     total_rows = len(rows)

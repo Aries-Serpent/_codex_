@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Tests for scripts/validate_table_spacing.py"""
 
-
 import pytest
 from validate_table_spacing import check_table_spacing, fix_table_spacing
 
@@ -81,9 +80,7 @@ class TestCheckTableSpacing:
     def test_detects_multiple_issues(self, tmp_path):
         """Test detection of multiple table spacing issues"""
         test_file = tmp_path / "test.md"
-        test_file.write_text(
-            "First section\n| Table 1 |\n\nSecond section\n| Table 2 |\n"
-        )
+        test_file.write_text("First section\n| Table 1 |\n\nSecond section\n| Table 2 |\n")
 
         issues = check_table_spacing(test_file)
         assert len(issues) == 2
@@ -173,9 +170,7 @@ class TestCodeBlockHandling:
     def test_nested_code_blocks(self, tmp_path):
         """Test handling of nested code blocks (markdown in code)"""
         test_file = tmp_path / "test.md"
-        test_file.write_text(
-            "Example:\n```markdown\nText before table\n| Column |\n```\n"
-        )
+        test_file.write_text("Example:\n```markdown\nText before table\n| Column |\n```\n")
 
         issues = check_table_spacing(test_file)
         assert len(issues) == 0

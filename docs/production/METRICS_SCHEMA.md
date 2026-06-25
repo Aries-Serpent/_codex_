@@ -474,7 +474,7 @@ prometheus:
   retention:
     time: 15d  # Keep 15 days in hot storage
     size: 10GB  # Or 10GB, whichever comes first
-  
+
   remote_storage:
     enabled: true
     url: "s3://bucket/prometheus"

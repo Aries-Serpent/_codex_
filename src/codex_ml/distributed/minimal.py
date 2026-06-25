@@ -29,8 +29,8 @@ try:  # pragma: no cover - torch is optional
     import torch.distributed as dist
 
     import torch
-except Exception:  # pragma: no cover - execution environments without torch
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - execution environments without torch
+    torch = None
     dist = None
 
 _OPT_IN_VALUES = {"1", "true", "TRUE", "True", "YES", "yes", "on", "ON"}
@@ -143,7 +143,10 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
         if cuda is not None and getattr(cuda, "is_available", lambda: False)():
             try:
                 cuda.set_device(local_rank)
-            except Exception as exc:  # pragma: no cover - depends on runtime devices
+            except (
+                ImportError,
+                AttributeError,
+            ) as exc:  # pragma: no cover - depends on runtime devices
                 _warn_device_set_failed(local_rank, exc)
     if rank is None and local_rank is not None:
         rank = local_rank
@@ -154,8 +157,9 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
     try:
         dist.init_process_group(backend=chosen_backend, **init_kwargs)
         return True
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (ValueError, TypeError, RuntimeError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _warn_failed_init(chosen_backend, flag_used or env_flag, exc)
         return False
 

@@ -57,7 +57,7 @@ def list_secret_tokens(inventory_path: Path) -> None:
         inventory = yaml.safe_load(f)
 
     print("=" * 70)
-    print("SECRET TOKENS (Obfuscated)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print("SECRET TOKENS (Obfuscated)")
     print("=" * 70)
     print()
 
@@ -77,11 +77,11 @@ def list_secret_tokens(inventory_path: Path) -> None:
                 all_secrets[token]["workflows"].append(filename)
 
     if not all_secrets:
-        print("No secrets found in inventory.")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("No secrets found in inventory.")
         return
 
     for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
-        print(f"{i}. Token: {token[:16]}... (SHA256)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"{i}. Token: {token[:16]}... (SHA256)")
         print(f"   Hint: {info['hint']}")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
@@ -95,12 +95,12 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
     in secure, audited contexts.
     """
     if not authorized:
-        print("❌ ERROR: Secret decoding requires --authorized flag")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("❌ ERROR: Secret decoding requires --authorized flag")
         print()
-        print("This operation decodes obfuscated secret names and should only")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("This operation decodes obfuscated secret names and should only")
         print("be used in authorized security audit contexts.")
         print()
-        print("Add --authorized flag to confirm you have permission to decode secrets.")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("Add --authorized flag to confirm you have permission to decode secrets.")
         sys.exit(1)
 
     if not inventory_path.exists():
@@ -111,10 +111,10 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
         inventory = yaml.safe_load(f)
 
     print("=" * 70)
-    print("🔐 SECRET USAGE REPORT (AUTHORIZED DECODING)")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print("🔐 SECRET USAGE REPORT (AUTHORIZED DECODING)")
     print("=" * 70)
     print()
-    print("⚠️  WARNING: This report contains decoded secret names.")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print("⚠️  WARNING: This report contains decoded secret names.")
     print("    Do not expose this output in logs, dashboards, or public systems.")
     print()
 
@@ -138,15 +138,15 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
                 all_secrets[decoded_name]["workflows"].append(filename)
 
     if not all_secrets:
-        print("No secrets found in inventory.")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print("No secrets found in inventory.")
         return
 
-    print(f"Total unique secrets: {len(all_secrets)}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"Total unique secrets: {len(all_secrets)}")
     print()
 
     for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
-        print(f"{i}. Secret: {secret_name}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
-        print(f"   Token: {info['token'][:16]}...")  # nosec  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"{i}. Secret: {secret_name}")
+        print(f"   Token: {info['token'][:16]}...")
         print(f"   Hint: {info['hint']}")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
         for wf in sorted(info['workflows']):
@@ -214,9 +214,9 @@ Examples:
     # Handle single decode
     if args.encoded:
         decoded = decode_secret_name(args.encoded)
-        # Security: show only a masked fingerprint — CodeQL py/clear-text-logging-sensitive-data
+        # Security: show only a masked fingerprint — CodeQL py/clear-text-logging-sensitive-data  # codeql[py/clear-text-logging-sensitive-data]
         _decoded_fp = (str(decoded)[:8] + "…") if decoded else "<none>"
-        print(f"Decoded: {_decoded_fp}")  # nosec  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        print(f"Decoded: {_decoded_fp}")  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     # Handle token listing (safe, no decoding)

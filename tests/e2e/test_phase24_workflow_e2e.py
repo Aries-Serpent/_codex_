@@ -10,6 +10,7 @@ def _make_tokenizer(torch):
         def batch_encode_plus(self, texts, **kwargs):
             batch = len(texts)
             return {"input_ids": torch.zeros((batch, 4), dtype=torch.long)}
+
     return Tokenizer()
 
 

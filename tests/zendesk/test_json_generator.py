@@ -90,9 +90,7 @@ class TestTemplateRegistration:
         assert retrieved.name == "custom_action"
         assert retrieved.category == "custom"
 
-    def test_get_nonexistent_template_returns_none(
-        self, generator: ZendeskJSONGenerator
-    ) -> None:
+    def test_get_nonexistent_template_returns_none(self, generator: ZendeskJSONGenerator) -> None:
         """Test that getting a nonexistent template returns None."""
         template = generator.get_template("nonexistent_template")
         assert template is None
@@ -123,9 +121,7 @@ class TestTemplateListing:
         assert len(create_templates) >= 2
         assert all(any("create" in t.tags for t in create_templates) for t in create_templates)
 
-    def test_list_templates_with_combined_filters(
-        self, generator: ZendeskJSONGenerator
-    ) -> None:
+    def test_list_templates_with_combined_filters(self, generator: ZendeskJSONGenerator) -> None:
         """Test listing templates with both category and tags filters."""
         templates = generator.list_templates(category="tickets", tags=["create"])
         assert len(templates) >= 1
@@ -214,9 +210,7 @@ class TestPlaceholderReplacement:
 
     def test_simple_placeholder_replacement(self, generator: ZendeskJSONGenerator) -> None:
         """Test simple placeholder replacement."""
-        script = generator.generate(
-            "close_ticket", {"RESOLUTION_COMMENT": "All done!"}
-        )
+        script = generator.generate("close_ticket", {"RESOLUTION_COMMENT": "All done!"})
 
         assert script["ticket"]["comment"]["body"] == "All done!"
 
@@ -299,9 +293,7 @@ class TestChatGPTExport:
         assert "## create_ticket" in export["instructions"]
         assert "variables" in export
 
-    def test_export_for_chatgpt_without_instructions(
-        self, generator: ZendeskJSONGenerator
-    ) -> None:
+    def test_export_for_chatgpt_without_instructions(self, generator: ZendeskJSONGenerator) -> None:
         """Test ChatGPT export without instructions."""
         export = generator.export_for_chatgpt(
             "create_ticket",
@@ -355,9 +347,7 @@ class TestZendeskAIExport:
         assert export["action"] == "create_ticket"
         assert export["category"] == "tickets"
 
-    def test_export_for_zendesk_ai_includes_context(
-        self, generator: ZendeskJSONGenerator
-    ) -> None:
+    def test_export_for_zendesk_ai_includes_context(self, generator: ZendeskJSONGenerator) -> None:
         """Test that Zendesk AI export includes context."""
         export = generator.export_for_zendesk_ai_assistant(
             "create_ticket",
@@ -370,9 +360,7 @@ class TestZendeskAIExport:
         assert "tags" in export["context"]
         assert "variables" in export["context"]
 
-    def test_export_for_zendesk_ai_without_context(
-        self, generator: ZendeskJSONGenerator
-    ) -> None:
+    def test_export_for_zendesk_ai_without_context(self, generator: ZendeskJSONGenerator) -> None:
         """Test Zendesk AI export without context."""
         export = generator.export_for_zendesk_ai_assistant(
             "create_ticket",
@@ -393,9 +381,7 @@ class TestJSONSerialization:
 
     def test_to_json(self, generator: ZendeskJSONGenerator) -> None:
         """Test to_json method."""
-        json_str = generator.to_json(
-            "close_ticket", {"RESOLUTION_COMMENT": "Issue resolved"}
-        )
+        json_str = generator.to_json("close_ticket", {"RESOLUTION_COMMENT": "Issue resolved"})
 
         # Should be valid JSON
         parsed = json.loads(json_str)
@@ -404,9 +390,7 @@ class TestJSONSerialization:
 
     def test_to_json_is_pretty_printed(self, generator: ZendeskJSONGenerator) -> None:
         """Test that to_json output is pretty printed."""
-        json_str = generator.to_json(
-            "close_ticket", {"RESOLUTION_COMMENT": "Done"}
-        )
+        json_str = generator.to_json("close_ticket", {"RESOLUTION_COMMENT": "Done"})
 
         # Pretty printed JSON has newlines
         assert "\n" in json_str

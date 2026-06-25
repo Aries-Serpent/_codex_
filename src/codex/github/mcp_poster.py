@@ -203,7 +203,7 @@ class GitHubMCPPoster:
             status = exc.code
             body = {}
             raw_scopes = ""
-        except Exception as exc:
+        except (ConnectionError, TimeoutError) as exc:
             health["expiry_warning"] = f"Request failed: {exc}"
             return health
 
@@ -1845,7 +1845,7 @@ class GitHubMCPPoster:
             mem = SQLiteMemory()
             mem.store_pattern(pattern)
             logger.debug("CB pattern stored: %s", pattern_id)
-        except Exception as _cb_exc:
+        except (ValueError, TypeError, RuntimeError) as _cb_exc:
             logger.debug(
                 "CB pattern storage skipped (%s: %s)",
                 type(_cb_exc).__name__,
@@ -1910,7 +1910,7 @@ class GitHubMCPPoster:
 
             return "\n".join(lines) + "\n"
 
-        except Exception as _exc:
+        except (IOError, OSError) as _exc:
             logger.debug("CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc)
             return ""
 
@@ -2041,7 +2041,9 @@ class GitHubMCPPoster:
                     )
                     raise
         # Should be unreachable, but satisfy type checker
-        raise last_exc  # type: ignore[misc]
+        if last_exc is not None:
+            raise last_exc
+        raise RuntimeError("Request failed after all retries but exception was not captured")
 
     def _graphql(self, query: str, variables: dict[str, Any]) -> dict[str, Any]:
         url = f"{_GITHUB_API}/graphql"
@@ -2598,7 +2600,8 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     except RuntimeError as exc:
-        print(f"❌ {exc}", file=sys.stderr)
+        error_type = type(exc).__name__
+        print(f"❌ <ERROR_TYPE>", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:
         print(f"❌ GitHub API error {exc.code}: {exc.reason}", file=sys.stderr)

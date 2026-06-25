@@ -211,9 +211,7 @@ class TestPhysicsInspiredOrchestratorCore:
         state = DecisionState(current_position="start", goal_position="end")
 
         paths = [
-            ActionPath(
-                action_type=ActionType.TEST, description="Test 1", potential_energy=10.0
-            ),
+            ActionPath(action_type=ActionType.TEST, description="Test 1", potential_energy=10.0),
             ActionPath(
                 action_type=ActionType.AUDIT,
                 description="Audit 1",
@@ -259,9 +257,7 @@ class TestPhysicsInspiredOrchestratorCore:
 
         optimal = orch.optimize_path(paths, state)
 
-        assert (
-            optimal is not None or optimal is None
-        )  # May be None if constraints not met
+        assert optimal is not None or optimal is None  # May be None if constraints not met
 
     def test_act_with_none_path(self):
         """Test act method when no path provided."""

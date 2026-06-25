@@ -21,8 +21,8 @@ from typing import Any  # noqa: E402
 
 try:
     import torch
-except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover
+    torch = None
 
 SCHEMA_VERSION = "2.0"  # Checkpoint schema version for compatibility tracking
 
@@ -113,7 +113,8 @@ def load_checkpoint(
     try:
         payload = torch_load(weights, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
     except TypeError as exc:
-        logger.debug(f"TypeError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
         if "weights_only" in kwargs and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             payload = torch_load(weights, **kwargs)  # nosec B614 - Retrying without weights_only parameter
@@ -124,7 +125,7 @@ def load_checkpoint(
         try:
             with open(metadata, encoding="utf-8") as f:
                 meta = json.load(f)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             meta = {}
     # Validate schema version for compatibility

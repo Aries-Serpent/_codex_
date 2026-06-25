@@ -133,11 +133,12 @@ def register_configs() -> None:
         try:
             from hydra.core.config_store import ConfigStore
         except ImportError as e:
-            logger.debug(f"hydra not available: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"hydra not available: <ERROR_TYPE>")
             from config_legacy.core.config_store import ConfigStore
 
         from codex_ml.utils.hydra_cs import safe_exists
-    except Exception:  # pragma: no cover - hydra optional dependency
+    except (ImportError, AttributeError):  # pragma: no cover - hydra optional dependency
         return
 
     cs = ConfigStore.instance()
@@ -199,12 +200,12 @@ def _extract_defaults_from_text(text: str) -> list[str]:
 def _load_defaults_from_yaml(text: str) -> Optional[list[str]]:
     try:
         import yaml
-    except Exception:  # pragma: no cover - optional dependency
+    except (ImportError, AttributeError):  # pragma: no cover - optional dependency
         return None
 
     try:
         data = yaml.safe_load(text) or {}
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.debug("yaml.safe_load failed; skipping defaults", exc_info=True)
         return None
 

@@ -3,10 +3,10 @@ Test Custom Loop Overfit
 
 Test module for custom loop overfit.
 """
+
 import pytest
 
 pytest.importorskip("numpy", reason="numpy required")
-
 
 
 from codex.training import TrainCfg, run_custom_trainer
@@ -24,9 +24,13 @@ def disable_torch_profiler_and_meta(monkeypatch):
 
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):
-            monkeypatch.setattr(profiler_module, "_record_function_enter", lambda *args, **kwargs: None)
+            monkeypatch.setattr(
+                profiler_module, "_record_function_enter", lambda *args, **kwargs: None
+            )
         if hasattr(profiler_module, "_record_function_exit"):
-            monkeypatch.setattr(profiler_module, "_record_function_exit", lambda *args, **kwargs: None)
+            monkeypatch.setattr(
+                profiler_module, "_record_function_exit", lambda *args, **kwargs: None
+            )
 
         # Force CPU device to avoid meta tensor initialization issues
         torch.set_default_device("cpu")

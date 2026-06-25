@@ -19,8 +19,8 @@ Phase 6B Task 3 has **successfully completed** with **ZERO critical findings**. 
 ### Key Metrics
 | Metric | Value | Status |
 |--------|-------|--------|
-| Secrets in baseline | 1,090 | ✅ Verified |
-| New secrets detected | 0 | ✅ PASS |
+| Secrets in baseline | 1,090 | ✅ Verified | <!-- pragma: allowlist secret -->
+| New secrets detected | 0 | ✅ PASS | <!-- pragma: allowlist secret -->
 | Files affected | 259 | ✅ Catalogued |
 | Detection plugins | 22 | ✅ Configured |
 | Baseline compliance | 100% | ✅ CERTIFIED |
@@ -44,41 +44,41 @@ Phase 6B Task 3 has **successfully completed** with **ZERO critical findings**. 
 | Type | Count | % | Category |
 |------|-------|---|----------|
 | Hex High Entropy String | 769 | 70.6% | Test/Example Data |
-| Secret Keyword | 227 | 20.8% | Documentation/Comments |
+| Secret Keyword | 227 | 20.8% | Documentation/Comments | <!-- pragma: allowlist secret -->
 | Base64 High Entropy String | 55 | 5.0% | Test Data |
 | AWS Access Key | 16 | 1.5% | Test/Example IDs |
 | Private Key | 8 | 0.7% | Test Keys |
 | Basic Auth Credentials | 5 | 0.5% | Test Auth |
-| GitHub Token | 5 | 0.5% | Test Tokens |
-| JSON Web Token | 5 | 0.5% | Test Tokens |
+| GitHub Token | 5 | 0.5% | Test Tokens | <!-- pragma: allowlist secret -->
+| JSON Web Token | 5 | 0.5% | Test Tokens | <!-- pragma: allowlist secret -->
 
 **Total: 1,090 secrets (all allowlisted)**
 
 ### 1.3 File Distribution
 
 #### By Category
-| Category | Files | Secrets | Examples |
+| Category | Files | Secrets | Examples | <!-- pragma: allowlist secret -->
 |----------|-------|---------|----------|
 | Test Files | 90 | 171 | `tests/test_security_utils.py`, `tests/safety/test_sanitizers_comprehensive.py` |
 | Documentation | 66 | 487 | `.codex/status/*.md`, remediation plans, guides |
 | Configuration | 36 | 156 | JSON manifests, YAML configs, status updates |
 | Status Files | 22 | 421 | `.codex/status/_codex_status_update-*.md/.json` |
 | Archive/Legacy | 17 | 98 | Archived manifests and reports |
-| Source Code | 7 | 8 | Minimal secrets in production code |
+| Source Code | 7 | 8 | Minimal secrets in production code | <!-- pragma: allowlist secret -->
 | Other | 21 | 349 | Miscellaneous files |
 
 **Total Files: 259** (across 1,090 secrets)
 
 ### 1.4 High-Volume Files (Top 10)
 
-| File | Secrets | Type | Reason |
+| File | Secrets | Type | Reason | <!-- pragma: allowlist secret -->
 |------|---------|------|--------|
 | `.codex/status/_codex_status_update-2025-09-07.md` | 491 | Status Docs | Status update with hex hashes |
 | `workbench/sun_jun_07_2026_expanded_repository_variables_markdown_file_with.json` | 36 | Config | Repository variable exports |
 | `.codex/evidence/archive_ops.jsonl` | 24 | Archive | Audit logs with transaction IDs |
 | `.codex/status/manifest-2025-09-22T02-15-21Z.json` | 13 | Config | Build manifest artifacts |
-| `tests/test_security_utils.py` | 13 | Test | Test fixtures and mock secrets |
-| `workbench/security/secrets_baseline_audit.md` | 13 | Documentation | Audit documentation |
+| `tests/test_security_utils.py` | 13 | Test | Test fixtures and mock secrets | <!-- pragma: allowlist secret -->
+| `workbench/security/secrets_baseline_audit.md` | 13 | Documentation | Audit documentation | <!-- pragma: allowlist secret -->
 | `.codex/archive/status/manifest-20250922T013826Z.json` | 12 | Archive | Archived manifest |
 | `misc/repo-owner-review/pending-manual-review/deleted-files/codex_reproducibility_manifest.json` | 11 | Archive | Deleted file artifact |
 | `scripts/validate_security_utils.py` | 8 | Source | Validation script with test fixtures |
@@ -101,11 +101,11 @@ Phase 6B Task 3 has **successfully completed** with **ZERO critical findings**. 
 
 | Check | Result | Notes |
 |-------|--------|-------|
-| Baseline file exists | ✅ PASS | `.secrets.baseline` present and valid JSON |
-| Version compatibility | ✅ PASS | Version 1.5.0 compatible with detect-secrets |
+| Baseline file exists | ✅ PASS | `.secrets.baseline` present and valid JSON | <!-- pragma: allowlist secret -->
+| Version compatibility | ✅ PASS | Version 1.5.0 compatible with detect-secrets | <!-- pragma: allowlist secret -->
 | Plugin configuration | ✅ PASS | 22 plugins properly configured |
 | File integrity | ✅ PASS | No corruption or truncation |
-| Record count | ✅ PASS | 1,090 secrets across 259 files |
+| Record count | ✅ PASS | 1,090 secrets across 259 files | <!-- pragma: allowlist secret -->
 | Hashing scheme | ✅ PASS | SHA-1 hashes verified for audit trail |
 
 ### 2.3 Detection Plugin Status
@@ -148,7 +148,7 @@ All 22 detection plugins configured and active:
 ### 3.2 Results: ZERO New Secrets
 
 ```
-New secrets detected: 0
+New secrets detected: 0  # pragma: allowlist secret
 Status: ✅ PASS
 Risk level: ZERO
 ```
@@ -189,8 +189,8 @@ Status reports, changelogs, and archived manifests containing hash strings:
 - .codex/status/_codex_status_update-*.md
 - .codex/status/manifest-*.json
 - .codex/archive/status/manifest-*.json
-- remediation_plan_secrets.md
-- workbench/security/secrets_baseline_audit.md
+- remediation_plan_secrets.md  # pragma: allowlist secret
+- workbench/security/secrets_baseline_audit.md  # pragma: allowlist secret
 ```
 
 **Reason:** Hex hashes from build artifacts, commit SHAs, and version identifiers trigger high-entropy detection.
@@ -245,12 +245,12 @@ JSON/YAML configuration exports and deployment manifests:
 
 | Risk Category | Status | Finding |
 |---------------|--------|---------|
-| **Production Credentials** | ✅ CLEAR | No live API keys, passwords, or tokens detected |
-| **Database Credentials** | ✅ CLEAR | No connection strings or DB passwords |
+| **Production Credentials** | ✅ CLEAR | No live API keys, passwords, or tokens detected | <!-- pragma: allowlist secret -->
+| **Database Credentials** | ✅ CLEAR | No connection strings or DB passwords | <!-- pragma: allowlist secret -->
 | **Cloud Provider Keys** | ✅ CLEAR | No AWS/Azure/GCP keys with real account access |
 | **Encryption Keys** | ✅ CLEAR | No private keys except test fixtures |
-| **Authentication Tokens** | ✅ CLEAR | No GitHub/GitLab PATs or user tokens |
-| **Third-party Secrets** | ✅ CLEAR | No Stripe, Slack, SendGrid, etc. live keys |
+| **Authentication Tokens** | ✅ CLEAR | No GitHub/GitLab PATs or user tokens | <!-- pragma: allowlist secret -->
+| **Third-party Secrets** | ✅ CLEAR | No Stripe, Slack, SendGrid, etc. live keys | <!-- pragma: allowlist secret -->
 
 ### 5.2 Actual Secrets vs. False Positives
 
@@ -268,7 +268,7 @@ JSON/YAML configuration exports and deployment manifests:
 |--------|-----------|-------|
 | Baseline history check | HIGH | Baseline generated 2026-06-12, consistent with project state |
 | Pattern analysis | HIGH | All patterns match test/doc conventions (not production) |
-| File context review | HIGH | Secrets in test/, docs/, .codex/ directories (non-production) |
+| File context review | HIGH | Secrets in test/, docs/, .codex/ directories (non-production) | <!-- pragma: allowlist secret -->
 | Git history check | HIGH | No new suspicious commits in Phase 6B |
 | CI gate validation | HIGH | Baseline enforcement active, 0 exceptions |
 
@@ -317,7 +317,7 @@ JSON/YAML configuration exports and deployment manifests:
 
 ### Summary by File Category
 
-| Category | Files | Secrets | Allowlisted | Status |
+| Category | Files | Secrets | Allowlisted | Status | <!-- pragma: allowlist secret -->
 |----------|-------|---------|------------|--------|
 | Test Files | 90 | 171 | 171 ✅ | APPROVED |
 | Documentation | 66 | 487 | 487 ✅ | APPROVED |
@@ -377,7 +377,7 @@ Example AWS key: `AKIAIOSFODNN7EXAMPLE` <!-- pragma: allowlist secret -->
 |------|--------|------------|---------|
 | Task 1: unified-security-scanner | 🔄 RUNNING | In progress | Comprehensive security audit |
 | Task 2: codeql-alert-resolution-agent | 🔄 Deploying | In parallel | Code quality and security fixes |
-| Task 3: secrets-detection (THIS) | ✅ COMPLETE | **100%** | Zero new secrets, 100% baseline compliant |
+| Task 3: secrets-detection (THIS) | ✅ COMPLETE | **100%** | Zero new secrets, 100% baseline compliant | <!-- pragma: allowlist secret -->
 
 ### Phase 6A Status (Completed)
 | Task | Status | Result |
@@ -479,22 +479,22 @@ Example AWS key: `AKIAIOSFODNN7EXAMPLE` <!-- pragma: allowlist secret -->
 
 ```
 [2026-06-12 16:40:19] Baseline validation started
-[2026-06-12 16:40:20] Loading .secrets.baseline...
-[2026-06-12 16:40:21] ✓ Baseline loaded: 1,090 secrets across 259 files
+[2026-06-12 16:40:20] Loading .secrets.baseline...  # pragma: allowlist secret
+[2026-06-12 16:40:21] ✓ Baseline loaded: 1,090 secrets across 259 files  # pragma: allowlist secret
 [2026-06-12 16:40:22] Analyzing file categories...
-[2026-06-12 16:40:23] ✓ Test files: 90 (171 secrets)
-[2026-06-12 16:40:24] ✓ Documentation: 66 (487 secrets)
-[2026-06-12 16:40:25] ✓ Configuration: 36 (156 secrets)
+[2026-06-12 16:40:23] ✓ Test files: 90 (171 secrets)  # pragma: allowlist secret
+[2026-06-12 16:40:24] ✓ Documentation: 66 (487 secrets)  # pragma: allowlist secret
+[2026-06-12 16:40:25] ✓ Configuration: 36 (156 secrets)  # pragma: allowlist secret
 [2026-06-12 16:40:26] Starting fresh repository scan...
 [2026-06-12 16:40:27] ✓ Scanning src/ scripts/ tests/ cli/
-[2026-06-12 16:40:28] ✓ Running detect-secrets with 22 plugins
-[2026-06-12 16:41:28] ✓ Scan completed: 162 secrets detected in primary directories
+[2026-06-12 16:40:28] ✓ Running detect-secrets with 22 plugins  # pragma: allowlist secret
+[2026-06-12 16:41:28] ✓ Scan completed: 162 secrets detected in primary directories  # pragma: allowlist secret
 [2026-06-12 16:41:29] Comparing scan results with baseline...
 [2026-06-12 16:41:30] ✓ All 162 scan results found in baseline
-[2026-06-12 16:41:31] ✓ Zero NEW secrets detected - PASS
+[2026-06-12 16:41:31] ✓ Zero NEW secrets detected - PASS  # pragma: allowlist secret
 [2026-06-12 16:41:32] Analyzing false positives...
 [2026-06-12 16:41:33] ✓ 1,035 identified as allowlisted false positives (~95%)
-[2026-06-12 16:41:34] ✓ 55 secrets verified as safe test/example data (~5%)
+[2026-06-12 16:41:34] ✓ 55 secrets verified as safe test/example data (~5%)  # pragma: allowlist secret
 [2026-06-12 16:41:35] Risk assessment: ZERO critical findings
 [2026-06-12 16:41:36] Generating compliance report...
 [2026-06-12 16:41:37] ✓ Report generated
@@ -534,4 +534,3 @@ Example AWS key: `AKIAIOSFODNN7EXAMPLE` <!-- pragma: allowlist secret -->
 ---
 
 **Next Task:** Await completion of Phase 6B Task 1 & 2, then proceed to Phase 6C (Quality Assurance) upon campaign coordinator approval.
-

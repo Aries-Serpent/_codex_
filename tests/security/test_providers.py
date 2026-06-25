@@ -471,7 +471,7 @@ class TestGitHubTokenProvider:
         provider = GitHubTokenProvider(github_config)
 
         # Mock create_token to control the return value
-        with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
+        with patch.object(GitHubTokenProvider, "create_token") as mock_create:
             mock_create.return_value = RotationResult(
                 success=True,
                 old_secret_id="",
@@ -497,7 +497,7 @@ class TestGitHubTokenProvider:
         provider = GitHubTokenProvider(github_config)
 
         # Mock create_token to control the return value
-        with patch.object(GitHubTokenProvider, 'create_token') as mock_create:
+        with patch.object(GitHubTokenProvider, "create_token") as mock_create:
             mock_create.return_value = RotationResult(
                 success=True,
                 old_secret_id="",
@@ -505,7 +505,7 @@ class TestGitHubTokenProvider:
                 new_secret_value="ghp_new_token_value",  # pragma: allowlist secret
             )
 
-            with patch.object(GitHubTokenProvider, 'revoke_secret') as mock_revoke:
+            with patch.object(GitHubTokenProvider, "revoke_secret") as mock_revoke:
                 mock_revoke.return_value = True
 
                 result = provider.rotate_secret(
@@ -550,6 +550,7 @@ class TestGitHubTokenProvider:
     def test_validate_secret_network_error_degrades_gracefully(self, github_config):
         """Test that network errors fall back to format-only validation."""
         import requests as real_requests
+
         provider = GitHubTokenProvider(github_config)
         token = "ghp_" + "C" * 36
         with patch("requests.get", side_effect=real_requests.exceptions.ConnectionError("offline")):
@@ -625,8 +626,10 @@ class TestGitHubTokenProvider:
             "expires_at": "2026-03-18T00:00:00Z",
         }
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.post.return_value = mock_resp
             result = provider.create_token(
                 name="test-token",
@@ -634,7 +637,9 @@ class TestGitHubTokenProvider:
             )
 
         assert result.success is True
-        assert result.new_secret_value == "ghs_test_installation_token_value"  # pragma: allowlist secret  # noqa: E501
+        assert (
+            result.new_secret_value == "ghs_test_installation_token_value"
+        )  # pragma: allowlist secret  # noqa: E501
         assert result.new_secret_id == "99"
 
     def test_create_token_invalid_pat_scopes(self, github_config):
@@ -669,8 +674,10 @@ class TestGitHubTokenProvider:
         mock_resp.status_code = 201
         mock_resp.json.return_value = {"id": 99, "expires_at": "2026-03-18T00:00:00Z"}
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.post.return_value = mock_resp
             result = provider.create_token(name="t", scopes=["contents"])
 
@@ -691,8 +698,10 @@ class TestGitHubTokenProvider:
         mock_resp.status_code = 403
         mock_resp.text = "Forbidden"
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.post.return_value = mock_resp
             result = provider.create_token(name="t", scopes=["contents"])
 
@@ -706,8 +715,10 @@ class TestGitHubTokenProvider:
         mock_resp = Mock()
         mock_resp.status_code = 200
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.patch.return_value = mock_resp
             success = provider.update_token_scopes(
                 "12345",
@@ -770,6 +781,7 @@ class TestAWSSecretsManagerProvider:
         # This will either succeed if boto3 is installed or fail appropriately
         try:
             from security.providers.aws_provider import AWSSecretsManagerProvider
+
             provider = AWSSecretsManagerProvider(aws_config)
             assert provider.provider_type == ProviderType.AWS_SECRETS_MANAGER
             assert provider.region == "us-east-1"
@@ -818,6 +830,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         result = provider.rotate_secret(
@@ -843,6 +856,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         result = provider.rotate_secret("test-secret")
@@ -874,6 +888,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         is_valid = provider.validate_secret("test-secret")
@@ -894,6 +909,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         is_valid = provider.validate_secret("test-secret")
@@ -929,6 +945,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         metadata = provider.get_secret_metadata("test-secret")
@@ -964,6 +981,7 @@ class TestAWSSecretsManagerProvider:
     @patch("security.providers.aws_provider.boto3")
     def test_get_secret_metadata_client_error(self, mock_boto3, aws_config):
         """Test metadata lookup maps ClientError to ValidationError."""
+
         class FakeClientError(Exception):
             pass
 
@@ -985,6 +1003,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = Mock()
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         expiration = provider.get_expiration("test-secret")
@@ -1001,6 +1020,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         value = provider.get_secret_value("test-secret")
@@ -1011,12 +1031,11 @@ class TestAWSSecretsManagerProvider:
     def test_get_secret_value_binary(self, mock_boto3, aws_config):
         """Test getting secret binary value."""
         mock_client = Mock()
-        mock_client.get_secret_value.return_value = {
-            "SecretBinary": b"binary-secret"
-        }
+        mock_client.get_secret_value.return_value = {"SecretBinary": b"binary-secret"}
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         value = provider.get_secret_value("test-secret")
@@ -1026,6 +1045,7 @@ class TestAWSSecretsManagerProvider:
     @patch("security.providers.aws_provider.boto3")
     def test_get_secret_value_client_error(self, mock_boto3, aws_config):
         """Test secret retrieval maps ClientError to ValidationError."""
+
         class FakeClientError(Exception):
             pass
 
@@ -1053,6 +1073,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         result = provider.create_secret(
@@ -1091,6 +1112,7 @@ class TestAWSSecretsManagerProvider:
     @patch("security.providers.aws_provider.boto3")
     def test_create_secret_client_error(self, mock_boto3, aws_config):
         """Test create_secret returns failure result on ClientError."""
+
         class FakeClientError(Exception):
             pass
 
@@ -1115,6 +1137,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         success = provider.delete_secret("test-secret", recovery_window_days=7)
@@ -1124,6 +1147,7 @@ class TestAWSSecretsManagerProvider:
     @patch("security.providers.aws_provider.boto3")
     def test_delete_secret_client_error(self, mock_boto3, aws_config):
         """Test delete_secret returns False on client error."""
+
         class FakeClientError(Exception):
             pass
 
@@ -1167,6 +1191,7 @@ class TestAWSSecretsManagerProvider:
         mock_boto3.client.return_value = mock_client
 
         from security.providers.aws_provider import AWSSecretsManagerProvider
+
         provider = AWSSecretsManagerProvider(aws_config)
 
         secrets = provider.list_secrets()
@@ -1220,6 +1245,7 @@ class TestAWSSecretsManagerProvider:
     @patch("security.providers.aws_provider.boto3")
     def test_list_secrets_client_error_returns_empty(self, mock_boto3, aws_config):
         """Test list_secrets returns empty list when paginator creation fails."""
+
         class FakeClientError(Exception):
             pass
 
@@ -1431,7 +1457,9 @@ class TestProviderFactory:
         """Test hashicorp provider branch raises explicit not implemented error."""
         config = ProviderConfig(provider_type=ProviderType.HASHICORP_VAULT)
 
-        with pytest.raises(ProviderConfigError, match="HashiCorp Vault provider not yet implemented"):
+        with pytest.raises(
+            ProviderConfigError, match="HashiCorp Vault provider not yet implemented"
+        ):
             ProviderFactory.create_provider(config)
 
     def test_create_provider_unknown_type_raises(self):
@@ -1547,7 +1575,10 @@ class TestProviderFactory:
             provider_type=ProviderType.HASHICORP_VAULT,
             vault_url="https://vault.example.com",
         )
-        with pytest.raises(ProviderConfigError, match=r"Required configuration 'token' not found for hashicorp_vault"):
+        with pytest.raises(
+            ProviderConfigError,
+            match=r"Required configuration 'token' not found for hashicorp_vault",
+        ):
             ProviderFactory.validate_config(config_missing_token)
 
         config_complete = ProviderConfig(
@@ -1559,7 +1590,9 @@ class TestProviderFactory:
 
     def test_create_provider_import_error_wrapped(self):
         """Test create_provider wraps ImportError with provider context."""
-        config = ProviderConfig(provider_type=ProviderType.GITHUB, token="ghp_test")  # pragma: allowlist secret
+        config = ProviderConfig(
+            provider_type=ProviderType.GITHUB, token="ghp_test"
+        )  # pragma: allowlist secret
         real_import = __import__
 
         def fake_import(name, *args, **kwargs):
@@ -1716,9 +1749,7 @@ class TestGitHubTokenProviderEdgeCases:
         from unittest.mock import patch
 
         past = datetime.now(UTC) - timedelta(days=1)
-        with patch.object(
-            GitHubTokenProvider, "get_expiration", return_value=past
-        ):
+        with patch.object(GitHubTokenProvider, "get_expiration", return_value=past):
             token = "ghp_" + "V" * 36
             result = provider_with_token.validate_secret("tok", token)
         assert result is False
@@ -1729,8 +1760,10 @@ class TestGitHubTokenProviderEdgeCases:
 
         mock_resp = Mock()
         mock_resp.status_code = 403
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.get.return_value = mock_resp
             token = "ghp_" + "F" * 36
             result = provider_with_token.validate_secret("tok", token)
@@ -1742,8 +1775,10 @@ class TestGitHubTokenProviderEdgeCases:
 
         mock_resp = Mock()
         mock_resp.status_code = 202
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.get.return_value = mock_resp
             token = "ghp_" + "U" * 36
             result = provider_with_token.validate_secret("tok", token)
@@ -1768,8 +1803,10 @@ class TestGitHubTokenProviderEdgeCases:
         )
         provider = GitHubTokenProvider(config)
         token = "ghp_" + "E" * 36
-        with patch.object(provider, "get_expiration", side_effect=RuntimeError("boom")), \
-             patch("security.providers.github_provider.HAS_REQUESTS", False):
+        with (
+            patch.object(provider, "get_expiration", side_effect=RuntimeError("boom")),
+            patch("security.providers.github_provider.HAS_REQUESTS", False),
+        ):
             # RuntimeError is caught and wrapped
             result = provider.validate_secret("tok", token)
         # format-only validation returns True (exception in get_expiration is caught)
@@ -1807,8 +1844,10 @@ class TestGitHubTokenProviderEdgeCases:
 
         import requests
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.post.side_effect = requests.exceptions.ConnectionError("network down")
             result = provider_with_installation.create_token("name", ["contents"])
         assert result.success is False
@@ -1835,8 +1874,10 @@ class TestGitHubTokenProviderEdgeCases:
         mock_resp.status_code = 422
         mock_resp.text = "Unprocessable"
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.patch.return_value = mock_resp
             result = provider_with_token.update_token_scopes("12345", ["contents"])
         assert result is False
@@ -1848,8 +1889,10 @@ class TestGitHubTokenProviderEdgeCases:
         mock_resp = Mock()
         mock_resp.status_code = 204
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.patch.return_value = mock_resp
             result = provider_with_token.update_token_scopes("12345", ["contents"])
         assert result is True
@@ -1860,8 +1903,10 @@ class TestGitHubTokenProviderEdgeCases:
 
         import requests
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.patch.side_effect = requests.exceptions.Timeout("timeout")
             result = provider_with_token.update_token_scopes("12345", ["contents"])
         assert result is False
@@ -1900,8 +1945,10 @@ class TestGitHubTokenProviderEdgeCases:
         mock_resp = Mock()
         mock_resp.status_code = 204
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.delete.return_value = mock_resp
             result = provider.revoke_secret("tok-id")
         assert result is True
@@ -1919,8 +1966,10 @@ class TestGitHubTokenProviderEdgeCases:
         mock_resp = Mock()
         mock_resp.status_code = 403
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.delete.return_value = mock_resp
             result = provider.revoke_secret("tok-id")
         assert result is False
@@ -1937,8 +1986,10 @@ class TestGitHubTokenProviderEdgeCases:
         )
         provider = GitHubTokenProvider(config)
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.delete.side_effect = requests.exceptions.ConnectionError("network")
             result = provider.revoke_secret("tok-id")
         assert result is False
@@ -1972,8 +2023,10 @@ class TestGitHubTokenProviderEdgeCases:
         mock_resp.status_code = 200
         mock_resp.json.return_value = {"login": "testuser", "id": 12345}
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.get.return_value = mock_resp
             result = provider_with_token.list_secrets()
 
@@ -1988,8 +2041,10 @@ class TestGitHubTokenProviderEdgeCases:
         mock_resp = Mock()
         mock_resp.status_code = 401
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.get.return_value = mock_resp
             result = provider_with_token.list_secrets()
         assert result == []
@@ -2000,8 +2055,10 @@ class TestGitHubTokenProviderEdgeCases:
 
         import requests
 
-        with patch("security.providers.github_provider._requests") as mock_req, \
-             patch("security.providers.github_provider.HAS_REQUESTS", True):
+        with (
+            patch("security.providers.github_provider._requests") as mock_req,
+            patch("security.providers.github_provider.HAS_REQUESTS", True),
+        ):
             mock_req.get.side_effect = requests.exceptions.ConnectionError("offline")
             result = provider_with_token.list_secrets()
         assert result == []
@@ -2047,11 +2104,13 @@ class TestScopeDecoratorContextVars:
     def setup_method(self):
         """Clear context before each test."""
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def teardown_method(self):
         """Clear context after each test."""
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def test_set_and_get_scope_validator(self):
@@ -2083,10 +2142,12 @@ class TestRequireScopeDecorator:
 
     def setup_method(self):
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def teardown_method(self):
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def test_require_scope_passes_with_sufficient_scope(self):
@@ -2169,10 +2230,12 @@ class TestRequireAnyScopeDecorator:
 
     def setup_method(self):
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def teardown_method(self):
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def test_require_any_scope_passes_with_one_scope(self):
@@ -2241,10 +2304,12 @@ class TestOptionalScopeDecorator:
 
     def setup_method(self):
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def teardown_method(self):
         from security.decorators import clear_scope_validator
+
         clear_scope_validator()
 
     def test_optional_scope_runs_without_validator(self):

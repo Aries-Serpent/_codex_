@@ -333,7 +333,7 @@ class HyperparameterTuner:
             )
 
             if score > best_score:
-                best_score = score  # type: ignore[assignment]
+                best_score = score
                 best_params = params
 
         result = TuningResult(
@@ -388,7 +388,7 @@ class HyperparameterTuner:
             )
 
             if score > best_score:
-                best_score = score  # type: ignore[assignment]
+                best_score = score
                 best_params = params
 
         result = TuningResult(

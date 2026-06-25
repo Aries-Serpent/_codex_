@@ -462,7 +462,7 @@ def record_scoring_pattern(
         entropy = sum(r.metadata.get("entropy_contribution", 0.0) for r in results)
 
         # Store pattern
-        memory.store_pattern(  # type: ignore[attr-defined]
+        memory.store_pattern(
             pattern_type="quantum_retrieval",
             context={
                 "query": query,
@@ -485,7 +485,7 @@ def record_scoring_pattern(
 
     except ImportError:
         logger.debug("AgentMemory not available, skipping pattern recording")
-    except Exception as e:
+    except AttributeError as e:
         logger.warning("Failed to record scoring pattern: %s", e)
 
 

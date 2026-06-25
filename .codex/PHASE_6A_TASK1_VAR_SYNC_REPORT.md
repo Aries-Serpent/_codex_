@@ -15,7 +15,7 @@ All 13 designed environment variables are properly configured in `.codex/agent_c
 
 | # | Variable Name | Value | Prefix | Status |
 |---|---|---|---|---|
-| 1 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | COGNITIVE_BRAIN_* | ✅ OK |
+| 1 | `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | COGNITIVE_BRAIN_* | ✅ OK | <!-- pragma: allowlist secret -->
 | 2 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | COGNITIVE_BRAIN_* | ✅ OK |
 | 3 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | COGNITIVE_BRAIN_* | ✅ OK |
 | 4 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | COGNITIVE_BRAIN_* | ✅ OK |
@@ -75,7 +75,7 @@ All 13 designed environment variables are properly configured in `.codex/agent_c
 
 | Variable | Value | Type | Scope |
 |---|---|---|---|
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Numeric | Core |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Numeric | Core | <!-- pragma: allowlist secret -->
 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Numeric | Core |
 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Numeric | Core |
 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Enum | Core |
@@ -200,11 +200,11 @@ All variables are configured to be:
 1. **CODEX_CI_FAILURE_RATE**: Resolved ✅
    - Previous: Varied across runs
    - Current: `6.8:ok` (stable)
-   
+
 2. **CODEX_NETWORK_MODE**: Resolved ✅
    - Previous: Inconsistent defaults
    - Current: `isolated` (explicit)
-   
+
 3. **COGNITIVE_BRAIN_SESSION_NUMBER**: Resolved ✅
    - Previous: Drifting with each sync
    - Current: `1400` (fixed for production)
@@ -289,11 +289,11 @@ gh variable list --repo Aries-Serpent/_codex_ --json name,value > /tmp/gh_vars.j
 1. **Execute Sync** (Phase 6A Task 2)
    - Run GitHub Actions workflow to sync variables
    - Validate each variable is accessible via `gh variable view <VAR>`
-   
+
 2. **Verify Integration**
    - Test that variables are available in CI/CD environment
    - Confirm agent initialization uses correct values
-   
+
 3. **Monitor Drift**
    - Set up automated drift detection
    - Alert if file and GitHub variables diverge

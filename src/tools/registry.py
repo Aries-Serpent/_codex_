@@ -236,7 +236,7 @@ class ToolRegistry:
                 duration_ms=(time.time() - start_time) * 1000,
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Tool execution failed: %s - %s", name, e)
             return ToolResult(
                 success=False,

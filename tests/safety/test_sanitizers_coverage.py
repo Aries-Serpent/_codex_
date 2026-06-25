@@ -9,9 +9,7 @@ Test Coverage Target: 20+ tests for ~80% coverage of sanitizers module.
 Created: 2026-01-18 (Phase 14.2)
 """
 
-from __future__ import (  # pragma: allowlist secret
-    annotations,  # pragma: allowlist secret
-)
+from __future__ import annotations  # pragma: allowlist secret; pragma: allowlist secret
 
 import re
 
@@ -27,6 +25,7 @@ try:
         sanitize_output,
         sanitize_prompt,
     )
+
     SANITIZERS_AVAILABLE = True
 except ImportError:
     SANITIZERS_AVAILABLE = False
@@ -34,8 +33,7 @@ except ImportError:
 
 # Skip all tests if module not available
 pytestmark = pytest.mark.skipif(
-    not SANITIZERS_AVAILABLE,
-    reason="codex_ml.safety.sanitizers not available"
+    not SANITIZERS_AVAILABLE, reason="codex_ml.safety.sanitizers not available"
 )
 
 
@@ -121,7 +119,9 @@ class TestDefaultPatterns:
 
     def test_openai_key_pattern(self):
         """Test OpenAI API key pattern detection."""
-        openai_key = "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL"  # pragma: allowlist secret
+        openai_key = (
+            "sk-1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL"  # pragma: allowlist secret
+        )
         result = sanitize_prompt(openai_key)
         assert result["flags"]["secrets"]
 

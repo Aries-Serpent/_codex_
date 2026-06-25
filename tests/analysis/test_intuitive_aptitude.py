@@ -156,16 +156,12 @@ class TestUnparse:
     def test_unparse_binop(self):
         """Test unparsing a BinOp node."""
         # Create: 1 + 2
-        node = ast.BinOp(
-            left=ast.Constant(value=1), op=ast.Add(), right=ast.Constant(value=2)
-        )
+        node = ast.BinOp(left=ast.Constant(value=1), op=ast.Add(), right=ast.Constant(value=2))
         result = _unparse(node)
         # Result might be '1 + 2' or '(1 + 2)' depending on Python version
         assert "1" in result and "2" in result and "+" in result
 
-    @pytest.mark.skipif(
-        not hasattr(ast, "unparse"), reason="Python 3.9+ required for ast.unparse"
-    )
+    @pytest.mark.skipif(not hasattr(ast, "unparse"), reason="Python 3.9+ required for ast.unparse")
     def test_unparse_uses_builtin(self):
         """Test that _unparse uses built-in ast.unparse when available."""
         node = ast.Name(id="test", ctx=ast.Load())
@@ -480,9 +476,7 @@ class OldClass:
         pass
 """
         analyzer.ingest(code)
-        cloned = analyzer.clone_structure(
-            {"OldClass": "NewClass", "old_method": "new_method"}
-        )
+        cloned = analyzer.clone_structure({"OldClass": "NewClass", "old_method": "new_method"})
         assert "NewClass" in cloned
         assert "new_method" in cloned
 

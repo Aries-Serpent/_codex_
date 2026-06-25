@@ -402,8 +402,9 @@ class FeatureStore:
             if importlib.util.find_spec("pyarrow") is None:
                 raise ImportError("pyarrow is required for parquet support")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             logger.error(
                 "pandas and pyarrow required for parquet materialization. "
                 "Install with: pip install pandas pyarrow"

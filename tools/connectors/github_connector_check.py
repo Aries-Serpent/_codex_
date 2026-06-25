@@ -89,7 +89,8 @@ def main() -> int:
         return 1
 
     except Exception as e:
-        logger.error(f"Error checking connector: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Error checking connector: <ERROR_TYPE>")
         return 1
 
 

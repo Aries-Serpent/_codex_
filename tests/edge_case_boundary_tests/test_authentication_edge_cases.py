@@ -22,7 +22,6 @@ class TestTokenExpiration:
     def test_token_exactly_at_expiration(self, valid_token):
         """Test token validation at exact expiration boundary."""
         # Arrange
-        token = valid_token
         expiration_time = datetime.now()
 
         # Act - token at exact expiration
@@ -148,9 +147,8 @@ class TestTokenStructure:
         try:
             parts = invalid_jwt.split(".")
             is_valid_base64 = all(part.replace("-", "+").replace("_", "/") for part in parts)
-            validation_passed = True
         except Exception as _err:
-            validation_passed = False
+            pass
 
         # Assert - should handle gracefully
         assert isinstance(is_valid_base64, bool)
@@ -376,10 +374,7 @@ class TestOAuthFlow:
     def test_oauth_redirect_uri_validation(self):
         """Test OAuth redirect URI validation."""
         # Arrange
-        registered_uris = [
-            "https://example.com/callback",
-            "https://example.com/oauth/callback"
-        ]
+        registered_uris = ["https://example.com/callback", "https://example.com/oauth/callback"]
         provided_uri = "https://example.com/callback"
 
         # Act

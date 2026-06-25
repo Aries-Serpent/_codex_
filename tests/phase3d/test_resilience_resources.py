@@ -43,7 +43,7 @@ class TestMemoryExhaustion:
         """Test handling of large object allocation failure."""
         try:
             # Try to allocate huge object
-            huge_list = [0] * (10**9)
+            [0] * (10**9)
         except MemoryError:
             # Expected
             pass
@@ -65,6 +65,7 @@ class TestMemoryExhaustion:
 
     def test_circular_reference_cleanup(self):
         """Test cleanup of circular references."""
+
         class Node:
             def __init__(self):
                 self.ref = None
@@ -83,6 +84,7 @@ class TestMemoryExhaustion:
 
     def test_generator_memory_efficiency(self):
         """Test memory efficiency of generators."""
+
         # Generator should be more efficient than list
         def large_generator():
             for i in range(1000000):
@@ -119,7 +121,7 @@ class TestFileDescriptorExhaustion:
             for f in files:
                 try:
                     f.close()
-                except:
+                except (IOError, OSError):
                     pass
 
         assert len(files) > 0
@@ -138,8 +140,8 @@ class TestFileDescriptorExhaustion:
         import tempfile
 
         # Create and immediately close
-        with tempfile.NamedTemporaryFile(delete=True) as f:
-            temp_name = f.name
+        with tempfile.NamedTemporaryFile(delete=True):
+            pass
 
         # File should be closed
 
@@ -197,6 +199,7 @@ class TestThreadPoolExhaustion:
 
     def test_thread_join_timeout(self):
         """Test thread join with timeout."""
+
         def slow_task():
             time.sleep(1)
 
@@ -240,7 +243,7 @@ class TestConnectionPoolExhaustion:
         mock_pool = Mock()
         mock_pool.get_connection.side_effect = [
             ConnectionError("Lost connection"),
-            Mock()  # Recovery successful
+            Mock(),  # Recovery successful
         ]
 
         try:
@@ -307,7 +310,7 @@ class TestCacheExhaustion:
         """Test cache respects size limits."""
         cache = {}
         max_items = 1000
-        max_memory_approx = max_items * 100  # bytes
+        max_items * 100  # bytes
 
         for i in range(max_items):
             cache[f"key_{i}"] = "x" * 50
@@ -338,10 +341,10 @@ class TestRateLimitingRecovery:
             try:
                 # Simulate rate limited request
                 raise Exception("Rate limited")
-            except Exception as _err:
+            except (ConnectionError, TimeoutError) as _err:
                 attempt += 1
                 if attempt < max_attempts:
-                    delay = base_delay * (2 ** attempt)
+                    delay = base_delay * (2**attempt)
                     assert delay > 0
 
     def test_rate_limit_reset(self):
@@ -364,7 +367,7 @@ class TestProcessExhaustion:
             proc = subprocess.Popen(
                 [sys.executable, "-c", "import time; time.sleep(0.1)"],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
             )
 
             # Wait for completion
@@ -380,10 +383,7 @@ class TestProcessExhaustion:
         import subprocess
 
         try:
-            proc = subprocess.Popen(
-                [sys.executable, "-c", "pass"],
-                stdout=subprocess.PIPE
-            )
+            proc = subprocess.Popen([sys.executable, "-c", "pass"], stdout=subprocess.PIPE)
 
             # Always clean up
             stdout, stderr = proc.communicate(timeout=1)

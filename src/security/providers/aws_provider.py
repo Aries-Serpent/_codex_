@@ -143,8 +143,9 @@ class AWSSecretsManagerProvider(SecretProvider):
                 old_secret_id=secret_id,
                 error_message=f"{error_code}: {error_msg}",
             )
-        except Exception as e:
-            logger.error(f"AWS rotation failed: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"AWS rotation failed: <ERROR_TYPE>")
             return RotationResult(success=False, old_secret_id=secret_id, error_message=str(e))
 
     def validate_secret(self, secret_id: str, secret_value: Optional[str] = None) -> bool:
@@ -279,7 +280,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                 create_kwargs["Description"] = description
 
             if tags:
-                create_kwargs["Tags"] = [{"Key": k, "Value": v} for k, v in tags.items()]  # type: ignore[assignment]
+                create_kwargs["Tags"] = [{"Key": k, "Value": v} for k, v in tags.items()]
 
             response = self.client.create_secret(**create_kwargs)
 
@@ -345,7 +346,7 @@ class AWSSecretsManagerProvider(SecretProvider):
                     try:
                         metadata = self.get_secret_metadata(secret["Name"])
                         secrets.append(metadata)
-                    except Exception as e:
+                    except (ValueError, TypeError, RuntimeError) as e:
                         logger.warning(
                             "Failed to get secure-store metadata: %s",
                             type(e).__name__,

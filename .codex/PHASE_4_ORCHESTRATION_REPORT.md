@@ -313,7 +313,7 @@ T+3:30  → Phase 5 results published to PR comment
 
 async def phase_5_execute(context: OrchestrationContext):
     """Execute all Phase 5 agents concurrently"""
-    
+
     # Spawn all 4 agents concurrently
     tasks = [
         agent_5a_security.execute_async(context),
@@ -321,16 +321,16 @@ async def phase_5_execute(context: OrchestrationContext):
         agent_5c_compliance.execute_async(context),
         agent_5d_ci_heal.execute_async(context),
     ]
-    
+
     # Wait for all to complete
     results = await asyncio.gather(*tasks, return_exceptions=True)
-    
+
     # Aggregate results
     aggregated = AggregateResults(results)
-    
+
     # Grade on 0-100 rubric
     score = grade_orchestration_output(aggregated)
-    
+
     # Report findings
     return OrchestrationReport(
         score=score,

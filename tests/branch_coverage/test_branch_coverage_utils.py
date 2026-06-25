@@ -37,7 +37,7 @@ class TestErrorHandlingBranches:
         error_occurred = False
         try:
             raise RuntimeError("test error")
-        except Exception as _err:  # intentional: testing generic exception handler path
+        except (IOError, OSError) as _err:  # intentional: testing generic exception handler path
             error_occurred = True
         assert error_occurred is True
 
@@ -49,7 +49,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception as _err:  # intentional: testing generic exception handler path
+        except (IOError, OSError) as _err:  # intentional: testing generic exception handler path
             error_type = "generic"
         assert error_type == "value_error"
 
@@ -61,7 +61,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception as _err:  # intentional: testing generic exception handler path
+        except (IOError, OSError) as _err:  # intentional: testing generic exception handler path
             error_type = "generic"
         assert error_type == "type_error"
 
@@ -73,7 +73,7 @@ class TestErrorHandlingBranches:
             error_type = "value_error"
         except TypeError:
             error_type = "type_error"
-        except Exception as _err:  # intentional: testing generic exception handler path
+        except (IOError, OSError) as _err:  # intentional: testing generic exception handler path
             error_type = "generic"
         assert error_type == "generic"
 
@@ -330,9 +330,7 @@ class TestPathOperationBranches:
             (".bin", "binary"),
         ],
     )
-    def test_path_extension_branches(
-        self, extension: str, expected_type: str
-    ) -> None:
+    def test_path_extension_branches(self, extension: str, expected_type: str) -> None:
         """Test path extension detection branches."""
         ext_map = {
             ".txt": "text",

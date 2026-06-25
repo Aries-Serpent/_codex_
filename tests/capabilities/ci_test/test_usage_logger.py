@@ -1,6 +1,7 @@
 """
 Tests for scripts/ci/usage_logger.py (T-004).
 """
+
 from __future__ import annotations
 
 import json
@@ -20,6 +21,7 @@ def tmp_log(tmp_path: Path) -> Path:
 
 
 # ── log_usage ──────────────────────────────────────────────────────────────
+
 
 class TestLogUsage:
     def test_creates_file_on_first_write(self, tmp_log: Path) -> None:
@@ -58,7 +60,10 @@ class TestLogUsage:
 
     def test_sha_truncated_to_12(self, tmp_log: Path) -> None:
         entry = ul.log_usage(
-            workflow="W", runner="r", effective_minutes=1.0, tier="GREEN",
+            workflow="W",
+            runner="r",
+            effective_minutes=1.0,
+            tier="GREEN",
             sha="abcdefghijklmnop",
         )
         assert len(entry["sha"]) <= 12
@@ -72,6 +77,7 @@ class TestLogUsage:
 
 
 # ── monthly_summary ────────────────────────────────────────────────────────
+
 
 class TestMonthlySummary:
     def test_no_log_returns_zero(self, tmp_log: Path) -> None:
@@ -143,6 +149,7 @@ class TestMonthlySummary:
 
 
 # ── budget alert exit code ─────────────────────────────────────────────────
+
 
 class TestBudgetAlert:
     def test_below_threshold_returns_0(self, tmp_log: Path) -> None:

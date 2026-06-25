@@ -1,6 +1,7 @@
 """
 Tests for SQLiteUserRepository — all CRUD + thread-safety operations.
 """
+
 from __future__ import annotations
 
 import threading
@@ -219,10 +220,9 @@ class TestSQLiteUserRepositoryThreadSafety:
             except Exception as exc:
                 errors.append(exc)
 
-        threads = (
-            [threading.Thread(target=writer, args=(i,)) for i in range(10)]
-            + [threading.Thread(target=reader) for _ in range(10)]
-        )
+        threads = [threading.Thread(target=writer, args=(i,)) for i in range(10)] + [
+            threading.Thread(target=reader) for _ in range(10)
+        ]
         for t in threads:
             t.start()
         for t in threads:

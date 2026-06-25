@@ -270,11 +270,11 @@ class PythonASTAdapter(BaseASTAdapter):
             if param.default:
                 param_info["default"] = str(param.default)
             params.append(param_info)
-        metadata["parameters"] = params  # type: ignore[assignment]
+        metadata["parameters"] = params
 
         # Extract return type
         if func.returns:
-            metadata["return_type"] = str(func.returns.annotation)  # type: ignore[assignment]
+            metadata["return_type"] = str(func.returns.annotation)
 
         return metadata
 

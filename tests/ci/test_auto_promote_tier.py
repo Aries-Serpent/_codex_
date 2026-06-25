@@ -15,7 +15,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
 import auto_promote_tier  # noqa: I001
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -113,9 +112,7 @@ class TestApplyPromotion:
             ],
         )
         with patch.object(auto_promote_tier, "REGISTRY_PATH", registry):
-            updated = auto_promote_tier._apply_promotion(
-                ["grounded-agent", "partial-agent"]
-            )
+            updated = auto_promote_tier._apply_promotion(["grounded-agent", "partial-agent"])
 
         assert updated == 0
 

@@ -22,12 +22,12 @@ from typing import Any
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional dependency
     import torch as _torch
-except Exception:  # pragma: no cover - torch unavailable
-    _torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - torch unavailable
+    _torch = None
 
 try:  # pragma: no cover - optional dependency
     import numpy as _np
-except Exception:  # pragma: no cover - numpy unavailable
+except (ImportError, AttributeError):  # pragma: no cover - numpy unavailable
     _np = None
 
 _warnings.warn(
@@ -48,17 +48,17 @@ _restore_rng_state: Callable[[Mapping[str, Any]], None] | None = None
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
     from training.checkpoint_manager import CheckpointManager
-except Exception:  # pragma: no cover - fallback to canonical
+except (IOError, OSError):  # pragma: no cover - fallback to canonical
     from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore
 
 try:  # pragma: no cover - prefer canonical helpers
     from codex_ml.utils.checkpoint_core import (  # type: ignore[no-redef]  # noqa: I001
         capture_rng_state as _capture_rng_state,
-        load_checkpoint as _canonical_load_checkpoint,
-        restore_rng_state as _restore_rng_state,
-        save_checkpoint as _canonical_save_checkpoint,
     )
-except Exception as exc:  # pragma: no cover - canonical helpers unavailable
+    from codex_ml.utils.checkpoint_core import load_checkpoint as _canonical_load_checkpoint
+    from codex_ml.utils.checkpoint_core import restore_rng_state as _restore_rng_state
+    from codex_ml.utils.checkpoint_core import save_checkpoint as _canonical_save_checkpoint
+except (ImportError, AttributeError) as exc:  # pragma: no cover - canonical helpers unavailable
     LOGGER.debug("Canonical checkpoint helpers unavailable: %s", exc)
 
 
@@ -171,8 +171,9 @@ def _legacy_restore_rng_state(state: Mapping[str, Any]) -> None:
             try:
                 iterable_states = list(cuda_state)
             except TypeError as e:
-                logger.debug(f"TypeError: {e}")
-                logger.warning(f"TypeError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"TypeError: <ERROR_TYPE>")
+                logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
                 iterable_states = [cuda_state]
         for idx, tensor_state in enumerate(iterable_states):
             with suppress(Exception):
@@ -199,7 +200,7 @@ def _restore_rng(state: Mapping[str, Any]) -> None:
         try:
             _restore_rng_state(state)
             return
-        except Exception as exc:  # pragma: no cover - fall back to legacy behaviour
+        except (IOError, OSError) as exc:  # pragma: no cover - fall back to legacy behaviour
             LOGGER.debug("Canonical RNG restore failed; falling back to legacy: %s", exc)
     _legacy_restore_rng_state(state)
 
@@ -220,7 +221,8 @@ def _torch_load(path: str, *, map_location: str | None = None) -> Any:
     try:
         return load_fn(path, **kwargs)
     except TypeError as exc:
-        logger.debug(f"TypeError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             return load_fn(path, **kwargs)
@@ -275,15 +277,17 @@ def save_checkpoint(
         if tmp_path is not None:
             try:
                 tmp_path.unlink()
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (IOError, OSError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 LOGGER.warning("Temporary checkpoint cleanup failed for %s: %s", tmp_path, exc)
 
     if archive_latest and target.is_symlink():
         try:
             target.unlink()
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             LOGGER.debug("Failed to clean up symlink %s during archive: %s", target, exc)
     return
 
@@ -319,7 +323,7 @@ def load_checkpoint(
     try:
         state, _meta = _canonical_load_checkpoint(path, restore_rng=restore, **kwargs)
         return state
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         fallback = _load_legacy_checkpoint_payload(path, map_location=kwargs.get("map_location"))
         if fallback is None:
@@ -348,7 +352,7 @@ def _load_legacy_checkpoint_payload(
     if _torch is not None:
         try:
             loaded = _torch_load(str(path), map_location=map_location)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             loaded = None
         if isinstance(loaded, Mapping):
@@ -359,7 +363,7 @@ def _load_legacy_checkpoint_payload(
             from utils.safe_pickle import safe_pickle_load
 
             loaded = safe_pickle_load(str(path), use_restricted_unpickler=True)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             return None
         if not isinstance(loaded, Mapping):

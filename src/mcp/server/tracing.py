@@ -147,7 +147,7 @@ def drift_span(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         tracer = trace_mod.get_tracer(tracer_name)
-    except Exception:
+    except (IOError, OSError):
         yield None
         return
 
@@ -212,7 +212,7 @@ def record_drift_event(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         span = trace_mod.get_current_span()
-    except Exception:
+    except (IOError, OSError):
         return
 
     attrs: dict[str, Any] = {
@@ -231,5 +231,5 @@ def record_drift_event(
 
     try:
         span.add_event("drift.detected", attributes=attrs)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.debug("Suppressed exception in handler", exc_info=True)

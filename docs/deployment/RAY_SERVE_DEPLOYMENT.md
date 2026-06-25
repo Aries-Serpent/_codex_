@@ -138,14 +138,14 @@ data:
   app.py: |
     from ray import serve
     from fastapi import FastAPI
-    
+
     app = FastAPI()
-    
+
     @serve.deployment
     class Predictor:
         async def predict(self, request):
             return {"prediction": "ok"}
-    
+
     serve.start()
     serve.run(Predictor.bind())
 
@@ -251,7 +251,7 @@ available_node_types:
             requests:
               cpu: "4"
               memory: "16Gi"
-  
+
   ray_worker:
     min_workers: 2
     max_workers: 8
@@ -292,7 +292,7 @@ app = FastAPI()
 
 class PredictionRequest(BaseModel):
     text: str
-    max_tokens: int = 100
+    max_tokens: int = 100  # pragma: allowlist secret
 
 @serve.deployment
 class TextPredictor:
@@ -308,7 +308,7 @@ class TextPredictor:
         result = {
             "input": request.text,
             "output": "generated text",
-            "tokens_used": 45
+            "tokens_used": 45  # pragma: allowlist secret
         }
         return result
 
@@ -343,17 +343,17 @@ app = FastAPI()
 )
 class GPTModel:
     def __init__(self, model_name: str = "gpt2"):
-        from transformers import AutoTokenizer, AutoModelForCausalLM
+        from transformers import AutoTokenizer, AutoModelForCausalLM  # pragma: allowlist secret
 
         self.model_name = model_name
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)  # pragma: allowlist secret
         self.model = AutoModelForCausalLM.from_pretrained(model_name)
 
     @app.post("/generate")
-    async def generate(self, prompt: str, max_tokens: int = 50):
-        inputs = self.tokenizer(prompt, return_tensors="pt")
-        outputs = self.model.generate(**inputs, max_length=max_tokens)
-        text = self.tokenizer.decode(outputs[0])
+    async def generate(self, prompt: str, max_tokens: int = 50):  # pragma: allowlist secret
+        inputs = self.tokenizer(prompt, return_tensors="pt")  # pragma: allowlist secret
+        outputs = self.model.generate(**inputs, max_length=max_tokens)  # pragma: allowlist secret
+        text = self.tokenizer.decode(outputs[0])  # pragma: allowlist secret
         return {"generated_text": text}
 
 @serve.deployment(
@@ -362,14 +362,14 @@ class GPTModel:
 )
 class EmbeddingModel:
     def __init__(self):
-        from transformers import AutoTokenizer, AutoModel
+        from transformers import AutoTokenizer, AutoModel  # pragma: allowlist secret
 
-        self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+        self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")  # pragma: allowlist secret
         self.model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
     @app.post("/embed")
     async def embed(self, text: str):
-        inputs = self.tokenizer(text, return_tensors="pt")
+        inputs = self.tokenizer(text, return_tensors="pt")  # pragma: allowlist secret
         outputs = self.model(**inputs)
         embedding = outputs.last_hidden_state[0][0].tolist()
         return {"embedding": embedding}

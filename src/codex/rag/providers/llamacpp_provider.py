@@ -90,8 +90,9 @@ class LlamaCppEmbeddingProvider:
                 self.dimension = detected_dim
                 logger.debug(f"Detected embedding dimension: {detected_dim}")
 
-        except Exception as e:
-            logger.error(f"Failed to load llama.cpp model: {e}")
+        except (ValueError, TypeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to load llama.cpp model: <ERROR_TYPE>")
             raise
 
     def encode(
@@ -126,8 +127,9 @@ class LlamaCppEmbeddingProvider:
                     logger.error(f"Unexpected embedding format: {type(result)}")
                     embeddings.append([0.0] * self.dimension)
 
-            except Exception as e:
-                logger.error(f"Error encoding text: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Error encoding text: <ERROR_TYPE>")
                 embeddings.append([0.0] * self.dimension)
 
         return np.array(embeddings, dtype=np.float32)

@@ -119,8 +119,8 @@ dict[str, Optional[str]]
 - `test_secret_masking[ASIAABCDEFGHIJKLMNOP]` <!-- pragma: allowlist secret -->
 - `test_secret_masking[ghp_ABCdefGHIjklMNOpqrSTUvwxYZ012345678]`
 - `test_secret_masking[sk-abc123XYZsecret]`
-- `test_secret_masking[xoxb-1234567890-ABCDEFG]`
-- `test_secret_masking[xoxp-1234567890-ABCDEFG]`
+- `test_secret_masking[xoxb-1234567890-ABCDEFG]` <!-- pragma: allowlist secret -->
+- `test_secret_masking[xoxp-1234567890-ABCDEFG]` <!-- pragma: allowlist secret -->
 - `test_secret_filter_disabled`
 
 **CLI Fallback (2 tests)**:

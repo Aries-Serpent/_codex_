@@ -44,8 +44,9 @@ class MLflowBackend(LoggerBackend):
             if tracking_uri:
                 mlflow.set_tracking_uri(tracking_uri)
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError("MLflow not installed. Install: pip install mlflow") from e
 
     def start_run(self, run_name=None) -> None:
@@ -71,8 +72,9 @@ class TensorBoardBackend(LoggerBackend):
 
             self.writer = SummaryWriter(log_dir)
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError("TensorBoard not installed. Install: pip install tensorboard") from e
 
     def start_run(self, run_name=None) -> None:
@@ -101,8 +103,9 @@ class WandBBackend(LoggerBackend):
             self.project = project
             self.entity = entity
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError("Weights & Biases not installed. Install: pip install wandb") from e
 
     def start_run(self, run_name=None) -> None:
@@ -132,33 +135,37 @@ class LoggerRegistry:
         for name, backend in self.backends.items():
             try:
                 backend.start_run(run_name)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Failed start on {name}: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Failed start on {name}: <ERROR_TYPE>")
 
     def end_run(self) -> None:
         for backend in self.backends.values():
             try:
                 backend.end_run()
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Failed end: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Failed end: <ERROR_TYPE>")
 
     def log_metrics(self, metrics: dict, step: Optional[int] = None) -> None:
         for backend in self.backends.values():
             try:
                 backend.log_metrics(metrics, step)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Failed log: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Failed log: <ERROR_TYPE>")
 
     def log_params(self, params: dict) -> None:
         for backend in self.backends.values():
             try:
                 backend.log_params(params)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Failed params: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Failed params: <ERROR_TYPE>")
 
 
 # Global instance

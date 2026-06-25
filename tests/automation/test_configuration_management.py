@@ -24,6 +24,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def config_definition() -> dict[str, Any]:
     """Fixture for configuration definition."""
@@ -95,6 +96,7 @@ def secret_config() -> dict[str, Any]:
 # Configuration Versioning Tests
 # ============================================================================
 
+
 class TestConfigVersioning:
     """Tests for configuration versioning."""
 
@@ -144,6 +146,7 @@ class TestConfigVersioning:
 # Environment Configuration Tests
 # ============================================================================
 
+
 class TestEnvironmentConfigs:
     """Tests for environment-specific configurations."""
 
@@ -182,6 +185,7 @@ class TestEnvironmentConfigs:
 # ============================================================================
 # Secret Management Tests
 # ============================================================================
+
 
 class TestSecretManagement:
     """Tests for secret management."""
@@ -223,6 +227,7 @@ class TestSecretManagement:
 # Configuration Validation Tests
 # ============================================================================
 
+
 class TestConfigValidation:
     """Tests for configuration validation."""
 
@@ -258,6 +263,7 @@ class TestConfigValidation:
 # ============================================================================
 # Change Tracking Tests
 # ============================================================================
+
 
 class TestChangeTracking:
     """Tests for configuration change tracking."""
@@ -295,6 +301,7 @@ class TestChangeTracking:
 # ============================================================================
 # Config Drift Detection Tests
 # ============================================================================
+
 
 class TestConfigDriftDetection:
     """Tests for configuration drift detection."""

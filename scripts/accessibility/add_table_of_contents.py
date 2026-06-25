@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 from typing import Dict, List
 
+
 class TOCGenerator:
     """Generate table of contents for markdown files."""
 
@@ -22,14 +23,14 @@ class TOCGenerator:
         """Extract headings from markdown content."""
         headings = []
         lines = content.split('\n')
-        
+
         for i, line in enumerate(lines):
             match = re.match(r'^(#+)\s+(.+)$', line)
             if match:
                 level = len(match.group(1))
                 title = match.group(2).strip()
                 headings.append((level, title, i))
-        
+
         return headings
 
     def has_toc(self, content: str) -> bool:
@@ -40,16 +41,16 @@ class TOCGenerator:
         """Generate TOC markdown."""
         if not headings:
             return ""
-        
+
         toc_lines = ["## Table of Contents\n"]
-        
+
         for level, title, _ in headings[1:]:  # Skip first H1
             indent = "  " * (level - 2)
             # Create link-friendly title
             link = title.lower().replace(' ', '-').replace('/', '').replace("'", "")
             link = re.sub(r'[^a-z0-9\-_]', '', link)
             toc_lines.append(indent + "- [" + title + "](#" + link + ")")
-        
+
         return '\n'.join(toc_lines) + "\n"
 
     def count_words(self, content: str) -> int:
@@ -66,31 +67,31 @@ class TOCGenerator:
         """Process a single markdown file."""
         if not file_path.is_file() or file_path.suffix != '.md':
             return False
-        
+
         try:
             content = file_path.read_text(encoding='utf-8')
         except (UnicodeDecodeError, OSError):
             return False
-        
+
         self.files_processed += 1
-        
+
         # Check if file is long enough
         word_count = self.count_words(content)
         if word_count < self.min_words:
             return False
-        
+
         # Check if already has TOC
         if self.has_toc(content):
             return False
-        
+
         # Extract headings
         headings = self.extract_headings(content)
         if len(headings) < 2:  # Need at least 2 headings
             return False
-        
+
         # Generate TOC
         toc = self.generate_toc_markdown(headings)
-        
+
         # Find insertion point (after first heading)
         lines = content.split('\n')
         insert_at = 0
@@ -98,11 +99,11 @@ class TOCGenerator:
             if re.match(r'^#\s+', line):
                 insert_at = i + 1
                 break
-        
+
         # Insert TOC
         lines.insert(insert_at + 1, toc)
         updated_content = '\n'.join(lines)
-        
+
         # Save
         try:
             file_path.write_text(updated_content, encoding='utf-8')
@@ -115,7 +116,7 @@ class TOCGenerator:
         """Process all markdown files."""
         for file_path in self.docs_dir.rglob('*.md'):
             self.process_file(file_path)
-        
+
         return {
             'files_processed': self.files_processed,
             'tocs_added': self.tocs_added,
@@ -125,7 +126,7 @@ class TOCGenerator:
     def generate_report(self) -> str:
         """Generate TOC report."""
         stats = self.process_all()
-        
+
         report = f"""# Table of Contents Addition Report
 
 ## Summary
@@ -137,7 +138,7 @@ class TOCGenerator:
 ✅ Added table of contents to {stats['tocs_added']} long-form documents
 ✅ Each TOC links to all section headings for easy navigation
 """
-        
+
         return report
 
 
@@ -146,6 +147,6 @@ if __name__ == '__main__':
     docs_dir = sys.argv[1] if len(sys.argv) > 1 else 'docs'
     generator = TOCGenerator(docs_dir)
     stats = generator.process_all()
-    
+
     print(generator.generate_report())
     print(f"\n✅ Added TOCs to {stats['tocs_added']} documents")

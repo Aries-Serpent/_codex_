@@ -17,6 +17,7 @@ import pytest
 try:
     import click
     from click.testing import CliRunner
+
     HAS_CLICK = True
 except ImportError:
     HAS_CLICK = False
@@ -31,14 +32,14 @@ try:
         tokenizer,
         train,
     )
+
     HAS_CODEX_CLI = True
 except ImportError:
     HAS_CODEX_CLI = False
 
 
 pytestmark = pytest.mark.skipif(
-    not (HAS_CLICK and HAS_CODEX_CLI),
-    reason="click and codex_cli modules not available"
+    not (HAS_CLICK and HAS_CODEX_CLI), reason="click and codex_cli modules not available"
 )
 
 
@@ -102,12 +103,12 @@ class TestCodexMainCommand:
     def test_codex_version(self, cli_runner):
         """Test codex --version shows version."""
         with patch("codex_ml.cli.codex_cli.__version__", "1.0.0"):
-            result = cli_runner.invoke(codex, ["--version"])
+            cli_runner.invoke(codex, ["--version"])
             # May or may not support version flag
 
     def test_codex_no_args(self, cli_runner):
         """Test codex with no arguments."""
-        result = cli_runner.invoke(codex, [])
+        cli_runner.invoke(codex, [])
         # Should show help or error
 
     def test_codex_invalid_subcommand(self, cli_runner):
@@ -126,7 +127,7 @@ class TestTokenizerCommand:
 
     def test_tokenizer_help(self, cli_runner):
         """Test tokenizer --help."""
-        result = cli_runner.invoke(tokenizer, ["--help"])
+        cli_runner.invoke(tokenizer, ["--help"])
         # Tokenizer group should show subcommands
 
     def test_tokenizer_train_help(self, cli_runner):
@@ -136,13 +137,13 @@ class TestTokenizerCommand:
 
     def test_tokenizer_train_missing_config(self, cli_runner):
         """Test tokenizer train without config."""
-        result = cli_runner.invoke(codex, ["tokenizer", "train"])
+        cli_runner.invoke(codex, ["tokenizer", "train"])
         # Should require --config argument or show error
 
     def test_tokenizer_train_with_config(self, cli_runner, sample_tokenizer_config):
         """Test tokenizer train with valid config."""
-        with patch("codex_ml.tokenization.pipeline.train") as mock_train:
-            result = cli_runner.invoke(
+        with patch("codex_ml.tokenization.pipeline.train"):
+            cli_runner.invoke(
                 codex,
                 ["tokenizer", "train", "--config", str(sample_tokenizer_config)],
             )
@@ -155,7 +156,7 @@ class TestTokenizerCommand:
 
     def test_tokenizer_encode_missing_file(self, cli_runner):
         """Test tokenizer encode without tokenizer file."""
-        result = cli_runner.invoke(
+        cli_runner.invoke(
             codex,
             ["tokenizer", "encode", "--tokenizer", "nonexistent.json"],
         )
@@ -164,7 +165,7 @@ class TestTokenizerCommand:
     def test_tokenizer_decode_invalid_tokens(self, cli_runner):
         """Test tokenizer decode with invalid token IDs."""
         with patch("codex_ml.tokenization.Tokenizer"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["tokenizer", "decode", "--token-ids", "999999,999998", "--tokenizer", "test.json"],
             )
@@ -199,8 +200,8 @@ class TestTrainCommand:
 
     def test_train_with_valid_config(self, cli_runner, sample_training_config):
         """Test train with valid config."""
-        with patch("codex_ml.training.train_pipeline") as mock_train:
-            result = cli_runner.invoke(
+        with patch("codex_ml.training.train_pipeline"):
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(sample_training_config)],
             )
@@ -209,12 +210,14 @@ class TestTrainCommand:
     def test_train_with_overrides(self, cli_runner, sample_training_config):
         """Test train with config overrides."""
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 [
                     "train",
-                    "--config", str(sample_training_config),
-                    "--override", "training.batch_size=64",
+                    "--config",
+                    str(sample_training_config),
+                    "--override",
+                    "training.batch_size=64",
                 ],
             )
             # Should apply overrides
@@ -222,7 +225,7 @@ class TestTrainCommand:
     def test_train_with_seed(self, cli_runner, sample_training_config):
         """Test train with random seed."""
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(sample_training_config), "--seed", "42"],
             )
@@ -231,7 +234,7 @@ class TestTrainCommand:
     def test_train_dry_run(self, cli_runner, sample_training_config):
         """Test train in dry-run mode."""
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(sample_training_config), "--dry-run"],
             )
@@ -271,7 +274,7 @@ class TestResumeCommand:
         (checkpoint_dir / "config.yaml").write_text("model: test")
 
         with patch("codex_ml.training.resume_training"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["resume", "--checkpoint", str(checkpoint_dir)],
             )
@@ -293,7 +296,7 @@ class TestEvaluateCommand:
 
     def test_evaluate_missing_model(self, cli_runner):
         """Test evaluate without model path."""
-        result = cli_runner.invoke(codex, ["evaluate"])
+        cli_runner.invoke(codex, ["evaluate"])
         # May require model path
 
     def test_evaluate_invalid_model(self, cli_runner):
@@ -310,7 +313,7 @@ class TestEvaluateCommand:
         dataset_path.write_text('{"text": "test"}\n')
 
         with patch("codex_ml.evaluation.evaluate_model"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["evaluate", "--dataset", str(dataset_path), "--model", "test_model"],
             )
@@ -322,7 +325,7 @@ class TestEvaluateCommand:
         dataset_path.write_text('{"text": "test"}\n')
 
         with patch("codex_ml.evaluation.evaluate_model"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["evaluate", "--dataset", str(dataset_path), "--format", "json"],
             )
@@ -350,7 +353,7 @@ class TestPrepareDataCommand:
     def test_prepare_data_with_config(self, cli_runner, sample_training_config):
         """Test prepare-data with config."""
         with patch("codex_ml.data.prepare_data_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["prepare-data", "--config", str(sample_training_config)],
             )
@@ -359,7 +362,7 @@ class TestPrepareDataCommand:
     def test_prepare_data_with_seed(self, cli_runner, sample_training_config):
         """Test prepare-data with random seed."""
         with patch("codex_ml.data.prepare_data_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["prepare-data", "--config", str(sample_training_config), "--seed", "42"],
             )
@@ -386,7 +389,7 @@ class TestConfigSweepCommand:
 
     def test_config_sweep_missing_param(self, cli_runner, sample_training_config):
         """Test config-sweep without sweep parameters."""
-        result = cli_runner.invoke(
+        cli_runner.invoke(
             codex,
             ["config-sweep", "--config", str(sample_training_config)],
         )
@@ -395,13 +398,16 @@ class TestConfigSweepCommand:
     def test_config_sweep_with_params(self, cli_runner, sample_training_config):
         """Test config-sweep with sweep parameters."""
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 [
                     "config-sweep",
-                    "--config", str(sample_training_config),
-                    "--param", "learning_rate=0.001,0.0001",
-                    "--param", "batch_size=32,64",
+                    "--config",
+                    str(sample_training_config),
+                    "--param",
+                    "learning_rate=0.001,0.0001",
+                    "--param",
+                    "batch_size=32,64",
                 ],
             )
             # Should run sweep with multiple parameter combinations
@@ -412,8 +418,10 @@ class TestConfigSweepCommand:
             codex,
             [
                 "config-sweep",
-                "--config", str(sample_training_config),
-                "--param", "invalid_range",
+                "--config",
+                str(sample_training_config),
+                "--param",
+                "invalid_range",
             ],
         )
         assert result.exit_code != 0
@@ -481,7 +489,7 @@ class TestCodexCLIOutput:
         """Test JSON output format."""
         with patch("codex_ml.evaluation.evaluate_model") as mock_eval:
             mock_eval.return_value = {"accuracy": 0.95, "loss": 0.05}
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["evaluate", "--format", "json", "--model", "test"],
             )
@@ -490,7 +498,7 @@ class TestCodexCLIOutput:
     def test_verbose_logging(self, cli_runner, sample_training_config):
         """Test verbose logging output."""
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(sample_training_config), "--verbose"],
             )
@@ -499,7 +507,7 @@ class TestCodexCLIOutput:
     def test_quiet_mode(self, cli_runner, sample_training_config):
         """Test quiet/silent mode."""
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(sample_training_config), "--quiet"],
             )
@@ -544,7 +552,7 @@ class TestCodexCLIWorkflows:
         with patch("codex_ml.tokenization.pipeline.train"):
             with patch("codex_ml.tokenization.Tokenizer"):
                 # Train tokenizer
-                train_result = cli_runner.invoke(
+                cli_runner.invoke(
                     codex,
                     ["tokenizer", "train", "--config", str(config_file)],
                 )
@@ -564,7 +572,7 @@ class TestCodexCLIEdgeCases:
         empty_config = tmp_path / "empty.yaml"
         empty_config.write_text("")
 
-        result = cli_runner.invoke(
+        cli_runner.invoke(
             codex,
             ["train", "--config", str(empty_config)],
         )
@@ -573,12 +581,10 @@ class TestCodexCLIEdgeCases:
     def test_very_large_config_file(self, cli_runner, tmp_path):
         """Test with large config file."""
         large_config = tmp_path / "large_config.yaml"
-        large_config.write_text(
-            "\n".join([f"param_{i}: {i}" for i in range(10000)])
-        )
+        large_config.write_text("\n".join([f"param_{i}: {i}" for i in range(10000)]))
 
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(large_config)],
             )
@@ -592,7 +598,7 @@ class TestCodexCLIEdgeCases:
         config_file.write_text("test: config")
 
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(config_file)],
             )
@@ -604,7 +610,7 @@ class TestCodexCLIEdgeCases:
         unicode_config.write_text("description: 'Testing with unicode 测试 🚀'\nmodel: test")
 
         with patch("codex_ml.training.train_pipeline"):
-            result = cli_runner.invoke(
+            cli_runner.invoke(
                 codex,
                 ["train", "--config", str(unicode_config)],
             )

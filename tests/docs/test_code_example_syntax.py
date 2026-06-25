@@ -56,9 +56,7 @@ def test_python_code_blocks_syntax(markdown_files):
 
     if errors:
         # Soft warning
-        pytest.skip(
-            f"Found {len(errors)} Python syntax issues (may be intentional examples)"
-        )
+        pytest.skip(f"Found {len(errors)} Python syntax issues (may be intentional examples)")
 
 
 def test_code_blocks_have_language_tags(markdown_files):

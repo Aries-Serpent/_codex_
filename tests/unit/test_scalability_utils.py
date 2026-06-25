@@ -79,8 +79,8 @@ class TestLRUCache:
     def test_hit_rate_mixed(self):
         cache = LRUCache()
         cache.set("k", 1)
-        cache.get("k")   # hit
-        cache.get("x")   # miss
+        cache.get("k")  # hit
+        cache.get("x")  # miss
         assert cache.hit_rate == 0.5
 
     def test_ttl_expiry_returns_none(self):
@@ -100,7 +100,7 @@ class TestLRUCache:
         cache = LRUCache(max_size=2)
         cache.set("a", 1)
         cache.set("b", 2)
-        cache.get("a")   # make "a" most recently used
+        cache.get("a")  # make "a" most recently used
         cache.set("c", 3)  # should evict "b" (LRU)
         assert cache.get("b") is None
         assert cache.get("a") == 1
@@ -240,13 +240,13 @@ class TestRateLimiter:
 
     def test_acquire_fails_when_exhausted(self):
         limiter = RateLimiter(rate=0.01, burst=1)
-        limiter.acquire()   # drain the single token
+        limiter.acquire()  # drain the single token
         assert limiter.acquire() is False
 
     def test_acquire_refills_over_time(self):
         limiter = RateLimiter(rate=100, burst=1)
         limiter.acquire()  # drain
-        time.sleep(0.05)   # 100 tokens/s -> ~5 tokens added
+        time.sleep(0.05)  # 100 tokens/s -> ~5 tokens added
         assert limiter.acquire() is True
 
     def test_wait_for_token_succeeds_fast(self):

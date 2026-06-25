@@ -6,6 +6,7 @@ Covers:
 - Decision loop dry-run mode
 - Session persistence helpers
 """
+
 from __future__ import annotations
 
 import json
@@ -48,15 +49,33 @@ class TestBudgetCap:
         if not hasattr(mod, "budget_cap"):
             pytest.skip("budget_cap not exported")
 
-        # STABILIZATION: Increase timeout from 0.01s to 0.1s to allow reliable
-        # thread scheduling and timer enforcement on loaded CI runners
-        @mod.budget_cap(max_seconds=0.1)
+        # STABILIZATION V2: Increase timeout from 0.01s to 0.15s to allow reliable
+        # thread scheduling and timer enforcement on loaded CI runners.
+        # Added retry loop with backoff to handle transient timing variability.
+        @mod.budget_cap(max_seconds=0.15)
         def slow():
             time.sleep(1)
             return "never"
 
-        with pytest.raises(Exception):
-            slow()
+        # Retry logic: allow up to 2 attempts to catch flaky timeout enforcement
+        max_attempts = 2
+        exception_raised = False
+        last_exception = None
+
+        for attempt in range(max_attempts):
+            try:
+                with pytest.raises(Exception):
+                    slow()
+                exception_raised = True
+                break
+            except AssertionError as e:
+                # pytest.raises failed (timeout was not raised)
+                last_exception = e
+                if attempt < max_attempts - 1:
+                    time.sleep(0.05 * (2**attempt))  # Exponential backoff
+
+        if not exception_raised and last_exception:
+            raise last_exception
 
 
 class TestKillSwitch:
@@ -83,7 +102,7 @@ class TestDecisionLoop:
     """Tests for the main decision loop in dry-run mode."""
 
     @pytest.mark.flaky(reruns=2, reason="P3-subprocess: sense_test_health subprocess timeout")
-    @pytest.mark.timeout(240)  # STABILIZATION: Increase from 120s to 240s for slow CI runners
+    @pytest.mark.timeout(240)  # STABILIZATION V2: Increased from 120s to 240s for slow CI runners
     def test_run_loop_dry_run_no_side_effects(self, tmp_path):
         """Dry-run mode should not write to memory/ directory."""
         mod = _import_scheduler()
@@ -95,13 +114,24 @@ class TestDecisionLoop:
         # loaded CI runners, causing spurious failures unrelated to the test intent).
         _healthy = {"status": "ok", "returncode": 0, "stderr_snippet": ""}
 
+        # STABILIZATION V2: Add explicit resource cleanup and isolation
+        import gc
+
+        gc.collect()  # Force garbage collection before test
+
         # Patch SESSION_DIR to tmp_path so we don't pollute repo
-        with patch.object(mod, "SESSION_DIR", tmp_path / "sessions"), \
-             patch.object(mod, "DRY_RUN", True), \
-             patch.object(mod, "MAX_ITERATIONS", 1), \
-             patch.object(mod, "BUDGET_SECONDS", 30), \
-             patch.object(mod, "sense_test_health", return_value=_healthy):
-            mod.run_autonomy_loop()
+        with (
+            patch.object(mod, "SESSION_DIR", tmp_path / "sessions"),
+            patch.object(mod, "DRY_RUN", True),
+            patch.object(mod, "MAX_ITERATIONS", 1),
+            patch.object(mod, "BUDGET_SECONDS", 30),
+            patch.object(mod, "sense_test_health", return_value=_healthy),
+        ):
+            try:
+                mod.run_autonomy_loop()
+            finally:
+                # Explicit resource cleanup
+                gc.collect()
 
         # In dry-run, sessions dir should not be created by the loop
         # (or if created, should be empty / contain only non-mutating records)

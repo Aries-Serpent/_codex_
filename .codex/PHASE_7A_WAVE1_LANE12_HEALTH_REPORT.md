@@ -141,7 +141,7 @@ Summary:
 - Long functions often have multiple responsibilities
 - Testing these will require heavy use of mocks
 
-**Recommendation for Wave 1:** 
+**Recommendation for Wave 1:**
 - Focus on unit tests for functions <200 lines
 - For long functions, use fixture-based parametrization
 - Consider integration tests for training pipeline functions

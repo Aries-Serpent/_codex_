@@ -10,6 +10,7 @@ This module contains comprehensive tests for:
 
 CRITICAL: These tests validate disaster recovery capability.
 """
+
 from unittest.mock import Mock
 
 import pytest
@@ -23,7 +24,7 @@ class TestDatabaseRollback:
     def test_database_rollback_full(self):
         """
         Validate full database rollback capability.
-        
+
         Scenario:
         - Deploy database version v2
         - Make changes (insert, update, delete)
@@ -42,7 +43,7 @@ class TestDatabaseRollback:
                     {"id": 2, "name": "Bob", "status": "active"},
                 ]
             },
-            "timestamp": "2026-06-20T00:00:00Z"
+            "timestamp": "2026-06-20T00:00:00Z",
         }
 
         v2_state = {
@@ -53,7 +54,7 @@ class TestDatabaseRollback:
                     {"id": 2, "name": "Bob", "status": "active"},
                     {"id": 3, "name": "Charlie", "status": "active"},  # Added
                 ]
-            }
+            },
         }
 
         # Configure mocks
@@ -83,7 +84,7 @@ class TestDatabaseRollback:
     def test_database_rollback_partial(self):
         """
         Validate selective table rollback.
-        
+
         Scenario:
         - Modify multiple tables
         - Rollback only specific table
@@ -100,7 +101,7 @@ class TestDatabaseRollback:
             ],
             "orders_table": [
                 {"op": "insert", "order_id": 100, "user_id": 1, "amount": 99.99},
-            ]
+            ],
         }
 
         # Configure mocks
@@ -108,7 +109,7 @@ class TestDatabaseRollback:
         database.rollback_table.side_effect = lambda t: {
             "table": t,
             "rolled_back": True,
-            "rows_affected": 2 if t == "users_table" else 1
+            "rows_affected": 2 if t == "users_table" else 1,
         }
 
         # Action: Rollback only users_table
@@ -125,7 +126,7 @@ class TestDatabaseRollback:
     def test_database_data_consistency_post_rollback(self):
         """
         Validate data consistency after rollback.
-        
+
         Verify:
         - Foreign key constraints maintained
         - Referential integrity preserved
@@ -146,7 +147,7 @@ class TestDatabaseRollback:
         integrity_checker.check_constraints.return_value = {
             "valid": True,
             "orphaned_records": 0,
-            "broken_references": 0
+            "broken_references": 0,
         }
         integrity_checker.check_referential_integrity.return_value = True
 
@@ -170,7 +171,7 @@ class TestServiceVersionRollback:
     def test_service_version_rollback(self):
         """
         Validate service version rollback.
-        
+
         Scenario:
         - Deploy service v2
         - Service v2 has critical bug
@@ -190,7 +191,7 @@ class TestServiceVersionRollback:
         deployment_manager.rollback_to_version.return_value = {
             "success": True,
             "from_version": "2.0",
-            "to_version": "1.0"
+            "to_version": "1.0",
         }
         health_check.service_ready.return_value = True
         service.get_info.return_value = v1_config
@@ -216,7 +217,7 @@ class TestServiceVersionRollback:
     def test_service_traffic_rerouting_during_rollback(self):
         """
         Validate traffic rerouting during version rollback.
-        
+
         Ensure no traffic loss during rollback process.
         """
         load_balancer = Mock()
@@ -226,7 +227,7 @@ class TestServiceVersionRollback:
         # Setup: Two service instances
         load_balancer.get_traffic_distribution.return_value = {
             "v2": 100,  # All traffic to v2
-            "v1": 0
+            "v1": 0,
         }
 
         # Configure mocks
@@ -261,7 +262,7 @@ class TestServiceVersionRollback:
     def test_health_checks_during_service_rollback(self):
         """
         Validate health checks throughout service rollback.
-        
+
         Ensure service is healthy after each step.
         """
         health_checker = Mock()
@@ -291,7 +292,7 @@ class TestConfigurationRollback:
     def test_configuration_rollback(self):
         """
         Validate configuration rollback capability.
-        
+
         Scenario:
         - Apply new configuration
         - Service misbehaves
@@ -332,10 +333,7 @@ class TestConfigurationRollback:
 
         restored_config = {"db_pool_size": 10, "timeout": 30}
 
-        config_validator.validate.return_value = {
-            "valid": True,
-            "errors": []
-        }
+        config_validator.validate.return_value = {"valid": True, "errors": []}
 
         # Action: Validate restored config
         validation_result = config_validator.validate(restored_config)
@@ -353,7 +351,7 @@ class TestDataMigrationRollback:
     def test_data_migration_rollback(self):
         """
         Validate data migration can be rolled back.
-        
+
         Scenario:
         - Execute forward migration (v1 → v2 schema)
         - Data corruption detected
@@ -364,29 +362,22 @@ class TestDataMigrationRollback:
         backup_manager = Mock()
 
         # Setup: Pre-migration backup
-        pre_migration_backup = {
-            "version": "v1",
-            "data": {"users": 100, "orders": 500}
-        }
+        pre_migration_backup = {"version": "v1", "data": {"users": 100, "orders": 500}}
 
-        post_migration_state = {
-            "version": "v2",
-            "data": {"users": 100, "orders": 500, "audit_log": 1000}
-        }
 
         # Configure mocks
         backup_manager.create_backup.return_value = pre_migration_backup
         migration_manager.execute_forward.return_value = {
             "success": True,
-            "tables_migrated": ["audit_log"]
+            "tables_migrated": ["audit_log"],
         }
         migration_manager.execute_rollback.return_value = {
             "success": True,
-            "tables_reverted": ["audit_log"]
+            "tables_reverted": ["audit_log"],
         }
 
         # Action: Execute migration then rollback
-        backup = backup_manager.create_backup()
+        backup_manager.create_backup()
         forward_result = migration_manager.execute_forward()
         rollback_result = migration_manager.execute_rollback()
 
@@ -400,7 +391,7 @@ class TestDataMigrationRollback:
     def test_migration_data_integrity_post_rollback(self):
         """
         Validate data integrity after migration rollback.
-        
+
         Verify:
         - All records restored
         - No data loss
@@ -408,28 +399,14 @@ class TestDataMigrationRollback:
         """
         migration_validator = Mock()
 
-        pre_migration_state = {
-            "users_count": 100,
-            "orders_count": 500,
-            "schema_version": "v1"
-        }
+        pre_migration_state = {"users_count": 100, "orders_count": 500, "schema_version": "v1"}
 
-        post_rollback_state = {
-            "users_count": 100,
-            "orders_count": 500,
-            "schema_version": "v1"
-        }
+        post_rollback_state = {"users_count": 100, "orders_count": 500, "schema_version": "v1"}
 
-        migration_validator.compare_states.return_value = {
-            "match": True,
-            "differences": []
-        }
+        migration_validator.compare_states.return_value = {"match": True, "differences": []}
 
         # Action: Validate data integrity
-        comparison = migration_validator.compare_states(
-            pre_migration_state,
-            post_rollback_state
-        )
+        comparison = migration_validator.compare_states(pre_migration_state, post_rollback_state)
 
         # Assert: Data integrity maintained
         assert comparison["match"] is True
@@ -444,7 +421,7 @@ class TestCrashRecovery:
     def test_service_crash_detection_and_recovery(self):
         """
         Validate service crash detection and recovery.
-        
+
         Scenario:
         - Service crashes
         - Monitoring detects crash
@@ -459,11 +436,11 @@ class TestCrashRecovery:
         monitoring.detect_crash.return_value = {
             "crashed": True,
             "service": "data_pipeline",
-            "timestamp": "2026-06-21T10:30:00Z"
+            "timestamp": "2026-06-21T10:30:00Z",
         }
         recovery_manager.trigger_recovery.return_value = {
             "recovery_started": True,
-            "recovery_id": "rec_123"
+            "recovery_id": "rec_123",
         }
         service.sync_state.return_value = {"synced": True, "lag": "5s"}
 
@@ -484,7 +461,7 @@ class TestCrashRecovery:
     def test_state_recovery_post_crash(self):
         """
         Validate state recovery after service crash.
-        
+
         Verify:
         - State log replayed
         - In-flight transactions resolved
@@ -497,7 +474,7 @@ class TestCrashRecovery:
         crash_state = {
             "last_committed_tx": "tx_999",
             "in_flight_tx": ["tx_1000", "tx_1001"],
-            "data_version": "v1.5"
+            "data_version": "v1.5",
         }
 
         # Configure mocks
@@ -505,7 +482,7 @@ class TestCrashRecovery:
         transaction_log.replay.return_value = {
             "replayed": 1000,
             "failed": 0,
-            "final_state": "CONSISTENT"
+            "final_state": "CONSISTENT",
         }
 
         # Action: Recover state
@@ -525,29 +502,23 @@ class TestDowngradeCompatibility:
     def test_downgrade_from_v2_to_v1(self):
         """
         Validate system can downgrade from v2 to v1.
-        
+
         Ensure all v2-specific features are safely removed/disabled.
         """
         schema_manager = Mock()
         migration_executor = Mock()
 
         # Setup: Schema changes in v2
-        v2_schema = {
-            "tables": ["users", "orders", "audit_log"],
-            "version": "v2"
-        }
+        v2_schema = {"tables": ["users", "orders", "audit_log"], "version": "v2"}
 
-        v1_schema = {
-            "tables": ["users", "orders"],
-            "version": "v1"
-        }
+        v1_schema = {"tables": ["users", "orders"], "version": "v1"}
 
         # Configure mocks
         schema_manager.get_current.return_value = v2_schema
         migration_executor.downgrade.return_value = {
             "success": True,
             "tables_removed": ["audit_log"],
-            "new_schema": v1_schema
+            "new_schema": v1_schema,
         }
 
         # Action: Execute downgrade

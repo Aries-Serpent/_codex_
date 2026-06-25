@@ -48,9 +48,9 @@ class TestCLIEntryPointMinimal:
 
     def test_cli_environment_variables(self):
         """Test environment variable processing."""
-        with patch.dict('os.environ', {'CODEX_LOG_LEVEL': 'DEBUG'}):
-            env_val = __import__('os').environ.get('CODEX_LOG_LEVEL')
-            assert env_val == 'DEBUG'
+        with patch.dict("os.environ", {"CODEX_LOG_LEVEL": "DEBUG"}):
+            env_val = __import__("os").environ.get("CODEX_LOG_LEVEL")
+            assert env_val == "DEBUG"
 
 
 class TestCLIModuleInitialization:

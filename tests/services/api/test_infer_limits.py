@@ -42,6 +42,7 @@ class _StubModel:
 
         return {"logits": api_main.torch.tensor(logits)}
 
+
 @pytest.fixture
 def fresh_app(monkeypatch: pytest.MonkeyPatch) -> TestClient:
     # Disable JWT auth middleware so infer-limit tests are not blocked by

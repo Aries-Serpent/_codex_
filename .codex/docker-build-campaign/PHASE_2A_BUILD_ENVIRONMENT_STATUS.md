@@ -131,36 +131,36 @@ cache_configuration:
   driver: "local"
   mode: "max"  # Inline all layers for maximum reuse
   location: ".docker/buildx/cache"
-  
+
   per_variant:
     production:
       strategy: "max"  # Most aggressive caching
       reuse_from: []   # Base variant
-      
+
     cpu:
       strategy: "max"
       reuse_from: ["production"]
-      
+
     gpu:
       strategy: "max"
       reuse_from: ["production"]
-      
+
     optimized:
       strategy: "inline"  # Inline for distribution
       reuse_from: ["production"]
-      
+
     embedding:
       strategy: "max"
       reuse_from: ["production"]
-      
+
     ci:
       strategy: "max"
       reuse_from: ["production"]
-      
+
     preview:
       strategy: "max"
       reuse_from: ["production"]
-      
+
     local_dev:
       strategy: "max"
       reuse_from: []  # Independent build

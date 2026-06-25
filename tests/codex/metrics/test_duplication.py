@@ -16,9 +16,7 @@ class TestDuplicateBlock:
         from codex.metrics.duplication import DuplicateBlock
 
         block = DuplicateBlock(
-            hash="abc123",
-            lines=(1, 10),
-            occurrences=[{"file": "test.py", "start": 1, "end": 10}]
+            hash="abc123", lines=(1, 10), occurrences=[{"file": "test.py", "start": 1, "end": 10}]
         )
 
         assert block.hash == "abc123"
@@ -36,10 +34,10 @@ class TestDuplicateBlock:
             lines=(5, 20),
             occurrences=[
                 {"file": "a.py", "start": 5, "end": 20},
-                {"file": "b.py", "start": 10, "end": 25}
+                {"file": "b.py", "start": 10, "end": 25},
             ],
             severity="high",
-            clone_type="Type-2"
+            clone_type="Type-2",
         )
 
         assert block.severity == "high"
@@ -55,7 +53,7 @@ class TestDuplicateBlock:
             lines=(1, 10),
             occurrences=[{"file": "test.py", "start": 1, "end": 10}],
             severity="low",
-            clone_type="Type-3"
+            clone_type="Type-3",
         )
 
         result = block.to_dict()
@@ -74,11 +72,7 @@ class TestDuplicationRatio:
         """Test DuplicationRatio default values."""
         from codex.metrics.duplication import DuplicationRatio
 
-        ratio = DuplicationRatio(
-            ratio=0.15,
-            total_lines=1000,
-            duplicate_lines=150
-        )
+        ratio = DuplicationRatio(ratio=0.15, total_lines=1000, duplicate_lines=150)
 
         assert ratio.ratio == 0.15
         assert ratio.total_lines == 1000
@@ -93,7 +87,7 @@ class TestDuplicationRatio:
 
         blocks = [
             DuplicateBlock(hash="a", lines=(1, 5), occurrences=[]),
-            DuplicateBlock(hash="b", lines=(10, 15), occurrences=[])
+            DuplicateBlock(hash="b", lines=(10, 15), occurrences=[]),
         ]
 
         ratio = DuplicationRatio(
@@ -102,7 +96,7 @@ class TestDuplicationRatio:
             duplicate_lines=125,
             duplicate_blocks=blocks,
             files_scanned=10,
-            files_with_duplicates=3
+            files_with_duplicates=3,
         )
 
         assert ratio.files_scanned == 10
@@ -114,11 +108,7 @@ class TestDuplicationRatio:
         from codex.metrics.duplication import DuplicationRatio
 
         ratio = DuplicationRatio(
-            ratio=0.1,
-            total_lines=100,
-            duplicate_lines=10,
-            files_scanned=5,
-            files_with_duplicates=2
+            ratio=0.1, total_lines=100, duplicate_lines=10, files_scanned=5, files_with_duplicates=2
         )
 
         result = ratio.to_dict()
@@ -152,17 +142,13 @@ class TestDuplicationDetector:
         """Test DuplicationDetector with custom parameters."""
         from codex.metrics.duplication import DuplicationDetector
 
-        detector = DuplicationDetector(
-            min_lines=10,
-            min_tokens=100,
-            ignore_trivial=False
-        )
+        detector = DuplicationDetector(min_lines=10, min_tokens=100, ignore_trivial=False)
 
         assert detector.min_lines == 10
         assert detector.min_tokens == 100
         assert detector.ignore_trivial is False
 
-    @patch('codex.metrics.duplication.subprocess.run')
+    @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_not_found(self, mock_run):
         """Test handling when pylint is not found."""
         from codex.metrics.duplication import DuplicationDetector
@@ -174,7 +160,7 @@ class TestDuplicationDetector:
 
         assert result == []
 
-    @patch('codex.metrics.duplication.subprocess.run')
+    @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_timeout(self, mock_run):
         """Test handling when pylint times out."""
         import subprocess
@@ -188,7 +174,7 @@ class TestDuplicationDetector:
 
         assert result == []
 
-    @patch('codex.metrics.duplication.subprocess.run')
+    @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_error(self, mock_run):
         """Test handling when pylint has an error."""
         from codex.metrics.duplication import DuplicationDetector

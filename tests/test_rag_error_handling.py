@@ -17,7 +17,7 @@ pytest.importorskip("numpy")
 import numpy as np
 
 # Check for FAISS specifically
-FAISS_AVAILABLE = importlib.util.find_spec('faiss') is not None
+FAISS_AVAILABLE = importlib.util.find_spec("faiss") is not None
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
@@ -33,16 +33,17 @@ try:
         persist_index,
     )
     from codex.rag.retriever import MultiIndexRetriever, Retriever
+
     RAG_ERROR_HANDLING_AVAILABLE = True
 except ImportError:
     RAG_ERROR_HANDLING_AVAILABLE = False
 
 # Check if openai is available
-OPENAI_AVAILABLE = importlib.util.find_spec('openai') is not None
+OPENAI_AVAILABLE = importlib.util.find_spec("openai") is not None
 
 pytestmark = pytest.mark.skipif(
     not RAG_ERROR_HANDLING_AVAILABLE or not FAISS_AVAILABLE,
-    reason="RAG dependencies (sentence_transformers, faiss) not installed"
+    reason="RAG dependencies (sentence_transformers, faiss) not installed",
 )
 
 # Only import OpenAI provider if available
@@ -378,7 +379,7 @@ class TestConcurrentAccess:
                         overlap=50,
                     )
                     return True
-                except Exception as e:
+                except (IOError, OSError) as e:
                     print(f"Error in thread {index_id}: {e}")
                     return False
 
@@ -414,7 +415,7 @@ class TestConcurrentAccess:
                 try:
                     cached.encode([f"test {thread_id}"], cache_key=f"key_{thread_id % 2}")
                     return True
-                except Exception as e:
+                except (IOError, OSError) as e:
                     print(f"Error in thread {thread_id}: {e}")
                     return False
 
@@ -440,7 +441,7 @@ class TestResourceExhaustion:
         """Test processing very large batches"""
         # This tests memory management
         large_texts = [f"Text content {i} " * 100 for i in range(1000)]
-        chunks = [(i*100, (i+1)*100, text) for i, text in enumerate(large_texts)]
+        chunks = [(i * 100, (i + 1) * 100, text) for i, text in enumerate(large_texts)]
 
         # Should not crash, but may skip due to memory/time
         # In real scenario, would use batch processing

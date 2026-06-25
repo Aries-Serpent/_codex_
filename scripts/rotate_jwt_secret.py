@@ -185,7 +185,8 @@ class JWTSecretRotator:
                 print("✗ HMAC signature validation failed")
                 return False
         except Exception as e:
-            print(f"✗ Secret validation error: {e}")
+            error_type = type(e).__name__
+            print(f"✗ Secret validation error: <ERROR_TYPE>")
             return False
 
         print("✓ Secret validation passed")
@@ -202,7 +203,8 @@ class JWTSecretRotator:
             repo.create_secret(name, value)
             print(f"✓ Updated GitHub Secret: {name}")
         except Exception as e:
-            print(f"Warning: Could not update GitHub Secret: {e}")
+            error_type = type(e).__name__
+            print(f"Warning: Could not update GitHub Secret: <ERROR_TYPE>")
 
     def record_rotation(self, new_secret: str, backup_file: str) -> None:
         """Record rotation metadata."""
@@ -244,7 +246,8 @@ class JWTSecretRotator:
                 last = log_data['rotations'][-1]
                 return datetime.fromisoformat(last['timestamp'])
         except Exception as e:
-            print(f"Warning: Could not read rotation log: {e}")
+            error_type = type(e).__name__
+            print(f"Warning: Could not read rotation log: <ERROR_TYPE>")
 
         return None
 
@@ -332,7 +335,8 @@ def main():
             print(json.dumps(result, indent=2))
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(1)
 
 

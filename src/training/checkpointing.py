@@ -30,8 +30,8 @@ from typing import Any
 logger = logging.getLogger(__name__)
 try:  # pragma: no cover - torch is optional in minimal environments
     import torch
-except Exception:  # pragma: no cover - gracefully degrade when torch missing
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - gracefully degrade when torch missing
+    torch = None
 
 
 LOGGER = logging.getLogger(__name__)
@@ -44,12 +44,12 @@ def _extract_lora_state(model: Any) -> dict[str, Any] | None:
         return None
     try:  # pragma: no cover - optional dependency
         from peft import get_peft_model_state_dict
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     try:
         state = get_peft_model_state_dict(model)
-    except Exception as exc:  # pragma: no cover - defensive
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
         LOGGER.debug("Unable to capture LoRA state: %s", exc)
         return None
     if not isinstance(state, Mapping) or not state:
@@ -60,7 +60,11 @@ def _extract_lora_state(model: Any) -> dict[str, Any] | None:
         try:
             if hasattr(tensor, "detach") and hasattr(tensor, "cpu"):
                 tensor = tensor.detach().cpu()
-        except Exception as exc:  # pragma: no cover - optional conversion failures
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ) as exc:  # pragma: no cover - optional conversion failures
             LOGGER.debug("Failed to detach/move tensor to CPU for key %s: %s", key, exc)
         cpu_state[str(key)] = tensor
     return cpu_state if cpu_state else None
@@ -74,13 +78,13 @@ def _restore_lora_state(model: Any, payload: Mapping[str, Any]) -> None:
         return
     try:  # pragma: no cover - optional dependency
         from peft import set_peft_model_state_dict
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         LOGGER.debug("peft not available; skipping LoRA restore")
         return
     try:
         set_peft_model_state_dict(model, dict(lora_state))
-    except Exception as exc:  # pragma: no cover - defensive
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
         LOGGER.debug("Failed to restore LoRA weights: %s", exc)
 
 
@@ -211,7 +215,7 @@ def _parse_epoch_metric(path: Path) -> tuple[int | None, float | None]:
         epoch = int(prefix.replace("epoch", ""))
         metric = float(metric_str)
         return epoch, metric
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None, None
 
@@ -275,7 +279,7 @@ def save_checkpoint(
         try:
             manifest_payload = json.dumps(manifest, indent=2, sort_keys=True)
             manifest_path.write_text(manifest_payload, encoding="utf-8")
-        except Exception as exc:  # pragma: no cover - best effort logging
+        except (IOError, OSError) as exc:  # pragma: no cover - best effort logging
             LOGGER.debug("Failed to write checkpoint manifest at %s: %s", manifest_path, exc)
     _best_k_retention(out_path, keep_best_k=keep_best_k, mode=mode)
     return filename

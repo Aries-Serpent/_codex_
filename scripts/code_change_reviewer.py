@@ -97,7 +97,8 @@ class CodeChangeReviewer:
                     ))
 
         except (SyntaxError, UnicodeDecodeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             issues.append((
                 IssueType.RISK,
                 Priority.CRITICAL,

@@ -19,6 +19,7 @@ try:
         IndexOperation,
         manage_tenant_indices,
     )
+
     RAG_TENANT_AVAILABLE = True
 except (ImportError, ValueError):
     # ValueError is raised by importlib.util.find_spec() in Python 3.12 when
@@ -27,8 +28,7 @@ except (ImportError, ValueError):
     RAG_TENANT_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(
-    not RAG_TENANT_AVAILABLE,
-    reason="RAG dependencies (sentence_transformers, faiss) not installed"
+    not RAG_TENANT_AVAILABLE, reason="RAG dependencies (sentence_transformers, faiss) not installed"
 )
 
 
@@ -61,6 +61,7 @@ def mock_rag_dependencies(monkeypatch):
     # the module was imported without faiss installed).
     try:
         import codex.rag.indexer as _indexer
+
         monkeypatch.setattr(_indexer, "faiss", mock_faiss)
     except ImportError:
         _ = None  # codex.rag.indexer not installed; faiss patched via sys.modules only
@@ -68,11 +69,13 @@ def mock_rag_dependencies(monkeypatch):
     # --- Mock sentence_transformers ---
     mock_st_module = MagicMock()
     mock_model_instance = MagicMock()
+
     # encode() must return a numpy array of shape [N, 384]
     def _mock_encode(texts, **kwargs):
         if isinstance(texts, str):
             texts = [texts]
         return np.zeros((len(texts), 384), dtype=np.float32)
+
     mock_model_instance.encode.side_effect = _mock_encode
     mock_model_instance.get_sentence_embedding_dimension.return_value = 384
     mock_st_module.SentenceTransformer.return_value = mock_model_instance
@@ -82,8 +85,10 @@ def mock_rag_dependencies(monkeypatch):
     # directly, bypassing any device/meta-tensor logic.
     try:
         import codex.rag._model_utils as _mu
-        monkeypatch.setattr(_mu, "safe_load_sentence_transformer",
-                            lambda *a, **kw: mock_model_instance)
+
+        monkeypatch.setattr(
+            _mu, "safe_load_sentence_transformer", lambda *a, **kw: mock_model_instance
+        )
     except ImportError:
         _ = None  # codex.rag._model_utils not installed; sentence_transformers patched via sys.modules only
 
@@ -94,8 +99,14 @@ def mock_rag_dependencies(monkeypatch):
     try:
         import codex.rag.indexer as _indexer
 
-        def _mock_persist_index(embeddings, chunks, index_name, tenant_id="default",
-                                index_dir=".codex/tenants", metadata=None):
+        def _mock_persist_index(
+            embeddings,
+            chunks,
+            index_name,
+            tenant_id="default",
+            index_dir=".codex/tenants",
+            metadata=None,
+        ):
             """Create stub directory + sentinel files so list/load can detect index."""
             tenant_dir = Path(index_dir) / tenant_id / index_name
             tenant_dir.mkdir(parents=True, exist_ok=True)
@@ -103,8 +114,11 @@ def mock_rag_dependencies(monkeypatch):
             (tenant_dir / "index.faiss").touch()
             (tenant_dir / "chunks.json").write_text("[]")
             (tenant_dir / "metadata.json").write_text(
-                '{"index_name": "' + index_name + '", "tenant_id": "' + tenant_id +
-                '", "dimension": 384, "num_vectors": 1, "index_type": "IndexFlatL2"}'
+                '{"index_name": "'
+                + index_name
+                + '", "tenant_id": "'
+                + tenant_id
+                + '", "dimension": 384, "num_vectors": 1, "index_type": "IndexFlatL2"}'
             )
             return tenant_dir
 
@@ -113,9 +127,7 @@ def mock_rag_dependencies(monkeypatch):
             Raises for truly nonexistent indices so error-path tests work correctly."""
             sentinel = Path(index_dir) / tenant_id / index_name / "index.faiss"
             if not sentinel.exists():
-                raise FileNotFoundError(
-                    f"FAISS index file not found: {sentinel}"
-                )
+                raise FileNotFoundError(f"FAISS index file not found: {sentinel}")
             mock_idx = MagicMock()
             mock_idx.ntotal = 1
             mock_idx.d = 384
@@ -163,7 +175,9 @@ class TestManageTenantIndices:
 
             yield files
 
-    def test_create_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_create_operation_success(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test CREATE operation success"""
         result = manage_tenant_indices(
             tenant_id="customer_a",
@@ -182,7 +196,9 @@ class TestManageTenantIndices:
         assert "Successfully created" in result.message
         assert "created_indices" in result.details
 
-    def test_create_operation_multiple_indices(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_create_operation_multiple_indices(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test CREATE operation with multiple indices"""
         result = manage_tenant_indices(
             tenant_id="customer_a",
@@ -224,7 +240,9 @@ class TestManageTenantIndices:
         assert result.success is False
         assert "'create' operation requires 'files' parameter" in result.message
 
-    def test_update_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_update_operation_success(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test UPDATE operation success"""
         # First create an index
         create_result = manage_tenant_indices(
@@ -250,7 +268,9 @@ class TestManageTenantIndices:
         assert update_result.operation == IndexOperation.UPDATE
         assert "Successfully updated" in update_result.message
 
-    def test_update_operation_nonexistent_index(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_update_operation_nonexistent_index(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test UPDATE operation on non-existent index creates new one"""
         result = manage_tenant_indices(
             tenant_id="customer_a",
@@ -276,7 +296,9 @@ class TestManageTenantIndices:
         assert result.success is False
         assert "'update' operation requires 'files' parameter" in result.message
 
-    def test_delete_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_delete_operation_success(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test DELETE operation success"""
         # First create an index
         create_result = manage_tenant_indices(
@@ -300,7 +322,9 @@ class TestManageTenantIndices:
         assert delete_result.operation == IndexOperation.DELETE
         assert "Successfully deleted" in delete_result.message
 
-    def test_delete_operation_multiple_indices(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_delete_operation_multiple_indices(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test DELETE operation with multiple indices"""
         # Create multiple indices
         manage_tenant_indices(
@@ -335,7 +359,9 @@ class TestManageTenantIndices:
         assert result.success is False
         assert "No indices deleted" in result.message
 
-    def test_delete_operation_partial_failure(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_delete_operation_partial_failure(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test DELETE operation with some indices existing, some not"""
         # Create one index
         manage_tenant_indices(
@@ -384,7 +410,9 @@ class TestManageTenantIndices:
         assert "Successfully merged" in merge_result.message
         assert merge_result.details["merged_name"] == "all_content"
 
-    def test_merge_operation_missing_merge_name(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_merge_operation_missing_merge_name(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test MERGE operation fails without merge_name"""
         # Create indices
         manage_tenant_indices(
@@ -406,7 +434,9 @@ class TestManageTenantIndices:
         assert merge_result.success is False
         assert "'merge' operation requires 'merge_name' parameter" in merge_result.message
 
-    def test_merge_operation_single_index(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_merge_operation_single_index(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test MERGE operation with only one index"""
         # Create one index
         manage_tenant_indices(
@@ -482,7 +512,9 @@ class TestManageTenantIndices:
         assert result.success is True
         assert "No indices found" in result.message
 
-    def test_list_operation_multiple_tenants(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_list_operation_multiple_tenants(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test LIST operation with multiple tenants"""
         # Create indices for different tenants
         manage_tenant_indices(
@@ -518,11 +550,15 @@ class TestManageTenantIndices:
         )
 
         # Extract 'name' field from dict lists
-        indices_a = [idx["name"] if isinstance(idx, dict) else idx for idx in list_a.details["indices"]]
+        indices_a = [
+            idx["name"] if isinstance(idx, dict) else idx for idx in list_a.details["indices"]
+        ]
         assert "docs" in indices_a
         assert "api" not in indices_a
 
-        indices_b = [idx["name"] if isinstance(idx, dict) else idx for idx in list_b.details["indices"]]
+        indices_b = [
+            idx["name"] if isinstance(idx, dict) else idx for idx in list_b.details["indices"]
+        ]
         assert "api" in indices_b
         assert "docs" not in indices_b
 
@@ -539,7 +575,9 @@ class TestManageTenantIndices:
         assert "Invalid operation" in result.message
         assert "create, update, delete, merge, list" in result.message
 
-    def test_operation_case_insensitive(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_operation_case_insensitive(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test that operations are case-insensitive"""
         # Test uppercase
         result_upper = manage_tenant_indices(
@@ -578,7 +616,9 @@ class TestManageTenantIndices:
 
         assert result.success is True
 
-    def test_tenant_directory_creation(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_tenant_directory_creation(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test that tenant directories are created automatically"""
         tenant_dir = Path(temp_index_dir) / "customer_a"
         assert not tenant_dir.exists()
@@ -594,7 +634,9 @@ class TestManageTenantIndices:
         assert tenant_dir.exists()
         assert (tenant_dir / "docs").exists()
 
-    def test_create_with_error_in_one_index(self, temp_index_dir, sample_files, mock_sentence_transformer):
+    def test_create_with_error_in_one_index(
+        self, temp_index_dir, sample_files, mock_sentence_transformer
+    ):
         """Test CREATE where one index succeeds and another might fail"""
         # This test ensures partial success is handled correctly
         result = manage_tenant_indices(

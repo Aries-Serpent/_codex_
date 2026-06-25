@@ -10,6 +10,7 @@ import pytest
 
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
 
+
 @pytest.fixture
 def error_workspace(tmp_path):
     workspace = tmp_path / "error_test"
@@ -17,6 +18,7 @@ def error_workspace(tmp_path):
     for d in ["logs", "errors", "recovery"]:
         (workspace / d).mkdir()
     return workspace
+
 
 class TestExceptionHandling:
     """Exception handling across modules (4 tests)."""
@@ -32,6 +34,7 @@ class TestExceptionHandling:
 
     def test_exception_propagation(self, error_workspace):
         """Test exception propagation through layers."""
+
         def layer1():
             raise RuntimeError("Layer 1 error")
 
@@ -73,6 +76,7 @@ class TestExceptionHandling:
         module_b()
         assert len(errors) == 2
 
+
 class TestGracefulDegradation:
     """Graceful degradation (3 tests)."""
 
@@ -113,6 +117,7 @@ class TestGracefulDegradation:
 
         assert current_level in service_levels
         assert current_level != "full"
+
 
 class TestRecoveryMechanisms:
     """Recovery mechanisms (3 tests)."""

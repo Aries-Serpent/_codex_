@@ -157,9 +157,10 @@ class CircuitBreaker:
                     if not self.config.health_probe_func():
                         logger.warning("Health probe failed, keeping circuit open")
                         raise Exception("Health probe failed")
-                except Exception as e:
-                    logger.debug(f"Exception: {e}")
-                    logger.warning(f"Health probe error: {e}")
+                except (IOError, OSError) as e:
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.warning(f"Health probe error: <ERROR_TYPE>")
                     self._on_failure()
                     raise
 
@@ -172,7 +173,7 @@ class CircuitBreaker:
             result = func(*args, **kwargs)
             self._on_success()
             return result
-        except Exception:
+        except (ConnectionError, TimeoutError):
             self._on_failure()
             raise
 
@@ -359,9 +360,10 @@ class CircuitBreaker:
                 json.dump(state_data, f, indent=2)
 
             logger.debug(f"Circuit breaker state saved to {state_file}")
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to save circuit breaker state: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to save circuit breaker state: <ERROR_TYPE>")
 
     def _load_state(self) -> None:
         """Load persisted circuit breaker state from file"""
@@ -392,9 +394,10 @@ class CircuitBreaker:
             logger.info(
                 f"Circuit breaker state loaded: {self.state.value}, failures={self.failure_count}"
             )
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to load circuit breaker state: {e}, starting fresh")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to load circuit breaker state: <ERROR_TYPE>, starting fresh")
 
 
 def retry_with_backoff(
@@ -502,9 +505,10 @@ class FallbackHandler:
         """
         try:
             return func(*args, **kwargs)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Primary function failed: {e}, attempting fallback")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Primary function failed: <ERROR_TYPE>, attempting fallback")
 
             # Try cache fallback
             if self.use_cache and self.cache and fallback_key:

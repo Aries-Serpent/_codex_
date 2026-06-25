@@ -437,9 +437,7 @@ class TestCreateResponse:
 
     def test_create_response_error(self):
         """Test error response creation."""
-        msg = create_response(
-            "watcher", "q-1", status="error", error="Failed to process"
-        )
+        msg = create_response("watcher", "q-1", status="error", error="Failed to process")
         assert msg.status == "error"
         assert msg.error == "Failed to process"
 
@@ -463,9 +461,7 @@ class TestCreateStatus:
     def test_create_status_with_metrics(self):
         """Test status creation with metrics."""
         metrics = {"load": 0.5}
-        msg = create_status(
-            "orchestrator", "orchestrator", "idle", metrics=metrics
-        )
+        msg = create_status("orchestrator", "orchestrator", "idle", metrics=metrics)
         assert msg.metrics == metrics
 
     def test_create_status_all_statuses(self):

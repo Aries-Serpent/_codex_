@@ -23,7 +23,10 @@ def maybe_autocast(enabled: bool, *, dtype: Optional[object] = None) -> Iterator
         import torch
 
         autocast_cls: Any = torch.cuda.amp.autocast
-    except Exception:  # pragma: no cover - dependency missing or AMP unavailable
+    except (
+        ImportError,
+        AttributeError,
+    ):  # pragma: no cover - dependency missing or AMP unavailable
         yield
         return
 
@@ -61,7 +64,7 @@ def clip_gradients(parameters: Iterable[object], max_norm: float) -> None:
 
     try:  # pragma: no cover - optional dependency
         import torch
-    except Exception:  # pragma: no cover - dependency missing
+    except (ImportError, AttributeError):  # pragma: no cover - dependency missing
         return
 
     params = list(parameters)
@@ -100,7 +103,7 @@ def get_amp_scaler(enabled: bool):
         import torch
 
         return torch.cuda.amp.GradScaler()
-    except Exception:  # pragma: no cover - AMP unavailable
+    except (ImportError, AttributeError):  # pragma: no cover - AMP unavailable
         return _FakeScaler()
 
 

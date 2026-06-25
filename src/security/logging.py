@@ -305,7 +305,7 @@ SECURE LOGGING GUIDELINES:
    ```python
    import logging
    from security.logging import setup_secure_logging
-   
+
    logger = logging.getLogger(__name__)
    setup_secure_logging(logger)
    ```
@@ -322,7 +322,7 @@ if __name__ == "__main__":
     print()
 
     test_password = "MyS3cur3P@ssw0rd!"
-    # codeql[py/clear-text-logging-sensitive-data]
+
     print(f"Original password: {test_password}")  # nosec
     print(f"Redacted password: {redact_password(test_password)}")
     print()

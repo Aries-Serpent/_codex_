@@ -26,8 +26,7 @@ class TestFullWorkflow:
 
             # File 1 with duplicate code
             file1 = test_dir / "module1.py"
-            file1.write_text(
-                """
+            file1.write_text("""
 def duplicate_function():
     x = 1
     y = 2
@@ -36,13 +35,11 @@ def duplicate_function():
 
 def unique_function1():
     return "unique1"
-"""
-            )
+""")
 
             # File 2 with same duplicate code
             file2 = test_dir / "module2.py"
-            file2.write_text(
-                """
+            file2.write_text("""
 def another_function():
     x = 1
     y = 2
@@ -51,8 +48,7 @@ def another_function():
 
 def unique_function2():
     return "unique2"
-"""
-            )
+""")
 
             # Step 1: Detect duplicates
             duplicates = detect_duplicates(test_dir, min_lines=3)

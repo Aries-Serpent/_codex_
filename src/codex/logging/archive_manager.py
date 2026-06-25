@@ -12,13 +12,11 @@ This module provides:
 import json
 import logging
 import sqlite3
+import time
+from dataclasses import dataclass
 from datetime import datetime, timedelta
-from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from dataclasses import dataclass, asdict
-import time
-import hashlib
 
 try:
     import pandas as pd
@@ -110,9 +108,7 @@ class ArchiveManager:
             file_size = archive_path.stat().st_size
 
             # Update SQLite metadata
-            self._update_archive_metadata(
-                session_id, str(archive_path), datetime.now().isoformat()
-            )
+            self._update_archive_metadata(session_id, str(archive_path), datetime.now().isoformat())
 
             # Create record
             archive_record = ArchivedSession(
@@ -126,8 +122,9 @@ class ArchiveManager:
             logger.info(f"Archived session {session_id} ({file_size} bytes)")
             return archive_record
 
-        except Exception as e:
-            logger.error(f"Error archiving session {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error archiving session {session_id}: <ERROR_TYPE>")
             return None
 
     def get_archived_session(self, session_id: str) -> Optional[Dict[str, Any]]:
@@ -151,9 +148,7 @@ class ArchiveManager:
         if session_id in self._cache:
             session_data, cache_time = self._cache[session_id]
             elapsed_ms = (time.time() - start_time) * 1000
-            logger.debug(
-                f"Retrieved {session_id} from cache in {elapsed_ms:.1f}ms"
-            )
+            logger.debug(f"Retrieved {session_id} from cache in {elapsed_ms:.1f}ms")
             return session_data
 
         try:
@@ -164,7 +159,7 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                SELECT archive_location FROM sessions 
+                SELECT archive_location FROM sessions
                 WHERE session_id = ? AND archive_status = 'archived'
                 """,
                 (session_id,),
@@ -188,7 +183,7 @@ class ArchiveManager:
                 return None
 
             df = pd.read_parquet(archive_path)
-            
+
             # Convert to dict, handling numpy types and arrays
             session_row = df.iloc[0]
             session_data = {}
@@ -198,8 +193,8 @@ class ArchiveManager:
                     session_data[col] = None
                 elif isinstance(val, (list, tuple)):
                     # If it's a list/tuple, convert items
-                    session_data[col] = [v.item() if hasattr(v, 'item') else v for v in val]
-                elif hasattr(val, 'item'):  # numpy scalar
+                    session_data[col] = [v.item() if hasattr(v, "item") else v for v in val]
+                elif hasattr(val, "item"):  # numpy scalar
                     try:
                         session_data[col] = val.item()
                     except (TypeError, ValueError):
@@ -215,8 +210,9 @@ class ArchiveManager:
 
             return session_data
 
-        except Exception as e:
-            logger.error(f"Error retrieving archived session {session_id}: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error retrieving archived session {session_id}: <ERROR_TYPE>")
             return None
 
     def identify_archive_candidates(self, days: int = 90) -> List[str]:
@@ -238,8 +234,8 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                SELECT session_id FROM sessions 
-                WHERE archive_status = 'active' 
+                SELECT session_id FROM sessions
+                WHERE archive_status = 'active'
                 AND created_at < ?
                 AND status != 'in-progress'
                 ORDER BY created_at DESC
@@ -250,13 +246,12 @@ class ArchiveManager:
             candidates = [row["session_id"] for row in cursor.fetchall()]
             conn.close()
 
-            logger.info(
-                f"Found {len(candidates)} archive candidates (>= {days} days old)"
-            )
+            logger.info(f"Found {len(candidates)} archive candidates (>= {days} days old)")
             return candidates
 
-        except Exception as e:
-            logger.error(f"Error identifying archive candidates: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error identifying archive candidates: <ERROR_TYPE>")
             return []
 
     def purge_old_archives(self, iterations: int = 30) -> Dict[str, Any]:
@@ -305,7 +300,7 @@ class ArchiveManager:
                     # Update SQLite
                     self._mark_session_deleted(session_id)
 
-                    report["deleted_sessions"].append(  # type: ignore[attr-defined]
+                    report["deleted_sessions"].append(
                         {
                             "session_id": session_id,
                             "archive_location": archive_location,
@@ -319,13 +314,14 @@ class ArchiveManager:
             self._log_retention_action(report)
 
             logger.info(
-                f"Purged {len(report['deleted_sessions'])} sessions, "  # type: ignore[arg-type]
+                f"Purged {len(report['deleted_sessions'])} sessions, "
                 f"freed {report['total_bytes_freed']} bytes"
             )
             return report
 
-        except Exception as e:
-            logger.error(f"Error purging old archives: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error purging old archives: <ERROR_TYPE>")
             return report
 
     def update_archive_index(self) -> Dict[str, Any]:
@@ -355,22 +351,20 @@ class ArchiveManager:
                             "session_id": session_id,
                             "archive_location": str(parquet_file),
                             "file_size_bytes": file_size,
-                            "timestamp": datetime.fromtimestamp(
-                                created_at
-                            ).isoformat()
-                            + "Z",
+                            "timestamp": datetime.fromtimestamp(created_at).isoformat() + "Z",
                             "created_at": str(created_at),
                         }
                     )
-                except Exception as e:
-                    logger.warning(f"Error processing {parquet_file}: {e}")
+                except (IOError, OSError) as e:
+                    error_type = type(e).__name__
+                    logger.warning(f"Error processing {parquet_file}: <ERROR_TYPE>")
                     continue
 
             # Build index
             index = {
                 "version": "1.0",
                 "created": datetime.now().isoformat(),
-                "sessions": sorted(sessions, key=lambda x: x["created_at"]),  # type: ignore[arg-type, return-value]
+                "sessions": sorted(sessions, key=lambda x: x["created_at"]),
                 "statistics": {
                     "total_sessions": len(sessions),
                     "total_size_mb": total_size / (1024 * 1024),
@@ -391,8 +385,9 @@ class ArchiveManager:
             )
             return index
 
-        except Exception as e:
-            logger.error(f"Error updating archive index: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error updating archive index: <ERROR_TYPE>")
             return {"sessions": [], "statistics": {}}
 
     # Private methods
@@ -413,21 +408,15 @@ class ArchiveManager:
             session_data = dict(session_row)
 
             # Also fetch related metadata, events, outcomes
-            cursor.execute(
-                "SELECT * FROM session_metadata WHERE session_id = ?", (session_id,)
-            )
+            cursor.execute("SELECT * FROM session_metadata WHERE session_id = ?", (session_id,))
             metadata_rows = cursor.fetchall()
             session_data["metadata"] = [dict(row) for row in metadata_rows]
 
-            cursor.execute(
-                "SELECT * FROM session_events WHERE session_id = ?", (session_id,)
-            )
+            cursor.execute("SELECT * FROM session_events WHERE session_id = ?", (session_id,))
             event_rows = cursor.fetchall()
             session_data["events"] = [dict(row) for row in event_rows]
 
-            cursor.execute(
-                "SELECT * FROM session_outcomes WHERE session_id = ?", (session_id,)
-            )
+            cursor.execute("SELECT * FROM session_outcomes WHERE session_id = ?", (session_id,))
             outcome_row = cursor.fetchone()
             if outcome_row:
                 session_data["outcomes"] = dict(outcome_row)
@@ -435,8 +424,9 @@ class ArchiveManager:
             conn.close()
             return session_data
 
-        except Exception as e:
-            logger.error(f"Error extracting session {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error extracting session {session_id}: <ERROR_TYPE>")
             return None
 
     def _get_archive_path(self, session_id: str, created_at: str) -> Path:
@@ -461,8 +451,8 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                UPDATE sessions 
-                SET archive_status = 'archived', 
+                UPDATE sessions
+                SET archive_status = 'archived',
                     archive_location = ?,
                     archive_timestamp = ?
                 WHERE session_id = ?
@@ -472,8 +462,9 @@ class ArchiveManager:
 
             conn.commit()
             conn.close()
-        except Exception as e:
-            logger.error(f"Error updating archive metadata for {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error updating archive metadata for {session_id}: <ERROR_TYPE>")
 
     def _mark_session_deleted(self, session_id: str) -> None:
         """Mark session as deleted in SQLite."""
@@ -483,7 +474,7 @@ class ArchiveManager:
 
             cursor.execute(
                 """
-                UPDATE sessions 
+                UPDATE sessions
                 SET archive_status = 'deleted', status = 'deleted'
                 WHERE session_id = ?
                 """,
@@ -492,8 +483,9 @@ class ArchiveManager:
 
             conn.commit()
             conn.close()
-        except Exception as e:
-            logger.error(f"Error marking session deleted: {session_id}: {e}")
+        except (ValueError, TypeError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error marking session deleted: {session_id}: <ERROR_TYPE>")
 
     def _add_to_cache(self, session_id: str, session_data: Dict[str, Any]) -> None:
         """Add session to LRU cache."""
@@ -503,9 +495,7 @@ class ArchiveManager:
         if self._cache_size_bytes + data_size > self.cache_size_mb * 1024 * 1024:
             # Remove oldest entry
             if self._cache:
-                oldest_id = min(
-                    self._cache.keys(), key=lambda k: self._cache[k][1]
-                )
+                oldest_id = min(self._cache.keys(), key=lambda k: self._cache[k][1])
                 old_size = len(json.dumps(self._cache[oldest_id][0]))
                 del self._cache[oldest_id]
                 self._cache_size_bytes -= old_size
@@ -523,13 +513,14 @@ class ArchiveManager:
                     retention_log = json.load(f)
 
             if "cleanups" not in retention_log:
-                retention_log["cleanups"] = []  # type: ignore[assignment]
+                retention_log["cleanups"] = []
 
-            retention_log["cleanups"].append(report)  # type: ignore[attr-defined]
+            retention_log["cleanups"].append(report)
 
             self.retention_log_path.parent.mkdir(parents=True, exist_ok=True)
             with open(self.retention_log_path, "w") as f:
                 json.dump(retention_log, f, indent=2)
 
-        except Exception as e:
-            logger.error(f"Error logging retention action: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error logging retention action: <ERROR_TYPE>")

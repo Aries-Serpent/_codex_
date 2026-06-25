@@ -50,7 +50,7 @@ def apply_lora_if_available(
 
     try:  # pragma: no cover - optional dependency
         from peft import LoraConfig, TaskType, get_peft_model
-    except Exception:  # pragma: no cover - dependency missing
+    except (ImportError, AttributeError):  # pragma: no cover - dependency missing
         return model
 
     selected_task_type: TaskType | str = task_type or DEFAULT_TASK_TYPE
@@ -58,8 +58,9 @@ def apply_lora_if_available(
         try:
             selected_task_type = TaskType[selected_task_type]
         except KeyError as e:
-            logger.debug(f"KeyError: {e}")
-            logger.warning(f"KeyError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"KeyError: <ERROR_TYPE>")
+            logger.warning(f"KeyError: <ERROR_TYPE>", exc_info=True)
             selected_task_type = TaskType(selected_task_type)
 
     modules: Optional[Sequence[str]]

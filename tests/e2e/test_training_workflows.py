@@ -52,6 +52,7 @@ class TestTrainingPipelineSetup:
                     # Check first config file
                     try:
                         import yaml
+
                         config = yaml.safe_load(yaml_files[0].read_text(encoding="utf-8"))
                         # Just verify it's a dict
                         assert isinstance(config, dict), "Config should be a dictionary"

@@ -355,7 +355,7 @@ route:
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 12h
-  
+
   routes:
     # Critical alerts → Immediate page
     - match:
@@ -363,14 +363,14 @@ route:
       receiver: 'pagerduty-critical'
       group_wait: 0s  # Don't wait
       repeat_interval: 1h
-    
+
     # High alerts → Slack + PagerDuty
     - match:
         severity: high
       receiver: 'pagerduty-high'
       group_wait: 30s
       repeat_interval: 4h
-    
+
     # Medium alerts → Slack only
     - match:
         severity: medium
@@ -391,7 +391,7 @@ receivers:
     slack_configs:
       - channel: '#prod-alerts'
         color: 'warning'
-    
+
   - name: 'slack-alerts'
     slack_configs:
       - channel: '#alerts'
@@ -647,7 +647,7 @@ tests:
     interval: 60s
     timeout: 5s
     expected_status: 200
-    
+
   - name: "Login endpoint"
     url: "https://${API_ENDPOINT}/auth/login"
     method: POST
@@ -655,14 +655,14 @@ tests:
     timeout: 10s
     body: '{"username":"monitor","password":"monitor"}' <!-- pragma: allowlist secret -->
     expected_status: 200
-    
+
   - name: "Database connectivity"
     url: "https://${API_ENDPOINT}/health/db"
     method: GET
     interval: 120s
     timeout: 5s
     expected_status: 200
-    
+
   - name: "Cache connectivity"
     url: "https://${API_ENDPOINT}/health/cache"
     method: GET

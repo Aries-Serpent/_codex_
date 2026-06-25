@@ -158,7 +158,7 @@ Day 3 Start (09:00Z)
 
 All 3 agents: PARALLEL, NON-BLOCKING (same as Day 2 model)
 Communication: Async results aggregation at standup points
-Timeline: 
+Timeline:
   - 09:00Z Start
   - 14:00Z Mid-check (if running >5 hours, prepare escalation)
   - 17:00Z Final aggregation

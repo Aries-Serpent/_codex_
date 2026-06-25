@@ -16,6 +16,7 @@ import pytest
 
 try:
     import yaml
+
     HAS_YAML = True
 except ImportError:
     HAS_YAML = False
@@ -24,6 +25,7 @@ except ImportError:
 # =============================================================================
 # Workflow File Validation
 # =============================================================================
+
 
 class TestWorkflowFileValidation:
     """Tests for validating workflow file structure."""
@@ -38,8 +40,11 @@ class TestWorkflowFileValidation:
         workflows_dir = Path(".github/workflows")
         if workflows_dir.exists():
             # Only validate active workflow files (not archived .alt, .disabled, etc.)
-            active_workflows = [f for f in workflows_dir.iterdir()
-                                if f.is_file() and f.suffix in [".yml", ".yaml", ".md"]]
+            active_workflows = [
+                f
+                for f in workflows_dir.iterdir()
+                if f.is_file() and f.suffix in [".yml", ".yaml", ".md"]
+            ]
             # Verify we have at least some workflows
             assert len(active_workflows) > 0, "No active workflow files found"
 
@@ -73,14 +78,13 @@ class TestWorkflowFileValidation:
                 except OSError:
                     continue
 
-            assert len(files_without_name) == 0, (
-                f"Workflows without name: {files_without_name}"
-            )
+            assert len(files_without_name) == 0, f"Workflows without name: {files_without_name}"
 
 
 # =============================================================================
 # Workflow Trigger Validation
 # =============================================================================
+
 
 class TestWorkflowTriggerValidation:
     """Tests for validating workflow triggers."""
@@ -100,9 +104,9 @@ class TestWorkflowTriggerValidation:
                 except OSError:
                     continue
 
-            assert len(files_without_triggers) == 0, (
-                f"Workflows without triggers: {files_without_triggers}"
-            )
+            assert (
+                len(files_without_triggers) == 0
+            ), f"Workflows without triggers: {files_without_triggers}"
 
     def test_test_workflows_trigger_on_push_and_pr(self) -> None:
         """Test that test workflows trigger on push and pull_request.
@@ -134,6 +138,7 @@ class TestWorkflowTriggerValidation:
 # Workflow Job Validation
 # =============================================================================
 
+
 class TestWorkflowJobValidation:
     """Tests for validating workflow jobs."""
 
@@ -152,9 +157,9 @@ class TestWorkflowJobValidation:
                     continue
 
             # Some workflows might be valid without explicit jobs section
-            assert len(files_without_jobs) <= 2, (
-                f"Workflows without jobs section: {files_without_jobs}"
-            )
+            assert (
+                len(files_without_jobs) <= 2
+            ), f"Workflows without jobs section: {files_without_jobs}"
 
     def test_jobs_have_runs_on(self) -> None:
         """Test that jobs specify runs-on."""
@@ -165,9 +170,9 @@ class TestWorkflowJobValidation:
                     content = workflow.read_text()
                     if "jobs:" in content:
                         # Jobs should either run on a local runner or call a reusable workflow.
-                        assert "runs-on" in content or "uses:" in content, (
-                            f"{workflow} jobs should have runs-on or reusable workflow uses"
-                        )
+                        assert (
+                            "runs-on" in content or "uses:" in content
+                        ), f"{workflow} jobs should have runs-on or reusable workflow uses"
                 except OSError:
                     continue
 
@@ -180,9 +185,9 @@ class TestWorkflowJobValidation:
                     content = workflow.read_text()
                     if "jobs:" in content:
                         # Jobs should either define local steps or call a reusable workflow.
-                        assert "steps:" in content or "uses:" in content, (
-                            f"{workflow} jobs should have steps or reusable workflow uses"
-                        )
+                        assert (
+                            "steps:" in content or "uses:" in content
+                        ), f"{workflow} jobs should have steps or reusable workflow uses"
                 except OSError:
                     continue
 
@@ -190,6 +195,7 @@ class TestWorkflowJobValidation:
 # =============================================================================
 # Security Validation
 # =============================================================================
+
 
 class TestWorkflowSecurityValidation:
     """Tests for validating workflow security."""
@@ -212,7 +218,7 @@ class TestWorkflowSecurityValidation:
                         if match:
                             matched_text = match.group()
                             # Allow if it's using secrets context
-                            ctx = content[max(0, match.start()-50):match.end()+50]
+                            ctx = content[max(0, match.start() - 50) : match.end() + 50]
                             if "secrets." in ctx:
                                 continue
                             # Allow shell variable expansions (e.g. token="${VAR}" or
@@ -256,6 +262,7 @@ class TestWorkflowSecurityValidation:
 # Python Setup Validation
 # =============================================================================
 
+
 class TestPythonSetupValidation:
     """Tests for validating Python setup in workflows."""
 
@@ -296,9 +303,10 @@ class TestPythonSetupValidation:
                         parts = ver.split(".")
                         if len(parts) >= 2:
                             major, minor = int(parts[0]), int(parts[1])
-                            assert (major, minor) >= (3, 8), (
-                                f"{workflow} uses outdated Python version {ver}"
-                            )
+                            assert (major, minor) >= (
+                                3,
+                                8,
+                            ), f"{workflow} uses outdated Python version {ver}"
                 except OSError:
                     continue
 
@@ -320,6 +328,7 @@ class TestPythonSetupValidation:
 # =============================================================================
 # Test Workflow Validation
 # =============================================================================
+
 
 class TestTestWorkflowValidation:
     """Tests for validating test-specific workflows."""
@@ -367,6 +376,7 @@ class TestTestWorkflowValidation:
 # Artifact Validation
 # =============================================================================
 
+
 class TestArtifactValidation:
     """Tests for validating workflow artifact handling."""
 
@@ -381,7 +391,10 @@ class TestArtifactValidation:
                     # Check download-artifact version (CVE in v4.0.0-4.1.2)
                     if "actions/download-artifact@v4" in content:
                         # Should use v4.1.3 or later
-                        if "download-artifact@v4.0" in content or "download-artifact@v4.1.0" in content:
+                        if (
+                            "download-artifact@v4.0" in content
+                            or "download-artifact@v4.1.0" in content
+                        ):
                             pytest.fail(f"{workflow} uses vulnerable download-artifact version")
                 except OSError:
                     continue

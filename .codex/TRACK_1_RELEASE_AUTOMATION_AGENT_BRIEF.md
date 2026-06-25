@@ -124,11 +124,11 @@ Automate GitHub release creation, announcement, and artifact generation. The goa
    # Inputs:
    # - version: Release version (e.g., v0.1.0)
    # - dry_run: If true, create draft release; if false, publish immediately
-   # 
+   #
    # Outputs:
    # - release_id: Created release ID
    # - release_url: URL to created release
-   # 
+   #
    # Steps:
    # 1. Extract release notes
    # 2. Generate SBOM
@@ -304,4 +304,3 @@ Automate GitHub release creation, announcement, and artifact generation. The goa
 **Campaign Authority:** @mbaetiong (D-level autonomy)  
 **Execution Authority:** This agent brief  
 **Status:** READY FOR DELEGATION
-

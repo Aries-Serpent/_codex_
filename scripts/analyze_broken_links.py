@@ -99,7 +99,8 @@ def main():
                         'status': status,
                     })
         except Exception as e:
-            print(f"Warning: Could not analyze {md_file}: {e}")
+            error_type = type(e).__name__
+            print(f"Warning: Could not analyze {md_file}: <ERROR_TYPE>")
 
     # Report results
     print("=" * 80)

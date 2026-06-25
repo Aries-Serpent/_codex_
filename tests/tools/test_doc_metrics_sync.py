@@ -25,10 +25,7 @@ import pytest
 # The script lives outside ``src/``, so we load it via importlib from its
 # filesystem path rather than relying on PYTHONPATH/package install.
 _SCRIPT_PATH = (
-    Path(__file__).resolve().parent.parent.parent
-    / "scripts"
-    / "tools"
-    / "doc_metrics_sync.py"
+    Path(__file__).resolve().parent.parent.parent / "scripts" / "tools" / "doc_metrics_sync.py"
 )
 
 _spec = importlib.util.spec_from_file_location("doc_metrics_sync", _SCRIPT_PATH)
@@ -61,8 +58,7 @@ def fake_repo(tmp_path: Path) -> Path:
     # A small test directory with a known number of test functions
     test_dir = tmp_path / "tests"
     test_dir.mkdir()
-    (test_dir / "test_alpha.py").write_text(
-        textwrap.dedent("""\
+    (test_dir / "test_alpha.py").write_text(textwrap.dedent("""\
         def test_one():
             pass
 
@@ -72,8 +68,7 @@ def fake_repo(tmp_path: Path) -> Path:
         class TestGroup:
             def test_three(self):
                 pass
-        """)
-    )
+        """))
 
     # Observability source-of-truth stubs
     tracing_dir = tmp_path / "src" / "mcp" / "server"
@@ -89,22 +84,18 @@ def fake_repo(tmp_path: Path) -> Path:
     # SAR-G01 guide
     guide_dir = tmp_path / "docs" / "admin"
     guide_dir.mkdir(parents=True)
-    (guide_dir / "GITHUB_VARIABLES_MASTER_GUIDE.md").write_text(
-        "# Variables\nSAR-G01 COMPLETE\n"
-    )
+    (guide_dir / "GITHUB_VARIABLES_MASTER_GUIDE.md").write_text("# Variables\nSAR-G01 COMPLETE\n")
 
     # Feature store stub
     feast_dir = tmp_path / "src" / "codex_ml" / "features"
     feast_dir.mkdir(parents=True)
-    (feast_dir / "feast_compat.py").write_text(
-        textwrap.dedent("""\
+    (feast_dir / "feast_compat.py").write_text(textwrap.dedent("""\
         class InMemoryBackend: ...
         class SQLiteBackend: ...
         class RedisBackend: ...
         class DuckDBBackend: ...
         def materialize_to_arrow_ipc(): ...
-        """)
-    )
+        """))
 
     # Workflows directory
     wf_dir = tmp_path / ".github" / "workflows"

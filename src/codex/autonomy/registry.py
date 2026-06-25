@@ -156,7 +156,7 @@ class AutonomyRegistry:
 
         try:
             raw: dict = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        except Exception as exc:  # noqa: BLE001
+        except (IOError, OSError) as exc:  # noqa: BLE001
             logger.error("Failed to parse registry %s: %s", path, exc)
             return cls()
 

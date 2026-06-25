@@ -44,9 +44,10 @@ def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None
         ERRORS_PATH.parent.mkdir(parents=True, exist_ok=True)
         with ERRORS_PATH.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record) + "\n")
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     sys.stderr.write(
         f"Question for ChatGPT @codex {ts}:\n"
         f"While performing [{step_no}:{step_desc}], encountered the following error:\n"
@@ -92,7 +93,7 @@ def get_component(cfg_key: str, default_path: str) -> Any:
     path = os.environ.get(cfg_key, default_path)
     try:
         cls = load_component(path)
-    except Exception as exc:  # pragma: no cover - error path
+    except (IOError, OSError) as exc:  # pragma: no cover - error path
         raise RuntimeError(f"failed to load component: {path}") from exc
     return cls()
 
@@ -123,7 +124,7 @@ def apply_config(config_path: str) -> None:
     except YAMLError as exc:  # pragma: no cover - invalid YAML
         _error_capture("IFACE1", "load interface config", str(exc), f"path={config_path}")
         return
-    except Exception as exc:  # pragma: no cover - fallback logging
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback logging
         _error_capture("IFACE1", "load interface config", str(exc), f"path={config_path}")
         return
 
@@ -147,7 +148,7 @@ def apply_config(config_path: str) -> None:
             if kwargs:
                 try:
                     os.environ.setdefault(kw_env, json.dumps(kwargs))
-                except Exception as e:  # pragma: no cover - failure path
+                except (IOError, OSError) as e:  # pragma: no cover - failure path
                     _error_capture(
                         "IFACE2",
                         "encode interface kwargs",

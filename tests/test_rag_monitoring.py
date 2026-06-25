@@ -137,9 +137,7 @@ class TestRAGMetrics:
 
     def test_track_query_latency_with_labels(self, metrics):
         """Test query latency tracking with labels."""
-        metrics.track_query_latency(
-            100.0, tenant_id="tenant1", index_name="index1", cache_hit=True
-        )
+        metrics.track_query_latency(100.0, tenant_id="tenant1", index_name="index1", cache_hit=True)
         dp = metrics.query_latencies[0]
         assert dp.value == 100.0
         assert dp.labels["tenant_id"] == "tenant1"
@@ -487,9 +485,7 @@ class TestRAGMetrics:
         metrics.track_embedding_throughput(250.0)
 
         output = metrics.export_cloudwatch()
-        emb_metrics = [
-            m for m in output["MetricData"] if m["MetricName"] == "EmbeddingThroughput"
-        ]
+        emb_metrics = [m for m in output["MetricData"] if m["MetricName"] == "EmbeddingThroughput"]
         assert len(emb_metrics) == 1
         assert emb_metrics[0]["Value"] == 200.0  # Average
         assert emb_metrics[0]["Unit"] == "Count/Second"
@@ -659,9 +655,7 @@ class TestEdgeCases:
     def test_unicode_in_labels(self):
         """Test handling Unicode characters in labels."""
         metrics = RAGMetrics()
-        metrics.track_query_latency(
-            100.0, tenant_id="tenant_日本語", index_name="index_€"
-        )
+        metrics.track_query_latency(100.0, tenant_id="tenant_日本語", index_name="index_€")
 
         dp = metrics.query_latencies[0]
         assert "日本語" in dp.labels["tenant_id"]

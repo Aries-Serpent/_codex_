@@ -282,9 +282,7 @@ class TestTelemetryCollector:
     def test_telemetry_report_structure(self, collector):
         """Test that telemetry report has correct structure."""
         # Create minimal mock data
-        with patch.object(
-            collector, "collect_workflow_runs", return_value=[]
-        ):
+        with patch.object(collector, "collect_workflow_runs", return_value=[]):
             report = collector.generate_report("main", output="/tmp/test.json")
 
         required_keys = [
@@ -311,7 +309,9 @@ class TestClassifyRunCLI:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
+        return TelemetryCollector(
+            owner="test-owner", repo="test-repo", token="test-token"
+        )  # pragma: allowlist secret
 
     def test_classify_run_rebase_gate(self, collector):
         """--classify-run returns rebase-gate for branch-rebase-gate workflow failures."""
@@ -362,20 +362,26 @@ class TestClassifyRunCLI:
         mock_run_resp.raise_for_status = Mock()
 
         mock_jobs_resp = Mock()
-        mock_jobs_resp.json.return_value = {
-            "jobs": [{"name": "pytest resilient validation"}]
-        }
+        mock_jobs_resp.json.return_value = {"jobs": [{"name": "pytest resilient validation"}]}
         mock_jobs_resp.raise_for_status = Mock()
 
         with (
             patch("requests.get", side_effect=[mock_run_resp, mock_jobs_resp]),
-            patch.object(sys, "argv", [
-                "collect_telemetry.py",
-                "--owner", "test-owner",
-                "--repo", "test-repo",
-                "--token", "test-tok",
-                "--classify-run", "12345",
-            ]),
+            patch.object(
+                sys,
+                "argv",
+                [
+                    "collect_telemetry.py",
+                    "--owner",
+                    "test-owner",
+                    "--repo",
+                    "test-repo",
+                    "--token",
+                    "test-tok",
+                    "--classify-run",
+                    "12345",
+                ],
+            ),
         ):
             ct_mod.main()
 
@@ -388,13 +394,21 @@ class TestClassifyRunCLI:
 
         with (
             patch("requests.get", side_effect=Exception("network error")),
-            patch.object(sys, "argv", [
-                "collect_telemetry.py",
-                "--owner", "test-owner",
-                "--repo", "test-repo",
-                "--token", "test-tok",
-                "--classify-run", "99999",
-            ]),
+            patch.object(
+                sys,
+                "argv",
+                [
+                    "collect_telemetry.py",
+                    "--owner",
+                    "test-owner",
+                    "--repo",
+                    "test-repo",
+                    "--token",
+                    "test-tok",
+                    "--classify-run",
+                    "99999",
+                ],
+            ),
         ):
             ct_mod.main()
 
@@ -407,7 +421,9 @@ class TestAnalyzeMultiJobCascade:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
+        return TelemetryCollector(
+            owner="test-owner", repo="test-repo", token="test-token"
+        )  # pragma: allowlist secret
 
     def _make_report(self, distribution: dict) -> dict:
         """Build a minimal telemetry_data dict with the given pattern_distribution."""
@@ -514,14 +530,19 @@ class TestAnalyzeMultiJobCascade:
 
     def test_result_always_contains_required_keys(self, collector):
         required = {
-            "cascade_detected", "cascade_rate", "self_healing_count",
-            "total_failures", "root_cause", "recommended_action", "pattern_distribution",
+            "cascade_detected",
+            "cascade_rate",
+            "self_healing_count",
+            "total_failures",
+            "root_cause",
+            "recommended_action",
+            "pattern_distribution",
         }
         for dist in [{}, {"self-healing": 1}, {"unknown": 5, "self-healing": 6}]:
             result = collector.analyze_multi_job_cascade(self._make_report(dist))
-            assert required.issubset(result.keys()), (
-                f"Missing keys for dist={dist}: {required - result.keys()}"
-            )
+            assert required.issubset(
+                result.keys()
+            ), f"Missing keys for dist={dist}: {required - result.keys()}"
 
     def test_cascade_rate_rounded_to_4_decimal_places(self, collector):
         dist = {"self-healing": 2, "unknown": 3}  # 0.4 exactly
@@ -543,7 +564,9 @@ class TestCancelledRunsHandling:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
+        return TelemetryCollector(
+            owner="test-owner", repo="test-repo", token="test-token"
+        )  # pragma: allowlist secret
 
     def _make_run(self, run_id, name, conclusion):
         return {
@@ -653,7 +676,9 @@ class TestApprovalCascadeClassification:
 
     @pytest.fixture
     def collector(self):
-        return TelemetryCollector(owner="test-owner", repo="test-repo", token="test-token")  # pragma: allowlist secret
+        return TelemetryCollector(
+            owner="test-owner", repo="test-repo", token="test-token"
+        )  # pragma: allowlist secret
 
     def test_self_approve_workflow_classified_as_approval_cascade(self, collector):
         """⚡ Self-Approve Pending Workflow Runs → approval-cascade, not unknown."""

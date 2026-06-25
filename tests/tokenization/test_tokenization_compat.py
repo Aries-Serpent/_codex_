@@ -16,7 +16,7 @@ import pytest
 def test_tokenization_compat_emits_deprecation_and_forwards_attributes(monkeypatch):
     try:
         compat = importlib.import_module("codex_ml.tokenization.compat")
-    except Exception as exc:  # pragma: no cover - optional deps missing
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - optional deps missing
         pytest.skip(f"compat module unavailable: {exc}")
     else:
         captured: dict[str, object] = {}

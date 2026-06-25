@@ -26,6 +26,7 @@ from codex.auth.user_store import User, UserStore
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def token_manager():
     """Create a token manager with test secret."""
@@ -54,15 +55,14 @@ def auth_no_mfa(user_store, token_manager):
 def auth_with_mfa(user_store, token_manager, mfa_provider):
     """Create authenticator with MFA."""
     return Authenticator(
-        user_store=user_store,
-        token_manager=token_manager,
-        mfa_provider=mfa_provider
+        user_store=user_store, token_manager=token_manager, mfa_provider=mfa_provider
     )
 
 
 # ============================================================================
 # Registration Tests
 # ============================================================================
+
 
 class TestRegisterBasic:
     """Basic registration functionality."""
@@ -75,10 +75,7 @@ class TestRegisterBasic:
 
     def test_register_with_custom_roles(self, auth_no_mfa):
         user = auth_no_mfa.register(
-            "bob",
-            "bob@example.com",
-            "Str0ngPass!",
-            roles=["admin", "moderator"]
+            "bob", "bob@example.com", "Str0ngPass!", roles=["admin", "moderator"]
         )
         assert "admin" in user.roles
         assert "moderator" in user.roles
@@ -167,6 +164,7 @@ class TestRegisterUnicode:
 # Login Tests
 # ============================================================================
 
+
 class TestLoginBasic:
     """Basic login functionality."""
 
@@ -249,20 +247,18 @@ class TestLoginMFA:
 
         # Get valid TOTP code
         import pyotp
+
         totp = pyotp.TOTP(secret.secret)
         code = totp.now()
 
-        result = auth_with_mfa.login(
-            "zane",
-            "Str0ngPass!",
-            mfa_code=code
-        )
+        result = auth_with_mfa.login("zane", "Str0ngPass!", mfa_code=code)
         assert result.user_id == user.user_id
 
 
 # ============================================================================
 # Logout Tests
 # ============================================================================
+
 
 class TestLogout:
     """Logout functionality."""
@@ -274,8 +270,7 @@ class TestLogout:
         # Attempting to use the token should fail
         with pytest.raises(Exception):
             auth_no_mfa.token_manager.validate_token(
-                result.session_token,
-                expected_type=TokenType.SESSION
+                result.session_token, expected_type=TokenType.SESSION
             )
 
     def test_logout_none_token(self, auth_no_mfa):
@@ -290,6 +285,7 @@ class TestLogout:
 # ============================================================================
 # Password Management Tests
 # ============================================================================
+
 
 class TestPasswordChange:
     """Password change functionality."""
@@ -328,6 +324,7 @@ class TestPasswordChange:
 # Session Management Tests
 # ============================================================================
 
+
 class TestSessionManagement:
     """Session lifecycle and management."""
 
@@ -347,8 +344,7 @@ class TestSessionManagement:
         auth_no_mfa.register("hannah", "hannah@example.com", "Str0ngPass!")
         result = auth_no_mfa.login("hannah", "Str0ngPass!")
         claims = auth_no_mfa.token_manager.validate_token(
-            result.access_token,
-            expected_type=TokenType.ACCESS
+            result.access_token, expected_type=TokenType.ACCESS
         )
         assert claims.sub == result.user_id
 
@@ -356,8 +352,7 @@ class TestSessionManagement:
         auth_no_mfa.register("ivan", "ivan@example.com", "Str0ngPass!")
         result = auth_no_mfa.login("ivan", "Str0ngPass!")
         claims = auth_no_mfa.token_manager.validate_token(
-            result.refresh_token,
-            expected_type=TokenType.REFRESH
+            result.refresh_token, expected_type=TokenType.REFRESH
         )
         assert claims.sub == result.user_id
 
@@ -365,6 +360,7 @@ class TestSessionManagement:
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
 
 class TestErrorHandling:
     """Error handling and edge cases."""
@@ -406,6 +402,7 @@ class TestErrorHandling:
 # Integration Tests
 # ============================================================================
 
+
 class TestIntegration:
     """Integration scenarios combining multiple operations."""
 
@@ -431,11 +428,7 @@ class TestIntegration:
     def test_multiple_users(self, auth_no_mfa):
         users = []
         for i in range(5):
-            user = auth_no_mfa.register(
-                f"user{i}",
-                f"user{i}@example.com",
-                "Str0ngPass!"
-            )
+            user = auth_no_mfa.register(f"user{i}", f"user{i}@example.com", "Str0ngPass!")
             users.append(user)
 
         assert len(users) == 5

@@ -3,6 +3,7 @@ Unit tests for codex_ml.evaluation.metrics module.
 
 Tests metric calculation, accuracy, perplexity, and evaluation runners.
 """
+
 import pytest
 
 
@@ -38,7 +39,7 @@ class TestAccuracyMetric:
 
         metric = AccuracyMetric()
 
-        assert hasattr(metric, 'add_batch')
+        assert hasattr(metric, "add_batch")
         assert callable(metric.add_batch)
 
     def test_accuracy_metric_has_compute_method(self):
@@ -47,7 +48,7 @@ class TestAccuracyMetric:
 
         metric = AccuracyMetric()
 
-        assert hasattr(metric, 'compute')
+        assert hasattr(metric, "compute")
         assert callable(metric.compute)
 
 
@@ -83,7 +84,7 @@ class TestPerplexityMetric:
 
         metric = PerplexityMetric()
 
-        assert hasattr(metric, 'add_batch')
+        assert hasattr(metric, "add_batch")
         assert callable(metric.add_batch)
 
     def test_perplexity_metric_has_compute_method(self):
@@ -92,7 +93,7 @@ class TestPerplexityMetric:
 
         metric = PerplexityMetric()
 
-        assert hasattr(metric, 'compute')
+        assert hasattr(metric, "compute")
         assert callable(metric.compute)
 
 
@@ -119,7 +120,7 @@ class TestMetricAdapter:
 
         metric = AccuracyMetric(name="test_metric")
 
-        assert hasattr(metric, 'name')
+        assert hasattr(metric, "name")
         assert metric.name == "test_metric"
 
 
@@ -130,6 +131,7 @@ class TestBLEUMetric:
         """Test BLEU metric can be imported."""
         try:
             from codex_ml.evaluation.metrics.bleu import BLEUMetric
+
             assert BLEUMetric is not None
         except ImportError:
             pytest.skip("BLEU metric not available")
@@ -140,8 +142,8 @@ class TestBLEUMetric:
             from codex_ml.evaluation.metrics.bleu import BLEUMetric
 
             metric = BLEUMetric()
-            assert hasattr(metric, 'add_batch')
-            assert hasattr(metric, 'compute')
+            assert hasattr(metric, "add_batch")
+            assert hasattr(metric, "compute")
         except ImportError:
             pytest.skip("BLEU metric not available")
 
@@ -153,6 +155,7 @@ class TestROUGEMetric:
         """Test ROUGE metric can be imported."""
         try:
             from codex_ml.evaluation.metrics.rouge import ROUGEMetric
+
             assert ROUGEMetric is not None
         except ImportError:
             pytest.skip("ROUGE metric not available")
@@ -163,8 +166,8 @@ class TestROUGEMetric:
             from codex_ml.evaluation.metrics.rouge import ROUGEMetric
 
             metric = ROUGEMetric()
-            assert hasattr(metric, 'add_batch')
-            assert hasattr(metric, 'compute')
+            assert hasattr(metric, "add_batch")
+            assert hasattr(metric, "compute")
         except ImportError:
             pytest.skip("ROUGE metric not available")
 
@@ -176,6 +179,7 @@ class TestLatencyMetric:
         """Test LatencyMetric can be imported."""
         try:
             from codex_ml.evaluation.metrics.latency import LatencyMetric
+
             assert LatencyMetric is not None
         except ImportError:
             pytest.skip("LatencyMetric not available")
@@ -186,7 +190,7 @@ class TestLatencyMetric:
             from codex_ml.evaluation.metrics.latency import LatencyMetric
 
             metric = LatencyMetric()
-            assert hasattr(metric, 'name')
+            assert hasattr(metric, "name")
         except ImportError:
             pytest.skip("LatencyMetric not available")
 
@@ -204,6 +208,7 @@ class TestEvaluationRunner:
         """Test evaluation loop can be imported."""
         try:
             from codex_ml.evaluation.loop import evaluate_model
+
             assert evaluate_model is not None
         except ImportError:
             # evaluate_model may not exist
@@ -215,8 +220,8 @@ class TestEvaluationRunner:
             from codex_ml.evaluation import metrics
 
             # Should have multiple metric classes
-            assert hasattr(metrics, 'accuracy')
-            assert hasattr(metrics, 'perplexity')
+            assert hasattr(metrics, "accuracy")
+            assert hasattr(metrics, "perplexity")
         except (ImportError, AttributeError):
             # Registry pattern may not be used
             _ = None  # suppressed: no action needed
@@ -235,18 +240,19 @@ class TestMetricsModuleStructure:
         """Test metrics module has accuracy."""
         from codex_ml.evaluation import metrics
 
-        assert hasattr(metrics, 'accuracy')
+        assert hasattr(metrics, "accuracy")
 
     def test_metrics_has_perplexity(self):
         """Test metrics module has perplexity."""
         from codex_ml.evaluation import metrics
 
-        assert hasattr(metrics, 'perplexity')
+        assert hasattr(metrics, "perplexity")
 
     def test_evaluation_cli_import(self):
         """Test evaluation CLI can be imported."""
         try:
             from codex_ml.evaluation.cli import evaluate_cli
+
             assert evaluate_cli is not None
         except (ImportError, AttributeError):
             # CLI may not exist yet or dependencies missing

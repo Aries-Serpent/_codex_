@@ -14,7 +14,7 @@ def try_import(name: str) -> ModuleType | None:
 
     try:
         return import_module(name)
-    except Exception as exc:  # pragma: no cover - optional dependency
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency
         LOGGER.debug("Optional dependency %s could not be imported: %s", name, exc)
         return None
 

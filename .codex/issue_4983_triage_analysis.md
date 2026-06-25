@@ -387,7 +387,7 @@ gh workflow view <workflow-id> --json status
 
 1. **`.codex/issue_4983_triage_analysis.md`** (this file)
    - Status: ✅ Created
-   
+
 2. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**
    - Status: ⏳ Will be updated by Pattern 25 fix
    - Entry: `agent-accountability-fix: Fixed 88 CI failures (issue #4983) — Patterns 25 + delegated to specialized agents`
@@ -449,4 +449,3 @@ gh workflow view <workflow-id> --json status
 2. ⏳ **Phase 2 (Immediate)** — Run auto-fix for Pattern 25
 3. ⏳ **Phase 2B (Parallel)** — Delegate specialized fixes to agents
 4. ⏳ **Phase 3** — Validate all fixes and close issue
-

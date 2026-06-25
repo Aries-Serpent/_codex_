@@ -71,7 +71,7 @@ def test_training_result_initialization():
         backend="functional",
         final_epoch=5,
         output_dir="/output",
-        extra={"metric": 0.95}
+        extra={"metric": 0.95},
     )
     assert result.status == "ok"
     assert result.backend == "functional"
@@ -83,11 +83,7 @@ def test_training_result_initialization():
 def test_training_result_empty_extra():
     """Test TrainingResult with empty extra dict."""
     result = TrainingResult(
-        status="ok",
-        backend="legacy",
-        final_epoch=1,
-        output_dir="/tmp",
-        extra={}
+        status="ok", backend="legacy", final_epoch=1, output_dir="/tmp", extra={}
     )
     assert result.extra == {}
 
@@ -97,11 +93,7 @@ def test_training_result_serialization():
     from dataclasses import asdict
 
     result = TrainingResult(
-        status="ok",
-        backend="functional",
-        final_epoch=3,
-        output_dir="/output",
-        extra={"loss": 0.5}
+        status="ok", backend="functional", final_epoch=3, output_dir="/output", extra={"loss": 0.5}
     )
     result_dict = asdict(result)
     assert result_dict["status"] == "ok"
@@ -308,18 +300,25 @@ def test_legacy_strategy_run_basic(mock_import, mock_config):
 
 def test_callback_protocol_methods():
     """Test callback protocol defines expected methods."""
+
     # Create a custom callback implementing the protocol
     class CustomCallback:
         def on_epoch_start(self, epoch: int, state: dict[str, Any]) -> None:
             self.epoch_started = epoch
 
-        def on_epoch_end(self, epoch: int, metrics: dict[str, float], state: dict[str, Any]) -> None:
+        def on_epoch_end(
+            self, epoch: int, metrics: dict[str, float], state: dict[str, Any]
+        ) -> None:
             self.epoch_ended = epoch
 
-        def on_step(self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]) -> None:
+        def on_step(
+            self, batch_index: int, global_step: int, loss: float, state: dict[str, Any]
+        ) -> None:
             self.step_called = True
 
-        def on_checkpoint(self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]) -> None:
+        def on_checkpoint(
+            self, epoch: int, path: str, metrics: dict[str, float], state: dict[str, Any]
+        ) -> None:
             self.checkpoint_saved = path
 
     callback = CustomCallback()

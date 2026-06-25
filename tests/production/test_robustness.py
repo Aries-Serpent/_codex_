@@ -15,13 +15,14 @@ import pytest
 
 # Network Failure Simulation Tests
 
+
 def test_network_timeout_handling():
     """Test graceful handling of network timeouts."""
 
     def fetch_with_timeout(url, timeout=5):
         # Simulate network call
         time.sleep(0.01)  # Fast simulation
-        return {'status': 'success', 'data': 'response'}
+        return {"status": "success", "data": "response"}
 
     def fetch_with_retry(url, max_retries=3):
         for attempt in range(max_retries):
@@ -33,8 +34,8 @@ def test_network_timeout_handling():
                 time.sleep(0.01 * (attempt + 1))  # Exponential backoff
         raise RuntimeError("retry loop exited without success")
 
-    result = fetch_with_retry('http://example.com')
-    assert result['status'] == 'success'
+    result = fetch_with_retry("http://example.com")
+    assert result["status"] == "success"
 
 
 def test_connection_refused_fallback():
@@ -47,19 +48,19 @@ def test_connection_refused_fallback():
 
         def call(self, should_fail_primary=False):
             if not should_fail_primary:
-                return {'source': 'primary', 'data': 'success'}
+                return {"source": "primary", "data": "success"}
             # Fallback to secondary
-            return {'source': 'fallback', 'data': 'success'}
+            return {"source": "fallback", "data": "success"}
 
-    client = ServiceClient('http://primary:8080', 'http://fallback:8080')
+    client = ServiceClient("http://primary:8080", "http://fallback:8080")
 
     # Primary works
     result = client.call(should_fail_primary=False)
-    assert result['source'] == 'primary'
+    assert result["source"] == "primary"
 
     # Primary fails, fallback works
     result = client.call(should_fail_primary=True)
-    assert result['source'] == 'fallback'
+    assert result["source"] == "fallback"
 
 
 def test_partial_network_failure_handling():
@@ -74,13 +75,13 @@ def test_partial_network_failure_handling():
                 # Simulate some sources failing
                 if idx % 3 == 0:
                     raise ConnectionError(f"Failed to connect to {source}")
-                results.append({'source': source, 'data': f'data_{idx}'})
+                results.append({"source": source, "data": f"data_{idx}"})
             except ConnectionError as e:
-                failures.append({'source': source, 'error': str(e)})
+                failures.append({"source": source, "error": str(e)})
 
         return results, failures
 
-    sources = [f'http://source{i}.com' for i in range(10)]
+    sources = [f"http://source{i}.com" for i in range(10)]
     results, failures = fetch_multiple_sources(sources)
 
     # Should have some successes and some failures
@@ -98,13 +99,13 @@ def test_circuit_breaker_pattern():
             self.timeout = timeout
             self.failure_count = 0
             self.last_failure_time = None
-            self.state = 'closed'  # closed, open, half-open
+            self.state = "closed"  # closed, open, half-open
 
         def call(self, func, *args, **kwargs):
-            if self.state == 'open':
+            if self.state == "open":
                 # Check if timeout expired
                 if time.time() - self.last_failure_time > self.timeout:
-                    self.state = 'half-open'
+                    self.state = "half-open"
                 else:
                     raise Exception("Circuit breaker is OPEN")
 
@@ -112,14 +113,14 @@ def test_circuit_breaker_pattern():
                 result = func(*args, **kwargs)
                 # Success - reset
                 self.failure_count = 0
-                self.state = 'closed'
+                self.state = "closed"
                 return result
             except Exception as _err:
                 self.failure_count += 1
                 self.last_failure_time = time.time()
 
                 if self.failure_count >= self.failure_threshold:
-                    self.state = 'open'
+                    self.state = "open"
                 raise
 
     cb = CircuitBreaker(failure_threshold=3, timeout=0.1)
@@ -133,7 +134,7 @@ def test_circuit_breaker_pattern():
             cb.call(failing_service)
 
     # Circuit should be open
-    assert cb.state == 'open'
+    assert cb.state == "open"
 
     # Further calls should fail immediately
     with pytest.raises(Exception, match="Circuit breaker is OPEN"):
@@ -141,6 +142,7 @@ def test_circuit_breaker_pattern():
 
 
 # Database Recovery Tests
+
 
 def test_database_connection_recovery(tmp_path):
     """Test database reconnection after connection loss."""
@@ -206,13 +208,13 @@ def test_database_corruption_detection(tmp_path):
     # Create and populate database
     conn.execute("CREATE TABLE data (id INTEGER, value TEXT)")
     for i in range(100):
-        conn.execute("INSERT INTO data VALUES (?, ?)", (i, f'value_{i}'))
+        conn.execute("INSERT INTO data VALUES (?, ?)", (i, f"value_{i}"))
     conn.commit()
 
     # Verify integrity
     cursor = conn.execute("PRAGMA integrity_check")
     result = cursor.fetchone()[0]
-    assert result == 'ok'
+    assert result == "ok"
 
     conn.close()
 
@@ -275,7 +277,7 @@ def test_database_connection_pooling():
 
             if self.active_connections < self.pool_size:
                 self.active_connections += 1
-                return {'id': self.active_connections, 'status': 'active'}
+                return {"id": self.active_connections, "status": "active"}
 
             # Wait for available connection
             return self.pool.get(timeout=1.0)
@@ -283,14 +285,14 @@ def test_database_connection_pooling():
         def return_connection(self, conn):
             self.pool.put(conn)
 
-    pool = SimpleConnectionPool(':memory:', pool_size=3)
+    pool = SimpleConnectionPool(":memory:", pool_size=3)
 
     # Get connections
     conn1 = pool.get_connection()
     pool.get_connection()
     pool.get_connection()
 
-    assert conn1['status'] == 'active'
+    assert conn1["status"] == "active"
     assert pool.active_connections == 3
 
     # Return connection
@@ -303,17 +305,18 @@ def test_database_connection_pooling():
 
 # Disk Exhaustion Handling Tests
 
+
 def test_disk_full_graceful_handling(tmp_path):
     """Test graceful handling when disk is full."""
 
-    def write_with_space_check(file_path, data, min_free_space=1024*1024):
+    def write_with_space_check(file_path, data, min_free_space=1024 * 1024):
         # Simulate space check
         available_space = 10 * 1024 * 1024  # 10 MB
 
         if available_space < min_free_space:
             raise IOError("Insufficient disk space")
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(data)
 
     data_file = tmp_path / "data.txt"
@@ -329,11 +332,11 @@ def test_partial_write_recovery(tmp_path):
     """Test recovery from partial write operations."""
 
     def atomic_write(file_path, data):
-        temp_path = file_path.with_suffix('.tmp')
+        temp_path = file_path.with_suffix(".tmp")
 
         try:
             # Write to temporary file
-            with open(temp_path, 'w') as f:
+            with open(temp_path, "w") as f:
                 f.write(data)
                 f.flush()
 
@@ -377,8 +380,8 @@ def test_log_rotation_on_size_limit(tmp_path):
             if self.current_size + len(message) > self.max_size:
                 self.rotate()
 
-            with open(log_file, 'a') as f:
-                f.write(message + '\n')
+            with open(log_file, "a") as f:
+                f.write(message + "\n")
             self.current_size += len(message) + 1
 
         def rotate(self):
@@ -404,12 +407,13 @@ def test_log_rotation_on_size_limit(tmp_path):
 
 # Concurrent Access Tests
 
+
 def test_concurrent_file_writes(tmp_path):
     """Test concurrent writes to different files."""
 
     def write_file(file_path, content, repeat):
         for i in range(repeat):
-            with open(file_path, 'a') as f:
+            with open(file_path, "a") as f:
                 f.write(f"{content}_{i}\n")
 
     errors = []
@@ -418,7 +422,7 @@ def test_concurrent_file_writes(tmp_path):
         try:
             file_path = tmp_path / f"thread_{thread_id}.txt"
             write_file(file_path, f"data_{thread_id}", 100)
-        except Exception as e:
+        except (IOError, OSError) as e:
             errors.append(e)
 
     threads = [threading.Thread(target=worker, args=(i,)) for i in range(5)]
@@ -433,7 +437,7 @@ def test_concurrent_file_writes(tmp_path):
     for i in range(5):
         file_path = tmp_path / f"thread_{i}.txt"
         assert file_path.exists()
-        lines = file_path.read_text().strip().split('\n')
+        lines = file_path.read_text().strip().split("\n")
         assert len(lines) == 100
 
 
@@ -442,7 +446,7 @@ def test_concurrent_read_access(tmp_path):
 
     # Create test file
     data_file = tmp_path / "data.txt"
-    content = '\n'.join([f"Line {i}" for i in range(1000)])
+    content = "\n".join([f"Line {i}" for i in range(1000)])
     data_file.write_text(content)
 
     read_counts = []
@@ -451,11 +455,11 @@ def test_concurrent_read_access(tmp_path):
     def reader(reader_id):
         try:
             count = 0
-            with open(data_file, 'r') as f:
+            with open(data_file, "r") as f:
                 for line in f:
                     count += 1
             read_counts.append(count)
-        except Exception as e:
+        except (IOError, OSError) as e:
             errors.append(e)
 
     threads = [threading.Thread(target=reader, args=(i,)) for i in range(10)]
@@ -542,7 +546,7 @@ def test_resource_cleanup_on_error(tmp_path):
             self.is_open = False
 
         def __enter__(self):
-            self.handle = open(self.path, 'w')
+            self.handle = open(self.path, "w")
             self.is_open = True
             return self
 
@@ -567,7 +571,7 @@ def test_resource_cleanup_on_error(tmp_path):
         _ = None  # suppressed: no action needed
 
     # Resource should be cleaned up
-    assert not hasattr(res, 'is_open') or not res.is_open
+    assert not hasattr(res, "is_open") or not res.is_open
 
 
 def test_graceful_shutdown_with_pending_tasks():

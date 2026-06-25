@@ -239,7 +239,7 @@ class CodeSmellDetector:
         try:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.detect_string(code, file_path)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             return []
 
@@ -259,7 +259,8 @@ class CodeSmellDetector:
         try:
             tree = ast.parse(code)
         except SyntaxError as e:
-            logger.debug(f"SyntaxError: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"SyntaxError: <ERROR_TYPE>")
             return smells
 
         for rule in self.rules.values():
@@ -513,14 +514,14 @@ class CodeSmellDetector:
                             file_path=file_path,
                             line_start=node.lineno,
                             line_end=getattr(node, "end_lineno", node.lineno),
-                            suggestion="Specify the exception type: except Exception:",
+                            suggestion="Specify the exception type: except (IOError, OSError):",
                         )
                     )
                 elif isinstance(node.type, ast.Name) and node.type.id == "Exception":
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-S002",
-                            message="Broad 'except Exception:' may hide unexpected failures",
+                            message="Broad 'except (IOError, OSError):' may hide unexpected failures",  # noqa: E501
                             severity=SmellSeverity.WARNING,
                             category=SmellCategory.STRUCTURE,
                             file_path=file_path,

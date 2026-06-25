@@ -38,7 +38,13 @@ class TestEmitZendeskConfig:
 
         mock_cdm.return_value = {
             "assignment": [
-                FieldDef(name="Status", key="status", ftype="choice", required=True, choices=["open", "closed"])
+                FieldDef(
+                    name="Status",
+                    key="status",
+                    ftype="choice",
+                    required=True,
+                    choices=["open", "closed"],
+                )
             ]
         }
         mock_mapping.return_value = {}

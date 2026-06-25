@@ -82,7 +82,9 @@ class TestEnergyLandscapeSinglePoint:
 
         landscape = EnergyLandscape(temperature=1.0)
         for e in [0.0, 1.0, 2.0]:
-            landscape.add_state(EnergyState(configuration={"e": e}, energy=e, entropy=0.0, temperature=1.0))
+            landscape.add_state(
+                EnergyState(configuration={"e": e}, energy=e, entropy=0.0, temperature=1.0)
+            )
         entropy = landscape.calculate_system_entropy()
         assert entropy > 0.0
 

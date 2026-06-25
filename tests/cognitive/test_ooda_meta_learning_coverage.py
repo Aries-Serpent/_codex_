@@ -35,7 +35,9 @@ def test_ooda_orchestrator_execute_and_metrics(monkeypatch):
 
         def reason(self, data):
             self.last_input = data
-            return ActionResult(success=True, output={"ok": True}, metrics={"latency": 1.2}, errors=[])
+            return ActionResult(
+                success=True, output={"ok": True}, metrics={"latency": 1.2}, errors=[]
+            )
 
     base_mod = types.ModuleType("cognitive_brain.base")
     base_mod.ActionResult = ActionResult
@@ -113,7 +115,9 @@ def test_meta_learning_shared_memory_and_pattern_library(tmp_path):
     )
 
     shared = module.SharedMemory(tmp_path / "shared")
-    data_id = shared.store({"key": "value"}, {"source_agent": 1, "target_agent": 2, "pattern_type": "code"})
+    data_id = shared.store(
+        {"key": "value"}, {"source_agent": 1, "target_agent": 2, "pattern_type": "code"}
+    )
     assert shared.retrieve(data_id) == {"key": "value"}
     assert shared.search({"source_agent": 1}) == [data_id]
 

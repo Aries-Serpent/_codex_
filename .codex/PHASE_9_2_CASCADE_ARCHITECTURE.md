@@ -174,14 +174,14 @@ Each specialist agent implements a standardized interface:
 ```python
 class Agent:
     """Interface for cascade-compatible agents."""
-    
+
     async def execute(
         self,
         pattern_id: str,
         context: Dict[str, Any],
     ) -> FixResult:
         """Execute fix for given pattern.
-        
+
         Returns:
             FixResult(
                 success: bool,
@@ -420,10 +420,10 @@ ESCALATED   │ (terminal)           │ Human review needed
 if fix_execution.state == FixState.FAILED:
     # 1. Revert changes to HEAD
     orchestrator.rollback(fix_execution)
-    
+
     # 2. Log failure
     logger.error(f"Rollback: {pattern_id} failed; reverted")
-    
+
     # 3. Escalate if > 1 failure in tier
     if tier_failure_count >= 2:
         session.escalation_reason = f"Multiple failures in Tier {tier}"

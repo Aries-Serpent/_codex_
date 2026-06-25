@@ -181,9 +181,9 @@ Indirect Cycles Detected: 0
 
 ```
 Expected Flow:
-    P0 (torch, transformers, cryptography) 
+    P0 (torch, transformers, cryptography)
         ↓ (must complete)
-    P1 (pydantic, jinja2, urllib3, marshmallow) 
+    P1 (pydantic, jinja2, urllib3, marshmallow)
         ↓ (must complete)
     P2 (remaining security updates)
         ↓ (must complete)
@@ -194,7 +194,7 @@ Current Status:
         ├─ torch: ✅ READY
         ├─ transformers: ✅ READY
         └─ cryptography: 🔴 BLOCKED
-    
+
     P1 ⏸️ PENDING_P0
     P2 ⏸️ PENDING_P0_P1
     P3 ⏸️ PENDING_ALL

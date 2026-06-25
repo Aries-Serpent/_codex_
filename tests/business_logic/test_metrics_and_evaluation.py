@@ -33,7 +33,7 @@ class TestMetricComputations:
 
         precision = true_positives / (true_positives + false_positives)
 
-        assert precision == 2/3
+        assert precision == 2 / 3
 
     def test_recall_computation(self):
         """Test recall calculation."""
@@ -43,7 +43,7 @@ class TestMetricComputations:
 
         recall = true_positives / (true_positives + false_negatives)
 
-        assert recall == 2/3
+        assert recall == 2 / 3
 
     def test_f1_score_computation(self):
         """Test F1 score calculation."""
@@ -101,7 +101,7 @@ class TestMetricAggregation:
         batch_metrics = [
             {"loss": 0.5, "accuracy": 0.8},
             {"loss": 0.4, "accuracy": 0.85},
-            {"loss": 0.35, "accuracy": 0.88}
+            {"loss": 0.35, "accuracy": 0.88},
         ]
 
         avg_loss = sum(m["loss"] for m in batch_metrics) / len(batch_metrics)
@@ -145,19 +145,9 @@ class TestThresholdEvaluation:
 
     def test_multiple_thresholds(self):
         """Test multiple threshold checks."""
-        metrics = {
-            "accuracy": 0.87,
-            "precision": 0.89,
-            "recall": 0.85,
-            "f1": 0.87
-        }
+        metrics = {"accuracy": 0.87, "precision": 0.89, "recall": 0.85, "f1": 0.87}
 
-        thresholds = {
-            "accuracy": 0.85,
-            "precision": 0.85,
-            "recall": 0.80,
-            "f1": 0.85
-        }
+        thresholds = {"accuracy": 0.85, "precision": 0.85, "recall": 0.80, "f1": 0.85}
 
         all_pass = all(metrics[k] >= thresholds[k] for k in metrics)
 
@@ -192,7 +182,7 @@ class TestComparisonLogic:
         models = [
             {"name": "model_a", "accuracy": 0.85},
             {"name": "model_b", "accuracy": 0.90},
-            {"name": "model_c", "accuracy": 0.88}
+            {"name": "model_c", "accuracy": 0.88},
         ]
 
         ranked = sorted(models, key=lambda x: x["accuracy"], reverse=True)
@@ -201,11 +191,7 @@ class TestComparisonLogic:
 
     def test_best_model_selection(self):
         """Test selecting best model by metric."""
-        model_scores = {
-            "model_1": 0.85,
-            "model_2": 0.92,
-            "model_3": 0.88
-        }
+        model_scores = {"model_1": 0.85, "model_2": 0.92, "model_3": 0.88}
 
         best_model = max(model_scores, key=model_scores.get)
 
@@ -281,7 +267,7 @@ class TestStatisticalMeasures:
 
         # Simple correlation check - if one increases, so does other
         increased_together = all(
-            (metric_a[i] <= metric_a[i+1]) == (metric_b[i] <= metric_b[i+1])
+            (metric_a[i] <= metric_a[i + 1]) == (metric_b[i] <= metric_b[i + 1])
             for i in range(len(metric_a) - 1)
         )
 
@@ -293,10 +279,7 @@ class TestPerformanceTracking:
 
     def test_metric_history(self):
         """Test tracking metric history."""
-        history = {
-            "loss": [],
-            "accuracy": []
-        }
+        history = {"loss": [], "accuracy": []}
 
         for epoch in range(5):
             history["loss"].append(0.5 - epoch * 0.05)
@@ -336,7 +319,7 @@ class TestPerformanceTracking:
 
         diverging = False
         for i in range(1, len(losses)):
-            if losses[i] > losses[i-1] * 2:
+            if losses[i] > losses[i - 1] * 2:
                 diverging = True
                 break
 
@@ -344,7 +327,6 @@ class TestPerformanceTracking:
 
     def test_overfitting_detection(self):
         """Test detecting overfitting."""
-        train_loss = [0.5, 0.3, 0.1, 0.05]
         val_loss = [0.5, 0.35, 0.4, 0.6]  # Validation not improving
 
         overfitting = val_loss[-1] > val_loss[-2]

@@ -156,7 +156,7 @@ class OAuthManager:
             "redirect_uri": cfg.redirect_uri,
         }
         headers = {"Accept": "application/json"}
-        response = requests.post(cfg.token_url, data=data, headers=headers)
+        response = requests.post(cfg.token_url, data=data, headers=headers, timeout=30)
         if response.status_code != 200:
             raise OAuthException(f"Token exchange failed: {response.status_code}")
         token_data = response.json()

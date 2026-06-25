@@ -67,13 +67,13 @@ def _resolve_tokenizer() -> TokenizerAdapter:
     if kwargs_env:
         try:
             kwargs = json.loads(kwargs_env)
-        except Exception:  # pragma: no cover - invalid env config
+        except (IOError, OSError):  # pragma: no cover - invalid env config
             logger.warning("Failed to decode text-backend kwargs; using defaults")
     try:
         tokenizer = get_tokenizer(name, **kwargs)
         logger.info("Using text backend: %s", tokenizer.__class__.__name__)
         return tokenizer
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to whitespace backend: %s", type(exc).__name__)
         return WhitespaceTokenizer()
 
@@ -83,7 +83,7 @@ def _resolve_reward_model() -> RewardModel:
         model = get_component("CODEX_REWARD_PATH", DEFAULT_REWARD_PATH)
         logger.info("Using reward model: %s", model.__class__.__name__)
         return model
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to HeuristicRewardModel: %s", exc)
         return HeuristicRewardModel()
 
@@ -93,7 +93,7 @@ def _resolve_rl_agent() -> RLAgent:
         agent = get_component("CODEX_RL_PATH", DEFAULT_RL_PATH)
         logger.info("Using RL agent: %s", agent.__class__.__name__)
         return agent
-    except Exception as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         logger.warning("Falling back to BanditRLAgent: %s", exc)
         return BanditRLAgent()
 
@@ -242,7 +242,7 @@ def _run_rlhf_stage(
         actions.append(selected)
         rewards.append(reward_value)
         metrics = agent.update({"actions": [selected], "rewards": [reward_value]})
-        agent_updates += metrics.get("updates", 1)  # type: ignore[assignment]
+        agent_updates += metrics.get("updates", 1)
         agent_reward_total += metrics.get("mean_reward", reward_value)
 
     agent_metrics = {
@@ -362,10 +362,12 @@ def _coerce_pairwise_list(value: Any) -> list[tuple[str, str, str, int]]:
                 rejected = str(item["rejected"])
                 preference = int(item.get("preference", 1))
             except KeyError as exc:
-                logger.debug(f"KeyError: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"KeyError: <ERROR_TYPE>")
                 raise ValueError(f"pairwise[{idx}] missing key {exc.args[0]}") from exc
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (ValueError, TypeError, RuntimeError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 raise ValueError(f"pairwise[{idx}] has invalid values") from exc
         elif isinstance(item, Sequence) and len(item) == 4:
             label, chosen, rejected, preference = item
@@ -373,8 +375,9 @@ def _coerce_pairwise_list(value: Any) -> list[tuple[str, str, str, int]]:
                 raise ValueError(f"pairwise[{idx}] must contain three strings and an integer")
             try:
                 preference = int(preference)
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (ValueError, TypeError, RuntimeError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 raise ValueError(f"pairwise[{idx}] preference must be an integer") from exc
         else:
             raise ValueError("pairwise comparisons must be mappings or four-tuples")
@@ -706,7 +709,7 @@ def run_codex_pipeline_from_config(
     with _temporary_env(overrides):
         return run_codex_pipeline(
             corpus=corpus,
-            demos=demos,  # type: ignore[arg-type]
+            demos=demos,
             pairwise_prefs=pairwise,
             weights=weights,
             pre_cfg=pre_cfg,

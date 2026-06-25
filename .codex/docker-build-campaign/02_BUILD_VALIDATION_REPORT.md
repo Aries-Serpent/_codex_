@@ -29,7 +29,7 @@
 | **Parse Validation** | Dockerfile syntax is valid | Parses without errors (hadolint) |
 | **Layer Analysis** | Stage structure optimized | Multi-stage where beneficial |
 | **Dependency Audit** | Requirements pins compatible with Python version | Python ≥3.12 or documented rationale |
-| **Security Baseline** | Base image hardened | Digest-pinned, non-root user, no secrets |
+| **Security Baseline** | Base image hardened | Digest-pinned, non-root user, no secrets | <!-- pragma: allowlist secret -->
 | **Build Dry-Run** | Layer inspection succeeds | Can extract layer metadata |
 | **Optimization Assessment** | Opportunity identified & documented | Consolidation potential documented |
 
@@ -50,7 +50,7 @@ Target:      base, cpu-runtime, gpu-runtime, test
 | **Parse Validation** | ✅ PASS | Valid Dockerfile syntax |
 | **Layer Analysis** | ✅ PASS | 4 stages: base (reusable) → cpu, gpu, test |
 | **Dependency Audit** | ✅ PASS | Python 3.12, requirements pinned in requirements.txt |
-| **Security Baseline** | ✅ PASS | SHA256-pinned base; appuser non-root; no hardcoded secrets |
+| **Security Baseline** | ✅ PASS | SHA256-pinned base; appuser non-root; no hardcoded secrets | <!-- pragma: allowlist secret -->
 | **Build Dry-Run** | ✅ PASS | Stages parse correctly |
 | **Optimization** | ⚠️ MEDIUM | Layer count: 15-18 per stage. Consolidation opportunity: combine apt-get updates with cleanup (lines 22-28) |
 
@@ -163,7 +163,7 @@ Target:      single-stage (CPU-only runtime)
   - CI layer uses 3.14
   - Why 3.10? Check compatibility requirements; likely can upgrade
 
-**Action Item:** 
+**Action Item:**
 - [ ] Verify PyTorch CPU wheels support 3.12 (they do; pytorch.org confirms)
 - [ ] Update base image to `python:3.12-slim` in next PR
 - [ ] Test cpu-runtime locally before merge
@@ -317,7 +317,7 @@ Target:      single-stage (local codex environment)
 - **Severity:** Medium
 - **Issue:** Uses `python:3.10-slim` while main uses 3.12 and CI uses 3.14
 - **Impact:** Inconsistent runtime environment across variants; may miss Python 3.12+ features
-- **Action:** 
+- **Action:**
   - [ ] Verify PyTorch CPU wheels available for 3.12 (confirmed)
   - [ ] Update to `python:3.12-slim@sha256:090ba77e2958f6af52a5341f788b50b032dd4ca28377d2893dcf1ecbdfdfe203`
   - [ ] Test locally: `docker build -f docker/Dockerfile.cpu -t codex-cpu:test .`

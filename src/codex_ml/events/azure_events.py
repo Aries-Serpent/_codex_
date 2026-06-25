@@ -18,8 +18,9 @@ try:
 
     _HAS_AZURE = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     _HAS_AZURE = False
     logger.warning("azure-eventgrid not installed. Azure Event Grid support disabled.")
 
@@ -93,9 +94,10 @@ class AzureEventPublisher(EventPublisher):
             logger.info(f"Published event to Azure Event Grid: {event.event_id}")
             return True
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to publish to Azure Event Grid: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to publish to Azure Event Grid: <ERROR_TYPE>")
             return False
 
     def publish_batch(self, events: list[Event]) -> bool:
@@ -129,7 +131,8 @@ class AzureEventPublisher(EventPublisher):
             logger.info(f"Published {len(events)} events to Azure Event Grid")
             return True
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to publish batch to Azure Event Grid: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to publish batch to Azure Event Grid: <ERROR_TYPE>")
             return False

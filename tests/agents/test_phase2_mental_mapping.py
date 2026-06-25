@@ -257,9 +257,15 @@ class TestPhase2_MentalMapping_TraversalOperations:
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-        mapping.add_node(MentalNode(node_id="r", node_type=NodeType.CONCEPT, content="root", timestamp=ts))
-        mapping.add_node(MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="child1", timestamp=ts))
-        mapping.add_node(MentalNode(node_id="c2", node_type=NodeType.CONCEPT, content="child2", timestamp=ts))
+        mapping.add_node(
+            MentalNode(node_id="r", node_type=NodeType.CONCEPT, content="root", timestamp=ts)
+        )
+        mapping.add_node(
+            MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="child1", timestamp=ts)
+        )
+        mapping.add_node(
+            MentalNode(node_id="c2", node_type=NodeType.CONCEPT, content="child2", timestamp=ts)
+        )
         mapping.connect_nodes(source_id="r", target_id="c1")
         mapping.connect_nodes(source_id="r", target_id="c2")
         result = mapping.bfs(start_node="r")
@@ -275,8 +281,12 @@ class TestPhase2_MentalMapping_TraversalOperations:
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-        mapping.add_node(MentalNode(node_id="r", node_type=NodeType.CONCEPT, content="root", timestamp=ts))
-        mapping.add_node(MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="child1", timestamp=ts))
+        mapping.add_node(
+            MentalNode(node_id="r", node_type=NodeType.CONCEPT, content="root", timestamp=ts)
+        )
+        mapping.add_node(
+            MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="child1", timestamp=ts)
+        )
         mapping.connect_nodes(source_id="r", target_id="c1")
         result = mapping.dfs(start_node="r")
         assert isinstance(result, list)
@@ -292,7 +302,9 @@ class TestPhase2_MentalMapping_TraversalOperations:
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
         for nid in ("a", "b", "c"):
-            mapping.add_node(MentalNode(node_id=nid, node_type=NodeType.CONCEPT, content=nid, timestamp=ts))
+            mapping.add_node(
+                MentalNode(node_id=nid, node_type=NodeType.CONCEPT, content=nid, timestamp=ts)
+            )
         mapping.connect_nodes(source_id="a", target_id="b")
         mapping.connect_nodes(source_id="b", target_id="c")
         path = mapping.shortest_path(start_id="a", end_id="c")
@@ -349,7 +361,9 @@ class TestPhase2_MentalMapping_UpdateOperations:
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-        node = MentalNode(node_id="upd", node_type=NodeType.CONCEPT, content="original", timestamp=ts)
+        node = MentalNode(
+            node_id="upd", node_type=NodeType.CONCEPT, content="original", timestamp=ts
+        )
         mapping.add_node(node)
         assert "upd" in mapping.nodes
         # Verify node is retrievable and has content
@@ -364,8 +378,12 @@ class TestPhase2_MentalMapping_UpdateOperations:
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-        mapping.add_node(MentalNode(node_id="x", node_type=NodeType.CONCEPT, content="x", timestamp=ts))
-        mapping.add_node(MentalNode(node_id="y", node_type=NodeType.CONCEPT, content="y", timestamp=ts))
+        mapping.add_node(
+            MentalNode(node_id="x", node_type=NodeType.CONCEPT, content="x", timestamp=ts)
+        )
+        mapping.add_node(
+            MentalNode(node_id="y", node_type=NodeType.CONCEPT, content="y", timestamp=ts)
+        )
         mapping.connect_nodes(source_id="x", target_id="y", weight=2.5)
         assert len(mapping.edges) == 1
         edge = next(iter(mapping.edges.values()))
@@ -403,8 +421,12 @@ class TestPhase2_MentalMapping_QueryOperations:
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-        mapping.add_node(MentalNode(node_id="p", node_type=NodeType.CONCEPT, content="p", timestamp=ts))
-        mapping.add_node(MentalNode(node_id="q", node_type=NodeType.CONCEPT, content="q", timestamp=ts))
+        mapping.add_node(
+            MentalNode(node_id="p", node_type=NodeType.CONCEPT, content="p", timestamp=ts)
+        )
+        mapping.add_node(
+            MentalNode(node_id="q", node_type=NodeType.CONCEPT, content="q", timestamp=ts)
+        )
         mapping.connect_nodes(source_id="p", target_id="q")
         # edges supports standard iteration / dict filtering
         filtered = list(mapping.edges.values())
@@ -419,7 +441,9 @@ class TestPhase2_MentalMapping_QueryOperations:
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
         for nid in ("n1", "n2", "n3"):
-            mapping.add_node(MentalNode(node_id=nid, node_type=NodeType.CONCEPT, content=nid, timestamp=ts))
+            mapping.add_node(
+                MentalNode(node_id=nid, node_type=NodeType.CONCEPT, content=nid, timestamp=ts)
+            )
         assert isinstance(mapping.nodes, dict)
         assert len(mapping.nodes) == 3
 
@@ -431,8 +455,12 @@ class TestPhase2_MentalMapping_QueryOperations:
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-        mapping.add_node(MentalNode(node_id="e1", node_type=NodeType.CONCEPT, content="e1", timestamp=ts))
-        mapping.add_node(MentalNode(node_id="e2", node_type=NodeType.CONCEPT, content="e2", timestamp=ts))
+        mapping.add_node(
+            MentalNode(node_id="e1", node_type=NodeType.CONCEPT, content="e1", timestamp=ts)
+        )
+        mapping.add_node(
+            MentalNode(node_id="e2", node_type=NodeType.CONCEPT, content="e2", timestamp=ts)
+        )
         mapping.connect_nodes(source_id="e1", target_id="e2")
         assert isinstance(mapping.edges, dict)
         assert len(mapping.edges) == 1
@@ -453,7 +481,9 @@ class TestPhase2_MentalMapping_EdgeCases:
         mapping.add_node(node)
         # Add again — either overwrites (len still 1) or raises
         try:
-            node2 = MentalNode(node_id="dup", node_type=NodeType.CONCEPT, content="second", timestamp=ts)
+            node2 = MentalNode(
+                node_id="dup", node_type=NodeType.CONCEPT, content="second", timestamp=ts
+            )
             mapping.add_node(node2)
             assert len(mapping.nodes) == 1  # overwrite
         except ValueError:
@@ -467,7 +497,9 @@ class TestPhase2_MentalMapping_EdgeCases:
 
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
-        mapping.add_node(MentalNode(node_id="self", node_type=NodeType.CONCEPT, content="self", timestamp=ts))
+        mapping.add_node(
+            MentalNode(node_id="self", node_type=NodeType.CONCEPT, content="self", timestamp=ts)
+        )
         try:
             mapping.connect_nodes(source_id="self", target_id="self")
             # Self-loops accepted — at least 0 edges exist (no crash)
@@ -495,7 +527,11 @@ class TestPhase2_MentalMapping_EdgeCases:
         ts = datetime.now(UTC).isoformat()
         mapping = MentalMapping()
         for i in range(100):
-            mapping.add_node(MentalNode(node_id=f"n{i}", node_type=NodeType.CONCEPT, content=f"node {i}", timestamp=ts))
+            mapping.add_node(
+                MentalNode(
+                    node_id=f"n{i}", node_type=NodeType.CONCEPT, content=f"node {i}", timestamp=ts
+                )
+            )
         assert len(mapping.nodes) == 100
 
     def test_deeply_nested_reasoning_chain(self):

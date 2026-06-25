@@ -31,9 +31,7 @@ def test_mltest_runner_builds_summary(tmp_path: Path, monkeypatch):
             }
         ]
     }
-    (tmp_path / "codex_ml_test_map.yaml").write_text(
-        yaml.safe_dump(mlmap), encoding="utf-8"
-    )
+    (tmp_path / "codex_ml_test_map.yaml").write_text(yaml.safe_dump(mlmap), encoding="utf-8")
 
     rc = runner.main(
         [

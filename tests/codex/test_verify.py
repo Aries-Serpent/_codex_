@@ -300,12 +300,7 @@ class TestFlakiness:
         (baseline_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
         (patched_dir / "main.py").write_text("print('test')\n", encoding="utf-8")
 
-        result = compare(
-            baseline_dir,
-            patched_dir,
-            mode=ComparisonMode.STRICT,
-            flakiness_runs=3
-        )
+        result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT, flakiness_runs=3)
 
         assert "runs" in result.flakiness_check
         assert "consistent" in result.flakiness_check

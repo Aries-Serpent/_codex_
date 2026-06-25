@@ -22,7 +22,7 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
-except Exception:  # pragma: no cover - propagate a consistent runtime error lazily
+except (ValueError, TypeError):  # pragma: no cover - propagate a consistent runtime error lazily
     _HAS_REAL_TORCH = False
 
     class _NoOpScaler:
@@ -63,8 +63,8 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
         def no_grad() -> _NoOpNoGrad:
             return _NoOpNoGrad()
 
-    torch = _TorchStub()  # type: ignore[assignment]
-    nn = Any  # type: ignore[assignment]
+    torch = _TorchStub()
+    nn = Any
     GradScaler = _NoOpScaler
 
     def autocast(*, enabled: bool = False):
@@ -74,13 +74,13 @@ except Exception:  # pragma: no cover - propagate a consistent runtime error laz
 
 # Define type aliases
 if TYPE_CHECKING:  # pragma: no cover - typing bridge
-    TensorType: TypeAlias = Any
+    TensorType: TypeAlias = Any  # type: ignore
     OptimizerType: TypeAlias = Any
     DataLoaderType: TypeAlias = Any
 else:  # pragma: no cover - runtime fallback
-    TensorType: TypeAlias = Any  # type: ignore[misc]
-    OptimizerType: TypeAlias = Any  # type: ignore[misc]
-    DataLoaderType: TypeAlias = Any  # type: ignore[misc]
+    TensorType: TypeAlias = Any
+    OptimizerType: TypeAlias = Any
+    DataLoaderType: TypeAlias = Any
 
 from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
 from logging_utils import (  # noqa: E402
@@ -117,7 +117,8 @@ def _load_checkpoint_payload(path: Path, *, map_location: Any) -> Mapping[str, A
     try:
         result = _TORCH_LOAD_FN(path, **kwargs)
     except TypeError as exc:
-        logger.debug(f"TypeError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             result = _TORCH_LOAD_FN(path, **kwargs)
@@ -281,7 +282,8 @@ class Trainer:
             try:
                 resolved_seed = int(cfg.seed)
             except (TypeError, ValueError) as exc:
-                logger.debug(f"Exception: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 raise ValueError("TrainerConfig.seed must be an int") from exc
             _set_seed(resolved_seed)
             cfg.seed = resolved_seed
@@ -343,7 +345,11 @@ class Trainer:
             if latest is not None:
                 try:
                     self._load_checkpoint(*latest)
-                except Exception as exc:  # pragma: no cover - resume is best-effort
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ) as exc:  # pragma: no cover - resume is best-effort
                     LOGGER.warning("Auto-resume skipped due to error: %s", exc)
                 else:
                     resumed = True
@@ -398,7 +404,7 @@ class Trainer:
                 key=lambda p: p.stat().st_mtime,
                 reverse=True,
             )
-        except Exception:  # pragma: no cover - directory read failure
+        except (IOError, OSError):  # pragma: no cover - directory read failure
             return None
         return candidates[0] if candidates else None
 
@@ -408,7 +414,7 @@ class Trainer:
             return
         try:
             epoch, metric = load_checkpoint(latest, self.simple.model, self.simple.optimizer)
-        except Exception as exc:  # pragma: no cover - robustness guard
+        except (IOError, OSError) as exc:  # pragma: no cover - robustness guard
             LOGGER.warning("Failed to auto-resume from %s: %s", latest, exc)
             return
         self.state.epoch = int(epoch)
@@ -438,7 +444,11 @@ class Trainer:
         if self.metric_fn is not None:
             try:
                 metrics["val_metric"] = float(self.metric_fn(outputs, labels))
-            except Exception as exc:  # pragma: no cover - metric robustness guard
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - metric robustness guard
                 LOGGER.debug("Metric function failed: %s", exc)
         return metrics
 
@@ -468,8 +478,9 @@ class Trainer:
         for meta_path in sorted(directory.glob("epoch_*.json")):
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (IOError, OSError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue
             monitor_value = data.get("monitor")
@@ -496,7 +507,7 @@ class Trainer:
         if pointer.exists():
             try:
                 payload = json.loads(pointer.read_text(encoding="utf-8"))
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 payload = {}
             path_hint = payload.get("path")
@@ -508,8 +519,9 @@ class Trainer:
         for meta_path in sorted(directory.glob("epoch_*.json")):
             try:
                 data = json.loads(meta_path.read_text(encoding="utf-8"))
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (IOError, OSError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 LOGGER.debug("Skipping checkpoint metadata %s: %s", meta_path, exc)
                 continue
             checkpoint_path = meta_path.with_suffix(".pt")
@@ -573,7 +585,7 @@ class Trainer:
             for path in (ckpt_path, meta_path):
                 try:
                     path.unlink(missing_ok=True)
-                except Exception as exc:  # pragma: no cover - retention guard
+                except (IOError, OSError) as exc:  # pragma: no cover - retention guard
                     LOGGER.debug("Failed to remove checkpoint '%s': %s", path, exc)
 
     def _save_checkpoint(self, epoch: int, metrics: Mapping[str, float]) -> None:
@@ -618,7 +630,7 @@ class Trainer:
             }
             pointer_path = checkpoint_path.parent / "latest.json"
             pointer_path.write_text(json.dumps(pointer_payload, indent=2), encoding="utf-8")
-        except Exception as exc:  # pragma: no cover - persistence guard
+        except (IOError, OSError) as exc:  # pragma: no cover - persistence guard
             LOGGER.warning("Failed to persist checkpoint '%s': %s", checkpoint_path, exc)
 
     def evaluate(self) -> Mapping[str, float]:
@@ -667,7 +679,7 @@ class Trainer:
                 start_epoch,
                 cfg.epochs,
             )
-            return self.history[-1] if self.history else {}  # type: ignore[return-value]
+            return self.history[-1] if self.history else {}
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
@@ -690,7 +702,7 @@ class Trainer:
                 if should_step:
                     if cfg.max_grad_norm is not None:
                         self.scaler.unscale_(self.simple.optimizer)
-                        torch.nn.utils.clip_grad_norm_(  # type: ignore[attr-defined]
+                        torch.nn.utils.clip_grad_norm_(
                             self.simple.model.parameters(), cfg.max_grad_norm
                         )
                     self.scaler.step(self.simple.optimizer)
@@ -716,7 +728,7 @@ class Trainer:
                 try:
                     eval_metrics = self.evaluate()
                     epoch_metrics.update(eval_metrics)
-                except Exception as exc:  # pragma: no cover - evaluation robustness
+                except (IOError, OSError) as exc:  # pragma: no cover - evaluation robustness
                     LOGGER.warning("Validation failed at epoch %s: %s", epoch, exc)
 
             self.history.append(dict(epoch_metrics))
@@ -724,13 +736,13 @@ class Trainer:
             if self._metrics_path is not None:
                 try:
                     record = {"epoch": epoch, "global_step": self.state.global_step}
-                    record.update({k: float(v) for k, v in epoch_metrics.items()})  # type: ignore[misc]
+                    record.update({k: float(v) for k, v in epoch_metrics.items()})
                     append_ndjson(record, self._metrics_path)
-                except Exception as exc:  # pragma: no cover - diagnostics only
+                except (IOError, OSError) as exc:  # pragma: no cover - diagnostics only
                     LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
             self._save_checkpoint(epoch, epoch_metrics)
 
-        return self.history[-1] if self.history else {}  # type: ignore[return-value]
+        return self.history[-1] if self.history else {}
 
     def close(self) -> None:
         shutdown_logging(self._logging_session)

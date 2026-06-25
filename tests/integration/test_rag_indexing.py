@@ -3,6 +3,7 @@ Integration tests for RAG indexing functionality.
 
 Tests text chunking, embedding generation, and FAISS index building.
 """
+
 import importlib.util
 
 import pytest
@@ -140,8 +141,8 @@ class TestIndexerMetadata:
         from codex.rag import indexer
 
         # Should have functions for metadata handling
-        assert hasattr(indexer, 'chunk_text')
-        assert hasattr(indexer, 'embed_chunks')
+        assert hasattr(indexer, "chunk_text")
+        assert hasattr(indexer, "embed_chunks")
 
     def test_indexer_chunk_metadata(self):
         """Test chunk metadata includes position information."""
@@ -164,6 +165,7 @@ class TestIndexSaveLoad:
         """Test save_index function exists."""
         try:
             from codex.rag.indexer import save_index
+
             assert save_index is not None
         except ImportError:
             pytest.skip("save_index not available")
@@ -172,6 +174,7 @@ class TestIndexSaveLoad:
         """Test load_index function exists."""
         try:
             from codex.rag.indexer import load_index
+
             assert load_index is not None
         except ImportError:
             pytest.skip("load_index not available")
@@ -192,4 +195,5 @@ class TestFAISSIntegration:
         # FAISS is optional - test that indexer still imports without it
         # Should not crash if FAISS unavailable
         from codex.rag import indexer
+
         assert indexer is not None

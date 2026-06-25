@@ -403,7 +403,7 @@ TestCheckpointCoreBasics (7 tests)
   ✅ test_checkpoint_round_trip_preserves_state
   ✅ test_checkpoint_load_handles_missing_metadata
   ✅ test_checkpoint_schema_version_validation
-  
+
 TestCheckpointAtomicIO (2 tests)
   ✅ test_checkpoint_save_creates_atomic_write
   ✅ test_checkpoint_keep_last_k_cleanup
@@ -421,7 +421,7 @@ TestEarlyStoppingBasics (4 tests)
   ✅ test_early_stopping_custom_parameters
   ✅ test_early_stopping_first_metric_never_stops
   ✅ test_early_stopping_detects_improvement_min_mode
-  
+
 TestEarlyStoppingPlateauDetection (3 tests)
   ✅ test_early_stopping_stops_after_patience_exceeded
   ✅ test_early_stopping_resets_counter_on_improvement

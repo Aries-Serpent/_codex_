@@ -120,9 +120,7 @@ class TestGHZStateCreation:
 
         # For freshly created GHZ state, all correlations should be 1.0
         for correlation in corr_matrix.values():
-            assert correlation == 1.0, (
-                f"Initial correlation should be 1.0: {correlation}"
-            )
+            assert correlation == 1.0, f"Initial correlation should be 1.0: {correlation}"
 
 
 # =============================================================================
@@ -178,9 +176,7 @@ class TestAgentCoordination:
         """Test weighted voting consensus strategy."""
         coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.WEIGHTED)
         coordinator.register_agent("agent_1", role="analyzer", weight=1.0)
-        coordinator.register_agent(
-            "agent_2", role="validator", weight=2.0
-        )  # Higher weight
+        coordinator.register_agent("agent_2", role="validator", weight=2.0)  # Higher weight
         coordinator.register_agent("agent_3", role="executor", weight=1.0)
 
         decisions = [
@@ -197,17 +193,13 @@ class TestAgentCoordination:
 
     def test_consensus_confidence_based(self):
         """Test confidence-based consensus strategy."""
-        coordinator = MultiAgentCoordinator(
-            voting_strategy=VotingStrategy.CONFIDENCE_BASED
-        )
+        coordinator = MultiAgentCoordinator(voting_strategy=VotingStrategy.CONFIDENCE_BASED)
         coordinator.register_agent("agent_1", role="analyzer")
         coordinator.register_agent("agent_2", role="validator")
         coordinator.register_agent("agent_3", role="executor")
 
         decisions = [
-            AgentDecision(
-                "agent_1", "approve", 0.95, datetime.now(UTC)
-            ),  # Highest confidence
+            AgentDecision("agent_1", "approve", 0.95, datetime.now(UTC)),  # Highest confidence
             AgentDecision("agent_2", "reject", 0.75, datetime.now(UTC)),
             AgentDecision("agent_3", "reject", 0.70, datetime.now(UTC)),
         ]
@@ -460,9 +452,7 @@ class TestPerformance:
 
         assert latency_ms < 20, f"Latency {latency_ms}ms exceeds target 20ms"
 
-    @pytest.mark.skipif(
-        not HAS_TOPOLOGY_MANAGER, reason="TopologyManager not available"
-    )
+    @pytest.mark.skipif(not HAS_TOPOLOGY_MANAGER, reason="TopologyManager not available")
     def test_topology_configuration_speed(self):
         """Test topology configuration performance."""
         manager = TopologyManager()

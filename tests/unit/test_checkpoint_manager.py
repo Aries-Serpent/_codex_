@@ -23,9 +23,7 @@ def _load_training_checkpoint_manager(
     allow_checkpointing_import: bool = False,
 ):
     module_name = "training.checkpoint_manager_under_test"
-    module_path = (
-        Path(__file__).resolve().parents[2] / "training" / "checkpoint_manager.py"
-    )
+    module_path = Path(__file__).resolve().parents[2] / "training" / "checkpoint_manager.py"
     original_import = builtins.__import__
 
     def _import(name, globals=None, locals=None, fromlist=(), level=0):

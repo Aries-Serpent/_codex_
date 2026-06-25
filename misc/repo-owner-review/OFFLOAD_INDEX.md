@@ -165,4 +165,3 @@ All archived files are **read-only** and available for reference. To restore an 
 - [Plans Archive](../docs/plans/archive/) - Completed project plans
 - [Archive Index](../docs/archive/INDEX.md) - Detailed archive index
 - [Repository Health Dashboard](.codex/repository_health/DASHBOARD.md) - Current metrics
-

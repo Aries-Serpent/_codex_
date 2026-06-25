@@ -11,7 +11,10 @@ from workers.embedding_worker import run_worker
 
 
 def test_run_worker_upserts(tmp_path, monkeypatch):
-    items = [{"id": "a", "content": "hello", "metadata": {}}, {"id": "b", "content": "world", "metadata": {}}]
+    items = [
+        {"id": "a", "content": "hello", "metadata": {}},
+        {"id": "b", "content": "world", "metadata": {}},
+    ]
     p = tmp_path / "sample.json"
     p.write_text(json.dumps(items), encoding="utf-8")
     checkpoint = tmp_path / "ck.json"

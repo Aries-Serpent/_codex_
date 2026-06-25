@@ -233,7 +233,7 @@ Automate monitoring and alerting stack deployment using Prometheus/Grafana manif
    # Inputs:
    # - monitoring_stack: Monitoring solution (prometheus-grafana, datadog)
    # - environment: Target environment (staging/production)
-   # 
+   #
    # Steps:
    # 1. Deploy Prometheus/Grafana manifests
    # 2. Apply ServiceMonitor configuration
@@ -350,4 +350,3 @@ Automate monitoring and alerting stack deployment using Prometheus/Grafana manif
 **Campaign Authority:** @mbaetiong (D-level autonomy)  
 **Execution Authority:** This agent brief  
 **Status:** READY FOR DELEGATION (can start parallel to Phase 1 or Track 4/5)
-

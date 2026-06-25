@@ -47,7 +47,9 @@ def test_generate_agent_context_uses_runtime_timestamp(monkeypatch):
 
 
 def test_variable_validator_uses_callable_type_hint():
-    module = _load_module("validate_repo_variables_annotations", "scripts/ci/validate_repo_variables.py")
+    module = _load_module(
+        "validate_repo_variables_annotations", "scripts/ci/validate_repo_variables.py"
+    )
     hints = get_type_hints(module.Variable)
 
     assert hints["validator"] == (Callable[[str], bool] | None)

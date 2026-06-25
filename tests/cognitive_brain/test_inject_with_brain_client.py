@@ -39,11 +39,13 @@ def _mock_brain_client(*, available: bool = True, search_results: list | None = 
     client = MagicMock()
     client.is_available.return_value = available
     client.memory_search.return_value = {
-        "results": search_results
-        if search_results is not None
-        else [
-            {"pattern_id": "P-test-001", "fact": "Test fact from memory search"},
-        ]
+        "results": (
+            search_results
+            if search_results is not None
+            else [
+                {"pattern_id": "P-test-001", "fact": "Test fact from memory search"},
+            ]
+        )
     }
     return client
 

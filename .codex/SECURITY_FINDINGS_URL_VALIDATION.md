@@ -346,7 +346,7 @@ url = f"{scheme}://example.com"
    ```python
    ALLOWED_SCHEMES = ["https"]
    ALLOWED_DOMAINS = ["api.github.com", "github.com"]
-   
+
    def validate_url(url: str) -> bool:
        """Validate that URL has allowed scheme and domain."""
        parsed = urllib.parse.urlparse(url)

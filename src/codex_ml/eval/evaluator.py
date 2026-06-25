@@ -78,7 +78,7 @@ def evaluate_model(model: Any, tokenizer: Any, texts: Iterable[str]) -> dict[str
     missing = _missing_dependencies(require_datasets=True)
     if missing:
         raise EvaluationDependencyError(missing)
-    ds = Dataset.from_dict({"text": list(texts)})  # type: ignore[union-attr]
+    ds = Dataset.from_dict({"text": list(texts)})
     column = list(ds["text"])
     toks = tokenizer(column, return_tensors="pt", padding=True)
     input_ids = toks["input_ids"]
@@ -238,8 +238,9 @@ def evaluate_dataloader(
                         if not name.startswith("_") and not callable(value)
                     }
                 except TypeError as e:
-                    logger.debug(f"TypeError: {e}")
-                    logger.warning(f"TypeError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"TypeError: <ERROR_TYPE>")
+                    logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
                     # vars() raises TypeError for objects without __dict__ (e.g., some namedtuples, classes with __slots__)  # noqa: E501
                     output_mapping = {
                         name: value

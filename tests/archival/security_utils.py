@@ -55,9 +55,7 @@ def safe_extract_tarfile(
 
             # Additional check for absolute paths
             if member.name.startswith("/") or member.name.startswith("\\"):
-                raise ValueError(
-                    f"Security: Absolute path in tarfile member: {member.name}"
-                )
+                raise ValueError(f"Security: Absolute path in tarfile member: {member.name}")
 
         # Python 3.12+ has built-in filter, use it if available
         if hasattr(tarfile, "data_filter"):

@@ -44,11 +44,13 @@ def test_certificates(temp_cert_dir):
     """Generate test certificates for mTLS testing."""
     # Generate CA key and certificate
     ca_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    ca_name = x509.Name([
-        x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Codex Test CA"),
-        x509.NameAttribute(NameOID.COMMON_NAME, "Test CA"),
-    ])
+    ca_name = x509.Name(
+        [
+            x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Codex Test CA"),
+            x509.NameAttribute(NameOID.COMMON_NAME, "Test CA"),
+        ]
+    )
     ca_cert = (
         x509.CertificateBuilder()
         .subject_name(ca_name)
@@ -66,9 +68,11 @@ def test_certificates(temp_cert_dir):
 
     # Generate server key and certificate
     server_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    server_name = x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, "localhost"),
-    ])
+    server_name = x509.Name(
+        [
+            x509.NameAttribute(NameOID.COMMON_NAME, "localhost"),
+        ]
+    )
     server_cert = (
         x509.CertificateBuilder()
         .subject_name(server_name)
@@ -86,9 +90,11 @@ def test_certificates(temp_cert_dir):
 
     # Generate client key and certificate
     client_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-    client_name = x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, "test-client"),
-    ])
+    client_name = x509.Name(
+        [
+            x509.NameAttribute(NameOID.COMMON_NAME, "test-client"),
+        ]
+    )
     client_cert = (
         x509.CertificateBuilder()
         .subject_name(client_name)
@@ -336,6 +342,5 @@ class TestTLSSecurityProperties:
         # Verify TLS 1.3 ciphers use strong encryption (AES-GCM or ChaCha20)
         for cipher in tls13_ciphers:
             assert any(
-                alg in cipher["name"]
-                for alg in ["AES_128_GCM", "AES_256_GCM", "CHACHA20"]
+                alg in cipher["name"] for alg in ["AES_128_GCM", "AES_256_GCM", "CHACHA20"]
             ), f"Cipher {cipher['name']} doesn't use strong AEAD encryption"

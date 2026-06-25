@@ -152,7 +152,7 @@ class TestIngestionPipeline:
     @pytest.fixture
     def temp_text_file(self):
         """Create a temporary text file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             f.write("This is test content for ingestion.\n")
             f.write("It has multiple sentences. And paragraphs.\n\n")
             f.write("This is another paragraph.")
@@ -174,6 +174,7 @@ class TestIngestionPipeline:
 
         # Cleanup
         import shutil
+
         shutil.rmtree(temp_dir)
 
     def test_ingest_text(self, pipeline):
@@ -218,7 +219,9 @@ class TestIngestionPipeline:
 
         assert not result.is_success
         assert result.status == IngestionStatus.FAILED
-        assert "not found" in result.error_message.lower() or "error" in result.error_message.lower()
+        assert (
+            "not found" in result.error_message.lower() or "error" in result.error_message.lower()
+        )
 
     def test_ingest_files_batch(self, pipeline, temp_dir_with_files):
         """Test batch file ingestion."""
@@ -421,10 +424,12 @@ class TestIngestionPipelineRetry:
         # max_retries=2 → attempts 0 and 1 sleep; attempt 2 (final) does NOT sleep
         assert mock_sleep.call_count == 2
         # Delays are retry_delay_seconds × (attempt + 1): 0.1×1=0.1 and 0.1×2=0.2
-        mock_sleep.assert_has_calls([
-            call(pytest.approx(0.1, rel=0.05)),
-            call(pytest.approx(0.2, rel=0.05)),
-        ])
+        mock_sleep.assert_has_calls(
+            [
+                call(pytest.approx(0.1, rel=0.05)),
+                call(pytest.approx(0.2, rel=0.05)),
+            ]
+        )
 
 
 class TestIngestionPipelineCallback:
@@ -468,6 +473,7 @@ class TestIngestionPipelineCallback:
         completed = []
 
         import threading
+
         lock = threading.Lock()
 
         def on_complete(doc_id, result):
@@ -593,6 +599,7 @@ class TestGetStatsAndClearCache:
 # ---------------------------------------------------------------------------
 # Coverage-focused tests for edge cases and exception-handling branches
 # ---------------------------------------------------------------------------
+
 
 class TestBatchIngestionResultThroughputZeroTime:
     """Line 147: throughput_docs_per_hour returns 0.0 when total_time_seconds == 0."""
@@ -767,7 +774,9 @@ class TestIngestWithRetryNonValidationFailure:
         )
         config = IngestionConfig(max_retries=1, retry_delay_seconds=0.0)
         pipeline = IngestionPipeline(config)
-        with patch.object(pipeline, "ingest_file", return_value=failed_no_validation) as mock_ingest:
+        with patch.object(
+            pipeline, "ingest_file", return_value=failed_no_validation
+        ) as mock_ingest:
             result = pipeline._ingest_with_retry(f)
         # Called max_retries+1 times since result was FAILED with no validation_result
         assert mock_ingest.call_count == 2

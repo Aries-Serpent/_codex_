@@ -12,6 +12,7 @@ class TestKnowledgeBaseImports:
         """Test that the module can be imported."""
         try:
             from src.codex.knowledge import base
+
             assert base is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -24,7 +25,8 @@ class TestKnowledgeBaseOperations:
         """Test knowledge base creation."""
         try:
             from src.codex.knowledge import base
-            if hasattr(base, 'KnowledgeBase'):
+
+            if hasattr(base, "KnowledgeBase"):
                 kb = base.KnowledgeBase()
                 assert kb is not None
         except (ImportError, AttributeError):
@@ -34,8 +36,9 @@ class TestKnowledgeBaseOperations:
         """Test adding knowledge."""
         try:
             from src.codex.knowledge import base
-            if hasattr(base, 'add_knowledge'):
-                with patch.object(base, 'add_knowledge') as mock_add:
+
+            if hasattr(base, "add_knowledge"):
+                with patch.object(base, "add_knowledge") as mock_add:
                     mock_add.return_value = {"id": "k1"}
                     result = base.add_knowledge("test knowledge")
                     assert result["id"] == "k1"
@@ -46,8 +49,9 @@ class TestKnowledgeBaseOperations:
         """Test querying knowledge."""
         try:
             from src.codex.knowledge import base
-            if hasattr(base, 'query'):
-                with patch.object(base, 'query') as mock_query:
+
+            if hasattr(base, "query"):
+                with patch.object(base, "query") as mock_query:
                     mock_query.return_value = ["result1"]
                     results = base.query("test query")
                     assert len(results) == 1
@@ -62,10 +66,11 @@ class TestKnowledgeBasePersistence:
         """Test saving knowledge base."""
         try:
             from src.codex.knowledge import base
-            if hasattr(base, 'KnowledgeBase'):
+
+            if hasattr(base, "KnowledgeBase"):
                 kb = base.KnowledgeBase()
-                if hasattr(kb, 'save'):
-                    with patch.object(kb, 'save') as mock_save:
+                if hasattr(kb, "save"):
+                    with patch.object(kb, "save") as mock_save:
                         mock_save.return_value = True
                         result = kb.save("/tmp/kb.json")
                         assert result is True
@@ -76,8 +81,9 @@ class TestKnowledgeBasePersistence:
         """Test loading knowledge base."""
         try:
             from src.codex.knowledge import base
-            if hasattr(base, 'KnowledgeBase') and hasattr(base.KnowledgeBase, 'load'):
-                with patch.object(base.KnowledgeBase, 'load') as mock_load:
+
+            if hasattr(base, "KnowledgeBase") and hasattr(base.KnowledgeBase, "load"):
+                with patch.object(base.KnowledgeBase, "load") as mock_load:
                     mock_load.return_value = base.KnowledgeBase()
                     kb = base.KnowledgeBase.load("/tmp/kb.json")
                     assert kb is not None

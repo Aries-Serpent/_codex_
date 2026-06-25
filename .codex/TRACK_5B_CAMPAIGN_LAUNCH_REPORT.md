@@ -254,7 +254,7 @@ sqlite3 .codex/monitoring_data.db \
 **Get success rate calculation**:
 ```bash
 sqlite3 .codex/monitoring_data.db \
-  "SELECT 
+  "SELECT
     COUNT(*) as total,
     SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) as passed,
     ROUND(100.0 * SUM(CASE WHEN conclusion = 'success' THEN 1 ELSE 0 END) / COUNT(*), 1) as success_pct

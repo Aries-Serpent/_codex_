@@ -63,9 +63,10 @@ class FileCache:
 
             logger.debug(f"Cached file ({len(content)} bytes): {file_path}")
             return True
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to cache file {file_path}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to cache file {file_path}: <ERROR_TYPE>")
             return False
 
     def get(self, file_path: str, auto_refresh: bool = True) -> Optional[str]:
@@ -134,7 +135,15 @@ class SearchCache:
 
         @cache.memoize
         def find_files(pattern, scope):
-            return subprocess.run(['find', scope, '-name', pattern]).stdout
+            # SECURE: Use shell=False and properly quoted arguments
+            result = subprocess.run(
+                ['find', scope, '-name', pattern],
+                capture_output=True,
+                text=True,
+                shell=False,
+                timeout=30
+            )
+            return result.stdout
 
         result1 = find_files('*.py', '/src')  # Executes search
         result2 = find_files('*.py', '/src')  # Returns cached result
@@ -144,6 +153,45 @@ class SearchCache:
         """Initialize search cache."""
         self._cache: dict[str, Any] = {}
         logger.info("SearchCache initialized")
+
+    def _validate_path_arg(self, path_str: str, arg_name: str = "path") -> str:
+        """Validate path argument to prevent command injection.
+
+        Parameters:
+            path_str: Path to validate
+            arg_name: Name of argument for error messages
+
+        Returns:
+            Validated path string
+
+        Raises:
+            ValueError: If path contains suspicious patterns
+        """
+        if not path_str:
+            raise ValueError(f"{arg_name} cannot be empty")
+        if ".." in path_str:
+            raise ValueError(f"{arg_name} cannot contain '..' (path traversal)")
+        if any(c in path_str for c in [";", "|", "&", "$", "`", "\n", "\r"]):
+            raise ValueError(f"{arg_name} contains shell metacharacters")
+        return path_str
+
+    def _validate_pattern_arg(self, pattern: str) -> str:
+        """Validate glob pattern argument to prevent command injection.
+
+        Parameters:
+            pattern: Glob pattern to validate
+
+        Returns:
+            Validated pattern string
+
+        Raises:
+            ValueError: If pattern contains suspicious sequences
+        """
+        if not pattern:
+            raise ValueError("pattern cannot be empty")
+        if any(c in pattern for c in [";", "|", "&", "$", "`", "\n", "\r", "'"]):
+            raise ValueError("pattern contains forbidden characters")
+        return pattern
 
     def memoize(self, func: Callable) -> Callable:
         """Decorator to memoize function results."""

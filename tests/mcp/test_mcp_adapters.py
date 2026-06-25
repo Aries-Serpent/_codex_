@@ -52,10 +52,12 @@ class TestMockBackend:
         await backend.connect()
 
         # Upsert some vectors first
-        await backend.upsert([
-            {"id": "vec1", "values": [0.1, 0.2, 0.3], "metadata": {"text": "hello"}},
-            {"id": "vec2", "values": [0.4, 0.5, 0.6], "metadata": {"text": "world"}},
-        ])
+        await backend.upsert(
+            [
+                {"id": "vec1", "values": [0.1, 0.2, 0.3], "metadata": {"text": "hello"}},
+                {"id": "vec2", "values": [0.4, 0.5, 0.6], "metadata": {"text": "world"}},
+            ]
+        )
 
         result = await backend.query("test query", top_k=5)
 
@@ -76,10 +78,12 @@ class TestMockBackend:
         """Test upserting vectors."""
         await backend.connect()
 
-        result = await backend.upsert([
-            {"id": "vec1", "values": [0.1, 0.2]},
-            {"id": "vec2", "values": [0.3, 0.4]},
-        ])
+        result = await backend.upsert(
+            [
+                {"id": "vec1", "values": [0.1, 0.2]},
+                {"id": "vec2", "values": [0.3, 0.4]},
+            ]
+        )
 
         assert result.success is True
         assert result.data["upserted_count"] == 2

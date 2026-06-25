@@ -433,8 +433,9 @@ class IngestionPipeline:
                 },
             )
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             duration = time.time() - start_time
             errors.append(str(e))
             logger.error("Pipeline error: %s", e)
@@ -569,8 +570,9 @@ def ingest_directory(
         if file_path.is_file():
             try:
                 yield from pipeline.stream(file_path)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 logger.warning("Error processing %s: %s", file_path, e)
 
 
@@ -592,6 +594,6 @@ def transform_records(
         for transformer in transformers:
             if result is None:
                 break
-            result = transformer(result)  # type: ignore[assignment]
+            result = transformer(result)
         if result is not None:
             yield result

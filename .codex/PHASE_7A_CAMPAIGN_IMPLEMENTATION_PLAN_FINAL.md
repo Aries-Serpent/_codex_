@@ -96,17 +96,17 @@ Simple Modules (0% → 90% coverage):
   Modules: CLI, utilities, data classes, config loaders
   Est. Tests: 200-300 per module
   Agent: test-enhancement-agent
-  
+
 Medium Modules (0% → 80% coverage):
   Modules: Business logic, state management, algorithms
   Est. Tests: 300-500 per module
   Agent: autonomous-test-healer-agent
-  
+
 Complex Modules (0% → 70% coverage):
   Modules: Async operations, integrations, concurrency
   Est. Tests: 500-800 per module
   Agent: integration-test-runner
-  
+
 Very Complex (0% → 60% coverage):
   Modules: ML/AI, distributed systems, performance-critical
   Est. Tests: 800-1200 per module
@@ -336,7 +336,7 @@ Very Complex (0% → 60% coverage):
 - [ ] Task 3.3.4: Achieve mutation score ≥85% confidence threshold → agent_type: `mutation-testing-agent`
 
 **Quality Gate:** Mutation score ≥85%  
-**Deliverables:** 
+**Deliverables:**
 - Mutation analysis report (`.codex/WAVE_3_LANE_3_MUTATION_REPORT.md`)
 - Mutation score by module (JSON artifact)
 

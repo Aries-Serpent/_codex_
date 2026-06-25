@@ -34,7 +34,7 @@
 | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 | P1-015 | *Pending Agent 1* | *Pending* | *Pending* | *Pending* | HIGH | TBD | Day 3 | TBD |
 
-**Legend**: 
+**Legend**:
 - P1-001 through P1-015 = 15 CRITICAL+HIGH severity CVEs
 - These are prioritized for Wave 2 execution on Days 2-3
 - Safe versions and conflict info will be populated by Agent 1 & 2
@@ -199,7 +199,7 @@
 | P1-007 | *Pending* | Update to safe version | *Pending* | 20 min | 2A-2 |
 | P1-008 | *Pending* | Update to safe version | *Pending* | 20 min | 2A-2 |
 
-**Validation**: 
+**Validation**:
 - [ ] All 8 patches merged to PR
 - [ ] Full test suite passes (25K+ tests)
 - [ ] CodeQL/Semgrep scans GREEN
@@ -223,7 +223,7 @@
 | P1-014 | *Pending* | Update to safe version | *Pending* | 20 min | 2A-4 |
 | P1-015 | *Pending* | Update to safe version | *Pending* | 20 min | 2A-4 |
 
-**Validation**: 
+**Validation**:
 - [ ] All 7 patches merged to PR
 - [ ] Full test suite passes
 - [ ] Combined P1 pass rate ≥99%
@@ -249,7 +249,7 @@
 | Batch 4 | P2-016 to P2-020 | 5 packages | 1.5 hours | Unit + integration tests |
 | Batch 5 | P2-021 to P2-025 | 5 packages | 1.5 hours | Unit + integration tests |
 
-**Validation**: 
+**Validation**:
 - [ ] All 25 patches batched and validated
 - [ ] No circular dependency issues
 - [ ] Coverage ≥15% (from 17.57%)
@@ -265,7 +265,7 @@
 **Schedule**: Deferred to Phase 7 (next iteration)  
 **Condition**: Update only if blocking higher-priority remediation
 
-**Strategy**: 
+**Strategy**:
 - Monitor for pattern changes that elevate severity
 - Group with other Phase 7 improvements
 - Batch update in Phase 7 iteration

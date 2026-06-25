@@ -117,7 +117,8 @@ def generate_script_header(script_path: Path) -> Optional[str]:
         with open(script_path) as f:
             content = f.read()
     except Exception as e:
-        print(f"⚠️  Error reading {script_path}: {e}")
+        error_type = type(e).__name__
+        print(f"⚠️  Error reading {script_path}: <ERROR_TYPE>")
         return None
 
     # Skip if already has docstring
@@ -178,7 +179,8 @@ def add_header_to_script(script_path: Path) -> bool:
 
         return True
     except Exception as e:
-        print(f"❌ Error processing {script_path}: {e}")
+        error_type = type(e).__name__
+        print(f"❌ Error processing {script_path}: <ERROR_TYPE>")
         return False
 
 def main():

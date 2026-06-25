@@ -24,6 +24,7 @@ from cognitive_brain.quantum.config import QuantumConfig
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _make_assessor(lightweight: bool = True) -> QuantumComplianceAssessor:
     """Build a minimal QuantumComplianceAssessor suitable for unit tests."""
     from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
@@ -52,6 +53,7 @@ def _make_audit(**kwargs) -> AuditResult:
 # ---------------------------------------------------------------------------
 # TestIsTuningEnabled
 # ---------------------------------------------------------------------------
+
 
 class TestIsTuningEnabled:
     """Tests for QuantumComplianceAssessor._is_tuning_enabled()."""
@@ -90,6 +92,7 @@ class TestIsTuningEnabled:
 # TestDetectPattern
 # ---------------------------------------------------------------------------
 
+
 class TestDetectPattern:
     """Tests for QuantumComplianceAssessor._detect_pattern()."""
 
@@ -105,12 +108,16 @@ class TestDetectPattern:
         assert self.assessor._detect_pattern(audit) == "H"
 
     def test_pattern_F_multi_violation(self):
-        audit = _make_audit(score=0.70, violation_count=5, business_impact=0.80, remediation_cost=4000)
+        audit = _make_audit(
+            score=0.70, violation_count=5, business_impact=0.80, remediation_cost=4000
+        )
         assert self.assessor._detect_pattern(audit) == "F"
 
     def test_pattern_F_requires_all_conditions(self):
         # violation_count=5 but impact too low → no Pattern F
-        audit = _make_audit(score=0.70, violation_count=5, business_impact=0.50, remediation_cost=4000)
+        audit = _make_audit(
+            score=0.70, violation_count=5, business_impact=0.50, remediation_cost=4000
+        )
         assert self.assessor._detect_pattern(audit) != "F"
 
     def test_pattern_E_pii_indicators(self):
@@ -139,6 +146,7 @@ class TestDetectPattern:
 # TestExtractBayesianEvidence
 # ---------------------------------------------------------------------------
 
+
 class TestExtractBayesianEvidence:
     """Tests for QuantumComplianceAssessor._extract_bayesian_evidence()."""
 
@@ -163,7 +171,9 @@ class TestExtractBayesianEvidence:
         assert ev["multi_violation"] == "true"
 
     def test_all_false_case(self):
-        audit = _make_audit(score=0.50, risk_level="low", remediation_cost=1000, business_impact=0.30)
+        audit = _make_audit(
+            score=0.50, risk_level="low", remediation_cost=1000, business_impact=0.30
+        )
         ev = self.assessor._extract_bayesian_evidence(audit)
         assert ev["high_score"] == "false"
         assert ev["high_risk"] == "false"
@@ -180,6 +190,7 @@ class TestExtractBayesianEvidence:
 # ---------------------------------------------------------------------------
 # TestApplyPocTuning
 # ---------------------------------------------------------------------------
+
 
 class TestApplyPocTuning:
     """Tests for QuantumComplianceAssessor._apply_poc_tuning()."""
@@ -290,6 +301,7 @@ class TestApplyPocTuning:
 # TestTuningEndToEnd
 # ---------------------------------------------------------------------------
 
+
 class TestTuningEndToEnd:
     """End-to-end test: tuning changes the compliance decision for Pattern H."""
 
@@ -349,6 +361,7 @@ class TestTuningEndToEnd:
 # ---------------------------------------------------------------------------
 # TestK1VerifiedField
 # ---------------------------------------------------------------------------
+
 
 class TestK1VerifiedField:
     """Tests for EXP1BResults.k1_verified field introduced in Phase 4.5."""

@@ -88,7 +88,7 @@ exit 0
         print(f"Installed prepare-commit-msg hook: {hook}")
     except Exception as exc:
         # Surface a helpful message but do not raise; callers/scripts can inspect exit code.
-        print(f"Failed to install prepare-commit-msg hook at {hook}: {exc}", flush=True)
+        print(f"Failed to install prepare-commit-msg hook at {hook}: <ERROR_TYPE>", flush=True)
 
 
 if __name__ == "__main__":

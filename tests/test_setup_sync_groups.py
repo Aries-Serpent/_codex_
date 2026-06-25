@@ -30,16 +30,14 @@ def test_setup_group_parsing() -> None:
     func_def = _extract_uv_sync_selective()
     if not func_def.strip():
         pytest.skip("_uv_sync_selective helper not defined in setup script")
-    script = textwrap.dedent(
-        f"""
+    script = textwrap.dedent(f"""
         run() {{ echo "$@"; }}
         warn() {{ :; }}
         uv() {{ :; }}
         CODEX_SYNC_GROUPS=base,dev,cpu,test
         {func_def}
         _uv_sync_selective
-        """
-    )
+        """)
     result = subprocess.run(
         ["bash", "-c", script],
         capture_output=True,

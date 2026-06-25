@@ -111,7 +111,8 @@ def validate_documentation_links() -> int:
                     })
 
         except Exception as e:
-            print(f"⚠️  Error processing {md_file}: {e}")
+            error_type = type(e).__name__
+            print(f"⚠️  Error processing {md_file}: <ERROR_TYPE>")
 
     print("\n📈 Validation Summary:")
     print(f"   Total markdown files: {len(md_files)}")

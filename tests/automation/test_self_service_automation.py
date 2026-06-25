@@ -23,6 +23,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def service_request_config() -> dict[str, Any]:
     """Fixture for service request configuration."""
@@ -79,6 +80,7 @@ def access_policy() -> dict[str, Any]:
 # Service Request Tests
 # ============================================================================
 
+
 class TestServiceRequests:
     """Tests for service request processing."""
 
@@ -128,6 +130,7 @@ class TestServiceRequests:
 # Provisioning Tests
 # ============================================================================
 
+
 class TestProvisioning:
     """Tests for service provisioning."""
 
@@ -171,6 +174,7 @@ class TestProvisioning:
 # Access Management Tests
 # ============================================================================
 
+
 class TestAccessManagement:
     """Tests for access management."""
 
@@ -207,6 +211,7 @@ class TestAccessManagement:
 # ============================================================================
 # Self-Service Portal Tests
 # ============================================================================
+
 
 class TestSelfServicePortal:
     """Tests for self-service portal functionality."""
@@ -252,8 +257,5 @@ class TestSelfServicePortal:
         # Simple cost calculation
         cost_per_cpu = 10
         cost_per_gb_memory = 2
-        estimated_cost = (
-            specs["cpu_cores"] * cost_per_cpu
-            + specs["memory_gb"] * cost_per_gb_memory
-        )
+        estimated_cost = specs["cpu_cores"] * cost_per_cpu + specs["memory_gb"] * cost_per_gb_memory
         assert estimated_cost > 0

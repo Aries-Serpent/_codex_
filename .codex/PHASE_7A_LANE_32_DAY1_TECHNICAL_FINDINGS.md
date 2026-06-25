@@ -54,7 +54,7 @@
 1. **Boundary Mutations** (>, >=, <, <=): 30-40 mutants
    - Impact: HIGH (critical for validation logic)
    - Kill Rate: 95%+ (most boundary tests kill these)
-   
+
 2. **Boolean Logic** (and/or, not): 25-35 mutants
    - Impact: HIGH (common logic errors)
    - Kill Rate: 80-90%
@@ -136,13 +136,13 @@ from pathlib import Path
 
 def run_mutations(source_module, test_files):
     """Run mutations with fresh config"""
-    
+
     # Backup existing config
     config_path = Path('.mutmut.ini')
     backup_path = Path('.mutmut.ini.bak')
     if config_path.exists():
         shutil.copy(config_path, backup_path)
-    
+
     # Create fresh config
     config_content = f"""[mutmut]
 source_paths = {source_module}
@@ -151,13 +151,13 @@ test_time_multiplier = 3.0
 timeout = 30
 """
     config_path.write_text(config_content)
-    
+
     # Clean mutmut cache
     shutil.rmtree('.mutmut-cache', ignore_errors=True)
-    
+
     try:
         # Run mutations
-        result = subprocess.run(['python', '-m', 'mutmut', 'run'], 
+        result = subprocess.run(['python', '-m', 'mutmut', 'run'],
                               capture_output=False, text=True, timeout=600)
         return result.returncode
     finally:
@@ -166,7 +166,7 @@ timeout = 30
             shutil.move(backup_path, config_path)
 
 # Usage:
-# run_mutations('agents/agent_memory.py', 
+# run_mutations('agents/agent_memory.py',
 #               ['tests/agents/test_agent_memory*.py'])
 ```
 

@@ -7,6 +7,7 @@ Covers:
 - Verification step
 - Missing snapshot file → exit code 2
 """
+
 from __future__ import annotations
 
 import importlib.util

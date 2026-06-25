@@ -67,10 +67,10 @@ async def fetch_data():
 
     def test_parse_imports(self):
         """Test parsing import statements."""
-        code = '''
+        code = """
 import os
 from pathlib import Path
-'''
+"""
         parser = UniversalParser(use_libcst=False)  # Use ast for import parsing
         result = parser.parse_string(code)
 
@@ -80,12 +80,12 @@ from pathlib import Path
 
     def test_parse_with_decorators(self):
         """Test parsing decorated functions."""
-        code = '''
+        code = """
 @staticmethod
 @decorator_with_args(param=True)
 def decorated_func():
     pass
-'''
+"""
         parser = UniversalParser()
         result = parser.parse_string(code)
 
@@ -96,10 +96,10 @@ def decorated_func():
 
     def test_parse_with_type_hints(self):
         """Test extraction of type hints."""
-        code = '''
+        code = """
 def typed_func(x: int, y: str = "default") -> bool:
     return True
-'''
+"""
         parser = UniversalParser(use_libcst=False)  # Use ast for predictable hints
         result = parser.parse_string(code)
 
@@ -170,13 +170,13 @@ def sample():
 
     def test_source_location(self):
         """Test source location information."""
-        code = '''
+        code = """
 def first():
     pass
 
 def second():
     pass
-'''
+"""
         parser = UniversalParser(use_libcst=False)
         result = parser.parse_string(code)
 
@@ -189,11 +189,11 @@ def second():
 
     def test_node_id_uniqueness(self):
         """Test that generated node IDs are unique."""
-        code = '''
+        code = """
 def a(): pass
 def b(): pass
 def c(): pass
-'''
+"""
         parser = UniversalParser()
         result = parser.parse_string(code)
 

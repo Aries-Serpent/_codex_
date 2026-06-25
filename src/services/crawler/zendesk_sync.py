@@ -124,7 +124,7 @@ class ZendeskKnowledgeSyncService:
             self.base_url = f"https://{subdomain}.zendesk.com/api/v2"
             logger.info(f"Initialized ZendeskKnowledgeSyncService for {subdomain}")
         else:
-            self.base_url = None  # type: ignore[assignment]
+            self.base_url = None
 
         # Original parameters
         self.manifest_path = manifest_path or MANIFEST_PATH
@@ -176,12 +176,14 @@ class ZendeskKnowledgeSyncService:
                     try:
                         cache[url] = ArticleMetadata(**meta_dict)
                     except (TypeError, ValueError) as e:
-                        logger.warning(f"Invalid cache entry for {url}: {e}")
+                        error_type = type(e).__name__
+                        logger.warning(f"Invalid cache entry for {url}: <ERROR_TYPE>")
 
             logger.info(f"Loaded {len(cache)} cached articles from {self.api_index_path}")
             return cache
         except (json.JSONDecodeError, OSError) as e:
-            logger.error(f"Failed to load cache: {e}, starting fresh")
+            error_type = type(e).__name__
+            logger.error(f"Failed to load cache: <ERROR_TYPE>, starting fresh")
             return {}
 
     def _save_cache(self) -> None:
@@ -200,7 +202,8 @@ class ZendeskKnowledgeSyncService:
 
             logger.info(f"Saved cache with {len(self._cache)} articles to {self.api_index_path}")
         except OSError as e:
-            logger.error(f"Failed to save cache: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to save cache: <ERROR_TYPE>")
 
     def _slug(self, text: str) -> str:
         """Convert text to a safe filename slug."""
@@ -249,7 +252,7 @@ class ZendeskKnowledgeSyncService:
                 )
                 if attempt < self.retries - 1:
                     time.sleep(self.backoff * (2**attempt))
-            except Exception as exc:  # pragma: no cover - network failures
+            except (ConnectionError, TimeoutError) as exc:  # pragma: no cover - network failures
                 last_exc = exc
                 logger.warning(
                     f"Fetch attempt {attempt + 1}/{self.retries} failed for {url}: {exc}"
@@ -407,8 +410,9 @@ class ZendeskKnowledgeSyncService:
                         else:
                             logger.error(f"HTTP error {e.code} syncing {url}: {e}")
                             failed += 1
-                    except Exception as e:
-                        logger.error(f"Failed to sync {url}: {e}")
+                    except (ConnectionError, TimeoutError) as e:
+                        error_type = type(e).__name__
+                        logger.error(f"Failed to sync {url}: <ERROR_TYPE>")
                         failed += 1
 
         # Save updated cache
@@ -600,8 +604,9 @@ class ZendeskKnowledgeSyncService:
                 logger.error(f"HTTP error {e.code} fetching page {page_num}: {e}")
                 failed += len(articles) if "articles" in locals() else 0
                 break
-            except Exception as e:
-                logger.error(f"Failed to fetch page {page_num}: {e}")
+            except (ConnectionError, TimeoutError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Failed to fetch page {page_num}: <ERROR_TYPE>")
                 failed += len(articles) if "articles" in locals() else 0
                 break
 
@@ -681,8 +686,9 @@ class ZendeskKnowledgeSyncService:
 
                 articles.append(article_data)
 
-            except Exception as e:
-                logger.warning(f"Failed to process {html_file}: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Failed to process {html_file}: <ERROR_TYPE>")
 
         # Write JSON dataset
         dataset_path.parent.mkdir(parents=True, exist_ok=True)
@@ -836,8 +842,9 @@ def main() -> int:
 
         return 0 if result.failed == 0 else 1
 
-    except Exception as e:
-        logger.error(f"Sync failed: {e}", exc_info=True)
+    except (ValueError, TypeError) as e:
+        error_type = type(e).__name__
+        logger.error(f"Sync failed: <ERROR_TYPE>", exc_info=True)
         return 2
 
 

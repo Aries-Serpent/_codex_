@@ -29,7 +29,7 @@ from typing import Any, Optional
 
 try:  # pragma: no cover - optional dependency path
     import yaml
-except Exception:  # pragma: no cover - PyYAML not installed in minimal envs
+except (IOError, OSError):  # pragma: no cover - PyYAML not installed in minimal envs
     yaml = None
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -64,7 +64,7 @@ def _load_yaml(path: Path) -> Optional[Mapping[str, Any]]:
     try:
         with path.open("r", encoding="utf-8") as handle:
             data = yaml.safe_load(handle)
-    except Exception:  # pragma: no cover - best effort parse
+    except (IOError, OSError):  # pragma: no cover - best effort parse
         return None
     if isinstance(data, Mapping):
         return data
@@ -75,8 +75,9 @@ def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> dict[str, str
     try:
         content = path.read_text(encoding="utf-8")
     except OSError as e:
-        logger.debug(f"OSError: {e}")
-        logger.warning(f"OSError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"OSError: <ERROR_TYPE>")
+        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
         return {}
     results: dict[str, str] = {}
     for key in keys:

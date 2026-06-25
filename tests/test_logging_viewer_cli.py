@@ -20,11 +20,9 @@ from codex.logging import viewer
 def _make_db(tmp: Path) -> Path:
     db = tmp / "logs.db"
     conn = sqlite3.connect(str(db))
-    conn.execute(
-        """CREATE TABLE logs(
+    conn.execute("""CREATE TABLE logs(
         session_id TEXT, ts TEXT, level TEXT, message TEXT
-    )"""
-    )
+    )""")
     rows = [
         ("S-1", "2025-08-18 01:00:00", "INFO", "start session"),
         ("S-1", "2025-08-18 01:01:00", "WARN", "minor warning"),

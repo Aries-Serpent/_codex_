@@ -309,11 +309,11 @@ def test_workflow_state_progression():
     """Test state progression through workflow."""
     # Arrange
     context = WorkflowContext(capability="test")
-    
+
     # Act
     context.phase_history.append("Preparation")
     context.phase_history.append("Training")
-    
+
     # Assert
     assert len(context.phase_history) == 2
 ```

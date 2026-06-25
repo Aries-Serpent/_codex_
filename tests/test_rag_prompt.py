@@ -1,4 +1,5 @@
 """Tests for RAG prompt assembly"""
+
 from codex.rag.prompt import (
     PromptConfig,
     PromptTemplate,
@@ -18,8 +19,10 @@ def test_count_tokens_without_tokenizer():
 def test_count_tokens_with_tokenizer():
     """Test token counting with custom tokenizer"""
     text = "This is a test"
+
     def tokenizer(t):
         return t.split()  # Simple mock tokenizer
+
     count = _count_tokens(text, tokenizer)
     assert count == 4
 
@@ -68,8 +71,10 @@ def test_truncate_to_tokens_exact_limit():
 def test_truncate_to_tokens_with_custom_tokenizer():
     """Test truncation with custom tokenizer"""
     text = "This is a test text"
+
     def tokenizer(t):
         return t.split()
+
     result = _truncate_to_tokens(text, max_tokens=3, tokenizer=tokenizer)
     # Should be truncated to ~3 tokens
     assert "..." in result or len(result.split()) <= 4
@@ -89,9 +94,7 @@ class TestPromptConfig:
     def test_custom_config(self):
         """Test custom configuration values"""
         config = PromptConfig(
-            max_context_tokens=1024,
-            max_snippet_tokens=256,
-            include_sources=False
+            max_context_tokens=1024, max_snippet_tokens=256, include_sources=False
         )
         assert config.max_context_tokens == 1024
         assert config.max_snippet_tokens == 256
@@ -115,18 +118,17 @@ class TestPromptTemplate:
 
     def test_init_with_tokenizer(self):
         """Test initialization with custom tokenizer"""
+
         def tokenizer(t):
             return t.split()
+
         template = PromptTemplate(tokenizer=tokenizer)
         assert template.tokenizer is tokenizer
 
     def test_format_context_snippet(self):
         """Test context snippet formatting"""
         template = PromptTemplate()
-        doc = {
-            "content": "This is a test document.",
-            "metadata": {"source_id": "doc1"}
-        }
+        doc = {"content": "This is a test document.", "metadata": {"source_id": "doc1"}}
         result = template._format_context_snippet(doc, 1)
         assert "Document 1:" in result
         assert "This is a test document." in result
@@ -136,10 +138,7 @@ class TestPromptTemplate:
         """Test snippet formatting without source references"""
         config = PromptConfig(include_sources=False)
         template = PromptTemplate(config=config)
-        doc = {
-            "content": "Content",
-            "metadata": {"source_id": "doc1"}
-        }
+        doc = {"content": "Content", "metadata": {"source_id": "doc1"}}
         result = template._format_context_snippet(doc, 1)
         assert "[Source:" not in result
         assert "Content" in result
@@ -150,7 +149,7 @@ class TestPromptTemplate:
         template = PromptTemplate(config=config)
         doc = {
             "content": "This is a very long document that should be truncated because it exceeds the token limit",
-            "metadata": {"source_id": "doc1"}
+            "metadata": {"source_id": "doc1"},
         }
         result = template._format_context_snippet(doc, 1)
         # Should be truncated
@@ -175,7 +174,7 @@ class TestPromptTemplate:
         template = PromptTemplate()
         docs = [
             {"content": "Doc 1 content", "metadata": {"source_id": "d1"}},
-            {"content": "Doc 2 content", "metadata": {"source_id": "d2"}}
+            {"content": "Doc 2 content", "metadata": {"source_id": "d2"}},
         ]
         result = template._build_context_section(docs)
         assert "RETRIEVED CONTEXT START" in result
@@ -238,9 +237,7 @@ class TestPromptTemplate:
         docs = [{"content": "Content", "metadata": {"source_id": "d1"}}]
         instructions = "Be concise."
 
-        prompt = template.assemble_rag_prompt(
-            query, docs, instructions=instructions
-        )
+        prompt = template.assemble_rag_prompt(query, docs, instructions=instructions)
 
         assert "Be concise." in prompt
 
@@ -294,10 +291,10 @@ class TestPromptTemplate:
 
     def test_legacy_class_attributes(self):
         """Test legacy class attributes are available"""
-        assert hasattr(PromptTemplate, 'CONTEXT_START')
-        assert hasattr(PromptTemplate, 'CONTEXT_END')
-        assert hasattr(PromptTemplate, 'QUERY_START')
-        assert hasattr(PromptTemplate, 'QUERY_END')
+        assert hasattr(PromptTemplate, "CONTEXT_START")
+        assert hasattr(PromptTemplate, "CONTEXT_END")
+        assert hasattr(PromptTemplate, "QUERY_START")
+        assert hasattr(PromptTemplate, "QUERY_END")
 
 
 def test_build_prompt_with_rag():
@@ -350,6 +347,7 @@ def test_build_prompt_with_tokenizer():
     """Test build_prompt with custom tokenizer"""
     query = "Query"
     docs = [{"content": "Content", "metadata": {"source_id": "d1"}}]
+
     def tokenizer(t):
         return t.split()
 
@@ -374,8 +372,10 @@ def test_build_prompt_rag_with_empty_docs():
 def test_truncate_to_tokens_with_tokenizer_binary_search():
     """Test truncation uses binary search with custom tokenizer"""
     text = "One two three four five six seven eight nine ten"
+
     def tokenizer(t):
         return t.split()
+
     result = _truncate_to_tokens(text, max_tokens=5, tokenizer=tokenizer)
     # Should be truncated to approximately 5 tokens
     tokens = result.replace("...", "").split()
@@ -409,10 +409,7 @@ def test_assemble_rag_prompt_all_sections():
     instructions = "Provide a clear explanation."
 
     prompt = template.assemble_rag_prompt(
-        query=query,
-        retrieved_docs=docs,
-        system_prompt=system_prompt,
-        instructions=instructions
+        query=query, retrieved_docs=docs, system_prompt=system_prompt, instructions=instructions
     )
 
     assert "You are an AI expert." in prompt
@@ -427,7 +424,7 @@ def test_config_custom_headers():
         use_legacy_delimiters=False,
         context_header="## Retrieved Documents",
         instructions_header="## Task",
-        prompt_header="## User Question"
+        prompt_header="## User Question",
     )
     template = PromptTemplate(config=config)
     docs = [{"content": "Content", "metadata": {"source_id": "d1"}}]

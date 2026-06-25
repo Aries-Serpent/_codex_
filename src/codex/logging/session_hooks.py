@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 try:  # Prefer DB-backed logging when available
     from .session_logger import log_event
-except Exception:  # pragma: no cover - best effort fallback
+except (IOError, OSError):  # pragma: no cover - best effort fallback
 
     def log_event(
         session_id: str,

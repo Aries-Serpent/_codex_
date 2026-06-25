@@ -287,17 +287,17 @@ Generated Code: 5,400+ lines
 ### Example 1: Authentication Token Expiration (A1)
 
 ```python
-def test_token_exactly_at_expiration(self, valid_token):
-    """Test token validation at exact expiration boundary."""
+def test_token_exactly_at_expiration(self, valid_token):  # pragma: allowlist secret
+    """Test token validation at exact expiration boundary."""  # pragma: allowlist secret
     # Arrange
-    token = valid_token
+    token = valid_token  # pragma: allowlist secret
     expiration_time = datetime.now()
-    
+
     # Act
     is_expired = datetime.now() >= expiration_time
-    
+
     # Assert
-    assert is_expired, "Token should be considered expired at expiration boundary"
+    assert is_expired, "Token should be considered expired at expiration boundary"  # pragma: allowlist secret
 ```
 
 ### Example 2: Data Validation SQL Injection (D1)
@@ -307,10 +307,10 @@ def test_sql_injection_single_quote_escape(self):
     """Test SQL injection prevention with single quote."""
     # Arrange
     user_input = "' OR '1'='1"
-    
+
     # Act
     sanitized = user_input.replace("'", "''")
-    
+
     # Assert
     assert "OR '1'='1" in user_input  # Original contains injection
     assert sanitized.count("''") > 0  # Escaped version safe
@@ -324,17 +324,17 @@ def test_atomic_operation_importance(self):
     # Arrange
     value = [0]
     lock = threading.Lock()
-    
+
     # Act
     def increment():
         with lock:
             temp = value[0]
             temp += 1
             value[0] = temp
-    
+
     threads = [threading.Thread(target=increment) for _ in range(100)]
     # ... execute threads ...
-    
+
     # Assert
     assert value[0] == 100
 ```

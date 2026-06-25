@@ -29,12 +29,13 @@ from codex_ml.monitoring.data_drift import DataDriftDetector, DriftResult
 
 _UNIFORM_4 = [0.25, 0.25, 0.25, 0.25]
 _SHIFTED_4 = [0.40, 0.30, 0.20, 0.10]
-_ZERO_BIN_4 = [0.5, 0.0, 0.3, 0.2]   # zero bin — epsilon should handle this
+_ZERO_BIN_4 = [0.5, 0.0, 0.3, 0.2]  # zero bin — epsilon should handle this
 
 
 # ---------------------------------------------------------------------------
 # Test 1 — PSI: identical distributions → no drift
 # ---------------------------------------------------------------------------
+
 
 class TestDetectPsiNoDrift:
     def test_identical_distributions_score_near_zero(self):
@@ -56,6 +57,7 @@ class TestDetectPsiNoDrift:
 # ---------------------------------------------------------------------------
 # Test 2 — PSI: significantly shifted distribution → drift detected
 # ---------------------------------------------------------------------------
+
 
 class TestDetectPsiDrift:
     def test_shifted_distribution_exceeds_default_threshold(self):
@@ -81,6 +83,7 @@ class TestDetectPsiDrift:
 # Test 3 — KL: identical distributions → no drift
 # ---------------------------------------------------------------------------
 
+
 class TestDetectKlNoDrift:
     def test_identical_distributions_score_near_zero(self):
         detector = DataDriftDetector()
@@ -95,6 +98,7 @@ class TestDetectKlNoDrift:
 # ---------------------------------------------------------------------------
 # Test 4 — KL: significantly shifted distribution → drift detected
 # ---------------------------------------------------------------------------
+
 
 class TestDetectKlDrift:
     def test_shifted_distribution_exceeds_default_threshold(self):
@@ -120,6 +124,7 @@ class TestDetectKlDrift:
 # ---------------------------------------------------------------------------
 # Test 5 — check_epoch() convenience wrapper
 # ---------------------------------------------------------------------------
+
 
 class TestCheckEpoch:
     def test_returns_both_methods(self):
@@ -151,13 +156,22 @@ class TestCheckEpoch:
 # Test 6 — DriftResult.to_dict() serialisation
 # ---------------------------------------------------------------------------
 
+
 class TestDriftResultToDict:
     def test_to_dict_contains_required_keys(self):
         detector = DataDriftDetector()
         result = detector.detect_psi(_UNIFORM_4, _UNIFORM_4)
         d = result.to_dict()
 
-        for key in ("method", "score", "threshold", "drifted", "severity", "details", "detected_at"):
+        for key in (
+            "method",
+            "score",
+            "threshold",
+            "drifted",
+            "severity",
+            "details",
+            "detected_at",
+        ):
             assert key in d, f"Missing key: {key}"
 
     def test_to_dict_types(self):
@@ -175,6 +189,7 @@ class TestDriftResultToDict:
 # Test 7 — Input validation: mismatched lengths
 # ---------------------------------------------------------------------------
 
+
 class TestInputValidation:
     def test_psi_mismatched_lengths_raises(self):
         detector = DataDriftDetector()
@@ -191,6 +206,7 @@ class TestInputValidation:
 # Test 8 — Input validation: empty inputs
 # ---------------------------------------------------------------------------
 
+
 class TestEmptyInputs:
     def test_psi_empty_reference_raises(self):
         detector = DataDriftDetector()
@@ -206,6 +222,7 @@ class TestEmptyInputs:
 # ---------------------------------------------------------------------------
 # Test 9 — Custom thresholds are respected
 # ---------------------------------------------------------------------------
+
 
 class TestCustomThresholds:
     def test_low_psi_threshold_flags_mild_shift(self):
@@ -231,6 +248,7 @@ class TestCustomThresholds:
 # Test 10 — Epsilon smoothing handles zero-valued bins
 # ---------------------------------------------------------------------------
 
+
 class TestEpsilonSmoothing:
     def test_zero_bin_does_not_raise(self):
         detector = DataDriftDetector()
@@ -248,6 +266,7 @@ class TestEpsilonSmoothing:
 # Test 11 — Single-bin degenerate distribution
 # ---------------------------------------------------------------------------
 
+
 class TestSingleBin:
     def test_psi_single_bin_identical(self):
         detector = DataDriftDetector()
@@ -264,6 +283,7 @@ class TestSingleBin:
 # ---------------------------------------------------------------------------
 # Test 12 — Symmetric distribution gives low PSI
 # ---------------------------------------------------------------------------
+
 
 class TestSymmetricDistribution:
     def test_symmetric_uniform_psi_low(self):

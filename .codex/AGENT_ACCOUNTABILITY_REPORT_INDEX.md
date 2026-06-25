@@ -1,6 +1,6 @@
 # Agent Accountability Report — Session Index
 
-> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session 
+> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session
 > groups for GitHub rendering compatibility. All 316 sessions are preserved in 32 chunks.
 
 ## Quick Navigation
@@ -34,7 +34,7 @@
 | Group 15 | auto-pda-2026-06-05-auto-pda-2026-06-08 | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_15.md) | 2026-06-05 to 2026-06-08 | Archived |
 | Group 14 | auto-pda-2026-05-23-auto-pda-2026-06-04 | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_14.md) | 2026-05-23 to 2026-06-04 | Archived |
 | Group 13 | S993-cont5-cherry-pick-4445-S_PR4536_APPROVAL_MONITOR_WRAPUP_SYNC | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_13.md) | 2026-05-13 to 2026-05-22 | Archived |
-| Group 12 | S985-pr4434-codeql-report-followup-S993-cont4-secrets-baseline | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_12.md) | 2026-05-13 to 2026-05-13 | Archived |
+| Group 12 | S985-pr4434-codeql-report-followup-S993-cont4-secrets-baseline | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_12.md) | 2026-05-13 to 2026-05-13 | Archived | <!-- pragma: allowlist secret -->
 | Group 11 | S889-S984-pr4434-mfa-review-nits | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_11.md) | 2026-05-09 to 2026-05-13 | Archived |
 | Group 10 | S295-PR4211-ci-rescue-checkout-v5-pda-S859-PR4346-callable-fix-doc-optimizer | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_10.md) | 2026-05-04 to 2026-05-08 | Archived |
 | Group 09 | S183-PR4193-merge-conflict-S294-PR4204-access-probe-rag-context-autonomization | [View](accountability_chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_09.md) | 2026-05-03 to 2026-05-03 | Archived |

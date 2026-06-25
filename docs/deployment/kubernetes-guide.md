@@ -165,21 +165,21 @@ data:
   ENABLE_METRICS: "true"
   BATCH_SIZE: "32"
   MODEL_DEVICE: "cuda"
-  
+
   # Hydra configuration template
   hydra_config.yaml: |
     defaults:
       - _self_
-    
+
     model:
       name: gpt2
       device: cuda
-    
+
     training:
       batch_size: 32
       learning_rate: 1.0e-4
       num_epochs: 3
-    
+
     data:
       path: /data/train
       preprocessing:
@@ -236,11 +236,11 @@ spec:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
-  
+
   selector:
     matchLabels:
       app: codex-api
-  
+
   template:
     metadata:
       labels:
@@ -250,16 +250,16 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "8000"
         prometheus.io/path: "/metrics"
-    
+
     spec:
       serviceAccountName: codex-sa
-      
+
       # Security context for pod
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
         fsGroup: 1000
-      
+
       # Init container for setup
       initContainers:
       - name: init-setup
@@ -268,24 +268,24 @@ spec:
         envFrom:
         - configMapRef:
             name: codex-config
-      
+
       containers:
       - name: codex-api
         image: ghcr.io/aries-serpent/codex-ml:latest
         imagePullPolicy: IfNotPresent
-        
+
         ports:
         - name: http
           containerPort: 8000
           protocol: TCP
-        
+
         # Environment configuration
         envFrom:
         - configMapRef:
             name: codex-config
         - secretRef:
             name: codex-secrets
-        
+
         # Environment variables
         env:
         - name: POD_NAME
@@ -300,7 +300,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        
+
         # Resource limits
         resources:
           requests:
@@ -309,7 +309,7 @@ spec:
           limits:
             cpu: "4"
             memory: "8Gi"
-        
+
         # Liveness probe: restart if unhealthy
         livenessProbe:
           httpGet:
@@ -319,7 +319,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
-        
+
         # Readiness probe: remove from service if not ready
         readinessProbe:
           httpGet:
@@ -329,7 +329,7 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 3
           failureThreshold: 2
-        
+
         # Startup probe: allow time for initialization
         startupProbe:
           httpGet:
@@ -337,7 +337,7 @@ spec:
             port: http
           failureThreshold: 30
           periodSeconds: 10
-        
+
         # Volume mounts
         volumeMounts:
         - name: config
@@ -347,7 +347,7 @@ spec:
           mountPath: /app/logs
         - name: tmp
           mountPath: /tmp
-      
+
       # Volumes
       volumes:
       - name: config
@@ -357,7 +357,7 @@ spec:
         emptyDir: {}
       - name: tmp
         emptyDir: {}
-      
+
       # Pod affinity
       affinity:
         podAntiAffinity:
@@ -371,7 +371,7 @@ spec:
                   values:
                   - codex-api
               topologyKey: kubernetes.io/hostname
-      
+
       # Tolerations for node taints
       tolerations:
       - key: "workload"
@@ -421,7 +421,7 @@ codex-ml-chart/
 ├── templates/
 │   ├── namespace.yaml
 │   ├── configmap.yaml
-│   ├── secret.yaml
+│   ├── secret.yaml  # pragma: allowlist secret
 │   ├── deployment.yaml
 │   ├── service.yaml
 │   ├── ingress.yaml
@@ -614,23 +614,23 @@ metadata:
 spec:
   serviceName: codex-training
   replicas: 1
-  
+
   selector:
     matchLabels:
       app: codex-training
-  
+
   template:
     metadata:
       labels:
         app: codex-training
-    
+
     spec:
       serviceAccountName: codex-sa
-      
+
       containers:
       - name: training
         image: ghcr.io/aries-serpent/codex-ml:latest
-        
+
         # GPU support
         resources:
           requests:
@@ -639,7 +639,7 @@ spec:
             nvidia.com/gpu: 1
             cpu: "8"
             memory: "16Gi"
-        
+
         # Volume mounts for persistent storage
         volumeMounts:
         - name: checkpoints
@@ -648,7 +648,7 @@ spec:
           mountPath: /app/data
         - name: logs
           mountPath: /app/logs
-  
+
   # PersistentVolumeClaim templates
   volumeClaimTemplates:
   - metadata:
@@ -659,7 +659,7 @@ spec:
       resources:
         requests:
           storage: 50Gi
-  
+
   - metadata:
       name: data
     spec:
@@ -668,7 +668,7 @@ spec:
       resources:
         requests:
           storage: 100Gi
-  
+
   - metadata:
       name: logs
     spec:
@@ -704,7 +704,7 @@ spec:
     - codex-ml.example.com
     - api.codex-ml.example.com
     secretName: codex-tls
-  
+
   rules:
   - host: codex-ml.example.com
     http:
@@ -716,7 +716,7 @@ spec:
             name: codex-api
             port:
               number: 8000
-  
+
   - host: api.codex-ml.example.com
     http:
       paths:
@@ -778,10 +778,10 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: codex-api
-  
+
   minReplicas: 2
   maxReplicas: 10
-  
+
   metrics:
   - type: Resource
     resource:
@@ -789,14 +789,14 @@ spec:
       target:
         type: Utilization
         averageUtilization: 70
-  
+
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
         averageUtilization: 80
-  
+
   behavior:
     scaleUp:
       stabilizationWindowSeconds: 0
@@ -808,7 +808,7 @@ spec:
         value: 2
         periodSeconds: 15
       selectPolicy: Max
-    
+
     scaleDown:
       stabilizationWindowSeconds: 300
       policies:
@@ -834,7 +834,7 @@ spec:
   selector:
     matchLabels:
       app: codex-api
-  
+
   endpoints:
   - port: http
     interval: 30s
@@ -860,7 +860,7 @@ spec:
       for: 5m
       annotations:
         summary: "Codex high error rate"
-    
+
     - alert: CodexPodCrashing
       expr: rate(kube_pod_container_status_restarts_total{pod=~"codex-.*"}[1h]) > 0
       for: 5m
@@ -885,11 +885,11 @@ spec:
   podSelector:
     matchLabels:
       app: codex-api
-  
+
   policyTypes:
   - Ingress
   - Egress
-  
+
   ingress:
   - from:
     - namespaceSelector:
@@ -898,7 +898,7 @@ spec:
     ports:
     - protocol: TCP
       port: 8000
-  
+
   egress:
   - to:
     - namespaceSelector: {}

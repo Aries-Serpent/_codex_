@@ -28,12 +28,15 @@ try:
         ContextMessage,
         bridge_lock,
     )
+
     HAS_BRIDGE_MANAGER = True
 except ImportError:
     HAS_BRIDGE_MANAGER = False
 
 
-pytestmark = pytest.mark.skipif(not HAS_BRIDGE_MANAGER, reason="bridge_manager module not available")
+pytestmark = pytest.mark.skipif(
+    not HAS_BRIDGE_MANAGER, reason="bridge_manager module not available"
+)
 
 
 # ============================================================================
@@ -232,7 +235,7 @@ class TestBridgeManagerInit:
         """Test warning when required auth token is missing."""
         with patch.dict(os.environ, {}, clear=True):
             with caplog.at_level(logging.WARNING):
-                bridge = BridgeManager(
+                BridgeManager(
                     bridge_dir=temp_bridge_dir,
                     require_auth=True,
                 )
@@ -305,7 +308,9 @@ class TestBridgeManagerWrite:
         assert isinstance(result, bool)
 
     @patch("bridge_manager.BridgeManager._write_to_socket")
-    def test_write_message_socket_mode(self, mock_write, bridge_manager_unix_socket, sample_message):
+    def test_write_message_socket_mode(
+        self, mock_write, bridge_manager_unix_socket, sample_message
+    ):
         """Test write message delegates to socket writer."""
         mock_write.return_value = True
         bridge_manager_unix_socket.mode = BridgeMode.UNIX_SOCKET
@@ -597,7 +602,7 @@ class TestBridgeManagerIntegration:
         # In real scenario, would need two processes
         bridge_manager_named_pipe.write_message(sample_message)
         # Mock read since we're testing in same process
-        result = bridge_manager_named_pipe.read_message(timeout=0.1)
+        bridge_manager_named_pipe.read_message(timeout=0.1)
         # Result depends on actual pipe implementation
 
     def test_multiple_messages_queued(self, bridge_manager_named_pipe):
@@ -713,7 +718,7 @@ class TestBridgeManagerEdgeCases:
     def test_negative_max_clients(self, temp_bridge_dir):
         """Test with invalid max_clients value."""
         # Should use default or raise error
-        bridge = BridgeManager(
+        BridgeManager(
             bridge_dir=temp_bridge_dir,
             max_clients=-1,
         )

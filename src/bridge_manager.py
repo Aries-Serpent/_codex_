@@ -49,12 +49,8 @@ try:
         MAGIC_BYTES,  # Import magic bytes constant for consistency
         MultiClientBridge,
     )
-    from bridge_protocol_v2 import (
-        decode_message as v2_decode,
-    )
-    from bridge_protocol_v2 import (
-        encode_message as v2_encode,
-    )
+    from bridge_protocol_v2 import decode_message as v2_decode
+    from bridge_protocol_v2 import encode_message as v2_encode
 
     HAS_PROTOCOL_V2 = True
 except ImportError:
@@ -184,8 +180,9 @@ class BridgeLock:
                 os.close(self.lock_fd)
                 self.lock_fd = None
             return False
-        except Exception as e:
-            logger.error(f"Lock acquisition error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Lock acquisition error: <ERROR_TYPE>")
             if self.lock_fd:
                 os.close(self.lock_fd)
                 self.lock_fd = None
@@ -199,9 +196,9 @@ class BridgeLock:
         while time.monotonic() < deadline:
             try:
                 self.lock_fd = os.open(str(self.lock_path), os.O_RDWR | os.O_CREAT, 0o600)
-                _msvcrt.locking(  # type: ignore[attr-defined]
+                _msvcrt.locking(
                     self.lock_fd,
-                    _msvcrt.LK_NBLCK,  # type: ignore[attr-defined]
+                    _msvcrt.LK_NBLCK,
                     1,
                 )  # lock 1 byte at offset 0 — sufficient for a mutex/sentinel lock file
                 logger.debug(f"Lock acquired (msvcrt): {self.lock_path}")
@@ -221,7 +218,7 @@ class BridgeLock:
         if self.lock_fd is not None:
             try:
                 if _HAS_MSVCRT and not _HAS_FCNTL:
-                    _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)  # type: ignore[attr-defined]
+                    _msvcrt.locking(self.lock_fd, _msvcrt.LK_UNLCK, 1)
                     os.close(self.lock_fd)
                     logger.debug(f"Lock released (msvcrt): {self.lock_path}")
                 else:
@@ -229,8 +226,9 @@ class BridgeLock:
                     fcntl.flock(self.lock_fd, fcntl.LOCK_UN)
                     os.close(self.lock_fd)
                     logger.debug(f"Lock released: {self.lock_path}")
-            except Exception as e:
-                logger.error(f"Lock release error: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Lock release error: <ERROR_TYPE>")
             finally:
                 self.lock_fd = None
 
@@ -417,8 +415,9 @@ class BridgeManager:
             os.mkfifo(str(self.pipe_path), 0o600 if self.owner_only else 0o666)
             logger.info(f"Named pipe created: {self.pipe_path}")
 
-        except Exception as e:
-            logger.error(f"Failed to create named pipe: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to create named pipe: <ERROR_TYPE>")
             raise
 
     def _init_unix_socket(self) -> None:
@@ -431,8 +430,9 @@ class BridgeManager:
             # Socket will be created on bind
             logger.info(f"Unix socket path prepared: {self.socket_path}")
 
-        except Exception as e:
-            logger.error(f"Failed to prepare unix socket: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to prepare unix socket: <ERROR_TYPE>")
             raise
 
     def _validate_tls_config(self) -> None:
@@ -452,7 +452,7 @@ class BridgeManager:
             ("server_key", self.tls_server_key),
             ("ca_cert", self.tls_ca_cert),
         ]:
-            if not Path(path_value).exists():  # type: ignore[arg-type]
+            if not Path(path_value).exists():
                 raise FileNotFoundError(f"TLS {path_name} not found: {path_value}")
 
         logger.info("TLS configuration validated")
@@ -502,8 +502,9 @@ class BridgeManager:
             with open(self.audit_file, "a") as f:
                 f.write(json.dumps(log_entry) + "\n")
 
-        except Exception as e:
-            logger.error(f"Failed to write audit log: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to write audit log: <ERROR_TYPE>")
 
     def _verify_auth_token(self, message: ContextMessage) -> bool:
         """
@@ -532,7 +533,7 @@ class BridgeManager:
 
         # Compare tokens directly using constant-time comparison to prevent timing attacks
         # Note: secrets.compare_digest requires same-length inputs for security
-        if not secrets.compare_digest(self.auth_token, message.auth_token):  # type: ignore[type-var]
+        if not secrets.compare_digest(self.auth_token, message.auth_token):
             self._audit_log(
                 "AUTH_FAILURE",
                 {
@@ -594,11 +595,13 @@ class BridgeManager:
                 return result
 
         except TimeoutError as e:
-            logger.error(f"Bridge write timeout: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Bridge write timeout: <ERROR_TYPE>")
             self._audit_log("WRITE_TIMEOUT", {"error": str(e), "source": message.source})
             return False
-        except Exception as e:
-            logger.error(f"Bridge write error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Bridge write error: <ERROR_TYPE>")
             self._audit_log("WRITE_ERROR", {"error": str(e), "source": message.source})
             return False
 
@@ -625,8 +628,9 @@ class BridgeManager:
             logger.debug(f"Message written to pipe: {message.message_type}")
             return True
 
-        except Exception as e:
-            logger.error(f"Pipe write error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Pipe write error: <ERROR_TYPE>")
             return False
 
     def _write_to_socket(self, message: ContextMessage) -> bool:
@@ -651,8 +655,9 @@ class BridgeManager:
             logger.debug(f"Message written to socket: {message.message_type}")
             return True
 
-        except Exception as e:
-            logger.error(f"Socket write error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Socket write error: <ERROR_TYPE>")
             return False
 
     # ==================== Protocol v2 Methods ====================
@@ -681,7 +686,7 @@ class BridgeManager:
             logger.warning("Multi-client not available (Protocol v2 not enabled)")
             return False
 
-        result = self._multi_client_bridge.register_client(client_id, socket_path, priority)  # type: ignore[union-attr]
+        result = self._multi_client_bridge.register_client(client_id, socket_path, priority)
         if result:
             self._audit_log(
                 "CLIENT_REGISTERED",
@@ -753,11 +758,13 @@ class BridgeManager:
                 return None
 
         except TimeoutError as e:
-            logger.warning(f"Bridge read timeout: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Bridge read timeout: <ERROR_TYPE>")
             self._audit_log("READ_TIMEOUT", {"error": str(e)})
             return None
-        except Exception as e:
-            logger.error(f"Bridge read error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Bridge read error: <ERROR_TYPE>")
             self._audit_log("READ_ERROR", {"error": str(e)})
             return None
 
@@ -789,8 +796,9 @@ class BridgeManager:
 
             return None
 
-        except Exception as e:
-            logger.error(f"Pipe read error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Pipe read error: <ERROR_TYPE>")
             return None
 
     def _read_from_socket(self) -> Optional[ContextMessage]:
@@ -853,8 +861,9 @@ class BridgeManager:
 
             return None
 
-        except Exception as e:
-            logger.error(f"Socket read error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Socket read error: <ERROR_TYPE>")
             return None
 
     def cleanup(self) -> None:
@@ -875,8 +884,9 @@ class BridgeManager:
 
             logger.info("Bridge cleaned up")
 
-        except Exception as e:
-            logger.error(f"Bridge cleanup error: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Bridge cleanup error: <ERROR_TYPE>")
             self._audit_log("CLEANUP_ERROR", {"error": str(e)})
 
 

@@ -127,7 +127,7 @@ def get_db_path(name: str, env_var: Optional[str] = None) -> Path:
         Path('/tmp/logs.db')
     """
     if env_var and os.getenv(env_var):
-        return Path(os.getenv(env_var))  # type: ignore[arg-type]
+        return Path(os.getenv(env_var))
 
     ensure_codex_structure()
     return CODEX_DIR / f"{name}.db"

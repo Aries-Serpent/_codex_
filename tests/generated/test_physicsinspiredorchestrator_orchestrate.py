@@ -83,8 +83,20 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
         orchestrator = PhysicsInspiredOrchestrator()
         state = DecisionState()
         # energy >> available_resources (1.0 default) so no path meets constraints
-        a1 = ActionPath(action_type=ActionType.ANALYZE, description="expensive", energy=999.0, confidence=0.9, impact=0.9)
-        a2 = ActionPath(action_type=ActionType.TEST, description="also expensive", energy=888.0, confidence=0.8, impact=0.8)
+        a1 = ActionPath(
+            action_type=ActionType.ANALYZE,
+            description="expensive",
+            energy=999.0,
+            confidence=0.9,
+            impact=0.9,
+        )
+        a2 = ActionPath(
+            action_type=ActionType.TEST,
+            description="also expensive",
+            energy=888.0,
+            confidence=0.8,
+            impact=0.8,
+        )
         result = orchestrator.orchestrate(state=state, possible_actions=[a1, a2])
         assert result is not None
         assert isinstance(result, dict)
@@ -104,8 +116,16 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
         orchestrator = PhysicsInspiredOrchestrator()
         state = DecisionState()
         # Two paths with identical scores
-        a1 = ActionPath(action_type=ActionType.ANALYZE, description="tie1", confidence=0.9, impact=0.9, energy=0.1)
-        a2 = ActionPath(action_type=ActionType.TEST, description="tie2", confidence=0.9, impact=0.9, energy=0.1)
+        a1 = ActionPath(
+            action_type=ActionType.ANALYZE,
+            description="tie1",
+            confidence=0.9,
+            impact=0.9,
+            energy=0.1,
+        )
+        a2 = ActionPath(
+            action_type=ActionType.TEST, description="tie2", confidence=0.9, impact=0.9, energy=0.1
+        )
         result = orchestrator.orchestrate(state=state, possible_actions=[a1, a2])
         assert result is not None
         assert "action_taken" in result
@@ -123,7 +143,13 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
 
         orchestrator = PhysicsInspiredOrchestrator()
         state = DecisionState()
-        a = ActionPath(action_type=ActionType.DEBUG, description="negative energy", energy=-5.0, confidence=0.5, impact=0.5)
+        a = ActionPath(
+            action_type=ActionType.DEBUG,
+            description="negative energy",
+            energy=-5.0,
+            confidence=0.5,
+            impact=0.5,
+        )
         result = orchestrator.orchestrate(state=state, possible_actions=[a])
         assert result is not None
         assert isinstance(result, dict)

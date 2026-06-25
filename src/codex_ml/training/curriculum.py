@@ -170,9 +170,10 @@ class CurriculumScheduler:
                     data = json.load(f)
                 logger.info(f"Loaded curriculum state from {self.state_file}")
                 return CurriculumState.from_dict(data)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Failed to load state, creating new: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Failed to load state, creating new: <ERROR_TYPE>")
 
         return CurriculumState(curriculum_name=self.curriculum_name)
 
@@ -182,9 +183,10 @@ class CurriculumScheduler:
             with open(self.state_file, "w") as f:
                 json.dump(self.state.to_dict(), f, indent=2)
             logger.info(f"Saved curriculum state to {self.state_file}")
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to save state: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to save state: <ERROR_TYPE>")
             raise
 
     def get_current_phase(self) -> Optional[TrainingPhase]:
@@ -389,7 +391,7 @@ class CurriculumScheduler:
             "completed_phases": completed,
             "failed_phases": failed,
             "current_phase_index": self.state.current_phase_index,
-            "current_phase": (self.get_current_phase().id if self.get_current_phase() else None),  # type: ignore[union-attr]
+            "current_phase": (self.get_current_phase().id if self.get_current_phase() else None),
             "global_step": self.state.global_step,
             "is_complete": self.state.is_complete,
             "phase_results": [r.to_dict() for r in self.state.phase_results],
@@ -414,8 +416,9 @@ def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
     try:
         import yaml
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml") from e
 
     with open(config_path) as f:

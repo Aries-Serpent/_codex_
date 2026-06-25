@@ -2,7 +2,6 @@
 Tests for VectorStore Interface and FAISS Implementation
 """
 
-
 import tempfile
 
 import pytest

@@ -103,7 +103,7 @@ class TestErrorRecording:
             step="compile_step",
             message="Compilation failed due to missing imports",
             exception_type="ImportError",
-            context={"file": "module.py", "line": 42}
+            context={"file": "module.py", "line": 42},
         )
         assert error.phase == "Best-Effort Construction"
         assert error.capability == "feature_x"
@@ -118,7 +118,7 @@ class TestErrorRecording:
             capability="test",
             step="validate",
             message="Validation failed",
-            exception_type="ValueError"
+            exception_type="ValueError",
         )
         error_dict = error.to_dict()
         assert error_dict["phase"] == "Preparation"
@@ -136,7 +136,7 @@ class TestErrorRecording:
                 capability="test",
                 step=f"step_{i}",
                 message=f"Error {i}",
-                exception_type="RuntimeError"
+                exception_type="RuntimeError",
             )
             ctx.errors.append(error)
         assert len(ctx.errors) == 5
@@ -152,11 +152,7 @@ class TestErrorRecording:
             step="dependency_resolution",
             message="Circular dependency detected",
             exception_type="CircularDependencyError",
-            context={
-                "module_a": "module_b",
-                "module_b": "module_c",
-                "module_c": "module_a"
-            }
+            context={"module_a": "module_b", "module_b": "module_c", "module_c": "module_a"},
         )
         assert error.context["module_a"] == "module_b"
         assert error.context["module_c"] == "module_a"
@@ -169,7 +165,7 @@ class TestErrorRecording:
             capability="test",
             step="verify",
             message="Test message",
-            exception_type="TestError"
+            exception_type="TestError",
         )
         assert error.context == {}
 
@@ -298,10 +294,7 @@ class TestCapabilityPlan:
 
     def test_capability_plan_with_aliases(self):
         """Test capability plan with aliases."""
-        plan = CapabilityPlan(
-            name="authentication",
-            aliases=("auth", "login_system", "user_auth")
-        )
+        plan = CapabilityPlan(name="authentication", aliases=("auth", "login_system", "user_auth"))
         assert len(plan.aliases) == 3
         assert "auth" in plan.aliases
         assert "login_system" in plan.aliases
@@ -310,7 +303,7 @@ class TestCapabilityPlan:
         """Test capability plan search targets."""
         plan = CapabilityPlan(
             name="payment",
-            search_targets=("stripe_integration", "payment_routes", "transaction_log")
+            search_targets=("stripe_integration", "payment_routes", "transaction_log"),
         )
         assert len(plan.search_targets) == 3
         assert "stripe_integration" in plan.search_targets
@@ -323,8 +316,8 @@ class TestCapabilityPlan:
                 "define_routes",
                 "setup_middleware",
                 "configure_auth",
-                "setup_logging"
-            )
+                "setup_logging",
+            ),
         )
         assert len(plan.construction_steps) == 4
         assert plan.construction_steps[0] == "define_routes"
@@ -333,11 +326,7 @@ class TestCapabilityPlan:
         """Test capability plan pruning rules."""
         plan = CapabilityPlan(
             name="feature",
-            pruning_rules=(
-                "remove_deprecated_endpoints",
-                "clean_legacy_code",
-                "remove_debug_logs"
-            )
+            pruning_rules=("remove_deprecated_endpoints", "clean_legacy_code", "remove_debug_logs"),
         )
         assert len(plan.pruning_rules) == 3
 
@@ -349,6 +338,7 @@ class TestCapabilityPlan:
 
     def test_capability_plan_with_overrides(self):
         """Test get_action returns custom phase actions."""
+
         def custom_preparation(context, plan):
             context.notes.append("Custom preparation")
 
@@ -357,10 +347,7 @@ class TestCapabilityPlan:
 
         plan = CapabilityPlan(
             name="custom_feature",
-            phase_overrides={
-                "Preparation": custom_preparation,
-                "Search & Mapping": custom_search
-            }
+            phase_overrides={"Preparation": custom_preparation, "Search & Mapping": custom_search},
         )
 
         assert plan.get_action("Preparation") is custom_preparation
@@ -374,7 +361,7 @@ class TestCapabilityPlan:
             aliases=("alias_1", "alias_2"),
             search_targets=("target_1", "target_2"),
             construction_steps=("step_1", "step_2"),
-            pruning_rules=("rule_1", "rule_2")
+            pruning_rules=("rule_1", "rule_2"),
         )
         assert plan.name == "complete_feature"
         assert len(plan.aliases) == 2
@@ -440,7 +427,7 @@ class TestWorkflowStateInvariants:
             "Best-Effort Construction",
             "Controlled Pruning",
             "Error Capture",
-            "Finalization"
+            "Finalization",
         ]
         for phase in phases:
             ctx.phase_history.append(phase)
@@ -470,7 +457,7 @@ class TestWorkflowStateInvariants:
             capability="test",
             step="compile",
             message="Build failed",
-            exception_type="BuildError"
+            exception_type="BuildError",
         )
         ctx.errors.append(error)
         ctx.failed_phases.append("Construction")
@@ -515,7 +502,7 @@ class TestComplexWorkflows:
             capability="feature",
             step="dependency_search",
             message="Missing dependency",
-            exception_type="DependencyError"
+            exception_type="DependencyError",
         )
         ctx.errors.append(error1)
 
@@ -532,7 +519,7 @@ class TestComplexWorkflows:
             capability="feature",
             step="compilation",
             message="Compilation error",
-            exception_type="CompileError"
+            exception_type="CompileError",
         )
         ctx.errors.append(error2)
 
@@ -581,7 +568,7 @@ class TestComplexWorkflows:
             "debug_helpers.py",
             "deprecated_api.py",
             "core_feature.py",
-            "debug_tests.py"
+            "debug_tests.py",
         ]
 
         for item in items:
@@ -605,7 +592,7 @@ class TestComplexWorkflows:
             "Best-Effort Construction",
             "Controlled Pruning",
             "Error Capture",
-            "Finalization"
+            "Finalization",
         ]
 
         for phase in phases:
@@ -640,7 +627,7 @@ class TestEdgeCases:
                 capability="test",
                 step=f"step_{i}",
                 message=f"Error {i}",
-                exception_type="Error"
+                exception_type="Error",
             )
             ctx.errors.append(error)
         assert len(ctx.errors) == 50

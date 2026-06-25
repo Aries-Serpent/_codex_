@@ -9,9 +9,8 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 import torch
-from torch import nn
-
 from codex_ml.config import ReasoningConfig, ReasoningHeadConfig, ToolAdapterConfig
+from torch import nn
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +165,7 @@ class ReasoningHarness:
         if not torch.is_tensor(tensor):
             try:
                 tensor = torch.as_tensor(tensor)
-            except Exception as err:
+            except (ValueError, TypeError, RuntimeError) as err:
                 logger.warning("Exception occurred", exc_info=True)
                 raise TypeError("hidden_states must be convertible to a tensor") from err
         tensor = tensor.to(device=device, dtype=torch.float32)
@@ -207,8 +206,9 @@ class ReasoningHarness:
                 try:
                     tensor = self._pool_hidden_states(hidden_states, head_device, size)
                     return tensor, mode_used
-                except Exception as exc:
-                    logger.debug(f"Exception: {exc}")
+                except (ValueError, TypeError, RuntimeError) as exc:
+                    error_type = type(exc).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
                     logger.warning(
                         "Activation vectorization failed; falling back to weights: %s",
                         exc,

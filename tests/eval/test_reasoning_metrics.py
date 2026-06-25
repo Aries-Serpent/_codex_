@@ -48,8 +48,7 @@ def test_critique_density():
 
 def test_critique_density_structured():
     """Test critique density with structured responses"""
-    responses = [
-        """
+    responses = ["""
         Let me solve this step by step:
         1. First step
         2. Second step
@@ -57,8 +56,7 @@ def test_critique_density_structured():
 
         For example, consider Y.
         However, note that Z.
-        """
-    ]
+        """]
 
     density = calculate_critique_density(responses)
     assert density > 0.5  # Should be high due to structure

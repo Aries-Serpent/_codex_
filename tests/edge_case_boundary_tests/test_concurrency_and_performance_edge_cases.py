@@ -29,7 +29,7 @@ class TestFileSystemOperations:
 
         # Act
         resolved = Path(malicious_path).resolve()
-        is_safe = str(resolved).startswith(allowed_base)
+        str(resolved).startswith(allowed_base)
 
         # Assert
         # In a real scenario, this should fail
@@ -38,7 +38,6 @@ class TestFileSystemOperations:
     def test_symlink_handling(self):
         """Test handling of symbolic links."""
         # Arrange
-        symlink_target = "/real/file"
 
         # Act
         is_symlink = True  # Hypothetically
@@ -142,7 +141,6 @@ class TestConcurrencyPrimitives:
         """Test semaphore permit exhaustion."""
         # Arrange
         semaphore = threading.Semaphore(2)
-        acquired = []
 
         # Act
         semaphore.acquire()
@@ -199,13 +197,10 @@ class TestConcurrencyPrimitives:
     def test_read_write_lock_fairness(self):
         """Test read-write lock fairness."""
         # Arrange
-        readers = []
-        writers = []
 
         # Act
         # Simulate read-write lock behavior
         can_read = True
-        can_write = not readers  # Can write only if no readers
 
         # Assert
         assert can_read
@@ -351,7 +346,6 @@ class TestPerformanceBoundaries:
     def test_stack_overflow_boundary(self):
         """Test recursion at stack limit."""
         # Arrange
-        max_recursion = 1000
 
         # Act
         def recursive(n):
@@ -421,7 +415,6 @@ class TestComplexScenarios:
     def test_stress_test_at_boundaries(self):
         """Test system behavior under stress at boundaries."""
         # Arrange
-        iterations = 10000
         counter = [0]
         lock = threading.Lock()
 

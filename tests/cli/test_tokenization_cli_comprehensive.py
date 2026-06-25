@@ -22,6 +22,7 @@ try:
     from typer.testing import CliRunner
 
     from tokenization.cli import _append_error_block, _format_context, app
+
     HAS_TYPER = True
 except ImportError:
     HAS_TYPER = False
@@ -52,9 +53,7 @@ def temp_corpus(tmp_path: Path):
         "Used for training tokenizers.\n"
     )
 
-    (corpus_dir / "valid.txt").write_text(
-        "Validation text for tokenizer.\n"
-    )
+    (corpus_dir / "valid.txt").write_text("Validation text for tokenizer.\n")
 
     return corpus_dir
 
@@ -82,11 +81,7 @@ class TestFormatContext:
 
     def test_format_context_nested(self):
         """Verify nested structure serialization."""
-        context = {
-            "outer": {
-                "inner": ["a", "b", "c"]
-            }
-        }
+        context = {"outer": {"inner": ["a", "b", "c"]}}
         result = _format_context(context)
         assert "outer" in result
         assert "inner" in result
@@ -94,12 +89,14 @@ class TestFormatContext:
     def test_format_context_with_datetime(self):
         """Verify datetime object handling."""
         from datetime import datetime
+
         context = {"timestamp": datetime(2024, 1, 1, 12, 0, 0)}
         result = _format_context(context)
         assert "2024" in result
 
     def test_format_context_unserializable_fallback(self):
         """Verify fallback for unserializable objects."""
+
         class CustomObj:
             def __str__(self):
                 return "custom_object"
@@ -121,9 +118,7 @@ class TestAppendErrorBlock:
         monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", error_dir)
 
         _append_error_block(
-            step="TEST_STEP",
-            message="Test error message",
-            context={"test": "context"}
+            step="TEST_STEP", message="Test error message", context={"test": "context"}
         )
 
         # Check file created
@@ -136,12 +131,7 @@ class TestAppendErrorBlock:
         error_dir.mkdir()
         monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", error_dir)
 
-        _append_error_block(
-            step="TEST",
-            message="Error",
-            context=None,
-            question="Custom question?"
-        )
+        _append_error_block(step="TEST", message="Error", context=None, question="Custom question?")
 
         error_files = list(error_dir.glob("errors_*.md"))
         if error_files:
@@ -164,7 +154,9 @@ class TestTokenizerInspect:
         result = runner.invoke(app, ["inspect", "--model", "test_tokenizer"])
 
         # Should complete without error
-        assert result.exit_code == 0 or "inspect" not in str(app.registered_commands if hasattr(app, 'registered_commands') else [])
+        assert result.exit_code == 0 or "inspect" not in str(
+            app.registered_commands if hasattr(app, "registered_commands") else []
+        )
 
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     @patch("tokenization.cli.build_tokenizer")
@@ -192,11 +184,7 @@ class TestTokenizerEncode:
         mock_tokenizer.encode.return_value = [101, 2023, 2003, 102]
         mock_build.return_value = mock_tokenizer
 
-        result = runner.invoke(app, [
-            "encode",
-            "--model", "test_model",
-            "--text", "This is a test"
-        ])
+        result = runner.invoke(app, ["encode", "--model", "test_model", "--text", "This is a test"])
 
         # Check for encoding output
         if result.exit_code == 0:
@@ -210,11 +198,7 @@ class TestTokenizerEncode:
         mock_tokenizer.encode.return_value = []
         mock_build.return_value = mock_tokenizer
 
-        result = runner.invoke(app, [
-            "encode",
-            "--model", "test_model",
-            "--text", ""
-        ])
+        result = runner.invoke(app, ["encode", "--model", "test_model", "--text", ""])
 
         # Should handle gracefully
         assert result.exit_code in [0, 2]  # 0=success, 2=no command
@@ -231,11 +215,7 @@ class TestTokenizerDecode:
         mock_tokenizer.decode.return_value = "decoded text"
         mock_build.return_value = mock_tokenizer
 
-        result = runner.invoke(app, [
-            "decode",
-            "--model", "test_model",
-            "--ids", "101,2023,102"
-        ])
+        result = runner.invoke(app, ["decode", "--model", "test_model", "--ids", "101,2023,102"])
 
         if result.exit_code == 0:
             assert "decoded" in result.output.lower()
@@ -248,11 +228,7 @@ class TestTokenizerDecode:
         mock_tokenizer.decode.return_value = ""
         mock_build.return_value = mock_tokenizer
 
-        result = runner.invoke(app, [
-            "decode",
-            "--model", "test_model",
-            "--ids", ""
-        ])
+        result = runner.invoke(app, ["decode", "--model", "test_model", "--ids", ""])
 
         # Should handle gracefully
         assert result.exit_code in [0, 2]
@@ -268,12 +244,18 @@ class TestTokenizerTrain:
         mock_tokenizer = MagicMock()
         mock_build.return_value = mock_tokenizer
 
-        result = runner.invoke(app, [
-            "train",
-            "--corpus", str(temp_corpus / "train.txt"),
-            "--vocab-size", "1000",
-            "--output", str(temp_corpus / "tokenizer.json")
-        ])
+        result = runner.invoke(
+            app,
+            [
+                "train",
+                "--corpus",
+                str(temp_corpus / "train.txt"),
+                "--vocab-size",
+                "1000",
+                "--output",
+                str(temp_corpus / "tokenizer.json"),
+            ],
+        )
 
         # Command might not exist yet
         assert result.exit_code in [0, 2]
@@ -285,12 +267,18 @@ class TestTokenizerTrain:
         mock_tokenizer = MagicMock()
         mock_build.return_value = mock_tokenizer
 
-        result = runner.invoke(app, [
-            "train",
-            "--corpus", str(temp_corpus / "train.txt"),
-            "--vocab-size", "1000",
-            "--special-tokens", "[PAD],[UNK],[CLS],[SEP]"
-        ])
+        result = runner.invoke(
+            app,
+            [
+                "train",
+                "--corpus",
+                str(temp_corpus / "train.txt"),
+                "--vocab-size",
+                "1000",
+                "--special-tokens",
+                "[PAD],[UNK],[CLS],[SEP]",
+            ],
+        )
 
         assert result.exit_code in [0, 2]
 
@@ -311,18 +299,12 @@ class TestTokenizerRoundtrip:
         mock_build.return_value = mock_tokenizer
 
         # Encode
-        encode_result = runner.invoke(app, [
-            "encode",
-            "--model", "test",
-            "--text", test_text
-        ])
+        encode_result = runner.invoke(app, ["encode", "--model", "test", "--text", test_text])
 
         # Decode
-        decode_result = runner.invoke(app, [
-            "decode",
-            "--model", "test",
-            "--ids", ",".join(map(str, test_ids))
-        ])
+        decode_result = runner.invoke(
+            app, ["decode", "--model", "test", "--ids", ",".join(map(str, test_ids))]
+        )
 
         # Both should succeed if commands exist
         assert encode_result.exit_code in [0, 2]
@@ -382,10 +364,7 @@ class TestErrorHandling:
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_invalid_model_path(self, runner):
         """Verify error handling for invalid model path."""
-        result = runner.invoke(app, [
-            "inspect",
-            "--model", "/nonexistent/path/to/model"
-        ])
+        result = runner.invoke(app, ["inspect", "--model", "/nonexistent/path/to/model"])
 
         # Should fail gracefully
         assert result.exit_code != 0 or result.exit_code == 2  # 2 = command not found
@@ -393,10 +372,7 @@ class TestErrorHandling:
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_invalid_corpus_path(self, runner):
         """Verify error handling for invalid corpus."""
-        result = runner.invoke(app, [
-            "train",
-            "--corpus", "/nonexistent/corpus.txt"
-        ])
+        result = runner.invoke(app, ["train", "--corpus", "/nonexistent/corpus.txt"])
 
         assert result.exit_code != 0 or result.exit_code == 2
 
@@ -406,10 +382,7 @@ class TestErrorHandling:
         """Verify error handling when tokenizer build fails."""
         mock_build.side_effect = Exception("Build failed")
 
-        result = runner.invoke(app, [
-            "inspect",
-            "--model", "test_model"
-        ])
+        result = runner.invoke(app, ["inspect", "--model", "test_model"])
 
         # Should handle exception
         assert result.exit_code != 0 or result.exit_code == 2
@@ -421,11 +394,9 @@ class TestParameterValidation:
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_negative_vocab_size(self, runner, temp_corpus: Path):
         """Verify vocab size validation."""
-        result = runner.invoke(app, [
-            "train",
-            "--corpus", str(temp_corpus / "train.txt"),
-            "--vocab-size", "-100"
-        ])
+        result = runner.invoke(
+            app, ["train", "--corpus", str(temp_corpus / "train.txt"), "--vocab-size", "-100"]
+        )
 
         # Should reject negative value
         assert result.exit_code != 0 or result.exit_code == 2
@@ -433,11 +404,7 @@ class TestParameterValidation:
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_invalid_ids_format(self, runner):
         """Verify ID format validation."""
-        result = runner.invoke(app, [
-            "decode",
-            "--model", "test",
-            "--ids", "not,a,number,list"
-        ])
+        result = runner.invoke(app, ["decode", "--model", "test", "--ids", "not,a,number,list"])
 
         # Should handle invalid format
         assert result.exit_code != 0 or result.exit_code == 2

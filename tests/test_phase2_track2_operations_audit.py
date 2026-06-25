@@ -23,7 +23,7 @@ class TestAuditEventLogging:
             "timestamp": datetime.now(),
             "event_type": "user_login",
             "user_id": "user_123",
-            "status": "success"
+            "status": "success",
         }
         assert event["event_type"] == "user_login"
         assert event["user_id"] is not None
@@ -37,7 +37,7 @@ class TestAuditEventLogging:
             "resource": "database",
             "resource_id": "db_001",
             "details": {"region": "us-east-1", "size": "10GB"},
-            "status": "success"
+            "status": "success",
         }
         assert "resource_id" in event
         assert event["details"]["size"] == "10GB"
@@ -48,23 +48,14 @@ class TestAuditEventLogging:
             "session_id": "sess_abc123",
             "ip_address": "192.168.1.1",
             "user_agent": "Mozilla/5.0...",
-            "request_id": "req_xyz789"
+            "request_id": "req_xyz789",
         }
-        event = {
-            "timestamp": datetime.now(),
-            "event_type": "api_request",
-            "context": context
-        }
+        event = {"timestamp": datetime.now(), "event_type": "api_request", "context": context}
         assert event["context"]["session_id"] is not None
 
     def test_event_severity_levels(self):
         """Test event severity classification."""
-        severity_levels = {
-            "INFO": 1,
-            "WARNING": 2,
-            "ERROR": 3,
-            "CRITICAL": 4
-        }
+        severity_levels = {"INFO": 1, "WARNING": 2, "ERROR": 3, "CRITICAL": 4}
         assert severity_levels["ERROR"] > severity_levels["WARNING"]
 
     def test_event_error_tracking(self):
@@ -74,7 +65,7 @@ class TestAuditEventLogging:
             "error_code": "E001",
             "error_message": "Database connection failed",
             "stack_trace": "...",
-            "timestamp": datetime.now()
+            "timestamp": datetime.now(),
         }
         assert event["error_code"] is not None
 
@@ -83,7 +74,7 @@ class TestAuditEventLogging:
         events = [
             {"event_type": "login", "user": "alice", "timestamp": datetime.now()},
             {"event_type": "logout", "user": "alice", "timestamp": datetime.now()},
-            {"event_type": "login", "user": "bob", "timestamp": datetime.now()}
+            {"event_type": "login", "user": "bob", "timestamp": datetime.now()},
         ]
         alice_events = [e for e in events if e["user"] == "alice"]
         assert len(alice_events) == 2
@@ -99,7 +90,7 @@ class TestAuditTrailManagement:
             "resource": "user_profile",
             "resource_id": "user_001",
             "created_at": datetime.now(),
-            "events": []
+            "events": [],
         }
         assert trail["id"] is not None
         assert len(trail["events"]) == 0
@@ -110,27 +101,19 @@ class TestAuditTrailManagement:
         events = [
             {"action": "created", "timestamp": datetime.now()},
             {"action": "updated", "timestamp": datetime.now()},
-            {"action": "deleted", "timestamp": datetime.now()}
+            {"action": "deleted", "timestamp": datetime.now()},
         ]
         trail["events"].extend(events)
         assert len(trail["events"]) == 3
 
     def test_audit_trail_immutability(self):
         """Test audit trail immutability."""
-        trail = {
-            "id": "trail_123",
-            "events": [{"action": "created"}],
-            "readonly": True
-        }
+        trail = {"id": "trail_123", "events": [{"action": "created"}], "readonly": True}
         assert trail["readonly"]
 
     def test_audit_trail_retention_policy(self):
         """Test retention policy application."""
-        policy = {
-            "retention_days": 365,
-            "archive_after_days": 90,
-            "delete_after_days": 2555
-        }
+        policy = {"retention_days": 365, "archive_after_days": 90, "delete_after_days": 2555}
         assert policy["archive_after_days"] < policy["delete_after_days"]
 
     def test_audit_trail_archival(self):
@@ -139,7 +122,7 @@ class TestAuditTrailManagement:
             "enabled": True,
             "frequency": "monthly",
             "archive_location": "s3://backup/audit",
-            "compression": "gzip"
+            "compression": "gzip",
         }
         assert archival["enabled"]
 
@@ -148,7 +131,7 @@ class TestAuditTrailManagement:
         versions = {
             "v1": {"event_fields": ["action", "timestamp", "user"]},
             "v2": {"event_fields": ["action", "timestamp", "user", "details"]},
-            "v3": {"event_fields": ["action", "timestamp", "user", "details", "context"]}
+            "v3": {"event_fields": ["action", "timestamp", "user", "details", "context"]},
         }
         assert len(versions["v3"]["event_fields"]) > len(versions["v1"]["event_fields"])
 
@@ -170,7 +153,7 @@ class TestChangeDetection:
         diff = {
             "added": {"phone": "555-1234"},
             "removed": {"fax": "555-5678"},
-            "modified": {"email": ("old@example.com", "new@example.com")}
+            "modified": {"email": ("old@example.com", "new@example.com")},
         }
         assert len(diff["added"]) > 0
         assert len(diff["removed"]) > 0
@@ -183,7 +166,7 @@ class TestChangeDetection:
             "old_value": "active",
             "new_value": "inactive",
             "reason": "user_requested_deactivation",
-            "approved_by": "admin_123"
+            "approved_by": "admin_123",
         }
         assert change["reason"] is not None
 
@@ -193,7 +176,7 @@ class TestChangeDetection:
             "operation": "bulk_update",
             "affected_resources": 1000,
             "timestamp": datetime.now(),
-            "initiator": "batch_job"
+            "initiator": "batch_job",
         }
         assert bulk_change["affected_resources"] > 0
 
@@ -203,7 +186,7 @@ class TestChangeDetection:
             "direct_impact": ["dependent_resource_1", "dependent_resource_2"],
             "cascading_impact": ["level2_resource"],
             "affected_users": 50,
-            "requires_notification": True
+            "requires_notification": True,
         }
         assert impact["requires_notification"]
 
@@ -217,13 +200,13 @@ class TestComplianceVerification:
             "rule_1": {
                 "name": "all_changes_logged",
                 "condition": "event_type in audit_log",
-                "required": True
+                "required": True,
             },
             "rule_2": {
                 "name": "user_approval_required",
                 "condition": "approval_count >= 2",
-                "required": True
-            }
+                "required": True,
+            },
         }
         assert len(rules) == 2
 
@@ -233,7 +216,7 @@ class TestComplianceVerification:
             "rule_id": "rule_001",
             "check_date": datetime.now(),
             "status": "compliant",
-            "violations": []
+            "violations": [],
         }
         assert check["status"] == "compliant"
 
@@ -245,7 +228,7 @@ class TestComplianceVerification:
             "rule_id": "rule_001",
             "description": "Change made without approval",
             "timestamp": datetime.now(),
-            "status": "unresolved"
+            "status": "unresolved",
         }
         assert violation["severity"] == "high"
 
@@ -256,7 +239,7 @@ class TestComplianceVerification:
             "action": "reverse_change",
             "initiated_by": "admin",
             "status": "in_progress",
-            "completion_target": datetime.now() + timedelta(days=1)
+            "completion_target": datetime.now() + timedelta(days=1),
         }
         assert remediation["status"] in ["pending", "in_progress", "completed"]
 
@@ -267,7 +250,7 @@ class TestComplianceVerification:
             "audit_date": datetime.now(),
             "scope": "data_processing",
             "status": "passed",
-            "findings": []
+            "findings": [],
         }
         assert audit["status"] in ["passed", "failed", "conditional"]
 
@@ -282,7 +265,7 @@ class TestAuditReporting:
             "period": "2024-06-01 to 2024-06-30",
             "generated_at": datetime.now(),
             "total_events": 10000,
-            "status": "complete"
+            "status": "complete",
         }
         assert report["total_events"] > 0
 
@@ -293,7 +276,7 @@ class TestAuditReporting:
             "failed_logins": 150,
             "permission_changes": 200,
             "resource_deletions": 50,
-            "error_events": 75
+            "error_events": 75,
         }
         assert summary["total_logins"] > summary["failed_logins"]
 
@@ -304,8 +287,8 @@ class TestAuditReporting:
             "end_time": datetime.now(),
             "events": [
                 {"timestamp": datetime.now() - timedelta(days=29), "action": "login"},
-                {"timestamp": datetime.now() - timedelta(days=15), "action": "update"}
-            ]
+                {"timestamp": datetime.now() - timedelta(days=15), "action": "update"},
+            ],
         }
         assert len(timeline["events"]) >= 2
 
@@ -322,7 +305,7 @@ class TestAuditReporting:
             "date_range": {"start": "2024-06-01", "end": "2024-06-30"},
             "event_types": ["login", "logout", "update"],
             "users": ["alice", "bob"],
-            "severity": ["ERROR", "CRITICAL"]
+            "severity": ["ERROR", "CRITICAL"],
         }
         assert len(filters) == 4
 
@@ -332,14 +315,7 @@ class TestAuditSearching:
 
     def test_audit_log_query(self):
         """Test audit log querying."""
-        query = {
-            "event_type": "resource_created",
-            "user_id": "user_123",
-            "date_range": ("2024-06-01", "2024-06-30")
-        }
-        results = [
-            {"event_type": "resource_created", "user_id": "user_123", "date": "2024-06-15"}
-        ]
+        results = [{"event_type": "resource_created", "user_id": "user_123", "date": "2024-06-15"}]
         assert len(results) > 0
 
     def test_full_text_search(self):
@@ -347,26 +323,18 @@ class TestAuditSearching:
         search = {
             "query": "database connection",
             "fields": ["error_message", "description"],
-            "limit": 100
+            "limit": 100,
         }
         assert search["limit"] > 0
 
     def test_audit_log_pagination(self):
         """Test audit log pagination."""
-        pagination = {
-            "page": 1,
-            "per_page": 50,
-            "total_pages": 200,
-            "total_records": 10000
-        }
+        pagination = {"page": 1, "per_page": 50, "total_pages": 200, "total_records": 10000}
         assert pagination["total_records"] > pagination["per_page"]
 
     def test_audit_log_sorting(self):
         """Test audit log sorting."""
-        sort = {
-            "field": "timestamp",
-            "direction": "descending"
-        }
+        sort = {"field": "timestamp", "direction": "descending"}
         assert sort["direction"] in ["ascending", "descending"]
 
 
@@ -375,20 +343,12 @@ class TestAuditSecurityAndIntegrity:
 
     def test_audit_log_signing(self):
         """Test audit log signing."""
-        config = {
-            "signing_enabled": True,
-            "algorithm": "SHA256",
-            "key_rotation_days": 90
-        }
+        config = {"signing_enabled": True, "algorithm": "SHA256", "key_rotation_days": 90}
         assert config["signing_enabled"]
 
     def test_audit_log_encryption(self):
         """Test audit log encryption."""
-        encryption = {
-            "enabled": True,
-            "algorithm": "AES-256-GCM",
-            "key_management": "external_kms"
-        }
+        encryption = {"enabled": True, "algorithm": "AES-256-GCM", "key_management": "external_kms"}
         assert encryption["enabled"]
 
     def test_audit_tampering_detection(self):
@@ -397,18 +357,13 @@ class TestAuditSecurityAndIntegrity:
             "hash_verification": True,
             "signature_verification": True,
             "sequence_verification": True,
-            "alert_on_tamper": True
+            "alert_on_tamper": True,
         }
         assert detection["alert_on_tamper"]
 
     def test_audit_access_control(self):
         """Test audit log access control."""
-        acl = {
-            "auditor": ["read"],
-            "admin": ["read", "archive"],
-            "user": [],
-            "public": []
-        }
+        acl = {"auditor": ["read"], "admin": ["read", "archive"], "user": [], "public": []}
         assert "read" in acl["auditor"]
         assert len(acl["user"]) == 0
 
@@ -417,7 +372,7 @@ class TestAuditSecurityAndIntegrity:
         config = {
             "witnesses_required": 3,
             "witness_types": ["hash", "signature", "timestamp"],
-            "consensus_algorithm": "quorum"
+            "consensus_algorithm": "quorum",
         }
         assert config["witnesses_required"] > 1
 
@@ -431,7 +386,7 @@ class TestPerformanceAudit:
             "enabled": True,
             "threshold_ms": 1000,
             "sample_rate": 1.0,
-            "log_slow_queries": True
+            "log_slow_queries": True,
         }
         assert detection["threshold_ms"] > 0
 
@@ -441,7 +396,7 @@ class TestPerformanceAudit:
             "track_cpu": True,
             "track_memory": True,
             "track_disk_io": True,
-            "track_network": True
+            "track_network": True,
         }
         assert audit["track_cpu"]
 
@@ -451,7 +406,7 @@ class TestPerformanceAudit:
             "metric": "response_time",
             "baseline_ms": 100,
             "alert_threshold_ms": 200,
-            "update_interval_days": 30
+            "update_interval_days": 30,
         }
         assert baseline["alert_threshold_ms"] > baseline["baseline_ms"]
 
@@ -465,7 +420,7 @@ class TestAuditHistoricalAnalysis:
             "metric": "login_attempts",
             "data_points": [100, 110, 120, 115, 125],
             "trend": "upward",
-            "growth_percent": 25.0
+            "growth_percent": 25.0,
         }
         assert trends["growth_percent"] > 0
 
@@ -475,7 +430,7 @@ class TestAuditHistoricalAnalysis:
             "enabled": True,
             "method": "statistical",
             "std_dev_threshold": 3.0,
-            "min_baseline_samples": 100
+            "min_baseline_samples": 100,
         }
         assert detection["std_dev_threshold"] > 0
 
@@ -485,13 +440,9 @@ class TestAuditHistoricalAnalysis:
             "pattern_1": {
                 "name": "nightly_batch_jobs",
                 "frequency": "daily",
-                "time_window": "02:00-05:00 UTC"
+                "time_window": "02:00-05:00 UTC",
             },
-            "pattern_2": {
-                "name": "weekend_maintenance",
-                "frequency": "weekly",
-                "day": "Saturday"
-            }
+            "pattern_2": {"name": "weekend_maintenance", "frequency": "weekly", "day": "Saturday"},
         }
         assert len(patterns) == 2
 
@@ -501,6 +452,6 @@ class TestAuditHistoricalAnalysis:
             "metric_1": "cpu_usage",
             "metric_2": "query_response_time",
             "correlation_coefficient": 0.85,
-            "significant": True
+            "significant": True,
         }
         assert correlation["correlation_coefficient"] > 0.8

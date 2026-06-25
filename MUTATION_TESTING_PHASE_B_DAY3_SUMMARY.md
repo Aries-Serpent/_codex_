@@ -68,7 +68,7 @@ tests/agents/test_mental_mapping_mutation_killers.py
 #### .mutmut-cognitive-brain.ini
 ```ini
 [mutmut]
-source_paths = 
+source_paths =
     agents/agent_memory.py
     agents/mental_mapping.py
     agents/sqlite_memory.py
@@ -175,7 +175,7 @@ Comprehensive planning document covering:
 4. Re-run mutation tests
 5. Verify score improvement (+10-15% target)
 
-### Day 6-16: Iterations 2+ 
+### Day 6-16: Iterations 2+
 1. Repeat iteration process
 2. Target incremental score improvements
 3. Achieve ≥75% overall target

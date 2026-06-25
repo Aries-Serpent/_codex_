@@ -10,7 +10,6 @@ Tests that physical laws are correctly implemented and maintained:
 6. Lorentz factor bounds
 """
 
-
 import pytest
 
 np = pytest.importorskip("numpy")

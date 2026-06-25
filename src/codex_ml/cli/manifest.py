@@ -76,7 +76,7 @@ if TYPER_AVAILABLE:
         except typer.Exit:
             # Re-raise typer.Exit to preserve exit code
             raise
-        except Exception as e:
+        except (IOError, OSError) as e:
             typer.echo(f"Error: {e}")
             raise typer.Exit(2) from e
 

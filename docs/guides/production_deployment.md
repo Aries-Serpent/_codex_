@@ -480,7 +480,7 @@ groups:
     for: 5m
     annotations:
       summary: "High error rate detected"
-      
+
   - alert: HighLatency
     expr: histogram_quantile(0.95, rate(codex_request_duration_seconds_bucket[5m])) > 1
     for: 5m

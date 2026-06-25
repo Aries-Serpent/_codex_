@@ -166,7 +166,7 @@ class TestDocstringExamples:
 
     def test_function_docstring_example_format(self) -> None:
         """Test that docstring examples follow correct format."""
-        example_docstring = '''
+        example_docstring = """
         Load a dataset from disk.
 
         Args:
@@ -179,32 +179,32 @@ class TestDocstringExamples:
             >>> dataset = load_dataset("train.json")
             >>> len(dataset)
             1000
-        '''
+        """
         assert "Example:" in example_docstring or "Examples:" in example_docstring
         assert ">>>" in example_docstring
 
     def test_class_docstring_example_format(self) -> None:
         """Test that class docstring examples follow correct format."""
-        example_docstring = '''
+        example_docstring = """
         A trainer for fine-tuning language models.
 
         Example:
             >>> trainer = Trainer(model, config)
             >>> trainer.train()
             >>> trainer.evaluate()
-        '''
+        """
         assert ">>>" in example_docstring
 
     def test_module_docstring_has_description(self) -> None:
         """Test that module docstrings have descriptions."""
-        example_module_docstring = '''
+        example_module_docstring = """
         This module provides utilities for data loading and processing.
 
         It includes functions for:
         - Loading datasets from various formats
         - Validating data schemas
         - Splitting data for training
-        '''
+        """
         lines = example_module_docstring.strip().split("\n")
         assert len(lines) > 1  # More than just one line
 
@@ -330,6 +330,7 @@ training:
     def test_json_config_example_valid(self) -> None:
         """Test that JSON config examples are valid."""
         import json
+
         json_example = """{
     "model": {
         "name": "gpt2",

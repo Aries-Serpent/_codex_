@@ -156,7 +156,7 @@ validators.py:         13 → 18 (+5 tests) ✅
 embedding_cache.py:    12 → 17 (+5 tests) ✅
 middleware.py:         15 → 16 (+1 test)  ✅
 sanitizers.py:         10 → 13 (+3 tests) ✅
-token_handler.py:       8 → 10 (+2 tests) ✅
+token_handler.py:       8 → 10 (+2 tests) ✅  # pragma: allowlist secret
 ────────────────────────────────────────
 TOTAL:                 58 → 74 (+16 tests) ✅
 ```
@@ -269,4 +269,3 @@ TOTAL:                 58 → 74 (+16 tests) ✅
 **Prepared by:** Mutation Testing Refinement Agent  
 **Report Time:** 2026-06-20 15:00Z UTC  
 **Delivery Target:** Final report by 21:00Z
-

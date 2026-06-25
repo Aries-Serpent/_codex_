@@ -253,11 +253,11 @@ Path to PASS: Fix 4 bugs → all tests pass → re-audit → verify
 Step 1: Fix subprocess shell=True (5 min)
   └─ File: scripts/ci/scan_all.py:360
   └─ Change: subprocess.run(cmd.split())
-  
+
 Step 2: Add MD5 nosec comment (2 min)
   └─ File: src/codex/metrics/duplication.py:221
   └─ Change: Add # nosec B324 comment
-  
+
 Step 3: Verify fixes (0 min)
   └─ Run security audit
   └─ ✅ Phase 1 PASS
@@ -270,20 +270,20 @@ Step 1: Fix early stopping logic (2-4 hours)
   └─ File: src/codex_ml/training/callbacks.py
   └─ Issue: Off-by-one patience counter
   └─ Tests will pass: 6 failures resolved
-  
+
 Step 2: Fix checkpoint state restoration (4-6 hours)
   └─ File: src/codex_ml/training/checkpoint_manager.py
   └─ Issue: State not restored after resume
   └─ Tests will pass: 3 failures resolved
-  
+
 Step 3: Fix schema warnings (1-2 hours)
   └─ Raise UserWarning on schema mismatch
   └─ Tests will pass: 1 failure resolved
-  
-Step 4: Fix tokenization error type (0.5-1 hour)
+
+Step 4: Fix tokenization error type (0.5-1 hour)  # pragma: allowlist secret
   └─ Align ValueError vs AttributeError
   └─ Tests will pass: 1 failure resolved
-  
+
 Step 5: Verify all 71 tests passing (10 min)
   └─ Run full test suite
   └─ Coverage remains ≥12.23%

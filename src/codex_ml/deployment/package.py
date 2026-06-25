@@ -60,12 +60,14 @@ def build_service_package(
         "model_dir": str(model_root),
         "files": sorted(p.name for p in model_root.glob("*")),
         "metadata": dict(metadata or {}),
-        # codeql[py/clear-text-storage-sensitive-data]
+        # Secrets stored only as SHA256 hashes, not raw values  # noqa: E501
         "secrets": [hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets],  # nosec - hashed identifiers only — no secret values stored
     }
     manifest_path = staging / "manifest.json"
-    # codeql[py/clear-text-storage-sensitive-data]
-    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")  # nosec
+    # Manifest stores only hashed secret identifiers
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+    )  # File contains only hashed secrets
 
     pointer_path = staging / "model_pointer.txt"
     pointer_path.write_text(str(model_root), encoding="utf-8")
@@ -88,12 +90,16 @@ def build_service_package(
         if callable(hook):
             try:
                 hook_results[name] = hook(output)
-            except Exception as exc:  # pragma: no cover - plugin specific
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - plugin specific
                 hook_results[name] = f"error: {exc}"
 
     try:
         shutil.rmtree(staging)
-    except Exception:  # pragma: no cover - best effort cleanup
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - best effort cleanup
         logger.debug("Suppressed exception in handler", exc_info=True)
     return {
         "run_id": run_id,

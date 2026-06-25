@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import mlflow
-except Exception:  # pragma: no cover - mlflow not installed or misconfigured
+except (IOError, OSError):  # pragma: no cover - mlflow not installed or misconfigured
     mlflow = None
 
 from omegaconf import DictConfig, OmegaConf  # noqa: E402
@@ -45,7 +45,7 @@ def _config_fingerprint(cfg: DictConfig) -> str:
         # OmegaConf.to_yaml doesn't exist in older versions, use to_container
         container = OmegaConf.to_container(cfg, resolve=True)
         yml = yaml.dump(container, default_flow_style=False, sort_keys=True)
-    except Exception:
+    except (ValueError, TypeError):
         # Fallback to unresolved config
         container = OmegaConf.to_container(cfg, resolve=False)
         yml = yaml.dump(container, default_flow_style=False, sort_keys=True)

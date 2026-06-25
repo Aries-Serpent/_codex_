@@ -226,7 +226,7 @@ Automate post-deployment verification procedures that validate successful deploy
    # Triggered: workflow_dispatch
    # Inputs:
    # - environment: Environment to verify (dev/staging/production)
-   # 
+   #
    # Steps:
    # 1. Generate verification checklist
    # 2. Run automated smoke tests
@@ -330,4 +330,3 @@ Automate post-deployment verification procedures that validate successful deploy
 **Campaign Authority:** @mbaetiong (D-level autonomy)  
 **Execution Authority:** This agent brief  
 **Status:** READY FOR DELEGATION
-

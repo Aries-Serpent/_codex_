@@ -55,9 +55,9 @@ fi
 # ============================================================================
 if [ -n "$MD_FILES" ]; then
     echo -e "\n${BLUE}[2/5]${NC} Linting Markdown files..."
-    
+
     MD_COUNT=$(echo "$MD_FILES" | wc -l)
-    
+
     if command -v markdownlint &> /dev/null; then
         if echo "$MD_FILES" | xargs markdownlint --fix --quiet 2>/dev/null; then
             echo -e "${GREEN}✓ Markdown linting passed (${MD_COUNT} files)${NC}"
@@ -81,7 +81,7 @@ fi
 # ============================================================================
 if [ -n "$MD_FILES" ]; then
     echo -e "\n${BLUE}[3/5]${NC} Validating cross-references..."
-    
+
     if [ -f "$REPO_ROOT/.github/scripts/check-cross-references.py" ]; then
         if python3 "$REPO_ROOT/.github/scripts/check-cross-references.py" \
             --repo-root="$REPO_ROOT" \
@@ -111,9 +111,9 @@ fi
 # ============================================================================
 if [ -n "$PY_FILES" ]; then
     echo -e "\n${BLUE}[4/5]${NC} Checking Python files..."
-    
+
     PY_COUNT=$(echo "$PY_FILES" | wc -l)
-    
+
     if command -v black &> /dev/null; then
         if black --quiet "$PY_FILES" 2>/dev/null; then
             echo -e "${GREEN}✓ Black formatting OK (${PY_COUNT} files)${NC}"
@@ -123,7 +123,7 @@ if [ -n "$PY_FILES" ]; then
             echo "$PY_FILES" | xargs git add 2>/dev/null || true
         fi
     fi
-    
+
     if command -v ruff &> /dev/null; then
         if ruff check --quiet "$PY_FILES" 2>/dev/null; then
             echo -e "${GREEN}✓ Ruff linting OK${NC}"
@@ -141,9 +141,9 @@ fi
 # ============================================================================
 if [ -n "$YAML_FILES" ]; then
     echo -e "\n${BLUE}[5/5]${NC} Validating YAML files..."
-    
+
     YAML_COUNT=$(echo "$YAML_FILES" | wc -l)
-    
+
     if command -v yamllint &> /dev/null; then
         if yamllint -d '{extends: relaxed}' "$YAML_FILES" 2>/dev/null; then
             echo -e "${GREEN}✓ YAML validation OK (${YAML_COUNT} files)${NC}"

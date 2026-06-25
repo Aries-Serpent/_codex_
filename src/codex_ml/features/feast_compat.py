@@ -209,7 +209,7 @@ class FeastCompatibleStore:
                 else:
                     for fname in fnames:
                         retrieved[f"{vname}__{fname}"] = None
-            except Exception as exc:
+            except (ValueError, TypeError, RuntimeError) as exc:
                 logger.debug("get_online_features: native store miss for %s: %s", vname, exc)
                 for fname in fnames:
                     retrieved[f"{vname}__{fname}"] = None
@@ -258,8 +258,8 @@ class FeastCompatibleStore:
 
             # Stub materialization — writes placeholder data
             stub_data = {f: None for f in view.features}
-            stub_data["__materialized_at"] = end_date.isoformat()  # type: ignore[assignment]
-            stub_data["__source"] = view.source or "stub"  # type: ignore[assignment]
+            stub_data["__materialized_at"] = end_date.isoformat()
+            stub_data["__source"] = view.source or "stub"
 
             try:
                 path = self._native.materialize_feature_group(
@@ -270,7 +270,7 @@ class FeastCompatibleStore:
                 )
                 written[vname] = path
                 logger.info("Materialized %s → %s", vname, path)
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 logger.warning("materialize: failed for %s: %s", vname, exc)
 
         return written
@@ -719,9 +719,7 @@ class DuckDBBackend:
             self._ensure_table(view_name)
             tbl = self._table(view_name)
             arrow_table: pa.Table = (
-                self._conn.execute(
-                    f"SELECT * FROM {tbl}"  # nosec B608 — tbl validated by _table()
-                )
+                self._conn.execute(f"SELECT * FROM {tbl}")  # nosec B608 — tbl validated by _table()
                 .arrow()
                 .read_all()
             )

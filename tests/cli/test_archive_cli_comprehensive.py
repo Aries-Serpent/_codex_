@@ -15,6 +15,7 @@ from click.testing import CliRunner
 
 # ==================== Fixtures ====================
 
+
 @pytest.fixture
 def cli_runner():
     """Provide Click CLI test runner."""
@@ -45,6 +46,7 @@ def mock_config():
 
 # ==================== Parse Metadata Tests ====================
 
+
 class TestParseMetadata:
     """Tests for _parse_metadata helper function."""
 
@@ -52,6 +54,7 @@ class TestParseMetadata:
         """Test parsing valid key=value entries."""
         try:
             from src.codex.archive.cli import _parse_metadata
+
             result = _parse_metadata(["key1=value1", "key2=value2"])
             assert result == {"key1": "value1", "key2": "value2"}
         except ImportError:
@@ -61,6 +64,7 @@ class TestParseMetadata:
         """Test parsing values containing equals sign."""
         try:
             from src.codex.archive.cli import _parse_metadata
+
             result = _parse_metadata(["key=value=with=equals"])
             assert result == {"key": "value=with=equals"}
         except ImportError:
@@ -70,6 +74,7 @@ class TestParseMetadata:
         """Test that keys and values are stripped."""
         try:
             from src.codex.archive.cli import _parse_metadata
+
             result = _parse_metadata(["  key  =  value  "])
             assert result == {"key": "value"}
         except ImportError:
@@ -81,6 +86,7 @@ class TestParseMetadata:
             import click
 
             from src.codex.archive.cli import _parse_metadata
+
             with pytest.raises(click.BadParameter):
                 _parse_metadata(["invalid_no_equals"])
         except ImportError:
@@ -89,6 +95,7 @@ class TestParseMetadata:
 
 # ==================== Resolve Commit Tests ====================
 
+
 class TestResolveCommit:
     """Tests for _resolve_commit helper function."""
 
@@ -96,6 +103,7 @@ class TestResolveCommit:
         """Test that non-HEAD commits pass through."""
         try:
             from src.codex.archive.cli import _resolve_commit
+
             result = _resolve_commit("abc123def")
             assert result == "abc123def"
         except ImportError:
@@ -105,6 +113,7 @@ class TestResolveCommit:
         """Test HEAD keyword resolution (uppercase)."""
         try:
             from src.codex.archive.cli import _resolve_commit
+
             with patch("subprocess.run") as mock_run:
                 mock_run.return_value = Mock(stdout="abc123def456\n")
                 result = _resolve_commit("HEAD")
@@ -116,6 +125,7 @@ class TestResolveCommit:
         """Test head keyword resolution (lowercase)."""
         try:
             from src.codex.archive.cli import _resolve_commit
+
             with patch("subprocess.run") as mock_run:
                 mock_run.return_value = Mock(stdout="abc123def456\n")
                 result = _resolve_commit("head")
@@ -126,6 +136,7 @@ class TestResolveCommit:
 
 # ==================== CLI Group Tests ====================
 
+
 class TestCLIGroup:
     """Tests for the main CLI group."""
 
@@ -133,6 +144,7 @@ class TestCLIGroup:
         """Test that CLI group is defined."""
         try:
             from src.codex.archive.cli import cli
+
             assert cli is not None
         except ImportError:
             pytest.skip("archive.cli module not available")
@@ -141,6 +153,7 @@ class TestCLIGroup:
         """Test CLI group has help text."""
         try:
             from src.codex.archive.cli import cli
+
             assert cli.help is not None
         except ImportError:
             pytest.skip("archive.cli module not available")
@@ -149,6 +162,7 @@ class TestCLIGroup:
         """Test CLI can be invoked."""
         try:
             from src.codex.archive.cli import cli
+
             result = cli_runner.invoke(cli, ["--help"])
             assert result.exit_code == 0
             assert "archive" in result.output.lower() or "tombstone" in result.output.lower()
@@ -158,6 +172,7 @@ class TestCLIGroup:
 
 # ==================== Config Show Command Tests ====================
 
+
 class TestConfigShowCommand:
     """Tests for config-show command."""
 
@@ -165,6 +180,7 @@ class TestConfigShowCommand:
         """Test config-show command exists."""
         try:
             from src.codex.archive.cli import cli
+
             result = cli_runner.invoke(cli, ["config-show", "--help"])
             # Should either succeed or show help
             assert result.exit_code in [0, 1, 2]
@@ -173,6 +189,7 @@ class TestConfigShowCommand:
 
 
 # ==================== Batch Progress Logger Tests ====================
+
 
 class TestBatchProgressLogger:
     """Tests for _batch_progress_logger function."""
@@ -211,6 +228,7 @@ class TestBatchProgressLogger:
 
 # ==================== Service Initialization Tests ====================
 
+
 class TestServiceInitialization:
     """Tests for _service helper function."""
 
@@ -218,6 +236,7 @@ class TestServiceInitialization:
         """Test service creation with default config."""
         try:
             from src.codex.archive.cli import _service
+
             with patch("src.codex.archive.cli._load_config") as mock_load:
                 mock_config = Mock()
                 mock_load.return_value = mock_config
@@ -231,6 +250,7 @@ class TestServiceInitialization:
         """Test service creation with custom config."""
         try:
             from src.codex.archive.cli import _service
+
             custom_config = Mock()
             with patch("src.codex.archive.cli.ArchiveService") as mock_svc:
                 _service(app_config=custom_config)
@@ -240,6 +260,7 @@ class TestServiceInitialization:
 
 
 # ==================== Setup Logger Tests ====================
+
 
 class TestSetupLogger:
     """Tests for _setup_logger helper function."""
@@ -264,6 +285,7 @@ class TestSetupLogger:
 
 # ==================== Load Config Tests ====================
 
+
 class TestLoadConfig:
     """Tests for _load_config helper function."""
 
@@ -271,6 +293,7 @@ class TestLoadConfig:
         """Test loading default configuration."""
         try:
             from src.codex.archive.cli import _load_config
+
             with patch("src.codex.archive.config.ArchiveAppConfig.load") as mock_load:
                 mock_load.return_value = Mock()
                 _load_config()
@@ -282,6 +305,7 @@ class TestLoadConfig:
         """Test loading configuration from custom file."""
         try:
             from src.codex.archive.cli import _load_config
+
             config_file = tmp_path / "config.yaml"
             config_file.write_text("# test config")
 
@@ -295,6 +319,7 @@ class TestLoadConfig:
 
 # ==================== Module Import Tests ====================
 
+
 class TestModuleImports:
     """Tests for module-level imports."""
 
@@ -302,6 +327,7 @@ class TestModuleImports:
         """Test logger is properly configured."""
         try:
             from src.codex.archive.cli import logger
+
             assert logger is not None
         except ImportError:
             pytest.skip("archive.cli module not available")
@@ -310,13 +336,15 @@ class TestModuleImports:
         """Test click is imported."""
         try:
             from src.codex.archive import cli
+
             # Should be able to access click through the module
-            assert hasattr(cli, 'cli')
+            assert hasattr(cli, "cli")
         except ImportError:
             pytest.skip("archive.cli module not available")
 
 
 # ==================== Redaction Tests ====================
+
 
 class TestRedactionFunctions:
     """Tests for credential redaction utilities."""
@@ -325,6 +353,7 @@ class TestRedactionFunctions:
         """Test redact_text_credentials is available."""
         try:
             from src.codex.archive.cli import redact_text_credentials
+
             assert callable(redact_text_credentials)
         except ImportError:
             pytest.skip("archive.cli module not available")
@@ -333,12 +362,14 @@ class TestRedactionFunctions:
         """Test redact_url_credentials is available."""
         try:
             from src.codex.archive.cli import redact_url_credentials
+
             assert callable(redact_url_credentials)
         except ImportError:
             pytest.skip("archive.cli module not available")
 
 
 # ==================== Integration Tests ====================
+
 
 class TestCLIIntegration:
     """Integration tests for CLI operations."""
@@ -347,6 +378,7 @@ class TestCLIIntegration:
         """Test that expected commands are registered."""
         try:
             from src.codex.archive.cli import cli
+
             result = cli_runner.invoke(cli, ["--help"])
             output = result.output.lower()
             # Check for common commands

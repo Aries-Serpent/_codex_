@@ -268,6 +268,7 @@ class TestAutoFixWithRollback:
         assert output_file.exists()
 
         import json
+
         with open(output_file) as f:
             saved_metrics = json.load(f)
 
@@ -321,9 +322,7 @@ class TestIntegration:
         test_file.write_text("# test\n")
 
         subprocess.run(["git", "add", "."], cwd=repo, capture_output=True)
-        subprocess.run(
-            ["git", "commit", "-m", "init"], cwd=repo, capture_output=True
-        )
+        subprocess.run(["git", "commit", "-m", "init"], cwd=repo, capture_output=True)
 
         fixer = AutoFixWithRollback(repo, verbose=False)
 

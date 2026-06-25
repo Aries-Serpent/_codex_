@@ -97,7 +97,7 @@ def _run_tune(args: argparse.Namespace) -> int:
     from services.audio.workflow.auto_tune_workflow import AutoTuneWorkflow
 
     workflow = AutoTuneWorkflow(cognitive_mode=True)
-    result = workflow.process_path(  # type: ignore[call-arg]
+    result = workflow.process_path(
         input_path=args.path,
         output_dir=args.output,
         preview=args.preview,
@@ -111,10 +111,10 @@ def _run_tune(args: argparse.Namespace) -> int:
 
     if result.success:
         print(f"✅ Successfully processed {result.total_files} file(s)")
-        print(f"   Success rate: {result.success_rate:.1%}")  # type: ignore[attr-defined]
-        print(f"   Average quality improvement: {result.avg_improvement:.1f}/10")  # type: ignore[attr-defined]
-        print(f"   Total time: {result.total_time:.1f}s")  # type: ignore[attr-defined]
-        print(f"   Output location: {result.output_dir}")  # type: ignore[attr-defined]
+        print(f"   Success rate: {result.success_rate:.1%}")
+        print(f"   Average quality improvement: {result.avg_improvement:.1f}/10")
+        print(f"   Total time: {result.total_time:.1f}s")
+        print(f"   Output location: {result.output_dir}")
         return 0
 
     print(f"❌ Processing failed: {result.error}")
@@ -194,8 +194,9 @@ def main() -> int:
             return _run_transcribe(args)
         parser.print_help()
         return 1
-    except Exception as exc:
-        print(f"❌ Error: {exc}")
+    except (ValueError, TypeError) as exc:
+        error_type = type(exc).__name__
+        print(f"❌ Error: <ERROR_TYPE>")
         return 1
 
 

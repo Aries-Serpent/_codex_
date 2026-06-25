@@ -72,7 +72,7 @@ The 2,467 comprehensive tests from Phase 7A Task 3 are distributed across:
 
 | Test Category | Count | Percentage | Coverage Impact |
 |---------------|-------|------------|-----------------|
-| **Security-Critical Tests** | 287 | 12% | Authentication, token mgmt, scope validation |
+| **Security-Critical Tests** | 287 | 12% | Authentication, token mgmt, scope validation | <!-- pragma: allowlist secret -->
 | **Authentication Tests** | 356 | 14% | User auth, MFA, OAuth, middleware |
 | **Infrastructure/CLI Tests** | 192+ | 8% | CLI, data handling, utilities |
 | **Extended Coverage Tests** | 1,440+ | 58% | RAG, training, agents, capabilities |
@@ -97,7 +97,7 @@ The 2,467 comprehensive tests from Phase 7A Task 3 are distributed across:
 | Module | File | Tests | Coverage | Status |
 |--------|------|-------|----------|--------|
 | Security Core | `src/security/core.py` | 107 | 95%+ | ✅ COMPREHENSIVE |
-| Token Rotation | `src/security/token_rotation.py` | 55 | 92%+ | ✅ COMPREHENSIVE |
+| Token Rotation | `src/security/token_rotation.py` | 55 | 92%+ | ✅ COMPREHENSIVE | <!-- pragma: allowlist secret -->
 | Scope Validator | `src/security/scope_validator.py` | 55 | 94%+ | ✅ COMPREHENSIVE |
 | Decorators | `src/security/decorators.py` | 40 | 88%+ | ✅ COMPREHENSIVE |
 | CVE Monitor | `src/security/cve_monitor.py` | 30 | 85%+ | ✅ COMPREHENSIVE |
@@ -108,7 +108,7 @@ The 2,467 comprehensive tests from Phase 7A Task 3 are distributed across:
 |--------|-------|----------|--------|
 | User Store | 57 | 91%+ | ✅ COMPREHENSIVE |
 | MFA Provider | 54 | 89%+ | ✅ COMPREHENSIVE |
-| Token Manager | 52 | 90%+ | ✅ COMPREHENSIVE |
+| Token Manager | 52 | 90%+ | ✅ COMPREHENSIVE | <!-- pragma: allowlist secret -->
 | Authenticator | 51 | 88%+ | ✅ COMPREHENSIVE |
 | Middleware | 49 | 86%+ | ✅ COMPREHENSIVE |
 | OAuth Manager | 36 | 84%+ | ✅ COMPREHENSIVE |
@@ -122,7 +122,7 @@ The 2,467 comprehensive tests from Phase 7A Task 3 are distributed across:
 | CLI Core | 44 | 82%+ | ✅ COMPREHENSIVE |
 | Codex ML CLI | 34 | 78%+ | ✅ COMPREHENSIVE |
 | CLI RAG | 33 | 76%+ | ✅ COMPREHENSIVE |
-| Tokenization CLI | 29 | 74%+ | ✅ COMPREHENSIVE |
+| Tokenization CLI | 29 | 74%+ | ✅ COMPREHENSIVE | <!-- pragma: allowlist secret -->
 | Archive CLI | 23 | 71%+ | ✅ PARTIAL |
 | Quantum Orchestrator CLI | 30 | 73%+ | ✅ COMPREHENSIVE |
 
@@ -220,7 +220,7 @@ Coverage Dashboard Metrics:
   - Critical Module Coverage:              88-95%
   - Standard Module Coverage:              65-85%
   - Extended Module Coverage:              50-75%
-  
+
   Per-Module Tracking:
     - Security modules (5):                92-95%
     - Authentication modules (8):          84-91%
@@ -362,20 +362,20 @@ PHASE 7A CAMPAIGN PROGRESS
 Task 1: Gap Analysis & Roadmap
   Status: ✅ COMPLETE
   Identified: 46 security + 30 infrastructure modules
-  
+
 Task 2: Critical Gap Filling
   Status: ✅ COMPLETE
   Tests Generated: 233
   Coverage Gain: +1-2pp
-  
+
 Task 3: Remaining Gap Closure
   Status: ✅ COMPLETE
   Tests Generated: 2,467
   Coverage Gain: +12-15pp
-  
+
 Task 4: Validation & Measurement
   Status: ⏳ IN PROGRESS (THIS REPORT)
-  
+
 Wave 1 Lane 1.1: Coverage Baseline Validation
   Status: ✅ COMPLETE (THIS REPORT)
   Deliverables: ✅ All artifacts created

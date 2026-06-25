@@ -48,7 +48,8 @@ def cmd_search(args: argparse.Namespace) -> int:
         try:
             text = get_text(DEFAULT_OWNER, DEFAULT_REPO, ref, path)
         except Exception as e:  # pragma: no cover - defensive
-            print(f"(error fetching file: {e})")
+            error_type = type(e).__name__
+            print(f"(error fetching file: <ERROR_TYPE>)")
             continue
         snippet = text[:800]
         print("```text")

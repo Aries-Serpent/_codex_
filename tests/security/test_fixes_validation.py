@@ -4,7 +4,6 @@ Validation tests to ensure all 5 test fixes from job 61355404613 are working.
 This module serves as a smoke test to verify that the critical fixes remain functional.
 """
 
-
 import pytest
 
 pytest.importorskip("numpy")

@@ -5,7 +5,6 @@ This module contains tests for code transformation and patch generation.
 """
 
 
-
 class TestTier:
     """Tests for Tier enum."""
 
@@ -42,7 +41,7 @@ class TestPatch:
             diff="@@ -1 +1,2 @@",
             rule_id="FORMAT001",
             tier=Tier.A,
-            description="Format function"
+            description="Format function",
         )
 
         assert patch.file_path == "src/module.py"
@@ -63,7 +62,7 @@ class TestPatch:
             diff="--- a/test.py\n+++ b/test.py",
             rule_id="WHITESPACE001",
             tier=Tier.A,
-            description="Add spaces around assignment"
+            description="Add spaces around assignment",
         )
 
         result = patch.to_dict()
@@ -84,10 +83,7 @@ class TestTransformResult:
 
         from codex.transform.transformer import TransformResult
 
-        result = TransformResult(
-            snapshot_id="snap_123",
-            timestamp=datetime.now(timezone.utc)
-        )
+        result = TransformResult(snapshot_id="snap_123", timestamp=datetime.now(timezone.utc))
 
         assert result.snapshot_id == "snap_123"
         assert result.tier_a_patches == []
@@ -103,9 +99,7 @@ class TestTransformResult:
         from codex.transform.transformer import TransformResult
 
         result = TransformResult(
-            snapshot_id="snap_456",
-            timestamp=datetime.now(timezone.utc),
-            applied=True
+            snapshot_id="snap_456", timestamp=datetime.now(timezone.utc), applied=True
         )
 
         d = result.to_dict()

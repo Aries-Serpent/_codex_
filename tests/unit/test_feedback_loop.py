@@ -85,21 +85,15 @@ class TestFeedbackCollectorRecordAndGetRecent:
         collector.record(FeedbackEvent(event_type="metric", source="x"))
         assert len(collector) == 1
 
-    def test_get_recent_returns_all_when_fewer_than_n(
-        self, collector: FeedbackCollector
-    ) -> None:
+    def test_get_recent_returns_all_when_fewer_than_n(self, collector: FeedbackCollector) -> None:
         for i in range(5):
             collector.record(FeedbackEvent(event_type="metric", source=f"s{i}"))
         result = collector.get_recent(n=100)
         assert len(result) == 5
 
-    def test_get_recent_pagination_returns_last_n(
-        self, collector: FeedbackCollector
-    ) -> None:
+    def test_get_recent_pagination_returns_last_n(self, collector: FeedbackCollector) -> None:
         for i in range(20):
-            collector.record(
-                FeedbackEvent(event_type="metric", source=f"s{i}", payload={"i": i})
-            )
+            collector.record(FeedbackEvent(event_type="metric", source=f"s{i}", payload={"i": i}))
         result = collector.get_recent(n=5)
         assert len(result) == 5
         # Last event should have i=19
@@ -109,9 +103,7 @@ class TestFeedbackCollectorRecordAndGetRecent:
 
     def test_get_recent_order_newest_last(self, collector: FeedbackCollector) -> None:
         for i in range(10):
-            collector.record(
-                FeedbackEvent(event_type="x", source="s", payload={"i": i})
-            )
+            collector.record(FeedbackEvent(event_type="x", source="s", payload={"i": i}))
         result = collector.get_recent(n=10)
         indices = [r.payload["i"] for r in result]
         assert indices == list(range(10))
@@ -146,9 +138,7 @@ class TestFeedbackCollectorAggregate:
         stats = collector.aggregate()
         assert stats["avg_score"] == pytest.approx(0.6)
 
-    def test_avg_score_none_when_no_scores(
-        self, collector: FeedbackCollector
-    ) -> None:
+    def test_avg_score_none_when_no_scores(self, collector: FeedbackCollector) -> None:
         collector.record(FeedbackEvent(event_type="metric", source="x"))
         stats = collector.aggregate()
         assert stats["avg_score"] is None
@@ -175,9 +165,7 @@ class TestFeedbackLoopOnAlert:
         assert ev.score == pytest.approx(0.5)
 
     def test_on_alert_passthrough_feedback_event(self, loop: FeedbackLoop) -> None:
-        original = FeedbackEvent(
-            event_type="alert", source="custom", score=0.7, payload={"k": "v"}
-        )
+        original = FeedbackEvent(event_type="alert", source="custom", score=0.7, payload={"k": "v"})
         loop.on_alert(original)
         recent = loop.collector.get_recent(n=1)
         assert recent[0] is original

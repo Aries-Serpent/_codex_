@@ -208,7 +208,7 @@ conn.commit()  # All-or-nothing
 **Example**:
 ```python
 try:
-    conn.execute("INSERT INTO users (username, email) VALUES (?, ?)", 
+    conn.execute("INSERT INTO users (username, email) VALUES (?, ?)",
                  ("alice", "alice@example.com"))
     conn.execute("INSERT INTO users (username, email) VALUES (?, ?)",
                  ("alice", "alice2@example.com"))  # Duplicate
@@ -353,11 +353,11 @@ sqlite3 codex_users.db "PRAGMA integrity_check;"
 Writer thread:
   conn.execute("INSERT INTO session_events ...")
   conn.commit()
-  
+
 Reader thread (concurrent):
   events = conn.execute("SELECT * FROM session_events WHERE ...").fetchall()
   # Sees consistent snapshot, doesn't wait for writer
-  
+
 Result: Readers never block (high throughput)
 ```
 
@@ -370,12 +370,12 @@ Writer thread:
     conn.execute("INSERT INTO users ...")
     conn.commit()
   # Lock released
-  
+
 Reader thread (concurrent):
   with lock:
     users = conn.execute("SELECT * FROM users").fetchall()
   # Must wait for writer's lock
-  
+
 Result: Serializable, but lower read concurrency than WAL
 Trade-off: Acceptable for low-volume users table
 ```
@@ -457,7 +457,7 @@ Enforcement: Foreign key constraint + test coverage
 class SQLiteUserRepository:
     def __init__(self):
         self._lock = threading.RLock()
-    
+
     def update(self, user_id, user):
         with self._lock:  # Serialize all updates
             # Update logic
@@ -525,4 +525,3 @@ class SQLiteUserRepository:
 **Production Readiness**: ✅ APPROVED
 
 **Final Recommendation**: Deploy with confidence. Implement recommended monitoring for operational excellence.
-

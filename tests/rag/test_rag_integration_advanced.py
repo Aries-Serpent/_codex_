@@ -7,7 +7,6 @@ Comprehensive testing for complex RAG workflows:
 - Performance benchmarks and optimization
 """
 
-
 import tempfile
 import threading
 import time
@@ -44,7 +43,11 @@ class TestComplexWorkflows:
             for doc_id, content in documents:
                 try:
                     indexer.add_document(doc_id, content)
-                except (AttributeError, OSError, RuntimeError):  # Expected: document may already exist or indexer may not be fully initialized
+                except (
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                ):  # Expected: document may already exist or indexer may not be fully initialized
                     _ = None
 
             # Retrieve relevant documents
@@ -101,7 +104,11 @@ class TestComplexWorkflows:
                     try:
                         indexer.add_document(doc_id, content)
                         doc_count += 1
-                    except (AttributeError, OSError, RuntimeError):  # Expected: concurrent indexing may fail or reach capacity
+                    except (
+                        AttributeError,
+                        OSError,
+                        RuntimeError,
+                    ):  # Expected: concurrent indexing may fail or reach capacity
                         _ = None
 
             # Should have added documents incrementally
@@ -130,7 +137,11 @@ class TestComplexWorkflows:
                 try:
                     indexer.remove_document(doc_id)
                     indexer.add_document(doc_id, updated_content)
-                except (AttributeError, OSError, RuntimeError):  # Expected: document may not exist or update operation may not be supported
+                except (
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                ):  # Expected: document may not exist or update operation may not be supported
                     _ = None
 
             assert True
@@ -157,7 +168,11 @@ class TestStressTests:
                 content = f"Document {i} with test content for stress testing. " * 10
                 try:
                     indexer.add_document(doc_id, content)
-                except (AttributeError, OSError, RuntimeError):  # Expected: stress test may exceed limits or cause memory issues
+                except (
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                ):  # Expected: stress test may exceed limits or cause memory issues
                     _ = None
 
             duration = time.time() - start_time
@@ -186,7 +201,11 @@ class TestStressTests:
                 content = f"Content about topic {i % 10}"
                 try:
                     indexer.add_document(doc_id, content)
-                except (AttributeError, OSError, RuntimeError):  # Expected: bulk indexing may fail for individual documents
+                except (
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                ):  # Expected: bulk indexing may fail for individual documents
                     _ = None
 
             # Test retrieval performance
@@ -196,7 +215,11 @@ class TestStressTests:
             for query in queries:
                 try:
                     retriever.retrieve(query, top_k=10)
-                except (AttributeError, OSError, RuntimeError):  # Expected: retrieval may fail if indexing was incomplete
+                except (
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                ):  # Expected: retrieval may fail if indexing was incomplete
                     _ = None
             duration = time.time() - start_time
 
@@ -274,7 +297,7 @@ class TestConcurrentAccess:
                     texts = [f"Thread {thread_id} text {i}" for i in range(10)]
                     emb = provider.encode(texts)
                     results.append((thread_id, emb))
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append((thread_id, e))
 
             # Create threads
@@ -308,7 +331,7 @@ class TestConcurrentAccess:
                         doc_id = f"thread_{thread_id}_doc_{i}"
                         content = f"Content from thread {thread_id}"
                         indexer.add_document(doc_id, content)
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append((thread_id, e))
 
             # Create threads
@@ -343,7 +366,7 @@ class TestConcurrentAccess:
                         query = f"thread {thread_id} query {i}"
                         res = retriever.retrieve(query, top_k=5)
                         results.append((thread_id, res))
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append((thread_id, e))
 
             # Create threads
@@ -378,16 +401,16 @@ class TestConcurrentAccess:
                         doc_id = f"rw_thread_{thread_id}_doc_{i}"
                         content = f"Content {i}"
                         indexer.add_document(doc_id, content)
-                except Exception as e:
-                    errors.append(('writer', thread_id, e))
+                except (IOError, OSError) as e:
+                    errors.append(("writer", thread_id, e))
 
             def reader(thread_id):
                 try:
                     for i in range(10):
                         query = f"content {i}"
                         retriever.retrieve(query, top_k=5)
-                except Exception as e:
-                    errors.append(('reader', thread_id, e))
+                except (IOError, OSError) as e:
+                    errors.append(("reader", thread_id, e))
 
             # Create mixed readers and writers
             threads = []
@@ -436,7 +459,9 @@ class TestPerformanceBenchmarks:
             # Larger batches should have better throughput
             # (or at least reasonable throughput)
             for batch_size, throughput in throughputs:
-                assert throughput > 10, f"Low throughput for batch {batch_size}: {throughput} docs/sec"
+                assert (
+                    throughput > 10
+                ), f"Low throughput for batch {batch_size}: {throughput} docs/sec"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -455,7 +480,11 @@ class TestPerformanceBenchmarks:
                 start = time.time()
                 try:
                     retriever.retrieve("benchmark query", top_k=top_k)
-                except (AttributeError, OSError, RuntimeError):  # Expected: retrieval may fail during performance benchmarking
+                except (
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                ):  # Expected: retrieval may fail during performance benchmarking
                     _ = None
                 latency = (time.time() - start) * 1000  # ms
                 latencies.append((top_k, latency))
@@ -484,7 +513,11 @@ class TestPerformanceBenchmarks:
                 for i in range(num_docs):
                     try:
                         indexer.add_document(f"bench_{size}_{i}", content)
-                    except (AttributeError, OSError, RuntimeError):  # Expected: benchmarking may hit resource limits
+                    except (
+                        AttributeError,
+                        OSError,
+                        RuntimeError,
+                    ):  # Expected: benchmarking may hit resource limits
                         _ = None
                 duration = time.time() - start
 
@@ -571,9 +604,9 @@ class TestResourceManagement:
                     indexer.add_document(f"cleanup_doc_{i}", "content")
 
                 # Cleanup if method exists
-                if hasattr(indexer, 'close'):
+                if hasattr(indexer, "close"):
                     indexer.close()
-                elif hasattr(indexer, 'cleanup'):
+                elif hasattr(indexer, "cleanup"):
                     indexer.cleanup()
 
                 # Should complete without errors
@@ -592,11 +625,15 @@ class TestResourceManagement:
             for i in range(50):
                 try:
                     indexer.add_document(f"shutdown_doc_{i}", "content")
-                except (AttributeError, OSError, RuntimeError):  # Expected: cleanup may fail if resource already released in test teardown
+                except (
+                    AttributeError,
+                    OSError,
+                    RuntimeError,
+                ):  # Expected: cleanup may fail if resource already released in test teardown
                     _ = None
 
             # Initiate shutdown
-            if hasattr(indexer, 'shutdown'):
+            if hasattr(indexer, "shutdown"):
                 indexer.shutdown()
 
             # Should shutdown cleanly

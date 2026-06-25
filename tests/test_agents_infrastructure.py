@@ -632,7 +632,7 @@ class TestConcurrentAccess:
                         )
                         conn.commit()
                     write_count[0] += 1
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append((thread_id, str(e)))
 
         # Spawn 5 threads writing 10 messages each

@@ -80,10 +80,7 @@ class TestOAuth2AdvancedFlows:
 
     def test_authorization_code_with_custom_params(self, oauth):
         """Test auth code with custom parameters."""
-        params = {
-            "custom_param": "value",
-            "another_param": "another_value"
-        }
+        params = {"custom_param": "value", "another_param": "another_value"}
 
         # Should handle custom params
         assert params
@@ -93,7 +90,7 @@ class TestOAuth2AdvancedFlows:
         uris = [
             "https://app1.example.com/callback",
             "https://app2.example.com/callback",
-            "https://localhost:3000/callback"
+            "https://localhost:3000/callback",
         ]
 
         # Should validate against registered URIs
@@ -108,7 +105,7 @@ class TestOAuth2AdvancedFlows:
             "unsupported_response_type",
             "invalid_scope",
             "server_error",
-            "temporarily_unavailable"
+            "temporarily_unavailable",
         ]
 
         assert len(errors) == 7
@@ -149,7 +146,7 @@ class TestPKCEAdvanced:
         # Should only accept S256 or plain
         try:
             oauth.create_code_challenge(code_verifier, "invalid")
-        except:
+        except (AttributeError, OSError, RuntimeError):
             pass
 
     def test_pkce_missing_verifier(self, oauth):
@@ -183,8 +180,7 @@ class TestPKCEAdvanced:
     def test_pkce_with_multiple_code_challenges(self, oauth):
         """Test multiple code challenges."""
         challenges = [
-            oauth.create_code_challenge(oauth.generate_code_verifier(), "S256")
-            for _ in range(10)
+            oauth.create_code_challenge(oauth.generate_code_verifier(), "S256") for _ in range(10)
         ]
 
         # All should be unique
@@ -208,11 +204,7 @@ class TestOpenIDConnect:
     def test_id_token_generation(self, oauth):
         """Test ID token generation."""
         user_id = "user123"
-        claims = {
-            "sub": user_id,
-            "aud": "client_id",
-            "iss": "https://auth.example.com"
-        }
+        claims = {"sub": user_id, "aud": "client_id", "iss": "https://auth.example.com"}
 
         assert claims["sub"] == user_id
 
@@ -247,13 +239,7 @@ class TestOpenIDConnect:
 
     def test_claims_request(self, oauth):
         """Test claims request."""
-        claims_request = {
-            "userinfo": {
-                "email": None,
-                "email_verified": None,
-                "name": None
-            }
-        }
+        claims_request = {"userinfo": {"email": None, "email_verified": None, "name": None}}
 
         assert "email" in claims_request["userinfo"]
 
@@ -301,8 +287,6 @@ class TestScopeManagement:
 
     def test_scope_upgrade_prevention(self, oauth):
         """Test preventing scope upgrade."""
-        current = ["read"]
-        requested = ["read", "write", "admin"]
 
         # Should not auto-approve higher scopes
         upgradeable = False
@@ -340,15 +324,7 @@ class TestProviderManagement:
 
     def test_provider_jwks_endpoint(self):
         """Test JWKS endpoint."""
-        jwks = {
-            "keys": [
-                {
-                    "kty": "RSA",
-                    "use": "sig",
-                    "kid": "key1"
-                }
-            ]
-        }
+        jwks = {"keys": [{"kty": "RSA", "use": "sig", "kid": "key1"}]}
 
         assert len(jwks["keys"]) == 1
 
@@ -445,7 +421,6 @@ class TestCrossOriginOAuth:
 
     def test_subdomain_callback_handling(self):
         """Test subdomain in callback."""
-        allowed = "*.example.com"
         callback = "https://api.example.com/callback"
 
         # Wildcard domains

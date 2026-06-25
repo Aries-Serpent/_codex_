@@ -27,7 +27,7 @@ import sys
 from collections.abc import Sequence
 from typing import Any, Optional
 
-from codex_ml import __version__  # type: ignore[attr-defined]
+from codex_ml import __version__
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -123,7 +123,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             try:
                 prompt = filters.enforce(prompt, stage="prompt", bypass=bypass)
             except SafetyViolation as exc:
-                logger.debug(f"SafetyViolation: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"SafetyViolation: <ERROR_TYPE>")
                 log_event(
                     logger,
                     "cli.finish",
@@ -153,7 +154,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             try:
                 text = filters.enforce(text, stage="output", bypass=bypass)
             except SafetyViolation as exc:
-                logger.debug(f"SafetyViolation: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"SafetyViolation: <ERROR_TYPE>")
                 log_event(
                     logger,
                     "cli.finish",

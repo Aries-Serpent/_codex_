@@ -302,11 +302,11 @@ while datetime.utcnow() < end_time:
         ["./scripts/health_check.sh", "--environment", "staging"],
         capture_output=True
     )
-    
+
     if result.returncode != 0:
         print(f"⚠️  Warning: Staging health degraded")
         # Continue monitoring but don't fail
-    
+
     # Show metrics
     print(f"✓ {datetime.utcnow().isoformat()}: Staging operational")
     time.sleep(30)
@@ -345,17 +345,17 @@ gh secret set CODEX_MASTER_KEY --body "$NEW_KEY" \
 if [ $? -ne 0 ]; then
     echo "❌ CRITICAL ERROR: Failed to set CODEX_MASTER_KEY"
     echo "🚨 EMERGENCY ROLLBACK INITIATED"
-    
+
     # Automatic rollback
     gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
       --repo Aries-Serpent/_codex_
-    
+
     # Alert security team
     curl -X POST "$SLACK_WEBHOOK" -d '{
       "text": "🚨 KEY ROTATION FAILED - ROLLBACK SUCCESSFUL",
       "channel": "#security"
     }'
-    
+
     exit 1
 fi
 

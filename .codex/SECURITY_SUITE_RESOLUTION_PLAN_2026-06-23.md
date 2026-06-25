@@ -37,7 +37,7 @@ This plan consolidates:
 | Dependency Security Scan | ✅ Success | ~3m21s | pip-audit + Safety + CycloneDX analysis |
 | SBOM Generation | ✅ Success | ~3m16s | Software Bill of Materials generated |
 | Semgrep SAST | ✅ Success | ~9m45s | 3 Semgrep passes (SARIF, JSON, summary) |
-| Secret Scanning | 🔄 In Progress (Step 5/7) | ~6m+ | detect-secrets running; summary/upload pending |
+| Secret Scanning | 🔄 In Progress (Step 5/7) | ~6m+ | detect-secrets running; summary/upload pending | <!-- pragma: allowlist secret -->
 
 ### Artifacts Produced
 
@@ -391,4 +391,3 @@ prompt: Consolidate all Phase 1-3 reports. Run pre-merge validation (security, C
 **Document Status:** ✅ READY FOR EXECUTION  
 **Authority:** Agentic Managed Repo (Session 318, @copilot)  
 **Generated:** 2026-06-23T15:36:38Z
-

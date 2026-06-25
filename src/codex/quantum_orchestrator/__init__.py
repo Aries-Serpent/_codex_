@@ -58,21 +58,18 @@ from .orchestrator import (
 
 # QFT Extensions (Phases C.1, C.2, C.3)
 try:
-    from .qft import (
+    from .qft import (  # C.2 - Entanglement; C.3 - Path Integral; C.1 - Second Quantization
         ActionFunctional,
         AdaptivePathOptimizer,
         AnnihilationOperator,
         BatchCreationOperator,
-        # C.2 - Entanglement
         BellState,
         CreationOperator,
         EntangledPair,
         EntanglementManager,
-        # C.3 - Path Integral
         ExecutionPath,
         FockState,
         NumberOperator,
-        # C.1 - Second Quantization
         ParticleStatistics,
         PathIntegralOptimizer,
         PathSampler,
@@ -85,8 +82,9 @@ try:
 
     QFT_AVAILABLE = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     QFT_AVAILABLE = False
 
 __all__ = [

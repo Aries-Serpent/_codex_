@@ -22,7 +22,7 @@ class TestRoutingPattern:
             pattern_name="test_pattern",
             cdm_condition="condition_1",
             zd_destination_group="group_a",
-            d365_queue="queue_1"
+            d365_queue="queue_1",
         )
 
         assert pattern.pattern_name == "test_pattern"
@@ -38,7 +38,7 @@ class TestRoutingPattern:
             "pattern_name": "pattern_1",
             "cdm_condition": "cond",
             "zd_destination_group": "group",
-            "d365_queue": "queue"
+            "d365_queue": "queue",
         }
 
         pattern = RoutingPattern(**data)
@@ -55,7 +55,7 @@ class TestRoutingPattern:
                 cdm_condition="cond",
                 zd_destination_group="group",
                 d365_queue="queue",
-                extra_field="not_allowed"
+                extra_field="not_allowed",
             )
 
     def test_missing_required_field(self):
@@ -65,7 +65,7 @@ class TestRoutingPattern:
         with pytest.raises(ValidationError):
             RoutingPattern(
                 pattern_name="test",
-                cdm_condition="cond"
+                cdm_condition="cond",
                 # Missing required fields
             )
 
@@ -77,11 +77,7 @@ class TestSlaParity:
         """Test SlaParity basic creation."""
         from codex.mapping.models import SlaParity
 
-        sla = SlaParity(
-            cdm_metric="response_time",
-            zd_target_minutes=30,
-            d365_target_minutes=45
-        )
+        sla = SlaParity(cdm_metric="response_time", zd_target_minutes=30, d365_target_minutes=45)
 
         assert sla.cdm_metric == "response_time"
         assert sla.zd_target_minutes == 30
@@ -91,11 +87,7 @@ class TestSlaParity:
         """Test SlaParity with zero minutes."""
         from codex.mapping.models import SlaParity
 
-        sla = SlaParity(
-            cdm_metric="metric",
-            zd_target_minutes=0,
-            d365_target_minutes=0
-        )
+        sla = SlaParity(cdm_metric="metric", zd_target_minutes=0, d365_target_minutes=0)
 
         assert sla.zd_target_minutes == 0
         assert sla.d365_target_minutes == 0
@@ -105,11 +97,7 @@ class TestSlaParity:
         from codex.mapping.models import SlaParity
 
         with pytest.raises(ValidationError):
-            SlaParity(
-                cdm_metric="metric",
-                zd_target_minutes=-5,
-                d365_target_minutes=10
-            )
+            SlaParity(cdm_metric="metric", zd_target_minutes=-5, d365_target_minutes=10)
 
     def test_extra_fields_forbidden(self):
         """Test extra fields are forbidden."""
@@ -120,7 +108,7 @@ class TestSlaParity:
                 cdm_metric="metric",
                 zd_target_minutes=10,
                 d365_target_minutes=20,
-                extra="not_allowed"
+                extra="not_allowed",
             )
 
 

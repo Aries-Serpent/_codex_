@@ -237,10 +237,12 @@ if _TOKENIZERS_STUB_FLAG or _tokenizers_spec is None:
         def encode(self, text: str) -> object:
             """Return encoded result as a simple object with ids attribute."""
             ids = [self.vocab.get(tok, 1) for tok in str(text).split()]
+
             # Use a simple class instead of SimpleNamespace for hashability
             class EncodeResult:
                 def __init__(self, ids):
                     self.ids = ids
+
             return EncodeResult(ids)
 
         def save(self, path: str) -> None:
@@ -277,7 +279,7 @@ if _SPM_STUB_FLAG:
                     continue
                 try:
                     data = Path(path).read_text(encoding="utf-8")
-                except Exception as _err:
+                except (IOError, OSError) as _err:
                     continue
                 tokens.extend(data.split())
         elif "sentence_iterator" in kwargs:
@@ -312,7 +314,7 @@ if _SPM_STUB_FLAG:
             self.model_file = path
             try:
                 data = json.loads(Path(path).read_text(encoding="utf-8"))
-            except Exception as _err:
+            except (IOError, OSError) as _err:
                 data = {"tokens": []}
             self._tokens = list(data.get("tokens", []))
             self._token_to_id = {
@@ -377,6 +379,7 @@ def no_sentencepiece(monkeypatch):
     simulating an ImportError condition for testing fallback behavior.
     """
     import codex_ml.tokenization.sentencepiece_adapter as sp_adapter
+
     monkeypatch.setattr(sp_adapter, "spm", None)
     yield
     # monkeypatch automatically restores original value

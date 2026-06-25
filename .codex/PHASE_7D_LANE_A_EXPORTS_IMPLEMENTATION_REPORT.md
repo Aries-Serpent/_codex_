@@ -10,7 +10,7 @@
 
 ## Executive Summary
 
-Successfully implemented **11 viable ML module exports** in `src/codex_ml/__init__.py`. 
+Successfully implemented **11 viable ML module exports** in `src/codex_ml/__init__.py`.
 
 **Analysis Baseline:** 15 exports identified  
 **Implemented:** 11 exports (viable/existing)  
@@ -62,19 +62,19 @@ Added 11 new entries to `_EXPORT_MAP` using consistent lazy-loading pattern:
 ```python
 _EXPORT_MAP = {
     # ... existing exports ...
-    
+
     # P1 - CLI-Critical Exports (BLOCKING)
     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
     "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),  # pragma: allowlist secret
     "set_seed": ("codex_ml.utils.repro", "set_seed"),
-    
+
     # P2 - Core ML Functionality (High Priority)
     "CheckpointManager": ("codex_ml.utils.checkpointing", "CheckpointManager"),
     "load_checkpoint": ("codex_ml.utils.checkpointing", "load_checkpoint"),
     "save_checkpoint": ("codex_ml.utils.checkpointing", "save_checkpoint"),
     "load_training_checkpoint": ("codex_ml.utils.checkpointing", "load_training_checkpoint"),
     "verify_ckpt_integrity": ("codex_ml.utils.checkpointing", "verify_ckpt_integrity"),
-    
+
     # P3 - Observability/Utilities (Medium Priority)
     "init_logger": ("codex_ml.monitoring.codex_logging", "init_logger"),
     "init_telemetry": ("codex_ml.monitoring.codex_logging", "init_telemetry"),
@@ -172,7 +172,7 @@ The analysis report identified 15 exports, but 4 could not be implemented:
 
 **Breaking Changes:** None  
 **Deprecated Exports:** None  
-**New Import Pattern:** 
+**New Import Pattern:**
 ```python
 # Old way still works (direct submodule import)
 from codex_ml.utils.repro import set_reproducible

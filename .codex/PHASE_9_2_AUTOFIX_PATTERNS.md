@@ -232,7 +232,7 @@ ci-testing-agent:
   patterns: [RP-001, RP-002, RP-005]
   p19_detection: enabled
   sys_path_injection: aggressive
-  
+
 ci-importerror-agent:
   patterns: [RP-005]
   fallback_mode: true

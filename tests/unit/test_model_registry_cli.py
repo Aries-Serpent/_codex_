@@ -50,7 +50,9 @@ def _load_registry_module():
         sys.modules["codex_ml.registry.mlflow_registry"] = fake_mlflow_registry
 
         module_path = _repo_root() / "src" / "codex_ml" / "cli" / "registry.py"
-        spec = importlib.util.spec_from_file_location("codex_ml_cli_registry_under_test", module_path)
+        spec = importlib.util.spec_from_file_location(
+            "codex_ml_cli_registry_under_test", module_path
+        )
         assert spec is not None and spec.loader is not None
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -92,7 +94,9 @@ class _FakeVersion:
         }
 
 
-def test_list_models_command_text(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+def test_list_models_command_text(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
     registry = _load_registry_module()
 
     class _FakeRegistry:
@@ -179,7 +183,9 @@ def test_promote_model_command_keep_existing_sets_archive_false(
     assert captured["archive_existing"] is False
 
 
-def test_compare_models_command_text(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+def test_compare_models_command_text(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
     registry = _load_registry_module()
     comparison = {
         "version_1": {"stage": "Staging", "created_at": "2026-01-01T00:00:00+00:00"},
@@ -205,7 +211,9 @@ def test_compare_models_command_text(monkeypatch: pytest.MonkeyPatch, capsys: py
     assert "Time difference: 2 days" in out
 
 
-def test_get_lineage_command_no_lineage(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+def test_get_lineage_command_no_lineage(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
     registry = _load_registry_module()
 
     class _FakeRegistry:
@@ -217,13 +225,17 @@ def test_get_lineage_command_no_lineage(monkeypatch: pytest.MonkeyPatch, capsys:
             return {"lineage": None}
 
     monkeypatch.setattr(registry, "ModelRegistry", _FakeRegistry)
-    code = registry.get_lineage_command(Namespace(tracking_uri=None, name="demo", version="4", json=False))
+    code = registry.get_lineage_command(
+        Namespace(tracking_uri=None, name="demo", version="4", json=False)
+    )
     out = capsys.readouterr().out
     assert code == 0
     assert "No lineage information available" in out
 
 
-def test_export_model_command_success(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+def test_export_model_command_success(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
     registry = _load_registry_module()
 
     class _FakeRegistry:
@@ -243,7 +255,9 @@ def test_export_model_command_success(monkeypatch: pytest.MonkeyPatch, capsys: p
     assert "Exported demo version 4 to build/out/demo-v4" in out
 
 
-def test_list_models_command_error_path(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+def test_list_models_command_error_path(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
     registry = _load_registry_module()
 
     class _FakeRegistry:

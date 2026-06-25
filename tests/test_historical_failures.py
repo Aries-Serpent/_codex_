@@ -21,9 +21,7 @@ try:
     from agent import (
         CIDiagnosticAgent,
     )
-    from agent import (
-        DiagnosticReport as DiagnosticReport,
-    )
+    from agent import DiagnosticReport as DiagnosticReport
 except ImportError:
     pytest.skip("CI Diagnostic Agent not available", allow_module_level=True)
 
@@ -249,26 +247,30 @@ class TestIntegration:
         assert json.loads(json_report) is not None
 
 
-@pytest.mark.parametrize("failure_type,expected_pattern", [
-    ("import_error", "ImportError"),
-    ("rust_compile_error", "error[E"),
-    ("disk_full", "No space left"),
-    ("timeout", "Timeout after"),
-    ("cache_miss", "Cache not found"),
-    ("dependency_error", "Could not find.*requirement"),
-    ("artifact_missing", "Unable to find.*artifact"),
-])
+@pytest.mark.parametrize(
+    "failure_type,expected_pattern",
+    [
+        ("import_error", "ImportError"),
+        ("rust_compile_error", "error[E"),
+        ("disk_full", "No space left"),
+        ("timeout", "Timeout after"),
+        ("cache_miss", "Cache not found"),
+        ("dependency_error", "Could not find.*requirement"),
+        ("artifact_missing", "Unable to find.*artifact"),
+    ],
+)
 def test_pattern_coverage(failure_type, expected_pattern):
     """Test that all expected patterns are defined"""
     agent = CIDiagnosticAgent()
 
     # Check pattern exists
-    patterns = {p['id']: p for p in agent.patterns}
+    patterns = {p["id"]: p for p in agent.patterns}
     assert failure_type in patterns
 
     # Verify pattern can match expected strings
     import re
-    pattern = patterns[failure_type]['pattern']
+
+    pattern = patterns[failure_type]["pattern"]
     assert re.search(pattern, expected_pattern, re.IGNORECASE) is not None
 
 

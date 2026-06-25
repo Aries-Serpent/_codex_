@@ -22,7 +22,9 @@ from types import SimpleNamespace
 
 import pytest
 
-pytestmark = pytest.mark.filterwarnings("ignore::DeprecationWarning")  # noqa: F841 - consumed by pytest
+pytestmark = pytest.mark.filterwarnings(
+    "ignore::DeprecationWarning"
+)  # noqa: F841 - consumed by pytest
 _ = pytestmark
 
 
@@ -206,7 +208,7 @@ def _get_adapter_module():
     """Import and return the sentencepiece_adapter module, skipping tests when unavailable."""
     try:
         return importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    except Exception as _err:
+    except (ImportError, AttributeError) as _err:
         # If the module cannot be imported for reasons unrelated to sentencepiece, raise so tests fail loudly.
         raise
 

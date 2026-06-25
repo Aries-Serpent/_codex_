@@ -7,7 +7,7 @@ This template shows the structure used for the generated index file. It demonstr
 ```markdown
 # Agent Accountability Report — Session Index
 
-> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session 
+> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session
 > groups for GitHub rendering compatibility. All {TOTAL_SESSIONS} sessions are preserved in {TOTAL_GROUPS} chunks.
 
 ## Quick Navigation

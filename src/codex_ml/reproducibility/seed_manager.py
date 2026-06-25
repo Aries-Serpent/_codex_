@@ -25,8 +25,9 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     np = None
     NUMPY_AVAILABLE = False
 
@@ -37,7 +38,7 @@ try:
     TORCH_AVAILABLE = hasattr(torch, "manual_seed")
 except (ImportError, AttributeError):
     # AttributeError can occur from sitecustomize.py
-    torch = None  # type: ignore[assignment]
+    torch = None
     TORCH_AVAILABLE = False
 
 
@@ -156,7 +157,8 @@ class SeedManager:
                     try:
                         torch.use_deterministic_algorithms(True)
                     except RuntimeError as e:
-                        logger.debug(f"RuntimeError: {e}")
+                        error_type = type(e).__name__
+                        logger.debug(f"RuntimeError: <ERROR_TYPE>")
                         logger.warning(
                             f"torch.use_deterministic_algorithms(True) failed: {e}. "
                             "Some operations may not be fully deterministic."

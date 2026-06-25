@@ -309,7 +309,8 @@ class GitHubClient:
             return None
 
         except GitHubAPIError as e:
-            logger.debug(f"GitHubAPIError: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"GitHubAPIError: <ERROR_TYPE>")
             raise WorkflowTriggerError(
                 workflow=str(workflow_id),
                 reason=e.message,
@@ -437,8 +438,9 @@ class GitHubClient:
             await self._post(f"/repos/{owner}/{repo}/actions/runs/{run_id}/cancel")
             return True
         except GitHubAPIError as e:
-            logger.debug(f"GitHubAPIError: {e}")
-            logger.warning(f"GitHubAPIError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"GitHubAPIError: <ERROR_TYPE>")
+            logger.warning(f"GitHubAPIError: <ERROR_TYPE>", exc_info=True)
             return False
 
     async def rerun_workflow(
@@ -466,8 +468,9 @@ class GitHubClient:
             )
             return True
         except GitHubAPIError as e:
-            logger.debug(f"GitHubAPIError: {e}")
-            logger.warning(f"GitHubAPIError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"GitHubAPIError: <ERROR_TYPE>")
+            logger.warning(f"GitHubAPIError: <ERROR_TYPE>", exc_info=True)
             return False
 
     # =========================================================================

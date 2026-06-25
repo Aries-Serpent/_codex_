@@ -18,6 +18,7 @@ from codex.auth.oauth_manager import OAuthConfig, OAuthManager
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def oauth_config():
     """Create OAuth configuration."""
@@ -39,6 +40,7 @@ def oauth_manager(oauth_config):
 # ============================================================================
 # Initialization Tests
 # ============================================================================
+
 
 class TestOAuthInitialization:
     """Test OAuth manager initialization."""
@@ -62,6 +64,7 @@ class TestOAuthInitialization:
 # ============================================================================
 # Authorization URL Tests
 # ============================================================================
+
 
 class TestAuthorizationUrl:
     """Test authorization URL generation."""
@@ -110,6 +113,7 @@ class TestAuthorizationUrl:
 # State Management Tests
 # ============================================================================
 
+
 class TestStateManagement:
     """Test OAuth state parameter handling."""
 
@@ -144,6 +148,7 @@ class TestStateManagement:
 # ============================================================================
 # Token Exchange Tests
 # ============================================================================
+
 
 class TestTokenExchange:
     """Test OAuth token exchange."""
@@ -185,7 +190,7 @@ class TestTokenExchange:
                 }
 
                 try:
-                    result = oauth_manager.exchange_code_for_token("invalid_code")
+                    oauth_manager.exchange_code_for_token("invalid_code")
                 except Exception as _err:
                     # Exception is acceptable for error response
                     pass
@@ -194,6 +199,7 @@ class TestTokenExchange:
 # ============================================================================
 # Callback Handling Tests
 # ============================================================================
+
 
 class TestCallbackHandling:
     """Test OAuth callback handling."""
@@ -218,7 +224,7 @@ class TestCallbackHandling:
         """Test handling callback with error."""
         if hasattr(oauth_manager, "handle_callback"):
             try:
-                result = oauth_manager.handle_callback(
+                oauth_manager.handle_callback(
                     error="access_denied",
                     error_description="User denied access",
                 )
@@ -231,7 +237,7 @@ class TestCallbackHandling:
         """Test handling callback without state."""
         if hasattr(oauth_manager, "handle_callback"):
             try:
-                result = oauth_manager.handle_callback(code="auth_code")
+                oauth_manager.handle_callback(code="auth_code")
                 # Should handle missing state
             except (AttributeError, OSError, RuntimeError):
                 # Expected: method may not exist or raise implementation errors
@@ -241,6 +247,7 @@ class TestCallbackHandling:
 # ============================================================================
 # User Info Retrieval Tests
 # ============================================================================
+
 
 class TestUserInfoRetrieval:
     """Test retrieving user information via OAuth token."""
@@ -277,6 +284,7 @@ class TestUserInfoRetrieval:
 # Token Refresh Tests
 # ============================================================================
 
+
 class TestTokenRefresh:
     """Test token refresh functionality."""
 
@@ -312,6 +320,7 @@ class TestTokenRefresh:
 # Error Handling Tests
 # ============================================================================
 
+
 class TestErrorHandling:
     """Test error handling in OAuth."""
 
@@ -319,7 +328,7 @@ class TestErrorHandling:
         """Test handling invalid client ID."""
         oauth_config["client_id"] = ""
         try:
-            manager = OAuthManager(**oauth_config)
+            OAuthManager(**oauth_config)
             # Should either raise or handle gracefully
         except ValueError:
             pass
@@ -345,7 +354,7 @@ class TestErrorHandling:
                 mock_post.side_effect = Exception("Network error")
 
                 try:
-                    result = oauth_manager.exchange_code_for_token("code")
+                    oauth_manager.exchange_code_for_token("code")
                 except Exception as _err:
                     # Network error is expected
                     pass
@@ -354,6 +363,7 @@ class TestErrorHandling:
 # ============================================================================
 # Edge Cases Tests
 # ============================================================================
+
 
 class TestOAuthEdgeCases:
     """Test edge cases in OAuth."""
@@ -364,7 +374,7 @@ class TestOAuthEdgeCases:
             long_state = "x" * 1000
             # Should handle long state
             try:
-                result = oauth_manager.verify_state(long_state)
+                oauth_manager.verify_state(long_state)
             except (AttributeError, OSError, RuntimeError):
                 # Expected: method may not exist or raise implementation errors
                 pass
@@ -377,7 +387,7 @@ class TestOAuthEdgeCases:
                 mock_post.return_value.json.return_value = {"error": "invalid_code"}
 
                 try:
-                    result = oauth_manager.exchange_code_for_token(special_code)
+                    oauth_manager.exchange_code_for_token(special_code)
                 except (AttributeError, OSError, RuntimeError):
                     # Expected: method may not exist or raise implementation errors
                     pass
@@ -386,7 +396,7 @@ class TestOAuthEdgeCases:
         """Test unicode in callback parameters."""
         if hasattr(oauth_manager, "handle_callback"):
             try:
-                result = oauth_manager.handle_callback(
+                oauth_manager.handle_callback(
                     code="code_123",
                     state="state_世界",
                 )
@@ -401,7 +411,7 @@ class TestOAuthEdgeCases:
                 mock_get.return_value.json.return_value = {}
 
                 try:
-                    result = oauth_manager.get_user_info("")
+                    oauth_manager.get_user_info("")
                 except (AttributeError, OSError, RuntimeError):
                     # Expected: method may not exist or raise implementation errors
                     pass
@@ -413,7 +423,7 @@ class TestOAuthEdgeCases:
                 mock_post.return_value.json.return_value = None
 
                 try:
-                    result = oauth_manager.exchange_code_for_token("code")
+                    oauth_manager.exchange_code_for_token("code")
                 except (AttributeError, OSError, RuntimeError):
                     # Expected: method may not exist or raise implementation errors
                     pass
@@ -422,6 +432,7 @@ class TestOAuthEdgeCases:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestOAuthIntegration:
     """Integration tests for OAuth manager."""

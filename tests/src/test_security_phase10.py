@@ -23,12 +23,8 @@ from codex.security.log_sanitizer import (
     safe_log_message,
     sanitize_dict_for_log,
 )
-from codex.security.log_sanitizer import (
-    mask_sensitive as ls_mask_sensitive,
-)
-from codex.security.log_sanitizer import (
-    sanitize_log as ls_sanitize_log,
-)
+from codex.security.log_sanitizer import mask_sensitive as ls_mask_sensitive
+from codex.security.log_sanitizer import sanitize_log as ls_sanitize_log
 from codex.security.sanitization import sanitize_html
 
 # ============================================================================

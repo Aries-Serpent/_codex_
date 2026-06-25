@@ -26,10 +26,12 @@ class TestErrorHandlerImports:
 
     def test_import_codex_error_handler_class(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
+
         assert CodexErrorHandler is not None
 
     def test_import_error_handler_singleton(self) -> None:
         from codex.logging.error_handler import error_handler
+
         assert error_handler is not None
 
 
@@ -238,8 +240,10 @@ class TestErrorHandlerSingleton:
 
     def test_singleton_exists(self) -> None:
         from codex.logging.error_handler import error_handler
+
         assert error_handler is not None
 
     def test_singleton_is_codex_error_handler(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler, error_handler
+
         assert isinstance(error_handler, CodexErrorHandler)

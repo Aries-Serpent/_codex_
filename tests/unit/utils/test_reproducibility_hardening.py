@@ -10,7 +10,8 @@ from src.codex_ml.utils.reproducibility_hardening import (
     save_env_snapshot,
 )
 
- # pragma: allowlist secret # pragma: allowlist secret
+# pragma: allowlist secret # pragma: allowlist secret
+
 
 def test_enable_deterministic_training_success():
     """Test deterministic training with all dependencies mocked successfully."""
@@ -22,8 +23,12 @@ def test_enable_deterministic_training_success():
     mock_tf = MagicMock()
     mock_tf.config.experimental.enable_op_determinism = MagicMock()
 
-    with patch("random.seed"), \
-         patch.dict("sys.modules", {"numpy": mock_numpy, "torch": mock_torch, "tensorflow": mock_tf}):
+    with (
+        patch("random.seed"),
+        patch.dict(
+            "sys.modules", {"numpy": mock_numpy, "torch": mock_torch, "tensorflow": mock_tf}
+        ),
+    ):
 
         status = enable_deterministic_training(42, strict=True)
 
@@ -53,6 +58,7 @@ def test_enable_deterministic_training_success():
         assert status["tensorflow_deterministic"] is True
         mock_tf.config.experimental.enable_op_determinism.assert_called_once()
 
+
 def test_enable_deterministic_training_missing_dependencies():
     """Test when numpy, torch, tensorflow are missing."""
     with patch.dict("sys.modules", {"numpy": None, "torch": None, "tensorflow": None}):
@@ -62,14 +68,18 @@ def test_enable_deterministic_training_missing_dependencies():
         assert status["torch"] is None
         assert status["tensorflow"] is None
 
+
 def test_enable_deterministic_training_exceptions():
     """Test exceptions in setting seeds."""
+
     class MockEnviron(dict):
         def __setitem__(self, key, value):
             raise Exception("mock env error")
 
-    with patch("random.seed", side_effect=Exception("mock random error")), \
-         patch("src.codex_ml.utils.reproducibility_hardening.os.environ", MockEnviron()):
+    with (
+        patch("random.seed", side_effect=Exception("mock random error")),
+        patch("src.codex_ml.utils.reproducibility_hardening.os.environ", MockEnviron()),
+    ):
         status = enable_deterministic_training(42)
         assert status["python_random"] is False
         assert status["python_hash_seed"] is False
@@ -81,11 +91,14 @@ def test_enable_deterministic_training_exceptions():
     mock_tf = MagicMock()
     mock_tf.random.set_seed.side_effect = Exception("tf error")
 
-    with patch.dict("sys.modules", {"numpy": mock_numpy, "torch": mock_torch, "tensorflow": mock_tf}):
+    with patch.dict(
+        "sys.modules", {"numpy": mock_numpy, "torch": mock_torch, "tensorflow": mock_tf}
+    ):
         status = enable_deterministic_training(42)
         assert status["numpy"] is False
         assert status["torch"] is False
         assert status["tensorflow"] is False
+
 
 def test_enable_deterministic_training_torch_no_cuda_and_strict_exception():
     mock_torch = MagicMock()
@@ -97,6 +110,7 @@ def test_enable_deterministic_training_torch_no_cuda_and_strict_exception():
         assert status["torch_cuda"] is None
         assert status["torch_deterministic_algorithms"] is False
 
+
 def test_enable_deterministic_training_tf_no_op_determinism():
     class _Experimental:
         pass
@@ -107,6 +121,7 @@ def test_enable_deterministic_training_tf_no_op_determinism():
         status = enable_deterministic_training(42)
         assert status["tensorflow"] is True
         assert status["tensorflow_deterministic"] is None
+
 
 def test_save_env_snapshot(tmp_path):
     output_path = tmp_path / "env_snapshot.txt"
@@ -132,8 +147,10 @@ def test_save_env_snapshot(tmp_path):
     mock_torch.cuda.get_device_name.return_value = "Mock GPU"
     mock_torch.cuda.get_device_capability.return_value = (8, 6)
 
-    with patch("subprocess.check_output", side_effect=mock_check_output), \
-         patch.dict("sys.modules", {"torch": mock_torch}):
+    with (
+        patch("subprocess.check_output", side_effect=mock_check_output),
+        patch.dict("sys.modules", {"torch": mock_torch}),
+    ):
         snapshot = save_env_snapshot(output_path, include_pip_freeze=True)
 
         assert snapshot["python_version"] == sys.version
@@ -154,11 +171,14 @@ def test_save_env_snapshot(tmp_path):
             data = json.load(f)
             assert data["git_commit"] == "abc1234567890def"  # pragma: allowlist secret
 
+
 def test_save_env_snapshot_no_git_no_gpu(tmp_path):
     output_path = tmp_path / "env_snapshot.txt"
 
-    with patch("subprocess.check_output", side_effect=Exception("Git error")), \
-         patch.dict("sys.modules", {"torch": None}):
+    with (
+        patch("subprocess.check_output", side_effect=Exception("Git error")),
+        patch.dict("sys.modules", {"torch": None}),
+    ):
         snapshot = save_env_snapshot(output_path, include_pip_freeze=False)
 
         assert snapshot["git_commit"] is None
@@ -166,16 +186,20 @@ def test_save_env_snapshot_no_git_no_gpu(tmp_path):
         assert snapshot["pip_freeze"] is None
         assert snapshot["cuda_available"] is None
 
+
 def test_save_env_snapshot_gpu_error(tmp_path):
     output_path = tmp_path / "env_snapshot.txt"
 
     mock_torch = MagicMock()
     mock_torch.cuda.is_available.side_effect = Exception("GPU error")
 
-    with patch("subprocess.check_output", side_effect=Exception("Git error")), \
-         patch.dict("sys.modules", {"torch": mock_torch}):
+    with (
+        patch("subprocess.check_output", side_effect=Exception("Git error")),
+        patch.dict("sys.modules", {"torch": mock_torch}),
+    ):
         snapshot = save_env_snapshot(output_path, include_pip_freeze=False)
         assert "cuda_available" not in snapshot
+
 
 def test_save_env_snapshot_pip_error(tmp_path):
     output_path = tmp_path / "env_snapshot.txt"
@@ -185,10 +209,13 @@ def test_save_env_snapshot_pip_error(tmp_path):
             raise Exception("pip error")
         return b""
 
-    with patch("subprocess.check_output", side_effect=mock_check_output), \
-         patch.dict("sys.modules", {"torch": None}):
+    with (
+        patch("subprocess.check_output", side_effect=mock_check_output),
+        patch.dict("sys.modules", {"torch": None}),
+    ):
         snapshot = save_env_snapshot(output_path, include_pip_freeze=True)
         assert snapshot["pip_freeze"] == []
+
 
 def test_save_env_snapshot_no_cuda_available(tmp_path):
     output_path = tmp_path / "env_snapshot.txt"
@@ -196,17 +223,24 @@ def test_save_env_snapshot_no_cuda_available(tmp_path):
     mock_torch = MagicMock()
     mock_torch.cuda.is_available.return_value = False
 
-    with patch("subprocess.check_output", side_effect=Exception("Git error")), \
-         patch.dict("sys.modules", {"torch": mock_torch}):
+    with (
+        patch("subprocess.check_output", side_effect=Exception("Git error")),
+        patch.dict("sys.modules", {"torch": mock_torch}),
+    ):
         snapshot = save_env_snapshot(output_path, include_pip_freeze=False)
         assert snapshot["cuda_available"] is False
         assert snapshot["cuda_version"] is None
         assert snapshot["gpu_count"] == 0
         assert snapshot["gpu_devices"] == []
 
+
 def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
-    with patch("src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
-         patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
+    with (
+        patch(
+            "src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
+        ) as mock_enable,
+        patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
+    ):
 
         mock_enable.return_value = {"python_random": True}
         mock_save.return_value = {
@@ -214,7 +248,7 @@ def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
             "git_commit": "abc",
             "git_dirty": False,
             "cuda_available": False,
-            "platform": {"system": "Linux"}
+            "platform": {"system": "Linux"},
         }
 
         manifest = create_reproducibility_manifest(
@@ -226,9 +260,14 @@ def test_create_reproducibility_manifest_no_config_no_hash(tmp_path):
         assert "config" not in manifest
         assert "dataset_hash" not in manifest
 
+
 def test_create_reproducibility_manifest(tmp_path):
-    with patch("src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
-         patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
+    with (
+        patch(
+            "src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
+        ) as mock_enable,
+        patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
+    ):
 
         mock_enable.return_value = {"python_random": True}
         mock_save.return_value = {
@@ -236,14 +275,11 @@ def test_create_reproducibility_manifest(tmp_path):
             "git_commit": "abc",
             "git_dirty": False,
             "cuda_available": False,
-            "platform": {"system": "Linux"}
+            "platform": {"system": "Linux"},
         }
 
         manifest = create_reproducibility_manifest(
-            seed=123,
-            output_dir=tmp_path,
-            config={"batch_size": 32},
-            dataset_hash="hash456"
+            seed=123, output_dir=tmp_path, config={"batch_size": 32}, dataset_hash="hash456"
         )
 
         assert manifest["seed"] == 123
@@ -255,9 +291,14 @@ def test_create_reproducibility_manifest(tmp_path):
         manifest_path = tmp_path / "reproducibility_manifest.json"
         assert manifest_path.exists()
 
+
 def test_reproducibility_manager(tmp_path):
-    with patch("src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training") as mock_enable, \
-         patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save:
+    with (
+        patch(
+            "src.codex_ml.utils.reproducibility_hardening.enable_deterministic_training"
+        ) as mock_enable,
+        patch("src.codex_ml.utils.reproducibility_hardening.save_env_snapshot") as mock_save,
+    ):
 
         mock_enable.return_value = {"status": "ok"}
         mock_save.return_value = {"env": "snapshot"}
@@ -275,7 +316,9 @@ def test_reproducibility_manager(tmp_path):
         mock_save.assert_called_once_with(tmp_path / "env_snapshot.txt")
 
         # Test finalize
-        with patch("src.codex_ml.utils.reproducibility_hardening.create_reproducibility_manifest") as mock_create:
+        with patch(
+            "src.codex_ml.utils.reproducibility_hardening.create_reproducibility_manifest"
+        ) as mock_create:
             mock_create.return_value = {"manifest": "data"}
 
             manifest = manager.finalize(config={"lr": 0.01}, dataset_hash="dataset1")
@@ -283,8 +326,5 @@ def test_reproducibility_manager(tmp_path):
             assert manifest == {"manifest": "data"}
             assert manager.get_manifest() == {"manifest": "data"}
             mock_create.assert_called_once_with(
-                seed=777,
-                output_dir=tmp_path,
-                config={"lr": 0.01},
-                dataset_hash="dataset1"
+                seed=777, output_dir=tmp_path, config={"lr": 0.01}, dataset_hash="dataset1"
             )

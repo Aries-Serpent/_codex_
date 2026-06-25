@@ -3,7 +3,6 @@ Integration tests for RAG modules.
 Tests end-to-end workflows, multi-tenant isolation, and cross-module interactions.
 """
 
-
 import importlib.util
 import tempfile
 from pathlib import Path
@@ -17,6 +16,7 @@ try:
     from codex.rag.embeddings import create_embedding_provider
     from codex.rag.indexer import build_index_from_files, load_index
     from codex.rag.retriever import MultiIndexRetriever, Retriever
+
     RAG_INTEGRATION_AVAILABLE = True
 except ImportError:
     RAG_INTEGRATION_AVAILABLE = False
@@ -31,12 +31,13 @@ except ImportError:
 
 pytestmark = pytest.mark.skipif(
     not RAG_INTEGRATION_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
-    reason="RAG dependencies (sentence_transformers, faiss) not installed"
+    reason="RAG dependencies (sentence_transformers, faiss) not installed",
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
     import torch as _torch
+
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
     _cuda_available = False
@@ -62,9 +63,12 @@ class TestEndToEndPipeline:
             docs_dir.mkdir()
 
             corpus = {
-                "python_guide.md": "# Python Programming\n\nPython is a high-level, interpreted language. " * 50,
-                "ml_intro.md": "# Machine Learning\n\nML uses statistical algorithms to learn from data. " * 50,
-                "docker_tutorial.md": "# Docker Containerization\n\nDocker packages applications in containers. " * 50,
+                "python_guide.md": "# Python Programming\n\nPython is a high-level, interpreted language. "
+                * 50,
+                "ml_intro.md": "# Machine Learning\n\nML uses statistical algorithms to learn from data. "
+                * 50,
+                "docker_tutorial.md": "# Docker Containerization\n\nDocker packages applications in containers. "
+                * 50,
             }
 
             files = []

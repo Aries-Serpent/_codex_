@@ -92,7 +92,7 @@ def test_fuzz_query_request_valid(query, index_name, tenant_id, top_k, min_score
         assert 0.0 <= req.min_score <= 1.0
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour
-    except Exception as exc:  # noqa: BLE001
+    except (ConnectionError, TimeoutError) as exc:  # noqa: BLE001
         pytest.fail(f"QueryRequest raised unexpected: {exc!r}")
 
 
@@ -140,19 +140,20 @@ def test_fuzz_build_index_request_valid(files, index_name, chunk_size, overlap):
     _, BuildIndexRequest, *_ = _import_models()
     ValidationError = _validation_error()
     try:
-        req = BuildIndexRequest(files=files, index_name=index_name,
-                                chunk_size=chunk_size, overlap=overlap)
+        req = BuildIndexRequest(
+            files=files, index_name=index_name, chunk_size=chunk_size, overlap=overlap
+        )
         assert isinstance(req.files, list)
         assert 100 <= req.chunk_size <= 10000
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour
-    except Exception as exc:  # noqa: BLE001
+    except (ConnectionError, TimeoutError) as exc:  # noqa: BLE001
         pytest.fail(f"BuildIndexRequest raised unexpected: {exc!r}")
 
 
 @given(
     chunk_size=st.one_of(
-        st.integers(min_value=-1000, max_value=99),   # below min
+        st.integers(min_value=-1000, max_value=99),  # below min
         st.integers(min_value=10001, max_value=100000),  # above max
     ),
     overlap=st.integers(min_value=-1000, max_value=-1),  # negative
@@ -191,7 +192,7 @@ def test_fuzz_delete_index_request_valid(index_name, tenant_id, force):
         assert isinstance(req.force, bool)
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour
-    except Exception as exc:  # noqa: BLE001
+    except (ConnectionError, TimeoutError) as exc:  # noqa: BLE001
         pytest.fail(f"DeleteIndexRequest raised unexpected: {exc!r}")
 
 
@@ -219,7 +220,7 @@ def test_fuzz_merge_indices_request_valid(source_indices, target_index, tenant_i
         assert len(req.source_indices) >= 2
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour in fuzz test
-    except Exception as exc:  # noqa: BLE001
+    except (ConnectionError, TimeoutError) as exc:  # noqa: BLE001
         pytest.fail(f"MergeIndicesRequest raised unexpected: {exc!r}")
 
 

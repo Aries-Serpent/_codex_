@@ -421,7 +421,7 @@ Subject: Service Incident Notification - Aries-Serpent/_codex_
 
 Dear Valued Customers,
 
-We experienced a service disruption affecting [list affected services] 
+We experienced a service disruption affecting [list affected services]
 starting at [time] UTC.
 
 Impact:

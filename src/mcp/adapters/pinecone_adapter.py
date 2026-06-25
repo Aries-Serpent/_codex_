@@ -107,13 +107,13 @@ class PineconeAdapter(BaseAdapter):
             self._client = Pinecone(api_key=self._api_key)
 
             # Get index
-            self._index = self._client.Index(self._index_name)  # type: ignore[attr-defined]
+            self._index = self._client.Index(self._index_name)
 
             self._connected = True
             logger.info("Connected to Pinecone index: %s", self._index_name)
             return True
 
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.error("Failed to connect to Pinecone: %s", e)
             return False
 
@@ -133,10 +133,10 @@ class PineconeAdapter(BaseAdapter):
             # Describe index to verify connectivity
             stats = await asyncio.get_event_loop().run_in_executor(
                 None,
-                self._index.describe_index_stats,  # type: ignore[attr-defined]
+                self._index.describe_index_stats,
             )
             return stats is not None
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning("Pinecone health check failed: %s", e)
             return False
 
@@ -175,7 +175,7 @@ class PineconeAdapter(BaseAdapter):
             # Run query in thread pool
             result = await asyncio.get_event_loop().run_in_executor(
                 None,
-                lambda: self._index.query(  # type: ignore[attr-defined]
+                lambda: self._index.query(
                     vector=vector,
                     top_k=top_k,
                     filter=filters,
@@ -199,7 +199,7 @@ class PineconeAdapter(BaseAdapter):
                 metadata={"top_k": top_k, "total_matches": len(matches)},
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Pinecone query failed: %s", e)
             return QueryResult(
                 success=False,
@@ -261,7 +261,7 @@ class PineconeAdapter(BaseAdapter):
 
                 await asyncio.get_event_loop().run_in_executor(
                     None,
-                    lambda b=batch: self._index.upsert(vectors=b),  # type: ignore[misc, attr-defined]
+                    lambda b=batch: self._index.upsert(vectors=b),
                 )
 
                 total_upserted += len(batch)
@@ -273,7 +273,7 @@ class PineconeAdapter(BaseAdapter):
                 data={"upserted_count": total_upserted},
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Pinecone upsert failed: %s", e)
             return QueryResult(
                 success=False,
@@ -298,7 +298,7 @@ class PineconeAdapter(BaseAdapter):
         try:
             await asyncio.get_event_loop().run_in_executor(
                 None,
-                lambda: self._index.delete(ids=ids),  # type: ignore[attr-defined]
+                lambda: self._index.delete(ids=ids),
             )
 
             return QueryResult(
@@ -306,7 +306,7 @@ class PineconeAdapter(BaseAdapter):
                 data={"deleted_count": len(ids)},
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Pinecone delete failed: %s", e)
             return QueryResult(
                 success=False,

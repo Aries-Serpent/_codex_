@@ -107,8 +107,7 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
     assert res_apply.exit_code == 0, res_apply.output
     apply_payload = json.loads(res_apply.stdout)
     assert any(
-        item["path"] in {target_file.as_posix(), target_rel}
-        for item in apply_payload["applied"]
+        item["path"] in {target_file.as_posix(), target_rel} for item in apply_payload["applied"]
     )
 
     lines_after_apply = evidence_path.read_text(encoding="utf-8").strip().splitlines()
@@ -122,9 +121,7 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
     assert summary_payload["total_bytes"] >= len("return 'legacy-value'\n")
 
     lines_after_summary = evidence_path.read_text(encoding="utf-8").strip().splitlines()
-    assert any(
-        json.loads(line).get("action") == "SUMMARY" for line in lines_after_summary
-    )
+    assert any(json.loads(line).get("action") == "SUMMARY" for line in lines_after_summary)
 
     changelog_update = (
         f"- Archived {summary_payload['count']} items totaling "

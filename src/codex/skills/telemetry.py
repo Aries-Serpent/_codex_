@@ -132,7 +132,7 @@ def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any
         trace_mod = importlib.import_module("opentelemetry.trace")
         _configure_otlp_if_needed(trace_mod)
         tracer = trace_mod.get_tracer("codex.skills")
-    except Exception:
+    except (IOError, OSError):
         yield None
         return
 
@@ -231,7 +231,7 @@ def read_events(path: Path | None = None) -> list[TelemetryEvent]:
                 continue
             try:
                 events.append(TelemetryEvent.model_validate_json(line))
-            except Exception as exc:
+            except (ValueError, TypeError) as exc:
                 logger.debug("Telemetry: skipping malformed line: %s", exc)
     return events
 
@@ -308,7 +308,7 @@ def skill_invocation_span(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         tracer = trace_mod.get_tracer(tracer_name)
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.debug("OTel tracer unavailable: %s", exc)
         yield None
         return
@@ -317,7 +317,7 @@ def skill_invocation_span(
         outcome = {"skill.outcome": "success"}
         try:
             yield span
-        except Exception as exc:
+        except (ImportError, AttributeError) as exc:
             outcome = {"skill.outcome": "error", "skill.error": str(exc)}
             raise
         finally:
@@ -327,7 +327,7 @@ def skill_invocation_span(
                 for k, v in outcome.items():
                     try:
                         span.set_attribute(k, v)
-                    except Exception:
+                    except (ImportError, AttributeError):
                         logger.debug("Suppressed exception in handler", exc_info=True)
             logger.info(
                 "Skill '%s' completed (%s) in %.1f ms",
@@ -363,7 +363,7 @@ def push_to_app(events: list[TelemetryEvent], endpoint: str) -> bool:
             resp.raise_for_status()
             logger.info("Telemetry: pushed %d events to %s", len(events), endpoint)
             return True
-        except Exception as exc:
+        except (ValueError, TypeError) as exc:
             logger.error("Telemetry: push to app failed: %s", exc)
             return False
 

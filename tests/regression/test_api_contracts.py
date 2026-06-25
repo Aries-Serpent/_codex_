@@ -26,6 +26,7 @@ pytestmark = pytest.mark.regression
 # 1. Root endpoint
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestRootEndpoint:
     def test_root_returns_200(self, dashboard_client):
         """GET / must return HTTP 200."""
@@ -49,6 +50,7 @@ class TestRootEndpoint:
 # 2. Health endpoint
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestHealthEndpoint:
     def test_health_returns_200(self, dashboard_client):
         """GET /health must return HTTP 200."""
@@ -70,6 +72,7 @@ class TestHealthEndpoint:
 # ────────────────────────────────────────────────────────────────────────────
 # 3. Liveness probe
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestLivenessEndpoint:
     def test_liveness_returns_200(self, dashboard_client):
@@ -94,22 +97,22 @@ class TestLivenessEndpoint:
     def test_liveness_status_value(self, dashboard_client):
         """Liveness status field must be 'alive'."""
         body = dashboard_client.get("/liveness").json()
-        assert body["status"] == "alive", (
-            f"Expected status='alive', got {body['status']!r}"
-        )
+        assert body["status"] == "alive", f"Expected status='alive', got {body['status']!r}"
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # 4. Readiness probe
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestReadinessEndpoint:
     def test_readiness_returns_2xx(self, dashboard_client):
         """GET /readiness must return 2xx (200 ready or 503 not-ready — never 4xx/5xx)."""
         resp = dashboard_client.get("/readiness")
-        assert resp.status_code in (200, 503), (
-            f"Expected 200 or 503 from /readiness, got {resp.status_code}"
-        )
+        assert resp.status_code in (
+            200,
+            503,
+        ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
 
     def test_readiness_schema_status_field(self, dashboard_client):
         """Readiness response must always contain a 'status' field."""
@@ -132,13 +135,14 @@ class TestReadinessEndpoint:
 # 5. Content-type contract
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestContentTypeContracts:
     def test_health_content_type_json(self, dashboard_client):
         """All JSON endpoints must return application/json content type."""
         resp = dashboard_client.get("/health")
-        assert "application/json" in resp.headers.get("content-type", ""), (
-            "Expected JSON content-type on /health"
-        )
+        assert "application/json" in resp.headers.get(
+            "content-type", ""
+        ), "Expected JSON content-type on /health"
 
     def test_liveness_content_type_json(self, dashboard_client):
         """Liveness endpoint must return application/json."""

@@ -10,56 +10,47 @@ class TestAgentCoreMinimal:
     def test_agent_initialization(self):
         """Test basic agent initialization."""
         # Create minimal agent
-        agent_config = {
-            'name': 'test_agent',
-            'type': 'default',
-            'enabled': True
-        }
-         # pragma: allowlist secret # pragma: allowlist secret
-        assert agent_config['name'] == 'test_agent'
-        assert agent_config['enabled'] is True
+        agent_config = {"name": "test_agent", "type": "default", "enabled": True}
+        # pragma: allowlist secret # pragma: allowlist secret
+        assert agent_config["name"] == "test_agent"
+        assert agent_config["enabled"] is True
 
     def test_agent_lifecycle_state_transitions(self):
         """Test agent state transitions."""
-        states = ['created', 'initialized', 'running', 'stopped']
-        
+        states = ["created", "initialized", "running", "stopped"]
+
         # Verify state progression
         current_state = states[0]
-        assert current_state == 'created'
-        
+        assert current_state == "created"
+
         # Transition
         current_state = states[1]
-        assert current_state == 'initialized'
+        assert current_state == "initialized"
 
     def test_agent_error_handling(self):
         """Test agent error handling."""
+
         def process_agent_error(error):
             return str(error)
-        
+
         error = ValueError("Test error")
         result = process_agent_error(error)
         assert "Test error" in result
 
     def test_agent_configuration_validation(self):
         """Test agent configuration validation."""
-        valid_config = {
-            'agent_id': 'test-123',
-            'config': {'param1': 'value1'}
-        }
-        
+        valid_config = {"agent_id": "test-123", "config": {"param1": "value1"}}
+
         # Check required fields
-        assert 'agent_id' in valid_config
-        assert 'config' in valid_config
+        assert "agent_id" in valid_config
+        assert "config" in valid_config
 
     def test_agent_secrets_management(self):
         """Test agent secrets handling."""
-        secrets = {
-            'api_key': 'test-key',
-            'secret': 'test-secret'
-        }
-        
+        secrets = {"api_key": "test-key", "secret": "test-secret"}
+
         # Secrets should not be logged
-        assert 'test-key' in secrets.values()
+        assert "test-key" in secrets.values()
 
 
 class TestAgentPhaseManager:
@@ -75,7 +66,7 @@ class TestAgentPhaseManager:
         """Test phase advancement logic."""
         current_phase = 10
         next_phase = current_phase + 1
-        
+
         assert next_phase == 11
 
     def test_agent_phase_completion(self):
@@ -90,11 +81,11 @@ class TestAgentLifecycleHooks:
     def test_agent_pre_initialization_hook(self):
         """Test pre-initialization hook."""
         hook_called = False
-        
+
         def on_pre_init():
             nonlocal hook_called
             hook_called = True
-        
+
         on_pre_init()
         assert hook_called is True
 

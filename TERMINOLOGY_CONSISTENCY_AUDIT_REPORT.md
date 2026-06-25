@@ -31,7 +31,7 @@ This audit identified **8 major terminology inconsistencies** affecting 356+ doc
 
 | Term | Definition | First Appearance | Defined In Documents | Status |
 |------|-----------|-------------------|----------------------|--------|
-| **Copilot Agent** (noun) | A GitHub-operated AI assistant running in the cloud with sandboxed access to the repository. Distinct from custom agents. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 356 references | ⚠️ INCONSISTENT CAPS |
+| **Copilot Agent** (noun) | A GitHub-operated AI assistant running in the cloud with sandboxed access to the repository. Distinct from custom agents. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 356 references | ⚠️ INCONSISTENT CAPS | <!-- pragma: allowlist secret -->
 | **Custom Agent** | A user-defined or repository-specific AI automation component registered in `.github/agents/AGENT_REGISTRY.yaml`. Can be specialized or general-purpose. | docs/AGENTIC_REPO_SYSTEM_GUIDE.md | 135 references | ⚠️ INCONSISTENT CAPS |
 | **Background Agent** | An agent that runs in async/background mode without blocking the main task flow. Distinction not consistently maintained. | docs/agent/OPERATIONAL_GUIDELINES.md | 12 references | ⚠️ RARELY DEFINED |
 | **RAG** (Retrieval-Augmented Generation) | A system that retrieves relevant context from indexed documents and feeds it into an LLM to improve answer quality and reduce hallucination. | docs/EXPANDED_CONTEXT_RAG.md | 8 definitions | ✅ WELL-DEFINED |
@@ -40,10 +40,10 @@ This audit identified **8 major terminology inconsistencies** affecting 356+ doc
 | **Cognitive Brain** | The internal decision-making and memory system that enables agents to maintain context across sessions, learn from interactions, and execute the OODA loop. | docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md | 4+ definitions | ⚠️ INCONSISTENTLY SCOPED |
 | **OODA Loop** (Observe-Orient-Decide-Act) | A feedback cycle where agents observe the environment, orient to the problem context, decide on actions, and act. Core to agentic execution. | docs/architecture/PHASES_3_4_5_IMPLEMENTATION.md | 2 definitions | ⚠️ RARELY EXPLAINED |
 | **Session** | A discrete logical unit of agent work, tracked in session store with associated context, turn history, and state. | docs/status/GITHUB_PAGES_STATUS.md | 3+ places | ⚠️ UNDER-DEFINED |
-| **Session Store** | The persistent database (SQLite/Cloud) that tracks session metadata, turn history, events, and checkpoint state. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 1 definition | ⚠️ RARELY MENTIONED |
-| **Memory** (STM/LTM) | **STM (Short-Term Memory):** Session-local context within current turn. **LTM (Long-Term Memory):** Cross-session patterns and lessons learned, retained in persistent store. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 1 definition | ⚠️ ACRONYMS NOT EXPANDED |
+| **Session Store** | The persistent database (SQLite/Cloud) that tracks session metadata, turn history, events, and checkpoint state. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 1 definition | ⚠️ RARELY MENTIONED | <!-- pragma: allowlist secret -->
+| **Memory** (STM/LTM) | **STM (Short-Term Memory):** Session-local context within current turn. **LTM (Long-Term Memory):** Cross-session patterns and lessons learned, retained in persistent store. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 1 definition | ⚠️ ACRONYMS NOT EXPANDED | <!-- pragma: allowlist secret -->
 | **CI/CD** | Continuous Integration / Continuous Deployment pipeline. GitHub Actions workflows that test, build, and deploy code. | docs/configuration/MIGRATION_MAPPING.md | Multiple | ✅ CONSISTENT |
-| **WEC** (Workflow Execution Checklist) | A structured checklist embedded in PR bodies that gates merge approval, managed by `workflow-compliance-guardian` agent. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 1 definition | ❌ ACRONYM ONLY, NO EXPANSION |
+| **WEC** (Workflow Execution Checklist) | A structured checklist embedded in PR bodies that gates merge approval, managed by `workflow-compliance-guardian` agent. | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 1 definition | ❌ ACRONYM ONLY, NO EXPANSION | <!-- pragma: allowlist secret -->
 | **MCP** (Model Context Protocol) | A standard protocol for exposing tools to AI models, enabling Copilot to call custom functions. Used for tool integration. | docs/mcp/MCP_DEVELOPER_GUIDE.md | 1 clear definition | ⚠️ ACRONYM NOT EXPANDED IN MOST DOCS |
 | **AAIS** (Agent Ability Impact Score) | A normalized (0.0-1.0) metric measuring skill/agent quality across dimensions like accuracy, latency, cost, and reliability. | docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md | 1 definition | ❌ ACRONYM NEVER EXPANDED |
 | **Pull Request** / **PR** | A GitHub feature for proposing code changes. Inconsistently abbreviated; sometimes "PR", sometimes "pull request", sometimes "PullRequest". | docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md | Multiple | ⚠️ MIXED ABBREVIATION |
@@ -111,7 +111,7 @@ Agents (Generic)
 - "Track Cognitive Brain Skills Registry telemetry: skill invocations" ✅
 - "overlapping capability_tags" (should be "skill_tags") ⚠️
 
-**Suggested Fix:** 
+**Suggested Fix:**
 - **Skill**: Discrete, versioned, trackable unit in registry (e.g., `doc.retriever.core`)
 - **Capability**: What the agent can do (e.g., "document retrieval capability")
 - **Feature**: Repository/system-level feature (e.g., "RAG feature")
@@ -174,10 +174,10 @@ Session Creation → Turn Execution → Session Checkpoint → Session Store
 | Acronym | Current Definition | Found In | Times Used | Status |
 |---------|-------------------|----------|-----------|--------|
 | **AAIS** | Agent Ability Impact Score (NO EXPANSION FOUND) | docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md | 15+ | ❌ **CRITICAL** - Never expanded |
-| **WEC** | Workflow Execution Checklist (NO EXPANSION FOUND) | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 8+ | ❌ **CRITICAL** - Defined in one file only, acronym used elsewhere |
+| **WEC** | Workflow Execution Checklist (NO EXPANSION FOUND) | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 8+ | ❌ **CRITICAL** - Defined in one file only, acronym used elsewhere | <!-- pragma: allowlist secret -->
 | **MCP** | Model Context Protocol (Defined in 1 place only) | docs/mcp/MCP_DEVELOPER_GUIDE.md | 12+ | ⚠️ **HIGH** - First use in docs should always expand |
 | **GHAS** | GitHub Advanced Security (NO EXPANSION FOUND) | docs/evidence/consolidated-security-residual-backlog.md | 3 | ⚠️ **HIGH** - Used without expansion |
-| **STM/LTM** | Short-Term Memory / Long-Term Memory (NO EXPANSION FOUND) | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 4 | ⚠️ **HIGH** - Cognitive science acronyms need definition |
+| **STM/LTM** | Short-Term Memory / Long-Term Memory (NO EXPANSION FOUND) | docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 4 | ⚠️ **HIGH** - Cognitive science acronyms need definition | <!-- pragma: allowlist secret -->
 | **PDA** | Plan-Do-Assess (or Predict-Diagnose-Act) | docs/discussions/ | 3 | ⚠️ **MEDIUM** - Context-dependent, undefined |
 | **RBAC** | Role-Based Access Control | docs/operations/SECURITY_INCIDENT_PLAYBOOK.md | 1 | ⚠️ **LOW** - Standard term, but should expand |
 | **CCA** | Copilot Cloud Agent | docs/ (implicit) | 2 | ⚠️ **MEDIUM** - Used in `.codex/` reference, not expanded in docs |
@@ -438,7 +438,7 @@ Used in `memory-sync-agent` and overall cognitive brain optimization.
 
 | File | Issues | Severity | Recommended Action |
 |------|--------|----------|-------------------|
-| docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 8 | HIGH | Standardize capitalization, expand acronyms |
+| docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md | 8 | HIGH | Standardize capitalization, expand acronyms | <!-- pragma: allowlist secret -->
 | docs/agent/OPERATIONAL_GUIDELINES.md | 6 | HIGH | Add agent type diagram, clarify Session |
 | docs/AGENTIC_REPO_SYSTEM_GUIDE.md | 5 | MEDIUM | Define E vs D mode, clarify custom agent types |
 | docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md | 4 | MEDIUM | Separate "skill" vs "capability", expand AAIS |

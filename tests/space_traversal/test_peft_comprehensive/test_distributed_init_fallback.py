@@ -43,7 +43,7 @@ def test_accelerate_init_cpu_fallback():
 
     except ImportError:
         pytest.skip("accelerate not installed")
-    except Exception as e:
+    except AttributeError as e:
         # Log the error but don't fail - some environments may not support it
         pytest.skip(f"Accelerator init failed (expected in minimal env): {e}")
 

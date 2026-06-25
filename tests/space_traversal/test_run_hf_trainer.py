@@ -30,7 +30,10 @@ def _stub_trainer_components(monkeypatch) -> None:
         is_fast = True
 
         def __call__(self, text, truncation=True, padding=True, max_length=None):
-            return {"input_ids": torch.tensor([[1, 2, 3]]), "attention_mask": torch.tensor([[1, 1, 1]])}
+            return {
+                "input_ids": torch.tensor([[1, 2, 3]]),
+                "attention_mask": torch.tensor([[1, 1, 1]]),
+            }
 
         def save_pretrained(self, output_dir):  # pragma: no cover
             return None
@@ -56,15 +59,17 @@ def _stub_trainer_components(monkeypatch) -> None:
     # Use sys.modules to avoid dual-import CodeQL alert (import + from-import for same module)
     __import__("src.training.engine_hf_trainer")
     _eng = sys.modules["src.training.engine_hf_trainer"]
-    monkeypatch.setattr(_eng, "AutoTokenizer",
-                        types.SimpleNamespace(from_pretrained=lambda *a, **k: _Tok()))
-    monkeypatch.setattr(_eng, "AutoModelForCausalLM",
-                        types.SimpleNamespace(from_pretrained=lambda *a, **k: _M()))
+    monkeypatch.setattr(
+        _eng, "AutoTokenizer", types.SimpleNamespace(from_pretrained=lambda *a, **k: _Tok())
+    )
+    monkeypatch.setattr(
+        _eng, "AutoModelForCausalLM", types.SimpleNamespace(from_pretrained=lambda *a, **k: _M())
+    )
     monkeypatch.setattr(_eng, "Trainer", _Trainer)
-    monkeypatch.setattr(_eng, "prepare_dataset",
-                        lambda texts, tok: [{"input_ids": torch.tensor([1, 2, 3])}])
-    monkeypatch.setattr(_eng, "DataCollatorForLanguageModeling",
-                        lambda *a, **k: None)
+    monkeypatch.setattr(
+        _eng, "prepare_dataset", lambda texts, tok: [{"input_ids": torch.tensor([1, 2, 3])}]
+    )
+    monkeypatch.setattr(_eng, "DataCollatorForLanguageModeling", lambda *a, **k: None)
     monkeypatch.setattr(_eng, "_make_accelerator", lambda **kw: None)
     monkeypatch.setattr(_eng, "set_reproducible", lambda *a, **kw: None)
 
@@ -108,7 +113,12 @@ def test_run_hf_trainer_accepts_empty_texts(monkeypatch, tmp_path):
         run_hf_trainer([], tmp_path / "empty_out", distributed=False, seed=0)
     except (ValueError, RuntimeError) as exc:
         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
-        assert "empty" in str(exc).lower() or "dataset" in str(exc).lower() or "no samples" in str(exc).lower() or "0" in str(exc)
+        assert (
+            "empty" in str(exc).lower()
+            or "dataset" in str(exc).lower()
+            or "no samples" in str(exc).lower()
+            or "0" in str(exc)
+        )
 
 
 def test_prepare_dataset_missing_attention_mask(monkeypatch, tmp_path):
@@ -119,6 +129,7 @@ def test_prepare_dataset_missing_attention_mask(monkeypatch, tmp_path):
 
     class _MinimalTok:
         """Tokenizer that only returns input_ids (no attention_mask)."""
+
         model_max_length = 512
 
         def __call__(self, text_list, truncation=True):

@@ -32,7 +32,7 @@ def _read_index(index_path: Path) -> dict[str, Any]:
         return {"entries": []}
     try:
         return json.loads(index_path.read_text())
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return {"entries": []}
 
@@ -108,7 +108,7 @@ def update_and_prune(
                 p = Path(e["path"])
                 if p.exists():
                     p.unlink()
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Log or ignore; failure leaves extra file (acceptable fallback)
 
@@ -128,7 +128,7 @@ def _infer_step_from_name(name: str) -> int:
             core = name.split("checkpoint_")[1]
             num_part = core.split(".")[0]
             return int(num_part)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return -1
     return -1

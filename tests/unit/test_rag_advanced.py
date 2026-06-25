@@ -22,9 +22,9 @@ class TestQueryExpansion:
 
         # Check for prompt-related functions - at least one should exist
         has_prompt_api = (
-            hasattr(prompt, 'format_prompt')
-            or hasattr(prompt, 'expand_query')
-            or hasattr(prompt, 'build_prompt')
+            hasattr(prompt, "format_prompt")
+            or hasattr(prompt, "expand_query")
+            or hasattr(prompt, "build_prompt")
         )
         if not has_prompt_api:
             pytest.skip("Prompt module does not have expected expansion functions")

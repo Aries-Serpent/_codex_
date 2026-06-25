@@ -192,7 +192,7 @@ class JsonRpcHandler:
         """
         handler = self._methods.get(request.method)
         if handler is None:
-            raise JsonRpcError(code=METHOD_NOT_FOUND, message=f"Method not found: {request.method}")  # type: ignore[misc]
+            raise JsonRpcError(code=METHOD_NOT_FOUND, message=f"Method not found: {request.method}")
 
         return await handler(request.params)
 
@@ -219,8 +219,9 @@ class JsonRpcHandler:
         if request.is_notification:
             try:
                 await self._dispatch(request)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (ConnectionError, TimeoutError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 # Log but don't respond to notifications
                 self._logger.warning("Notification error for %s: %s", request.method, e)
             return None
@@ -230,13 +231,15 @@ class JsonRpcHandler:
             result = await self._dispatch(request)
             return JsonRpcResponse(id=request.id, result=result).to_dict()
 
-        except JsonRpcError as e:  # type: ignore[misc]
-            logger.debug(f"JsonRpcError: {e}")
+        except JsonRpcError as e:
+            error_type = type(e).__name__
+            logger.debug(f"JsonRpcError: <ERROR_TYPE>")
             logger.debug("Exception caught, returning", exc_info=True)
             return JsonRpcResponse(id=request.id, error=e.to_dict()).to_dict()
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ValueError, TypeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             self._logger.exception("Unhandled error in method %s", request.method)
             return JsonRpcResponse(
                 id=request.id,
@@ -279,7 +282,7 @@ class JsonRpcHandler:
                     ).to_dict()
                 )
             elif result is not None:
-                responses.append(result)  # type: ignore[arg-type]
+                responses.append(result)
 
         return responses
 

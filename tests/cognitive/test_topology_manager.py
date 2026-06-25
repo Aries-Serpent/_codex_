@@ -39,9 +39,7 @@ def topology_manager(temp_repo):
 def sample_map(topology_manager):
     """Create a sample navigation map with test data."""
     nav_map = topology_manager.create_map(
-        name="test_map",
-        description="Test navigation map",
-        metadata={"version": "1.0.0"}
+        name="test_map", description="Test navigation map", metadata={"version": "1.0.0"}
     )
 
     # Add sample locations
@@ -52,7 +50,7 @@ def sample_map(topology_manager):
         line_end=20,
         concept="pytest fixtures",
         module="pytest",
-        category="testing"
+        category="testing",
     )
 
     topology_manager.add_location(
@@ -62,7 +60,7 @@ def sample_map(topology_manager):
         line_end=50,
         concept="test setup",
         module="pytest",
-        category="testing"
+        category="testing",
     )
 
     topology_manager.add_location(
@@ -72,7 +70,7 @@ def sample_map(topology_manager):
         line_end=150,
         concept="mock objects",
         module="unittest",
-        category="testing"
+        category="testing",
     )
 
     # Add relationships
@@ -93,7 +91,7 @@ class TestCodeLocation:
             line_end=20,
             concept="test fixture",
             module="pytest",
-            category="testing"
+            category="testing",
         )
 
         assert location.path == "src/example.py"
@@ -113,7 +111,7 @@ class TestCodeLocation:
             module="pytest",
             category="testing",
             metadata={"importance": "high"},
-            related_locations=["loc1", "loc2"]
+            related_locations=["loc1", "loc2"],
         )
 
         # Serialize
@@ -134,10 +132,7 @@ class TestNavigationMap:
 
     def test_navigation_map_creation(self):
         """Test creating a NavigationMap."""
-        nav_map = NavigationMap(
-            name="test_map",
-            description="Test map"
-        )
+        nav_map = NavigationMap(name="test_map", description="Test map")
 
         assert nav_map.name == "test_map"
         assert nav_map.description == "Test map"
@@ -153,7 +148,7 @@ class TestNavigationMap:
             line_end=10,
             concept="test",
             module="test",
-            category="test"
+            category="test",
         )
 
         nav_map.add_location(location)
@@ -181,7 +176,7 @@ class TestNavigationMap:
             line_end=10,
             concept="test concept",
             module="test",
-            category="test"
+            category="test",
         )
         nav_map.add_location(location)
         nav_map.add_relationship("concept_a", "concept_b")
@@ -211,9 +206,7 @@ class TestTopologyManager:
     def test_create_map(self, topology_manager):
         """Test creating a new navigation map."""
         nav_map = topology_manager.create_map(
-            name="ci_cd",
-            description="CI/CD infrastructure map",
-            metadata={"version": "1.0.0"}
+            name="ci_cd", description="CI/CD infrastructure map", metadata={"version": "1.0.0"}
         )
 
         assert nav_map.name == "ci_cd"
@@ -231,7 +224,7 @@ class TestTopologyManager:
             line_end=20,
             concept="test fixture",
             module="pytest",
-            category="testing"
+            category="testing",
         )
 
         assert location.path == "src/test.py"
@@ -248,7 +241,7 @@ class TestTopologyManager:
                 line_end=10,
                 concept="test",
                 module="test",
-                category="test"
+                category="test",
             )
 
     def test_find_by_concept(self, topology_manager, sample_map):
@@ -282,10 +275,7 @@ class TestTopologyManager:
 
     def test_find_optimal_path(self, topology_manager, sample_map):
         """Test finding optimal navigation path."""
-        path = topology_manager.find_optimal_path(
-            "pytest fixtures",
-            "mock objects"
-        )
+        path = topology_manager.find_optimal_path("pytest fixtures", "mock objects")
 
         assert path is not None
         assert path[0] == "pytest fixtures"
@@ -294,10 +284,7 @@ class TestTopologyManager:
 
     def test_find_optimal_path_no_connection(self, topology_manager, sample_map):
         """Test finding path when no connection exists."""
-        path = topology_manager.find_optimal_path(
-            "pytest fixtures",
-            "nonexistent concept"
-        )
+        path = topology_manager.find_optimal_path("pytest fixtures", "nonexistent concept")
 
         assert path is None
 
@@ -357,10 +344,7 @@ class TestTopologyManagerIntegration:
     def test_ci_failure_navigation_scenario(self, topology_manager):
         """Test navigating from CI failure to test fix."""
         # Create CI/CD map
-        topology_manager.create_map(
-            name="ci_cd",
-            description="CI/CD infrastructure"
-        )
+        topology_manager.create_map(name="ci_cd", description="CI/CD infrastructure")
 
         # Add CI failure location
         topology_manager.add_location(
@@ -370,7 +354,7 @@ class TestTopologyManagerIntegration:
             line_end=30,
             concept="CI test failure",
             module="github-actions",
-            category="ci-cd"
+            category="ci-cd",
         )
 
         # Add test execution location
@@ -381,7 +365,7 @@ class TestTopologyManagerIntegration:
             line_end=100,
             concept="test execution",
             module="pytest",
-            category="testing"
+            category="testing",
         )
 
         # Add test fix location
@@ -392,7 +376,7 @@ class TestTopologyManagerIntegration:
             line_end=50,
             concept="test fix patterns",
             module="pytest",
-            category="testing"
+            category="testing",
         )
 
         # Add relationships
@@ -409,10 +393,7 @@ class TestTopologyManagerIntegration:
     def test_concept_discovery_scenario(self, topology_manager):
         """Test discovering related testing concepts."""
         # Create testing map
-        topology_manager.create_map(
-            name="testing",
-            description="Testing infrastructure"
-        )
+        topology_manager.create_map(name="testing", description="Testing infrastructure")
 
         # Add various testing concepts
         concepts = [
@@ -431,7 +412,7 @@ class TestTopologyManagerIntegration:
                 line_end=100,
                 concept=concept,
                 module=module,
-                category="testing"
+                category="testing",
             )
 
         # Create web of relationships

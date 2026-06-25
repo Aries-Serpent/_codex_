@@ -9,6 +9,7 @@ Covers previously-uncovered branches in:
 - src/codex/rag/indexer.py     (embed_chunks ImportError, build_index_from_files
                                 missing-files path, manage_tenant_indices error branch)
 """
+
 from __future__ import annotations
 
 import sys
@@ -52,6 +53,7 @@ def _import_retriever():
 # retriever.py — _load_model error paths (lines 78-103)
 # ===========================================================================
 
+
 class TestRetrieverLoadModelErrors:
     """Cover _load_model() branches that are not exercised by the main test suite."""
 
@@ -70,8 +72,10 @@ class TestRetrieverLoadModelErrors:
 
         sentinel = MagicMock()  # non-None SentenceTransformer sentinel
         with patch.object(_mod, "SentenceTransformer", sentinel):
-            with patch("codex.rag._model_utils.safe_load_sentence_transformer",
-                       side_effect=RuntimeError("load failed")):
+            with patch(
+                "codex.rag._model_utils.safe_load_sentence_transformer",
+                side_effect=RuntimeError("load failed"),
+            ):
                 r = _mod.Retriever.__new__(_mod.Retriever)
                 r.model_name = "test-model"
                 r.cache_dir = None
@@ -83,8 +87,10 @@ class TestRetrieverLoadModelErrors:
 
         sentinel = MagicMock()
         with patch.object(_mod, "SentenceTransformer", sentinel):
-            with patch("codex.rag._model_utils.safe_load_sentence_transformer",
-                       side_effect=ValueError("bad value")):
+            with patch(
+                "codex.rag._model_utils.safe_load_sentence_transformer",
+                side_effect=ValueError("bad value"),
+            ):
                 r = _mod.Retriever.__new__(_mod.Retriever)
                 r.model_name = "test-model"
                 r.cache_dir = None
@@ -96,12 +102,12 @@ class TestRetrieverLoadModelErrors:
 # retriever.py — Retriever._load_index generic exception path (lines 79-80)
 # ===========================================================================
 
+
 class TestRetrieverLoadIndexErrors:
     def test_load_index_reraises_generic_exception(self, tmp_path):
         _mod = _import_retriever()
 
-        with patch("codex.rag.indexer.load_index",
-                   side_effect=RuntimeError("corrupt index")):
+        with patch("codex.rag.indexer.load_index", side_effect=RuntimeError("corrupt index")):
             with pytest.raises(RuntimeError, match="corrupt index"):
                 _mod.Retriever(index_dir=str(tmp_path), index_name="test")
 
@@ -109,6 +115,7 @@ class TestRetrieverLoadIndexErrors:
 # ===========================================================================
 # retriever.py — Retriever.reload (lines 261-262)
 # ===========================================================================
+
 
 class TestRetrieverReload:
     def test_reload_calls_load_index(self, tmp_path):
@@ -134,6 +141,7 @@ class TestRetrieverReload:
 # ===========================================================================
 # retriever.py — MultiIndexRetriever (lines 298-334)
 # ===========================================================================
+
 
 class TestMultiIndexRetriever:
     def test_query_merges_results_from_multiple_retrievers(self):
@@ -184,9 +192,11 @@ class TestMultiIndexRetriever:
 # retriever.py — CachedRetriever (lines 485-635)
 # ===========================================================================
 
+
 class TestCachedRetriever:
     def _make_cached_retriever(self):
         from codex.rag import retriever as _mod
+
         cr = _mod.CachedRetriever.__new__(_mod.CachedRetriever)
         cr.cache_ttl = 60
         cr.normalize_queries = True
@@ -232,6 +242,7 @@ class TestCachedRetriever:
         so clearing it would have no bearing on the result.
         """
         import time
+
         cr = self._make_cached_retriever()
         key = "k1"
         cr.query_cache.put(key, [{"text": "cached"}])
@@ -244,6 +255,7 @@ class TestCachedRetriever:
 
     def test_is_cache_valid_false_for_expired_entry(self):
         import time
+
         cr = self._make_cached_retriever()
         cr.cache_ttl = 0  # immediately expired
         cr.cache_timestamps["k1"] = time.time() - 1
@@ -251,6 +263,7 @@ class TestCachedRetriever:
 
     def test_cache_hit_returns_cached_results(self):
         import time
+
         cr = self._make_cached_retriever()
         cached = [{"text": "cached", "score": 0.1}]
         key = cr._make_cache_key("hello", 5, None)
@@ -274,6 +287,7 @@ class TestCachedRetriever:
 
     def test_clear_cache_empties_all(self):
         import time
+
         cr = self._make_cached_retriever()
         cr.query_cache.put("k1", [])
         cr.cache_timestamps["k1"] = time.time()
@@ -287,6 +301,7 @@ class TestCachedRetriever:
 
     def test_invalidate_expired_removes_stale_entries(self):
         import time
+
         cr = self._make_cached_retriever()
         cr.cache_ttl = 0  # immediately expired
         cr.cache_timestamps["k1"] = time.time() - 1
@@ -299,15 +314,18 @@ class TestCachedRetriever:
 # retriever.py — RAGRetriever (lines 573-635)
 # ===========================================================================
 
+
 class TestRAGRetriever:
     def test_query_raises_when_not_loaded(self):
         from codex.rag import retriever as _mod
+
         rr = _mod.RAGRetriever()
         with pytest.raises(RuntimeError, match="not initialised"):
             rr.query("anything")
 
     def test_load_creates_retriever(self, tmp_path):
         from codex.rag import retriever as _mod
+
         mock_retriever = MagicMock()
         with patch.object(_mod, "Retriever", return_value=mock_retriever):
             rr = _mod.RAGRetriever().load(
@@ -318,6 +336,7 @@ class TestRAGRetriever:
 
     def test_query_delegates_to_retriever(self, tmp_path):
         from codex.rag import retriever as _mod
+
         mock_retriever = MagicMock()
         mock_retriever.query.return_value = [{"text": "r", "score": 0.1}]
         with patch.object(_mod, "Retriever", return_value=mock_retriever):
@@ -329,6 +348,7 @@ class TestRAGRetriever:
 # ===========================================================================
 # utils.py — has_meta_tensors submodule walk (lines 83-140)
 # ===========================================================================
+
 
 class TestHasMetaTensorsSubmoduleWalk:
     def test_submodule_with_meta_param_returns_true(self):
@@ -431,6 +451,7 @@ class TestHasMetaTensorsSubmoduleWalk:
 # utils.py — safe_model_to_device meta/None/import paths (lines 182-315)
 # ===========================================================================
 
+
 class TestSafeModelToDevice:
     def test_returns_model_when_has_meta_tensors_is_none(self):
         from codex.rag.utils import safe_model_to_device
@@ -495,6 +516,7 @@ class TestSafeModelToDevice:
 # utils.py — _try_model_to (lines 301-314)
 # ===========================================================================
 
+
 class TestTryModelTo:
     def test_calls_to_with_kwargs(self):
         from codex.rag.utils import _try_model_to
@@ -525,6 +547,7 @@ class TestTryModelTo:
 # _model_utils.py — safe_load_sentence_transformer error paths (lines 80-100)
 # ===========================================================================
 
+
 class TestModelUtilsSafeLoad:
     def test_raises_on_load_failure(self):
         pytest.importorskip(
@@ -533,8 +556,10 @@ class TestModelUtilsSafeLoad:
         )
         from codex.rag._model_utils import safe_load_sentence_transformer
 
-        with patch("sentence_transformers.SentenceTransformer",
-                   side_effect=RuntimeError("simulated load failure")):
+        with patch(
+            "sentence_transformers.SentenceTransformer",
+            side_effect=RuntimeError("simulated load failure"),
+        ):
             with pytest.raises(RuntimeError, match="simulated load failure"):
                 safe_load_sentence_transformer("nonexistent-model-xyz", None)
 
@@ -550,16 +575,20 @@ class TestModelUtilsSafeLoad:
 
         # First call (device="cpu") → NotImplementedError triggers meta-tensor fallback.
         # Second call (device="meta") → returns a model without to_empty.
-        with patch(
-            "sentence_transformers.SentenceTransformer",
-            side_effect=[NotImplementedError("meta tensor"), no_to_empty_model],
-        ), pytest.raises(RuntimeError, match="to_empty"):
+        with (
+            patch(
+                "sentence_transformers.SentenceTransformer",
+                side_effect=[NotImplementedError("meta tensor"), no_to_empty_model],
+            ),
+            pytest.raises(RuntimeError, match="to_empty"),
+        ):
             _mu.safe_load_sentence_transformer("test-model", None)
 
 
 # ===========================================================================
 # indexer.py — embed_chunks ImportError path (lines 105-109)
 # ===========================================================================
+
 
 class TestIndexerEmbedChunksImportError:
     def test_embed_chunks_raises_on_missing_sentence_transformers(self):
@@ -577,6 +606,7 @@ class TestIndexerEmbedChunksImportError:
 # indexer.py — build_index_from_files missing files path
 # ===========================================================================
 
+
 class TestIndexerBuildIndexErrors:
     def test_build_index_from_files_raises_when_no_valid_files(self, tmp_path):
         from codex.rag import indexer as _mod
@@ -593,6 +623,7 @@ class TestIndexerBuildIndexErrors:
 # ===========================================================================
 # indexer.py — manage_tenant_indices error branch
 # ===========================================================================
+
 
 class TestManageTenantIndicesError:
     def test_invalid_operation_returns_failure(self, tmp_path):

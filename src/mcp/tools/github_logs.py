@@ -98,15 +98,16 @@ def fetch_check_run_logs(params: dict[str, Any]) -> dict[str, Any]:
                 "conclusion": check_run.conclusion,
                 "html_url": check_run.html_url,
                 "started_at": check_run.started_at.isoformat() if check_run.started_at else None,
-                "completed_at": check_run.completed_at.isoformat()
-                if check_run.completed_at
-                else None,
+                "completed_at": (
+                    check_run.completed_at.isoformat() if check_run.completed_at else None
+                ),
             },
             "logs": logs,
         }
 
-    except Exception as e:
-        logger.error(f"Failed to fetch check run logs: {e}", exc_info=True)
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.error(f"Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
         return {
             "success": False,
             "error": str(e),
@@ -156,8 +157,9 @@ def fetch_job_logs(params: dict[str, Any]) -> dict[str, Any]:
             "logs": logs,
         }
 
-    except Exception as e:
-        logger.error(f"Failed to fetch job logs: {e}", exc_info=True)
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.error(f"Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
         return {
             "success": False,
             "error": str(e),
@@ -232,8 +234,9 @@ def list_check_runs(params: dict[str, Any]) -> dict[str, Any]:
             "check_runs": check_runs_list,
         }
 
-    except Exception as e:
-        logger.error(f"Failed to list check runs: {e}", exc_info=True)
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.error(f"Failed to list check runs: <ERROR_TYPE>", exc_info=True)
         return {
             "success": False,
             "error": str(e),

@@ -2,7 +2,6 @@
 Tests for UserStore and PasswordHasher.
 """
 
-
 import pytest
 
 from codex.auth.exceptions import InvalidCredentialsError
@@ -90,8 +89,15 @@ class TestUser:
             password_hash="x:y",
         )
         d = user.to_dict()
-        for key in ("user_id", "username", "email", "is_active", "roles",
-                    "created_at", "updated_at"):
+        for key in (
+            "user_id",
+            "username",
+            "email",
+            "is_active",
+            "roles",
+            "created_at",
+            "updated_at",
+        ):
             assert key in d
 
 

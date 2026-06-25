@@ -300,4 +300,3 @@ When an incident occurs, use this checklist:
 - Test quarterly with verification calls
 - Keep printed copy in war room
 - Share only with authorized personnel
-

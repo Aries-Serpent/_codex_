@@ -58,7 +58,7 @@ def append_error_entry(step_name: str, message: str, context: str, question: str
         log_path.parent.mkdir(parents=True, exist_ok=True)
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Error reporting should never raise further exceptions.
 
@@ -86,7 +86,7 @@ def _load_policy_from_file() -> Optional[str]:
         return None
     try:
         raw = path.read_text(encoding="utf-8")
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     # Minimal TOML parse: look for 'policy = "<value>"'
@@ -200,7 +200,8 @@ def _register_metric_from_plugin(
             source="entry_point",
         )
     except RegistryConflictError as e:
-        logger.warning(f"RegistryConflictError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.warning(f"RegistryConflictError: <ERROR_TYPE>", exc_info=True)
         if fn is None:
             append_error_entry(
                 "metric-plugin.register",
@@ -243,7 +244,7 @@ def init_metric_plugins(*, force: bool = False) -> int:
 
     try:
         from codex_ml.plugins import load_plugins
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return 0
 
@@ -451,7 +452,7 @@ def token_accuracy(
 
 
 # Provide a shorter alias for minimal metric registries/tests.
-register_metric("token_accuracy")(token_accuracy)  # type: ignore[arg-type]
+register_metric("token_accuracy")(token_accuracy)
 
 
 @register_metric("ppl")
@@ -539,7 +540,7 @@ def bleu(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
     """Corpus BLEU via NLTK if available; returns None otherwise."""
     try:  # pragma: no cover - optional dependency
         from nltk.translate.bleu_score import SmoothingFunction, corpus_bleu
-    except Exception:  # pragma: no cover
+    except (ImportError, AttributeError):  # pragma: no cover
         return None
     cand = [_norm_str(p, remove_punct=True).split() for p in preds]
     ref = [[_norm_str(t, remove_punct=True).split()] for t in targets]
@@ -557,7 +558,7 @@ def rouge_l(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
     """ROUGE-L F-measure via rouge_score; returns None if unavailable."""
     try:  # pragma: no cover - optional dependency
         from rouge_score import rouge_scorer
-    except Exception:  # pragma: no cover
+    except (ImportError, AttributeError):  # pragma: no cover
         return None
     scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
     scores = [
@@ -609,14 +610,15 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
 
         scorer = CHRF()
         return float(scorer.corpus_score(preds, [targets]).score)
-    except Exception as e:
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (ImportError, AttributeError) as e:
+        error_type = type(e).__name__
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     # Fallback to nltk
     try:  # pragma: no cover - optional dependency
         from nltk.translate.chrf_score import corpus_chrf
 
         return float(corpus_chrf(targets, preds))
-    except Exception:  # pragma: no cover
+    except (ImportError, AttributeError):  # pragma: no cover
         return None
 
 

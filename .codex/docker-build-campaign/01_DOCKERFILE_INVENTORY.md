@@ -308,23 +308,23 @@ graph TD
     C["python:3.10-slim\n(cpu - LEGACY)"]
     D["nvidia/cuda:13.3.0\n(main GPU)"]
     E["nvidia/cuda:12.2.2\n(docker/gpu variant)"]
-    
+
     A -->|Dockerfile| F["base layer"]
     A -->|Dockerfile.preview| G["preview API"]
     A -->|docker/Dockerfile.optimized| H["optimized runtime"]
-    
+
     B -->|docker/Dockerfile.ci| I["CI cache"]
     B -->|docker/Dockerfile.embedding| J["embedding worker"]
-    
+
     C -->|docker/Dockerfile.cpu| K["CPU lightweight"]
-    
+
     D -->|Dockerfile gpu-runtime| L["GPU production"]
     E -->|docker/Dockerfile.gpu| M["GPU variant"]
-    
+
     F -->|extends to| N["cpu-runtime"]
     F -->|extends to| L
     F -->|extends to| O["test stage"]
-    
+
     style C fill:#ffeeee
     style E fill:#fff0f0
 ```
@@ -363,7 +363,7 @@ graph TD
 | Base image digest pinning | ✅ 10/12 | All current Dockerfiles SHA256-pinned |
 | Non-root user enforcement | ✅ 12/12 | All use appuser |
 | Least privilege (no sudo) | ✅ 100% | No sudo in any Dockerfile |
-| Secrets management | ✅ Pass | No hardcoded credentials found |
+| Secrets management | ✅ Pass | No hardcoded credentials found | <!-- pragma: allowlist secret -->
 | .dockerignore completeness | ✅ Comprehensive | Covers all build artifacts, caches, venv |
 
 ---

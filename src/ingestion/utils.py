@@ -38,21 +38,19 @@ logger = logging.getLogger(__name__)
 
 # Try to import the repository-provided encoding detector if present.
 try:
-    from .encoding_detect import (
-        detect_encoding as _repo_detect_encoding,
-    )
-except Exception:
+    from .encoding_detect import detect_encoding as _repo_detect_encoding
+except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _repo_detect_encoding = None  # type: ignore[assignment]
+    _repo_detect_encoding = None
 
 # Try to import the io_text.read_text helper if available. Some historical
 # variants return (text, encoding) while others return just text; the wrapper
 # below handles both.
 try:
     from .io_text import read_text as _io_read_text
-except Exception:
+except (IOError, OSError):
     logger.warning("Exception occurred", exc_info=True)
-    _io_read_text = None  # type: ignore[assignment]
+    _io_read_text = None
 
 
 __all__ = [
@@ -82,7 +80,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     """
     try:
         data = path.read_bytes()[: max(1024, int(sample_size))]
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
@@ -94,9 +92,10 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             return "utf-16"
         if data.startswith(b"\xef\xbb\xbf"):
             return "utf-8"
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     safe_encodings = {
         "utf-8",
@@ -113,7 +112,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         result = from_bytes(data)
         best = result.best() if result is not None else None
         enc = best.encoding.lower().replace("_", "-") if best and best.encoding else None
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         enc = None
     if enc:
@@ -128,7 +127,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         except (UnicodeDecodeError, LookupError):
             logger.debug("Exception caught, continuing", exc_info=True)
             continue
-        except Exception as exc:  # nosec B112 - intentional continue; add trace for diagnostics
+        except (IOError, OSError) as exc:  # nosec B112 - intentional continue; add trace for diagnostics
             logger.debug("ingestion.utils: probing encodings failed: %s", exc, exc_info=True)
             continue
 
@@ -145,7 +144,7 @@ def _detect_encoding(path: str | Path) -> str:
     if _repo_detect_encoding is not None:
         try:
             return _repo_detect_encoding(p)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             # fall through to fallback detector
     return _fallback_detect_encoding(p)
@@ -206,7 +205,7 @@ def split_dataset(
     result = (train_items, val_items, test_items)
     try:
         cache.set(key, result)
-    except Exception as exc:  # nosec B110 - cache writes are best effort; log at debug
+    except (IOError, OSError) as exc:  # nosec B110 - cache writes are best effort; log at debug
         logger.debug("ingestion.utils: failed to cache split dataset: %s", exc, exc_info=True)
     return result
 
@@ -229,7 +228,7 @@ def write_manifest(
         if _git is None:
             raise FileNotFoundError("git not available on PATH")
         sha = subprocess.check_output([_git, "rev-parse", "HEAD"], text=True).strip()  # nosec B603
-    except Exception as exc:  # nosec B110 - best-effort VCS probe; continue without commit metadata
+    except (IOError, OSError) as exc:  # nosec B110 - best-effort VCS probe; continue without commit metadata
         logger.debug("ingestion.utils: unable to capture git SHA: %s", exc, exc_info=True)
         sha = None
     manifest = {
@@ -254,8 +253,9 @@ def _manual_read_text(
     p = Path(path)
     try:
         data = p.read_bytes()
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to read bytes from {p}: {exc}") from exc
 
     enc = encoding
@@ -264,7 +264,7 @@ def _manual_read_text(
 
     try:
         text = data.decode(enc if isinstance(enc, str) else "utf-8", errors)
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         # Fallback: try common encodings with replacement to ensure we return something
         for trial in ("utf-8", "cp1252", "iso-8859-1"):
@@ -272,7 +272,7 @@ def _manual_read_text(
                 text = data.decode(trial, "replace")
                 enc = trial
                 break
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         else:
@@ -282,7 +282,7 @@ def _manual_read_text(
     # Normalize newlines and strip BOM
     try:
         text = text.replace("\r\n", "\n").replace("\r", "\n").lstrip("\ufeff")
-    except Exception as exc:  # nosec B110 - preserve original behavior; log for observability
+    except (IOError, OSError) as exc:  # nosec B110 - preserve original behavior; log for observability
         logger.debug("ingestion.utils: failed to normalize text: %s", exc, exc_info=True)
     return text, str(enc)
 
@@ -307,20 +307,22 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
         try:
             result = _io_read_text(p, encoding=encoding, errors=errors)
         except TypeError as e:
-            logger.debug(f"TypeError: {e}")
-            logger.warning(f"TypeError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"TypeError: <ERROR_TYPE>")
+            logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
             # The helper may not accept encoding/errors kwargs — try positional and fewer args
             try:
                 result = _io_read_text(p, encoding)
             except TypeError as e:
-                logger.debug(f"TypeError: {e}")
-                logger.warning(f"TypeError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"TypeError: <ERROR_TYPE>")
+                logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
                 try:
                     result = _io_read_text(p)
-                except Exception:
+                except (IOError, OSError):
                     logger.warning("Exception occurred", exc_info=True)
                     result = None
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             # If the helper raised for any reason, fall back to manual reader below
             result = None

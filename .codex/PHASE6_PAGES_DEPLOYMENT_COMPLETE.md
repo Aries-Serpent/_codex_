@@ -24,7 +24,7 @@ Deploy live GitHub Pages for v0.1.0 release documentation with full theme config
 - **Colors**: Primary/Accent Indigo, Dark scheme Slate
 - **Dark Mode**: 3-way toggle (Auto/Light/Dark)
 - **Navigation**: Sidebar + tabs + breadcrumbs
-- **Features**: 
+- **Features**:
   - Instant page loading (XHR)
   - Full-text search with suggestions
   - Code syntax highlighting

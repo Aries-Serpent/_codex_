@@ -176,9 +176,7 @@ class TestAPIKeyValidatorBranches:
         secret_key = branch_input(None)
         with patch.dict(os.environ, {"CODEX_ENV": "production"}, clear=True):
             env = {
-                k: v
-                for k, v in os.environ.items()
-                if k != "AUTH_SECRET_KEY" and k != "CODEX_ENV"
+                k: v for k, v in os.environ.items() if k != "AUTH_SECRET_KEY" and k != "CODEX_ENV"
             }
             env["CODEX_ENV"] = "production"
             with patch.dict(os.environ, env, clear=True):
@@ -243,9 +241,7 @@ class TestAuthMethodBranches:
             ("none", "no_auth"),
         ],
     )
-    def test_auth_method_selection_branches(
-        self, method: str, expected: str
-    ) -> None:
+    def test_auth_method_selection_branches(self, method: str, expected: str) -> None:
         """Test authentication method selection branches."""
         auth_methods = {
             "jwt": "jwt_validator",

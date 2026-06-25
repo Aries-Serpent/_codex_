@@ -3,6 +3,7 @@
 Covers InMemoryBackend, SQLiteBackend, RedisBackend (mocked),
 FeastBackend Protocol conformance, and create_backend() factory.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -13,6 +14,7 @@ import pytest
 
 # ── Import helpers ──────────────────────────────────────────────────────────
 
+
 def _import_feast():
     return pytest.importorskip(
         "codex_ml.features.feast_compat",
@@ -21,6 +23,7 @@ def _import_feast():
 
 
 # ── FeastBackend Protocol ───────────────────────────────────────────────────
+
 
 class TestFeastBackendProtocol:
     """Protocol conformance tests."""
@@ -46,6 +49,7 @@ class TestFeastBackendProtocol:
 
 
 # ── InMemoryBackend ─────────────────────────────────────────────────────────
+
 
 class TestInMemoryBackend:
     """Unit tests for InMemoryBackend."""
@@ -101,7 +105,7 @@ class TestInMemoryBackend:
         def writer(i: int) -> None:
             try:
                 self.backend.write("view", f"key:{i}", {"val": i})
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 errors.append(exc)
 
         threads = [threading.Thread(target=writer, args=(i,)) for i in range(20)]
@@ -118,6 +122,7 @@ class TestInMemoryBackend:
 
 
 # ── SQLiteBackend ───────────────────────────────────────────────────────────
+
 
 class TestSQLiteBackend:
     """Unit tests for SQLiteBackend."""
@@ -181,7 +186,7 @@ class TestSQLiteBackend:
         def writer(i: int) -> None:
             try:
                 self.backend.write("view", f"key:{i}", {"val": i})
-            except Exception as exc:
+            except (IOError, OSError) as exc:
                 errors.append(exc)
 
         threads = [threading.Thread(target=writer, args=(i,)) for i in range(10)]
@@ -194,6 +199,7 @@ class TestSQLiteBackend:
 
 # ── RedisBackend (mocked) ───────────────────────────────────────────────────
 
+
 @pytest.fixture
 def mock_redis_backend():
     """Pytest fixture: returns (backend, mock_redis) with a mocked Redis client."""
@@ -203,7 +209,9 @@ def mock_redis_backend():
     # scan() returns (cursor, keys); cursor=0 means iteration complete.
     mock_redis.scan.return_value = (0, [])
 
-    with patch.dict("sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}):
+    with patch.dict(
+        "sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}
+    ):
         backend = mod.RedisBackend(url="redis://localhost:6379/0")
     backend._redis = mock_redis
     return backend, mock_redis, mod
@@ -221,7 +229,9 @@ class TestRedisBackend:
         mod = _import_feast()
         mock_redis = MagicMock()
         mock_redis.scan.return_value = (0, [])
-        with patch.dict("sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}):
+        with patch.dict(
+            "sys.modules", {"redis": MagicMock(from_url=MagicMock(return_value=mock_redis))}
+        ):
             backend = mod.RedisBackend(url="redis://localhost:6379/0", ttl=60)
         backend._redis = mock_redis
         backend.write("view", "key:1", {"x": 10})
@@ -262,6 +272,7 @@ class TestRedisBackend:
     def test_missing_redis_package_raises_import_error(self):
         mod = _import_feast()
         import sys
+
         real_redis = sys.modules.pop("redis", None)
         try:
             with pytest.raises(ImportError, match="RedisBackend requires"):
@@ -272,6 +283,7 @@ class TestRedisBackend:
 
 
 # ── create_backend() factory ────────────────────────────────────────────────
+
 
 class TestCreateBackend:
     """Tests for the create_backend() factory function."""
@@ -309,7 +321,7 @@ class TestCreateBackend:
         assert "duckdb" in msg
 
     def test_duckdb_backend(self):
-        if importlib.util.find_spec('duckdb') is None:
+        if importlib.util.find_spec("duckdb") is None:
             pytest.skip("duckdb not installed")
         mod = _import_feast()
         b = mod.create_backend("duckdb")
@@ -317,7 +329,7 @@ class TestCreateBackend:
         b.close()
 
     def test_duckdb_backend_custom_path(self, tmp_path):
-        if importlib.util.find_spec('duckdb') is None:
+        if importlib.util.find_spec("duckdb") is None:
             pytest.skip("duckdb not installed")
         mod = _import_feast()
         db_path = tmp_path / "offline.duckdb"
@@ -328,7 +340,7 @@ class TestCreateBackend:
 
 def _import_duckdb():
     """Skip the test if duckdb is not installed."""
-    if importlib.util.find_spec('duckdb') is None:
+    if importlib.util.find_spec("duckdb") is None:
         pytest.skip("duckdb or feast_compat not importable")
 
     return pytest.importorskip(
@@ -421,6 +433,7 @@ class TestDuckDBBackend:
         assert result_path == out
         assert out.exists()
         import pyarrow.parquet as pq
+
         table = pq.read_table(str(out))
         assert table.num_rows == 2
         b.close()
@@ -436,6 +449,7 @@ class TestDuckDBBackend:
 
     def test_thread_safety_concurrent_writes(self):
         import threading
+
         mod = _import_duckdb()
         b = mod.DuckDBBackend()
         errors: list[Exception] = []
@@ -444,7 +458,7 @@ class TestDuckDBBackend:
             for i in range(start, start + 5):
                 try:
                     b.write("v", f"key_{i}", {"val": i})
-                except Exception as exc:
+                except (IOError, OSError) as exc:
                     errors.append(exc)
 
         threads = [threading.Thread(target=write_batch, args=(i * 5,)) for i in range(4)]
@@ -495,6 +509,7 @@ class TestDuckDBBackend:
         assert result_path == out
         assert out.exists()
         import pyarrow.ipc as pa_ipc
+
         reader = pa_ipc.open_file(str(out))
         table = reader.read_all()
         assert table.num_rows == 2
@@ -515,6 +530,7 @@ class TestDuckDBBackend:
         """materialize_to_arrow_ipc raises ImportError when pyarrow is absent."""
         mod = _import_duckdb()
         import sys
+
         monkeypatch.setitem(sys.modules, "pyarrow", None)
         monkeypatch.setitem(sys.modules, "pyarrow.ipc", None)
         b = mod.DuckDBBackend()

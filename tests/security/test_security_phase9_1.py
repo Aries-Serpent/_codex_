@@ -22,6 +22,7 @@ try:
         sanitize_path,
         validate_input,
     )
+
     HAS_SECURITY_CORE = True
 except ImportError:
     HAS_SECURITY_CORE = False
@@ -33,6 +34,7 @@ try:
         sanitize_html,
         validate_email,
     )
+
     HAS_CONTENT_FILTERS = True
 except ImportError:
     HAS_CONTENT_FILTERS = False
@@ -298,6 +300,7 @@ class TestInputValidation:
 
     def test_validate_integer_range(self) -> None:
         """Test integer range validation."""
+
         def validate_age(age: int) -> bool:
             return 0 <= age <= 150
 
@@ -310,7 +313,7 @@ class TestInputValidation:
         import re
 
         def validate_username(username: str) -> bool:
-            pattern = r'^[a-zA-Z0-9_]{3,20}$'
+            pattern = r"^[a-zA-Z0-9_]{3,20}$"
             return bool(re.match(pattern, username))
 
         assert validate_username("valid_user123") is True
@@ -319,12 +322,14 @@ class TestInputValidation:
 
     def test_sanitize_filename(self) -> None:
         """Test filename sanitization."""
+
         def sanitize_filename(filename: str) -> str:
             import re
+
             # Remove dangerous characters
-            safe = re.sub(r'[^\w\s.-]', '', filename)
+            safe = re.sub(r"[^\w\s.-]", "", filename)
             # Remove path traversal
-            return safe.replace('..', '')
+            return safe.replace("..", "")
 
         assert ".." not in sanitize_filename("../etc/passwd")
         assert "/" not in sanitize_filename("path/to/file")

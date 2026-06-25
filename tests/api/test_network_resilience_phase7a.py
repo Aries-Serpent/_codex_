@@ -52,6 +52,7 @@ class TestConnectionAndTimeouts:
 
     def test_slow_server_response(self):
         """Handle slow server response."""
+
         def slow_response(*args, **kwargs):
             time.sleep(0.5)
             return Mock(status_code=200)

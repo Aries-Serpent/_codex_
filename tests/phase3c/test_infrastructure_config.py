@@ -72,7 +72,7 @@ class TestEnvironmentManagerBasics:
             default="test_default",
             validator=lambda x: x.startswith("test"),
             required=True,
-            description="Test configuration"
+            description="Test configuration",
         )
         assert config.name == "TEST_VAR"
         assert config.default == "test_default"
@@ -155,7 +155,7 @@ class TestPathManagement:
                 {
                     "CODEX_LOG_DB_PATH": str(db_path),
                     "CODEX_DB_PATH": str(db_path),
-                }
+                },
             ):
                 manager = EnvironmentManager()
                 result = manager.get_db_path()
@@ -171,7 +171,7 @@ class TestPathManagement:
                 {
                     "CODEX_LOG_DB_PATH": "",
                     "CODEX_DB_PATH": str(db_path),
-                }
+                },
             ):
                 manager = EnvironmentManager()
                 result = manager.get_db_path()
@@ -227,10 +227,10 @@ class TestEnvironmentValidation:
         manager = EnvironmentManager()
         for var_name, config in manager.ENV_VARS.items():
             assert config.name == var_name
-            assert hasattr(config, 'default')
-            assert hasattr(config, 'validator')
-            assert hasattr(config, 'required')
-            assert hasattr(config, 'description')
+            assert hasattr(config, "default")
+            assert hasattr(config, "validator")
+            assert hasattr(config, "required")
+            assert hasattr(config, "description")
 
     def test_validate_required_variables(self):
         """Test validation of required variables."""

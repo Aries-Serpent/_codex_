@@ -38,26 +38,26 @@ except ModuleNotFoundError:  # pragma: no cover - lightweight environments
 try:
     import torch
 except ModuleNotFoundError:  # pragma: no cover - torch optional
-    torch = None  # type: ignore[assignment]
+    torch = None
 else:
     if not hasattr(torch, "Tensor"):
-        torch = None  # type: ignore[assignment]
+        torch = None
 
 try:  # pragma: no cover - fcntl unavailable on Windows
     import fcntl
 except ImportError:  # pragma: no cover - platform-specific fallback
-    fcntl = None  # type: ignore[assignment]
+    fcntl = None
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     if torch is not None:
-        Tensor = torch.Tensor
+        Tensor = torch.Tensor  # type: ignore
     else:
-        Tensor = Any  # type: ignore[misc]
+        Tensor = Any
 else:  # pragma: no cover - runtime alias
     if torch is not None:
-        Tensor = torch.Tensor
+        Tensor = torch.Tensor  # type: ignore
     else:
-        Tensor = Any  # type: ignore[assignment]
+        Tensor = Any
 
 T = TypeVar("T")
 
@@ -70,7 +70,7 @@ def _require_torch() -> None:
 # Optional deterministic shuffler import with robust fallback
 try:  # pragma: no cover - optional import from ingestion utilities
     from ingestion import deterministic_shuffle
-except Exception:  # pragma: no cover - fallback
+except (ImportError, AttributeError):  # pragma: no cover - fallback
     import random
 
     def deterministic_shuffle(seq: Iterable[Any], seed: int) -> list[Any]:
@@ -150,7 +150,7 @@ def split_dataset(
                 ):
                     cached_train_idx = [int(i) for i in data["train_idx"]]
                     cached_val_idx = [int(i) for i in data["val_idx"]]
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Ignore malformed cache and proceed to recompute
                 cached_train_idx = cached_val_idx = None
@@ -188,7 +188,7 @@ def split_dataset(
                 ),
                 encoding="utf-8",
             )
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             # Best-effort cache; ignore failures
 
@@ -234,7 +234,7 @@ def split_texts(
                 if cached_sum == checksum:
                     # defensive cast and copies
                     return list(data["train"]), list(data["val"])
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 # fall through to recompute
 
@@ -259,7 +259,7 @@ def split_texts(
                 ),
                 encoding="utf-8",
             )
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             # Best-effort caching; ignore failures
 
@@ -287,7 +287,7 @@ class TextDataset:
                     out = self.tokenizer(txt)
                     # Expecting a mapping with 'input_ids'
                     ids = out["input_ids"]
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Skip samples that fail tokenization
                 continue
@@ -369,12 +369,13 @@ def cache_dataset(
                 finally:
                     try:
                         fcntl.flock(fd, fcntl.LOCK_UN)
-                    except Exception as e:
-                        logger.debug(f"Exception: {e}")
+                    except (IOError, OSError) as e:
+                        error_type = type(e).__name__
+                        logger.debug(f"Exception: <ERROR_TYPE>")
                         logger.warning(
                             f"Exception: {e}", exc_info=True
                         )  # File lock release failed; continue cleanup
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             # Skip samples that fail to serialize
             continue
@@ -395,7 +396,7 @@ def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
             data = np.load(npz)
             _require_torch()
             yield {k: torch.tensor(data[k]) for k in data.files}
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             # Skip unreadable/corrupted shards
             continue

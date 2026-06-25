@@ -37,8 +37,8 @@ def legacy_hash_api_key(api_key: str) -> str:
     # on first use via TenantRegistry.get_tenant_by_api_key(). See tenant_context.py.
     # nosec: B303,B324 - legacy support for existing hashes
     # nosemgrep: python.lang.security.insecure-hash-algorithm-md5.insecure-hash-algorithm-md5
-    # codeql[py/weak-sensitive-data-hashing]: intentional legacy SHA-256; PBKDF2 migration
-    # happens on first use in TenantRegistry — see services/msp_gateway/middleware/tenant_context.py
+    # intentional legacy SHA-256; PBKDF2 migration happens on first use in TenantRegistry
+    # see services/msp_gateway/middleware/tenant_context.py
     return sha256(api_key.encode("utf-8")).hexdigest()  # nosec  # pragma: allowlist secret
 
 
@@ -225,7 +225,7 @@ def validate_prompt(prompt: str, tenant_id: str) -> tuple[bool, Optional[str]]:
     # Check for blocked patterns
     error = policy_enforcer.check_blocked_patterns(prompt)
     if error:
-        logger.warning(  # nosec: tenant_id and error are sanitized via sanitize_log_input  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        logger.warning(  # nosec: tenant_id and error are sanitized via sanitize_log_input  # pragma: allowlist secret
             "Blocked prompt for tenant %s: %s",
             sanitize_log_input(tenant_id),
             sanitize_log_input(error),
@@ -247,7 +247,7 @@ def redact_content(text: str, tenant_id: str) -> tuple[str, list[str]]:
     """
     redacted, redactions = policy_enforcer.redact_sensitive_content(text)
     if redactions:
-        logger.info(  # nosec: tenant_id and redactions are sanitized via sanitize_log_input  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
+        logger.info(  # nosec: tenant_id and redactions are sanitized via sanitize_log_input  # pragma: allowlist secret
             "Applied redactions for tenant %s: %s",
             sanitize_log_input(tenant_id),
             sanitize_log_input(str(redactions)),

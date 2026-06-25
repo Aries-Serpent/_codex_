@@ -20,6 +20,7 @@ class TestConfigModuleImport:
         """Test that config module can be imported."""
         try:
             from codex_ml.cli import config
+
             assert config is not None
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
@@ -34,7 +35,7 @@ class TestConfigCLI:
             [sys.executable, "-m", "codex_ml.cli.config", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -44,7 +45,7 @@ class TestConfigCLI:
             [sys.executable, "-m", "codex_ml.cli.config", "show", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -54,7 +55,7 @@ class TestConfigCLI:
             [sys.executable, "-m", "codex_ml.cli.config", "validate", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -68,15 +69,13 @@ class TestConfigFunctionality:
             [sys.executable, "-m", "codex_ml.cli.config"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
     def test_config_show_valid_file(self):
         """Test config show with valid YAML file."""
-        with tempfile.NamedTemporaryFile(
-            mode='w', suffix='.yaml', delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             yaml.dump({"test": "config", "value": 123}, f)
             temp_path = f.name
 
@@ -85,7 +84,7 @@ class TestConfigFunctionality:
                 [sys.executable, "-m", "codex_ml.cli.config", "show", temp_path],
                 capture_output=True,
                 text=True,
-                timeout=30
+                timeout=30,
             )
             # May succeed or fail depending on command structure
             assert result.returncode in (0, 1, 2)
@@ -95,11 +94,10 @@ class TestConfigFunctionality:
     def test_config_validate_invalid_file(self):
         """Test config validate with nonexistent file."""
         result = subprocess.run(
-            [sys.executable, "-m", "codex_ml.cli.config", "validate",
-             "/nonexistent/config.yaml"],
+            [sys.executable, "-m", "codex_ml.cli.config", "validate", "/nonexistent/config.yaml"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # Should fail with invalid file
         assert result.returncode in (0, 1, 2)

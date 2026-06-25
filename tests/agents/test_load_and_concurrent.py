@@ -95,7 +95,7 @@ class TestConcurrentMemoryAccess:
                     if hasattr(memory, "get_memory"):
                         result = memory.get_memory(memory_id)
                         results.append((thread_id, result))
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(e)
 
         # Run 10 threads reading simultaneously
@@ -136,7 +136,7 @@ class TestConcurrentMemoryAccess:
                         # Read
                         if hasattr(memory, "search_memories"):
                             memory.search_memories(category="fact")
-            except Exception as e:
+            except (IOError, OSError) as e:
                 errors.append(e)
 
         threads = []

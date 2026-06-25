@@ -32,9 +32,9 @@ class TestTestSuiteStructure:
                 test_categories.add(relative.parts[0])
 
         # Should have multiple categories
-        assert len(test_categories) >= 10, (
-            f"Should have 10+ test categories, found: {test_categories}"
-        )
+        assert (
+            len(test_categories) >= 10
+        ), f"Should have 10+ test categories, found: {test_categories}"
 
     def test_conftest_files_exist(self):
         """Verify conftest.py files exist in test directories."""
@@ -156,9 +156,9 @@ class TestTestCaching:
 
         if gitignore.exists():
             content = gitignore.read_text(encoding="utf-8")
-            assert ".pytest_cache" in content or "pytest_cache" in content, (
-                ".pytest_cache should be in .gitignore"
-            )
+            assert (
+                ".pytest_cache" in content or "pytest_cache" in content
+            ), ".pytest_cache should be in .gitignore"
 
     def test_no_unnecessary_imports(self):
         """Check for unnecessary imports that slow down test collection."""
@@ -171,8 +171,9 @@ class TestTestCaching:
             try:
                 content = test_file.read_text(encoding="utf-8", errors="ignore")
                 total_files += 1
-                if any(f"import {imp}" in content or f"from {imp}" in content
-                       for imp in heavy_imports):
+                if any(
+                    f"import {imp}" in content or f"from {imp}" in content for imp in heavy_imports
+                ):
                     files_with_heavy += 1
             except (UnicodeDecodeError, OSError):
                 continue

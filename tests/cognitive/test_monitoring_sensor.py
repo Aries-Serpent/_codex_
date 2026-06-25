@@ -9,6 +9,7 @@ Covers:
 * export_state_for_cognitive_brain(): complete export structure
 * Error resilience: missing / corrupt state file
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -305,7 +306,10 @@ class TestShouldProposeAction:
         """health < 50 AND ≥3 critical failures → (True, _, 0.9)."""
         # 4 failing out of 5 = 20% health → critical
         # severity for each: (10/10*0.6)+(1.0*0.4)=1.0 ≥ 0.8 → 4 critical_failures
-        workflows = {f"wf_f{i}": {"last_status": "failure", "consecutive_failures": 10, "failure_rate": 1.0} for i in range(4)}
+        workflows = {
+            f"wf_f{i}": {"last_status": "failure", "consecutive_failures": 10, "failure_rate": 1.0}
+            for i in range(4)
+        }
         workflows["wf_ok"] = {"last_status": "success"}
         sensor = self._sensor_with_workflows(tmp_path, workflows)
         health = sensor.get_system_health()
@@ -318,7 +322,10 @@ class TestShouldProposeAction:
         """50 ≤ health < 80 AND ≥2 critical failures → (True, _, 0.75)."""
         # 2 failing out of 7 = 71.4% health → degraded
         # severity: (10/10*0.6)+(1.0*0.4)=1.0 ≥ 0.8 → 2 critical_failures
-        workflows = {f"wf_f{i}": {"last_status": "failure", "consecutive_failures": 10, "failure_rate": 1.0} for i in range(2)}
+        workflows = {
+            f"wf_f{i}": {"last_status": "failure", "consecutive_failures": 10, "failure_rate": 1.0}
+            for i in range(2)
+        }
         workflows.update({f"wf_ok{i}": {"last_status": "success"} for i in range(5)})
         sensor = self._sensor_with_workflows(tmp_path, workflows)
         health = sensor.get_system_health()
@@ -331,7 +338,10 @@ class TestShouldProposeAction:
         """health < 80 BUT <2 critical failures → (False, _, 0.5)."""
         # 2 failing out of 5 = 60% health → degraded
         # severity: (2/10*0.6)+(0.2*0.4)=0.12+0.08=0.20 < 0.8 → 0 critical_failures
-        workflows = {f"wf_f{i}": {"last_status": "failure", "consecutive_failures": 2, "failure_rate": 0.2} for i in range(2)}
+        workflows = {
+            f"wf_f{i}": {"last_status": "failure", "consecutive_failures": 2, "failure_rate": 0.2}
+            for i in range(2)
+        }
         workflows.update({f"wf_ok{i}": {"last_status": "success"} for i in range(3)})
         sensor = self._sensor_with_workflows(tmp_path, workflows)
         health = sensor.get_system_health()

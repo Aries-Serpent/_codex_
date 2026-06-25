@@ -1,16 +1,16 @@
-# Repository Architecture Diagrams - v0.1.0 Pre-Release
+# Repository Architecture Diagrams - v0.9.0 Pre-Release
 
-**Version**: v0.1.0 Pre-Release
+**Version**: v0.9.0 Pre-Release
 **Package**: codex-ml
 **Last Updated**: 2026-05-20
 **Context**: Production-ready with 21,500+ test functions, 10.7% coverage, 48 CVEs fixed, 280+ agents
-**Purpose**: Updated architecture diagrams reflecting v0.1.0 pre-release state
+**Purpose**: Updated architecture diagrams reflecting v0.9.0 pre-release state
 
 ---
 
-## 🎯 Overview (v0.1.0)
+## 🎯 Overview (v0.9.0)
 
-This document presents all key architecture diagrams aligned with v0.1.0 pre-release:
+This document presents all key architecture diagrams aligned with v0.9.0 pre-release:
 1. **21,500+ Tests**: Comprehensive test functions across all components
 2. **10.7% Coverage**: Current baseline — ratchet roadmap targeting 90%
 3. **48 CVEs Fixed**: Security-hardened through IP-005 remediation
@@ -22,14 +22,14 @@ This document presents all key architecture diagrams aligned with v0.1.0 pre-rel
 
 ---
 
-## 📊 Diagram 1: codex-ml v0.1.0 CI/CD & Testing Architecture
+## 📊 Diagram 1: codex-ml v0.9.0 CI/CD & Testing Architecture
 
-### Current State (v0.1.0 Pre-Release)
+### Current State (v0.9.0 Pre-Release)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram showing test-comprehensive.yml<br/>✅ 21,500+ Tests<br/>10.7% Coverage<br/>✅ pytest-rerunfailures, test-rag.yml<br/>✅ RAG Pipeline Tests<br/>✅ No duplicate timeouts<br/>✅ Uses pytest.ini'}}%%
 graph TB
-    subgraph "codex-ml v0.1.0 CI/CD Pipeline"
+    subgraph "codex-ml v0.9.0 CI/CD Pipeline"
         TC[test-comprehensive.yml<br/>✅ 21,500+ Tests<br/>10.7% Coverage<br/>✅ pytest-rerunfailures]
         TR[test-rag.yml<br/>✅ RAG Pipeline Tests<br/>✅ No duplicate timeouts<br/>✅ Uses pytest.ini]
         SH[self-healing.yml<br/>✅ Auto-Fix + Self-Heal<br/>✅ 75-87% Time Savings<br/>✅ PyYAML dependency order]
@@ -41,7 +41,7 @@ graph TB
         CONV[TESTING_CONVENTIONS.md<br/>📚 Best practices<br/>⚠️ Common pitfalls<br/>🔍 Quick reference]
     end
 
-    subgraph "Custom Actions (v0.1.0)"
+    subgraph "Custom Actions (v0.9.0)"
         SPC[setup-python-cached<br/>✅ Requires PyYAML first<br/>✅ Tiered caching<br/>📝 Documented usage]
         DTS[doc-test-scribe-action<br/>🆕 Auto-generate docs/tests<br/>🔒 Integrated security<br/>🌐 HTML index generation]
     end
@@ -82,7 +82,7 @@ graph TB
     DTS --> MODE
     PR -.tags.-> Copilot[GitHub Copilot<br/>🤖 AI Review]
 
-    %% Styling v0.1.0
+    %% Styling v0.9.0
     style TC fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
     style TR fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
     style SH fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
@@ -92,7 +92,7 @@ graph TB
     style HTML fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
 ```
 
-### v0.1.0 Key Improvements
+### v0.9.0 Key Improvements
 - **21,500+ Tests**: Comprehensive test functions across all modules
 - **10.7% Coverage**: Baseline; roadmap targets 90%
 - **48 CVEs Fixed**: Security hardening complete

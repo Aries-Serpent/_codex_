@@ -49,7 +49,8 @@ def canonicalize_json(p: Path) -> dict:
     try:
         data = json.loads(p.read_text(encoding="utf-8"))
     except json.JSONDecodeError as e:
-        print(f"[ERR] Failed to parse {p}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"[ERR] Failed to parse {p}: <ERROR_TYPE>", file=sys.stderr)
         raise
 
     def scrub(obj):

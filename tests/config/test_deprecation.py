@@ -62,8 +62,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "config.yaml").write_text("test: config")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
-        )
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root)
 
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -86,8 +85,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "settings.yaml").write_text("test: settings")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
-        )
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root)
 
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -109,8 +107,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "DEPRECATED.md").write_text("This directory is deprecated")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
-        )
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root)
 
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -127,8 +124,7 @@ class TestCheckLegacyConfigUsage:
         (repo_root / ".git").mkdir()
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
-        )
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root)
 
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -147,8 +143,7 @@ class TestCheckLegacyConfigUsage:
         legacy_dir.mkdir()
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
-        )
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root)
 
         # Mock iterdir to raise PermissionError
         original_iterdir = Path.iterdir
@@ -175,8 +170,7 @@ class TestCheckLegacyConfigUsage:
         def mock_find_repo_root():
             raise RuntimeError("Cannot find repo root")
 
-        monkeypatch.setattr(_dep_mod, "find_repo_root", mock_find_repo_root
-        )
+        monkeypatch.setattr(_dep_mod, "find_repo_root", mock_find_repo_root)
 
         # Should not crash
         with warnings.catch_warnings(record=True) as w:
@@ -201,8 +195,7 @@ class TestCheckLegacyConfigUsage:
         (legacy_dir / "config.yaml").write_text("test: config")
 
         # Mock find_repo_root to return our test directory
-        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root
-        )
+        monkeypatch.setattr(_dep_mod, "find_repo_root", lambda: repo_root)
 
         # With env var set to 0, function would still warn if called
         # This test verifies the function works when called explicitly

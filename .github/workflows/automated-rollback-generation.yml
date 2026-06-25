@@ -24,6 +24,10 @@ env:
   OUTPUT_DIR: .codex
   SCRIPTS_DIR: scripts/deployment
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generate-rollback-procedures:
     name: Generate Rollback Procedures
@@ -284,6 +288,7 @@ jobs:
   validate-dry-run:
     name: Validate Procedures (Dry-Run)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: generate-rollback-procedures
 
     steps:
@@ -314,6 +319,7 @@ jobs:
   notify-completion:
     name: Notify Completion
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: generate-rollback-procedures
     if: always()
 

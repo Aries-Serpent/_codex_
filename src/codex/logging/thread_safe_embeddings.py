@@ -12,23 +12,24 @@ from __future__ import annotations
 
 import json
 import logging
-import threading
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .concurrency import ReadWriteLock, LockMetrics, log_error, save_metrics
+from .concurrency import ReadWriteLock, log_error, save_metrics
 
 logger = logging.getLogger(__name__)
 
 try:
     import numpy as np
+
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
 
 try:
     import faiss
+
     HAS_FAISS = True
 except ImportError:
     HAS_FAISS = False
@@ -36,6 +37,7 @@ except ImportError:
 
 try:
     from sentence_transformers import SentenceTransformer
+
     HAS_SENTENCE_TRANSFORMERS = True
 except ImportError:
     HAS_SENTENCE_TRANSFORMERS = False
@@ -93,9 +95,7 @@ class ThreadSafeSessionEmbeddings:
                 # Load metadata
                 with open(self.metadata_path, "r") as f:
                     self._metadata = json.load(f)
-                    logger.info(
-                        f"Loaded metadata for {len(self._metadata)} sessions"
-                    )
+                    logger.info(f"Loaded metadata for {len(self._metadata)} sessions")
             else:
                 # Create new index
                 if HAS_FAISS:
@@ -103,8 +103,9 @@ class ThreadSafeSessionEmbeddings:
                     logger.info("Created new Faiss index")
                 self._metadata = {}
 
-        except Exception as e:
-            logger.error(f"Failed to load/create index: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to load/create index: <ERROR_TYPE>")
             log_error(e, "load_index", self.errors_path)
             if HAS_FAISS:
                 self._index = faiss.IndexFlatL2(self.DIMENSION)
@@ -122,11 +123,12 @@ class ThreadSafeSessionEmbeddings:
             if self._model is None:
                 self._model = SentenceTransformer(self.MODEL_NAME)
 
-            embedding = self._model.encode(text, convert_to_numpy=True)  # type: ignore[attr-defined]
+            embedding = self._model.encode(text, convert_to_numpy=True)
             return embedding.astype(np.float32)
 
-        except Exception as e:
-            logger.warning(f"Failed to get embedding: {e}")
+        except (ValueError, TypeError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Failed to get embedding: <ERROR_TYPE>")
             if HAS_NUMPY:
                 return np.random.rand(self.DIMENSION).astype(np.float32)
             return None
@@ -177,8 +179,9 @@ class ThreadSafeSessionEmbeddings:
                     self.save_index()
                 return result
 
-        except Exception as e:
-            logger.error(f"Failed to add session {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to add session {session_id}: <ERROR_TYPE>")
             log_error(e, "add_session", self.errors_path)
             return False
 
@@ -204,9 +207,7 @@ class ThreadSafeSessionEmbeddings:
                         "similarity_score": 0.9 - (i * 0.05),
                         "description": meta.get("description", ""),
                     }
-                    for i, (sid, meta) in enumerate(
-                        list(self._metadata.items())[:k]
-                    )
+                    for i, (sid, meta) in enumerate(list(self._metadata.items())[:k])
                     if sid != query_session_id
                 ]
 
@@ -227,11 +228,13 @@ class ThreadSafeSessionEmbeddings:
                 # Find session_id by index
                 for sid, meta in self._metadata.items():
                     if meta.get("index_id") == idx and sid != query_session_id:
-                        results.append({
-                            "session_id": sid,
-                            "similarity_score": float(1.0 / (1.0 + float(dist))),
-                            "description": meta.get("description", ""),
-                        })
+                        results.append(
+                            {
+                                "session_id": sid,
+                                "similarity_score": float(1.0 / (1.0 + float(dist))),
+                                "description": meta.get("description", ""),
+                            }
+                        )
                         if len(results) >= k:
                             break
 
@@ -241,8 +244,9 @@ class ThreadSafeSessionEmbeddings:
             with self._rw_lock.read_lock():
                 return _find()
 
-        except Exception as e:
-            logger.error(f"Failed to find similar sessions: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to find similar sessions: <ERROR_TYPE>")
             log_error(e, "find_similar", self.errors_path)
             return []
 
@@ -266,16 +270,18 @@ class ThreadSafeSessionEmbeddings:
             try:
                 embedding = self._index.reconstruct(int(idx))
                 return embedding.astype(np.float32)
-            except Exception as e:
-                logger.warning(f"Failed to reconstruct embedding for {session_id}: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Failed to reconstruct embedding for {session_id}: <ERROR_TYPE>")
                 return None
 
         try:
             with self._rw_lock.read_lock():
                 return _get()
 
-        except Exception as e:
-            logger.error(f"Failed to get embedding: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to get embedding: <ERROR_TYPE>")
             log_error(e, "get_embedding", self.errors_path)
             return None
 
@@ -297,8 +303,9 @@ class ThreadSafeSessionEmbeddings:
             logger.debug(f"Index saved to {self.embeddings_path}")
             return True
 
-        except Exception as e:
-            logger.error(f"Failed to save index: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to save index: <ERROR_TYPE>")
             log_error(e, "save_index", self.errors_path)
             return False
 
@@ -315,7 +322,7 @@ class ThreadSafeSessionEmbeddings:
             "index_size": self._index.ntotal if self._index else 0,
             "metadata_entries": len(self._metadata),
         }
-        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
+        save_metrics(metrics_dict, self.metrics_path)
 
     def __enter__(self):
         """Context manager entry."""

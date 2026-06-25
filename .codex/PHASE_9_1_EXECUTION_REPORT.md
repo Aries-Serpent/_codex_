@@ -239,7 +239,7 @@ python scripts/ci/phase_9_1_confidence_scorer.py algorithm
 
 | Task | Duration | Status | Completion | Notes |
 |------|----------|--------|-----------|-------|
-| TASK 9.1.1: Identify & authorize agents | 0.5d | ✅ | 2026-06-22 | All 9 agents identified & risk-assessed |
+| TASK 9.1.1: Identify & authorize agents | 0.5d | ✅ | 2026-06-22 | All 9 agents identified & risk-assessed | <!-- pragma: allowlist secret -->
 | TASK 9.1.2: Build decision logging | 1.0d | ✅ | 2026-06-22 | Immutable append-only system deployed |
 | TASK 9.1.3: Implement confidence scoring | 1.0d | ✅ | 2026-06-22 | Multi-factor algorithm, <100ms performance |
 | TASK 9.1.4: Build audit trail | 0.5d | ✅ | 2026-06-22 | Queryable in <1s, integrated with logger |
@@ -435,9 +435,9 @@ See `.codex/PHASE_9_COORDINATION_DASHBOARD.md` for Phase 9 tracking
 ### Final Authorization
 
 > **✅ PHASE 9.1 EXECUTION COMPLETE**
-> 
+>
 > All deliverables deployed, all 9 agents authorized for autonomous D_CAPABLE operations.
-> 
+>
 > Framework is operational, tested, and ready for production deployment starting 2026-06-30.
 
 **Effective Date:** 2026-06-22 11:12 UTC  

@@ -37,7 +37,7 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as e:
+except (IOError, OSError) as e:
     logger.warning("sqlite auto setup skipped: %s", e, exc_info=True)
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     session_ctx: Optional[Any]
     try:
         from .session_hooks import session as session_ctx
-    except Exception:  # pragma: no cover - helper optional
+    except (ImportError, AttributeError):  # pragma: no cover - helper optional
         session_ctx = None
     if session_ctx:
         with session_ctx(sys.argv):

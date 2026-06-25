@@ -83,9 +83,7 @@ def test_task_sequence_and_script_templates() -> None:
     text = read_status()
     assert "```yaml" in text, "Codex-ready task sequence must be fenced as YAML"
     assert "{{task_sequence_preparation_step_1}}" in text
-    assert "```python" in text, (
-        "Executable script must be provided in fenced python block"
-    )
+    assert "```python" in text, "Executable script must be provided in fenced python block"
     assert '"""Codex remediation workflow template."""' in text
     assert 'raise NotImplementedError("{{implement_context_loader}}")' in text
     assert "{{script_completion_message}}" in text
@@ -124,9 +122,9 @@ def test_reproducibility_table_placeholders() -> None:
 def test_error_capture_placeholder_present() -> None:
     text = read_status()
     assert "{{error_capture_summary}}" in text, "Error capture placeholder missing"
-    assert "{{task_sequence_error_capture_step_1}}" in text, (
-        "Error capture phase placeholder missing"
-    )
-    assert "Question for ChatGPT @codex" not in text, (
-        "Template should not contain filled error capture block"
-    )
+    assert (
+        "{{task_sequence_error_capture_step_1}}" in text
+    ), "Error capture phase placeholder missing"
+    assert (
+        "Question for ChatGPT @codex" not in text
+    ), "Template should not contain filled error capture block"

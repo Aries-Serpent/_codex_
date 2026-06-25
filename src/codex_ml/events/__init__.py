@@ -39,16 +39,18 @@ __all__ += [
 try:
     from .azure_events import AzureEventPublisher
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
-    AzureEventPublisher = None  # type: ignore[assignment,misc]
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    AzureEventPublisher = None
 
 try:
     from .aws_events import AWSEventPublisher
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
-    AWSEventPublisher = None  # type: ignore[assignment,misc]
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    AWSEventPublisher = None
 
 
 def get_optional_event_publishers() -> dict[str, type[EventPublisher] | None]:

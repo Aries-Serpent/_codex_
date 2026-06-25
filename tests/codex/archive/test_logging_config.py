@@ -19,7 +19,7 @@ class TestStructuredLogRecord:
             message="Test message",
             timestamp="2024-01-01T00:00:00.000000Z",
             component="test_component",
-            extra={"key": "value"}
+            extra={"key": "value"},
         )
 
         assert record.level == "INFO"
@@ -37,7 +37,7 @@ class TestStructuredLogRecord:
             message="Warning message",
             timestamp="2024-01-01T12:00:00.000000Z",
             component="warning_component",
-            extra={"warning_type": "deprecation"}
+            extra={"warning_type": "deprecation"},
         )
 
         result = record.to_dict()
@@ -57,7 +57,7 @@ class TestStructuredLogRecord:
             message="Error occurred",
             timestamp="2024-01-01T00:00:00.000000Z",
             component="error_handler",
-            extra={"code": 500}
+            extra={"code": 500},
         )
 
         result = record.to_json()
@@ -76,7 +76,7 @@ class TestStructuredLogRecord:
             message="Debug info",
             timestamp="2024-01-01T00:00:00.000000Z",
             component="debugger",
-            extra={"trace_id": "abc123"}
+            extra={"trace_id": "abc123"},
         )
 
         result = record.to_text()
@@ -94,7 +94,7 @@ class TestStructuredLogRecord:
             message="Simple message",
             timestamp="2024-01-01T00:00:00.000000Z",
             component="simple",
-            extra={}
+            extra={},
         )
 
         result = record.to_text()

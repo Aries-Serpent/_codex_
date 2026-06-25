@@ -49,9 +49,7 @@ class TestCrossAdapterIntegration:
         json_root = json_adapter.parse('{"key": "value"}')
         assert isinstance(json_root, StandardizedASTNode)
 
-    def test_all_adapters_support_traverse(
-        self, python_adapter, yaml_adapter, json_adapter
-    ):
+    def test_all_adapters_support_traverse(self, python_adapter, yaml_adapter, json_adapter):
         """Test that all adapters support tree traversal"""
         # Python
         py_root = python_adapter.parse("class Foo:\n    def bar(self): pass")
@@ -87,9 +85,7 @@ class TestCrossAdapterIntegration:
         json_primitives = json_adapter.find_nodes_by_type("primitive")
         assert len(json_primitives) >= 2
 
-    def test_all_adapters_support_get_stats(
-        self, python_adapter, yaml_adapter, json_adapter
-    ):
+    def test_all_adapters_support_get_stats(self, python_adapter, yaml_adapter, json_adapter):
         """Test that all adapters generate statistics"""
         # Python
         python_adapter.parse("def foo(): pass")
@@ -109,9 +105,7 @@ class TestCrossAdapterIntegration:
         assert isinstance(json_stats, dict)
         assert len(json_stats) > 0
 
-    def test_yaml_and_json_similar_structure(
-        self, yaml_adapter, json_adapter
-    ):
+    def test_yaml_and_json_similar_structure(self, yaml_adapter, json_adapter):
         """Test that YAML and JSON adapters handle similar data structures"""
         # YAML
         yaml_adapter.parse("""
@@ -122,23 +116,21 @@ config:
         yaml_mappings = yaml_adapter.find_nodes_by_type("mapping")
 
         # JSON equivalent
-        json_adapter.parse('''
+        json_adapter.parse("""
 {
     "config": {
         "host": "localhost",
         "port": 5432
     }
 }
-''')
+""")
         json_objects = json_adapter.find_nodes_by_type("object")
 
         # Both should have 2 containers (root + config)
         assert len(yaml_mappings) == 2
         assert len(json_objects) == 2
 
-    def test_path_based_navigation_consistency(
-        self, yaml_adapter, json_adapter
-    ):
+    def test_path_based_navigation_consistency(self, yaml_adapter, json_adapter):
         """Test that YAML and JSON adapters have consistent path navigation"""
         # YAML
         yaml_adapter.parse("config:\n  database:\n    host: localhost")
@@ -213,7 +205,7 @@ config:
 
     def test_json_adapter_performance(self, json_adapter):
         """Benchmark JSON adapter parsing speed"""
-        source = '''
+        source = """
 {
     "config": {
         "database": {
@@ -230,7 +222,7 @@ config:
         }
     }
 }
-'''
+"""
         start = time.time()
         root = json_adapter.parse(source)
         elapsed = time.time() - start
@@ -243,6 +235,7 @@ config:
         # Create a large JSON structure
         large_data = {"items": [{"id": i, "name": f"item{i}"} for i in range(1000)]}
         import json
+
         source = json.dumps(large_data)
 
         start = time.time()
@@ -335,7 +328,7 @@ database:
 
     def test_parse_json_api_response(self, json_adapter):
         """Test parsing typical JSON API response"""
-        api_response = '''
+        api_response = """
 {
     "status": "success",
     "data": {
@@ -362,7 +355,7 @@ database:
         "version": "1.0"
     }
 }
-'''
+"""
         json_adapter.parse(api_response)
 
         # Test path navigation
@@ -379,9 +372,7 @@ database:
         objects = json_adapter.find_nodes_by_type("object")
         assert len(objects) >= 4  # root, data, meta, 2 users
 
-    def test_error_handling_across_adapters(
-        self, python_adapter, yaml_adapter, json_adapter
-    ):
+    def test_error_handling_across_adapters(self, python_adapter, yaml_adapter, json_adapter):
         """Test that all adapters handle errors gracefully"""
         # Invalid Python
         with pytest.raises(Exception):  # Could be SyntaxError or ValueError

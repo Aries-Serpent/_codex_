@@ -107,7 +107,7 @@ class TestMLflowGuard:
         from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
-            with MLflowGuard() as guard:
+            with MLflowGuard():
                 raise ValueError("Test error")
         except ValueError:
             pass  # Expected
@@ -663,7 +663,7 @@ class TestIntegrationAndErrors:
         from codex_ml.tracking.mlflow_guard import MLflowGuard
 
         try:
-            guard = MLflowGuard(config=None)
+            MLflowGuard(config=None)
             assert True
         except (AttributeError, OSError, RuntimeError):
             pass
@@ -707,7 +707,7 @@ class TestIntegrationAndErrors:
         from codex_ml.training.dp_config import DPConfig
 
         try:
-            config = DPConfig(backend="invalid_backend_xyz")
+            DPConfig(backend="invalid_backend_xyz")
             assert True  # Might accept and validate later
         except (ValueError, RuntimeError):
             pass  # Also valid

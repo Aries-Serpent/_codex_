@@ -13,8 +13,7 @@ Comprehensive test coverage for the ingest adapter module covering:
 
 Tests follow patterns from existing codebase, use fixtures for temp directories,
 and include edge case coverage, error paths, and integration scenarios.
-""" # pragma: allowlist secret # pragma: allowlist secret
-
+"""  # pragma: allowlist secret # pragma: allowlist secret
 
 import hashlib
 import json
@@ -37,7 +36,6 @@ from src.codex.ingest.adapter import (
     _validate_path,
     ingest,
 )
-
 
 # =====================================================================
 # FIXTURES
@@ -273,7 +271,7 @@ class TestValidatePath:
         base_dir = tmp_path / "base"
         base_dir.mkdir()
 
-        traversal_path = base_dir / ".." / ".."  / "etc" / "passwd"
+        traversal_path = base_dir / ".." / ".." / "etc" / "passwd"
         with pytest.raises(ValueError, match="Path traversal"):
             _validate_path(traversal_path, base_dir)
 
@@ -516,7 +514,9 @@ class TestIngestFunction:
     @patch("src.codex.ingest.adapter._clone_git_repo")
     def test_ingest_git_url(self, mock_clone, artifacts_dir):
         """Test ingesting from Git URL."""
-        mock_clone.side_effect = lambda url, ref, dest: (dest / "cloned_file.py").write_text("# cloned")
+        mock_clone.side_effect = lambda url, ref, dest: (dest / "cloned_file.py").write_text(
+            "# cloned"
+        )
 
         snapshot = ingest("https://github.com/user/repo.git")
         assert snapshot.snapshot_id is not None

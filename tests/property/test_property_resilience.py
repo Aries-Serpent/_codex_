@@ -69,16 +69,13 @@ class TestRetryProperties:
             with pytest.raises(RetryExhausted):
                 wrapped()
 
-        assert call_count == max_retries + 1, (
-            f"Expected {max_retries + 1} calls, got {call_count}"
-        )
+        assert call_count == max_retries + 1, f"Expected {max_retries + 1} calls, got {call_count}"
 
     @given(_max_retries)
     @settings(max_examples=50)
-    def test_retry_exhausted_attempts_attribute_matches_max_retries(
-        self, max_retries: int
-    ) -> None:
+    def test_retry_exhausted_attempts_attribute_matches_max_retries(self, max_retries: int) -> None:
         """RetryExhausted.attempts must equal max_retries + 1."""
+
         def always_fails() -> None:
             raise RuntimeError("fail")
 
@@ -93,9 +90,9 @@ class TestRetryProperties:
                 wrapped()
                 pytest.fail("Expected RetryExhausted")
             except RetryExhausted as exc:
-                assert exc.attempts == max_retries + 1, (
-                    f"attempts={exc.attempts} should equal max_retries+1={max_retries + 1}"
-                )
+                assert (
+                    exc.attempts == max_retries + 1
+                ), f"attempts={exc.attempts} should equal max_retries+1={max_retries + 1}"
 
     @given(st.integers(min_value=1, max_value=8), _fallback_values)
     @settings(max_examples=50)
@@ -103,6 +100,7 @@ class TestRetryProperties:
         self, max_retries: int, return_val: object
     ) -> None:
         """When the function succeeds on the first attempt, the correct value is returned."""
+
         def succeeds() -> object:
             return return_val
 
@@ -136,15 +134,11 @@ class TestRetryProperties:
 
         assert result == "ok"
         # Must have stopped after the second call (1 fail + 1 success)
-        assert call_count == 2, (
-            f"Expected 2 calls (1 fail + 1 success), got {call_count}"
-        )
+        assert call_count == 2, f"Expected 2 calls (1 fail + 1 success), got {call_count}"
 
     @given(_max_retries)
     @settings(max_examples=50)
-    def test_call_count_never_exceeds_max_retries_plus_one(
-        self, max_retries: int
-    ) -> None:
+    def test_call_count_never_exceeds_max_retries_plus_one(self, max_retries: int) -> None:
         """Total call count must never exceed max_retries + 1, regardless of failures."""
         call_count = 0
 
@@ -194,24 +188,22 @@ class TestCircuitBreakerProperties:
                 cb.call(always_fails)
             except RuntimeError:
                 pass  # expected: underlying error propagates while circuit stays CLOSED
-        assert cb.state is CircuitState.CLOSED, (
-            f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
-        )
+        assert (
+            cb.state is CircuitState.CLOSED
+        ), f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
 
         # One more failure trips it to OPEN.
         try:
             cb.call(always_fails)
         except RuntimeError:
             pass  # expected: final failure propagates and trips circuit to OPEN
-        assert cb.state is CircuitState.OPEN, (
-            f"Circuit must be OPEN after {failure_threshold} consecutive failures"
-        )
+        assert (
+            cb.state is CircuitState.OPEN
+        ), f"Circuit must be OPEN after {failure_threshold} consecutive failures"
 
     @given(_failure_threshold)
     @settings(max_examples=50)
-    def test_open_circuit_raises_circuit_open_error(
-        self, failure_threshold: int
-    ) -> None:
+    def test_open_circuit_raises_circuit_open_error(self, failure_threshold: int) -> None:
         """Calls while OPEN must raise CircuitOpenError, not the underlying error."""
         cb = CircuitBreaker(
             failure_threshold=failure_threshold,
@@ -285,25 +277,21 @@ class TestGracefulDegradationProperties:
 
     @given(_fallback_values)
     @settings(max_examples=50)
-    def test_fallback_returned_when_function_raises(
-        self, fallback: object
-    ) -> None:
+    def test_fallback_returned_when_function_raises(self, fallback: object) -> None:
         """Fallback value must be returned (not raised) when wrapped function fails."""
+
         @GracefulDegradation(fallback=fallback)
         def always_fails() -> object:
             raise RuntimeError("error")
 
         result = always_fails()
-        assert result == fallback, (
-            f"Expected fallback {fallback!r}, got {result!r}"
-        )
+        assert result == fallback, f"Expected fallback {fallback!r}, got {result!r}"
 
     @given(_fallback_values)
     @settings(max_examples=50)
-    def test_return_value_preserved_when_function_succeeds(
-        self, expected: object
-    ) -> None:
+    def test_return_value_preserved_when_function_succeeds(self, expected: object) -> None:
         """When the function succeeds, its return value must pass through unchanged."""
+
         @GracefulDegradation(fallback="should-not-be-used")
         def succeeds() -> object:
             return expected
@@ -313,9 +301,7 @@ class TestGracefulDegradationProperties:
 
     @given(_fallback_values)
     @settings(max_examples=50)
-    def test_context_manager_fallback_on_error(
-        self, fallback: object
-    ) -> None:
+    def test_context_manager_fallback_on_error(self, fallback: object) -> None:
         """Context manager form must set result=fallback when the body raises."""
         dg = GracefulDegradation(fallback=fallback)
 
@@ -330,10 +316,9 @@ class TestGracefulDegradationProperties:
 
     @given(_fallback_values)
     @settings(max_examples=50)
-    def test_no_fallback_raises_degradation_error(
-        self, ignored: object
-    ) -> None:
+    def test_no_fallback_raises_degradation_error(self, ignored: object) -> None:
         """Without a fallback, a failing wrapped function must raise DegradationError."""
+
         @GracefulDegradation()  # no fallback
         def always_fails() -> None:
             raise RuntimeError("fail")

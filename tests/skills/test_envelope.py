@@ -111,12 +111,14 @@ class TestExecutionEnvelopeErrors:
 class TestExecutionEnvelopePolicy:
     def test_allowlist_blocks_caller(self):
         reg = SkillRegistry()
-        reg.register(_make_manifest(
-            policy=PolicyConfig(
-                allowlist=["allowed-agent"],
-                budgets=BudgetConfig(calls=100, tokens=10_000, wallclock_ms=5_000),
+        reg.register(
+            _make_manifest(
+                policy=PolicyConfig(
+                    allowlist=["allowed-agent"],
+                    budgets=BudgetConfig(calls=100, tokens=10_000, wallclock_ms=5_000),
+                )
             )
-        ))
+        )
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {}, caller_id="unknown-agent")
         assert result.status == "error"
@@ -171,6 +173,7 @@ class TestExecutionEnvelopeRetries:
         # Inject the real implementation into the handler module to avoid
         # coupling state to this test module.
         import tests.skills._envelope_test_handlers as _handlers_mod
+
         mod = _handlers_mod
         original = getattr(mod, "flaky_handler", None)
         mod.flaky_handler = flaky_handler  # type: ignore[attr-defined]
@@ -189,12 +192,11 @@ class TestExecutionEnvelopeRetries:
 class TestTelemetryEmission:
     def test_telemetry_emit_jsonl_called(self, tmp_path):
         import os
+
         os.environ["CODEX_SKILL_TELEMETRY_PATH"] = str(tmp_path / "events.jsonl")
         try:
             reg = SkillRegistry()
-            manifest = _make_manifest(
-                telemetry=TelemetryConfig(emit_jsonl=True, emit_otel=False)
-            )
+            manifest = _make_manifest(telemetry=TelemetryConfig(emit_jsonl=True, emit_otel=False))
             reg.register(manifest)
             env = ExecutionEnvelope(reg)
             env.run("test.skill", {})

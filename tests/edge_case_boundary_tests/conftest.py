@@ -12,6 +12,7 @@ import pytest
 # AUTHENTICATION FIXTURES
 # ============================================================================
 
+
 @pytest.fixture
 def valid_token():
     """Valid JWT token fixture."""
@@ -44,7 +45,10 @@ def mock_mfa_manager():
 def mock_oauth_provider():
     """Mock OAuth provider fixture."""
     provider = MagicMock()
-    provider.exchange_code_for_token.return_value = {"access_token": "token", "refresh_token": "refresh"}
+    provider.exchange_code_for_token.return_value = {
+        "access_token": "token",
+        "refresh_token": "refresh",
+    }
     provider.validate_state.return_value = True
     provider.get_user_info.return_value = {"id": "123", "email": "user@example.com"}
     return provider
@@ -53,6 +57,7 @@ def mock_oauth_provider():
 # ============================================================================
 # AUTHORIZATION FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def mock_rbac_engine():
@@ -78,6 +83,7 @@ def mock_abac_engine():
 # DATA VALIDATION FIXTURES
 # ============================================================================
 
+
 @pytest.fixture
 def injection_payloads():
     """Common injection attack payloads for boundary testing."""
@@ -87,22 +93,16 @@ def injection_payloads():
             "'; DROP TABLE users; --",
             "1' UNION SELECT * FROM users --",
             "admin'--",
-            "1' AND 1=1 --"
+            "1' AND 1=1 --",
         ],
         "xss_injection": [
             "<script>alert('xss')</script>",
             "<img src=x onerror='alert(1)'>",
             "javascript:alert('xss')",
             "<svg onload='alert(1)'>",
-            "<iframe src='javascript:alert(1)'>"
+            "<iframe src='javascript:alert(1)'>",
         ],
-        "command_injection": [
-            "; ls -la",
-            "| cat /etc/passwd",
-            "&& whoami",
-            "`id`",
-            "$(whoami)"
-        ]
+        "command_injection": ["; ls -la", "| cat /etc/passwd", "&& whoami", "`id`", "$(whoami)"],
     }
 
 
@@ -115,7 +115,7 @@ def boundary_values():
             "max_int": 2147483647,
             "zero": 0,
             "one": 1,
-            "negative_one": -1
+            "negative_one": -1,
         },
         "strings": {
             "empty": "",
@@ -123,14 +123,15 @@ def boundary_values():
             "newline": "\n",
             "very_long": "x" * 1000000,
             "unicode": "🔐😀中文",
-            "special_chars": "!@#$%^&*()"
-        }
+            "special_chars": "!@#$%^&*()",
+        },
     }
 
 
 # ============================================================================
 # CRYPTOGRAPHY FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def key_management_mock():
@@ -145,6 +146,7 @@ def key_management_mock():
 # ============================================================================
 # STATE MANAGEMENT FIXTURES
 # ============================================================================
+
 
 @pytest.fixture
 def state_machine_mock():
@@ -161,6 +163,7 @@ def state_machine_mock():
 # API/NETWORK FIXTURES
 # ============================================================================
 
+
 @pytest.fixture
 def http_client_mock():
     """Mock HTTP client for testing network scenarios."""
@@ -174,16 +177,19 @@ def http_client_mock():
 # PARAMETRIZATION FIXTURES
 # ============================================================================
 
-@pytest.fixture(params=[
-    {"status": 200, "data": {"result": "ok"}},
-    {"status": 201, "data": {"id": "123"}},
-    {"status": 204, "data": None},
-    {"status": 400, "error": "Invalid request"},
-    {"status": 401, "error": "Unauthorized"},
-    {"status": 403, "error": "Forbidden"},
-    {"status": 404, "error": "Not found"},
-    {"status": 500, "error": "Internal server error"},
-])
+
+@pytest.fixture(
+    params=[
+        {"status": 200, "data": {"result": "ok"}},
+        {"status": 201, "data": {"id": "123"}},
+        {"status": 204, "data": None},
+        {"status": 400, "error": "Invalid request"},
+        {"status": 401, "error": "Unauthorized"},
+        {"status": 403, "error": "Forbidden"},
+        {"status": 404, "error": "Not found"},
+        {"status": 500, "error": "Internal server error"},
+    ]
+)
 def http_status_codes(request):
     """Parametrized HTTP status codes for boundary testing."""
     return request.param
@@ -192,6 +198,7 @@ def http_status_codes(request):
 # ============================================================================
 # UTILITY FUNCTIONS FOR TESTS
 # ============================================================================
+
 
 def create_mock_request(method="GET", path="/", headers=None, body=None):
     """Create a mock HTTP request."""

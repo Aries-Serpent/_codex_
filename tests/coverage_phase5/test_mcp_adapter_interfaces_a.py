@@ -77,4 +77,3 @@ async def test_adapter_context_manager():
 
     await adapter.shutdown()
     assert not adapter.initialized
-

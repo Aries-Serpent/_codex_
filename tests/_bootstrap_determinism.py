@@ -43,8 +43,13 @@ try:
         torch.backends.cudnn.benchmark = False
     print("✓ PyTorch determinism enabled (seed=0)", file=sys.stderr)
 except ImportError:
-    _ = None  # suppressed: no action needed
-except Exception as e:
+    # PyTorch not installed in this environment (expected in CPU-only test runs)
+    pass
+except AttributeError:
+    # torch module is installed but torch.use_deterministic_algorithms or CUDA-specific attributes
+    # (like torch.backends.cudnn) are unavailable in CPU-only or minimal PyTorch installations
+    pass
+except (IOError, OSError) as e:
     # Some PyTorch operations may not support deterministic mode
     print(f"⚠ PyTorch determinism partially enabled: {e}", file=sys.stderr)
 
@@ -58,7 +63,9 @@ try:
     print("✓ TensorFlow determinism enabled (seed=0)", file=sys.stderr)
 except ImportError:
     _ = None  # suppressed: no action needed
-except Exception as e:
+except (IOError, OSError) as e:
     print(f"⚠ TensorFlow determinism partially enabled: {e}", file=sys.stderr)
 
-print("✓ Determinism bootstrap complete", file=sys.stderr)  # intentional: diagnostic output on import via conftest
+print(
+    "✓ Determinism bootstrap complete", file=sys.stderr
+)  # intentional: diagnostic output on import via conftest

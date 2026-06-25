@@ -22,10 +22,10 @@ def _import_any(paths):
     for p in paths:
         try:
             return importlib.import_module(p)
-        except (ImportError, AttributeError) as e:  # pragma: no cover - optional deps
+        except ImportError as e:  # pragma: no cover - optional deps
             logging.debug("failed to import %s: %s", p, e)
             continue
-        except Exception as e:  # pragma: no cover - unexpected import error
+        except AttributeError as e:  # pragma: no cover - unexpected import error
             logging.exception("unexpected error importing %s", p)
             pytest.fail(f"Unexpected error importing {p}: {e!r}")
     return None
@@ -97,7 +97,7 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
                 with cm:
                     time.sleep(0.01)
                 session_logging_succeeded = True
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logging.exception("session logging hook raised: %s: %s", e.__class__.__name__, e)
         if isinstance(e, (ImportError, AttributeError, NotImplementedError)):
             pytest.skip(f"Required session logging hook not available: {e!r}")
@@ -232,7 +232,7 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
                 parsed = json.loads(out)
                 assert isinstance(parsed, list)
                 messages = [r.get("message") or r.get("content") for r in parsed]
-            except Exception as _err:
+            except (ValueError, TypeError) as _err:
                 # Tolerate non-JSON lines containing messages
                 messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
             assert any("hi" in m for m in messages)
@@ -264,7 +264,7 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
             try:
                 data = json.loads(out)
                 messages = [r.get("message") or r.get("content") for r in data]
-            except Exception as _err:
+            except (ValueError, TypeError) as _err:
                 messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
             assert any("hi" in m for m in messages)
             assert any("hey" in m for m in messages)
@@ -289,13 +289,15 @@ def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
     if not sh.exists():
         pytest.skip("session_logging.sh not found")
 
-    cmd = "; ".join([
-        f"source '{sh}'",
-        "set +e",
-        "codex_session_start",
-        'test -f "$CODEX_SESSION_LOG_DIR/$CODEX_SESSION_ID.meta"',
-        ' || { echo "permission denied: session file not created" >&2; exit 1; }',
-    ])
+    cmd = "; ".join(
+        [
+            f"source '{sh}'",
+            "set +e",
+            "codex_session_start",
+            'test -f "$CODEX_SESSION_LOG_DIR/$CODEX_SESSION_ID.meta"',
+            ' || { echo "permission denied: session file not created" >&2; exit 1; }',
+        ]
+    )
 
     try:
         with subprocess.Popen(

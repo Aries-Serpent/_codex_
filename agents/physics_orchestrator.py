@@ -15,16 +15,16 @@ Core Principles:
 import concurrent.futures
 import json
 import logging
+import math
 import os
+import secrets
+from dataclasses import dataclass, field
+from datetime import UTC, datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
-import math  # noqa: E402
-import random  # noqa: E402
-from dataclasses import dataclass, field  # noqa: E402
-from datetime import UTC, datetime  # noqa: E402
-from enum import Enum  # noqa: E402
-from pathlib import Path  # noqa: E402
-from typing import Any, Callable, Optional  # noqa: E402
 
 
 class ActionType(Enum):
@@ -1015,8 +1015,8 @@ class FlowVector:
         dx = velocity * dt + gradient * dt + noise * sqrt(dt)
         """
         # Generate random noise for exploration (Brownian motion component)
-        noise_x = math.sqrt(2 * self.diffusion_coefficient * dt) * (random.random() - 0.5)
-        noise_y = math.sqrt(2 * self.diffusion_coefficient * dt) * (random.random() - 0.5)
+        noise_x = math.sqrt(2 * self.diffusion_coefficient * dt) * (secrets.SystemRandom().random() - 0.5)
+        noise_y = math.sqrt(2 * self.diffusion_coefficient * dt) * (secrets.SystemRandom().random() - 0.5)
 
         new_x = self.position[0] + self.velocity[0] * dt + self.gradient[0] * dt + noise_x
         new_y = self.position[1] + self.velocity[1] * dt + self.gradient[1] * dt + noise_y

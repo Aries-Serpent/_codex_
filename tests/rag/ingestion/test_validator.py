@@ -94,7 +94,7 @@ class TestDocumentValidator:
     @pytest.fixture
     def temp_text_file(self):
         """Create a temporary text file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             f.write("This is test content.\nSecond line.")
             temp_path = f.name
         yield Path(temp_path)
@@ -103,7 +103,7 @@ class TestDocumentValidator:
     @pytest.fixture
     def temp_empty_file(self):
         """Create an empty temporary file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             pass  # Empty file
         yield Path(f.name)
         os.unlink(f.name)
@@ -199,7 +199,7 @@ class TestValidateDocumentFunction:
     @pytest.fixture
     def temp_file(self):
         """Create a temporary file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
             f.write("Test content for validation")
             temp_path = f.name
         yield Path(temp_path)
@@ -248,6 +248,7 @@ class TestValidationConfig:
 # Coverage-gap tests for file-validation edge cases and branch handling
 # ---------------------------------------------------------------------------
 
+
 class TestValidateFileDirectoryPath:
     """Lines 176-177: path exists but is a directory, not a file."""
 
@@ -265,8 +266,9 @@ class TestValidateFileMimeTypeDetection:
         f = tmp_path / "data.xyz"
         f.write_text("text content here for mime type detection test")
         validator = DocumentValidator()
-        with patch("codex.rag.ingestion.validator.mimetypes.guess_type",
-                   return_value=("text/plain", None)):
+        with patch(
+            "codex.rag.ingestion.validator.mimetypes.guess_type", return_value=("text/plain", None)
+        ):
             result = validator.validate_file(f)
         assert result.document_format == DocumentFormat.TEXT
 
@@ -275,8 +277,7 @@ class TestValidateFileMimeTypeDetection:
         f = tmp_path / "data.xyz"
         f.write_text("text content with no mime type")
         validator = DocumentValidator()
-        with patch("codex.rag.ingestion.validator.mimetypes.guess_type",
-                   return_value=(None, None)):
+        with patch("codex.rag.ingestion.validator.mimetypes.guess_type", return_value=(None, None)):
             result = validator.validate_file(f)
         # UNKNOWN is not in default allowed_formats → validation fails
         assert not result.is_valid
@@ -322,8 +323,11 @@ class TestValidateFileHashAndFormatBranches:
         f = tmp_path / "fail.txt"
         f.write_bytes(b"some bytes content here")
         validator = DocumentValidator()
-        with patch.object(validator, "_decode_content",
-                          side_effect=lambda c, r: r.add_error("Decode failed") or None):
+        with patch.object(
+            validator,
+            "_decode_content",
+            side_effect=lambda c, r: r.add_error("Decode failed") or None,
+        ):
             result = validator.validate_file(f)
         assert not result.is_valid
         assert any("decode" in e.lower() for e in result.errors)

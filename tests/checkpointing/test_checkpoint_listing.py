@@ -1,6 +1,5 @@
 """Tests for checkpoint management."""
 
-
 from list_checkpoints import apply_retention_policy, list_checkpoints
 
 

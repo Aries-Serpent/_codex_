@@ -35,7 +35,7 @@ def read(path: str, lines: int = 0) -> str:
 
 def _calculate_recency_score(timestamp_str: str) -> float:
     """Calculate recency score for a session (1.0 = today, ~0.14 = 7 days old).
-    
+
     Score = 1 / (days_old + 1) to always give weight to older sessions.
     """
     try:
@@ -51,20 +51,20 @@ def _calculate_recency_score(timestamp_str: str) -> float:
 
 def _pda_summary_from_index() -> str:
     """Query PDA summary from session index API (Phase 1.4 NEW).
-    
+
     Uses SessionQuery.list_recent_sessions(days=7) to get recent session data
     instead of scanning entire PDA file, reducing token footprint by 60%.
     """
     try:
         # Import here to allow graceful fallback if module unavailable
         from scripts.ci.session_query import SessionQuery
-        
+
         query = SessionQuery()
         recent_sessions = query.list_recent_sessions(days=7)
-        
+
         if not recent_sessions:
             return "(no recent sessions in index)"
-        
+
         # Limit to top 10 most recent + relevant sessions
         # Score by recency and display top results
         scored_sessions = []
@@ -72,17 +72,17 @@ def _pda_summary_from_index() -> str:
             timestamp = session.get('first_timestamp') or session.get('last_timestamp')
             score = _calculate_recency_score(timestamp)
             scored_sessions.append((session, score))
-        
+
         # Sort by recency score descending
         scored_sessions.sort(key=lambda x: x[1], reverse=True)
-        
+
         out = []
         for session, score in scored_sessions[:10]:  # Display top 10
             sid = session.get('session_id', '?')
             timestamp = session.get('first_timestamp') or session.get('last_timestamp', '')
             status = session.get('status', 'unknown')
             event_count = session.get('event_count', 0)
-            
+
             # Confidence indicator based on recency score
             if score >= 0.8:
                 confidence = "✅"
@@ -90,14 +90,14 @@ def _pda_summary_from_index() -> str:
                 confidence = "⚠️"
             else:
                 confidence = "ℹ️"
-            
+
             out.append(
                 f"  {confidence} [{timestamp}] {sid} — {status} "
                 f"({event_count} events, score: {score:.2f})"
             )
-        
+
         return "\n".join(out) if out else "(no sessions)"
-        
+
     except (ImportError, Exception) as e:
         # Graceful fallback to file scan if API unavailable
         return _pda_summary_from_file()
@@ -105,7 +105,7 @@ def _pda_summary_from_index() -> str:
 
 def _pda_summary_from_file() -> str:
     """Legacy fallback: read PDA summary directly from JSONL file.
-    
+
     Used if SessionQuery is unavailable. This is the original behavior
     from before Phase 1.4 refactor.
     """
@@ -136,7 +136,7 @@ def _pda_summary_from_file() -> str:
 
 def pda_summary() -> str:
     """Unified PDA summary function with API-first, file-fallback strategy.
-    
+
     Phase 1.4: Tries SessionQuery API first for 60% token reduction.
     Falls back to file scan if API unavailable.
     """

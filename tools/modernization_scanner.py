@@ -60,7 +60,8 @@ def scan_file(filepath: Path) -> list[tuple[int, str, str]]:
         content = filepath.read_text(encoding="utf-8")
         tree = ast.parse(content, filename=str(filepath))
     except (SyntaxError, UnicodeDecodeError) as e:
-        print(f"Warning: Could not parse {filepath}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Warning: Could not parse {filepath}: <ERROR_TYPE>", file=sys.stderr)
         return []
 
     checker = ModernizationChecker(str(filepath))

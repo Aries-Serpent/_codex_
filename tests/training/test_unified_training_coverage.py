@@ -46,8 +46,10 @@ def temp_output_dir(tmp_path: Path) -> Path:
 @pytest.fixture
 def mock_checkpoint_utils():
     """Mock checkpoint utilities to avoid file I/O."""
-    with patch("codex_ml.training.unified_training.save_checkpoint") as mock_save, \
-         patch("codex_ml.training.unified_training.load_checkpoint") as mock_load:
+    with (
+        patch("codex_ml.training.unified_training.save_checkpoint") as mock_save,
+        patch("codex_ml.training.unified_training.load_checkpoint") as mock_load,
+    ):
         mock_save.return_value = (Path("checkpoint.pt"), {"epoch": 1, "metric": 0.5})
         mock_load.return_value = {"model_state": {}, "optimizer_state": {}}
         yield {"save": mock_save, "load": mock_load}
@@ -56,9 +58,11 @@ def mock_checkpoint_utils():
 @pytest.fixture
 def mock_mlflow():
     """Mock MLflow integration."""
-    with patch("codex_ml.training.unified_training.init_mlflow_safe") as mock_init, \
-         patch("codex_ml.training.unified_training.log_metric_safe") as mock_metric, \
-         patch("codex_ml.training.unified_training.log_params_safe") as mock_params:
+    with (
+        patch("codex_ml.training.unified_training.init_mlflow_safe") as mock_init,
+        patch("codex_ml.training.unified_training.log_metric_safe") as mock_metric,
+        patch("codex_ml.training.unified_training.log_params_safe") as mock_params,
+    ):
         yield {"init": mock_init, "metric": mock_metric, "params": mock_params}
 
 
@@ -185,8 +189,7 @@ def test_unified_training_config_validation_seed():
 def test_unified_training_config_continual_from_dict():
     """Test UnifiedTrainingConfig converts continual dict to ContinualConfig."""
     config = UnifiedTrainingConfig(
-        model_name="test",
-        continual={"strategy": "replay", "buffer_size": 500}
+        model_name="test", continual={"strategy": "replay", "buffer_size": 500}
     )
     assert isinstance(config.continual, ContinualConfig)
     assert config.continual.strategy == "replay"
@@ -368,10 +371,7 @@ def test_unified_config_serialization(minimal_config):
 
 def test_unified_config_with_extra_params():
     """Test UnifiedTrainingConfig preserves extra parameters."""
-    config = UnifiedTrainingConfig(
-        model_name="test",
-        extra={"custom_param": "value", "flag": True}
-    )
+    config = UnifiedTrainingConfig(model_name="test", extra={"custom_param": "value", "flag": True})
     assert config.extra["custom_param"] == "value"
     assert config.extra["flag"] is True
 
@@ -384,7 +384,7 @@ def test_continual_config_complex_phases():
             ContinualPhase(name="warmup", epochs=2, replay_ratio=0.1),
             ContinualPhase(name="main", epochs=10, replay_ratio=0.3),
             ContinualPhase(name="finetune", epochs=5, replay_ratio=0.5),
-        ]
+        ],
     )
     assert len(config.phases) == 3
     assert config.phases[0].name == "warmup"
@@ -403,8 +403,5 @@ def test_unified_config_grad_clip_optional():
 
 def test_unified_config_resume_from():
     """Test UnifiedTrainingConfig with resume_from path."""
-    config = UnifiedTrainingConfig(
-        model_name="test",
-        resume_from="/path/to/checkpoint.pt"
-    )
+    config = UnifiedTrainingConfig(model_name="test", resume_from="/path/to/checkpoint.pt")
     assert config.resume_from == "/path/to/checkpoint.pt"

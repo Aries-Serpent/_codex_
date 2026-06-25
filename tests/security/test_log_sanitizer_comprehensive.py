@@ -24,6 +24,7 @@ from codex.security.log_sanitizer import (
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def log_with_injection():
     """Log entry with injection attack."""
@@ -57,6 +58,7 @@ def log_with_hex_secrets():
 # ============================================================================
 # Sanitize Log (Control Character Removal) Tests
 # ============================================================================
+
 
 class TestSanitizeLogBasic:
     """Basic sanitize_log functionality."""
@@ -210,6 +212,7 @@ class TestSanitizeLogEdgeCases:
 # Mask Sensitive Tests
 # ============================================================================
 
+
 class TestMaskSensitiveBasic:
     """Basic mask_sensitive functionality."""
 
@@ -297,7 +300,6 @@ class TestMaskSensitiveJwt:
 
     def test_jwt_in_bearer_pattern(self):
         """Test JWT in ******"""
-        jwt = "******"
         result = mask_sensitive("******")
         assert "***" in result
 
@@ -346,6 +348,7 @@ MIIEvAIBADANBgkqhkiG9w0BAQE
 # Safe Log Message Tests
 # ============================================================================
 
+
 class TestSafeLogMessage:
     """Test comprehensive safe_log_message function."""
 
@@ -377,7 +380,7 @@ class TestSafeLogMessage:
 
     def test_real_world_log_entry(self):
         """Test realistic log entry."""
-        msg = 'User: alice\nPassword: secret123\nAPI_KEY=sk_live_abc123\nStatus: OK'
+        msg = "User: alice\nPassword: secret123\nAPI_KEY=sk_live_abc123\nStatus: OK"
         result = safe_log_message(msg)
         assert "\n" not in result
         assert "secret" not in result
@@ -387,6 +390,7 @@ class TestSafeLogMessage:
 # ============================================================================
 # Sanitize Dictionary Tests
 # ============================================================================
+
 
 class TestSanitizeDictForLog:
     """Test dictionary sanitization for logging."""
@@ -412,22 +416,14 @@ class TestSanitizeDictForLog:
 
     def test_nested_dict_sanitization(self):
         """Test sanitization of nested dictionaries."""
-        data = {
-            "user": {
-                "name": "alice\ninjection",
-                "token": "******"
-            }
-        }
+        data = {"user": {"name": "alice\ninjection", "token": "******"}}
         result = sanitize_dict_for_log(data)
         assert "\n" not in result["user"]["name"]
         assert "***" in str(result["user"]["token"])
 
     def test_dict_with_list_values(self):
         """Test sanitization of dict with list values."""
-        data = {
-            "messages": ["line1\nline2", "normal"],
-            "tokens": ["token1", "token2"]
-        }
+        data = {"messages": ["line1\nline2", "normal"], "tokens": ["token1", "token2"]}
         result = sanitize_dict_for_log(data)
         assert isinstance(result["messages"], list)
         for msg in result["messages"]:
@@ -467,16 +463,7 @@ class TestSanitizeDictForLog:
 
     def test_deeply_nested_dict(self):
         """Test deeply nested dictionary."""
-        data = {
-            "level1": {
-                "level2": {
-                    "level3": {
-                        "message": "test\ninjection",
-                        "token": "******"
-                    }
-                }
-            }
-        }
+        data = {"level1": {"level2": {"level3": {"message": "test\ninjection", "token": "******"}}}}
         result = sanitize_dict_for_log(data)
         assert "\n" not in result["level1"]["level2"]["level3"]["message"]
 
@@ -484,6 +471,7 @@ class TestSanitizeDictForLog:
 # ============================================================================
 # Alias Tests
 # ============================================================================
+
 
 class TestAliases:
     """Test function aliases."""
@@ -503,6 +491,7 @@ class TestAliases:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestLogSanitizerIntegration:
     """Integration tests for log sanitization."""

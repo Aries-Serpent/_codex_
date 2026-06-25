@@ -8,7 +8,6 @@ import json
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
 
 
-
 def test_jsonrpc_version_compliance():
     """Test JSON-RPC 2.0 version compliance."""
     request = {"jsonrpc": "2.0", "id": 1, "method": "test"}

@@ -14,7 +14,6 @@ Comprehensive test coverage for the transformer module covering:
 Tests include basic functionality, edge cases, integration scenarios.
 """
 
-
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -43,8 +42,7 @@ def temp_source_files(tmp_path):
     source_dir.mkdir()
 
     # Create various Python files
-    (source_dir / "main.py").write_text(
-        """
+    (source_dir / "main.py").write_text("""
 import os
 import sys
 
@@ -52,38 +50,31 @@ def process_file(path):
     if os.path.exists(path):
         content = open(path).read()
         return content
-"""
-    )
+""")
 
-    (source_dir / "utils.py").write_text(
-        """
+    (source_dir / "utils.py").write_text("""
 import os.path
 import requests
 
 def fetch_data(url):
     response = requests.get(url)
     return response.json()
-"""
-    )
+""")
 
-    (source_dir / "clean.py").write_text(
-        """
+    (source_dir / "clean.py").write_text("""
 from pathlib import Path
 
 def read_file(p: Path) -> str:
     return p.read_text()
-"""
-    )
+""")
 
-    (source_dir / "untyped.py").write_text(
-        """
+    (source_dir / "untyped.py").write_text("""
 def add(a, b):
     return a + b
 
 def multiply(x, y):
     return x * y
-"""
-    )
+""")
 
     return source_dir
 
@@ -357,32 +348,32 @@ class TestApplyPathlibMigration:
 
     def test_migrate_os_path_exists(self):
         """Test migrating os.path.exists."""
-        original = 'if os.path.exists(path): pass'
+        original = "if os.path.exists(path): pass"
         result = _apply_pathlib_migration(original)
         assert ".exists()" in result
 
     def test_migrate_os_path_dirname(self):
         """Test migrating os.path.dirname."""
-        original = 'parent = os.path.dirname(path)'
+        original = "parent = os.path.dirname(path)"
         result = _apply_pathlib_migration(original)
         # Should have pathlib migration
         assert ".parent" in result or "Path(" in result
 
     def test_migrate_os_path_basename(self):
         """Test migrating os.path.basename."""
-        original = 'name = os.path.basename(path)'
+        original = "name = os.path.basename(path)"
         result = _apply_pathlib_migration(original)
         assert ".name" in result
 
     def test_migrate_os_path_isfile(self):
         """Test migrating os.path.isfile."""
-        original = 'if os.path.isfile(path): pass'
+        original = "if os.path.isfile(path): pass"
         result = _apply_pathlib_migration(original)
         assert ".is_file()" in result
 
     def test_migrate_os_path_isdir(self):
         """Test migrating os.path.isdir."""
-        original = 'if os.path.isdir(path): pass'
+        original = "if os.path.isdir(path): pass"
         result = _apply_pathlib_migration(original)
         assert ".is_dir()" in result
 
@@ -402,10 +393,7 @@ class TestApplyPathlibMigration:
 
     def test_migrate_multiple_patterns(self):
         """Test migrating multiple os.path patterns."""
-        original = (
-            'path = os.path.join("dir", "file")\n'
-            'if os.path.exists(path): pass'
-        )
+        original = 'path = os.path.join("dir", "file")\n' "if os.path.exists(path): pass"
         result = _apply_pathlib_migration(original)
         # Should have migrated both patterns
         assert "/" in result or "Path(" in result
@@ -435,9 +423,7 @@ class TestTransformFunction:
         result = transform(temp_source_files, "snap-001")
         # Should have processed Python files
         total_patches = (
-            len(result.tier_a_patches)
-            + len(result.tier_b_patches)
-            + len(result.tier_c_suggestions)
+            len(result.tier_a_patches) + len(result.tier_b_patches) + len(result.tier_c_suggestions)
         )
         assert total_patches >= 0
 
@@ -584,53 +570,53 @@ class TestIntegration:
         assert patch_dict["tier"] == "A"
 
     def test_transform_with_multiple_files(self, temp_source_files):
-       """Test transform handles multiple files."""
-       result = transform(temp_source_files, "snap-002", dry_run=True)
-       # Should process all files
-       assert result is not None
+        """Test transform handles multiple files."""
+        result = transform(temp_source_files, "snap-002", dry_run=True)
+        # Should process all files
+        assert result is not None
 
     def test_tier_enum_all_values(self):
-       """Test all Tier enum values exist."""
-       tiers = [Tier.A, Tier.B, Tier.C]
-       assert len(tiers) == 3
-       tier_names = [t.name for t in tiers]
-       assert "A" in tier_names
-       assert "B" in tier_names
-       assert "C" in tier_names
+        """Test all Tier enum values exist."""
+        tiers = [Tier.A, Tier.B, Tier.C]
+        assert len(tiers) == 3
+        tier_names = [t.name for t in tiers]
+        assert "A" in tier_names
+        assert "B" in tier_names
+        assert "C" in tier_names
 
     def test_patch_to_dict_contains_fields(self):
-       """Test Patch to_dict contains all important fields."""
-       patch = Patch(
-           file_path="test.py",
-           original="old",
-           modified="new",
-           diff="--- old\n+++ new",
-           rule_id="test-rule",
-           tier=Tier.A,
-           description="Test patch",
-       )
-       patch_dict = patch.to_dict()
-       assert "file_path" in patch_dict or "path" in patch_dict
-       assert "tier" in patch_dict
+        """Test Patch to_dict contains all important fields."""
+        patch = Patch(
+            file_path="test.py",
+            original="old",
+            modified="new",
+            diff="--- old\n+++ new",
+            rule_id="test-rule",
+            tier=Tier.A,
+            description="Test patch",
+        )
+        patch_dict = patch.to_dict()
+        assert "file_path" in patch_dict or "path" in patch_dict
+        assert "tier" in patch_dict
 
     def test_transform_result_fields(self):
-       """Test TransformResult has expected fields."""
-       result = TransformResult(
-           snapshot_id="test-snap",
-           patches=[],
-           stats={"A": 0, "B": 0, "C": 0},
-       )
-       assert result.snapshot_id == "test-snap"
-       assert isinstance(result.patches, list)
-       assert isinstance(result.stats, dict)
+        """Test TransformResult has expected fields."""
+        result = TransformResult(
+            snapshot_id="test-snap",
+            patches=[],
+            stats={"A": 0, "B": 0, "C": 0},
+        )
+        assert result.snapshot_id == "test-snap"
+        assert isinstance(result.patches, list)
+        assert isinstance(result.stats, dict)
 
     def test_transform_result_to_dict(self):
-       """Test TransformResult serialization."""
-       result = TransformResult(
-           snapshot_id="test-snap",
-           patches=[],
-           stats={"A": 1, "B": 2, "C": 3},
-       )
-       result_dict = result.to_dict()
-       assert isinstance(result_dict, dict)
-       assert "snapshot_id" in result_dict or "id" in result_dict
+        """Test TransformResult serialization."""
+        result = TransformResult(
+            snapshot_id="test-snap",
+            patches=[],
+            stats={"A": 1, "B": 2, "C": 3},
+        )
+        result_dict = result.to_dict()
+        assert isinstance(result_dict, dict)
+        assert "snapshot_id" in result_dict or "id" in result_dict

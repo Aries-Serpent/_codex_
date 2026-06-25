@@ -35,13 +35,13 @@ class TestPythonPerformance:
         functions = []
         for i in range(500):
             functions.append(
-                f'def function_{i}(arg1, arg2, arg3):\n'
+                f"def function_{i}(arg1, arg2, arg3):\n"
                 f'    """Function {i} docstring."""\n'
-                f'    result = arg1 + arg2 + arg3\n'
-                f'    return result * {i}\n'
+                f"    result = arg1 + arg2 + arg3\n"
+                f"    return result * {i}\n"
             )
 
-        source = '\n'.join(functions)
+        source = "\n".join(functions)
         assert len(source) > 10000  # Verify >10KB
 
         adapter = PythonASTAdapter()
@@ -65,15 +65,15 @@ class TestPythonPerformance:
         indent_level = 0
         lines = []
         for i in range(10):
-            indent = '    ' * indent_level
-            lines.append(f'{indent}class Class{i}:')
+            indent = "    " * indent_level
+            lines.append(f"{indent}class Class{i}:")
             lines.append(f'{indent}    """Class {i}."""')
-            lines.append(f'{indent}    def method{i}(self):')
+            lines.append(f"{indent}    def method{i}(self):")
             lines.append(f'{indent}        """Method {i}."""')
-            lines.append(f'{indent}        return {i}')
+            lines.append(f"{indent}        return {i}")
             indent_level += 1
 
-        source = '\n'.join(lines)
+        source = "\n".join(lines)
 
         adapter = PythonASTAdapter()
 
@@ -99,11 +99,11 @@ class TestYAMLPerformance:
         # Generate YAML with 1000 keys (10 sections, 100 keys each)
         lines = []
         for section in range(10):
-            lines.append(f'section_{section}:')
+            lines.append(f"section_{section}:")
             for key in range(100):
-                lines.append(f'  key_{key}: value_{section}_{key}')
+                lines.append(f"  key_{key}: value_{section}_{key}")
 
-        yaml_source = '\n'.join(lines)
+        yaml_source = "\n".join(lines)
 
         adapter = YAMLASTAdapter()
 
@@ -125,11 +125,11 @@ class TestYAMLPerformance:
         # Generate 20-level deep nesting
         lines = []
         for level in range(20):
-            indent = '  ' * level
-            lines.append(f'{indent}level_{level}:')
-        lines.append('  ' * 20 + 'value: deep_value')
+            indent = "  " * level
+            lines.append(f"{indent}level_{level}:")
+        lines.append("  " * 20 + "value: deep_value")
 
-        yaml_source = '\n'.join(lines)
+        yaml_source = "\n".join(lines)
 
         adapter = YAMLASTAdapter()
 
@@ -162,8 +162,8 @@ class TestJSONPerformance:
                     "active": i % 2 == 0,
                     "metadata": {
                         "created": f"2024-01-{(i % 30) + 1:02d}",
-                        "category": f"cat_{i % 10}"
-                    }
+                        "category": f"cat_{i % 10}",
+                    },
                 }
                 for i in range(10000)
             ]
@@ -224,15 +224,15 @@ class TestSQLPerformance:
         statements = []
         for i in range(100):
             statements.append(
-                f'CREATE TABLE table_{i} ('
-                f'id INT PRIMARY KEY, '
-                f'name VARCHAR(100), '
-                f'value INT, '
-                f'created_at TIMESTAMP'
-                f');'
+                f"CREATE TABLE table_{i} ("
+                f"id INT PRIMARY KEY, "
+                f"name VARCHAR(100), "
+                f"value INT, "
+                f"created_at TIMESTAMP"
+                f");"
             )
 
-        sql_source = '\n'.join(statements)
+        sql_source = "\n".join(statements)
 
         adapter = SQLASTAdapter()
 
@@ -255,16 +255,16 @@ class TestSQLPerformance:
         statements = []
         for i in range(50):
             statements.append(
-                f'SELECT t1.id, t1.name, t2.value, t3.total '
-                f'FROM table_{i} AS t1 '
-                f'JOIN table_{i + 1} AS t2 ON t1.id = t2.id '
-                f'LEFT JOIN table_{i + 2} AS t3 ON t2.id = t3.id '
-                f'WHERE t1.active = 1 AND t2.value > {i * 10} '
-                f'ORDER BY t1.created_at DESC '
-                f'LIMIT {i + 10};'
+                f"SELECT t1.id, t1.name, t2.value, t3.total "
+                f"FROM table_{i} AS t1 "
+                f"JOIN table_{i + 1} AS t2 ON t1.id = t2.id "
+                f"LEFT JOIN table_{i + 2} AS t3 ON t2.id = t3.id "
+                f"WHERE t1.active = 1 AND t2.value > {i * 10} "
+                f"ORDER BY t1.created_at DESC "
+                f"LIMIT {i + 10};"
             )
 
-        sql_source = '\n'.join(statements)
+        sql_source = "\n".join(statements)
 
         adapter = SQLASTAdapter()
 
@@ -290,7 +290,7 @@ class TestMemoryEfficiency:
         adapter = PythonASTAdapter()
 
         # Parse the same file multiple times
-        source = 'def test(): pass\n' * 100
+        source = "def test(): pass\n" * 100
 
         for _ in range(10):
             root = adapter.parse(source)
@@ -303,7 +303,7 @@ class TestMemoryEfficiency:
         adapter = YAMLASTAdapter()
 
         # Parse the same YAML multiple times
-        yaml_source = 'key: value\n' * 100
+        yaml_source = "key: value\n" * 100
 
         for _ in range(10):
             root = adapter.parse(yaml_source)
@@ -314,6 +314,7 @@ class TestMemoryEfficiency:
     def test_json_memory_efficient(self):
         """Verify JSON adapter doesn't leak memory."""
         import json
+
         adapter = JSONASTAdapter()
 
         # Parse the same JSON multiple times
@@ -331,7 +332,7 @@ class TestMemoryEfficiency:
         adapter = SQLASTAdapter()
 
         # Parse the same SQL multiple times
-        sql_source = 'SELECT * FROM table_1;\n' * 100
+        sql_source = "SELECT * FROM table_1;\n" * 100
 
         for _ in range(10):
             root = adapter.parse(sql_source)
@@ -351,10 +352,10 @@ class TestConcurrentParsing:
         sql_adapter = SQLASTAdapter()
 
         # Parse different formats simultaneously
-        py_root = py_adapter.parse('def test(): pass')
-        yaml_root = yaml_adapter.parse('key: value')
+        py_root = py_adapter.parse("def test(): pass")
+        yaml_root = yaml_adapter.parse("key: value")
         json_root = json_adapter.parse('{"key": "value"}')
-        sql_root = sql_adapter.parse('SELECT * FROM table1;')
+        sql_root = sql_adapter.parse("SELECT * FROM table1;")
 
         # Verify all succeeded
         assert py_root is not None

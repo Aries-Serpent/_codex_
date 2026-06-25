@@ -80,10 +80,10 @@ class TestMetricCalculations:
 
         # Calculate composite score
         composite = (
-            weights["pass_rate"] * metrics["pass_rate"] +
-            weights["first_pass_rate"] * metrics["first_pass_rate"] +
-            weights["stability"] * metrics["stability"] +
-            weights["flaky_rate_inverse"] * (100 - metrics["flaky_rate"])
+            weights["pass_rate"] * metrics["pass_rate"]
+            + weights["first_pass_rate"] * metrics["first_pass_rate"]
+            + weights["stability"] * metrics["stability"]
+            + weights["flaky_rate_inverse"] * (100 - metrics["flaky_rate"])
         )
 
         assert composite > 95.0
@@ -121,7 +121,7 @@ class TestMetricCalculations:
 
         mean = sum(values) / len(values)
         variance = sum((x - mean) ** 2 for x in values) / len(values)
-        std_dev = variance ** 0.5
+        std_dev = variance**0.5
 
         assert 0 < std_dev < 1.0  # Low deviation indicates stability
 
@@ -131,7 +131,7 @@ class TestMetricCalculations:
 
         mean = sum(values) / len(values)
         variance = sum((x - mean) ** 2 for x in values) / len(values)
-        std_dev = variance ** 0.5
+        std_dev = variance**0.5
         cv = (std_dev / mean) * 100
 
         assert cv < 5.0  # Low CV indicates consistent performance
@@ -142,10 +142,32 @@ class TestMetricAggregation:
 
     def test_aggregate_hourly_to_daily(self):
         """Test aggregation of hourly metrics to daily."""
-        hourly_pass_rates = [99.5, 98.0, 99.0, 97.5, 99.5, 99.0,
-                            98.5, 99.0, 98.5, 99.5, 98.0, 99.0,
-                            99.5, 98.5, 99.0, 98.0, 99.5, 99.0,
-                            98.5, 99.5, 99.0, 98.5, 99.0, 99.5]
+        hourly_pass_rates = [
+            99.5,
+            98.0,
+            99.0,
+            97.5,
+            99.5,
+            99.0,
+            98.5,
+            99.0,
+            98.5,
+            99.5,
+            98.0,
+            99.0,
+            99.5,
+            98.5,
+            99.0,
+            98.0,
+            99.5,
+            99.0,
+            98.5,
+            99.5,
+            99.0,
+            98.5,
+            99.0,
+            99.5,
+        ]
 
         daily_avg = sum(hourly_pass_rates) / len(hourly_pass_rates)
 
@@ -215,9 +237,7 @@ class TestMetricAggregation:
         ]
 
         total_weight = sum(m["weight"] for m in category_metrics)
-        weighted_avg = sum(
-            m["pass_rate"] * m["weight"] for m in category_metrics
-        ) / total_weight
+        weighted_avg = sum(m["pass_rate"] * m["weight"] for m in category_metrics) / total_weight
 
         assert weighted_avg > 95.0  # Higher due to more unit tests
 
@@ -247,10 +267,12 @@ class TestMetricStorage:
         history = []
 
         for i in range(5):
-            history.append({
-                "date": f"2026-01-{14 + i}",
-                "pass_rate": 99.0 + i * 0.1,
-            })
+            history.append(
+                {
+                    "date": f"2026-01-{14 + i}",
+                    "pass_rate": 99.0 + i * 0.1,
+                }
+            )
 
         assert len(history) == 5
         assert history[-1]["pass_rate"] == 99.4
@@ -268,10 +290,7 @@ class TestMetricStorage:
         start_date = "2026-01-11"
         end_date = "2026-01-13"
 
-        filtered = [
-            m for m in metrics_history
-            if start_date <= m["date"] <= end_date
-        ]
+        filtered = [m for m in metrics_history if start_date <= m["date"] <= end_date]
 
         assert len(filtered) == 3
         assert filtered[0]["date"] == "2026-01-11"
@@ -287,25 +306,19 @@ class TestMetricStorage:
             {"date": datetime.now() - timedelta(days=5), "value": 99.0},
         ]
 
-        retained = [
-            m for m in metrics_history
-            if m["date"] >= cutoff_date
-        ]
+        retained = [m for m in metrics_history if m["date"] >= cutoff_date]
 
         assert len(retained) == 2
 
     def test_metric_compression(self):
         """Test compression of old metric data."""
         # Daily metrics for 90 days
-        daily_metrics = [
-            {"day": i, "value": 98.0 + (i % 3) * 0.5}
-            for i in range(90)
-        ]
+        daily_metrics = [{"day": i, "value": 98.0 + (i % 3) * 0.5} for i in range(90)]
 
         # Compress to weekly averages
         weekly_compressed = []
         for week in range(0, 90, 7):
-            week_data = daily_metrics[week:week + 7]
+            week_data = daily_metrics[week : week + 7]
             avg = sum(d["value"] for d in week_data) / len(week_data)
             weekly_compressed.append({"week": week // 7, "avg": round(avg, 2)})
 
@@ -330,8 +343,7 @@ class TestMetricAlerts:
 
         # Check for declining trend
         is_declining = all(
-            recent_values[i] > recent_values[i + 1]
-            for i in range(len(recent_values) - 1)
+            recent_values[i] > recent_values[i + 1] for i in range(len(recent_values) - 1)
         )
 
         assert is_declining

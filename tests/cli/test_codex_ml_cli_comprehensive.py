@@ -24,6 +24,7 @@ class TestHelperFunctions:
         """Test _csv_list with simple comma-separated values."""
         try:
             from codex_ml.cli.codex_cli import _csv_list
+
             result = _csv_list("a,b,c")
             assert result == ["a", "b", "c"]
         except ImportError:
@@ -33,6 +34,7 @@ class TestHelperFunctions:
         """Test _csv_list with spaces around values."""
         try:
             from codex_ml.cli.codex_cli import _csv_list
+
             result = _csv_list(" a , b , c ")
             assert result == ["a", "b", "c"]
         except ImportError:
@@ -42,6 +44,7 @@ class TestHelperFunctions:
         """Test _csv_list with empty string."""
         try:
             from codex_ml.cli.codex_cli import _csv_list
+
             result = _csv_list("")
             assert result == []
         except ImportError:
@@ -51,6 +54,7 @@ class TestHelperFunctions:
         """Test _csv_list with single value."""
         try:
             from codex_ml.cli.codex_cli import _csv_list
+
             result = _csv_list("single")
             assert result == ["single"]
         except ImportError:
@@ -64,6 +68,7 @@ class TestUpdatePath:
         """Test _update_path with dictionary target."""
         try:
             from codex_ml.cli.codex_cli import _update_path
+
             target = {}
             _update_path(target, "a.b.c", "value")
             assert target["a"]["b"]["c"] == "value"
@@ -74,6 +79,7 @@ class TestUpdatePath:
         """Test _update_path with single level path."""
         try:
             from codex_ml.cli.codex_cli import _update_path
+
             target = {}
             _update_path(target, "key", "value")
             assert target["key"] == "value"
@@ -84,6 +90,7 @@ class TestUpdatePath:
         """Test _update_path with existing nested dict."""
         try:
             from codex_ml.cli.codex_cli import _update_path
+
             target = {"a": {"b": {}}}
             _update_path(target, "a.b.c", "value")
             assert target["a"]["b"]["c"] == "value"
@@ -98,6 +105,7 @@ class TestCLIGroup:
         """Test CLI help output."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["--help"])
             assert result.exit_code == 0
@@ -109,6 +117,7 @@ class TestCLIGroup:
         """Test tokenizer subgroup help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "--help"])
             assert result.exit_code == 0
@@ -124,6 +133,7 @@ class TestTokenizerCommands:
         """Test tokenizer train command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "train", "--help"])
             assert result.exit_code == 0
@@ -135,6 +145,7 @@ class TestTokenizerCommands:
         """Test tokenizer validate command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "validate", "--help"])
             assert result.exit_code == 0
@@ -145,6 +156,7 @@ class TestTokenizerCommands:
         """Test tokenizer encode command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "encode", "--help"])
             assert result.exit_code == 0
@@ -155,6 +167,7 @@ class TestTokenizerCommands:
         """Test tokenizer decode command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "decode", "--help"])
             assert result.exit_code == 0
@@ -169,6 +182,7 @@ class TestConfigSweepCommand:
         """Test config-sweep command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["config-sweep", "--help"])
             assert result.exit_code == 0
@@ -192,12 +206,18 @@ class TestConfigSweepCommand:
             mock_subprocess.return_value = "abc123"
 
             runner = CliRunner()
-            result = runner.invoke(codex, [
-                "config-sweep",
-                "--base-config", str(base_config),
-                "--output", str(output),
-                "--seeds", "1,2,3"
-            ])
+            result = runner.invoke(
+                codex,
+                [
+                    "config-sweep",
+                    "--base-config",
+                    str(base_config),
+                    "--output",
+                    str(output),
+                    "--seeds",
+                    "1,2,3",
+                ],
+            )
             # May fail due to additional validation but should parse
             assert result.exit_code in (0, 1, 2)
         except ImportError:
@@ -211,6 +231,7 @@ class TestTrainCommand:
         """Test train command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["train", "--help"])
             assert result.exit_code == 0
@@ -224,6 +245,7 @@ class TestTrainCommand:
         """Test train command has MLflow options."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["train", "--help"])
             assert result.exit_code == 0
@@ -239,6 +261,7 @@ class TestResumeCommand:
         """Test resume command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["resume", "--help"])
             assert result.exit_code == 0
@@ -254,6 +277,7 @@ class TestMetricsServerCommand:
         """Test metrics-server command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["metrics-server", "--help"])
             assert result.exit_code == 0
@@ -269,6 +293,7 @@ class TestTokenizeCommand:
         """Test tokenize command help (if exists)."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenize", "--help"])
             # May or may not exist
@@ -284,6 +309,7 @@ class TestRepoMapCommand:
         """Test repo-map command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["repo-map", "--help"])
             assert result.exit_code == 0
@@ -299,6 +325,7 @@ class TestDeployCommand:
         """Test deploy command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["deploy", "--help"])
             assert result.exit_code == 0
@@ -331,6 +358,7 @@ class TestStatusReportCommand:
         """Test status-report command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["status-report", "--help"])
             assert result.exit_code == 0
@@ -346,6 +374,7 @@ class TestEvaluateCommand:
         """Test evaluate command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["evaluate", "--help"])
             assert result.exit_code == 0
@@ -358,6 +387,7 @@ class TestEvaluateCommand:
         """Test evaluate command has metrics-sink option."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["evaluate", "--help"])
             assert result.exit_code == 0
@@ -373,6 +403,7 @@ class TestPrepareDataCommand:
         """Test prepare-data command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["prepare-data", "--help"])
             assert result.exit_code == 0
@@ -389,6 +420,7 @@ class TestExportEnvCommand:
         """Test export-env command help."""
         try:
             from codex_ml.cli.codex_cli import codex
+
             runner = CliRunner()
             result = runner.invoke(codex, ["export-env", "--help"])
             assert result.exit_code == 0
@@ -405,6 +437,7 @@ class TestMainFunction:
         """Test main function with --help."""
         try:
             from codex_ml.cli.codex_cli import main
+
             exit_code = main(["--help"])
             assert exit_code == 0
         except (ImportError, SystemExit):
@@ -418,11 +451,12 @@ class TestMainFunction:
             _click_exc = None  # type: ignore[assignment]
         try:
             from codex_ml.cli.codex_cli import main
+
             exit_code = main(["invalid-command"])
             assert exit_code != 0
         except (ImportError, SystemExit):
             pytest.skip("codex_ml.cli.codex_cli not available or exits")
-        except Exception as exc:
+        except AttributeError as exc:
             if _click_exc is not None and isinstance(exc, _click_exc.UsageError):
                 pytest.skip("codex_ml.cli.codex_cli not available or exits")
             raise
@@ -497,6 +531,6 @@ class TestGetTokenizerPipeline:
             assert pipeline1 is pipeline2
         except ImportError:
             pytest.skip("tokenizer pipeline not available")
-        except Exception as _err:
+        except AttributeError as _err:
             # May fail due to missing dependencies
             pytest.skip("tokenizer dependencies not available")

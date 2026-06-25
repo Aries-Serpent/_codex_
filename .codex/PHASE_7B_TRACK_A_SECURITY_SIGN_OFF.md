@@ -123,13 +123,13 @@ logger.info("Task: %s", _msg_fp)  # Only first 8 chars visible
 
 **Pattern 2: Hashed Identifiers**
 ```python
-sha256_hash = hashlib.sha256(secret_name.encode()).hexdigest()[:16]
+sha256_hash = hashlib.sha256(secret_name.encode()).hexdigest()[:16]  # pragma: allowlist secret
 ```
 ✅ **25 instances verified** - Cryptographically irreversible
 
 **Pattern 3: Summary Statistics**
 ```python
-logger.info(f"Total secrets: {len(secrets_count)}")  # Count only
+logger.info(f"Total secrets: {len(secrets_count)}")  # Count only  # pragma: allowlist secret
 ```
 ✅ **15 instances verified** - No actual data exposed
 
@@ -322,4 +322,3 @@ I, **@mbaetiong**, COPILOT_AGENT_AUTH_ENABLED=true, hereby authorize and sign of
 **Signature:** codeql-alert-resolution-agent (Track A2)  
 **Date:** 2026-06-20T10:00:00Z UTC  
 **Authority:** @mbaetiong
-

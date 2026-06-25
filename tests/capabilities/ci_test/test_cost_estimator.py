@@ -19,7 +19,7 @@ _SCRIPT = _REPO_ROOT / "scripts" / "ci" / "cost_estimator.py"
 
 spec = importlib.util.spec_from_file_location("cost_estimator", _SCRIPT)
 _mod = importlib.util.module_from_spec(spec)
-sys.modules["cost_estimator"] = _mod   # register before exec so dataclass __module__ resolves
+sys.modules["cost_estimator"] = _mod  # register before exec so dataclass __module__ resolves
 spec.loader.exec_module(_mod)
 
 CostEstimate = _mod.CostEstimate
@@ -28,8 +28,8 @@ RUNNER_MULTIPLIERS = _mod.RUNNER_MULTIPLIERS
 
 # ── Helper ────────────────────────────────────────────────────────────────────
 
-def make(runner="ubuntu-latest", timeout=30, matrix=1, ghcr=False,
-         name="Test Workflow"):
+
+def make(runner="ubuntu-latest", timeout=30, matrix=1, ghcr=False, name="Test Workflow"):
     return CostEstimate(
         workflow_name=name,
         runner=runner,
@@ -41,15 +41,19 @@ def make(runner="ubuntu-latest", timeout=30, matrix=1, ghcr=False,
 
 # ── Tier classification ───────────────────────────────────────────────────────
 
+
 class TestTierClassification:
     """GREEN / YELLOW / RED tier boundary tests (KR-1)."""
 
     # GREEN: < 30 effective min, no GHCR
-    @pytest.mark.parametrize("timeout,matrix", [
-        (5, 1),    # 5 eff-min
-        (29, 1),   # 29 eff-min — just under GREEN ceiling
-        (10, 2),   # 20 eff-min
-    ])
+    @pytest.mark.parametrize(
+        "timeout,matrix",
+        [
+            (5, 1),  # 5 eff-min
+            (29, 1),  # 29 eff-min — just under GREEN ceiling
+            (10, 2),  # 20 eff-min
+        ],
+    )
     def test_green_tier(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix)
         assert e.tier == "GREEN"
@@ -63,35 +67,44 @@ class TestTierClassification:
         assert e.tier == "YELLOW"
 
     # YELLOW: 30–90 effective min, no GHCR
-    @pytest.mark.parametrize("timeout,matrix", [
-        (30, 1),   # 30 eff-min — at YELLOW floor
-        (45, 1),   # 45 eff-min
-        (90, 1),   # 90 eff-min — at YELLOW ceiling
-    ])
+    @pytest.mark.parametrize(
+        "timeout,matrix",
+        [
+            (30, 1),  # 30 eff-min — at YELLOW floor
+            (45, 1),  # 45 eff-min
+            (90, 1),  # 90 eff-min — at YELLOW ceiling
+        ],
+    )
     def test_yellow_tier(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix)
         assert e.tier == "YELLOW"
         assert e.exit_code == 1
 
     # RED: > 90 effective min
-    @pytest.mark.parametrize("timeout,matrix", [
-        (91, 1),    # just over YELLOW ceiling
-        (60, 2),    # 120 eff-min
-        (60, 3),    # 180 eff-min
-        (30, 4),    # 120 eff-min
-    ])
+    @pytest.mark.parametrize(
+        "timeout,matrix",
+        [
+            (91, 1),  # just over YELLOW ceiling
+            (60, 2),  # 120 eff-min
+            (60, 3),  # 180 eff-min
+            (30, 4),  # 120 eff-min
+        ],
+    )
     def test_red_tier_high_minutes(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix)
         assert e.tier == "RED"
         assert e.exit_code == 2
 
     # RED: any GHCR push, regardless of minutes
-    @pytest.mark.parametrize("timeout,matrix", [
-        (5, 1),    # would be GREEN without GHCR
-        (20, 1),   # would be GREEN without GHCR
-        (30, 1),   # would be YELLOW without GHCR
-        (120, 3),  # already RED + GHCR
-    ])
+    @pytest.mark.parametrize(
+        "timeout,matrix",
+        [
+            (5, 1),  # would be GREEN without GHCR
+            (20, 1),  # would be GREEN without GHCR
+            (30, 1),  # would be YELLOW without GHCR
+            (120, 3),  # already RED + GHCR
+        ],
+    )
     def test_red_tier_ghcr_push(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix, ghcr=True)
         assert e.tier == "RED"
@@ -103,6 +116,7 @@ class TestTierClassification:
 
 
 # ── Runner multiplier ─────────────────────────────────────────────────────────
+
 
 class TestRunnerMultiplier:
     """Effective minutes = timeout × multiplier × matrix (KR-1)."""
@@ -140,6 +154,7 @@ class TestRunnerMultiplier:
 
 
 # ── Five covered workflows (KR-1 explicit verification) ──────────────────────
+
 
 class TestCoveredWorkflows:
     """Verify the correct tier for each of the 5 cost-gated workflows."""
@@ -204,6 +219,7 @@ class TestCoveredWorkflows:
 
 # ── Proposal markdown ─────────────────────────────────────────────────────────
 
+
 class TestProposalMarkdown:
     """Proposal output contains required fields (KR-2)."""
 
@@ -231,6 +247,7 @@ class TestProposalMarkdown:
 
     def test_to_dict_serializable(self):
         import json
+
         e = make(runner="ubuntu-latest-m", timeout=30, matrix=2, ghcr=True)
         d = e.to_dict()
         # Must be JSON-serializable
@@ -242,6 +259,7 @@ class TestProposalMarkdown:
 
 
 # ── Exit codes ────────────────────────────────────────────────────────────────
+
 
 class TestExitCodes:
     def test_green_exit_0(self):
@@ -255,6 +273,7 @@ class TestExitCodes:
 
 
 # ── Reason string ─────────────────────────────────────────────────────────────
+
 
 class TestReasonString:
     def test_ghcr_in_reason_when_push(self):

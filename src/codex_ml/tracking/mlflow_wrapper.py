@@ -60,13 +60,15 @@ class MLflowTracker:
 
             logger.info(f"MLflow initialized: {self.tracking_uri}")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             logger.warning("MLflow not available, tracking disabled")
             self.enabled = False
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"MLflow initialization failed: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"MLflow initialization failed: <ERROR_TYPE>")
             self.enabled = False
 
     @contextmanager
@@ -90,18 +92,20 @@ class MLflowTracker:
             self._active = True
             logger.info(f"Started MLflow run: {run_name or 'auto'}")
             yield self._run
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"MLflow run failed: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"MLflow run failed: <ERROR_TYPE>")
             yield None
         finally:
             if self._active:
                 try:
                     self._mlflow.end_run()
                     self._active = False
-                except Exception as e:
-                    logger.debug(f"Exception: {e}")
-                    logger.warning(f"Failed to end MLflow run: {e}")
+                except (ValueError, TypeError, RuntimeError) as e:
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.warning(f"Failed to end MLflow run: <ERROR_TYPE>")
 
     def log_params(self, params: dict[str, Any]) -> None:
         """Log parameters to current run.
@@ -114,9 +118,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_params(params)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to log params: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to log params: <ERROR_TYPE>")
 
     def log_param(self, key: str, value: Any) -> None:
         """Log single parameter.
@@ -130,9 +135,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_param(key, value)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to log param {key}: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to log param {key}: <ERROR_TYPE>")
 
     def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None) -> None:
         """Log metrics to current run.
@@ -146,9 +152,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_metrics(metrics, step=step)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to log metrics: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to log metrics: <ERROR_TYPE>")
 
     def log_metric(self, key: str, value: float, step: Optional[int] = None) -> None:
         """Log single metric.
@@ -163,9 +170,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_metric(key, value, step=step)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to log metric {key}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to log metric {key}: <ERROR_TYPE>")
 
     def log_artifact(self, local_path: str, artifact_path: Optional[str] = None):
         """Log artifact file to current run.
@@ -183,9 +191,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_artifact(local_path, artifact_path=artifact_path)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to log artifact: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to log artifact: <ERROR_TYPE>")
 
     def log_artifacts(self, local_dir: str, artifact_path: Optional[str] = None):
         """Log directory of artifacts.
@@ -203,9 +212,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_artifacts(local_dir, artifact_path=artifact_path)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to log artifacts: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to log artifacts: <ERROR_TYPE>")
 
     def set_tag(self, key: str, value: Any):
         """set tag on current run.
@@ -219,9 +229,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.set_tag(key, value)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to set tag {key}: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to set tag {key}: <ERROR_TYPE>")
 
     def set_tags(self, tags: dict[str, Any]):
         """set multiple tags on current run.
@@ -234,9 +245,10 @@ class MLflowTracker:
 
         try:
             self._mlflow.set_tags(tags)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to set tags: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to set tags: <ERROR_TYPE>")
 
     def end_run(self):
         """End current run manually."""
@@ -244,9 +256,10 @@ class MLflowTracker:
             try:
                 self._mlflow.end_run()
                 self._active = False
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.debug(f"Failed to end run: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug(f"Failed to end run: <ERROR_TYPE>")
 
 
 # Global tracker instance (can be configured via init)

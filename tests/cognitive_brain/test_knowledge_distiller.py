@@ -25,6 +25,7 @@ from codex.cognitive.knowledge_distiller import (
 # KnowledgeType / KnowledgePriority enums
 # ---------------------------------------------------------------------------
 
+
 class TestKnowledgeType:
     def test_members(self):
         assert KnowledgeType.FACTUAL.value == "factual"
@@ -48,6 +49,7 @@ class TestKnowledgePriority:
 # KnowledgeItem
 # ---------------------------------------------------------------------------
 
+
 class TestKnowledgeItem:
     @pytest.fixture()
     def item(self):
@@ -70,9 +72,18 @@ class TestKnowledgeItem:
     def test_to_dict_keys(self, item):
         d = item.to_dict()
         expected_keys = {
-            "id", "knowledge_type", "priority", "content", "source",
-            "session_id", "created_at", "last_accessed", "access_count",
-            "tags", "related_files", "confidence",
+            "id",
+            "knowledge_type",
+            "priority",
+            "content",
+            "source",
+            "session_id",
+            "created_at",
+            "last_accessed",
+            "access_count",
+            "tags",
+            "related_files",
+            "confidence",
         }
         assert expected_keys == set(d.keys())
 
@@ -106,6 +117,7 @@ class TestKnowledgeItem:
 # SessionSummary
 # ---------------------------------------------------------------------------
 
+
 class TestSessionSummary:
     def test_to_dict(self):
         now = datetime.now(timezone.utc)
@@ -129,6 +141,7 @@ class TestSessionSummary:
 # ---------------------------------------------------------------------------
 # KnowledgeStore
 # ---------------------------------------------------------------------------
+
 
 class TestKnowledgeStore:
     @pytest.fixture()
@@ -200,6 +213,7 @@ class TestKnowledgeStore:
         item = self._make_item("KN-1", KnowledgePriority.LOW)
         # Force old last_accessed
         from datetime import timedelta
+
         item.last_accessed = datetime.now(timezone.utc) - timedelta(days=60)
         store._knowledge[item.id] = item
         removed = store.prune_low_priority(max_age_days=30)
@@ -216,6 +230,7 @@ class TestKnowledgeStore:
 # ---------------------------------------------------------------------------
 # LearningExtractor
 # ---------------------------------------------------------------------------
+
 
 class TestLearningExtractor:
     @pytest.fixture()
@@ -244,6 +259,7 @@ class TestLearningExtractor:
 # DecisionExtractor
 # ---------------------------------------------------------------------------
 
+
 class TestDecisionExtractor:
     @pytest.fixture()
     def extractor(self):
@@ -261,6 +277,7 @@ class TestDecisionExtractor:
 # ---------------------------------------------------------------------------
 # KnowledgeDistiller
 # ---------------------------------------------------------------------------
+
 
 class TestKnowledgeDistiller:
     @pytest.fixture()

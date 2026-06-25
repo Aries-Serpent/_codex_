@@ -123,11 +123,9 @@ def test_status_audit_full_run(status_audit_script, tmp_path):
 
     # Create minimal required artifacts
     capabilities_scored = artifacts_dir / "capabilities_scored.json"
-    capabilities_scored.write_text(json.dumps({
-        "capabilities": [],
-        "timestamp": "2026-01-27T00:00:00Z",
-        "version": "1.0"
-    }))
+    capabilities_scored.write_text(
+        json.dumps({"capabilities": [], "timestamp": "2026-01-27T00:00:00Z", "version": "1.0"})
+    )
 
     result = subprocess.run(
         [
@@ -145,15 +143,16 @@ def test_status_audit_full_run(status_audit_script, tmp_path):
     )
 
     # Assertions
-    assert result.returncode == 0, \
-        f"Command failed with code {result.returncode}:\n{result.stderr}"
-    assert "SUCCESS" in result.stdout or result.returncode == 0, \
-        f"Expected success indicator in output:\n{result.stdout}"
+    assert result.returncode == 0, f"Command failed with code {result.returncode}:\n{result.stderr}"
+    assert (
+        "SUCCESS" in result.stdout or result.returncode == 0
+    ), f"Expected success indicator in output:\n{result.stdout}"
 
     # Verify report was created
     reports = list(output_dir.glob("codex_status_update_*.md"))
-    assert len(reports) > 0, \
-        f"No reports generated in {output_dir}. Files: {list(output_dir.iterdir())}"
+    assert (
+        len(reports) > 0
+    ), f"No reports generated in {output_dir}. Files: {list(output_dir.iterdir())}"
 
 
 if __name__ == "__main__":

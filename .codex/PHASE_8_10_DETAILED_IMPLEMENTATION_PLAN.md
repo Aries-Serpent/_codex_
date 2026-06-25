@@ -33,10 +33,10 @@ Establish production readiness through backup validation, infrastructure verific
   ```bash
   # 1. Create mirror clone
   git clone --mirror https://github.com/Aries-Serpent/_codex_.git /backup/codex-mirror.git
-  
+
   # 2. Verify clone integrity
   cd /backup/codex-mirror.git && git fsck --full
-  
+
   # 3. Create checksum manifest (efficient batch processing for large repositories)
   find /backup/codex-mirror.git -type f -print0 | xargs -0 sha256sum > /backup/codex-mirror.git/CHECKSUM.sha256
   # Alternative for multiple .git directories: find /backup -name "*.git" -type d | while read gitdir; do find "$gitdir" -type f -print0 | xargs -0 sha256sum > "$gitdir/CHECKSUM.sha256"; done
@@ -69,7 +69,7 @@ Establish production readiness through backup validation, infrastructure verific
   ```bash
   # 1. Export all configuration
   kubectl get all -A -o yaml > /backup/k8s-config-backup.yaml
-  
+
   # 2. Export all secrets (encrypted)
   # ⚠️ Security: Requires GPG private key 'deployment-key' from KMS (not local)
   # Key source documentation:
@@ -89,7 +89,7 @@ Establish production readiness through backup validation, infrastructure verific
   fi
   kubectl get secrets -A -o yaml | \
     gpg --encrypt --recipient deployment-key > /backup/secrets-backup.gpg
-  
+
   # 3. Create manifest
   tar czf /backup/config-manifest.tar.gz /backup/*.yaml /backup/*.gpg
   ```
@@ -261,17 +261,17 @@ Execute staged production rollout with continuous health monitoring and defined 
   # 1. Tag release
   git tag -a v0.1.0-production -m "Production release v0.1.0"
   git push origin v0.1.0-production
-  
+
   # 2. Build container image
   docker build -t codex:v0.1.0-production .
   docker tag codex:v0.1.0-production registry.example.com/codex:v0.1.0-production
-  
+
   # 3. Push to registry
   docker push registry.example.com/codex:v0.1.0-production
-  
+
   # 4. Create SBOM
   syft -o json registry.example.com/codex:v0.1.0-production > sbom.json
-  
+
   # 5. Sign artifacts (requires private key from KMS/HSM)
   # ⚠️ Security: Signing key stored in AWS KMS or HashiCorp Vault (no local key files)
   # CONFIGURATION REQUIRED:

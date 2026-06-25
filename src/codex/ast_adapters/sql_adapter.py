@@ -82,7 +82,7 @@ class SQLASTAdapter(BaseASTAdapter):
         # Parse SQL statements
         try:
             parsed = sqlparse.parse(source)
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             raise ValueError(f"Failed to parse SQL: {e}") from e
 
         if not parsed:
@@ -93,7 +93,7 @@ class SQLASTAdapter(BaseASTAdapter):
             node_id=str(uuid.uuid4()),
             node_type="sql_document",
             name="root",
-            file_path=file_path,  # type: ignore[arg-type]
+            file_path=file_path,
             line_start=1,
             line_end=len(source.splitlines()),
             column_start=0,

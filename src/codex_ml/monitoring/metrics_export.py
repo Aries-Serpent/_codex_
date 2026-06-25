@@ -21,7 +21,7 @@ try:  # Optional dependency for Prometheus integration
     from prometheus_client import REGISTRY, CollectorRegistry, generate_latest
 
     _HAS_PROMETHEUS = True
-except Exception:  # pragma: no cover - optional dependency path
+except (IOError, OSError):  # pragma: no cover - optional dependency path
     CollectorRegistry = None
     REGISTRY = None
     generate_latest = None
@@ -47,7 +47,7 @@ async def metrics_endpoint_fastapi(
     text = get_metrics_text(registry)
     try:
         from fastapi import Response
-    except Exception:  # pragma: no cover - optional dependency path
+    except (IOError, OSError):  # pragma: no cover - optional dependency path
         return text
     return Response(content=text, media_type="text/plain; version=0.0.4")
 

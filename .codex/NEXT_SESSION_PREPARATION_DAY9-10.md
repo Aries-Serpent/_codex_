@@ -225,13 +225,13 @@ Morning (09:00Z):
     * wave-3-lane-3.1-edge-case-tests
     * wave-3-lane-3.2-mutation-testing
     * wave-3-lane-3.3-production-validation
-  
+
 Midday (12:00Z):
   - Dispatch 3 agents simultaneously (background mode)
     * autonomous-test-healer-agent (Lane 3.1)
     * mutation-testing-agent (Lane 3.2)
     * qa-walkthrough-agent (Lane 3.3)
-  
+
   - Pass detailed specifications:
     * WAVE_3_LANE_3.1_SPECIFICATION.md
     * WAVE_3_LANE_3.2_SPECIFICATION.md

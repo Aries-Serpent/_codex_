@@ -25,10 +25,7 @@ def decode_message(encoded: str) -> Dict[str, Any]:
 
 
 @given(
-    data=st.dictionaries(
-        st.text(min_size=1),
-        st.one_of(st.text(), st.integers(), st.booleans())
-    )
+    data=st.dictionaries(st.text(min_size=1), st.one_of(st.text(), st.integers(), st.booleans()))
 )
 def test_message_roundtrip(data: Dict[str, str | int | bool]):
     """Test that messages survive JSON roundtrip."""
@@ -44,12 +41,7 @@ def test_message_roundtrip(data: Dict[str, str | int | bool]):
 )
 def test_jsonrpc_message_roundtrip(message_id: int, method: str):
     """Test JSON-RPC message roundtrip."""
-    message = {
-        "jsonrpc": "2.0",
-        "id": message_id,
-        "method": method,
-        "params": {}
-    }
+    message = {"jsonrpc": "2.0", "id": message_id, "method": method, "params": {}}
 
     encoded = encode_message(message)
     decoded = decode_message(encoded)

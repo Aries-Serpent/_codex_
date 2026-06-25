@@ -8,6 +8,7 @@ Tests the complete Cognitive Brain decision loop:
   4. SelfHealingValidator validates outcomes and adjusts confidence
   5. Confidence history feeds back into subsequent decisions
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -69,9 +70,7 @@ def pipeline(tmp_path: Path):
 
 
 def _write_state(state_file: Path, workflows: dict) -> None:
-    state_file.write_text(
-        json.dumps({"workflows": workflows, "last_run": "2026-01-22T07:00:00Z"})
-    )
+    state_file.write_text(json.dumps({"workflows": workflows, "last_run": "2026-01-22T07:00:00Z"}))
 
 
 # ---------------------------------------------------------------------------
@@ -208,7 +207,13 @@ class TestPipelineValidationFeedback:
         sensor, proposer, validator, sf = pipeline
         _write_state(
             sf,
-            {"wf_flaky": {"last_status": "failure", "consecutive_failures": 5, "failure_rate": 0.8}},
+            {
+                "wf_flaky": {
+                    "last_status": "failure",
+                    "consecutive_failures": 5,
+                    "failure_rate": 0.8,
+                }
+            },
         )
         actions = proposer.propose_actions(sensor.get_active_failures())
         initial_confidence = actions[0]["confidence"]

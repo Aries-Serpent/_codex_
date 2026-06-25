@@ -53,13 +53,13 @@ CODEX_MASTER_KEY (primary, rotates quarterly)
 Q1: Mar 15  - CODEX_MASTER_KEY rotation
     Mar 14  - Database credentials
     Jan 15  - TLS certificates (annual)
-    
+
 Q2: Jun 14  - CODEX_MASTER_KEY rotation + other keys
     May 14  - Monthly keys
-    
+
 Q3: Sep 13  - CODEX_MASTER_KEY rotation
     Aug 14  - Monthly keys
-    
+
 Q4: Dec 13  - CODEX_MASTER_KEY rotation
     Nov 14  - Monthly keys
 ```
@@ -149,19 +149,19 @@ validation_steps:
   - name: "Key format validation"
     action: "Validate base64 and 32-byte length"
     expected: "PASS"
-  
+
   - name: "Staged key deployment"
     action: "Test new key in staging workflows"
     expected: "All workflows succeed with new key"
-  
+
   - name: "Old key still works"
     action: "Verify systems handle old key gracefully"
     expected: "No failures during transition"
-  
+
   - name: "New key active"
     action: "Verify new key is primary"
     expected: "New key successfully authenticates"
-  
+
   - name: "Service continuity"
     action: "Monitor all services during rotation"
     expected: "Zero downtime, all services operational"
@@ -194,15 +194,15 @@ validation_steps:
 # Detect rotation failure
 if ! ./scripts/verify_key_active.sh; then
     echo "❌ Key rotation verification failed"
-    
+
     # Immediate rollback
     gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
       --repo Aries-Serpent/_codex_
-    
+
     # Alert security team
     curl -X POST $SLACK_WEBHOOK \
       -d '{"text": "🚨 Key rotation failed - rollback successful"}'
-    
+
     # Document incident
     cat >> .codex/key-archive/incidents.log << LOG
 [$(date -u +%Y-%m-%dT%H:%M:%SZ)] ROTATION_FAILED
@@ -210,7 +210,7 @@ reason: key_validation_failed
 action_taken: rollback_to_previous_key
 investigation_required: true
 LOG
-    
+
     exit 1
 fi
 ```
@@ -399,11 +399,11 @@ from typing import Dict, List
 
 class TokenExpiryChecker:  # pragma: allowlist secret
     ALERT_THRESHOLD_DAYS = 30
-    
+
     def __init__(self):
         self.tokens = self._load_token_inventory()  # pragma: allowlist secret
         self.alerts = []
-    
+
     def _load_token_inventory(self) -> Dict:  # pragma: allowlist secret
         """Load token expiration dates from environment or config"""  # pragma: allowlist secret
         return {
@@ -425,13 +425,13 @@ class TokenExpiryChecker:  # pragma: allowlist secret
                 "critical": False
             }
         }
-    
+
     def check_expiry(self) -> List[Dict]:
         """Check all tokens for impending expiration"""  # pragma: allowlist secret
         alerts = []
         now = datetime.utcnow()
         threshold = now + timedelta(days=self.ALERT_THRESHOLD_DAYS)
-        
+
         for token_name, token_info in self.tokens.items():  # pragma: allowlist secret
             if token_info["type"] == "master_key":  # pragma: allowlist secret
                 # Calculate next rotation date
@@ -441,7 +441,7 @@ class TokenExpiryChecker:  # pragma: allowlist secret
                 next_rotation = last_rotation + timedelta(
                     days=token_info["rotation_frequency_days"]  # pragma: allowlist secret
                 )
-                
+
                 if next_rotation <= threshold:
                     alerts.append({
                         "token": token_name,  # pragma: allowlist secret
@@ -451,10 +451,10 @@ class TokenExpiryChecker:  # pragma: allowlist secret
                         "days_until": (next_rotation - now).days,
                         "severity": "HIGH" if token_info["critical"] else "MEDIUM"  # pragma: allowlist secret
                     })
-        
+
         self.alerts = alerts
         return alerts
-    
+
     def send_alerts(self):
         """Send alert notifications"""
         for alert in self.alerts:
@@ -464,27 +464,27 @@ class TokenExpiryChecker:  # pragma: allowlist secret
                 severity_emoji = "⚠️"
             else:
                 severity_emoji = "ℹ️"
-            
+
             message = (
                 f"{severity_emoji} Token Rotation Alert\n"  # pragma: allowlist secret
                 f"Token: {alert['token']}\n"  # pragma: allowlist secret
                 f"Due: {alert['due_date']}\n"
                 f"Days remaining: {alert['days_until']}"
             )
-            
+
             # Send to Slack
             self._notify_slack(message, alert["severity"])
-            
+
             # Log to audit trail
             self._log_alert(alert)
-    
+
     def _notify_slack(self, message: str, severity: str):
         """Send Slack notification"""
         import requests
         webhook = os.getenv("SLACK_WEBHOOK")
         if webhook:
             requests.post(webhook, json={"text": message})
-    
+
     def _log_alert(self, alert: Dict):
         """Log alert to audit trail"""
         with open(".codex/aftermath/token_expiry_alerts.jsonl", "a") as f:  # pragma: allowlist secret
@@ -516,12 +516,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Check token expiry
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
@@ -529,7 +529,7 @@ jobs:
           GITHUB_TOKEN_EXPIRY: ${{ secrets.GITHUB_TOKEN_EXPIRY }}
         run: |
           python scripts/token_rotation/check_token_expiry.py
-      
+
       - name: Create GitHub issue if needed
         if: failure()
         uses: actions/github-script@v6
@@ -594,7 +594,7 @@ class AuditLogger:
     def __init__(self):
         self.log_file = ".codex/aftermath/secrets_audit.jsonl"  # pragma: allowlist secret
         self.rotation_log_file = ".codex/key-archive/rotation-log.txt"
-    
+
     def log_secret_access(  # pragma: allowlist secret
         self,
         action_type: str,
@@ -606,7 +606,7 @@ class AuditLogger:
         duration_ms: int = None
     ):
         """Log secret access event"""  # pragma: allowlist secret
-        
+
         event = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "event_type": "secret_access",  # pragma: allowlist secret
@@ -633,18 +633,18 @@ class AuditLogger:
                 "duration_ms": duration_ms
             }
         }
-        
+
         # Mask secret name for audit trail  # pragma: allowlist secret
         event["action"]["secret_hash"] = self._hash_secret_name(secret_name)  # pragma: allowlist secret
-        
+
         # Write to audit log
         with open(self.log_file, "a") as f:
             f.write(json.dumps(event) + "\n")
-    
+
     def _hash_secret_name(self, secret_name: str) -> str:  # pragma: allowlist secret
         """Hash secret name for audit trail"""  # pragma: allowlist secret
         return hashlib.sha256(secret_name.encode()).hexdigest()[:16]  # pragma: allowlist secret
-    
+
     def log_rotation_event(
         self,
         key_name: str,
@@ -654,7 +654,7 @@ class AuditLogger:
         error_message: str = None
     ):
         """Log key rotation event"""
-        
+
         event = {
             "timestamp": datetime.utcnow().isoformat() + "Z",
             "event": "key_rotation",
@@ -664,7 +664,7 @@ class AuditLogger:
             "status": status,
             "error_message": error_message
         }
-        
+
         with open(self.rotation_log_file, "a") as f:
             f.write(json.dumps(event) + "\n")
 ```
@@ -712,11 +712,11 @@ from datetime import datetime, timedelta
 
 def investigate_incident(incident_time: str, window_hours: int = 24):
     """Investigate incident by looking at audit trail"""
-    
+
     incident = datetime.fromisoformat(incident_time)
     start = incident - timedelta(hours=window_hours)
     end = incident + timedelta(hours=1)
-    
+
     events = []
     with open(".codex/aftermath/secrets_audit.jsonl", "r") as f:  # pragma: allowlist secret
         for line in f:
@@ -726,10 +726,10 @@ def investigate_incident(incident_time: str, window_hours: int = 24):
             )
             if start <= event_time <= end:
                 events.append(event)
-    
+
     # Sort by timestamp
     events.sort(key=lambda x: x["timestamp"])
-    
+
     print(f"Events within {window_hours}h of incident:")
     for event in events:
         print(f"  {event['timestamp']}: {event['actor']['id']} "

@@ -17,8 +17,8 @@ try:  # pragma: no cover - optional dependency
     # Verify torch is actually functional (not just a stub)
     _ = torch.float32  # Test access to a common attribute
     _HAS_TORCH = True
-except Exception:  # pragma: no cover - defensive import guard
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - defensive import guard
+    torch = None
     _HAS_TORCH = False
 
 
@@ -38,7 +38,7 @@ def _supports_bfloat16() -> bool:
                 capability = torch.cuda.get_device_capability()
                 # Ampere (8.x) and newer support bfloat16 efficiently
                 return capability[0] >= 8
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Try alternative check
                 checker = getattr(torch.cuda, "is_bf16_supported", None)
@@ -47,7 +47,7 @@ def _supports_bfloat16() -> bool:
         if getattr(torch.backends, "mps", None):  # pragma: no branch - optional backend
             mps = torch.backends.mps
             return bool(getattr(mps, "is_built", lambda: False)())
-    except Exception:  # pragma: no cover - conservative fallback
+    except (ImportError, AttributeError):  # pragma: no cover - conservative fallback
         return False
     return False
 
@@ -162,8 +162,9 @@ class DeviceConfig:
             else:
                 model = model.to(device=target_device, dtype=self.dtype)
             return model
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (ValueError, TypeError, RuntimeError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             LOGGER.warning(
                 "[codex] failed to place model on %s (%s); falling back to CPU fp32",
                 self.device,
@@ -186,8 +187,9 @@ class DeviceConfig:
 
         try:
             return tensor.to(device=torch.device(self.device), dtype=self.dtype)
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (ValueError, TypeError, RuntimeError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             LOGGER.warning(
                 "[codex] failed to move tensor to %s (%s); returning CPU copy",
                 self.device,
@@ -231,7 +233,8 @@ class DeviceMapper:
         try:
             return cls._STRATEGIES[key]
         except KeyError as exc:
-            logger.debug(f"KeyError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"KeyError: <ERROR_TYPE>")
             raise KeyError(f"device strategy not registered: {name}") from exc
 
     @classmethod

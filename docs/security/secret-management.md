@@ -42,8 +42,8 @@ Secrets are sensitive credentials that require careful management:
 ```
 Development (loose) → Staging (moderate) → Production (strict)
 - Dev: Local .env files (gitignored)
-- Staging: GitHub repository secrets
-- Production: Managed secrets service
+- Staging: GitHub repository secrets  # pragma: allowlist secret
+- Production: Managed secrets service  # pragma: allowlist secret
 ```
 
 ---
@@ -108,12 +108,12 @@ sleep 30
 # Step 5: Rotate to production
 if [ "$ENVIRONMENT" = "production" ]; then
     echo "5️⃣  Updating production secrets..."
-    
+
     # Use secure secrets management service
     aws secretsmanager update-secret \
       --secret-id "$SERVICE_NAME-api-key" \
       --secret-string "$NEW_KEY"
-    
+
     # Verify update
     aws secretsmanager get-secret-value \
       --secret-id "$SERVICE_NAME-api-key" \
@@ -203,14 +203,14 @@ echo "✅ Database password rotation complete!"
 **Scenario**: Rotate OAuth tokens (GitHub, Slack, etc.)
 
 ```python
-# scripts/rotate_oauth_tokens.py
+# scripts/rotate_oauth_tokens.py  # pragma: allowlist secret
 
 import os
 import subprocess
 from datetime import datetime, timedelta
 import json
 
-class OAuthTokenRotator:
+class OAuthTokenRotator:  # pragma: allowlist secret
     def __init__(self, service_name: str):
         self.service_name = service_name
         self.log_file = f"logs/oauth_rotation_{service_name}.log"
@@ -222,64 +222,64 @@ class OAuthTokenRotator:
         with open(self.log_file, 'a') as f:
             f.write(log_entry + "\n")
 
-    def rotate_github_token(self, new_token: str) -> bool:
-        """Rotate GitHub API token"""
-        self.log("Starting GitHub token rotation...")
+    def rotate_github_token(self, new_token: str) -> bool:  # pragma: allowlist secret
+        """Rotate GitHub API token"""  # pragma: allowlist secret
+        self.log("Starting GitHub token rotation...")  # pragma: allowlist secret
 
         try:
-            # Step 1: Verify new token
-            self.log("Verifying new token...")
+            # Step 1: Verify new token  # pragma: allowlist secret
+            self.log("Verifying new token...")  # pragma: allowlist secret
             result = subprocess.run(
                 ["gh", "api", "user"],
-                env={**os.environ, "GH_TOKEN": new_token},
+                env={**os.environ, "GH_TOKEN": new_token},  # pragma: allowlist secret
                 capture_output=True,
                 text=True,
                 timeout=10
             )
 
             if result.returncode != 0:
-                self.log(f"Token verification failed: {result.stderr}", "ERROR")
+                self.log(f"Token verification failed: {result.stderr}", "ERROR")  # pragma: allowlist secret
                 return False
 
-            self.log("✅ New token verified")
+            self.log("✅ New token verified")  # pragma: allowlist secret
 
-            # Step 2: Update in secrets manager
-            self.log("Updating GitHub token in secrets...")
+            # Step 2: Update in secrets manager  # pragma: allowlist secret
+            self.log("Updating GitHub token in secrets...")  # pragma: allowlist secret
             subprocess.run(
-                ["gh", "secret", "set", "GITHUB_TOKEN", 
-                 "--body", new_token],
+                ["gh", "secret", "set", "GITHUB_TOKEN",  # pragma: allowlist secret
+                 "--body", new_token],  # pragma: allowlist secret
                 check=True
             )
 
-            # Step 3: Log old token for audit
+            # Step 3: Log old token for audit  # pragma: allowlist secret
             self.log("Recording rotation in audit log...")
-            self._record_rotation_audit("GitHub", "token")
+            self._record_rotation_audit("GitHub", "token")  # pragma: allowlist secret
 
-            self.log("✅ GitHub token rotation complete", "SUCCESS")
+            self.log("✅ GitHub token rotation complete", "SUCCESS")  # pragma: allowlist secret
             return True
 
         except Exception as e:
             self.log(f"Rotation failed: {str(e)}", "ERROR")
             return False
 
-    def _record_rotation_audit(self, service: str, secret_type: str):
+    def _record_rotation_audit(self, service: str, secret_type: str):  # pragma: allowlist secret
         """Record rotation in audit log"""
         audit_entry = {
             "timestamp": datetime.now().isoformat(),
             "service": service,
-            "secret_type": secret_type,
+            "secret_type": secret_type,  # pragma: allowlist secret
             "rotated_by": os.environ.get("USER", "unknown"),
             "status": "success"
         }
 
-        with open("logs/secret_rotations_audit.jsonl", 'a') as f:
+        with open("logs/secret_rotations_audit.jsonl", 'a') as f:  # pragma: allowlist secret
             f.write(json.dumps(audit_entry) + "\n")
 
 # Usage
 if __name__ == "__main__":
-    rotator = OAuthTokenRotator("GitHub")
-    new_token = os.environ.get("NEW_GITHUB_TOKEN")
-    rotator.rotate_github_token(new_token)
+    rotator = OAuthTokenRotator("GitHub")  # pragma: allowlist secret
+    new_token = os.environ.get("NEW_GITHUB_TOKEN")  # pragma: allowlist secret
+    rotator.rotate_github_token(new_token)  # pragma: allowlist secret
 ```
 
 ---
@@ -296,35 +296,35 @@ import json
 from datetime import datetime
 from enum import Enum
 
-class SecretAccessType(Enum):
+class SecretAccessType(Enum):  # pragma: allowlist secret
     READ = "READ"
     WRITE = "WRITE"
     DELETE = "DELETE"
     ROTATE = "ROTATE"
 
 class AuditLogger:
-    def __init__(self, log_file: str = "logs/secret_audit.log"):
-        self.logger = logging.getLogger("secret_audit")
+    def __init__(self, log_file: str = "logs/secret_audit.log"):  # pragma: allowlist secret
+        self.logger = logging.getLogger("secret_audit")  # pragma: allowlist secret
         handler = logging.FileHandler(log_file)
         formatter = logging.Formatter(
-            '%(timestamp)s - %(service)s - %(action)s - %(secret_name)s - %(user)s'
+            '%(timestamp)s - %(service)s - %(action)s - %(secret_name)s - %(user)s'  # pragma: allowlist secret
         )
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
     def log_access(
         self,
-        secret_name: str,
-        access_type: SecretAccessType,
+        secret_name: str,  # pragma: allowlist secret
+        access_type: SecretAccessType,  # pragma: allowlist secret
         user: str,
         service: str,
         success: bool = True,
         details: dict = None
     ):
-        """Log secret access"""
+        """Log secret access"""  # pragma: allowlist secret
         audit_entry = {
             "timestamp": datetime.utcnow().isoformat(),
-            "secret_name": secret_name,
+            "secret_name": secret_name,  # pragma: allowlist secret
             "access_type": access_type.value,
             "user": user,
             "service": service,
@@ -343,18 +343,18 @@ class AuditLogger:
         pass
 
 # Usage in application
-from src.security.audit_logger import AuditLogger, SecretAccessType
+from src.security.audit_logger import AuditLogger, SecretAccessType  # pragma: allowlist secret
 
 audit_logger = AuditLogger()
 
-def get_api_key(secret_name: str) -> str:
+def get_api_key(secret_name: str) -> str:  # pragma: allowlist secret
     """Retrieve API key with audit logging"""
     try:
-        key = os.environ.get(secret_name)
+        key = os.environ.get(secret_name)  # pragma: allowlist secret
 
         audit_logger.log_access(
-            secret_name=secret_name,
-            access_type=SecretAccessType.READ,
+            secret_name=secret_name,  # pragma: allowlist secret
+            access_type=SecretAccessType.READ,  # pragma: allowlist secret
             user=os.environ.get("USER"),
             service="authentication",
             success=True
@@ -364,8 +364,8 @@ def get_api_key(secret_name: str) -> str:
 
     except Exception as e:
         audit_logger.log_access(
-            secret_name=secret_name,
-            access_type=SecretAccessType.READ,
+            secret_name=secret_name,  # pragma: allowlist secret
+            access_type=SecretAccessType.READ,  # pragma: allowlist secret
             user=os.environ.get("USER"),
             service="authentication",
             success=False,
@@ -385,9 +385,9 @@ echo "================================"
 
 # Most accessed secrets
 echo -e "\n📊 Top 10 Most Accessed Secrets:"
-jq -s 'group_by(.secret_name) | 
-       map({name: .[0].secret_name, count: length}) | 
-       sort_by(-.count) | 
+jq -s 'group_by(.secret_name) |
+       map({name: .[0].secret_name, count: length}) |
+       sort_by(-.count) |
        .[0:10]' logs/secret_audit.jsonl
 
 # Failed access attempts
@@ -396,20 +396,20 @@ jq 'select(.success == false)' logs/secret_audit.jsonl | wc -l
 
 # Recent rotations
 echo -e "\n🔄 Recent Secret Rotations (Last 7 days):"
-jq "select(.access_type == \"ROTATE\" and 
+jq "select(.access_type == \"ROTATE\" and
     (now - (.timestamp | fromdateiso8601)) < 604800)" \
     logs/secret_rotations_audit.jsonl
 
 # Access by user
 echo -e "\n👤 Access by User:"
-jq -s 'group_by(.user) | 
-       map({user: .[0].user, count: length}) | 
+jq -s 'group_by(.user) |
+       map({user: .[0].user, count: length}) |
        sort_by(-.count)' logs/secret_audit.jsonl
 
 # Unusual activity (high volume in short time)
 echo -e "\n🚨 Unusual Activity Detection:"
-jq -s 'group_by(.timestamp | split(".")[0]) | 
-       map({timestamp: .[0].timestamp, count: length}) | 
+jq -s 'group_by(.timestamp | split(".")[0]) |
+       map({timestamp: .[0].timestamp, count: length}) |
        select(.count > 100)' logs/secret_audit.jsonl
 ```
 
@@ -527,8 +527,8 @@ class DeploymentRecovery:
 
         return health
 
-    def identify_secret_mismatches(self) -> List[str]:
-        """Identify services using wrong secrets"""
+    def identify_secret_mismatches(self) -> List[str]:  # pragma: allowlist secret
+        """Identify services using wrong secrets"""  # pragma: allowlist secret
         mismatches = []
 
         # Check for signature/auth failures in logs
@@ -543,27 +543,27 @@ class DeploymentRecovery:
 
         return mismatches
 
-    def rollback_secrets(self):
-        """Rollback to last known good secrets"""
+    def rollback_secrets(self):  # pragma: allowlist secret
+        """Rollback to last known good secrets"""  # pragma: allowlist secret
         print(f"🔄 Rolling back to: {self.rollback_target}")
 
         try:
             # Retrieve last known good configuration
             result = subprocess.run(
-                ["aws", "secretsmanager", "describe-secret",
-                 "--secret-id", "app-secrets-backup"],
+                ["aws", "secretsmanager", "describe-secret",  # pragma: allowlist secret
+                 "--secret-id", "app-secrets-backup"],  # pragma: allowlist secret
                 capture_output=True,
                 text=True
             )
 
             # Restore from backup
             subprocess.run(
-                ["aws", "secretsmanager", "restore-secret",
-                 "--secret-id", "app-secrets"],
+                ["aws", "secretsmanager", "restore-secret",  # pragma: allowlist secret
+                 "--secret-id", "app-secrets"],  # pragma: allowlist secret
                 check=True
             )
 
-            print("✅ Secrets rolled back")
+            print("✅ Secrets rolled back")  # pragma: allowlist secret
 
         except subprocess.CalledProcessError as e:
             print(f"❌ Rollback failed: {e}")
@@ -595,12 +595,12 @@ class DeploymentRecovery:
         print(f"\n📊 Service Health: {health}")
 
         # 2. Identify problems
-        mismatches = self.identify_secret_mismatches()
+        mismatches = self.identify_secret_mismatches()  # pragma: allowlist secret
         if mismatches:
             print(f"\n⚠️  Found {len(mismatches)} auth failures")
 
         # 3. Rollback
-        self.rollback_secrets()
+        self.rollback_secrets()  # pragma: allowlist secret
 
         # 4. Restart services
         self.restart_services()
@@ -660,7 +660,7 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Configure secrets
         env:
           API_KEY: ${{ secrets.API_KEY }}
@@ -669,7 +669,7 @@ jobs:
         run: |
           echo "API_KEY=${API_KEY:0:10}..." # Log first 10 chars only
           # Use secrets in deployment
-      
+
       - name: Deploy application
         run: ./scripts/deploy.sh
         env:
@@ -695,24 +695,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Generate new secrets
         id: rotate
         run: |
           NEW_API_KEY=$(openssl rand -hex 32)
           echo "api_key=$NEW_API_KEY" >> $GITHUB_OUTPUT
-      
+
       - name: Test new secrets
         env:
           API_KEY: ${{ steps.rotate.outputs.api_key }}
         run: python -m pytest tests/integration/
-      
+
       - name: Update GitHub secret
         run: |
           gh secret set API_KEY \
             --body "${{ steps.rotate.outputs.api_key }}" \
             --env production
-      
+
       - name: Record rotation
         run: |
           echo "Secret rotated at $(date)" >> logs/rotations.log
@@ -725,14 +725,14 @@ jobs:
 1. **Never log secrets**: Use masking in logs
 ```python
 logger.info(f"Connecting to {host}:{port}")  # ✅ Safe
-logger.info(f"Auth: {api_key}")  # ❌ Never
+logger.info(f"Auth: {api_key}")  # ❌ Never  # pragma: allowlist secret
 ```
 
 2. **Use environment variables**: Not config files
    ```bash
    # ✅ Good
    export API_KEY="$(aws secretsmanager get-secret-value ...)"
-   
+
    # ❌ Bad
    API_KEY = "hardcoded_key_here"  # In config file <!-- pragma: allowlist secret -->
    ```

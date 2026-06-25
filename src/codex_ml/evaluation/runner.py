@@ -46,9 +46,10 @@ try:
 
     DataLoader = torch.utils.data.DataLoader
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
-    torch = None  # type: ignore[assignment]
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    torch = None
     DataLoader = None
 
 
@@ -121,7 +122,7 @@ class EvaluationRunner:
     def __init__(
         self,
         model: Any,
-        dataset: Any | DataLoader,  # type: ignore[valid-type]
+        dataset: Any | DataLoader,
         metrics: list[MetricAdapter | Callable],
         config: Optional[EvaluationConfig] = None,
         tracking_writer: Optional[Any] = None,
@@ -161,10 +162,11 @@ class EvaluationRunner:
                     if isinstance(result, dict):
                         return result
                     return {self.name: float(result)}
-                except Exception as e:
-                    logger.debug(f"Exception: {e}")
+                except (ValueError, TypeError, RuntimeError) as e:
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
                     logger.debug("Exception caught, returning", exc_info=True)
-                    return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
+                    return {f"{self.name}_error": str(e)}
 
         name = getattr(metric, "__name__", "custom_metric")
         return CallableMetricAdapter(metric, name)
@@ -269,10 +271,11 @@ class EvaluationRunner:
             try:
                 computed = metric.compute()
                 metric_results.update(computed)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                print(f"Warning: Metric {metric.name} failed: {e}")
-                metric_results[f"{metric.name}_error"] = str(e)  # type: ignore[assignment]
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                print(f"Warning: Metric {metric.name} failed: <ERROR_TYPE>")
+                metric_results[f"{metric.name}_error"] = str(e)
 
         # Build results
         self.results = {
@@ -348,23 +351,24 @@ class EvaluationRunner:
             # Log metrics
             for name, value in self.results["metrics"].items():
                 if isinstance(value, (int, float)):
-                    self.tracking_writer.log_metric(name, value)  # type: ignore[union-attr]
+                    self.tracking_writer.log_metric(name, value)
 
             # Log performance metrics
-            self.tracking_writer.log_metric("latency_ms", self.results["latency_ms"])  # type: ignore[union-attr]
-            self.tracking_writer.log_metric(  # type: ignore[union-attr]
+            self.tracking_writer.log_metric("latency_ms", self.results["latency_ms"])
+            self.tracking_writer.log_metric(
                 "throughput", self.results["throughput_samples_per_sec"]
             )
 
             # Log artifact
             summary_path = str(self.output_path / "evaluation_summary.json")
             if hasattr(self.tracking_writer, "log_artifact"):
-                self.tracking_writer.log_artifact(summary_path)  # type: ignore[union-attr]
+                self.tracking_writer.log_artifact(summary_path)
 
             print("Logged results to tracking writer")
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            print(f"Warning: Failed to log to tracking writer: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"Warning: Failed to log to tracking writer: <ERROR_TYPE>")
 
 
 class _nullcontext:

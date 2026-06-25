@@ -111,7 +111,8 @@ def analyze_file(filepath: Path) -> dict:
             "word_count": len(content.split()),
         }
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         logger.debug("Exception caught, returning", exc_info=True)
         return {"filename": filepath.name, "path": str(filepath), "error": str(e)}
 
@@ -213,16 +214,19 @@ def organize_repository(
             archived_files.append(dest)
             logger.info(f"Archived: {md_file.name}")
         except FileNotFoundError as e:
-            logger.debug(f"FileNotFoundError: {e}")
-            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             logger.error(f"File not found - {md_file.name}")
         except PermissionError as e:
-            logger.debug(f"PermissionError: {e}")
-            logger.warning(f"PermissionError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"PermissionError: <ERROR_TYPE>")
+            logger.warning(f"PermissionError: <ERROR_TYPE>", exc_info=True)
             logger.error(f"Permission denied - {md_file.name}")
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Unexpected error archiving {md_file.name}: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Unexpected error archiving {md_file.name}: <ERROR_TYPE>")
 
     # Create archive index
     if archived_files:

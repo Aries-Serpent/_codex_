@@ -26,7 +26,9 @@ def test_hash_key_is_deterministic_for_same_pepper(monkeypatch: pytest.MonkeyPat
     assert hash_key("token-a") != hash_key("token-b")
 
 
-def test_verify_api_key_accepts_issued_store_key(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_verify_api_key_accepts_issued_store_key(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     monkeypatch.setenv("ITA_API_KEY_PEPPER", "pepper-a")
     store = ApiKeyStore(path=tmp_path / "keys.json")
     issued = store.issue_key()
@@ -40,7 +42,9 @@ def test_verify_api_key_accepts_env_keys(tmp_path: Path, monkeypatch: pytest.Mon
     assert verify_api_key("single-key", store=ApiKeyStore(path=tmp_path / "keys.json"))
 
 
-def test_verify_api_key_rejects_missing_invalid_and_oversized(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_verify_api_key_rejects_missing_invalid_and_oversized(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setenv("ITA_API_KEY_PEPPER", "pepper-a")
     with pytest.raises(HTTPException) as missing:
         verify_api_key(None)

@@ -39,7 +39,8 @@ def main() -> int:
         try:
             actual = sha256(path)
         except Exception as e:
-            print(f"ERROR reading {path}: {e}")
+            error_type = type(e).__name__
+            print(f"ERROR reading {path}: <ERROR_TYPE>")
             ok = False
             continue
         if actual != expected:

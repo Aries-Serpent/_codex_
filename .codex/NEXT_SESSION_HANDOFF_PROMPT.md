@@ -139,15 +139,15 @@ IMMEDIATE ACTION:
   1. read_agent with wait=true (verify agent is truly stuck)
   2. Document error in .codex/PHASE_7A_ESCALATION_LOG.md
   3. Delegate to ci-emergency-response-agent:
-     
+
      task tool with:
      - name: "Lane 2.1 Security Tests Emergency Response"
      - agent_type: "ci-emergency-response-agent"
-     - prompt: "Lane 2.1 (unified-coverage-agent) generating 900 security tests 
-               has been blocked/failed. Diagnose blocker and restore execution 
+     - prompt: "Lane 2.1 (unified-coverage-agent) generating 900 security tests
+               has been blocked/failed. Diagnose blocker and restore execution
                or recommend mitigation (defer to Wave 3 if time-critical)."
      - mode: "background"
-     
+
   4. Monitor escalation agent for resolution
   5. Update @mbaetiong via Discussion #4872
 ```

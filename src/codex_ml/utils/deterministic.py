@@ -44,13 +44,14 @@ def enable_deterministic_mode(warn_only: bool = False) -> None:
             logger.info("Set CuDNN to deterministic mode")
 
         logger.info("PyTorch deterministic algorithms enabled")
-    except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
-        logger.warning("PyTorch not available, skipping torch deterministic setup")
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Failed to enable PyTorch deterministic mode: {e}")
+    except (ImportError, AttributeError) as e:
+        if isinstance(e, ImportError):
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+            logger.warning("PyTorch not available, skipping torch deterministic setup")
+        else:
+            logger.debug(f"Exception: {e}")
+            logger.warning(f"Failed to enable PyTorch deterministic mode: {e}")
 
     # TensorFlow deterministic ops (if available)
     try:
@@ -61,11 +62,13 @@ def enable_deterministic_mode(warn_only: bool = False) -> None:
             tf.config.experimental.enable_op_determinism()
             logger.info("TensorFlow deterministic ops enabled")
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)  # TensorFlow not installed
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Failed to enable TensorFlow deterministic mode: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)  # TensorFlow not installed
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Failed to enable TensorFlow deterministic mode: <ERROR_TYPE>")
 
     # Set environment variables for determinism
     os.environ["PYTHONHASHSEED"] = "0"
@@ -93,11 +96,13 @@ def disable_deterministic_mode() -> None:
 
         logger.info("PyTorch deterministic algorithms disabled")
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Failed to disable PyTorch deterministic mode: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Failed to disable PyTorch deterministic mode: <ERROR_TYPE>")
 
     # Remove determinism environment variables
     os.environ.pop("PYTHONHASHSEED", None)
@@ -117,10 +122,11 @@ def is_deterministic_mode_enabled() -> bool:
 
         return torch.are_deterministic_algorithms_enabled()
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         return False
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 
@@ -177,15 +183,16 @@ def check_deterministic_operations() -> dict[str, bool | None]:
             status["cudnn_deterministic"] = torch.backends.cudnn.deterministic
             status["cudnn_benchmark_disabled"] = not torch.backends.cudnn.benchmark
         else:
-            status["cudnn_deterministic"] = None  # type: ignore[assignment]
-            status["cudnn_benchmark_disabled"] = None  # type: ignore[assignment]
+            status["cudnn_deterministic"] = None
+            status["cudnn_benchmark_disabled"] = None
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         status["torch_available"] = False
         status["torch_deterministic"] = False
 
-    return status  # type: ignore[return-value]
+    return status
 
 
 def warn_non_deterministic_ops():

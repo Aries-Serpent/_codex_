@@ -51,7 +51,7 @@ Layer 4: Workflow Execution Gate (WEC)
   └─ Status: ✅ Active | Enforcement: Advisory (allows skip/cancel)
 
 Layer 5: Agent Auth Delegation (REQ-6)
-  └─ Scans: Authorization token validity, autonomy level
+  └─ Scans: Authorization token validity, autonomy level  # pragma: allowlist secret
   └─ Status: ✅ Active | Enforcement: Time-limited (4h TTL)
 
 Layer 6: Branch Divergence Monitor
@@ -91,7 +91,7 @@ The repository enforces **9 mandatory workflow items** in PR body checklist:
 - [x] pre-merge-validation.yml        ← Pre-merge checks
 - [x] comment-review-gate.yml         ← Comment review gate
 - [x] deferral-language-gate.yml      ← Deferral language guard
-- [x] agent-auth-delegation.yml       ← Agent token delegation
+- [x] agent-auth-delegation.yml       ← Agent token delegation  # pragma: allowlist secret
 - [x] workflow-execution-gate.yml     ← WEC gate
 - [x] copilot-agent-checkin.yml       ← Agent check-in
 - [x] copilot-agent-session-done.yml  ← Auto-post review
@@ -161,7 +161,7 @@ The repository enforces **9 mandatory workflow items** in PR body checklist:
 | `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | ✅ Active | Session context injection |
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | See below | ✅ Configured | RBAC enforcement |
 | `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | ✅ Active | STM + LTM enabled |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | ✅ Configured | Token budget allocation |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | ✅ Configured | Token budget allocation | <!-- pragma: allowlist secret -->
 | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | ✅ Configured | Pattern quality threshold |
 | `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | ✅ Configured | Memory retention policy |
 
@@ -212,7 +212,7 @@ Level E (Advisory Only)
   ├─ Read-only pattern access
   ├─ Session context visible
   └─ No autonomous commits
-  
+
 Level D (Full Delegation) ← CURRENT
   ├─ Autonomous PR creation
   ├─ Session context injection

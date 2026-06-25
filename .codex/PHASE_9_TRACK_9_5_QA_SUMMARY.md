@@ -318,7 +318,7 @@ The _codex_ codebase is **substantially ready for production** with one critical
 - ✅ Performance good
 - ❌ **Test coverage 1.96% short of target**
 
-**Recommendation:** 
+**Recommendation:**
 - Hold deployment until test coverage reaches 20% (~24 hours)
 - Upon blocker fix, proceed to production
 - Address high-priority items within 1 week post-deployment

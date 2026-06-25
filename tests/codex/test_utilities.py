@@ -250,11 +250,13 @@ class TestMetricsUtilities:
         try:
             # Try the expected name first
             from codex_ml.metrics import CodexMetricsRegistry
+
             assert CodexMetricsRegistry is not None
         except ImportError:
             # Fall back to actual name if different
             try:
                 from codex_ml.metrics import MetricRegistry
+
                 assert MetricRegistry is not None
             except ImportError:
                 pytest.skip("metrics registry not available")
@@ -484,7 +486,7 @@ class TestGithubUtilities:
         """Test github module has utility functions."""
         from codex import github
 
-        items = [n for n in dir(github) if not n.startswith("_")]
+        [n for n in dir(github) if not n.startswith("_")]
         # Module might be minimal, just check it's importable
         assert github is not None
 

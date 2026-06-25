@@ -533,7 +533,7 @@ Contact: _________________________ Phone: _________
 ```
 START: Execute Traffic Cutover
   │
-  ├─ Are all tests passing? 
+  ├─ Are all tests passing?
   │   ├─ NO → ABORT, perform rollback
   │   └─ YES → Continue
   │

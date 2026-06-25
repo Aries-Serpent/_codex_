@@ -146,7 +146,7 @@ class EmailChannel(AlertChannel):
         except OSError as exc:
             logger.warning("EmailChannel: network error — %s", exc)
             return False
-        except Exception as exc:  # pragma: no cover — unexpected errors
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover — unexpected errors
             logger.warning("EmailChannel: unexpected error — %s", exc)
             return False
 

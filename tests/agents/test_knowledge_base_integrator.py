@@ -28,9 +28,7 @@ class TestBuildContext:
         result = build_context("query", tickets)
 
         MockBridge.assert_called_once()
-        mock_bridge.retrieve_ticket_context.assert_called_once_with(
-            "query", tickets, top_k=5
-        )
+        mock_bridge.retrieve_ticket_context.assert_called_once_with("query", tickets, top_k=5)
         assert result == ["ctx1", "ctx2"]
 
     @patch("agents.knowledge_base_integrator.ZendeskRAGBridge")
@@ -44,9 +42,7 @@ class TestBuildContext:
 
         build_context("query", [], top_k=20)
 
-        mock_bridge.retrieve_ticket_context.assert_called_once_with(
-            "query", [], top_k=20
-        )
+        mock_bridge.retrieve_ticket_context.assert_called_once_with("query", [], top_k=20)
 
 
 class TestModuleExports:

@@ -80,7 +80,9 @@ def test_checkpoint_includes_lora_state(tmp_path: Path):
     )
     ckpt_files = list(ckpt_dir.glob("epoch*-metric*.pt"))
     assert ckpt_files, "checkpoint was not written"
-    payload = torch.load(ckpt_files[0], map_location="cpu", weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
+    payload = torch.load(
+        ckpt_files[0], map_location="cpu", weights_only=False
+    )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
     assert "peft_state" in payload
     assert payload["peft_state"], "peft_state payload should not be empty"
 

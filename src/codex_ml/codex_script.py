@@ -51,8 +51,9 @@ def _init_determinism_from_env() -> dict[str, Any]:
 
         np.random.seed(seed)
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
 
     # Apply PyTorch settings if available
     try:
@@ -73,7 +74,7 @@ def _init_determinism_from_env() -> dict[str, Any]:
                 cudnn.benchmark = False
     except (ImportError, ModuleNotFoundError, OSError) as e:
         logger.debug("PyTorch determinism setup skipped: %s", e, exc_info=True)
-    except Exception as e:
+    except AttributeError as e:
         logger.warning(
             "PyTorch determinism setup failed with unexpected error: %s", e, exc_info=True
         )
@@ -87,8 +88,9 @@ def _init_determinism_from_env() -> dict[str, Any]:
         tf.config.threading.set_intra_op_parallelism_threads(num_threads)
         tf.config.threading.set_inter_op_parallelism_threads(num_threads)
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
 
     return {"determinism_enabled": True, "seed": seed, "num_threads": num_threads}
 

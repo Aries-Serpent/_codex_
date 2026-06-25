@@ -69,25 +69,25 @@ def _find_nearby_url_line(lines: list[str], start_index: int, window: int = 20) 
 @pytest.mark.timeout(120)
 def test_suppression_config_valid(suppression_config: dict) -> None:
     """Validate suppression rules YAML is parseable and contains expected rules."""
-    assert isinstance(suppression_config, dict), "Suppression configuration should be a YAML mapping"
+    assert isinstance(
+        suppression_config, dict
+    ), "Suppression configuration should be a YAML mapping"
     assert "rules" in suppression_config, "Suppression configuration must contain rules"
     assert len(suppression_config["rules"]) >= 2, "Expected at least two suppression rules"
 
 
 @pytest.mark.timeout(120)
 @pytest.mark.parametrize("filepath,expected_count", EXPECTED_SUPPRESSION_FILES.items())
-def test_inline_suppressions_present(
-    repo_root: Path, filepath: str, expected_count: int
-) -> None:
+def test_inline_suppressions_present(repo_root: Path, filepath: str, expected_count: int) -> None:
     """Verify all expected files have the required nosemgrep suppressions."""
     path = repo_root / filepath
     assert path.exists(), f"File not found: {filepath}"
 
     content = path.read_text(encoding="utf-8")
     actual_count = len(re.findall(r"#\s+nosemgrep:\s+url-substring-check", content))
-    assert actual_count >= expected_count, (
-        f"{filepath}: Expected {expected_count} suppressions, found {actual_count}"
-    )
+    assert (
+        actual_count >= expected_count
+    ), f"{filepath}: Expected {expected_count} suppressions, found {actual_count}"
 
 
 @pytest.mark.timeout(120)
@@ -98,9 +98,7 @@ def test_suppression_comment_format(repo_root: Path, filepath: str) -> None:
     content = (repo_root / filepath).read_text(encoding="utf-8")
     for line in content.splitlines():
         if "nosemgrep: url-substring-check" in line:
-            assert pattern.search(line), (
-                f"Suppression comment format invalid in {filepath}: {line}"
-            )
+            assert pattern.search(line), f"Suppression comment format invalid in {filepath}: {line}"
 
 
 @pytest.mark.timeout(120)
@@ -125,7 +123,16 @@ def test_no_over_suppression(repo_root: Path) -> None:
     """Confirm suppressions are only applied to intended files."""
     allowed_paths = set(EXPECTED_SUPPRESSION_FILES.keys())
 
-    _SKIP_DIRS = {".venv_ci", ".venv", "venv", "node_modules", ".git", "__pycache__", "target", ".tox"}
+    _SKIP_DIRS = {
+        ".venv_ci",
+        ".venv",
+        "venv",
+        "node_modules",
+        ".git",
+        "__pycache__",
+        "target",
+        ".tox",
+    }
     for path in repo_root.rglob("*.py"):
         if any(part in _SKIP_DIRS for part in path.parts):
             continue
@@ -135,9 +142,7 @@ def test_no_over_suppression(repo_root: Path) -> None:
             continue
         if re.search(r"#\s+nosemgrep:\s+url-substring-check", content):
             relative_path = path.relative_to(repo_root).as_posix()
-            assert relative_path in allowed_paths, (
-                f"Unexpected suppression in {relative_path}"
-            )
+            assert relative_path in allowed_paths, f"Unexpected suppression in {relative_path}"
 
 
 @pytest.mark.timeout(120)
@@ -148,6 +153,6 @@ def test_suppression_comment_targets_url_literals(repo_root: Path, filepath: str
     for index in _find_suppression_lines("\n".join(lines)):
         url_line = _find_nearby_url_line(lines, index)
         assert url_line, f"No URL literal found near suppression in {filepath}"
-        assert URL_LITERAL_REGEX.search(url_line), (
-            f"Expected URL literal near suppression in {filepath}"
-        )
+        assert URL_LITERAL_REGEX.search(
+            url_line
+        ), f"Expected URL literal near suppression in {filepath}"

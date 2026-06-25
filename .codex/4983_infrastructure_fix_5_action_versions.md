@@ -64,7 +64,7 @@ Key Actions:
 
 Some workflows use newer major versions than the minimum required. This is acceptable because the enforcer uses "minimum version" policy:
 
-- **`actions/checkout`**: 
+- **`actions/checkout`**:
   - Policy: v5 minimum
   - Found: 299x v5, 22x v6.0.3
   - Status: ✅ v6 >= v5 (forward-compatible, approved)

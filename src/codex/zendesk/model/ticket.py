@@ -260,7 +260,7 @@ class Ticket(_ZendeskBaseModel):
                     "public": self.comment.public,
                 }
                 if self.comment.html_body:
-                    payload["comment"]["html_body"] = self.comment.html_body  # type: ignore[index]
+                    payload["comment"]["html_body"] = self.comment.html_body
 
             return {"ticket": payload}
 

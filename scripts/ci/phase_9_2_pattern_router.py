@@ -10,7 +10,7 @@ Target: <5 second classification latency, 95%+ accuracy, <2% false positives
 
 Usage:
     from phase_9_2_pattern_router import PatternRouter
-    
+
     router = PatternRouter()
     classification = router.classify(ci_log_text)
     print(f"Confidence: {classification.confidence:.1%}")
@@ -24,8 +24,7 @@ import time
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Optional, Any
-
+from typing import Any, Dict, List, Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -211,8 +210,8 @@ class PatternRouter:
     def _init_ml_model(self) -> None:
         """Initialize ML model (BERT/RoBERTa for complex patterns)."""
         try:
-            from transformers import AutoTokenizer, AutoModelForSequenceClassification
             import torch
+            from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
             logger.info("Initializing BERT model for ML classification")
             model_name = "distilbert-base-uncased-finetuned-sst-2-english"
@@ -488,7 +487,7 @@ if __name__ == "__main__":
     with open(args.output, 'w') as f:
         json.dump(result.to_dict(), f, indent=2)
 
-    print(f"\n✓ Classification complete")
+    print("\n✓ Classification complete")
     print(f"  Pattern: {result.primary_pattern.value if result.primary_pattern else 'UNKNOWN'}")
     print(f"  Confidence: {result.confidence:.1%}")
     print(f"  Recommendation: {result.recommendation}")

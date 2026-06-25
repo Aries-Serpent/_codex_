@@ -41,8 +41,7 @@ class TestEndToEndTraining:
     """Test complete training workflow"""
 
     @pytest.mark.skipif(
-        sys.version_info >= (3, 12),
-        reason="PyTorch profiler ScriptObject issue in Python 3.12"
+        sys.version_info >= (3, 12), reason="PyTorch profiler ScriptObject issue in Python 3.12"
     )
     def test_train_tiny_model(self, temp_workspace):
         """Test training tiny model end-to-end"""
@@ -70,8 +69,7 @@ class TestCheckpointResumeWorkflow:
     """Test checkpoint and resume workflow"""
 
     @pytest.mark.skipif(
-        sys.version_info >= (3, 12),
-        reason="PyTorch profiler ScriptObject issue in Python 3.12"
+        sys.version_info >= (3, 12), reason="PyTorch profiler ScriptObject issue in Python 3.12"
     )
     def test_save_and_resume(self, temp_workspace):
         """Test saving checkpoint and resuming"""
@@ -101,7 +99,9 @@ class TestCheckpointResumeWorkflow:
         new_model = torch.nn.Linear(10, 5)
         new_optimizer = torch.optim.Adam(new_model.parameters())
 
-        checkpoint = torch.load(checkpoint_path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
+        checkpoint = torch.load(
+            checkpoint_path, weights_only=False
+        )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
         new_model.load_state_dict(checkpoint["model_state_dict"])
         new_optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 

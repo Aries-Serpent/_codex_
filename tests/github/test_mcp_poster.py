@@ -3,6 +3,7 @@
 Covers all public methods with mocked urllib responses so no real
 network calls are made. Zero external dependencies.
 """
+
 from __future__ import annotations
 
 import json
@@ -154,7 +155,9 @@ def test_set_repo_variable_falls_back_to_post_on_404(poster, monkeypatch):
     def fake_urlopen(req, timeout):
         call_count["n"] += 1
         if call_count["n"] == 1:
-            exc = urllib.error.HTTPError(url="", code=404, msg="Not Found", hdrs=None, fp=BytesIO(b"{}"))
+            exc = urllib.error.HTTPError(
+                url="", code=404, msg="Not Found", hdrs=None, fp=BytesIO(b"{}")
+            )
             raise exc
         return _mock_response({"name": "MY_VAR"})
 
@@ -197,6 +200,7 @@ def test_cli_no_token_returns_1(monkeypatch):
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     rc = main(["post-comment", "--repo", "o/r", "--pr", "1", "--body", "hi"])
     assert rc == 1
+
 
 # ---------------------------------------------------------------------------
 # create_ref
@@ -323,6 +327,7 @@ def test_list_pull_requests_head_filter_adds_owner_prefix(poster, monkeypatch):
     poster.list_pull_requests("myorg/repo", head="my-branch")
 
     from urllib.parse import parse_qs, urlparse
+
     qs = parse_qs(urlparse(captured["url"]).query)
     assert qs.get("head") == ["myorg:my-branch"]
 
@@ -338,6 +343,7 @@ def test_list_pull_requests_head_with_colon_not_modified(poster, monkeypatch):
     poster.list_pull_requests("myorg/repo", head="otherorg:their-branch")
 
     from urllib.parse import parse_qs, urlparse
+
     qs = parse_qs(urlparse(captured["url"]).query)
     # Should NOT re-prefix: the value already contains an owner
     assert qs.get("head") == ["otherorg:their-branch"]
@@ -447,20 +453,34 @@ def test_create_discussion_success(poster, monkeypatch):
         call_count["n"] += 1
         if call_count["n"] == 1:
             # First call: resolve repo/category IDs
-            return _graphql_response({
-                "repository": {
-                    "id": "R_123",
-                    "discussionCategories": {
-                        "nodes": [{"id": "DC_1", "slug": "session-summaries", "name": "Session Summaries"}],
+            return _graphql_response(
+                {
+                    "repository": {
+                        "id": "R_123",
+                        "discussionCategories": {
+                            "nodes": [
+                                {
+                                    "id": "DC_1",
+                                    "slug": "session-summaries",
+                                    "name": "Session Summaries",
+                                }
+                            ],
+                        },
+                    }
+                }
+            )
+        # Second call: create discussion
+        return _graphql_response(
+            {
+                "createDiscussion": {
+                    "discussion": {
+                        "number": 5,
+                        "url": "https://github.com/discuss/5",
+                        "title": "Test",
                     },
                 }
-            })
-        # Second call: create discussion
-        return _graphql_response({
-            "createDiscussion": {
-                "discussion": {"number": 5, "url": "https://github.com/discuss/5", "title": "Test"},
             }
-        })
+        )
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     result = poster.create_discussion("owner/repo", "Test", "Body text", "session-summaries")
@@ -490,19 +510,27 @@ def test_create_discussion_category_fallback(poster, monkeypatch):
     def fake_urlopen(req, timeout):
         call_count["n"] += 1
         if call_count["n"] == 1:
-            return _graphql_response({
-                "repository": {
-                    "id": "R_456",
-                    "discussionCategories": {
-                        "nodes": [{"id": "DC_FIRST", "slug": "general", "name": "General"}],
+            return _graphql_response(
+                {
+                    "repository": {
+                        "id": "R_456",
+                        "discussionCategories": {
+                            "nodes": [{"id": "DC_FIRST", "slug": "general", "name": "General"}],
+                        },
+                    }
+                }
+            )
+        return _graphql_response(
+            {
+                "createDiscussion": {
+                    "discussion": {
+                        "number": 6,
+                        "url": "https://github.com/discuss/6",
+                        "title": "t",
                     },
                 }
-            })
-        return _graphql_response({
-            "createDiscussion": {
-                "discussion": {"number": 6, "url": "https://github.com/discuss/6", "title": "t"},
             }
-        })
+        )
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     # "nonexistent-slug" won't match "general", should fall back to first category
@@ -529,7 +557,9 @@ def test_request_retries_on_429(poster, monkeypatch):
         if call_count["n"] < 3:
             headers = mock.MagicMock()
             headers.get = mock.Mock(return_value="")
-            raise urllib.error.HTTPError(url="", code=429, msg="Rate limited", hdrs=headers, fp=BytesIO(b"{}"))
+            raise urllib.error.HTTPError(
+                url="", code=429, msg="Rate limited", hdrs=headers, fp=BytesIO(b"{}")
+            )
         return _mock_response({"ok": True})
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
@@ -547,7 +577,9 @@ def test_request_does_not_retry_on_403_without_rate_limit_signals(poster, monkey
         call_count["n"] += 1
         headers = mock.MagicMock()
         headers.get = mock.Mock(return_value="")
-        raise urllib.error.HTTPError(url="", code=403, msg="Forbidden", hdrs=headers, fp=BytesIO(b"forbidden"))
+        raise urllib.error.HTTPError(
+            url="", code=403, msg="Forbidden", hdrs=headers, fp=BytesIO(b"forbidden")
+        )
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     with pytest.raises(urllib.error.HTTPError) as exc_info:
@@ -564,8 +596,12 @@ def test_request_retries_on_403_with_retry_after_header(poster, monkeypatch):
         call_count["n"] += 1
         if call_count["n"] == 1:
             headers = mock.MagicMock()
-            headers.get = mock.Mock(side_effect=lambda k, default="": "1" if k == "Retry-After" else default)
-            raise urllib.error.HTTPError(url="", code=403, msg="Secondary rate limited", hdrs=headers, fp=BytesIO(b"{}"))
+            headers.get = mock.Mock(
+                side_effect=lambda k, default="": "1" if k == "Retry-After" else default
+            )
+            raise urllib.error.HTTPError(
+                url="", code=403, msg="Secondary rate limited", hdrs=headers, fp=BytesIO(b"{}")
+            )
         return _mock_response({"id": 99})
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
@@ -586,7 +622,9 @@ def test_request_retries_on_403_with_ratelimit_remaining_zero(poster, monkeypatc
             headers.get = mock.Mock(
                 side_effect=lambda k, default="": "0" if k == "x-ratelimit-remaining" else default
             )
-            raise urllib.error.HTTPError(url="", code=403, msg="Limit", hdrs=headers, fp=BytesIO(b"{}"))
+            raise urllib.error.HTTPError(
+                url="", code=403, msg="Limit", hdrs=headers, fp=BytesIO(b"{}")
+            )
         return _mock_response({"id": 77})
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
@@ -609,7 +647,9 @@ def test_cli_create_branch(monkeypatch):
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
     monkeypatch.setattr(
         "urllib.request.urlopen",
-        lambda req, timeout: _mock_response({"ref": "refs/heads/test-branch", "object": {"sha": "abc1234"}}),
+        lambda req, timeout: _mock_response(
+            {"ref": "refs/heads/test-branch", "object": {"sha": "abc1234"}}
+        ),
     )
     rc = main(["create-branch", "--repo", "o/r", "--ref", "test-branch", "--sha", "abc1234" * 5])
     assert rc == 0
@@ -621,7 +661,9 @@ def test_cli_create_pr(monkeypatch):
         "urllib.request.urlopen",
         lambda req, timeout: _mock_response({"number": 99, "html_url": "https://github.com/pr/99"}),
     )
-    rc = main(["create-pr", "--repo", "o/r", "--title", "My PR", "--head", "feature", "--base", "main"])
+    rc = main(
+        ["create-pr", "--repo", "o/r", "--title", "My PR", "--head", "feature", "--base", "main"]
+    )
     assert rc == 0
 
 
@@ -633,10 +675,19 @@ def test_cli_create_pr_with_body_file(monkeypatch, tmp_path):
         "urllib.request.urlopen",
         lambda req, timeout: _mock_response({"number": 55, "html_url": "https://github.com/pr/55"}),
     )
-    rc = main([
-        "create-pr", "--repo", "o/r", "--title", "PR via file",
-        "--head", "feature", "--body-file", str(body_file),
-    ])
+    rc = main(
+        [
+            "create-pr",
+            "--repo",
+            "o/r",
+            "--title",
+            "PR via file",
+            "--head",
+            "feature",
+            "--body-file",
+            str(body_file),
+        ]
+    )
     assert rc == 0
 
 
@@ -671,22 +722,38 @@ def test_cli_create_discussion(monkeypatch, tmp_path):
     def fake_urlopen(req, timeout):
         call_count["n"] += 1
         if call_count["n"] == 1:
-            return _graphql_response({
-                "repository": {
-                    "id": "R_999",
-                    "discussionCategories": {
-                        "nodes": [{"id": "DC_99", "slug": "cognitive-brain-patterns", "name": "Patterns"}],
+            return _graphql_response(
+                {
+                    "repository": {
+                        "id": "R_999",
+                        "discussionCategories": {
+                            "nodes": [
+                                {
+                                    "id": "DC_99",
+                                    "slug": "cognitive-brain-patterns",
+                                    "name": "Patterns",
+                                }
+                            ],
+                        },
+                    }
+                }
+            )
+        return _graphql_response(
+            {
+                "createDiscussion": {
+                    "discussion": {
+                        "number": 99,
+                        "url": "https://github.com/discuss/99",
+                        "title": "S99",
                     },
                 }
-            })
-        return _graphql_response({
-            "createDiscussion": {
-                "discussion": {"number": 99, "url": "https://github.com/discuss/99", "title": "S99"},
             }
-        })
+        )
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
-    rc = main(["create-discussion", "--repo", "o/r", "--title", "S99", "--body-file", str(body_file)])
+    rc = main(
+        ["create-discussion", "--repo", "o/r", "--title", "S99", "--body-file", str(body_file)]
+    )
     assert rc == 0
 
 
@@ -829,7 +896,9 @@ def test_set_repo_variable_reraises_non_404_http_error(poster, monkeypatch):
     hdrs.get = lambda key, default="": default  # No Retry-After, no rate-limit headers
 
     def fake_urlopen(req, timeout):
-        raise urllib.error.HTTPError(url="", code=403, msg="Forbidden", hdrs=hdrs, fp=BytesIO(b"{}"))
+        raise urllib.error.HTTPError(
+            url="", code=403, msg="Forbidden", hdrs=hdrs, fp=BytesIO(b"{}")
+        )
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     with pytest.raises(urllib.error.HTTPError) as exc_info:
@@ -854,6 +923,7 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
     fake_module.SQLiteMemory = FakeSQLiteMemory
 
     import sys
+
     # Inject the fake module so the import inside _record_cb_pattern succeeds.
     # Clean up after to avoid contaminating other tests.
     sys.modules["cognitive_brain"] = mock.MagicMock()
@@ -882,7 +952,9 @@ def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
     hdrs.get = lambda key, default="": "1" if key == "Retry-After" else default
 
     def fake_urlopen(req, timeout):
-        raise urllib.error.HTTPError(url="", code=429, msg="Too Many Requests", hdrs=hdrs, fp=BytesIO(b"{}"))
+        raise urllib.error.HTTPError(
+            url="", code=429, msg="Too Many Requests", hdrs=hdrs, fp=BytesIO(b"{}")
+        )
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     monkeypatch.setattr("time.sleep", lambda s: None)  # speed up test
@@ -897,6 +969,7 @@ def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
 def test_cli_no_subcommand_returns_zero(monkeypatch):
     """main() with no recognised subcommand reaches return 0 (branch 751->766)."""
     import argparse
+
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
 
     # Patch parse_args so args.command is None (no subcommand given)
@@ -915,6 +988,7 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 # ---------------------------------------------------------------------------
 # IMP-002 — Git Data API commit_files tests
 # ---------------------------------------------------------------------------
+
 
 def test_get_method_returns_json(poster, monkeypatch):
     """_get() parses JSON from a successful GET response."""
@@ -1012,13 +1086,19 @@ def test_cli_commit_files(monkeypatch, tmp_path):
 
     monkeypatch.setattr(pm.GitHubMCPPoster, "commit_files", fake_commit_files)
 
-    rc = main([
-        "commit-files",
-        "--repo", "owner/repo",
-        "--branch", "main",
-        "--message", "docs: update",
-        "--file", f"README.md:{src}",
-    ])
+    rc = main(
+        [
+            "commit-files",
+            "--repo",
+            "owner/repo",
+            "--branch",
+            "main",
+            "--message",
+            "docs: update",
+            "--file",
+            f"README.md:{src}",
+        ]
+    )
     assert rc == 0
 
 
@@ -1027,13 +1107,19 @@ def test_cli_commit_files_bad_mapping(monkeypatch, tmp_path):
     from codex.github.mcp_poster import main
 
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
-    rc = main([
-        "commit-files",
-        "--repo", "owner/repo",
-        "--branch", "main",
-        "--message", "x",
-        "--file", "no_colon_here",
-    ])
+    rc = main(
+        [
+            "commit-files",
+            "--repo",
+            "owner/repo",
+            "--branch",
+            "main",
+            "--message",
+            "x",
+            "--file",
+            "no_colon_here",
+        ]
+    )
     assert rc == 1
 
 
@@ -1048,7 +1134,9 @@ def _discussion_node_response(discussion_id: str = "DI_123") -> mock.MagicMock:
     return _graphql_response({"repository": {"discussion": {"id": discussion_id}}})
 
 
-def _add_comment_response(comment_id: str = "DC_abc", url: str = "https://github.com/d/1#c1") -> mock.MagicMock:
+def _add_comment_response(
+    comment_id: str = "DC_abc", url: str = "https://github.com/d/1#c1"
+) -> mock.MagicMock:
     return _graphql_response(
         {"addDiscussionComment": {"comment": {"id": comment_id, "url": url, "body": "body"}}}
     )
@@ -1056,7 +1144,11 @@ def _add_comment_response(comment_id: str = "DC_abc", url: str = "https://github
 
 def _update_comment_response(comment_id: str = "DC_abc") -> mock.MagicMock:
     return _graphql_response(
-        {"updateDiscussionComment": {"comment": {"id": comment_id, "url": "https://u", "body": "updated"}}}
+        {
+            "updateDiscussionComment": {
+                "comment": {"id": comment_id, "url": "https://u", "body": "updated"}
+            }
+        }
     )
 
 
@@ -1123,15 +1215,19 @@ class TestUpsertDiscussionComment:
             data = json.loads(req.data)
             query = data.get("query", "")
             if "comments(last:" in query:
-                return _graphql_response({
-                    "repository": {
-                        "discussion": {
-                            "comments": {
-                                "nodes": [{"id": "DC_exist", "body": "<!-- marker --> old body"}]
+                return _graphql_response(
+                    {
+                        "repository": {
+                            "discussion": {
+                                "comments": {
+                                    "nodes": [
+                                        {"id": "DC_exist", "body": "<!-- marker --> old body"}
+                                    ]
+                                }
                             }
                         }
                     }
-                })
+                )
             if "updateDiscussionComment" in query:
                 return _update_comment_response("DC_exist")
             return _graphql_response({})
@@ -1197,7 +1293,9 @@ class TestPostContinuationChain:
             return {"id": "DC_chain", "url": "https://u/chain"}
 
         monkeypatch.setattr(poster, "add_discussion_comment", fake_add)
-        result = poster.post_continuation_chain("owner/repo", 3673, "## Chain\n@copilot continue ...")
+        result = poster.post_continuation_chain(
+            "owner/repo", 3673, "## Chain\n@copilot continue ..."
+        )
         assert called["number"] == 3673
         assert "@copilot continue" in called["body"]
         assert result["id"] == "DC_chain"
@@ -1220,7 +1318,9 @@ def test_cli_add_discussion_comment_body(monkeypatch):
         return _add_comment_response(url="https://github.com/d/3673#c99")
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
-    rc = main(["add-discussion-comment", "--repo", "owner/repo", "--number", "3673", "--body", "Hello"])
+    rc = main(
+        ["add-discussion-comment", "--repo", "owner/repo", "--number", "3673", "--body", "Hello"]
+    )
     assert rc == 0
 
 
@@ -1250,13 +1350,23 @@ def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
         return {"id": "DC_1", "url": "https://u"}
 
     from codex.github.mcp_poster import GitHubMCPPoster
+
     monkeypatch.setattr(GitHubMCPPoster, "upsert_discussion_comment", fake_upsert)
     f = tmp_path / "update.md"
     f.write_text("## Status")
-    rc = main([
-        "upsert-discussion-comment", "--repo", "o/r", "--number", "3673",
-        "--body-file", str(f), "--marker", "<!-- status -->",
-    ])
+    rc = main(
+        [
+            "upsert-discussion-comment",
+            "--repo",
+            "o/r",
+            "--number",
+            "3673",
+            "--body-file",
+            str(f),
+            "--marker",
+            "<!-- status -->",
+        ]
+    )
     assert rc == 0
     assert "## Status" in captured_body["body"]
 
@@ -1270,13 +1380,23 @@ def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
         return {"id": "DC_s", "url": "https://u/s"}
 
     from codex.github.mcp_poster import GitHubMCPPoster
+
     monkeypatch.setattr(GitHubMCPPoster, "post_ci_pattern_summary", fake_post)
     f = tmp_path / "summary.md"
     f.write_text("## CI Patterns")
-    rc = main([
-        "post-ci-pattern-summary", "--repo", "o/r", "--number", "3673",
-        "--body-file", str(f), "--session-id", "run-99",
-    ])
+    rc = main(
+        [
+            "post-ci-pattern-summary",
+            "--repo",
+            "o/r",
+            "--number",
+            "3673",
+            "--body-file",
+            str(f),
+            "--session-id",
+            "run-99",
+        ]
+    )
     assert rc == 0
     assert captured["session_id"] == "run-99"
 
@@ -1290,6 +1410,7 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
         return {"id": "DC_c", "url": "https://u/c"}
 
     from codex.github.mcp_poster import GitHubMCPPoster
+
     monkeypatch.setattr(GitHubMCPPoster, "post_continuation_chain", fake_chain)
     f = tmp_path / "chain.md"
     f.write_text("@copilot continue ...")
@@ -1302,6 +1423,7 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
 # GAP-033 — check_token_health tests
 # ---------------------------------------------------------------------------
 
+
 class TestCheckTokenHealth:
     """Tests for GitHubMCPPoster.check_token_health() (GAP-033)."""
 
@@ -1310,6 +1432,7 @@ class TestCheckTokenHealth:
         for key in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
             monkeypatch.delenv(key, raising=False)
         from codex.github.mcp_poster import GitHubMCPPoster
+
         poster = GitHubMCPPoster(token=None)
         result = poster.check_token_health()
         assert result["healthy"] is False
@@ -1320,6 +1443,7 @@ class TestCheckTokenHealth:
         """HTTP 401 → healthy=False, expiry_warning mentions rotation."""
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_expired")
         from codex.github.mcp_poster import GitHubMCPPoster
+
         poster = GitHubMCPPoster()
 
         def fake_urlopen(req, timeout=None):
@@ -1334,7 +1458,10 @@ class TestCheckTokenHealth:
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.check_token_health()
         assert result["healthy"] is False
-        assert "expired" in str(result["expiry_warning"]).lower() or "invalid" in str(result["expiry_warning"]).lower()
+        assert (
+            "expired" in str(result["expiry_warning"]).lower()
+            or "invalid" in str(result["expiry_warning"]).lower()
+        )
 
     def test_healthy_token_with_full_scopes(self, monkeypatch):
         """200 response with repo+workflow scopes → healthy=True."""
@@ -1342,6 +1469,7 @@ class TestCheckTokenHealth:
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_valid")
         from codex.github.mcp_poster import GitHubMCPPoster
+
         poster = GitHubMCPPoster()
 
         hdrs = _Msg()
@@ -1373,6 +1501,7 @@ class TestCheckTokenHealth:
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_limited")
         from codex.github.mcp_poster import GitHubMCPPoster
+
         poster = GitHubMCPPoster()
 
         hdrs = _Msg()

@@ -210,9 +210,10 @@ class PluginRegistry:
                 module_name = f"{plugin_dir.name}.{plugin_file.stem}"
                 importlib.import_module(module_name)
                 logger.info(f"Loaded plugin module: {module_name}")
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Failed to load plugin {plugin_file}: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Failed to load plugin {plugin_file}: <ERROR_TYPE>")
 
     def reload_plugin(self, name: str):
         """Reload a plugin (for hot-reloading).

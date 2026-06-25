@@ -9,7 +9,8 @@ Covers:
 - EmailChannel.send() with mocked smtplib.SMTP
 - Graceful degradation — alerting failures never propagate
 """
- # pragma: allowlist secret
+
+# pragma: allowlist secret
 from __future__ import annotations
 
 import os
@@ -26,6 +27,7 @@ from codex.alerting.slack import SlackChannel
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 class _FakeChannel(AlertChannel):
     """In-memory channel for testing."""
@@ -57,6 +59,7 @@ class _RaisingChannel(AlertChannel):
 # AlertSeverity
 # ---------------------------------------------------------------------------
 
+
 class TestAlertSeverity:
     def test_values(self) -> None:
         assert AlertSeverity.INFO.value == "info"
@@ -84,6 +87,7 @@ class TestAlertSeverity:
 # ---------------------------------------------------------------------------
 # AlertEvent
 # ---------------------------------------------------------------------------
+
 
 class TestAlertEvent:
     def test_defaults(self) -> None:
@@ -119,6 +123,7 @@ class TestAlertEvent:
 # ---------------------------------------------------------------------------
 # TrainingAlertManager
 # ---------------------------------------------------------------------------
+
 
 class TestTrainingAlertManager:
     def test_dispatches_to_all_channels(self) -> None:
@@ -199,6 +204,7 @@ class TestTrainingAlertManager:
 # TrainingAlertManager.from_env()
 # ---------------------------------------------------------------------------
 
+
 class TestFromEnv:
     def test_no_env_vars_yields_empty_channels(self) -> None:
         clean_env = {
@@ -248,6 +254,7 @@ class TestFromEnv:
 # ---------------------------------------------------------------------------
 # SlackChannel
 # ---------------------------------------------------------------------------
+
 
 class TestSlackChannel:
     def _make_event(self, severity: AlertSeverity = AlertSeverity.CRITICAL) -> AlertEvent:
@@ -343,6 +350,7 @@ class TestSlackChannel:
 # ---------------------------------------------------------------------------
 # EmailChannel
 # ---------------------------------------------------------------------------
+
 
 class TestEmailChannel:
     def _make_channel(self) -> EmailChannel:
@@ -485,6 +493,7 @@ class TestEmailChannel:
 # Graceful degradation — alerting failure must not crash training
 # ---------------------------------------------------------------------------
 
+
 class TestGracefulDegradation:
     def test_manager_with_raising_channel_does_not_raise(self) -> None:
         raising = _RaisingChannel()
@@ -509,20 +518,18 @@ class TestGracefulDegradation:
             side_effect=urllib.error.URLError("timeout"),
         ):
             ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
-            result = ch.send(
-                AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR)
-            )
+            result = ch.send(AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR))
         assert result is False
 
     def test_email_channel_does_not_raise_on_smtp_error(self) -> None:
-        with patch("smtplib.SMTP", side_effect=smtplib.SMTPConnectError(421, "Service unavailable")):
+        with patch(
+            "smtplib.SMTP", side_effect=smtplib.SMTPConnectError(421, "Service unavailable")
+        ):
             ch = EmailChannel(
                 smtp_host="smtp.bad.com",
                 smtp_port=587,
                 from_addr="noreply@example.com",
                 to_addrs=["ops@example.com"],
             )
-            result = ch.send(
-                AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR)
-            )
+            result = ch.send(AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR))
         assert result is False

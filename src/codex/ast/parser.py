@@ -27,7 +27,8 @@ try:
     PositionProvider = cst.metadata.PositionProvider
     LIBCST_AVAILABLE = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
     LIBCST_AVAILABLE = False
     cst = None
     MetadataWrapper = None
@@ -85,8 +86,9 @@ class UniversalParser:
         try:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.parse_string(code, file_path)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
             return None
@@ -136,8 +138,9 @@ class UniversalParser:
 
             return root
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
             # Fallback to stdlib ast
@@ -169,7 +172,8 @@ class UniversalParser:
             return root
 
         except SyntaxError as e:
-            logger.debug(f"SyntaxError: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"SyntaxError: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path, e.lineno or 0) from e
             return None
@@ -272,7 +276,7 @@ class UniversalParser:
         return hints
 
 
-class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):  # type: ignore[misc]
+class _LibCSTExtractor(cst.CSTVisitor if LIBCST_AVAILABLE else object):
     """LibCST visitor to extract nodes."""
 
     def __init__(self, file_path: Path, id_generator):

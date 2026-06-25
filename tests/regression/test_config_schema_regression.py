@@ -28,6 +28,7 @@ pytestmark = pytest.mark.regression
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
+
 def _make_train_config(**overrides):
     from codex_ml.config_schema import TrainConfig
 
@@ -38,26 +39,23 @@ def _make_train_config(**overrides):
 # 1. Default value regression
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestTrainConfigDefaults:
     """Default field values must not drift silently."""
 
     def test_default_model_name(self):
         cfg = _make_train_config()
-        assert cfg.model_name == "tiny", (
-            f"Default model_name changed: expected 'tiny', got {cfg.model_name!r}"
-        )
+        assert (
+            cfg.model_name == "tiny"
+        ), f"Default model_name changed: expected 'tiny', got {cfg.model_name!r}"
 
     def test_default_learning_rate(self):
         cfg = _make_train_config()
-        assert cfg.learning_rate == 1e-3, (
-            f"Default learning_rate changed: {cfg.learning_rate}"
-        )
+        assert cfg.learning_rate == 1e-3, f"Default learning_rate changed: {cfg.learning_rate}"
 
     def test_default_batch_size(self):
         cfg = _make_train_config()
-        assert cfg.batch_size == 8, (
-            f"Default batch_size changed: {cfg.batch_size}"
-        )
+        assert cfg.batch_size == 8, f"Default batch_size changed: {cfg.batch_size}"
 
     def test_default_epochs(self):
         cfg = _make_train_config()
@@ -69,34 +67,38 @@ class TestTrainConfigDefaults:
 
     def test_default_device(self):
         cfg = _make_train_config()
-        assert cfg.device == "cpu", (
-            f"Default device changed: {cfg.device!r}"
-        )
+        assert cfg.device == "cpu", f"Default device changed: {cfg.device!r}"
 
     def test_default_dtype(self):
         cfg = _make_train_config()
-        assert cfg.dtype == "float32", (
-            f"Default dtype changed: {cfg.dtype!r}"
-        )
+        assert cfg.dtype == "float32", f"Default dtype changed: {cfg.dtype!r}"
 
     def test_default_config_version(self):
         cfg = _make_train_config()
-        assert cfg.config_version == 1, (
-            f"Default config_version changed: {cfg.config_version}"
-        )
+        assert cfg.config_version == 1, f"Default config_version changed: {cfg.config_version}"
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # 2. Required field presence
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestTrainConfigRequiredFields:
     """All public fields that the training stack relies on must exist."""
 
     REQUIRED_FIELDS = {
-        "model_name", "learning_rate", "batch_size", "epochs", "seed",
-        "device", "dtype", "grad_accum", "lora", "eval_split",
-        "checkpoint_keep", "config_version",
+        "model_name",
+        "learning_rate",
+        "batch_size",
+        "epochs",
+        "seed",
+        "device",
+        "dtype",
+        "grad_accum",
+        "lora",
+        "eval_split",
+        "checkpoint_keep",
+        "config_version",
     }
 
     def test_required_fields_present(self):
@@ -108,6 +110,7 @@ class TestTrainConfigRequiredFields:
 # ────────────────────────────────────────────────────────────────────────────
 # 3. Validation — reject invalid values
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestTrainConfigValidation:
     """Schema validation must reject known-bad configurations."""
@@ -154,6 +157,7 @@ class TestTrainConfigValidation:
 # 4. Round-trip serialisation
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestTrainConfigRoundTrip:
     """JSON round-trip must produce an identical object."""
 
@@ -163,9 +167,9 @@ class TestTrainConfigRoundTrip:
         original = TrainConfig(model_name="gpt2", learning_rate=5e-5, batch_size=16)
         data = original.model_dump()
         reloaded = TrainConfig.model_validate(data)
-        assert reloaded == original, (
-            "TrainConfig round-trip (model_dump → model_validate) produced different object"
-        )
+        assert (
+            reloaded == original
+        ), "TrainConfig round-trip (model_dump → model_validate) produced different object"
 
     def test_validate_config_dict_helper(self):
         """validate_config_dict must accept a plain dict and return a TrainConfig."""

@@ -1,4 +1,5 @@
 """Tests for codex_ml.utils.optional_dependencies."""
+
 from __future__ import annotations
 
 import pytest

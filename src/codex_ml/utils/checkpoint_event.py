@@ -78,7 +78,7 @@ def maybe_emit_checkpoint_saved_event(
         out.write(json.dumps(payload, separators=(",", ":")) + "\n")
         out.flush()
         return True
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 

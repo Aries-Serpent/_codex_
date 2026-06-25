@@ -47,9 +47,10 @@ def run_git_command(cmd: str) -> Optional[str]:
             timeout=5,
         )
         return result.stdout.strip() if result.returncode == 0 else None
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Git command failed: {cmd} - {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Git command failed: {cmd} - <ERROR_TYPE>")
         return None
 
 
@@ -97,8 +98,9 @@ def get_pr_number(interactive: bool = True) -> str:
             logger.info(f"PR number provided by user: {pr_num}")
             return pr_num
         except EOFError as e:
-            logger.debug(f"EOFError: {e}")
-            logger.warning(f"EOFError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"EOFError: <ERROR_TYPE>")
+            logger.warning(f"EOFError: <ERROR_TYPE>", exc_info=True)
             logger.warning("Cannot prompt (no TTY), using N/A")
             return "N/A"
     else:

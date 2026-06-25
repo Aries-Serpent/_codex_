@@ -28,11 +28,13 @@ def mock_jsonl_data(tmp_path):
     """Create mock JSONL dataset."""
     data_file = tmp_path / "data.jsonl"
     data_file.write_text(
-        '\n'.join([
-            '{"text": "example 1", "label": 0}',
-            '{"text": "example 2", "label": 1}',
-            '{"text": "example 3", "label": 0}',
-        ]),
+        "\n".join(
+            [
+                '{"text": "example 1", "label": 0}',
+                '{"text": "example 2", "label": 1}',
+                '{"text": "example 3", "label": 0}',
+            ]
+        ),
         encoding="utf-8",
     )
     return data_file
@@ -156,7 +158,7 @@ class TestLoadTexts:
         """Test loading texts with limit."""
         if hasattr(loader, "load_texts"):
             texts = loader.load_texts(mock_jsonl_data)
-            assert isinstance(texts, (list, tuple, set, dict))# Just verify it loads
+            assert isinstance(texts, (list, tuple, set, dict))  # Just verify it loads
 
 
 class TestStreamTexts:

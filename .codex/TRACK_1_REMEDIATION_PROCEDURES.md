@@ -148,7 +148,7 @@ jobs:
 ```bash
 # Monitor job logs for these indicators:
 # - "Killed" (process killed, likely OOM)
-# - "out of memory" 
+# - "out of memory"
 # - Job duration >> expected
 
 # Run test job 3 times to check consistency
@@ -338,7 +338,7 @@ python3 << 'PYEOF'
 import tomllib
 with open('pyproject.toml', 'rb') as f:
     pyproject = tomllib.load(f)
-    
+
 # Check key fields
 assert 'project' in pyproject, "Missing [project]"
 assert 'name' in pyproject['project'], "Missing name"

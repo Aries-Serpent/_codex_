@@ -17,6 +17,7 @@ class TestCounterMetrics:
 
     def test_counter_increment(self):
         """Counter increments correctly."""
+
         class Counter:
             def __init__(self, name):
                 self.name = name
@@ -38,6 +39,7 @@ class TestCounterMetrics:
 
     def test_counter_labels(self):
         """Counter supports labels."""
+
         class LabeledCounter:
             def __init__(self, name):
                 self.name = name
@@ -70,6 +72,7 @@ class TestGaugeMetrics:
 
     def test_gauge_set(self):
         """Gauge can be set to arbitrary values."""
+
         class Gauge:
             def __init__(self, name):
                 self.name = name
@@ -91,6 +94,7 @@ class TestGaugeMetrics:
 
     def test_gauge_inc_dec(self):
         """Gauge can increment and decrement."""
+
         class Gauge:
             def __init__(self, name):
                 self.name = name
@@ -120,10 +124,11 @@ class TestHistogramMetrics:
 
     def test_histogram_observe(self):
         """Histogram observes values in buckets."""
+
         class Histogram:
             def __init__(self, name, buckets):
                 self.name = name
-                self.buckets = sorted(buckets) + [float('inf')]
+                self.buckets = sorted(buckets) + [float("inf")]
                 self.bucket_counts = defaultdict(int)
                 self.sum = 0
                 self.count = 0
@@ -138,9 +143,9 @@ class TestHistogramMetrics:
         histogram = Histogram("request_duration", [0.1, 0.5, 1.0, 5.0])
 
         histogram.observe(0.05)  # <= 0.1
-        histogram.observe(0.3)   # <= 0.5
-        histogram.observe(0.8)   # <= 1.0
-        histogram.observe(3.0)   # <= 5.0
+        histogram.observe(0.3)  # <= 0.5
+        histogram.observe(0.8)  # <= 1.0
+        histogram.observe(3.0)  # <= 5.0
 
         assert histogram.count == 4
         assert histogram.bucket_counts[0.1] == 1
@@ -149,6 +154,7 @@ class TestHistogramMetrics:
 
     def test_histogram_percentiles(self):
         """Histogram can compute percentiles."""
+
         def compute_percentile(values, percentile):
             sorted_values = sorted(values)
             # Use proper percentile calculation: (n-1) * p/100
@@ -167,6 +173,7 @@ class TestSummaryMetrics:
 
     def test_summary_quantiles(self):
         """Summary tracks quantiles."""
+
         class Summary:
             def __init__(self, name, quantiles):
                 self.name = name
@@ -197,6 +204,7 @@ class TestMetricsRegistry:
 
     def test_registry_registration(self):
         """Metrics can be registered."""
+
         class MetricsRegistry:
             def __init__(self):
                 self.metrics = {}
@@ -225,10 +233,11 @@ class TestMetricsRegistry:
 
     def test_registry_export(self):
         """Registry can export all metrics."""
+
         def export_prometheus_format(metrics):
             lines = []
             for name, metric in metrics.items():
-                value = getattr(metric, 'value', 0)
+                value = getattr(metric, "value", 0)
                 lines.append(f"{name} {value}")
             return "\n".join(lines)
 
@@ -253,6 +262,7 @@ class TestMetricsAggregation:
 
     def test_rate_calculation(self):
         """Rate is calculated correctly."""
+
         def calculate_rate(values, time_range_seconds):
             if len(values) < 2:
                 return 0
@@ -267,6 +277,7 @@ class TestMetricsAggregation:
 
     def test_moving_average(self):
         """Moving average is computed correctly."""
+
         def moving_average(values, window_size):
             if len(values) < window_size:
                 return sum(values) / len(values) if values else 0

@@ -19,7 +19,7 @@
   - Resource utilization (CPU, memory, disk)
   - Database connection pool status
   - Cache hit rate
-  
+
 - [ ] Configure alerting rules:
   - Error rate >1% → Alert team
   - P99 latency >5s → Alert team
@@ -73,25 +73,25 @@
   - [ ] Investigation steps
   - [ ] Resolution options
   - [ ] Rollback trigger
-  
+
 - [ ] Scenario 2: Performance degradation
   - [ ] Detection criteria
   - [ ] Investigation steps
   - [ ] Resolution options
   - [ ] Scaling triggers
-  
+
 - [ ] Scenario 3: Database replication lag
   - [ ] Detection criteria
   - [ ] Investigation steps
   - [ ] Failover procedures
   - [ ] Recovery steps
-  
+
 - [ ] Scenario 4: Memory leak detected
   - [ ] Detection criteria
   - [ ] Investigation steps
   - [ ] Service restart procedure
   - [ ] Monitoring after restart
-  
+
 - [ ] Scenario 5: Security alert
   - [ ] Detection criteria
   - [ ] Incident classification
@@ -221,14 +221,14 @@
   for: 5m
   annotations:
     summary: "High error rate detected"
-    
+
 # High latency
 - alert: HighLatency
   expr: histogram_quantile(0.99, http_request_duration_seconds) > 5
   for: 5m
   annotations:
     summary: "P99 latency exceeds 5s threshold"
-    
+
 # CPU alert
 - alert: HighCPU
   expr: node_cpu_percent > 85

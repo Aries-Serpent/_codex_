@@ -25,7 +25,10 @@ try:  # pragma: no cover - optional dependency (OmegaConf)
         TrainingWeights,
         ValidationThresholds,
     )
-except Exception:  # pragma: no cover - degrade gracefully when config deps are missing
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - degrade gracefully when config deps are missing
 
     class _MissingConfig:
         def __init__(self, name: str):
@@ -41,17 +44,17 @@ except Exception:  # pragma: no cover - degrade gracefully when config deps are 
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[configs]"
             )
 
-    PretrainingConfig = _MissingConfig("PretrainingConfig")  # type: ignore[misc, assignment]
-    SFTConfig = _MissingConfig("SFTConfig")  # type: ignore[misc, assignment]
-    RLHFConfig = _MissingConfig("RLHFConfig")  # type: ignore[misc, assignment]
-    TrainingWeights = _MissingConfig("TrainingWeights")  # type: ignore[misc, assignment]
-    ValidationThresholds = _MissingConfig("ValidationThresholds")  # type: ignore[misc, assignment]
+    PretrainingConfig = _MissingConfig("PretrainingConfig")
+    SFTConfig = _MissingConfig("SFTConfig")
+    RLHFConfig = _MissingConfig("RLHFConfig")
+    TrainingWeights = _MissingConfig("TrainingWeights")
+    ValidationThresholds = _MissingConfig("ValidationThresholds")
 
 try:  # pragma: no cover - optional dependency tree
     from .pipeline import run_codex_pipeline
-except Exception:  # pragma: no cover - degrade gracefully when configs missing
+except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when configs missing
 
-    def run_codex_pipeline(*_args, **_kwargs):  # type: ignore[misc]
+    def run_codex_pipeline(*_args, **_kwargs):
         raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
 
 
@@ -69,7 +72,10 @@ try:  # pragma: no cover - optional metrics dependency
         RecallScore,
         TokenAccuracy,
     )
-except Exception:  # pragma: no cover - degrade gracefully when metrics extras missing
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - degrade gracefully when metrics extras missing
 
     class _MissingMetric:
         def __init__(self, name: str):
@@ -82,11 +88,11 @@ except Exception:  # pragma: no cover - degrade gracefully when metrics extras m
             msg = f"Metrics module unavailable; {self._name} requires optional extras"
             raise AttributeError(msg)
 
-    MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[assignment, misc]
-    F1Score = _MissingMetric("F1Score")  # type: ignore[assignment, misc]
-    RecallScore = _MissingMetric("RecallScore")  # type: ignore[assignment, misc]
-    BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[assignment, misc]
-    TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[assignment, misc]
+    MetricRegistry = _MissingMetric("MetricRegistry")
+    F1Score = _MissingMetric("F1Score")
+    RecallScore = _MissingMetric("RecallScore")
+    BLEUScore = _MissingMetric("BLEUScore")
+    TokenAccuracy = _MissingMetric("TokenAccuracy")
     get_metric = _MissingMetric("get_metric")
     register_metric = _MissingMetric("register_metric")
     list_metrics = _MissingMetric("list_metrics")
@@ -119,7 +125,10 @@ try:  # pragma: no cover - optional path
         Weights,
         run_codex_symbolic_pipeline,
     )
-except Exception:  # pragma: no cover - degrade gracefully when symbolic deps missing
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - degrade gracefully when symbolic deps missing
 
     class _MissingSymbolic:
         def __init__(self, name: str):
@@ -136,13 +145,13 @@ except Exception:  # pragma: no cover - degrade gracefully when symbolic deps mi
             )
 
     run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")
-    Weights = _MissingSymbolic("Weights")  # type: ignore[misc, assignment]
-    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[misc, assignment]
-    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[misc, assignment]
-    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[misc, assignment]
-    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[misc, assignment]
-    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[misc, assignment]
-    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[misc, assignment]
+    Weights = _MissingSymbolic("Weights")
+    PretrainCfg = _MissingSymbolic("PretrainCfg")
+    SFTCfg = _MissingSymbolic("SFTCfg")
+    RewardModelCfg = _MissingSymbolic("RewardModelCfg")
+    RLHFCfg = _MissingSymbolic("RLHFCfg")
+    ModelHandle = _MissingSymbolic("ModelHandle")
+    RewardModelHandle = _MissingSymbolic("RewardModelHandle")
 
 
 _EXPORT_MAP = {
@@ -164,19 +173,16 @@ _EXPORT_MAP = {
     "RLHFCfg": ("codex_ml.symbolic_pipeline", "RLHFCfg"),
     "ModelHandle": ("codex_ml.symbolic_pipeline", "ModelHandle"),
     "RewardModelHandle": ("codex_ml.symbolic_pipeline", "RewardModelHandle"),
-
     # P1 - CLI-Critical Exports (BLOCKING) - Successfully implemented
     "set_reproducible": ("codex_ml.utils.repro", "set_reproducible"),
     "load_tokenizer": ("codex_ml.tokenization", "load_tokenizer"),
     "set_seed": ("codex_ml.utils.repro", "set_seed"),
-
     # P2 - Core ML Functionality (High Priority) - Successfully implemented
     "CheckpointManager": ("codex_ml.utils.checkpointing", "CheckpointManager"),
     "load_checkpoint": ("codex_ml.utils.checkpointing", "load_checkpoint"),
     "save_checkpoint": ("codex_ml.utils.checkpointing", "save_checkpoint"),
     "load_training_checkpoint": ("codex_ml.utils.checkpointing", "load_training_checkpoint"),
     "verify_ckpt_integrity": ("codex_ml.utils.checkpointing", "verify_ckpt_integrity"),
-
     # P3 - Observability/Utilities (Medium Priority) - Successfully implemented
     "init_logger": ("codex_ml.monitoring.codex_logging", "init_logger"),
     "init_telemetry": ("codex_ml.monitoring.codex_logging", "init_telemetry"),
@@ -201,7 +207,7 @@ def __getattr__(name: str):
     module_name, attr_name = _EXPORT_MAP[name]
     try:
         module = import_module(module_name)
-    except Exception as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
         message = (
             f"{attr_name} is unavailable because importing {module_name!r} failed."
             " Install optional Codex ML dependencies to enable this feature."

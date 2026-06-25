@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer
-except Exception:  # pragma: no cover - fallback when typer missing
+except (ImportError, AttributeError):  # pragma: no cover - fallback when typer missing
     _typer = None
 else:
     required_attrs = {"Typer", "echo", "Option", "Exit"}
@@ -135,7 +135,7 @@ def _format_context(context: dict[str, Any] | str | None) -> str:
         return context
     try:
         return json.dumps(context, sort_keys=True, default=str)
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return str(context)
 
@@ -163,16 +163,18 @@ def _append_error_block(
 
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to ensure error log directory {log_path.parent}: {exc}", err=True)
         return
 
     try:
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block + "\n")
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to append error log to {log_path}: {exc}", err=True)
 
 
@@ -195,15 +197,17 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
     try:
         return build_tokenizer(tokenizer_path)
     except FileNotFoundError as exc:
-        logger.debug(f"FileNotFoundError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
         _fail(
             step,
             f"Tokenizer not found at {tokenizer_path}",
             {"tokenizer_path": str(tokenizer_path), "error": str(exc)},
             "Could you confirm the tokenizer path or share how to generate it?",
         )
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _fail(
             step,
             f"Failed to load tokenizer from {tokenizer_path}: {exc}",
@@ -243,7 +247,7 @@ def vocab(
             vocab_size = int(vocab_attr)
         else:
             raise AttributeError("Tokenizer does not expose a vocab_size attribute.")
-    except Exception as exc:  # pragma: no cover - defensive casting guards
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive casting guards
         _fail(
             "vocab",
             f"Unable to determine vocabulary size: {exc}",
@@ -265,7 +269,7 @@ def vocab(
     for idx in range(sample_count):
         try:
             token = converter(idx)
-        except Exception as exc:  # pragma: no cover - optional backend failures
+        except (IOError, OSError) as exc:  # pragma: no cover - optional backend failures
             _append_error_block(
                 "vocab",
                 f"Failed to preview token {idx}: {exc}",
@@ -293,8 +297,9 @@ def inspect(tokenizer_path: Path) -> None:
     if manifest_path.exists():
         try:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             _append_error_block(
                 "inspect",
                 f"Failed to parse manifest.json: {exc}",
@@ -308,7 +313,7 @@ def inspect(tokenizer_path: Path) -> None:
     if callable(getter):
         try:
             special_tokens = list(getter())
-        except Exception as exc:  # pragma: no cover - backend specific guard
+        except (IOError, OSError) as exc:  # pragma: no cover - backend specific guard
             _append_error_block(
                 "inspect",
                 f"Failed to collect special tokens: {exc}",
@@ -322,8 +327,9 @@ def inspect(tokenizer_path: Path) -> None:
         if config_path.exists():
             try:
                 tokenizer_cfg = json.loads(config_path.read_text(encoding="utf-8"))
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (IOError, OSError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 _append_error_block(
                     "inspect",
                     f"Failed to parse tokenizer.json: {exc}",
@@ -334,7 +340,7 @@ def inspect(tokenizer_path: Path) -> None:
                 added = tokenizer_cfg.get("added_tokens", [])
                 if isinstance(added, list):
                     special_tokens = [
-                        item.get("content")  # type: ignore[misc]
+                        item.get("content")
                         for item in added
                         if isinstance(item, dict) and item.get("special")
                     ]
@@ -374,8 +380,9 @@ def encode(
         input_path = Path(text)
         try:
             payload = input_path.read_text(encoding="utf-8")
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             _fail(
                 "encode",
                 f"Failed to read input text from {input_path}: {exc}",
@@ -384,13 +391,14 @@ def encode(
             )
 
     try:
-        encoded = tokenizer(  # type: ignore[operator]
+        encoded = tokenizer(
             payload,
             padding="max_length" if pad_to else False,
             max_length=pad_to or None,
         )
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _fail(
             "encode",
             f"Tokenizer encode failed: {exc}",
@@ -417,8 +425,9 @@ def encode(
 
     try:
         ids_source = ids_candidate if isinstance(ids_candidate, Sequence) else list(ids_candidate)
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _fail(
             "encode",
             f"Unable to interpret input_ids: {exc}",
@@ -449,8 +458,9 @@ def encode(
         else:
             try:
                 tokens = [str(converter(i)) for i in ids_list]
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (IOError, OSError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 _append_error_block(
                     "encode",
                     f"Failed to convert ids to tokens: {exc}",
@@ -482,7 +492,8 @@ def decode(
     try:
         id_list = [int(item.strip()) for item in ids.split(",") if item.strip()]
     except ValueError as exc:
-        logger.debug(f"ValueError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
         _fail(
             "decode",
             f"Invalid token id list '{ids}': {exc}",
@@ -507,11 +518,12 @@ def decode(
     try:
         decoded = decode_fn(id_list, **kwargs)
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
         try:
             decoded = decode_fn(id_list)
-        except Exception as exc:  # pragma: no cover - backend guard
+        except (IOError, OSError) as exc:  # pragma: no cover - backend guard
             _fail(
                 "decode",
                 f"Tokenizer decode failed: {exc}",
@@ -522,8 +534,9 @@ def decode(
                 },
                 "What changes are needed so decoding succeeds?",
             )
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _fail(
             "decode",
             f"Tokenizer decode failed: {exc}",
@@ -545,8 +558,9 @@ def export(src: Path, dst: Path) -> None:
     root = _resolve_root(src)
     try:
         dst.mkdir(parents=True, exist_ok=True)
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _fail(
             "export",
             f"Failed to prepare export directory {dst}: {exc}",
@@ -561,8 +575,9 @@ def export(src: Path, dst: Path) -> None:
             target = dst / name
             try:
                 shutil.copy2(candidate, target)
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (ValueError, TypeError, RuntimeError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 _append_error_block(
                     "export",
                     f"Failed to copy {candidate} to {target}: {exc}",
@@ -584,8 +599,9 @@ def export(src: Path, dst: Path) -> None:
     )
     try:
         readme_path.write_text(readme_contents, encoding="utf-8")
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _append_error_block(
             "export",
             f"Failed to write README.md: {exc}",

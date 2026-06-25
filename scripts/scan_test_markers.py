@@ -30,7 +30,8 @@ class MarkerScanner:
             content = filepath.read_text(encoding='utf-8')
             tree = ast.parse(content, filename=str(filepath))
         except Exception as e:
-            print(f"⚠️  Failed to parse {filepath}: {e}")
+            error_type = type(e).__name__
+            print(f"⚠️  Failed to parse {filepath}: <ERROR_TYPE>")
             return []
 
         markers_found = []

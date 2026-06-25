@@ -18,10 +18,11 @@ class TestStdioTransport:
 
     def test_message_framing(self):
         """Messages are properly framed with length prefix."""
+
         def frame_message(content):
-            body = json.dumps(content).encode('utf-8')
+            body = json.dumps(content).encode("utf-8")
             header = f"Content-Length: {len(body)}\r\n\r\n"
-            return header.encode('utf-8') + body
+            return header.encode("utf-8") + body
 
         message = {"jsonrpc": "2.0", "method": "test", "id": 1}
         framed = frame_message(message)
@@ -31,6 +32,7 @@ class TestStdioTransport:
 
     def test_message_parsing(self):
         """Framed messages are correctly parsed."""
+
         def parse_frame(data):
             # Split header and body
             parts = data.split(b"\r\n\r\n", 1)
@@ -49,7 +51,7 @@ class TestStdioTransport:
 
             return json.loads(body[:length])
 
-        raw = b"Content-Length: 42\r\n\r\n{\"jsonrpc\":\"2.0\",\"method\":\"test\",\"id\":1}"
+        raw = b'Content-Length: 42\r\n\r\n{"jsonrpc":"2.0","method":"test","id":1}'
         parsed = parse_frame(raw)
 
         assert parsed["jsonrpc"] == "2.0"
@@ -57,6 +59,7 @@ class TestStdioTransport:
 
     def test_incomplete_frame_handling(self):
         """Incomplete frames are buffered."""
+
         class MessageBuffer:
             def __init__(self):
                 self.buffer = b""
@@ -93,11 +96,11 @@ class TestStdioTransport:
         buffer = MessageBuffer()
 
         # Feed partial data
-        buffer.feed(b"Content-Length: 18\r\n\r\n{\"id\":")
+        buffer.feed(b'Content-Length: 18\r\n\r\n{"id":')
         assert len(buffer.messages) == 0
 
         # Feed rest
-        buffer.feed(b"1,\"ok\":true}")
+        buffer.feed(b'1,"ok":true}')
         assert len(buffer.messages) == 1
 
 
@@ -106,27 +109,26 @@ class TestHTTPTransport:
 
     def test_request_encoding(self):
         """HTTP requests are properly encoded."""
+
         def encode_http_request(method, path, body):
-            body_bytes = json.dumps(body).encode('utf-8')
+            body_bytes = json.dumps(body).encode("utf-8")
             headers = [
                 f"{method} {path} HTTP/1.1",
                 "Content-Type: application/json",
                 f"Content-Length: {len(body_bytes)}",
                 "",
-                ""
+                "",
             ]
-            return "\r\n".join(headers).encode('utf-8') + body_bytes
+            return "\r\n".join(headers).encode("utf-8") + body_bytes
 
-        request = encode_http_request(
-            "POST", "/mcp",
-            {"jsonrpc": "2.0", "method": "test", "id": 1}
-        )
+        request = encode_http_request("POST", "/mcp", {"jsonrpc": "2.0", "method": "test", "id": 1})
 
         assert b"POST /mcp HTTP/1.1" in request
         assert b"Content-Type: application/json" in request
 
     def test_response_parsing(self):
         """HTTP responses are parsed correctly."""
+
         def parse_http_response(data):
             parts = data.split(b"\r\n\r\n", 1)
             header_lines = parts[0].decode().split("\r\n")
@@ -146,7 +148,7 @@ class TestHTTPTransport:
 
             return int(status_code), headers, body
 
-        response = b"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"result\":\"ok\"}"
+        response = b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{"result":"ok"}'
         status, headers, _body = parse_http_response(response)
 
         assert status == 200
@@ -172,8 +174,9 @@ class TestWebSocketTransport:
 
     def test_frame_construction(self):
         """WebSocket frames are constructed correctly."""
+
         def create_text_frame(payload):
-            data = payload.encode('utf-8')
+            data = payload.encode("utf-8")
             frame = bytearray()
 
             # FIN + text opcode
@@ -184,10 +187,10 @@ class TestWebSocketTransport:
                 frame.append(len(data))
             elif len(data) < 65536:
                 frame.append(126)
-                frame.extend(len(data).to_bytes(2, 'big'))
+                frame.extend(len(data).to_bytes(2, "big"))
             else:
                 frame.append(127)
-                frame.extend(len(data).to_bytes(8, 'big'))
+                frame.extend(len(data).to_bytes(8, "big"))
 
             frame.extend(data)
             return bytes(frame)
@@ -218,8 +221,9 @@ class TestTransportReconnection:
 
     def test_exponential_backoff(self):
         """Reconnection uses exponential backoff."""
+
         def calculate_backoff(attempt, base=1.0, max_delay=60.0):
-            return min(base * (2 ** attempt), max_delay)
+            return min(base * (2**attempt), max_delay)
 
         assert calculate_backoff(0) == 1.0
         assert calculate_backoff(1) == 2.0
@@ -255,6 +259,7 @@ class TestTransportSecurity:
 
     def test_tls_requirement(self):
         """TLS is required for non-localhost connections."""
+
         def validate_endpoint(url):
             if url.startswith("http://") and "localhost" not in url and "127.0.0.1" not in url:
                 raise ValueError("TLS required for remote connections")

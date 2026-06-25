@@ -83,7 +83,7 @@ python scripts/ci/auto_fix_common_issues.py --pattern 25
 ```
 ✅ Append minimal auto-generated entry to:
    docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
-   
+
 ✅ Run sync_tracked_files.py --fix to update:
    .codex/tracked_files.json (index consistency)
 ```

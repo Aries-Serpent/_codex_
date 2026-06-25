@@ -33,6 +33,7 @@ class TestAuthMiddlewareAdv:
     def test_basic_auth_extraction(self, middleware):
         """Extract basic auth."""
         import base64
+
         creds = base64.b64encode(b"user:pass").decode()
         headers = {"Authorization": f"Basic {creds}"}
         # Should extract
@@ -92,7 +93,6 @@ class TestResponseHeaders:
 
     def test_security_headers_addition(self):
         """Security headers should be added."""
-        headers = {}
         # Should add:
         # - X-Content-Type-Options
         # - X-Frame-Options
@@ -104,29 +104,23 @@ class TestResponseHeaders:
             "X-Frame-Options",
             "X-XSS-Protection",
             "Strict-Transport-Security",
-            "Content-Security-Policy"
+            "Content-Security-Policy",
         ]
         assert len(security_headers) == 5
 
     def test_cors_headers(self):
         """CORS headers should be set."""
-        headers = {}
         cors_headers = [
             "Access-Control-Allow-Origin",
             "Access-Control-Allow-Methods",
             "Access-Control-Allow-Headers",
-            "Access-Control-Max-Age"
+            "Access-Control-Max-Age",
         ]
         assert len(cors_headers) == 4
 
     def test_cache_control_headers(self):
         """Cache control headers."""
-        headers = {}
-        cache_headers = [
-            "Cache-Control",
-            "Pragma",
-            "Expires"
-        ]
+        cache_headers = ["Cache-Control", "Pragma", "Expires"]
         assert len(cache_headers) == 3
 
     def test_content_type_header(self):
@@ -136,10 +130,7 @@ class TestResponseHeaders:
 
     def test_custom_response_headers(self):
         """Custom response headers."""
-        headers = {
-            "X-Custom-Header": "value",
-            "X-Request-ID": "req123"
-        }
+        headers = {"X-Custom-Header": "value", "X-Request-ID": "req123"}
         assert "X-Request-ID" in headers
 
     def test_header_value_encoding(self):
@@ -182,7 +173,7 @@ class TestErrorResponses:
         error = {
             "error": "invalid_token",
             "error_description": "Token is invalid or expired",
-            "error_uri": "https://example.com/error"
+            "error_uri": "https://example.com/error",
         }
         assert "error_description" in error
 
@@ -191,17 +182,13 @@ class TestErrorResponses:
         headers = {
             "Content-Type": "application/json",
             "Cache-Control": "no-store",
-            "Pragma": "no-cache"
+            "Pragma": "no-cache",
         }
         assert "Cache-Control" in headers
 
     def test_error_code_consistency(self):
         """Error codes should be consistent."""
-        errors = {
-            "invalid_token": 401,
-            "insufficient_permissions": 403,
-            "invalid_request": 400
-        }
+        errors = {"invalid_token": 401, "insufficient_permissions": 403, "invalid_request": 400}
         assert errors["invalid_token"] == 401
 
 
@@ -213,7 +200,7 @@ class TestRateLimiting:
         headers = {
             "X-RateLimit-Limit": "1000",
             "X-RateLimit-Remaining": "999",
-            "X-RateLimit-Reset": "1234567890"
+            "X-RateLimit-Reset": "1234567890",
         }
         assert int(headers["X-RateLimit-Limit"]) == 1000
 
@@ -231,13 +218,11 @@ class TestRateLimiting:
 
     def test_per_user_rate_limiting(self):
         """Per-user rate limits."""
-        user_id = "user123"
         limit = 100
         assert limit > 0
 
     def test_per_endpoint_rate_limiting(self):
         """Per-endpoint rate limits."""
-        endpoint = "/api/users"
         limit = 50
         assert limit > 0
 
@@ -318,7 +303,7 @@ class TestSessionHandling:
             "value": "sess_12345",
             "httponly": True,
             "secure": True,
-            "samesite": "Strict"
+            "samesite": "Strict",
         }
         assert cookie["httponly"]
 
@@ -368,7 +353,7 @@ class TestTokenHandling:
             "iss": "https://auth.example.com",
             "sub": "user123",
             "aud": "api",
-            "exp": 1234567890
+            "exp": 1234567890,
         }
         assert "sub" in claims
 
@@ -387,6 +372,7 @@ class TestTokenHandling:
     def test_token_expiration_validation(self):
         """Validate token expiration."""
         import time
+
         exp = int(time.time()) + 3600
         current = int(time.time())
         assert exp > current
@@ -394,16 +380,14 @@ class TestTokenHandling:
     def test_token_not_before_validation(self):
         """Validate token not-before time."""
         import time
+
         nbf = int(time.time()) - 60
         current = int(time.time())
         assert nbf <= current
 
     def test_token_custom_claims(self):
         """Validate custom claims."""
-        claims = {
-            "custom_claim": "value",
-            "user_roles": ["admin", "user"]
-        }
+        claims = {"custom_claim": "value", "user_roles": ["admin", "user"]}
         assert "custom_claim" in claims
 
     def test_token_jti_uniqueness(self):
@@ -456,6 +440,7 @@ class TestPermissionHandling:
         """Time-based permissions."""
         # Permission valid during certain hours
         import datetime
+
         current_hour = datetime.datetime.now().hour
         assert 0 <= current_hour <= 23
 
@@ -468,33 +453,23 @@ class TestLoggingAndAudit:
         log_entry = {
             "event": "login_attempt",
             "username": "user123",
-            "timestamp": "2024-01-01T00:00:00Z"
+            "timestamp": "2024-01-01T00:00:00Z",
         }
         assert log_entry["event"] == "login_attempt"
 
     def test_failed_auth_logging(self):
         """Log failed authentications."""
-        log_entry = {
-            "event": "login_failed",
-            "reason": "invalid_password"
-        }
+        log_entry = {"event": "login_failed", "reason": "invalid_password"}
         assert "login_failed" in log_entry["event"]
 
     def test_permission_check_logging(self):
         """Log permission checks."""
-        log_entry = {
-            "event": "permission_check",
-            "user": "user123",
-            "permission": "write:admin"
-        }
+        log_entry = {"event": "permission_check", "user": "user123", "permission": "write:admin"}
         assert "permission_check" in log_entry["event"]
 
     def test_token_generation_logging(self):
         """Log token generation."""
-        log_entry = {
-            "event": "token_generated",
-            "token_type": "access_token"
-        }
+        log_entry = {"event": "token_generated", "token_type": "access_token"}
         assert log_entry["token_type"] == "access_token"
 
     def test_audit_trail_retention(self):
@@ -534,10 +509,7 @@ class TestIntegrationScenarios:
 
     def test_performance_metrics(self):
         """Performance metrics collection."""
-        metrics = {
-            "response_time_ms": 45,
-            "auth_time_ms": 10
-        }
+        metrics = {"response_time_ms": 45, "auth_time_ms": 10}
         assert metrics["response_time_ms"] > 0
 
     def test_upstream_service_integration(self):

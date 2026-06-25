@@ -33,15 +33,13 @@ def test_detect_base_model():
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create file with BaseModel
         py_file = Path(tmpdir) / "models.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 from pydantic import BaseModel
 
 class User(BaseModel):
     name: str
     age: int
-"""
-        )
+""")
 
         file_index = {
             "files": [
@@ -60,14 +58,12 @@ def test_detect_pydantic_import():
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create file with pydantic import
         py_file = Path(tmpdir) / "schemas.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 import pydantic
 from typing import Optional
 
 # Using pydantic for validation
-"""
-        )
+""")
 
         file_index = {
             "files": [
@@ -115,14 +111,12 @@ def test_detect_both_patterns():
     """Test detection of both BaseModel and OpenAPI."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "models.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 from pydantic import BaseModel
 
 class APISchema(BaseModel):
     pass
-"""
-        )
+""")
 
         file_index = {
             "files": [
@@ -142,8 +136,7 @@ def test_evidence_deduplication():
     """Test that evidence files are deduplicated."""
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "models.py"
-        py_file.write_text(
-            """
+        py_file.write_text("""
 from pydantic import BaseModel
 
 class User(BaseModel):
@@ -151,8 +144,7 @@ class User(BaseModel):
 
 class Product(BaseModel):
     id: int
-"""
-        )
+""")
 
         file_index = {
             "files": [

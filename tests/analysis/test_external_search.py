@@ -39,9 +39,7 @@ def test_external_web_search_loads_offline_index(tmp_path: Path) -> None:
     assert entry["url"].endswith("/codex")
 
 
-def test_external_web_search_supports_tilde_endpoint(
-    monkeypatch, tmp_path: Path
-) -> None:
+def test_external_web_search_supports_tilde_endpoint(monkeypatch, tmp_path: Path) -> None:
     offline_index = tmp_path / "index.json"
     _write_offline_index(offline_index)
 

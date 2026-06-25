@@ -136,9 +136,9 @@ class TestExpansionGateMeasured:
     def test_from_measured_gate_open(self):
         """from_measured() must produce an open gate (all 4 conditions met)."""
         result = ExpansionGate.from_measured().evaluate()
-        assert result.enabled, (
-            f"Phase 1-5 measured gate is CLOSED — blocking: {result.blocking_conditions}"
-        )
+        assert (
+            result.enabled
+        ), f"Phase 1-5 measured gate is CLOSED — blocking: {result.blocking_conditions}"
 
     def test_measured_gi_at_target(self):
         assert MEASURED_GI >= TARGET_GI
@@ -166,9 +166,16 @@ class TestAutonomyGateCheckScript:
     def test_gate_check_permitted(self, tmp_path):
         """Gate allows ADVISORY_WRITE under SAFE_AUTO mode (requires ASSISTED)."""
         result = subprocess.run(
-            [sys.executable, "scripts/ci/autonomy_gate_check.py",
-             "--surface", "AUT-007", "--class", "ADVISORY_WRITE"],
-            capture_output=True, text=True,
+            [
+                sys.executable,
+                "scripts/ci/autonomy_gate_check.py",
+                "--surface",
+                "AUT-007",
+                "--class",
+                "ADVISORY_WRITE",
+            ],
+            capture_output=True,
+            text=True,
         )
         assert result.returncode == 0
 
@@ -176,14 +183,21 @@ class TestAutonomyGateCheckScript:
         """--no-fail makes even a denial exit 0."""
         registry_file = tmp_path / "reg.yaml"
         registry_file.write_text(
-            "schema_version: '1.0.0'\n"
-            "autonomy_mode: OFF\n"
-            "kill_switch: false\n"
+            "schema_version: '1.0.0'\n" "autonomy_mode: OFF\n" "kill_switch: false\n"
         )
         env = {**os.environ, "CODEX_AUTONOMY_REGISTRY": str(registry_file)}
         result = subprocess.run(
-            [sys.executable, "scripts/ci/autonomy_gate_check.py",
-             "--surface", "AUT-007", "--class", "ADVISORY_WRITE", "--no-fail"],
-            capture_output=True, text=True, env=env,
+            [
+                sys.executable,
+                "scripts/ci/autonomy_gate_check.py",
+                "--surface",
+                "AUT-007",
+                "--class",
+                "ADVISORY_WRITE",
+                "--no-fail",
+            ],
+            capture_output=True,
+            text=True,
+            env=env,
         )
         assert result.returncode == 0

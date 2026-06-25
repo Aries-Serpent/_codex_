@@ -195,7 +195,6 @@ class TestSubprocessCompletedProcess:
         result = run(["echo", "test"])
         rc = result.returncode
         out = result.stdout
-        err = result.stderr
         assert isinstance(rc, int)
         assert out is not None or out is None
 
@@ -262,13 +261,7 @@ class TestSubprocessIntegration:
     def test_run_api_compatibility(self):
         """Test that API is compatible with stdlib subprocess.run."""
         # Should accept same parameters as subprocess.run
-        result = run(
-            ["echo", "hello"],
-            capture_output=True,
-            text=True,
-            check=False,
-            timeout=None
-        )
+        result = run(["echo", "hello"], capture_output=True, text=True, check=False, timeout=None)
         assert result.returncode == 0
 
 

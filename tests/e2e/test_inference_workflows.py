@@ -81,7 +81,9 @@ class TestBatchInference:
         for py_file in list(SRC_DIR.rglob("*.py"))[:50] if SRC_DIR.exists() else []:
             try:
                 content = py_file.read_text(encoding="utf-8", errors="ignore").lower()
-                if any(f"def {p}" in content or f"class {p.title()}" in content for p in batch_patterns):
+                if any(
+                    f"def {p}" in content or f"class {p.title()}" in content for p in batch_patterns
+                ):
                     return  # Found batch processing
             except (UnicodeDecodeError, OSError):
                 continue

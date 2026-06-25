@@ -52,6 +52,4 @@ def test_logging_bootstrap_initialization(monkeypatch, tmp_path):
     assert isinstance(loggers.tb, DummyWriter)
     assert loggers.wb is not None
     assert calls["wb"]["mode"] == "offline" and calls["wb"]["project"] == "proj"
-    assert (
-        loggers.mlflow_active and calls["ml_uri"] == "uri" and calls["ml_exp"] == "exp"
-    )
+    assert loggers.mlflow_active and calls["ml_uri"] == "uri" and calls["ml_exp"] == "exp"

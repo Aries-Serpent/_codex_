@@ -339,10 +339,7 @@ class TestConcurrentStateAccess:
             memory.store_memory(entry)
 
         # Write from multiple threads
-        threads = [
-            threading.Thread(target=write_memory, args=(f"entry_{i}",))
-            for i in range(10)
-        ]
+        threads = [threading.Thread(target=write_memory, args=(f"entry_{i}",)) for i in range(10)]
 
         for t in threads:
             t.start()
@@ -379,10 +376,7 @@ class TestConcurrentStateAccess:
             read_results.append(entry)
 
         # Read from multiple threads
-        threads = [
-            threading.Thread(target=read_memory, args=(f"entry_{i}",))
-            for i in range(10)
-        ]
+        threads = [threading.Thread(target=read_memory, args=(f"entry_{i}",)) for i in range(10)]
 
         for t in threads:
             t.start()
@@ -597,16 +591,14 @@ class TestDatabaseStateConsistency:
     def test_database_schema_consistency(self, tmp_path: Path) -> None:
         """Test database schema remains consistent."""
         db_path = tmp_path / "schema_test.db"
-        memory = AgentMemory(db_path=db_path)
+        AgentMemory(db_path=db_path)
 
         # Verify schema exists
         with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()
 
             # Check memories table
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='memories'"
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='memories'")
             assert cursor.fetchone() is not None
 
             # Check context_frames table
@@ -616,9 +608,7 @@ class TestDatabaseStateConsistency:
             assert cursor.fetchone() is not None
 
             # Check patterns table
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='patterns'"
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='patterns'")
             assert cursor.fetchone() is not None
 
     def test_database_state_after_many_operations(self, tmp_path: Path) -> None:

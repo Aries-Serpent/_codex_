@@ -487,12 +487,11 @@ class ResolutionRecommender:
             "hit_rate_at_1": hits_at_1 / total if total > 0 else 0.0,
             f"hit_rate_at_{top_k}": hits_at_k / total if total > 0 else 0.0,
             "total_samples": total,
-            "mean_recommendations": sum(
-                len(self.recommend(s.symptoms).recommendations) for s in samples
-            )
-            / total
-            if total > 0
-            else 0.0,
+            "mean_recommendations": (
+                sum(len(self.recommend(s.symptoms).recommendations) for s in samples) / total
+                if total > 0
+                else 0.0
+            ),
         }
 
 

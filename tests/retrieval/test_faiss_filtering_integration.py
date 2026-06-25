@@ -1,6 +1,5 @@
 """Integration tests for metadata filtering with FAISS store"""
 
-
 import importlib.util
 
 import pytest
@@ -9,13 +8,13 @@ np = pytest.importorskip("numpy")
 
 try:
     from src.codex.retrieval.stores.faiss_store import FAISSStore
-    FAISS_AVAILABLE = importlib.util.find_spec('faiss') is not None
+
+    FAISS_AVAILABLE = importlib.util.find_spec("faiss") is not None
 except ImportError:
     FAISS_AVAILABLE = False
 
 pytestmark = pytest.mark.skipif(
-    not FAISS_AVAILABLE,
-    reason="FAISS not installed (pip install faiss-cpu)"
+    not FAISS_AVAILABLE, reason="FAISS not installed (pip install faiss-cpu)"
 )
 
 

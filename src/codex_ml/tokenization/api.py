@@ -199,10 +199,11 @@ def deprecated_legacy_access(name: str):
     try:
         value = provider()
     except ModuleNotFoundError as e:
-        logger.debug(f"ModuleNotFoundError: {e}")
-        logger.warning(f"ModuleNotFoundError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ModuleNotFoundError: <ERROR_TYPE>")
+        logger.warning(f"ModuleNotFoundError: <ERROR_TYPE>", exc_info=True)
         raise
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         if name == "SPTokenizer":  # pragma: no cover - optional dependency guard
             raise

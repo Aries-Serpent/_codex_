@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import yaml
-except Exception:  # pragma: no cover - optional dependency
+except (IOError, OSError):  # pragma: no cover - optional dependency
     yaml = None
 
 

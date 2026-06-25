@@ -34,10 +34,12 @@ class TestDocRetrieverRun:
             md_file = docs_dir / "guide.md"
             md_file.write_text("# Getting Started\n\nThis guide explains how to use the API.\n")
 
-            result = run({
-                "query": "guide",
-                "doc_root": str(tmpdir_path),
-            })
+            result = run(
+                {
+                    "query": "guide",
+                    "doc_root": str(tmpdir_path),
+                }
+            )
 
             assert "results" in result
             assert "total_found" in result
@@ -54,12 +56,16 @@ class TestDocRetrieverRun:
             docs_dir.mkdir()
 
             md_file = docs_dir / "api.md"
-            md_file.write_text("# API Reference\n\nThe API provides endpoints for data retrieval.\n")
+            md_file.write_text(
+                "# API Reference\n\nThe API provides endpoints for data retrieval.\n"
+            )
 
-            result = run({
-                "query": "API endpoints",
-                "doc_root": str(tmpdir_path),
-            })
+            result = run(
+                {
+                    "query": "API endpoints",
+                    "doc_root": str(tmpdir_path),
+                }
+            )
 
             assert "results" in result
 
@@ -76,11 +82,13 @@ class TestDocRetrieverRun:
                 md_file = docs_dir / f"doc{i}.md"
                 md_file.write_text(f"# Document {i}\n\nThis document contains test content.\n")
 
-            result = run({
-                "query": "test",
-                "doc_root": str(tmpdir_path),
-                "top_k": 2,
-            })
+            result = run(
+                {
+                    "query": "test",
+                    "doc_root": str(tmpdir_path),
+                    "top_k": 2,
+                }
+            )
 
             assert len(result["results"]) <= 2
 
@@ -95,15 +103,19 @@ class TestDocRetrieverRun:
             md_file = docs_dir / "api.md"
             md_file.write_text("# API\n\nAPI Reference Guide.\n")
 
-            result_lower = run({
-                "query": "api",
-                "doc_root": str(tmpdir_path),
-            })
+            result_lower = run(
+                {
+                    "query": "api",
+                    "doc_root": str(tmpdir_path),
+                }
+            )
 
-            result_upper = run({
-                "query": "API",
-                "doc_root": str(tmpdir_path),
-            })
+            result_upper = run(
+                {
+                    "query": "API",
+                    "doc_root": str(tmpdir_path),
+                }
+            )
 
             # Both should find the same results
             assert len(result_lower["results"]) == len(result_upper["results"])
@@ -124,10 +136,12 @@ class TestDocRetrieverRun:
                 "And continues with more content.\n"
             )
 
-            result = run({
-                "query": "example",
-                "doc_root": str(tmpdir_path),
-            })
+            result = run(
+                {
+                    "query": "example",
+                    "doc_root": str(tmpdir_path),
+                }
+            )
 
             assert len(result["results"]) > 0
             assert "excerpt" in result["results"][0]
@@ -149,10 +163,12 @@ class TestDocRetrieverRun:
             md_file2 = docs_dir / "few_hits.md"
             md_file2.write_text("This has one test word.\n")
 
-            result = run({
-                "query": "test",
-                "doc_root": str(tmpdir_path),
-            })
+            result = run(
+                {
+                    "query": "test",
+                    "doc_root": str(tmpdir_path),
+                }
+            )
 
             # Results should be sorted by score
             if len(result["results"]) >= 2:
@@ -171,10 +187,12 @@ class TestDocRetrieverRun:
             md_file = nested_dir / "endpoints.md"
             md_file.write_text("# API Endpoints\n\nList of available endpoints.\n")
 
-            result = run({
-                "query": "endpoints",
-                "doc_root": str(tmpdir_path),
-            })
+            result = run(
+                {
+                    "query": "endpoints",
+                    "doc_root": str(tmpdir_path),
+                }
+            )
 
             assert "results" in result
 

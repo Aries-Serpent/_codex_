@@ -47,7 +47,7 @@ def test_load_checkpoint_detects_corruption(tmp_path):
     # UPDATED: Add error handling for save operation
     try:
         save_checkpoint(str(path), model, opt, scheduler=None, epoch=1, extra={})
-    except Exception as e:
+    except (IOError, OSError) as e:
         pytest.skip(f"Cannot test corruption detection: save_checkpoint failed with {e}")
 
     # Verify checkpoint was created

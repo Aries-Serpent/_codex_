@@ -154,11 +154,11 @@ class ZendeskAPIClient:
         }
 
         if requester_email:
-            payload["ticket"]["requester"] = {"email": requester_email}  # type: ignore[assignment]
+            payload["ticket"]["requester"] = {"email": requester_email}
         if tags:
-            payload["ticket"]["tags"] = tags  # type: ignore[assignment]
+            payload["ticket"]["tags"] = tags
         if custom_fields:
-            payload["ticket"]["custom_fields"] = custom_fields  # type: ignore[assignment]
+            payload["ticket"]["custom_fields"] = custom_fields
 
         response = self.session.post(f"{self.config.base_url}/tickets.json", json=payload)
         response.raise_for_status()
@@ -286,7 +286,7 @@ class ZendeskAPIClient:
         """
         params = {"per_page": per_page}
         if role:
-            params["role"] = role  # type: ignore[assignment]
+            params["role"] = role
 
         response = self.session.get(f"{self.config.base_url}/users.json", params=params)
         response.raise_for_status()
@@ -536,7 +536,7 @@ class ZendeskAPIClient:
         """
         params = {"per_page": per_page}
         if filter_type:
-            params["filter[action]"] = filter_type  # type: ignore[assignment]
+            params["filter[action]"] = filter_type
 
         response = self.session.get(f"{self.config.base_url}/audit_logs.json", params=params)
         response.raise_for_status()

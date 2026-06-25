@@ -51,15 +51,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Check for unsafe API field handling
         run: |
           # Flag code that assumes non-null API fields
           rg "\.get\(.*\)\.replace\(" --glob="scripts/ci/**" && exit 1 || true
-          
+
           # Warn on direct API field access without null-check
           rg "response\[.*\]\.replace\(" --glob="scripts/ci/**" && exit 1 || true
-          
+
           echo "✅ API null-handling validation passed"
 ```
 
@@ -89,7 +89,7 @@ def test_timestamp_none():
     """Ensure None timestamps are handled gracefully."""
     # Job with no completed_at (still running)
     job = {"completed_at": None, "started_at": "2026-06-23T04:00:00Z"}
-    
+
     result = process_job(job)
     assert result['duration_ms'] == 0  # Should not crash
 ```

@@ -71,6 +71,7 @@ class TestTrainModuleImport:
         """Verify train module can be imported."""
         try:
             from codex_ml.cli import train
+
             assert train is not None
         except ImportError as e:
             pytest.skip(f"train module not available: {e}")
@@ -79,6 +80,7 @@ class TestTrainModuleImport:
         """Verify train module has Typer app or commands."""
         try:
             from codex_ml.cli import train
+
             # Check for either app or command functions
             has_app = hasattr(train, "app")
             has_commands = any(
@@ -111,10 +113,7 @@ class TestTrainCommandHelp:
         output = result.stdout + result.stderr
         # Should show help or indicate command exists
         if result.returncode == 0:
-            assert any(
-                term in output.lower()
-                for term in ["usage", "options", "help", "train"]
-            )
+            assert any(term in output.lower() for term in ["usage", "options", "help", "train"])
 
     @pytest.mark.parametrize(
         "option",
@@ -155,8 +154,12 @@ class TestConfigLoading:
         """Verify --config option is accepted."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli", "train",
-                "--config", str(temp_train_config),
+                sys.executable,
+                "-m",
+                "codex_ml.cli",
+                "train",
+                "--config",
+                str(temp_train_config),
                 "--help",
             ],
             capture_output=True,
@@ -181,8 +184,12 @@ class TestTrainingArguments:
         """Verify --epochs argument is accepted."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli", "train",
-                "--epochs", str(epochs),
+                sys.executable,
+                "-m",
+                "codex_ml.cli",
+                "train",
+                "--epochs",
+                str(epochs),
                 "--help",
             ],
             capture_output=True,
@@ -197,8 +204,12 @@ class TestTrainingArguments:
         """Verify --batch-size argument is accepted."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli", "train",
-                "--batch-size", str(batch_size),
+                sys.executable,
+                "-m",
+                "codex_ml.cli",
+                "train",
+                "--batch-size",
+                str(batch_size),
                 "--help",
             ],
             capture_output=True,
@@ -212,8 +223,12 @@ class TestTrainingArguments:
         """Verify --learning-rate argument is accepted."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli", "train",
-                "--learning-rate", "0.001",
+                sys.executable,
+                "-m",
+                "codex_ml.cli",
+                "train",
+                "--learning-rate",
+                "0.001",
                 "--help",
             ],
             capture_output=True,
@@ -237,8 +252,12 @@ class TestBackendSelection:
         """Verify --backend argument is accepted."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli", "train",
-                "--backend", backend,
+                sys.executable,
+                "-m",
+                "codex_ml.cli",
+                "train",
+                "--backend",
+                backend,
                 "--help",
             ],
             capture_output=True,
@@ -261,7 +280,10 @@ class TestExperimentTracking:
         """Verify --mlflow flag is accepted."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli", "train",
+                sys.executable,
+                "-m",
+                "codex_ml.cli",
+                "train",
                 "--mlflow",
                 "--help",
             ],
@@ -276,7 +298,10 @@ class TestExperimentTracking:
         """Verify --wandb flag is accepted."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli", "train",
+                sys.executable,
+                "-m",
+                "codex_ml.cli",
+                "train",
                 "--wandb",
                 "--help",
             ],

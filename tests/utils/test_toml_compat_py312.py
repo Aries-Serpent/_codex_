@@ -20,7 +20,8 @@ class TestTomlCompatibility:
         """Verify tomllib is imported on Python 3.11+."""
         try:
             import tomllib
-            assert tomllib.__name__ == 'tomllib'
+
+            assert tomllib.__name__ == "tomllib"
         except ImportError:
             pytest.fail("tomllib should be available on Python 3.11+")
 
@@ -29,8 +30,9 @@ class TestTomlCompatibility:
         """Verify codex uses tomllib on Python 3.11+."""
         try:
             from codex_ml.utils import toml_compat
+
             # Check if it imported the _toml module (tomllib or tomli)
-            assert hasattr(toml_compat, '_toml')
+            assert hasattr(toml_compat, "_toml")
         except ImportError:
             pytest.skip("toml_compat module not available")
 
@@ -56,11 +58,13 @@ testpaths = ["tests"]
         data: dict = {}
         try:
             import tomllib
+
             with open(toml_file, "rb") as f:
                 data = tomllib.load(f)
         except ImportError:
             try:
                 import tomli
+
                 with open(toml_file, "rb") as f:
                     data = tomli.load(f)
             except ImportError:
@@ -133,11 +137,13 @@ addopts = "-v --strict-markers"
         data: dict = {}
         try:
             import tomllib
+
             with open(toml_file, "rb") as f:
                 data = tomllib.load(f)
         except ImportError:
             try:
                 import tomli
+
                 with open(toml_file, "rb") as f:
                     data = tomli.load(f)
             except ImportError:
@@ -165,11 +171,13 @@ class TestPyprojectTomlParsing:
         data: dict = {}
         try:
             import tomllib
+
             with open(pyproject_path, "rb") as f:
                 data = tomllib.load(f)
         except ImportError:
             try:
                 import tomli
+
                 with open(pyproject_path, "rb") as f:
                     data = tomli.load(f)
             except ImportError:
@@ -187,14 +195,17 @@ class TestPyprojectTomlParsing:
             # Use packaging library for robust version parsing if available
             try:
                 from packaging.specifiers import SpecifierSet
+
                 spec = SpecifierSet(requires_python)
                 # Verify that 3.10, 3.11, or 3.12 are in the valid range
-                assert any(f"3.{minor}" in spec for minor in range(10, 13)), \
-                    f"Expected Python 3.10-3.12 support, got: {requires_python}"
+                assert any(
+                    f"3.{minor}" in spec for minor in range(10, 13)
+                ), f"Expected Python 3.10-3.12 support, got: {requires_python}"
             except ImportError:
                 # Fallback to string matching if packaging is not available
-                assert any(v in requires_python for v in ["3.10", "3.11", "3.12", ">=3.10"]), \
-                    f"Expected Python 3.10+ support, got: {requires_python}"
+                assert any(
+                    v in requires_python for v in ["3.10", "3.11", "3.12", ">=3.10"]
+                ), f"Expected Python 3.10+ support, got: {requires_python}"
 
     def test_dependency_extraction(self):
         """Test extracting dependencies from pyproject.toml."""
@@ -207,11 +218,13 @@ class TestPyprojectTomlParsing:
         data: dict = {}
         try:
             import tomllib
+
             with open(pyproject_path, "rb") as f:
                 data = tomllib.load(f)
         except ImportError:
             try:
                 import tomli
+
                 with open(pyproject_path, "rb") as f:
                     data = tomli.load(f)
             except ImportError:
@@ -278,6 +291,7 @@ author = "José García"
         data: dict = {}
         try:
             import tomllib
+
             with open(toml_file, "rb") as f:
                 data = tomllib.load(f)
         except ImportError:
@@ -298,11 +312,13 @@ class TestTomlErrorHandling:
 
         try:
             import tomllib
+
             with pytest.raises(tomllib.TOMLDecodeError), open(toml_file, "rb") as f:
                 tomllib.load(f)
         except ImportError:
             try:
                 import tomli
+
                 with pytest.raises(tomli.TOMLDecodeError):
                     with open(toml_file, "rb") as f:
                         tomli.load(f)
@@ -313,6 +329,7 @@ class TestTomlErrorHandling:
         """Test handling of missing TOML file."""
         try:
             import tomllib
+
             with pytest.raises(FileNotFoundError), open("nonexistent.toml", "rb") as f:
                 tomllib.load(f)
         except ImportError:

@@ -2,7 +2,6 @@
 Tests for Reranker Module.
 """
 
-
 import pytest
 
 np = pytest.importorskip("numpy")
@@ -119,10 +118,7 @@ class TestScoreFusionReranker:
         config = RerankingConfig(top_k=2)
         reranker = ScoreFusionReranker(config)
 
-        results = [
-            {"id": f"doc{i}", "content": f"Content {i}", "score": 0.5}
-            for i in range(10)
-        ]
+        results = [{"id": f"doc{i}", "content": f"Content {i}", "score": 0.5} for i in range(10)]
 
         reranked = reranker.rerank("query", results)
         assert len(reranked) == 2
@@ -170,8 +166,7 @@ class TestMMRReranker:
     def test_mmr_respects_lambda(self):
         """Test that lambda affects diversity."""
         sample_results = [
-            {"id": f"doc{i}", "content": f"Content {i}", "score": 1.0 - i * 0.1}
-            for i in range(5)
+            {"id": f"doc{i}", "content": f"Content {i}", "score": 1.0 - i * 0.1} for i in range(5)
         ]
 
         # High lambda = more relevance focused

@@ -155,7 +155,11 @@ class TestConfigValidationBranches:
     def test_config_type_invalid_branch(self) -> None:
         """Test invalid type validation branch."""
         value = branch_input([])  # List not expected
-        if isinstance(value, str) or (isinstance(value, int) and not isinstance(value, bool)) or isinstance(value, bool):
+        if (
+            isinstance(value, str)
+            or (isinstance(value, int) and not isinstance(value, bool))
+            or isinstance(value, bool)
+        ):
             type_valid = True
         else:
             type_valid = False
@@ -228,9 +232,7 @@ class TestConfigMergingBranches:
         """Test nested dictionary merge branch."""
         base = branch_input({"section": {"key": "base"}})
         override = branch_input({"section": {"key": "override"}})
-        if isinstance(base.get("section"), dict) and isinstance(
-            override.get("section"), dict
-        ):
+        if isinstance(base.get("section"), dict) and isinstance(override.get("section"), dict):
             merge_type = "deep"
         else:
             merge_type = "shallow"
@@ -240,9 +242,7 @@ class TestConfigMergingBranches:
         """Test non-dictionary merge branch."""
         base = branch_input({"section": "value"})
         override = branch_input({"section": "override"})
-        if isinstance(base.get("section"), dict) and isinstance(
-            override.get("section"), dict
-        ):
+        if isinstance(base.get("section"), dict) and isinstance(override.get("section"), dict):
             merge_type = "deep"
         else:
             merge_type = "shallow"
@@ -321,11 +321,13 @@ class TestEnvironmentOverridesBranches:
         """Test environment variable prefix matching branch."""
         with patch.dict(
             os.environ,
-            {"CODEX_API_KEY": "key1", "CODEX_DB_URL": "url1", "OTHER_VAR": "value"},  # pragma: allowlist secret
+            {
+                "CODEX_API_KEY": "key1",
+                "CODEX_DB_URL": "url1",
+                "OTHER_VAR": "value",
+            },  # pragma: allowlist secret
         ):
-            env_vars = {
-                k: v for k, v in os.environ.items() if k.startswith("CODEX_")
-            }
+            env_vars = {k: v for k, v in os.environ.items() if k.startswith("CODEX_")}
             assert "CODEX_API_KEY" in env_vars
             assert "CODEX_DB_URL" in env_vars
             assert "OTHER_VAR" not in env_vars
@@ -341,9 +343,7 @@ class TestEnvironmentOverridesBranches:
             ("no", False),
         ],
     )
-    def test_env_boolean_parsing_branches(
-        self, env_value: str, expected: bool
-    ) -> None:
+    def test_env_boolean_parsing_branches(self, env_value: str, expected: bool) -> None:
         """Test environment boolean parsing branches."""
         true_values = {"true", "1", "yes", "on"}
         result = env_value.lower() in true_values
@@ -542,9 +542,7 @@ class TestDefaultValueBranches:
             (False, "default", False),
         ],
     )
-    def test_falsy_value_handling_branches(
-        self, value: Any, default: str, expected: Any
-    ) -> None:
+    def test_falsy_value_handling_branches(self, value: Any, default: str, expected: Any) -> None:
         """Test falsy value handling branches."""
         result = default if value is None else value
         assert result == expected

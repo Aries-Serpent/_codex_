@@ -130,9 +130,7 @@ class TestSessionTokenGeneration:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        _token, session_id = tm.generate_session_token(
-            "user123", mfa_verified=True
-        )
+        _token, session_id = tm.generate_session_token("user123", mfa_verified=True)
         session = tm.get_session(session_id)
         assert session.mfa_verified is True
 
@@ -140,9 +138,7 @@ class TestSessionTokenGeneration:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        _token, session_id = tm.generate_session_token(
-            "user123", ip_address="192.168.1.100"
-        )
+        _token, session_id = tm.generate_session_token("user123", ip_address="192.168.1.100")
         session = tm.get_session(session_id)
         assert session.ip_address == "192.168.1.100"
 
@@ -150,9 +146,7 @@ class TestSessionTokenGeneration:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
-        _token, session_id = tm.generate_session_token(
-            "user123", user_agent="Mozilla/5.0"
-        )
+        _token, session_id = tm.generate_session_token("user123", user_agent="Mozilla/5.0")
         session = tm.get_session(session_id)
         assert session.user_agent == "Mozilla/5.0"
 

@@ -28,6 +28,7 @@ from codex_ml.monitoring.model_drift import (
 # T01 — JSD helper: edge-case values
 # ---------------------------------------------------------------------------
 
+
 class TestJensenShannonDivergence:
     """T01: Basic JSD correctness."""
 
@@ -51,6 +52,7 @@ class TestJensenShannonDivergence:
     def test_result_bounded_zero_one(self):
         """JSD must always lie in [0, 1]."""
         import random
+
         rng = random.Random(42)
         for _ in range(20):
             n = rng.randint(2, 10)
@@ -72,6 +74,7 @@ class TestJensenShannonDivergence:
 # T02 — JSD detects output distribution shift
 # ---------------------------------------------------------------------------
 
+
 class TestJSDDriftDetection:
     """T02: ModelDriftDetector detects output-distribution shift via JSD."""
 
@@ -91,8 +94,9 @@ class TestJSDDriftDetection:
 
     def test_similar_distributions_no_jsd_drift(self):
         """Near-identical distributions should not trigger JSD drift."""
-        detector = ModelDriftDetector(js_threshold=0.1, confidence_threshold=0.0,
-                                      low_confidence_rate_threshold=1.0)
+        detector = ModelDriftDetector(
+            js_threshold=0.1, confidence_threshold=0.0, low_confidence_rate_threshold=1.0
+        )
         baseline = [0.8 + 0.01 * (i % 5) for i in range(50)]
         detector.update_baseline(baseline)
 
@@ -110,12 +114,13 @@ class TestJSDDriftDetection:
 # T03 — Confidence-drop detection
 # ---------------------------------------------------------------------------
 
+
 class TestConfidenceDropDetection:
     """T03: Confidence-drop alert when mean confidence falls below threshold."""
 
     def test_low_mean_confidence_triggers_alert(self):
         detector = ModelDriftDetector(
-            js_threshold=1.0,          # disable JSD gate
+            js_threshold=1.0,  # disable JSD gate
             confidence_threshold=0.6,
             low_confidence_rate_threshold=1.0,  # disable low-rate gate
         )
@@ -144,13 +149,14 @@ class TestConfidenceDropDetection:
 # T04 — Low-confidence-rate detection
 # ---------------------------------------------------------------------------
 
+
 class TestLowConfidenceRateDetection:
     """T04: Drift triggered when too many predictions are low-confidence."""
 
     def test_high_low_confidence_rate_triggers_drift(self):
         detector = ModelDriftDetector(
             js_threshold=1.0,
-            confidence_threshold=0.0,   # disable mean gate
+            confidence_threshold=0.0,  # disable mean gate
             low_confidence_rate_threshold=0.3,
             low_conf_score_cutoff=0.5,
         )
@@ -181,6 +187,7 @@ class TestLowConfidenceRateDetection:
 # T05 — No drift on stable data
 # ---------------------------------------------------------------------------
 
+
 class TestNoDriftStableData:
     """T05: Stable, high-confidence scores produce no drift signal."""
 
@@ -203,6 +210,7 @@ class TestNoDriftStableData:
 # ---------------------------------------------------------------------------
 # T06 — Baseline management
 # ---------------------------------------------------------------------------
+
 
 class TestBaselineManagement:
     """T06: has_baseline / update_baseline / reset."""
@@ -254,6 +262,7 @@ class TestBaselineManagement:
 # T07 — DriftResult.summary() and to_dict()
 # ---------------------------------------------------------------------------
 
+
 class TestDriftResultShape:
     """T07: DriftResult produces correct summary and dict."""
 
@@ -285,9 +294,14 @@ class TestDriftResultShape:
         result = self._make_result(True)
         d = result.to_dict()
         expected_keys = {
-            "drift_detected", "js_divergence", "js_threshold",
-            "confidence_dropped", "confidence_threshold",
-            "epoch", "reasons", "confidence_stats",
+            "drift_detected",
+            "js_divergence",
+            "js_threshold",
+            "confidence_dropped",
+            "confidence_threshold",
+            "epoch",
+            "reasons",
+            "confidence_stats",
         }
         assert expected_keys.issubset(set(d.keys()))
 
@@ -303,6 +317,7 @@ class TestDriftResultShape:
 # ---------------------------------------------------------------------------
 # T08 — ConfidenceStats.from_scores()
 # ---------------------------------------------------------------------------
+
 
 class TestConfidenceStats:
     """T08: ConfidenceStats computes correct statistics."""
@@ -334,8 +349,12 @@ class TestConfidenceStats:
         stats = ConfidenceStats.from_scores([0.8, 0.6, 0.9])
         d = stats.to_dict()
         for key in (
-            "mean_confidence", "min_confidence", "max_confidence",
-            "low_confidence_rate", "entropy", "n_samples",
+            "mean_confidence",
+            "min_confidence",
+            "max_confidence",
+            "low_confidence_rate",
+            "entropy",
+            "n_samples",
         ):
             assert key in d
 
@@ -343,6 +362,7 @@ class TestConfidenceStats:
 # ---------------------------------------------------------------------------
 # T09 — First epoch auto-sets baseline; second epoch checks drift
 # ---------------------------------------------------------------------------
+
 
 class TestFirstEpochBaseline:
     """T09: check() before baseline returns no JSD; after baseline checks JSD."""
@@ -358,7 +378,7 @@ class TestFirstEpochBaseline:
 
         # Before baseline
         r0 = detector.check(baseline_scores, epoch=0)
-        assert r0.js_divergence is None   # no baseline yet
+        assert r0.js_divergence is None  # no baseline yet
 
         # Manually set baseline (simulating train_loop auto-set)
         detector.update_baseline(baseline_scores)
@@ -372,6 +392,7 @@ class TestFirstEpochBaseline:
 # ---------------------------------------------------------------------------
 # T10 — ModelDriftDetector raises ValueError on bad constructor inputs
 # ---------------------------------------------------------------------------
+
 
 class TestModelDriftDetectorValidation:
     """T10: Constructor validates threshold parameters."""

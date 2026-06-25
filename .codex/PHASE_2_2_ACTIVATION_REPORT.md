@@ -192,4 +192,3 @@ All artifacts in `.codex/` (repository-tracked, not /tmp):
 **Report Generated:** 2026-06-22T00:46:48.754594+00:00  
 **Status:** ✅ PHASE 2.2 ACTIVATED  
 **Overall Progress:** On track for v0.1.0-final release  
-

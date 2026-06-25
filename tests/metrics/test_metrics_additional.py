@@ -54,7 +54,7 @@ def stub_torch(monkeypatch):
             return float(np.asarray(self._data).item())
 
     def fake_argmax(tensor, dim=-1):
-        return FakeTensor(np.argmax(tensor._data if hasattr(tensor, '_data') else tensor, axis=dim))
+        return FakeTensor(np.argmax(tensor._data if hasattr(tensor, "_data") else tensor, axis=dim))
 
     fake_torch = SimpleNamespace(
         Tensor=FakeTensor,
@@ -64,6 +64,7 @@ def stub_torch(monkeypatch):
     monkeypatch.setitem(sys.modules, "torch", fake_torch)
     yield fake_torch
     sys.modules.pop("torch", None)
+
 
 def test_classification_metrics_numpy():
     """Classification helpers operate on numpy arrays and handle ignore_index."""
@@ -81,6 +82,7 @@ def test_classification_metrics_numpy():
     streaming.reset()
     assert streaming.compute() == 0.0
 
+
 def test_streaming_loss_from_kwargs():
     """StreamingLoss consumes scalar losses or tensor-like payloads."""
 
@@ -93,6 +95,7 @@ def test_streaming_loss_from_kwargs():
     metric.reset()
     assert metric.compute() == 0.0
 
+
 def test_reward_metrics():
     """Reward helpers coerce mappings and thresholds."""
 
@@ -101,6 +104,7 @@ def test_reward_metrics():
     predictions = [{"reward": 0.4}, {"reward": 0.6}, 0.8]
     assert reward.reward_mean(predictions, None) == pytest.approx((0.4 + 0.6 + 0.8) / 3)
     assert reward.reward_success_rate(predictions, None, threshold=0.5) == pytest.approx(2 / 3)
+
 
 def test_generation_scores():
     """BLEU and ROUGE utilities return bounded values."""
@@ -115,6 +119,7 @@ def test_generation_scores():
     assert 0.0 <= bp <= 1.0
     assert 0.0 <= bleu <= 1.0
     assert 0.0 <= rouge <= 1.0
+
 
 def test_evaluator_batch_metrics_text_and_loss():
     """batch_metrics derives text metrics and perplexity when available."""

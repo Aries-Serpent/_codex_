@@ -1,7 +1,5 @@
 """Tests for parallel parser."""
 
-
-
 from codex.ast.parallel import ParallelParser
 
 

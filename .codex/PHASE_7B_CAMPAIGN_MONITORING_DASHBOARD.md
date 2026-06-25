@@ -244,8 +244,8 @@
 
 ```bash
 # Activate Track C.1 (Mutation Hardening)
-task(agent_type="mutation-testing-agent", 
-     name="phase7b-mutation-hardening-trackC1", 
+task(agent_type="mutation-testing-agent",
+     name="phase7b-mutation-hardening-trackC1",
      mode="background",
      prompt="[Mission brief from Track C.1 ready-to-deploy above]")
 

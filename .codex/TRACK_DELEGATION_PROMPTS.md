@@ -122,17 +122,17 @@ Objective: Verify 0 critical/high security findings and 26 fixed CVEs
 Context:
 - IP-005 completion status: CVEs 1-26 eliminated
 - Current baseline: 0 critical + 0 high (needs re-verification)
-- Scan scope: Full codebase, dependencies, secrets baseline
+- Scan scope: Full codebase, dependencies, secrets baseline  # pragma: allowlist secret
 
 Scanning Tasks:
 1. CodeQL: Re-scan all Python files, verify codeql-alert-resolution-agent fixes
 2. Semgrep: Validate security patterns (custom rules + rulesets)
 3. Bandit: Check for common security issues
-4. Secrets baseline: Verify 11 pragma allowlist pragmas, detect new leaks
+4. Secrets baseline: Verify 11 pragma allowlist pragmas, detect new leaks  # pragma: allowlist secret
 5. Dependency scan: Confirm 26 CVEs fixed (no new vulnerabilities)
 
 Deliverables:
-- Full security scan results (CodeQL, Semgrep, Bandit, secrets)
+- Full security scan results (CodeQL, Semgrep, Bandit, secrets)  # pragma: allowlist secret
 - CVE verification matrix (26 fixed CVEs confirmed)
 - False positive analysis (pragma allowlist cleanup if needed)
 - Final security audit report (0 critical/high confirmed)
@@ -142,7 +142,7 @@ Success Criteria:
 - 0 high findings
 - <5 medium findings (acceptable risk)
 - 26 CVEs fixed and verified
-- 0 new secrets detected
+- 0 new secrets detected  # pragma: allowlist secret
 
 Timeline: Days 3-14 (parallel verification across 4 scanners)
 Status: Ready for delegation
@@ -169,7 +169,7 @@ Deliverables:
 - Remediation verification checklist
 - New alert detection report (0 expected)
 
-Timeline: Days 3-8 (parallel with secrets scan)
+Timeline: Days 3-8 (parallel with secrets scan)  # pragma: allowlist secret
 ```
 
 ### Prompt 2.3: code-scanning-remediation-agent (Sub-agent)
@@ -228,7 +228,7 @@ RP Pattern Categories:
 2. RP-002: Type annotation errors (mypy) — Detect + recommend
 3. RP-003: YAML indentation (actionlint) — Auto-fix indentation
 4. RP-004: Coverage threshold drift — Standardize to 70%
-5. RP-005-009: Docker, Python, secrets patterns
+5. RP-005-009: Docker, Python, secrets patterns  # pragma: allowlist secret
 6. RP-035: Markdown false positives (pragma allowlist)
 
 Healing Strategy:
@@ -570,7 +570,7 @@ WEC Always-Required Items:
 - [ ] codeql-fix (security scanning)
 - [ ] coverage-validation (coverage ratchet)
 - [ ] documentation (doc quality gates)
-- [ ] security-baseline (secrets scanning)
+- [ ] security-baseline (secrets scanning)  # pragma: allowlist secret
 - [ ] test-validation (CI passing)
 
 Policy Validation:
@@ -745,7 +745,7 @@ task(
     mode="background",
     prompt="""
     [Full track prompt above]
-    
+
     Campaign: Production Readiness 2026
     Track: [Track Name] ([N] of 8)
     Timeline: Days [Start]-[End]
@@ -785,4 +785,3 @@ task(
 **Document Version:** 1.0  
 **Last Updated:** 2026-06-16T13:15:39Z  
 **Campaign Status:** Phase A — READY FOR DAY 3 PHASE B KICKOFF
-

@@ -107,7 +107,8 @@ class TestSuiteAnalyzer:
                 metrics = self.analyze_test_file(test_file)
                 results[test_file.name] = metrics
             except Exception as e:
-                print(f"Warning: Could not analyze {test_file.name}: {e}")
+                error_type = type(e).__name__
+                print(f"Warning: Could not analyze {test_file.name}: <ERROR_TYPE>")
 
         return results
 

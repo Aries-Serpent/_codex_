@@ -66,7 +66,7 @@ def py_ast_hash(text: str) -> str:
         tree = ast.parse(text)
         dump = ast.dump(tree, annotate_fields=True, include_attributes=False)
         return hashlib.sha256(dump.encode("utf-8")).hexdigest()
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return ""
 

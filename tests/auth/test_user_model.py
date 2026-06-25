@@ -180,11 +180,11 @@ class TestUserModel:
         )
 
         # Should be able to access all attributes
-        assert hasattr(user, 'id')
-        assert hasattr(user, 'username')
-        assert hasattr(user, 'email')
-        assert hasattr(user, 'password_hash')
-        assert hasattr(user, 'created_at')
+        assert hasattr(user, "id")
+        assert hasattr(user, "username")
+        assert hasattr(user, "email")
+        assert hasattr(user, "password_hash")
+        assert hasattr(user, "created_at")
 
     def test_user_string_representation(self):
         """Test user string representation."""
@@ -291,8 +291,8 @@ class TestUserModel:
         )
 
         # Check if is_active attribute exists and can be modified
-        if hasattr(user, 'is_active'):
-            assert user.is_active == True
+        if hasattr(user, "is_active"):
+            assert user.is_active
 
     def test_user_with_mfa_enabled(self):
         """Test user with MFA enabled flag."""
@@ -306,8 +306,8 @@ class TestUserModel:
         )
 
         # Check if mfa_enabled attribute exists
-        if hasattr(user, 'mfa_enabled'):
-            assert user.mfa_enabled == True
+        if hasattr(user, "mfa_enabled"):
+            assert user.mfa_enabled
 
 
 class TestUserModelEdgeCases:
@@ -316,7 +316,7 @@ class TestUserModelEdgeCases:
     def test_empty_username_handling(self):
         """Test handling of empty username."""
         with pytest.raises((ValueError, TypeError, AttributeError)):
-            user = User(
+            User(
                 id=str(uuid4()),
                 username="",
                 email="test@example.com",
@@ -327,7 +327,7 @@ class TestUserModelEdgeCases:
     def test_empty_email_handling(self):
         """Test handling of empty email."""
         with pytest.raises((ValueError, TypeError, AttributeError)):
-            user = User(
+            User(
                 id=str(uuid4()),
                 username="testuser",
                 email="",
@@ -338,7 +338,7 @@ class TestUserModelEdgeCases:
     def test_empty_password_hash_handling(self):
         """Test handling of empty password hash."""
         with pytest.raises((ValueError, TypeError, AttributeError)):
-            user = User(
+            User(
                 id=str(uuid4()),
                 username="testuser",
                 email="test@example.com",
@@ -349,7 +349,7 @@ class TestUserModelEdgeCases:
     def test_none_id_handling(self):
         """Test handling of None ID."""
         with pytest.raises((ValueError, TypeError)):
-            user = User(
+            User(
                 id=None,
                 username="testuser",
                 email="test@example.com",

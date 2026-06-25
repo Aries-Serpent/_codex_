@@ -211,7 +211,7 @@ class TestGetDbPath:
 
     def test_get_db_path_with_env_var(self):
         """Test get_db_path with environment variable."""
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory():
             os.environ["TEST_DB_PATH"] = "/tmp/test.db"
             try:
                 path = get_db_path("test_db", "TEST_DB_PATH")

@@ -83,7 +83,7 @@ class CacheManifest:
             return None
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             return None
         return cls(
@@ -124,8 +124,9 @@ def _decode_bytes(
     try:
         return raw.decode(encoding)
     except UnicodeDecodeError as e:
-        logger.debug(f"UnicodeDecodeError: {e}")
-        logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"UnicodeDecodeError: <ERROR_TYPE>")
+        logger.warning(f"UnicodeDecodeError: <ERROR_TYPE>", exc_info=True)
         if validate_utf8:
             raise
         if fallback_encoding:
@@ -236,8 +237,9 @@ def _cache_key(path: Path, **params: Any) -> str:
         stat = path.stat()
         h.update(str(stat.st_mtime_ns).encode("utf-8"))
     except FileNotFoundError as e:
-        logger.debug(f"FileNotFoundError: {e}")
-        logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+        logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
     return h.hexdigest()
 
 
@@ -378,13 +380,14 @@ def load_dataset(
             data = safe_pickle_load(str(cache_file), use_restricted_unpickler=True)
             if isinstance(data, list):
                 return data
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             try:
                 cache_file.unlink()
             except FileNotFoundError as e:
-                logger.debug(f"FileNotFoundError: {e}")
-                logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+                logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
 
     fmt = _detect_dataset_format(path)
 

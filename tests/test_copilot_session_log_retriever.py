@@ -55,35 +55,35 @@ def sample_session_data():
             "timestamp": "2026-02-05T08:00:00Z",
             "role": "user",
             "message": "Create a new module",
-            "metadata": {}
+            "metadata": {},
         },
         {
             "session_id": "test-session-1",
             "timestamp": "2026-02-05T08:01:00Z",
             "role": "assistant",
             "message": 'Created file: "src/new_module.py" with the implementation',
-            "metadata": {}
+            "metadata": {},
         },
         {
             "session_id": "test-session-1",
             "timestamp": "2026-02-05T08:02:00Z",
             "role": "assistant",
             "message": 'Updated file: "README.md" with documentation',
-            "metadata": {}
+            "metadata": {},
         },
         {
             "session_id": "test-session-2",
             "timestamp": "2026-02-05T09:00:00Z",
             "role": "user",
             "message": "Fix the tests",
-            "metadata": {}
+            "metadata": {},
         },
         {
             "session_id": "test-session-2",
             "timestamp": "2026-02-05T09:01:00Z",
             "role": "assistant",
             "message": 'Modified file: "tests/test_module.py"',
-            "metadata": {}
+            "metadata": {},
         },
     ]
 
@@ -113,8 +113,8 @@ def populate_test_db(db_path: Path, data: list):
                 entry["timestamp"],
                 entry["role"],
                 entry["message"],
-                json.dumps(entry["metadata"])
-            )
+                json.dumps(entry["metadata"]),
+            ),
         )
 
     conn.commit()
@@ -126,10 +126,7 @@ class TestCopilotSessionRetriever:
 
     def test_initialization(self, temp_db, temp_repo):
         """Test retriever initialization."""
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         assert retriever.db_path == temp_db
         assert retriever.repo_root == temp_repo
@@ -207,13 +204,10 @@ class TestCopilotSessionRetriever:
             path="test_file.py",
             operation="create",
             session_id="test",
-            timestamp="2026-02-05T08:00:00Z"
+            timestamp="2026-02-05T08:00:00Z",
         )
 
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         verified = retriever.verify_files([expected])
 
@@ -227,13 +221,10 @@ class TestCopilotSessionRetriever:
             path="nonexistent_file.py",
             operation="create",
             session_id="test",
-            timestamp="2026-02-05T08:00:00Z"
+            timestamp="2026-02-05T08:00:00Z",
         )
 
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         verified = retriever.verify_files([expected])
 
@@ -248,10 +239,7 @@ class TestCopilotSessionRetriever:
         # Create one of the expected files
         (temp_repo / "README.md").write_text("# Test")
 
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         summary = retriever.analyze_session("test-session-1")
 
@@ -266,16 +254,10 @@ class TestCopilotSessionRetriever:
         """Test processing multiple sessions in batches."""
         populate_test_db(temp_db, sample_session_data)
 
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         session_ids = ["test-session-1", "test-session-2"]
-        summaries = retriever.process_sessions_in_batches(
-            session_ids,
-            batch_size=2
-        )
+        summaries = retriever.process_sessions_in_batches(session_ids, batch_size=2)
 
         assert len(summaries) == 2
         assert all(isinstance(s, SessionSummary) for s in summaries)
@@ -284,10 +266,7 @@ class TestCopilotSessionRetriever:
         """Test report generation."""
         populate_test_db(temp_db, sample_session_data)
 
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         summary = retriever.analyze_session("test-session-1")
         report = retriever.generate_report([summary])
@@ -313,7 +292,7 @@ class TestCopilotSessionRetriever:
                 session_id="test",
                 timestamp="2026-02-05T08:00:00Z",
                 role="assistant",
-                message=message
+                message=message,
             )
 
             files = retriever.extract_expected_files([log])
@@ -327,10 +306,7 @@ class TestCopilotSessionRetriever:
 
     def test_empty_database(self, temp_db, temp_repo):
         """Test handling of empty database."""
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         # Schema should be auto-created
         retriever._create_schema()
@@ -343,10 +319,7 @@ class TestCopilotSessionRetriever:
 
     def test_missing_session(self, temp_db, temp_repo):
         """Test handling of missing session."""
-        retriever = CopilotSessionRetriever(
-            db_path=str(temp_db),
-            repo_root=str(temp_repo)
-        )
+        retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
         # Schema should be auto-created
         retriever._create_schema()

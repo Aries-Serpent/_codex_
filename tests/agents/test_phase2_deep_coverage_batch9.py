@@ -12,7 +12,6 @@ Systematically applies integration and exception handling:
 Target: +3-4% coverage gain (62% → 66%)
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")

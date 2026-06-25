@@ -186,7 +186,7 @@ Comprehensive security scanning combining SAST, dependency checks, and secrets d
 "Need security checks?"
   ├─ "Scan code for vulnerabilities?" → unified-security-scanner (SAST)
   ├─ "Check dependencies?" → unified-security-scanner (dependency)
-  ├─ "Detect secrets?" → unified-security-scanner (secrets)
+  ├─ "Detect secrets?" → unified-security-scanner (secrets)  # pragma: allowlist secret
   ├─ "Resolve CodeQL alerts?" → unified-security-scanner (CodeQL)
   └─ "Full security audit?" → unified-security-scanner (audit)
 ```
@@ -300,7 +300,7 @@ Task: "Diagnose and heal all CI failures in workflow run #12345"
 
 ## Performance Characteristics Summary
 
-| Agent | Runtime | Model | Parallel | Tokens |
+| Agent | Runtime | Model | Parallel | Tokens | <!-- pragma: allowlist secret -->
 |-------|---------|-------|----------|--------|
 | unified-coverage-agent | 5-15m | Haiku | Yes | 2K-5K |
 | unified-doc-agent | 10-30m | Sonnet | Limited | 3K-8K |
@@ -327,4 +327,3 @@ Task: "Diagnose and heal all CI failures in workflow run #12345"
 - **Phase:** D Integration
 - **Authority:** @mbaetiong
 - **Next Review:** 2026-06-22T12:00Z
-

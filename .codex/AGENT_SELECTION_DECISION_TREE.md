@@ -115,8 +115,8 @@ START: What is your goal?
   │  └─ "Specific vulnerability type"
   │     ├─ "CodeQL alerts"
   │     │  └─ → codeql-alert-resolution-agent
-  │     ├─ "Secret leaks"
-  │     │  └─ → secret-detection-agent
+  │     ├─ "Secret leaks"  # pragma: allowlist secret
+  │     │  └─ → secret-detection-agent  # pragma: allowlist secret
   │     ├─ "Dependency vulns"
   │     │  └─ → dependency-vulnerability-scanner
   │     └─ "Custom scanning"
@@ -322,4 +322,3 @@ START: What is your goal?
 - **Decision Points:** 8 branches, 40+ leaf nodes
 - **Authority:** @mbaetiong
 - **Next Update:** 2026-06-22T12:00Z
-

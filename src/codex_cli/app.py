@@ -33,7 +33,7 @@ try:  # pragma: no cover - prefer Typer when available
     import typer as _typer
 
     _USE_TYPER = True
-except Exception:  # pragma: no cover - Typer shadowed/unavailable
+except (ImportError, AttributeError):  # pragma: no cover - Typer shadowed/unavailable
     _USE_TYPER = False
 
 if _USE_TYPER:
@@ -44,7 +44,7 @@ else:  # pragma: no cover - click fallback
 
     echo = _click.echo
 
-    class Exit(SystemExit):  # type: ignore[no-redef]
+    class Exit(SystemExit):
         def __init__(self, code: int = 0) -> None:
             super().__init__(code)
 
@@ -55,7 +55,7 @@ def _track_smoke_impl(dir_path: Optional[Path]) -> None:
     os.environ["MLFLOW_TRACKING_URI"] = uri
     try:
         import mlflow  # optional runtime dependency
-    except Exception as exc:  # pragma: no cover - optional dependency missing
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
         echo(f"MLflow not available: {exc}")
         raise Exit(code=1) from exc
     target.mkdir(parents=True, exist_ok=True)
@@ -74,10 +74,10 @@ def _split_smoke_impl(seed: int) -> None:
         if generator is None:
             raise AttributeError()
         order = torch.randperm(total, generator=torch.Generator().manual_seed(int(seed)))
-    except Exception as exc:  # pragma: no cover - optional dependency missing
+    except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency missing
         try:
             import random
-        except Exception as err:
+        except (ImportError, AttributeError) as err:
             logger.warning("Exception occurred", exc_info=True)
             echo(f"torch unavailable: {exc}")
             raise Exit(code=1) from err
@@ -96,7 +96,7 @@ def _checkpoint_smoke_impl(out_dir: Path) -> None:
 
         if not hasattr(torch, "nn"):
             raise AttributeError("torch.nn unavailable")
-    except Exception as exc:  # pragma: no cover - optional dependency missing
+    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
         out_dir.mkdir(parents=True, exist_ok=True)
         path = out_dir / "epoch1-metric0.500000.pt"
         path.write_bytes(b"stub")
@@ -137,8 +137,9 @@ if _USE_TYPER:
                         elif stripped:
                             break
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"OSError: <ERROR_TYPE>")
+                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
         return entries
@@ -146,14 +147,15 @@ if _USE_TYPER:
     def _load_yaml(path: Path) -> dict:
         try:
             import yaml
-        except Exception as exc:  # pragma: no cover - optional dependency missing
+        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
             raise Exit(code=1) from exc
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1) from exc
         if not isinstance(data, dict):
@@ -176,8 +178,9 @@ if _USE_TYPER:
             try:
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
-                logger.debug(f"ValueError: {e}")
-                logger.warning(f"ValueError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"ValueError: <ERROR_TYPE>")
+                logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")
 
@@ -252,7 +255,7 @@ if _USE_TYPER:
     def version() -> None:
         try:
             from . import __version__
-        except Exception:  # pragma: no cover - defensive fallback
+        except (IOError, OSError):  # pragma: no cover - defensive fallback
             __version__ = "unknown"
         echo(__version__)
 
@@ -300,8 +303,9 @@ else:  # pragma: no cover - click fallback
                         elif stripped:
                             break
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"OSError: <ERROR_TYPE>")
+                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
         return entries
@@ -309,14 +313,15 @@ else:  # pragma: no cover - click fallback
     def _load_yaml(path: Path) -> dict:
         try:
             import yaml
-        except Exception as exc:  # pragma: no cover - optional dependency missing
+        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
             raise Exit(code=1) from exc
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1) from exc
         if not isinstance(data, dict):
@@ -328,7 +333,7 @@ else:  # pragma: no cover - click fallback
     def version() -> None:
         try:
             from . import __version__
-        except Exception:  # pragma: no cover - defensive fallback
+        except (ImportError, AttributeError):  # pragma: no cover - defensive fallback
             __version__ = "unknown"
         echo(__version__)
 
@@ -384,8 +389,9 @@ else:  # pragma: no cover - click fallback
             try:
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
-                logger.debug(f"ValueError: {e}")
-                logger.warning(f"ValueError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"ValueError: <ERROR_TYPE>")
+                logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")
 

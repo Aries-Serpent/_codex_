@@ -59,16 +59,19 @@ class TestEvaluationErrors:
         """Test EvaluationDependencyError is an ImportError."""
         # Import and verify it exists
         from codex_ml.eval.fallback import EvaluationDependencyError
+
         assert issubclass(EvaluationDependencyError, ImportError)
 
     def test_metric_error_is_valueerror(self):
         """Test MetricError is a ValueError."""
         from codex_ml.eval.metrics import MetricError
+
         assert issubclass(MetricError, ValueError)
 
     def test_evaluation_error_is_runtime_error(self):
         """Test EvaluationError is a RuntimeError."""
         from codex_ml.eval.run_eval import EvaluationError
+
         assert issubclass(EvaluationError, RuntimeError)
 
 
@@ -246,6 +249,7 @@ class TestModelFactory:
         """Test model factory can be imported."""
         try:
             from codex_ml.modeling import factory
+
             assert factory is not None
         except ImportError:
             pytest.skip("Factory module not available")
@@ -254,6 +258,7 @@ class TestModelFactory:
         """Test CodexModel can be imported."""
         try:
             from codex_ml.modeling.codex_model import CodexModel
+
             assert CodexModel is not None
         except ImportError:
             pytest.skip("CodexModel not available")
@@ -347,7 +352,7 @@ class TestTextProcessing:
         # Should not raise
         try:
             _summarise_log(str(log_path))
-        except Exception as _err:
+        except (IOError, OSError) as _err:
             # May fail depending on implementation
             pass
 
@@ -376,7 +381,7 @@ class TestEvalEdgeCases:
 
         outcomes = ["tie", "tie", "tie"]
         try:
-            win_rate = calculate_win_rate(outcomes)
+            calculate_win_rate(outcomes)
             # Implementation dependent
         except ValueError:
             # May not accept 'tie' as outcome
@@ -415,7 +420,7 @@ class TestEvalErrorHandling:
 
         # Should handle gracefully or raise appropriate error
         try:
-            ppl = perplexity(predictions, targets)
+            perplexity(predictions, targets)
         except (ValueError, RuntimeError):
             pass
 

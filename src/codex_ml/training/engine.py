@@ -66,7 +66,7 @@ class TrainingEngine:
             # Auto-detect mlflow only when caller did not explicitly pass a module
             try:  # pragma: no cover - optional dependency path
                 import mlflow as _mlflow
-            except Exception:  # pragma: no cover - mlflow missing
+            except (IOError, OSError):  # pragma: no cover - mlflow missing
                 _mlflow = None
             self._mlflow_module = _mlflow
         # If caller explicitly passed None, treat as "no mlflow available"

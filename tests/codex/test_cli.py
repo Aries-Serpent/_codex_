@@ -19,11 +19,13 @@ class TestCLIBasics:
     def test_cli_module_imports(self):
         """Test that CLI module can be imported."""
         from codex.cli import main
+
         assert callable(main)
 
     def test_cli_main_function_exists(self):
         """Test that main entry point exists."""
         from codex.cli.main import main
+
         assert callable(main)
 
 

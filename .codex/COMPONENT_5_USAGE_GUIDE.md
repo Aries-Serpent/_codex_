@@ -88,7 +88,7 @@ After the "Session Context Pre-load" step runs, these variables are available:
     CURRENT=$(date -u +%s)
     GENERATED_EPOCH=$(date -u -d "$GENERATED" +%s)
     AGE=$((CURRENT - GENERATED_EPOCH))
-    
+
     if [ "$AGE" -gt 86400 ]; then
       echo "::warning::Context is older than 24 hours"
       # Regenerate if needed
@@ -106,7 +106,7 @@ After the "Session Context Pre-load" step runs, these variables are available:
   run: |
     RECOMMENDED=$SESSION_CONTEXT_RECOMMENDATIONS
     echo "System recommends delegating $RECOMMENDED agents"
-    
+
     if [ "$RECOMMENDED" -gt 0 ]; then
       gh workflow run adaptive-agent-delegation.yml \
         -f delegation_mode=recommended
@@ -126,11 +126,11 @@ After the "Session Context Pre-load" step runs, these variables are available:
   run: |
     AGENTS_COUNT=$SESSION_CONTEXT_AGENTS_COUNT
     PHASE=$SESSION_CONTEXT_PHASE
-    
+
     # Calculate how many more agents we can run
     MAX_AGENTS=5
     AVAILABLE=$((MAX_AGENTS - AGENTS_COUNT))
-    
+
     if [ "$AVAILABLE" -gt 0 ]; then
       echo "Delegating $AVAILABLE new agents for phase $PHASE"
       gh workflow run adaptive-agent-delegation.yml \
@@ -147,7 +147,7 @@ After the "Session Context Pre-load" step runs, these variables are available:
 - name: Allocate Resources Based on Patterns
   run: |
     PATTERN_COUNT=$SESSION_CONTEXT_PATTERNS
-    
+
     if [ "$PATTERN_COUNT" -lt 3 ]; then
       CONCURRENCY=2
       TIMEOUT=30
@@ -158,7 +158,7 @@ After the "Session Context Pre-load" step runs, these variables are available:
       CONCURRENCY=8
       TIMEOUT=60
     fi
-    
+
     echo "CONCURRENCY=$CONCURRENCY" >> $GITHUB_ENV
     echo "TIMEOUT=$TIMEOUT" >> $GITHUB_ENV
 ```
@@ -169,7 +169,7 @@ After the "Session Context Pre-load" step runs, these variables are available:
 - name: Route Based on Phase
   run: |
     PHASE=$SESSION_CONTEXT_PHASE
-    
+
     case "$PHASE" in
       "Phase 1.*")
         echo "Running phase 1 validations..."

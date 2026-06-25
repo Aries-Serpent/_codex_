@@ -12,7 +12,6 @@ Systematically applies memory and cognitive patterns:
 Target: +4-5% coverage gain (52% → 57%)
 """
 
-
 import pytest
 
 pytest.importorskip("numpy", reason="numpy not installed")
@@ -135,7 +134,9 @@ class TestPhase2_MentalMapping:
 
         ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
-        node = MentalNode(node_id="concept_test", node_type=NodeType.CONCEPT, content="test concept", timestamp=ts)
+        node = MentalNode(
+            node_id="concept_test", node_type=NodeType.CONCEPT, content="test concept", timestamp=ts
+        )
         mental_map.add_node(node)
         assert "concept_test" in mental_map.nodes
 
@@ -147,8 +148,12 @@ class TestPhase2_MentalMapping:
 
         ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
-        mental_map.add_node(MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="c1", timestamp=ts))
-        mental_map.add_node(MentalNode(node_id="c2", node_type=NodeType.CONCEPT, content="c2", timestamp=ts))
+        mental_map.add_node(
+            MentalNode(node_id="c1", node_type=NodeType.CONCEPT, content="c1", timestamp=ts)
+        )
+        mental_map.add_node(
+            MentalNode(node_id="c2", node_type=NodeType.CONCEPT, content="c2", timestamp=ts)
+        )
         mental_map.connect_nodes(source_id="c1", target_id="c2")
         assert len(mental_map.edges) == 1
 
@@ -178,7 +183,14 @@ class TestPhase2_MentalMapping:
 
         ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
-        mental_map.add_node(MentalNode(node_id="act_node", node_type=NodeType.CONCEPT, content="activation test", timestamp=ts))
+        mental_map.add_node(
+            MentalNode(
+                node_id="act_node",
+                node_type=NodeType.CONCEPT,
+                content="activation test",
+                timestamp=ts,
+            )
+        )
         # think_through_problem is the activation/spreading mechanism
         assert hasattr(mental_map, "think_through_problem")
 

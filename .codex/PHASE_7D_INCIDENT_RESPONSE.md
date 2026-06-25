@@ -166,7 +166,7 @@ SELECT client_addr, count(*) FROM pg_stat_activity GROUP BY client_addr;
 SQL
 
 # Check slow queries holding locks
-SELECT pid, query, query_start FROM pg_stat_activity 
+SELECT pid, query, query_start FROM pg_stat_activity
 WHERE state = 'active' AND query_start < now() - interval '5 min';
 
 # Check for idle transactions
@@ -266,12 +266,12 @@ kubectl exec $POD_NAME -- nc -zv api.external.com 443
 curl http://codex-ml/model/info
 
 # Compare recent predictions vs baseline
-SELECT avg(confidence) as accuracy FROM predictions 
+SELECT avg(confidence) as accuracy FROM predictions
 WHERE created_at > now() - interval '1 hour'
 GROUP BY created_at;
 
 # Check for data quality issues
-SELECT count(*) FROM training_data 
+SELECT count(*) FROM training_data
 WHERE quality_score < 0.5 AND created_at > now() - interval '24 hours';
 
 # Check for model drift
@@ -444,12 +444,12 @@ echo "[Step 6] Monitoring post-rollback metrics..."
 for i in {1..60}; do
   ERROR_RATE=$(curl -s 'http://prometheus:9090/api/v1/query?query=rate(http_requests_total{status=~"5.."}[5m])' | \
     jq '.data.result[0].value[1]' 2>/dev/null || echo "0")
-  
+
   if (( $(echo "$ERROR_RATE < 0.01" | bc -l) )); then
     echo "✓ Error rate normalizing: ${ERROR_RATE}%"
     break
   fi
-  
+
   echo "Error rate: ${ERROR_RATE}% (waiting for stabilization...)"
   sleep 1
 done

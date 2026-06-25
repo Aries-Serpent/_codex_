@@ -37,7 +37,7 @@
   # Added step:
   - name: Install PyYAML (required by setup-python-cached)
     run: pip install pyyaml --quiet
-  
+
   # Reordered steps:
   1. Set up Python (standard action)
   2. Install PyYAML

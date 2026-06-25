@@ -11,15 +11,15 @@ from typing import Any, Optional
 
 try:  # pragma: no cover - optional transformers dependency
     from transformers import BitsAndBytesConfig
-except Exception:  # pragma: no cover - transformers/quantization optional
-    BitsAndBytesConfig = None  # type: ignore[assignment, misc]
+except (ImportError, AttributeError):  # pragma: no cover - transformers/quantization optional
+    BitsAndBytesConfig = None
 
 from .peft_hooks import LoraBuildCfg, build_lora
 
 try:  # pragma: no cover - optional dependency
     import torch
-except Exception:  # pragma: no cover - torch optional in lightweight envs
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - torch optional in lightweight envs
+    torch = None
 
 logger = logging.getLogger(__name__)
 
@@ -135,12 +135,14 @@ def _call_builder(builder: Callable[..., Any], params: MutableMapping[str, Any])
     try:
         return builder(**params)
     except TypeError as exc:
-        logger.debug(f"TypeError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
         try:
             return builder(dict(params))
         except TypeError as e:
-            logger.debug(f"TypeError: {e}")
-            logger.warning(f"TypeError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"TypeError: <ERROR_TYPE>")
+            logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
             raise exc from e
 
 
@@ -261,7 +263,8 @@ def create_model(
                 validate_lora_config(lora_payload) if lora_payload is not None else LoraBuildCfg()
             )
         except ValueError as exc:
-            logger.debug(f"ValueError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
             logger.warning("Invalid LoRA configuration: %s. Disabling PEFT.", exc)
             lora_config = None
         if lora_config is not None:

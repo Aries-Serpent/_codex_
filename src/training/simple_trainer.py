@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch
-except Exception:  # pragma: no cover - handle missing torch lazily
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - handle missing torch lazily
+    torch = None
 
 
 class SimpleTrainer:

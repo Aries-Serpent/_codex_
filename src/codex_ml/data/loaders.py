@@ -33,13 +33,12 @@ from typing import Any, Optional  # noqa: E402
 from codex_ml.connectors.base import ConnectorError  # noqa: E402
 from codex_ml.connectors.registry import get_connector  # noqa: E402
 from codex_ml.data.loader import load_dataset as _load_text_dataset  # noqa: E402
-from codex_ml.safety.filters import SafetyFilters, SafetyResult  # noqa: E402
 from codex_ml.safety.filters import (  # noqa: E402
-    sanitize_output as filter_sanitize_output,
+    SafetyFilters,
+    SafetyResult,
 )
-from codex_ml.safety.filters import (  # noqa: E402
-    sanitize_prompt as filter_sanitize_prompt,
-)
+from codex_ml.safety.filters import sanitize_output as filter_sanitize_output  # noqa: E402
+from codex_ml.safety.filters import sanitize_prompt as filter_sanitize_prompt  # noqa: E402
 from codex_ml.utils.error_log import log_error  # noqa: E402
 
 __all__ = [
@@ -74,8 +73,9 @@ def _resolve_connector_cache_root() -> Path:
         try:
             return Path(override).expanduser().resolve()
         except OSError as e:
-            logger.debug(f"OSError: {e}")
-            logger.warning(f"OSError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"OSError: <ERROR_TYPE>")
+            logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
             return Path(override).expanduser()
     return _DEFAULT_CONNECTOR_CACHE
 
@@ -84,8 +84,9 @@ def _run_connector_coro(coro):
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError as e:
-        logger.debug(f"RuntimeError: {e}")
-        logger.warning(f"RuntimeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"RuntimeError: <ERROR_TYPE>")
+        logger.warning(f"RuntimeError: <ERROR_TYPE>", exc_info=True)
         return asyncio.run(coro)
     if loop.is_running():  # pragma: no cover - defensive for event-loop environments
         new_loop = asyncio.new_event_loop()
@@ -108,7 +109,8 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
     try:
         connector = get_connector(name)
     except KeyError as exc:
-        logger.debug(f"KeyError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"KeyError: <ERROR_TYPE>")
         raise ValueError(f"unknown connector: {name}") from exc
 
     cache_base = (cache_root or _resolve_connector_cache_root()).expanduser() / name
@@ -124,7 +126,8 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         else:
             remote_files = list(_run_connector_coro(connector.list_files(normalized)))
     except ConnectorError as exc:
-        logger.debug(f"ConnectorError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ConnectorError: <ERROR_TYPE>")
         raise RuntimeError(f"connector list failed for {uri}: {exc}") from exc
 
     if not remote_files:
@@ -140,7 +143,8 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         try:
             payload = _run_connector_coro(connector.read_file(remote_file))
         except ConnectorError as exc:
-            logger.debug(f"ConnectorError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ConnectorError: <ERROR_TYPE>")
             raise RuntimeError(f"connector read failed for {uri}: {exc}") from exc
         destination.write_bytes(payload)
         materialized.append(destination)
@@ -169,7 +173,7 @@ def load_jsonl(path: str | Path) -> tuple[list[dict[str, Any]], dict[str, Any]]:
                 continue
             try:
                 obj = json.loads(line)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 skipped += 1
                 continue
@@ -202,7 +206,7 @@ def _normalize_csv_value(value: Any) -> Any:
         if "\\" in value:
             try:
                 return codecs.decode(value, "unicode_escape")
-            except Exception:
+            except (IOError, OSError):
                 return value.replace('\\"', '"')
         return value
     return value
@@ -442,13 +446,13 @@ def _coerce_filters(value: Any) -> SafetyFilters | None:
     if value is True:
         try:
             return SafetyFilters.from_defaults()
-        except Exception:  # pragma: no cover - defensive
+        except (IOError, OSError):  # pragma: no cover - defensive
             return None
 
     if isinstance(value, (str, Path)):
         try:
             return SafetyFilters.from_policy_file(value)
-        except Exception:  # pragma: no cover - defensive
+        except (IOError, OSError):  # pragma: no cover - defensive
             return None
 
     if isinstance(value, Mapping):
@@ -460,7 +464,7 @@ def _coerce_filters(value: Any) -> SafetyFilters | None:
         if policy_path:
             try:
                 return SafetyFilters.from_policy_file(policy_path)
-            except Exception:  # pragma: no cover - defensive
+            except (IOError, OSError):  # pragma: no cover - defensive
                 return None
 
         if enabled:
@@ -535,7 +539,7 @@ def _log_safety_decision(path: Path, prompt: SafetyResult, completion: SafetyRes
             ensure_ascii=False,
         )
         log_error("data.safety", "dataset sample sanitized", context)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Logging should not interfere with dataset streaming.
 

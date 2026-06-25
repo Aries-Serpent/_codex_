@@ -20,7 +20,7 @@ try:
     import tomllib as _toml  # Python >=3.11
 
     _BINARY_REQUIRED = True
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     import tomli as _toml  # type: ignore
 
     _BINARY_REQUIRED = False
@@ -42,8 +42,8 @@ def load(fp: IO[bytes] | IO[str]) -> Any:
     if _BINARY_REQUIRED:
         # Ensure binary mode for tomllib
         if hasattr(fp, "read") and isinstance(getattr(fp, "read", None), object):
-            return _toml.load(fp)  # type: ignore[arg-type]
-    return _toml.load(fp)  # type: ignore[arg-type]
+            return _toml.load(fp)
+    return _toml.load(fp)
 
 
 def loads(s: str | bytes) -> Any:

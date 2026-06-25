@@ -14,7 +14,7 @@ class TestConfigUtils:
 
     def test_load_config_valid_file(self):
         """Test loading a valid config file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write("test: value\nkey: 123")
             f.flush()
             # Would test actual load_yaml here
@@ -27,7 +27,7 @@ class TestConfigUtils:
 
     def test_load_config_invalid_yaml(self):
         """Test handling of invalid YAML syntax."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
             f.write("invalid: yaml: content: [")  # Invalid YAML
             f.flush()
             # Would test error handling here
@@ -70,5 +70,5 @@ class TestConfigUtils:
         pass
 
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

@@ -16,6 +16,7 @@ from codex.auth.mfa_provider import MFAProvider
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def mfa_provider():
     """Create an MFA provider."""
@@ -31,6 +32,7 @@ def test_user_id():
 # ============================================================================
 # TOTP Enrollment Tests
 # ============================================================================
+
 
 class TestMFAEnrollment:
     """Test MFA enrollment functionality."""
@@ -57,7 +59,7 @@ class TestMFAEnrollment:
 
     def test_enrolled_user_stored(self, mfa_provider, test_user_id):
         """Test that enrolled user is stored."""
-        secret = mfa_provider.enroll_user(test_user_id)
+        mfa_provider.enroll_user(test_user_id)
         # After enrollment, user should be enrolled
         assert mfa_provider.is_user_enrolled(test_user_id)
 
@@ -72,6 +74,7 @@ class TestMFAEnrollment:
 # TOTP Verification Tests
 # ============================================================================
 
+
 class TestMFAVerification:
     """Test MFA verification functionality."""
 
@@ -80,6 +83,7 @@ class TestMFAVerification:
         secret = mfa_provider.enroll_user(test_user_id)
         # Generate a valid code
         import pyotp
+
         totp = pyotp.TOTP(secret)
         valid_code = totp.now()
 
@@ -89,7 +93,7 @@ class TestMFAVerification:
 
     def test_verify_invalid_totp_code(self, mfa_provider, test_user_id):
         """Test verification of invalid TOTP code."""
-        secret = mfa_provider.enroll_user(test_user_id)
+        mfa_provider.enroll_user(test_user_id)
 
         # Invalid code should fail
         is_valid = mfa_provider.verify_totp(test_user_id, "000000")
@@ -116,6 +120,7 @@ class TestMFAVerification:
         """Test verification with spaces in code."""
         secret = mfa_provider.enroll_user(test_user_id)
         import pyotp
+
         totp = pyotp.TOTP(secret)
         valid_code = totp.now()
 
@@ -129,6 +134,7 @@ class TestMFAVerification:
 # ============================================================================
 # Enrollment Status Tests
 # ============================================================================
+
 
 class TestEnrollmentStatus:
     """Test enrollment status checking."""
@@ -156,6 +162,7 @@ class TestEnrollmentStatus:
 # Backup Codes Tests
 # ============================================================================
 
+
 class TestBackupCodes:
     """Test backup codes functionality."""
 
@@ -182,7 +189,9 @@ class TestBackupCodes:
         """Test verifying backup codes."""
         mfa_provider.enroll_user(test_user_id)
 
-        if hasattr(mfa_provider, "generate_backup_codes") and hasattr(mfa_provider, "verify_backup_code"):
+        if hasattr(mfa_provider, "generate_backup_codes") and hasattr(
+            mfa_provider, "verify_backup_code"
+        ):
             codes = mfa_provider.generate_backup_codes(test_user_id)
             if codes:
                 # Verify first code
@@ -193,6 +202,7 @@ class TestBackupCodes:
 # ============================================================================
 # Unenrollment Tests
 # ============================================================================
+
 
 class TestMFAUnenrollment:
     """Test MFA unenrollment functionality."""
@@ -218,6 +228,7 @@ class TestMFAUnenrollment:
 # ============================================================================
 # Edge Cases Tests
 # ============================================================================
+
 
 class TestMFAEdgeCases:
     """Test edge cases in MFA."""
@@ -251,6 +262,7 @@ class TestMFAEdgeCases:
         secret = mfa_provider.enroll_user(test_user_id)
         # TOTP secrets should be base32 encoded
         import pyotp
+
         try:
             totp = pyotp.TOTP(secret)
             # Should be able to generate code
@@ -263,6 +275,7 @@ class TestMFAEdgeCases:
 # ============================================================================
 # Integration Tests
 # ============================================================================
+
 
 class TestMFAIntegration:
     """Integration tests for MFA provider."""
@@ -278,6 +291,7 @@ class TestMFAIntegration:
 
         # Generate and verify code
         import pyotp
+
         totp = pyotp.TOTP(secret)
         code = totp.now()
 
@@ -300,6 +314,7 @@ class TestMFAIntegration:
 
         # Verify codes for all users
         import pyotp
+
         for user_id in users:
             totp = pyotp.TOTP(secrets[user_id])
             code = totp.now()

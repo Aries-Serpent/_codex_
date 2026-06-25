@@ -45,7 +45,7 @@ class TestFixGenerator:
         """Test fix for eval/exec vulnerability."""
         context = FixContext(
             file_path="test.py",
-            code='result = eval(user_input)',
+            code="result = eval(user_input)",
             vulnerability_type="eval_usage",
             risk_score=0.90,
             line_numbers=[15],
@@ -63,7 +63,7 @@ class TestFixGenerator:
         """Test fix for unsafe pickle usage."""
         context = FixContext(
             file_path="test.py",
-            code='data = pickle.loads(user_data)',
+            code="data = pickle.loads(user_data)",
             vulnerability_type="pickle_usage",
             risk_score=0.80,
             line_numbers=[20],
@@ -80,7 +80,7 @@ class TestFixGenerator:
         """Test fix for weak cryptography."""
         context = FixContext(
             file_path="test.py",
-            code='hash_value = hashlib.md5(data).hexdigest()',
+            code="hash_value = hashlib.md5(data).hexdigest()",
             vulnerability_type="weak_crypto_md5",
             risk_score=0.70,
             line_numbers=[25],
@@ -98,7 +98,7 @@ class TestFixGenerator:
         """Test fix for XML parser vulnerability."""
         context = FixContext(
             file_path="test.py",
-            code='import xml.etree.ElementTree as ET\ntree = ET.parse(file)',
+            code="import xml.etree.ElementTree as ET\ntree = ET.parse(file)",
             vulnerability_type="xml_parsing",
             risk_score=0.85,
             line_numbers=[30],
@@ -116,7 +116,7 @@ class TestFixGenerator:
         """Test generation of multiple fix options."""
         context = FixContext(
             file_path="test.py",
-            code='subprocess.run(cmd, shell=True)',
+            code="subprocess.run(cmd, shell=True)",
             vulnerability_type="shell_injection",
             risk_score=0.85,
             line_numbers=[10],
@@ -360,10 +360,10 @@ class TestIntegration:
 
         test_cases = [
             ('subprocess.run("ls", shell=True)', "shell_injection"),
-            ('eval(user_input)', "eval_usage"),
-            ('hashlib.md5(data)', "weak_crypto"),
-            ('pickle.loads(data)', "pickle_usage"),
-            ('xml.etree.ElementTree.parse(file)', "xml_parsing"),
+            ("eval(user_input)", "eval_usage"),
+            ("hashlib.md5(data)", "weak_crypto"),
+            ("pickle.loads(data)", "pickle_usage"),
+            ("xml.etree.ElementTree.parse(file)", "xml_parsing"),
         ]
 
         successful = 0
@@ -411,7 +411,7 @@ class TestIntegration:
         # Start with conservative fix
         context = FixContext(
             file_path="test.py",
-            code='result = eval(user_input)',
+            code="result = eval(user_input)",
             vulnerability_type="eval_usage",
             risk_score=0.90,
             line_numbers=[15],
@@ -430,7 +430,7 @@ class TestIntegration:
         # High confidence fix (simple substitution)
         high_conf_context = FixContext(
             file_path="test.py",
-            code='hash_value = hashlib.md5(data).hexdigest()',
+            code="hash_value = hashlib.md5(data).hexdigest()",
             vulnerability_type="weak_crypto_md5",
             risk_score=0.70,
             line_numbers=[25],
@@ -443,7 +443,7 @@ class TestIntegration:
         # Lower confidence fix (complex removal)
         low_conf_context = FixContext(
             file_path="test.py",
-            code='result = eval(complex_expression)',
+            code="result = eval(complex_expression)",
             vulnerability_type="eval_usage",
             risk_score=0.90,
             line_numbers=[15],
@@ -523,7 +523,7 @@ class TestIntegration:
         generator = IntelligentFixGenerator()
         context = FixContext(
             file_path="test.py",
-            code='cmd = user_input\nsubprocess.run(cmd, shell=True)',
+            code="cmd = user_input\nsubprocess.run(cmd, shell=True)",
             vulnerability_type="shell_injection",
             risk_score=0.85,
             line_numbers=[10, 11],

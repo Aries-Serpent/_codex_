@@ -20,7 +20,10 @@ from typing import Any, Optional, TypeVar  # noqa: E402
 from codex_ml.config import DataConfig, EvaluationConfig  # noqa: E402
 from codex_ml.data.loader import CacheManifest  # noqa: E402
 from codex_ml.eval import metrics  # noqa: E402
-from codex_ml.metrics.registry import append_error_entry, list_metrics  # noqa: E402
+from codex_ml.metrics.registry import (
+    append_error_entry,  # noqa: E402
+    list_metrics,  # noqa: E402
+)
 from codex_ml.metrics.registry import get as get_registered_metric  # noqa: E402
 from codex_ml.metrics.sinks import create_sink  # noqa: E402
 from codex_ml.registry.base import RegistryNotFoundError  # noqa: E402
@@ -49,7 +52,7 @@ def _append_error_report(
     reports_dir = Path("_codex_reports")
     try:
         reports_dir.mkdir(parents=True, exist_ok=True)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # If error reporting fails we swallow the exception to avoid cascading failures.
         return
@@ -58,7 +61,7 @@ def _append_error_report(
     try:
         context_payload = context or {}
         context_str = json.dumps(context_payload, sort_keys=True, default=str)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         context_str = repr(context)
 
@@ -76,7 +79,7 @@ def _append_error_report(
     try:
         with error_file.open("a", encoding="utf-8") as fh:
             fh.write("\n".join(block_lines))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Suppress logging failures to keep evaluation running.
         return
@@ -92,7 +95,7 @@ def _safe_operation(
 
     try:
         return operation()
-    except Exception as exc:  # pragma: no cover - defensive logging path
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive logging path
         message = f"{exc.__class__.__name__}: {exc}"
         _append_error_report(step_name, message, context)
         raise
@@ -199,7 +202,8 @@ def _coerce_token_sequence(record: dict[str, Any], key: str, index: int) -> list
     try:
         coerced = [int(token) for token in tokens]
     except (TypeError, ValueError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         raise EvaluationError(f"Record {index} has invalid '{key}' values: {exc}") from exc
     return coerced
 
@@ -279,11 +283,13 @@ def _invoke_registry_metric(
         try:
             return attempt()
         except TypeError as exc:
-            logger.debug(f"TypeError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"TypeError: <ERROR_TYPE>")
             last_type_error = exc
             continue
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (ValueError, RuntimeError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             append_error_entry(
                 "metric.execute",
                 str(exc),
@@ -320,16 +326,18 @@ def _compute_metrics(
                     registered_name,
                     get_registered_metric(registered_name),
                 )
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (ValueError, TypeError, RuntimeError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 append_error_entry(
                     "metric-registry.load",
                     str(exc),
                     f"metric={registered_name}",
                     "Should this registry metric be reviewed or disabled?",
                 )
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (ValueError, TypeError, RuntimeError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         append_error_entry(
             "metric-registry.enumerate",
             str(exc),
@@ -603,14 +611,16 @@ def run_evaluation(
 
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # Silently ignore param logging errors
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore MLflow errors
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)  # Silently ignore MLflow errors
 
     # For the pluggable sink feature, use the first sink if multiple are specified
     # The remaining sinks will be handled by the dedicated writers later
@@ -651,8 +661,9 @@ def run_evaluation(
                 sink_fp,
                 fieldnames=fieldnames if sink_kind == "csv" else None,
             )
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (ImportError, AttributeError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
 
@@ -661,7 +672,7 @@ def run_evaluation(
         from codex_ml.utils.determinism import set_global_determinism
 
         set_global_determinism(1337)
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         # Determinism module not available or failed to initialize
 
@@ -671,7 +682,7 @@ def run_evaluation(
 
         _jl = JsonLogger("artifacts/logs/eval.ndjson")
         _jl.write(event="eval_start", metrics_sink=sink_kind)
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         # Logging module not available or failed to initialize
 
@@ -681,7 +692,7 @@ def run_evaluation(
             from tools.perf.sampler import PerfSampler
 
             PerfSampler().run(steps=3)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             # Performance sampler not available or failed
 
@@ -690,8 +701,9 @@ def run_evaluation(
     try:
         run_int = int(run_id, 16)
     except ValueError as e:
-        logger.debug(f"ValueError: {e}")
-        logger.warning(f"ValueError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
+        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
         # Fall back to hashing for non-hexadecimal run_ids
         run_int = int(hashlib.sha256(run_id.encode("utf-8")).hexdigest()[:16], 16)
     seconds_range = 3153600000  # ~100 years in seconds
@@ -860,7 +872,7 @@ def run_evaluation(
 
     manifest_params = {
         "evaluation_metrics": eval_cfg.metrics,
-        "data_config": asdict(data_cfg) if data_cfg and is_dataclass(data_cfg) else None,  # type: ignore[arg-type]
+        "data_config": asdict(data_cfg) if data_cfg and is_dataclass(data_cfg) else None,
     }
 
     manifest = CacheManifest(

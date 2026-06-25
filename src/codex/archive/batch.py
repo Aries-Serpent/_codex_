@@ -196,7 +196,7 @@ class BatchRestore:
         try:
             with _optional_timer(performance_enabled, f"restore:{item.tombstone}") as metrics:
                 decorated(item.tombstone, output_path=item.output, actor=item.actor)
-        except Exception as exc:  # pragma: no cover - exercised in tests
+        except (IOError, OSError) as exc:  # pragma: no cover - exercised in tests
             status = "FAILED"
             detail = str(exc)
         result = {
@@ -206,8 +206,8 @@ class BatchRestore:
             "status": status,
         }
         if metrics is not None and performance_enabled:
-            result["duration_ms"] = round(metrics.duration_ms, 3)  # type: ignore[assignment]
-            result["metrics"] = metrics.to_dict()  # type: ignore[assignment]
+            result["duration_ms"] = round(metrics.duration_ms, 3)
+            result["metrics"] = metrics.to_dict()
         if detail:
             result["detail"] = detail
         return result

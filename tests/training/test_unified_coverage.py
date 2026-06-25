@@ -63,6 +63,7 @@ def sample_training_config():
     """Create a sample UnifiedTrainingConfig for testing."""
     try:
         from codex_ml.training.unified_training import UnifiedTrainingConfig
+
         return UnifiedTrainingConfig(
             model_name="test-model",
             epochs=1,
@@ -88,6 +89,7 @@ class TestModuleImport:
         """Verify unified_training module can be imported."""
         try:
             from codex_ml.training import unified_training
+
             assert unified_training is not None
         except ImportError as e:
             pytest.fail(f"Failed to import unified_training module: {e}")
@@ -96,6 +98,7 @@ class TestModuleImport:
         """Verify UnifiedTrainingConfig can be imported."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             assert UnifiedTrainingConfig is not None
         except ImportError:
             pytest.skip("UnifiedTrainingConfig not available")
@@ -104,6 +107,7 @@ class TestModuleImport:
         """Verify run_unified_training can be imported."""
         try:
             from codex_ml.training.unified_training import run_unified_training
+
             assert callable(run_unified_training)
         except ImportError:
             pytest.skip("run_unified_training not available")
@@ -121,6 +125,7 @@ class TestUnifiedTrainingConfig:
         """Test creating config with default values."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(model_name="test")
             assert config.model_name == "test"
             assert config.epochs >= 1
@@ -131,6 +136,7 @@ class TestUnifiedTrainingConfig:
         """Test creating config with custom values."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(
                 model_name="custom-model",
                 epochs=5,
@@ -158,6 +164,7 @@ class TestUnifiedTrainingConfig:
         """Test config accepts various epoch values."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(model_name="test", epochs=epochs)
             assert config.epochs == epochs
         except ImportError:
@@ -168,6 +175,7 @@ class TestUnifiedTrainingConfig:
         """Test config accepts various batch sizes."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(model_name="test", batch_size=batch_size)
             assert config.batch_size == batch_size
         except ImportError:
@@ -186,6 +194,7 @@ class TestContinualPhase:
         """Test creating a ContinualPhase instance."""
         try:
             from codex_ml.training.unified_training import ContinualPhase
+
             phase = ContinualPhase(name="phase1", epochs=2)
             assert phase.name == "phase1"
             assert phase.epochs == 2
@@ -196,6 +205,7 @@ class TestContinualPhase:
         """Test ContinualPhase with dataset config."""
         try:
             from codex_ml.training.unified_training import ContinualPhase
+
             phase = ContinualPhase(
                 name="phase1",
                 epochs=1,
@@ -209,6 +219,7 @@ class TestContinualPhase:
         """Test ContinualPhase replay_ratio validation."""
         try:
             from codex_ml.training.unified_training import ContinualPhase
+
             # Valid ratio
             phase = ContinualPhase(name="test", replay_ratio=0.5)
             assert phase.replay_ratio == 0.5
@@ -224,6 +235,7 @@ class TestContinualPhase:
         """Test ContinualPhase rejects invalid replay_ratio."""
         try:
             from codex_ml.training.unified_training import ContinualPhase
+
             with pytest.raises(ValueError):
                 ContinualPhase(name="test", replay_ratio=1.5)
             with pytest.raises(ValueError):
@@ -235,6 +247,7 @@ class TestContinualPhase:
         """Test ContinualPhase rejects invalid epochs."""
         try:
             from codex_ml.training.unified_training import ContinualPhase
+
             with pytest.raises(ValueError):
                 ContinualPhase(name="test", epochs=0)
             with pytest.raises(ValueError):
@@ -255,6 +268,7 @@ class TestHelperFunctions:
         """Test _to_plain_container with dict input."""
         try:
             from codex_ml.training.unified_training import _to_plain_container
+
             result = _to_plain_container({"a": 1, "b": {"c": 2}})
             assert result == {"a": 1, "b": {"c": 2}}
         except ImportError:
@@ -264,6 +278,7 @@ class TestHelperFunctions:
         """Test _to_plain_container with list input."""
         try:
             from codex_ml.training.unified_training import _to_plain_container
+
             result = _to_plain_container([1, 2, {"a": 3}])
             assert result == [1, 2, {"a": 3}]
         except ImportError:
@@ -273,6 +288,7 @@ class TestHelperFunctions:
         """Test _to_plain_container with primitive types."""
         try:
             from codex_ml.training.unified_training import _to_plain_container
+
             assert _to_plain_container(42) == 42
             assert _to_plain_container("test") == "test"
             assert _to_plain_container(3.14) == 3.14
@@ -284,6 +300,7 @@ class TestHelperFunctions:
         """Test _materialise_mapping with None input."""
         try:
             from codex_ml.training.unified_training import _materialise_mapping
+
             result = _materialise_mapping(None)
             assert result == {}
         except ImportError:
@@ -293,6 +310,7 @@ class TestHelperFunctions:
         """Test _materialise_mapping with dict input."""
         try:
             from codex_ml.training.unified_training import _materialise_mapping
+
             result = _materialise_mapping({"key": "value"})
             assert result == {"key": "value"}
         except ImportError:
@@ -302,6 +320,7 @@ class TestHelperFunctions:
         """Test _materialise_mapping with invalid type."""
         try:
             from codex_ml.training.unified_training import _materialise_mapping
+
             with pytest.raises(TypeError):
                 _materialise_mapping("not a mapping")
         except ImportError:
@@ -320,6 +339,7 @@ class TestStrategyResolution:
         """Verify resolve_strategy can be imported."""
         try:
             from codex_ml.training.strategies import resolve_strategy
+
             assert callable(resolve_strategy)
         except ImportError:
             pytest.skip("resolve_strategy not available")
@@ -329,6 +349,7 @@ class TestStrategyResolution:
         """Test resolve_strategy with valid backend names."""
         try:
             from codex_ml.training.strategies import resolve_strategy
+
             strategy = resolve_strategy(backend)
             assert strategy is not None
         except ImportError:
@@ -350,6 +371,7 @@ class TestDeviceConfiguration:
         """Verify DeviceConfig can be imported."""
         try:
             from codex_ml.training.device_strategy import DeviceConfig
+
             assert DeviceConfig is not None
         except ImportError:
             pytest.skip("DeviceConfig not available")
@@ -358,6 +380,7 @@ class TestDeviceConfiguration:
         """Verify DeviceMapper can be imported."""
         try:
             from codex_ml.training.device_strategy import DeviceMapper
+
             assert DeviceMapper is not None
         except ImportError:
             pytest.skip("DeviceMapper not available")
@@ -375,6 +398,7 @@ class TestRNGStateManagement:
         """Verify RNGState can be imported."""
         try:
             from codex_ml.training.rng_checkpoint import RNGState
+
             assert RNGState is not None
         except ImportError:
             pytest.skip("RNGState not available")
@@ -392,6 +416,7 @@ class TestCheckpointIntegration:
         """Verify CheckpointMeta can be imported."""
         try:
             from codex_ml.utils.checkpoint_core import CheckpointMeta
+
             assert CheckpointMeta is not None
         except ImportError:
             pytest.skip("CheckpointMeta not available")
@@ -400,6 +425,7 @@ class TestCheckpointIntegration:
         """Verify save_checkpoint can be imported."""
         try:
             from codex_ml.utils.checkpoint_core import save_checkpoint
+
             assert callable(save_checkpoint)
         except ImportError:
             pytest.skip("save_checkpoint not available")
@@ -408,6 +434,7 @@ class TestCheckpointIntegration:
         """Verify load_checkpoint can be imported."""
         try:
             from codex_ml.utils.checkpoint_core import load_checkpoint
+
             assert callable(load_checkpoint)
         except ImportError:
             pytest.skip("load_checkpoint not available")
@@ -429,6 +456,7 @@ class TestMLflowIntegration:
                 log_metric_safe,
                 log_params_safe,
             )
+
             assert callable(init_mlflow_safe)
             assert callable(log_metric_safe)
             assert callable(log_params_safe)
@@ -439,6 +467,7 @@ class TestMLflowIntegration:
         """Test init_mlflow_safe handles missing MLflow gracefully."""
         try:
             from codex_ml.logging.mlflow_guard import init_mlflow_safe
+
             # Should not raise even without MLflow
             init_mlflow_safe(experiment_name="test")
             # Result can be anything - function should complete without error
@@ -459,6 +488,7 @@ class TestTrainingCallbacks:
         """Verify TrainingCallback can be imported."""
         try:
             from codex_ml.training.strategies import TrainingCallback
+
             assert TrainingCallback is not None
         except ImportError:
             pytest.skip("TrainingCallback not available")
@@ -467,6 +497,7 @@ class TestTrainingCallbacks:
         """Verify TrainingResult can be imported."""
         try:
             from codex_ml.training.strategies import TrainingResult
+
             assert TrainingResult is not None
         except ImportError:
             pytest.skip("TrainingResult not available")
@@ -484,6 +515,7 @@ class TestReproducibility:
         """Verify set_seed can be imported."""
         try:
             from codex_ml.utils.repro import set_seed
+
             assert callable(set_seed)
         except ImportError:
             pytest.skip("set_seed not available")
@@ -492,6 +524,7 @@ class TestReproducibility:
         """Verify capture_environment can be imported."""
         try:
             from codex_ml.utils.repro import capture_environment
+
             assert callable(capture_environment)
         except ImportError:
             pytest.skip("capture_environment not available")
@@ -502,6 +535,7 @@ class TestReproducibility:
             import random
 
             from codex_ml.utils.repro import set_seed
+
             set_seed(42)
             val1 = random.random()
             set_seed(42)
@@ -523,6 +557,7 @@ class TestErrorHandling:
         """Test config validation with empty model name."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             # Empty model name may be accepted or rejected
             config = UnifiedTrainingConfig(model_name="")
             assert config.model_name == ""
@@ -533,6 +568,7 @@ class TestErrorHandling:
         """Test config rejects negative batch size."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             # Negative batch size should be rejected
             with pytest.raises((ValueError, TypeError)):
                 UnifiedTrainingConfig(model_name="test", batch_size=-1)
@@ -552,6 +588,7 @@ class TestOutputDirectoryHandling:
         """Test config accepts Path-like output directory."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(
                 model_name="test",
                 output_dir=str(temp_output_dir),
@@ -573,6 +610,7 @@ class TestBackendSelection:
         """Test config accepts functional backend."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(
                 model_name="test",
                 backend="functional",
@@ -585,6 +623,7 @@ class TestBackendSelection:
         """Test config accepts legacy backend."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(
                 model_name="test",
                 backend="legacy",
@@ -607,6 +646,7 @@ class TestGradientClipping:
         """Test config accepts various gradient clipping values."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(
                 model_name="test",
                 grad_clip_norm=grad_clip_norm,
@@ -629,6 +669,7 @@ class TestDataTypeConfiguration:
         """Test config accepts various dtype values."""
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
+
             config = UnifiedTrainingConfig(
                 model_name="test",
                 dtype=dtype,

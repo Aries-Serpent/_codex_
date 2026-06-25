@@ -202,7 +202,7 @@ on:
   schedule:
     # Every Sunday at 2 AM UTC (before Monday deployments)
     - cron: '0 2 * * 0'
-  
+
   # Manual trigger for on-demand warm-up
   workflow_dispatch:
     inputs:
@@ -286,7 +286,7 @@ jobs:
         run: |
           echo "Cache warm-up complete!"
           python -m codex.ci.cache_manager health
-          
+
           # Send Slack notification
           curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
             -H 'Content-Type: application/json' \
@@ -425,27 +425,27 @@ while true; do
   clear
   echo "🔄 Cache Warm-up Progress"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  
+
   # Get job status
   gh run view $RUN_ID --json jobs --jq '.jobs[] | "\(.name): \(.status) (\(.conclusion // "N/A"))"'
-  
+
   echo ""
   echo "💾 Current Cache Size:"
   gh cache list --json sizeInBytes --jq '[.[].sizeInBytes] | add / 1024^3'
-  
+
   echo ""
   echo "⏱️  Run Duration:"
   gh run view $RUN_ID --json createdAt,updatedAt --jq 'now - .createdAt | floor'
-  
+
   # Check if complete
   STATUS=$(gh run view $RUN_ID --json conclusion --jq '.conclusion // "in_progress"')
-  
+
   if [[ "$STATUS" != "in_progress" && "$STATUS" != "null" ]]; then
     echo ""
     echo "✅ Warm-up complete (Status: $STATUS)"
     break
   fi
-  
+
   sleep 10
 done
 ```
@@ -503,7 +503,7 @@ Error: Workflow job timed out after 360 minutes
 jobs:
   warmup-l2:
     timeout-minutes: 60  # Increase from default 360
-    
+
 # Option 2: Split into smaller jobs
 # Run warm-up in multiple stages instead of parallel
 

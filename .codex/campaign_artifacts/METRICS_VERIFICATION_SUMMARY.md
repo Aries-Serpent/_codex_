@@ -263,7 +263,7 @@ Uptime:
   - Last unplanned outage: NONE
   - Last scheduled maintenance: 2026-06-15
   - Current uptime: 100% (since Gate 1 launch)
-  
+
 Performance:
   - Average API latency: 45ms
   - P99 latency: 120ms
@@ -437,4 +437,3 @@ STM_TRIGGER: 0.80 (80% fill)
 HOT_THRESHOLD: 3 (access count for promotion)
 PRUNE_RULE: age > 30d AND confidence < 0.3
 ```
-

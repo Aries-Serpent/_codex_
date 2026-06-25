@@ -39,9 +39,10 @@ def _maybe_cuda_sync() -> None:
 
         if torch.cuda.is_available():
             torch.cuda.synchronize()
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+    except (ImportError, AttributeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 def _target_numpy_matmul(n: int = 2048) -> None:
@@ -178,9 +179,10 @@ def main(argv: list[str] | None = None) -> int:
                         "cuda_sync": not args.no_cuda_sync,
                     }
                 )
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            print(f"[mlflow] skipped: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"[mlflow] skipped: <ERROR_TYPE>")
     return 0
 
 

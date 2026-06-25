@@ -14,6 +14,7 @@ import pytest
 
 class TrainingEvent(Enum):
     """Training events that trigger callbacks."""
+
     TRAIN_BEGIN = auto()
     TRAIN_END = auto()
     EPOCH_BEGIN = auto()
@@ -31,6 +32,7 @@ class TestCallbackRegistration:
 
     def test_callback_registration(self):
         """Callbacks can be registered for events."""
+
         class CallbackManager:
             def __init__(self):
                 self.callbacks = {}
@@ -54,6 +56,7 @@ class TestCallbackRegistration:
 
     def test_multiple_callbacks(self):
         """Multiple callbacks can be registered for same event."""
+
         class CallbackManager:
             def __init__(self):
                 self.callbacks = {}
@@ -84,11 +87,12 @@ class TestEarlyStoppingCallback:
 
     def test_early_stopping_patience(self):
         """Early stopping respects patience."""
+
         class EarlyStoppingCallback:
             def __init__(self, patience=3, min_delta=0.0):
                 self.patience = patience
                 self.min_delta = min_delta
-                self.best_loss = float('inf')
+                self.best_loss = float("inf")
                 self.counter = 0
                 self.should_stop = False
 
@@ -117,11 +121,12 @@ class TestEarlyStoppingCallback:
 
     def test_early_stopping_min_delta(self):
         """Early stopping considers min_delta."""
+
         class EarlyStoppingCallback:
             def __init__(self, patience=3, min_delta=0.01):
                 self.patience = patience
                 self.min_delta = min_delta
-                self.best_loss = float('inf')
+                self.best_loss = float("inf")
                 self.counter = 0
 
             def on_epoch_end(self, loss):
@@ -144,6 +149,7 @@ class TestModelCheckpointCallback:
 
     def test_checkpoint_on_epoch_end(self):
         """Checkpoint is saved at end of each epoch."""
+
         class ModelCheckpointCallback:
             def __init__(self, save_path, save_every=1):
                 self.save_path = save_path
@@ -163,9 +169,10 @@ class TestModelCheckpointCallback:
 
     def test_checkpoint_best_only(self):
         """Checkpoint saves only best model."""
+
         class BestModelCheckpoint:
             def __init__(self):
-                self.best_loss = float('inf')
+                self.best_loss = float("inf")
                 self.best_epoch = None
 
             def on_epoch_end(self, epoch, loss):
@@ -177,10 +184,10 @@ class TestModelCheckpointCallback:
 
         callback = BestModelCheckpoint()
 
-        assert callback.on_epoch_end(1, 1.0)   # Best
-        assert callback.on_epoch_end(2, 0.8)   # Better
+        assert callback.on_epoch_end(1, 1.0)  # Best
+        assert callback.on_epoch_end(2, 0.8)  # Better
         assert not callback.on_epoch_end(3, 0.9)  # Worse
-        assert callback.on_epoch_end(4, 0.7)   # Better
+        assert callback.on_epoch_end(4, 0.7)  # Better
 
         assert callback.best_epoch == 4
 
@@ -190,6 +197,7 @@ class TestLoggingCallback:
 
     def test_logging_frequency(self):
         """Logging respects frequency setting."""
+
         class LoggingCallback:
             def __init__(self, log_every=10):
                 self.log_every = log_every
@@ -208,6 +216,7 @@ class TestLoggingCallback:
 
     def test_metrics_logging(self):
         """Metrics are logged correctly."""
+
         class MetricsLogger:
             def __init__(self):
                 self.history = {"loss": [], "accuracy": []}
@@ -231,6 +240,7 @@ class TestLearningRateSchedulerCallback:
 
     def test_step_lr_scheduler(self):
         """Step LR scheduler reduces LR at intervals."""
+
         class StepLRCallback:
             def __init__(self, initial_lr, step_size, gamma):
                 self.initial_lr = initial_lr
@@ -253,6 +263,7 @@ class TestLearningRateSchedulerCallback:
 
     def test_warmup_scheduler(self):
         """Warmup scheduler increases LR during warmup."""
+
         class WarmupCallback:
             def __init__(self, warmup_steps, target_lr):
                 self.warmup_steps = warmup_steps
@@ -287,8 +298,9 @@ class TestGradientClippingCallback:
 
     def test_gradient_norm_clipping(self):
         """Gradients are clipped by norm."""
+
         def clip_gradient_norm(gradients, max_norm):
-            total_norm = sum(g ** 2 for g in gradients) ** 0.5
+            total_norm = sum(g**2 for g in gradients) ** 0.5
             if total_norm > max_norm:
                 scale = max_norm / total_norm
                 return [g * scale for g in gradients]
@@ -297,11 +309,12 @@ class TestGradientClippingCallback:
         gradients = [3.0, 4.0]  # norm = 5.0
         clipped = clip_gradient_norm(gradients, max_norm=1.0)
 
-        clipped_norm = sum(g ** 2 for g in clipped) ** 0.5
+        clipped_norm = sum(g**2 for g in clipped) ** 0.5
         assert clipped_norm == pytest.approx(1.0)
 
     def test_gradient_value_clipping(self):
         """Gradients are clipped by value."""
+
         def clip_gradient_value(gradients, clip_value):
             return [max(-clip_value, min(clip_value, g)) for g in gradients]
 
@@ -316,6 +329,7 @@ class TestProgressCallback:
 
     def test_progress_tracking(self):
         """Progress is tracked during training."""
+
         class ProgressCallback:
             def __init__(self, total_epochs, total_batches):
                 self.total_epochs = total_epochs

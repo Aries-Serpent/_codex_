@@ -33,12 +33,15 @@ class TestTransformer:
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        (source_dir / "test.py").write_text("""
+        (source_dir / "test.py").write_text(
+            """
 import os
 
 path = os.path.join("a", "b")
 exists = os.path.exists(path)
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
@@ -79,17 +82,22 @@ exists = os.path.exists(path)
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        (source_dir / "test.py").write_text("""
+        (source_dir / "test.py").write_text(
+            """
 import requests
 
 def fetch():
     return requests.get("http://example.com")
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
         # Should suggest async conversion
-        async_suggestions = [s for s in result.tier_c_suggestions if s.get("rule_id") == "async-conversion"]
+        async_suggestions = [
+            s for s in result.tier_c_suggestions if s.get("rule_id") == "async-conversion"
+        ]
         assert len(async_suggestions) > 0
 
     def test_transform_result_to_dict(self, tmp_path: Path):
@@ -115,10 +123,13 @@ def fetch():
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        (source_dir / "test.py").write_text("""
+        (source_dir / "test.py").write_text(
+            """
 import os
 path = os.path.join("a", "b")
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
@@ -180,10 +191,13 @@ class TestTierClassification:
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        (source_dir / "test.py").write_text("""
+        (source_dir / "test.py").write_text(
+            """
 import os
 path = os.path.join("a", "b")
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
@@ -196,10 +210,13 @@ path = os.path.join("a", "b")
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
-        (source_dir / "test.py").write_text("""
+        (source_dir / "test.py").write_text(
+            """
 import os
 os.path.exists("file")
-""", encoding="utf-8")
+""",
+            encoding="utf-8",
+        )
 
         result = transform(source_dir, "test-snapshot", dry_run=True)
 

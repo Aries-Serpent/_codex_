@@ -163,12 +163,12 @@ class TestOAuthManager:
 
         result = manager.initiate_flow(config)
 
-        assert 'auth_url' in result
-        assert 'state' in result
-        assert manager.GITHUB_AUTH_URL in result['auth_url']
-        assert 'client_id=test_id' in result['auth_url']
-        assert 'code_challenge' in result['auth_url']
-        assert result['state'] in manager._state_store
+        assert "auth_url" in result
+        assert "state" in result
+        assert manager.GITHUB_AUTH_URL in result["auth_url"]
+        assert "client_id=test_id" in result["auth_url"]
+        assert "code_challenge" in result["auth_url"]
+        assert result["state"] in manager._state_store
 
     def test_initiate_flow_without_config(self):
         """Test flow initiation without config raises error."""
@@ -187,7 +187,7 @@ class TestOAuthManager:
         )
 
         result = manager.initiate_flow(config)
-        state = result['state']
+        state = result["state"]
 
         assert manager.validate_state(state) is True
 
@@ -202,15 +202,15 @@ class TestOAuthManager:
         manager = OAuthManager()
         state = "test_state"
         manager._state_store[state] = {
-            'created_at': time.time() - 1000,  # 16+ minutes ago
-            'config': Mock(),
-            'code_verifier': 'test',
+            "created_at": time.time() - 1000,  # 16+ minutes ago
+            "config": Mock(),
+            "code_verifier": "test",
         }
 
         assert manager.validate_state(state) is False
         assert state not in manager._state_store
 
-    @patch('src.codex.auth.oauth_manager.httpx.Client')
+    @patch("src.codex.auth.oauth_manager.httpx.Client")
     def test_exchange_code_success(self, mock_client_class):
         """Test successful code exchange for token."""
         # Setup
@@ -223,17 +223,17 @@ class TestOAuthManager:
 
         # Initiate flow to get state
         flow_result = manager.initiate_flow(config)
-        state = flow_result['state']
+        state = flow_result["state"]
         code = "test_auth_code"
 
         # Mock HTTP response
         mock_response = Mock()
         mock_response.json.return_value = {
-            'access_token': 'gho_test123',
-            'token_type': 'bearer',
-            'expires_in': 3600,
-            'refresh_token': 'ghr_refresh123',
-            'scope': 'repo user',
+            "access_token": "gho_test123",
+            "token_type": "bearer",
+            "expires_in": 3600,
+            "refresh_token": "ghr_refresh123",
+            "scope": "repo user",
         }
         mock_response.raise_for_status = Mock()
 
@@ -245,10 +245,10 @@ class TestOAuthManager:
         token = manager.exchange_code(code, state)
 
         # Verify
-        assert token.access_token == 'gho_test123'
-        assert token.token_type == 'bearer'
+        assert token.access_token == "gho_test123"
+        assert token.token_type == "bearer"
         assert token.expires_in == 3600
-        assert token.refresh_token == 'ghr_refresh123'
+        assert token.refresh_token == "ghr_refresh123"
         assert state not in manager._state_store  # State should be consumed
 
     def test_exchange_code_invalid_state(self):
@@ -258,7 +258,7 @@ class TestOAuthManager:
         with pytest.raises(ValueError, match="Invalid or expired state"):
             manager.exchange_code("test_code", "invalid_state")
 
-    @patch('src.codex.auth.oauth_manager.httpx.Client')
+    @patch("src.codex.auth.oauth_manager.httpx.Client")
     def test_refresh_token_success(self, mock_client_class):
         """Test successful token refresh."""
         # Setup
@@ -273,11 +273,11 @@ class TestOAuthManager:
         # Mock HTTP response
         mock_response = Mock()
         mock_response.json.return_value = {
-            'access_token': 'gho_new_token',
-            'token_type': 'bearer',
-            'expires_in': 3600,
-            'refresh_token': 'ghr_new_refresh',
-            'scope': 'repo user',
+            "access_token": "gho_new_token",
+            "token_type": "bearer",
+            "expires_in": 3600,
+            "refresh_token": "ghr_new_refresh",
+            "scope": "repo user",
         }
         mock_response.raise_for_status = Mock()
 
@@ -289,10 +289,10 @@ class TestOAuthManager:
         token = manager.refresh_token("ghr_old_refresh")
 
         # Verify
-        assert token.access_token == 'gho_new_token'
-        assert token.refresh_token == 'ghr_new_refresh'
+        assert token.access_token == "gho_new_token"
+        assert token.refresh_token == "ghr_new_refresh"
 
-    @patch('src.codex.auth.oauth_manager.httpx.Client')
+    @patch("src.codex.auth.oauth_manager.httpx.Client")
     def test_get_github_user(self, mock_client_class):
         """Test getting GitHub user information."""
         # Setup
@@ -301,10 +301,10 @@ class TestOAuthManager:
         # Mock HTTP response
         mock_response = Mock()
         mock_response.json.return_value = {
-            'login': 'testuser',
-            'id': 123456,
-            'name': 'Test User',
-            'email': 'test@example.com',
+            "login": "testuser",
+            "id": 123456,
+            "name": "Test User",
+            "email": "test@example.com",
         }
         mock_response.raise_for_status = Mock()
 
@@ -316,9 +316,9 @@ class TestOAuthManager:
         user = manager.get_github_user("gho_test_token")
 
         # Verify
-        assert user['login'] == 'testuser'
-        assert user['id'] == 123456
-        assert user['email'] == 'test@example.com'
+        assert user["login"] == "testuser"
+        assert user["id"] == 123456
+        assert user["email"] == "test@example.com"
 
     def test_revoke_token(self):
         """Test token revocation."""
@@ -351,7 +351,7 @@ class TestOAuthManager:
 class TestOAuthManagerIntegration:
     """Integration tests for OAuth flow."""
 
-    @patch('src.codex.auth.oauth_manager.httpx.Client')
+    @patch("src.codex.auth.oauth_manager.httpx.Client")
     def test_full_oauth_flow(self, mock_client_class):
         """Test complete OAuth flow from start to user info."""
         # Setup
@@ -364,25 +364,25 @@ class TestOAuthManagerIntegration:
 
         # Step 1: Initiate flow
         flow_result = manager.initiate_flow(config)
-        assert 'auth_url' in flow_result
-        assert 'state' in flow_result
-        state = flow_result['state']
+        assert "auth_url" in flow_result
+        assert "state" in flow_result
+        state = flow_result["state"]
 
         # Step 2: Mock code exchange
         mock_token_response = Mock()
         mock_token_response.json.return_value = {
-            'access_token': 'gho_test123',
-            'token_type': 'bearer',
-            'expires_in': 3600,
-            'scope': 'repo user',
+            "access_token": "gho_test123",
+            "token_type": "bearer",
+            "expires_in": 3600,
+            "scope": "repo user",
         }
         mock_token_response.raise_for_status = Mock()
 
         # Step 3: Mock user info
         mock_user_response = Mock()
         mock_user_response.json.return_value = {
-            'login': 'testuser',
-            'id': 123456,
+            "login": "testuser",
+            "id": 123456,
         }
         mock_user_response.raise_for_status = Mock()
 
@@ -393,11 +393,11 @@ class TestOAuthManagerIntegration:
 
         # Execute exchange
         token = manager.exchange_code("test_code", state)
-        assert token.access_token == 'gho_test123'
+        assert token.access_token == "gho_test123"
 
         # Get user info
         user = manager.get_github_user(token.access_token)
-        assert user['login'] == 'testuser'
+        assert user["login"] == "testuser"
 
 
 if __name__ == "__main__":

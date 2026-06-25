@@ -446,7 +446,7 @@ No CI failure issue check
 |------|-----|--------|------|
 | `if ! command; then ... fi` | `command \| \| { ... }` | Functional change | 🟡 |
 | Explicit `if [ -n VAR ]` check | GitHub Actions `format()` | Complex expression | 🟡 |
-| Double-quoted secrets | Unquoted secrets | YAML parsing change | 🟡 |
+| Double-quoted secrets | Unquoted secrets | YAML parsing change | 🟡 | <!-- pragma: allowlist secret -->
 | Comments inline after values | Comments on separate lines | YAML formatting | 🟡 |
 
 ---
@@ -538,7 +538,7 @@ class TurnState:
     def __init__(self, turn_id: str):
         self.turn_id = turn_id
         self.function_calls = set()  # Prevent duplicate call IDs
-    
+
     def end_turn(self, turn_id: str):
         """Finalize turn, clear state"""
         self.function_calls.clear()
@@ -575,4 +575,3 @@ grep "COPILOT_AGENT_CCA_VERSION_LOCK\|COPILOT_AGENT_DEDUPLICATION\|COPILOT_AGENT
 **Created:** 2026-06-18
 **Status:** Complete analysis of all changes between baseline and problematic versions
 **Next Steps:** Implement recommendations to restore stable baseline and prevent future regressions
-

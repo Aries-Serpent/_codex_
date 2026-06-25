@@ -17,7 +17,7 @@ graph TD
     F --> J["✅ Fixed<br/>Root cause addressed"]
     G --> J
     H --> J
-    
+
     style A fill:#ffd93d
     style I fill:#51cf66
     style J fill:#51cf66
@@ -35,7 +35,7 @@ graph TD
     F -->|Yes| G["✅ Fixed<br/>TZ-aware datetime"]
     F -->|No| H["Debug<br/>Check comparisons"]
     H --> C
-    
+
     style A fill:#a78bfa
     style G fill:#51cf66
     style H fill:#ffd43b
@@ -53,9 +53,8 @@ graph TD
     F -->|Yes| G["✅ Abstract<br/>Cross-platform paths"]
     F -->|No| H["Investigate<br/>Path separator issues"]
     H --> C
-    
+
     style A fill:#333333,color:#fff
     style G fill:#51cf66
     style H fill:#ffd43b
 ```
-

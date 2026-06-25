@@ -24,6 +24,7 @@ class TestTokenCache:
     def cache(self, tmp_path):
         """Create a TokenCache instance."""
         from src.training.cache import TokenCache
+
         return TokenCache(out_dir=tmp_path, rows_per_shard=10)
 
     @pytest.fixture
@@ -87,7 +88,7 @@ class TestTokenCache:
         # Add batches until threshold
         for i in range(6):  # 6 * 2 = 12 rows > 10 threshold
             batch = {
-                "input_ids": np.array([[i, i, i], [i+1, i+1, i+1]]),
+                "input_ids": np.array([[i, i, i], [i + 1, i + 1, i + 1]]),
             }
             cache.add_batch(batch)
 

@@ -59,7 +59,8 @@ class MarkdownTableFixer:
         try:
             content = md_file.read_text(encoding='utf-8')
         except Exception as e:
-            print(f"⚠️  Failed to read {md_file}: {e}")
+            error_type = type(e).__name__
+            print(f"⚠️  Failed to read {md_file}: <ERROR_TYPE>")
             return
 
         # Find all table patterns
@@ -144,7 +145,8 @@ class MarkdownTableFixer:
                 md_file.write_text(new_content, encoding='utf-8')
                 print(f"  ✅ Fixed: {md_file.relative_to(self.root_dir)}")
             except Exception as e:
-                print(f"  ⚠️  Failed to write {md_file}: {e}")
+                error_type = type(e).__name__
+                print(f"  ⚠️  Failed to write {md_file}: <ERROR_TYPE>")
 
     def _is_header(self, line: str) -> bool:
         """Check if line is a markdown header (h1-h6)."""

@@ -34,7 +34,8 @@ def _validate_pair(data_path: str, schema_path: str) -> bool:
         print(f"[PASS] {data_path} OK {schema_path}")
         return True
     except Exception as e:
-        print(f"[fail] {data_path} ! {schema_path}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"[fail] {data_path} ! {schema_path}: <ERROR_TYPE>", file=sys.stderr)
         return False
 
 

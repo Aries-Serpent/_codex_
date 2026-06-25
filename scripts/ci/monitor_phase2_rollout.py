@@ -21,15 +21,15 @@ Usage:
 """
 
 import json
-import os
-import sys
 import logging
+import os
 import subprocess
-from datetime import datetime, timedelta
+import sys
 from dataclasses import dataclass
-from typing import Optional, Dict, List, Tuple
-from pathlib import Path
+from datetime import datetime, timedelta
 from enum import Enum
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(
@@ -96,7 +96,7 @@ class MetricsCollector:
     def query_github_api(self, endpoint: str, method: str = "GET") -> Dict:
         """Query GitHub API using gh CLI."""
         try:
-            cmd = ["gh", "api", endpoint, f"--header=authorization=******"]
+            cmd = ["gh", "api", endpoint, "--header=authorization=******"]
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
             return json.loads(result.stdout)
         except subprocess.CalledProcessError as e:

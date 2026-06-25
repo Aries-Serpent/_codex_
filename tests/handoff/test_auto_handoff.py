@@ -42,7 +42,7 @@ class TestHandoffContext:
             to_agent="copilot",
             phase="Plan 1",
             pr_number=3160,
-            session_id="test-session"
+            session_id="test-session",
         )
         assert context.from_agent == "user"
         assert context.to_agent == "copilot"
@@ -52,11 +52,7 @@ class TestHandoffContext:
 
     def test_to_dict(self):
         """Test conversion to dictionary."""
-        context = HandoffContext(
-            from_agent="copilot",
-            to_agent="codex",
-            phase="Test Phase"
-        )
+        context = HandoffContext(from_agent="copilot", to_agent="codex", phase="Test Phase")
         context.completed_tasks = ["Task 1", "Task 2"]
         context.deliverables = [{"path": "file.py", "status": "created"}]
 
@@ -132,10 +128,7 @@ class TestAutoHandoff:
     def test_create_handoff_record(self, handoff):
         """Test handoff record creation."""
         context = HandoffContext(
-            from_agent="copilot",
-            to_agent="codex",
-            phase="Test Phase",
-            pr_number=1234
+            from_agent="copilot", to_agent="codex", phase="Test Phase", pr_number=1234
         )
         context.completed_tasks = ["Task 1"]
         context.deliverables = [{"path": "file.py"}]
@@ -153,10 +146,7 @@ class TestAutoHandoff:
 
     def test_extract_session_context_no_log(self, handoff):
         """Test context extraction when no action log exists."""
-        with patch.object(
-            type(ACTION_LOG_PATH), 'exists',
-            return_value=False
-        ):
+        with patch.object(type(ACTION_LOG_PATH), "exists", return_value=False):
             context = handoff.extract_session_context()
 
         assert context.files_modified == []
@@ -164,11 +154,7 @@ class TestAutoHandoff:
 
     def test_generate_handoff_comment_structure(self, handoff):
         """Test generated comment has expected structure."""
-        context = HandoffContext(
-            from_agent="copilot",
-            to_agent="codex",
-            phase="Plan 1 Complete"
-        )
+        context = HandoffContext(from_agent="copilot", to_agent="codex", phase="Plan 1 Complete")
         context.completed_tasks = ["Implemented feature X"]
         context.deliverables = [{"path": "feature.py", "status": "created"}]
 
@@ -190,7 +176,7 @@ class TestAutoHandoff:
 
     def test_load_patterns_no_file(self, handoff):
         """Test pattern loading when file doesn't exist."""
-        with patch('auto_handoff.PATTERN_STORE') as mock_path:
+        with patch("auto_handoff.PATTERN_STORE") as mock_path:
             mock_path.exists.return_value = False
             patterns = handoff.load_patterns()
 
@@ -198,7 +184,7 @@ class TestAutoHandoff:
 
     def test_load_tracking_data_no_file(self, handoff, temp_dir):
         """Test tracking data loading when file doesn't exist."""
-        with patch('auto_handoff.TRACKING_FILE', temp_dir / "tracking.json"):
+        with patch("auto_handoff.TRACKING_FILE", temp_dir / "tracking.json"):
             data = handoff.load_tracking_data()
 
         assert "handoffs" in data
@@ -208,7 +194,7 @@ class TestAutoHandoff:
         """Test saving tracking data."""
         tracking_file = temp_dir / "tracking.json"
 
-        with patch('auto_handoff.TRACKING_FILE', tracking_file):
+        with patch("auto_handoff.TRACKING_FILE", tracking_file):
             data = {"handoffs": [], "metrics": {}}
             handoff.save_tracking_data(data)
 
@@ -221,23 +207,21 @@ class TestAutoHandoff:
         """Test successful status update."""
         tracking_file = temp_dir / "tracking.json"
         initial_data = {
-            "handoffs": [
-                {"id": "HO-001", "status": "pending"}
-            ],
+            "handoffs": [{"id": "HO-001", "status": "pending"}],
             "metrics": {
                 "total_handoffs": 1,
                 "completed": 0,
                 "pending": 1,
                 "in_progress": 0,
-                "failed": 0
-            }
+                "failed": 0,
+            },
         }
 
         tracking_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(tracking_file, 'w') as f:
+        with open(tracking_file, "w") as f:
             json.dump(initial_data, f)
 
-        with patch('auto_handoff.TRACKING_FILE', tracking_file):
+        with patch("auto_handoff.TRACKING_FILE", tracking_file):
             handoff.tracking_data = initial_data
             result = handoff.update_handoff_status("HO-001", "complete")
 
@@ -246,8 +230,7 @@ class TestAutoHandoff:
     def test_update_handoff_status_not_found(self, handoff):
         """Test status update for non-existent handoff."""
         with patch.object(
-            handoff, 'load_tracking_data',
-            return_value={"handoffs": [], "metrics": {}}
+            handoff, "load_tracking_data", return_value={"handoffs": [], "metrics": {}}
         ):
             result = handoff.update_handoff_status("HO-999", "complete")
 
@@ -255,10 +238,7 @@ class TestAutoHandoff:
 
     def test_list_handoffs_empty(self, handoff):
         """Test listing handoffs when empty."""
-        with patch.object(
-            handoff, 'load_tracking_data',
-            return_value={"handoffs": []}
-        ):
+        with patch.object(handoff, "load_tracking_data", return_value={"handoffs": []}):
             result = handoff.list_handoffs()
 
         assert result == []
@@ -269,11 +249,11 @@ class TestAutoHandoff:
             "handoffs": [
                 {"id": "HO-001", "status": "pending", "created": "2026-02-05T10:00:00Z"},
                 {"id": "HO-002", "status": "complete", "created": "2026-02-05T11:00:00Z"},
-                {"id": "HO-003", "status": "pending", "created": "2026-02-05T12:00:00Z"}
+                {"id": "HO-003", "status": "pending", "created": "2026-02-05T12:00:00Z"},
             ]
         }
 
-        with patch.object(handoff, 'load_tracking_data', return_value=mock_data):
+        with patch.object(handoff, "load_tracking_data", return_value=mock_data):
             result = handoff.list_handoffs(status_filter="pending")
 
         assert len(result) == 2
@@ -288,20 +268,16 @@ class TestAutoHandoff:
             ]
         }
 
-        with patch.object(handoff, 'load_tracking_data', return_value=mock_data):
+        with patch.object(handoff, "load_tracking_data", return_value=mock_data):
             result = handoff.list_handoffs(limit=5)
 
         assert len(result) == 5
 
     def test_get_handoff_status_found(self, handoff):
         """Test getting status of existing handoff."""
-        mock_data = {
-            "handoffs": [
-                {"id": "HO-001", "status": "complete", "from_agent": "copilot"}
-            ]
-        }
+        mock_data = {"handoffs": [{"id": "HO-001", "status": "complete", "from_agent": "copilot"}]}
 
-        with patch.object(handoff, 'load_tracking_data', return_value=mock_data):
+        with patch.object(handoff, "load_tracking_data", return_value=mock_data):
             result = handoff.get_handoff_status("HO-001")
 
         assert result is not None
@@ -310,10 +286,7 @@ class TestAutoHandoff:
 
     def test_get_handoff_status_not_found(self, handoff):
         """Test getting status of non-existent handoff."""
-        with patch.object(
-            handoff, 'load_tracking_data',
-            return_value={"handoffs": []}
-        ):
+        with patch.object(handoff, "load_tracking_data", return_value={"handoffs": []}):
             result = handoff.get_handoff_status("HO-999")
 
         assert result is None
@@ -340,9 +313,11 @@ class TestAutoHandoffIntegration:
         tracking_file = temp_env / ".codex" / "handoff_tracking.json"
         output_file = temp_env / ".codex" / "handoffs" / "test.md"
 
-        with patch('auto_handoff.TRACKING_FILE', tracking_file), \
-             patch('auto_handoff.ACTION_LOG_PATH', temp_env / "action_log.ndjson"), \
-             patch('auto_handoff.OUTPUT_DIR', temp_env / ".codex" / "handoffs"):
+        with (
+            patch("auto_handoff.TRACKING_FILE", tracking_file),
+            patch("auto_handoff.ACTION_LOG_PATH", temp_env / "action_log.ndjson"),
+            patch("auto_handoff.OUTPUT_DIR", temp_env / ".codex" / "handoffs"),
+        ):
 
             handoff = AutoHandoff()
             handoff_id, comment = handoff.execute_handoff(
@@ -350,7 +325,7 @@ class TestAutoHandoffIntegration:
                 to_agent="codex",
                 phase="Test Phase",
                 pr_number=1234,
-                output_path=output_file
+                output_path=output_file,
             )
 
         assert handoff_id == "HO-001"
@@ -362,15 +337,15 @@ class TestAutoHandoffIntegration:
         """Test complete handoff workflow."""
         tracking_file = temp_env / ".codex" / "handoff_tracking.json"
 
-        with patch('auto_handoff.TRACKING_FILE', tracking_file), \
-             patch('auto_handoff.ACTION_LOG_PATH', temp_env / "action_log.ndjson"):
+        with (
+            patch("auto_handoff.TRACKING_FILE", tracking_file),
+            patch("auto_handoff.ACTION_LOG_PATH", temp_env / "action_log.ndjson"),
+        ):
 
             handoff = AutoHandoff()
 
             # Create first handoff
-            handoff_id1, _ = handoff.execute_handoff(
-                phase="Phase 1"
-            )
+            handoff_id1, _ = handoff.execute_handoff(phase="Phase 1")
             assert handoff_id1 == "HO-001"
 
             # Update status
@@ -382,7 +357,5 @@ class TestAutoHandoffIntegration:
             assert status["status"] == "complete"
 
             # Create second handoff
-            handoff_id2, _ = handoff2.execute_handoff(
-                phase="Phase 2"
-            )
+            handoff_id2, _ = handoff2.execute_handoff(phase="Phase 2")
             assert handoff_id2 == "HO-002"

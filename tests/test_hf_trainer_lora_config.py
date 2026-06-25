@@ -35,6 +35,7 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
 
     class DummyDataset:
         """Mock dataset with required methods."""
+
         column_names = ["input_ids", "attention_mask"]
 
         def map(self, *args, **kwargs):

@@ -59,9 +59,7 @@ def engine(config, monitor):
 @pytest.fixture
 def compliance_assessor(config, engine, monitor, repository):
     """Quantum compliance assessor."""
-    return QuantumComplianceAssessor(
-        config, monitor, repository, enable_superposition=True
-    )
+    return QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
 
 
 @pytest.fixture

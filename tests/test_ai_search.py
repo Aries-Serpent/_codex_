@@ -1,4 +1,5 @@
 """Tests for AI-optimized repository search system."""
+
 import sys
 from pathlib import Path
 
@@ -54,11 +55,7 @@ CONSTANT_VALUE = 42
 def test_code_entity_creation():
     """Test CodeEntity dataclass creation."""
     entity = CodeEntity(
-        type="function",
-        name="test_func",
-        path="test.py",
-        line_start=10,
-        line_end=20
+        type="function", name="test_func", path="test.py", line_start=10, line_end=20
     )
 
     assert entity.type == "function"
@@ -283,10 +280,7 @@ def test_skip_directories(temp_repo):
     indexer.scan_repository()
 
     # Check that skip dirs were excluded
-    indexed_paths = [
-        data.relative_path
-        for data in indexer.content_index.values()
-    ]
+    indexed_paths = [data.relative_path for data in indexer.content_index.values()]
 
     assert not any(".git" in path for path in indexed_paths)
     assert not any("node_modules" in path for path in indexed_paths)

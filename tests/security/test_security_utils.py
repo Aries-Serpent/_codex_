@@ -20,7 +20,7 @@ class TestRedactSensitiveValue:
     def test_redact_without_preview(self):
         """Test basic redaction without preview."""
         result = redact_sensitive_value("my-secret-key-12345")
-        assert result == '[REDACTED]'
+        assert result == "[REDACTED]"
 
     def test_redact_with_preview(self):
         """Test redaction with preview showing first/last chars."""
@@ -32,12 +32,12 @@ class TestRedactSensitiveValue:
     def test_redact_empty_value(self):
         """Test redaction of empty value."""
         result = redact_sensitive_value("")
-        assert result == '[EMPTY]'
+        assert result == "[EMPTY]"
 
     def test_redact_short_value_with_preview(self):
         """Test that short values are fully redacted even with preview."""
         result = redact_sensitive_value("short", show_preview=True)
-        assert result == '[REDACTED]'
+        assert result == "[REDACTED]"
 
 
 class TestRedactSecretName:
@@ -61,7 +61,7 @@ class TestRedactSecretName:
     def test_redact_empty_name(self):
         """Test redaction of empty secret name."""
         result = redact_secret_name("")
-        assert result == '[UNNAMED_SECRET]'
+        assert result == "[UNNAMED_SECRET]"
 
 
 class TestSanitizeLogMessage:

@@ -32,9 +32,9 @@
 
 | Component | Status | Details |
 |-----------|--------|---------|
-| **CODEX_MASTER_KEY presence** | ⚠️ UNVERIFIED | Stored in GitHub secrets (not accessible from runner) |
-| **CODEX_BACKUP_KEY presence** | ⚠️ UNVERIFIED | Stored in GitHub secrets (not accessible from runner) |
-| **Token health check script** | ✅ PASS | Found at `scripts/ci/validate_token_setup.py` |
+| **CODEX_MASTER_KEY presence** | ⚠️ UNVERIFIED | Stored in GitHub secrets (not accessible from runner) | <!-- pragma: allowlist secret -->
+| **CODEX_BACKUP_KEY presence** | ⚠️ UNVERIFIED | Stored in GitHub secrets (not accessible from runner) | <!-- pragma: allowlist secret -->
+| **Token health check script** | ✅ PASS | Found at `scripts/ci/validate_token_setup.py` | <!-- pragma: allowlist secret -->
 | **GitHub environment setup** | ✅ PASS | GITHUB_REPOSITORY, GITHUB_RUN_ID verified |
 
 **Notes:**
@@ -99,7 +99,7 @@ Authorization:       D-tier autonomy approved
 ```
 - Action: actions/checkout@v5
 - Fetch-Depth: 0 (full history)
-- Credentials: GitHub token (workflow-scoped)
+- Credentials: GitHub token (workflow-scoped)  # pragma: allowlist secret
 - Result: ✅ Repository checked out successfully
 ```
 
@@ -261,7 +261,7 @@ Status:         READY FOR ACTIVATION
     "actor": "github-actions[bot]",
     "action": "DOWNSTREAM_WORKFLOWS_DISCOVERED",
     "workflows_discovered": 5,
-    "workflows": ["ci-failure-resolution-agent", "autonomous-test-healer-agent", 
+    "workflows": ["ci-failure-resolution-agent", "autonomous-test-healer-agent",
                   "unified-coverage-agent", "unified-security-scanner", "ci-testing-agent"],
     "dry_run": true,
     "status": "COMPLETED",
@@ -410,7 +410,7 @@ Status: ✅ N/A
 |-----------|-------|--------|
 | **Repository state** | Unchanged | ✅ PASS |
 | **Workflow configurations** | Intact | ✅ PASS |
-| **Secrets & variables** | Unchanged | ✅ PASS |
+| **Secrets & variables** | Unchanged | ✅ PASS | <!-- pragma: allowlist secret -->
 | **CI/CD pipeline** | Operational | ✅ PASS |
 | **Downstream workflows** | All discoverable | ✅ PASS |
 | **No lingering mutations** | Clean state | ✅ PASS |
@@ -453,7 +453,7 @@ Uncommitted changes:  0 (except test artifacts)
 | **.codex/ file count** | 1,512 | 1,512 | NO | ✅ PASS |
 | **Uncommitted changes** | 0 | 0 | NO | ✅ PASS |
 | **Production workflows** | Unchanged | Unchanged | NO | ✅ PASS |
-| **Repository secrets** | Unchanged | Unchanged | NO | ✅ PASS |
+| **Repository secrets** | Unchanged | Unchanged | NO | ✅ PASS | <!-- pragma: allowlist secret -->
 | **GitHub variables** | Unchanged | Unchanged | NO | ✅ PASS |
 
 ### 6.4 Detailed Mutation Analysis
@@ -475,7 +475,7 @@ Uncommitted changes:  0 (except test artifacts)
 
 **Secrets & Variables Mutations:** ✅ **0 MUTATIONS**
 ```
-- GitHub secrets: Unchanged ✅
+- GitHub secrets: Unchanged ✅  # pragma: allowlist secret
 - GitHub variables: Unchanged ✅
 - Repository configuration: Unchanged ✅
 ```

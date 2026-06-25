@@ -221,8 +221,10 @@ class TrainingCheckpointer:
         """Load best checkpoint by metric."""
         if not self.checkpoints:
             return None
+
         def key(c):
             return c["metrics"].get(metric, float("inf"))
+
         reverse = mode == "max"
         return sorted(self.checkpoints, key=key, reverse=reverse)[0]
 

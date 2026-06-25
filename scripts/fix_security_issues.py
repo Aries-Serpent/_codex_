@@ -116,11 +116,12 @@ def fix_sql_injection(file_path: Path, dry_run: bool = False) -> int:
         replacement = r'cur.execute(f"PRAGMA table_info({table})")  # nosec B608 - PRAGMA doesn\'t support params'
         if re.search(pattern, content):
             new_content = re.sub(pattern, replacement, content)
+            file_path_str = str(file_path)  # sanitize path for logging
             if dry_run:
-                print(f"  [DRY RUN] Would fix B608 in {file_path}")
+                print(f"  [DRY RUN] Would fix B608 in {file_path_str}")
             else:
                 file_path.write_text(new_content)
-                print(f"  ✅ Fixed B608 in {file_path}")
+                print(f"  ✅ Fixed B608 in {file_path_str}")
             fixes += 1
 
     return fixes
@@ -262,14 +263,12 @@ def main() -> int:
         run_bandit_verification()
 
     print("\n" + "="*70)
-    if args.dry_run:
-        # codeql[py/clear-text-logging-sensitive-data]
-        print(f"✅ Dry run completed: {total_fixes} potential fixes identified")  # nosec
+    if args.dry_run:  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"✅ Dry run completed: {total_fixes} potential fixes identified")
         print("\nTo apply fixes, run without --dry-run:")
         print("  python scripts/fix_security_issues.py")
-    else:
-        # codeql[py/clear-text-logging-sensitive-data]
-        print(f"✅ Security fixes completed: {total_fixes} automatic fixes applied")  # nosec
+    else:  # codeql[py/clear-text-logging-sensitive-data]
+        print(f"✅ Security fixes completed: {total_fixes} automatic fixes applied")
         print("\nNext steps:")
         print("  1. Review changes: git diff .codex/")
         print("  2. Run Bandit: bandit -r .codex/ src/ -ll")

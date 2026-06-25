@@ -87,7 +87,7 @@ Risk Assessment:         MINIMAL 🟢
   - Deployment steps (image updates, config changes, migrations)
   - 5 health checks (pod status, endpoints, functionality, database, metrics)
   - Rollback procedure
-  
+
 - **Stage 2: Staging Environment** (1-2 hours)
   - Pre-deployment checklist with load test preparation
   - Canary deployment strategy (10% → 20% → 100% traffic)

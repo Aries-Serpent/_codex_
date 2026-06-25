@@ -31,6 +31,7 @@ try:
         _log_optional_dependencies,
         _normalize_config,
     )
+
     LEGACY_API_AVAILABLE = True
 except ImportError:
     LEGACY_API_AVAILABLE = False
@@ -38,8 +39,7 @@ except ImportError:
 
 # Skip all tests if module not available
 pytestmark = pytest.mark.skipif(
-    not LEGACY_API_AVAILABLE,
-    reason="codex_ml.training.legacy_api not available"
+    not LEGACY_API_AVAILABLE, reason="codex_ml.training.legacy_api not available"
 )
 
 

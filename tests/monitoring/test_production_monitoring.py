@@ -99,9 +99,7 @@ def sample_health_response() -> dict[str, Any]:
 class TestHealthChecks:
     """Tests for health check functionality."""
 
-    def test_liveness_probe_returns_success(
-        self, mock_health_check_config: dict[str, Any]
-    ):
+    def test_liveness_probe_returns_success(self, mock_health_check_config: dict[str, Any]):
         """Test that liveness probe returns success when service is alive."""
         config = mock_health_check_config["liveness"]
         assert config["enabled"] is True
@@ -109,9 +107,7 @@ class TestHealthChecks:
         is_alive = True  # Service is responding
         assert is_alive is True
 
-    def test_liveness_probe_failure_threshold(
-        self, mock_health_check_config: dict[str, Any]
-    ):
+    def test_liveness_probe_failure_threshold(self, mock_health_check_config: dict[str, Any]):
         """Test that liveness probe respects failure threshold."""
         config = mock_health_check_config["liveness"]
         failure_count = 0
@@ -128,9 +124,7 @@ class TestHealthChecks:
         failure_count += 1
         assert failure_count == threshold
 
-    def test_readiness_probe_returns_ready(
-        self, mock_health_check_config: dict[str, Any]
-    ):
+    def test_readiness_probe_returns_ready(self, mock_health_check_config: dict[str, Any]):
         """Test that readiness probe returns ready when dependencies are available."""
         config = mock_health_check_config["readiness"]
         assert config["enabled"] is True
@@ -145,17 +139,13 @@ class TestHealthChecks:
         is_ready = all(dependencies.values())
         assert is_ready is False
 
-    def test_startup_probe_initial_delay(
-        self, mock_health_check_config: dict[str, Any]
-    ):
+    def test_startup_probe_initial_delay(self, mock_health_check_config: dict[str, Any]):
         """Test that startup probe respects initial delay."""
         config = mock_health_check_config["startup"]
         initial_delay = config["initial_delay_seconds"]
         assert initial_delay == 30
 
-    def test_startup_probe_failure_threshold(
-        self, mock_health_check_config: dict[str, Any]
-    ):
+    def test_startup_probe_failure_threshold(self, mock_health_check_config: dict[str, Any]):
         """Test startup probe failure threshold configuration."""
         config = mock_health_check_config["startup"]
         assert config["failure_threshold"] == 5
@@ -304,9 +294,7 @@ class TestResourceMonitoring:
         assert network["latency_warning_ms"] == 100
         assert network["latency_critical_ms"] == 500
 
-    def test_threshold_violation_detection(
-        self, mock_resource_thresholds: dict[str, Any]
-    ):
+    def test_threshold_violation_detection(self, mock_resource_thresholds: dict[str, Any]):
         """Test detection of threshold violations."""
         cpu_usage = 85
         cpu_warning = mock_resource_thresholds["cpu"]["warning"]
@@ -349,9 +337,7 @@ class TestServiceAvailability:
         total_time_seconds = 86400  # 24 hours
         downtime_seconds = 864  # ~1%
 
-        uptime_percent = (
-            (total_time_seconds - downtime_seconds) / total_time_seconds
-        ) * 100
+        uptime_percent = ((total_time_seconds - downtime_seconds) / total_time_seconds) * 100
         assert uptime_percent == 99.0
 
     def test_sla_compliance_check(self):

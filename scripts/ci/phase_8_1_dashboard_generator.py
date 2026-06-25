@@ -63,9 +63,9 @@ class DashboardGenerator:
 
         summary = f"""# Phase 8.1: Deployment Health Dashboard
 
-**Last Updated:** {timestamp}  
-**Update Frequency:** Every 1 hour (automated)  
-**Status:** {health_emoji} {health_status}  
+**Last Updated:** {timestamp}
+**Update Frequency:** Every 1 hour (automated)
+**Status:** {health_emoji} {health_status}
 **Monitoring Since:** 2026-06-22T00:00Z
 
 ---

@@ -36,7 +36,7 @@
 7. docs/ops/SAR_METHODOLOGY.md (14 missing headings)
 8. .github/AGENTS.md (13 missing headings)
 9. docs/AGENTIC_REPO_SYSTEM_GUIDE.md (12 missing headings)
-10. docs/Copy_of_Repository_Secrets_and_Variables_Inventory.md (13 missing headings)
+10. docs/Copy_of_Repository_Secrets_and_Variables_Inventory.md (13 missing headings)  # pragma: allowlist secret
 ```
 
 **Expected impact:** Fix ~600-900 broken links (57-86%)
@@ -188,4 +188,3 @@ Buffer:               0.5-1.5 hours [Safety margin ✅]
 **Quick Reference Version:** 1.0  
 **Status:** READY FOR IMPLEMENTATION  
 **Last Updated:** 2026-06-21T03:00Z
-

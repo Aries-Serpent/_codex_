@@ -31,10 +31,8 @@ class TestEventIntegrationLifecycle:
                 break
 
         # Assert
-        assert stopped is True, \
-            "Should trigger stop after patience exhausted"
-        assert stop_step == 4, \
-            f"Should stop at step 4, stopped at {stop_step}"
+        assert stopped is True, "Should trigger stop after patience exhausted"
+        assert stop_step == 4, f"Should stop at step 4, stopped at {stop_step}"
 
     def test_callback_state_reset_between_training_runs(self):
         """Verify callback state is properly reset for new training runs."""
@@ -61,10 +59,8 @@ class TestEventIntegrationLifecycle:
             es.step(loss)
 
         # Assert
-        assert es.best == 0.3, \
-            "Should reset best metric for new training run"
-        assert es.bad == 0, \
-            "Should reset bad counter for new training run"
+        assert es.best == 0.3, "Should reset best metric for new training run"
+        assert es.bad == 0, "Should reset bad counter for new training run"
 
     def test_event_flow_with_improvement_and_plateau(self):
         """Verify event flow during both improvement and plateau phases."""
@@ -92,14 +88,10 @@ class TestEventIntegrationLifecycle:
             events_fired.append("training_stop")
 
         # Assert
-        assert "initialization" in events_fired, \
-            "Should have initialization event"
-        assert "improvement" in events_fired, \
-            "Should have improvement event"
-        assert "plateau_start" in events_fired, \
-            "Should have plateau event"
-        assert "training_stop" in events_fired, \
-            "Should have stop event after patience"
+        assert "initialization" in events_fired, "Should have initialization event"
+        assert "improvement" in events_fired, "Should have improvement event"
+        assert "plateau_start" in events_fired, "Should have plateau event"
+        assert "training_stop" in events_fired, "Should have stop event after patience"
 
     def test_multiple_callbacks_independent_state(self):
         """Verify multiple callback instances maintain independent state."""
@@ -119,14 +111,10 @@ class TestEventIntegrationLifecycle:
         stop2 = es2.step(2.0)
 
         # Assert
-        assert stop1 is True, \
-            "es1 with patience=1 should stop"
-        assert stop2 is False, \
-            "es2 with patience=2 should not stop yet"
-        assert es1.bad == 1, \
-            "es1 bad counter should be 1"
-        assert es2.bad == 2, \
-            "es2 bad counter should be 2"
+        assert stop1 is True, "es1 with patience=1 should stop"
+        assert stop2 is False, "es2 with patience=2 should not stop yet"
+        assert es1.bad == 1, "es1 bad counter should be 1"
+        assert es2.bad == 2, "es2 bad counter should be 2"
 
 
 class TestCheckpointResumeIntegration:
@@ -167,12 +155,9 @@ class TestCheckpointResumeIntegration:
             loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
             # Assert
-            assert loaded_state == original_state, \
-                "State should match exactly after round-trip"
-            assert loaded_meta["step"] == 50, \
-                "Metadata step should be preserved"
-            assert loaded_meta["epoch"] == 5, \
-                "Metadata epoch should be preserved"
+            assert loaded_state == original_state, "State should match exactly after round-trip"
+            assert loaded_meta["step"] == 50, "Metadata step should be preserved"
+            assert loaded_meta["epoch"] == 5, "Metadata epoch should be preserved"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -208,8 +193,9 @@ class TestCheckpointResumeIntegration:
 
             # The checkpoint should be independent of training config
             # Assert
-            assert loaded_state["step"] == 100, \
-                "Checkpoint step should be preserved regardless of config"
+            assert (
+                loaded_state["step"] == 100
+            ), "Checkpoint step should be preserved regardless of config"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -247,10 +233,8 @@ class TestCheckpointResumeIntegration:
                 loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
                 # Assert
-                assert loaded_state["step"] == step, \
-                    f"Step {step} not preserved in checkpoint {i}"
-                assert loaded_meta["loss"] == loss, \
-                    f"Loss {loss} not preserved in checkpoint {i}"
+                assert loaded_state["step"] == step, f"Step {step} not preserved in checkpoint {i}"
+                assert loaded_meta["loss"] == loss, f"Loss {loss} not preserved in checkpoint {i}"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -309,21 +293,16 @@ class TestTrainingLoopIntegration:
                     last_checkpoint = ckpt_dir
 
             # Assert: Training should have stopped early
-            assert stopped_early is True, \
-                "Training should have stopped early due to plateau"
-            assert epoch < max_epochs, \
-                "Training should not complete all epochs"
+            assert stopped_early is True, "Training should have stopped early due to plateau"
+            assert epoch < max_epochs, "Training should not complete all epochs"
 
             # Assert: Should have saved checkpoints
-            assert last_checkpoint is not None, \
-                "Should have saved at least one checkpoint"
-            assert last_checkpoint.exists(), \
-                "Last checkpoint directory should exist"
+            assert last_checkpoint is not None, "Should have saved at least one checkpoint"
+            assert last_checkpoint.exists(), "Last checkpoint directory should exist"
 
             # Verify last checkpoint can be loaded
             loaded_state, loaded_meta = load_checkpoint(str(last_checkpoint))
-            assert "epoch" in loaded_state, \
-                "Checkpoint should contain epoch information"
+            assert "epoch" in loaded_state, "Checkpoint should contain epoch information"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -369,10 +348,8 @@ class TestTrainingLoopIntegration:
                     break
 
             # Assert
-            assert resume_epoch == 50, \
-                "Resumed epoch should match checkpoint"
-            assert es.best <= 0.21, \
-                "Training should continue from checkpoint state"
+            assert resume_epoch == 50, "Resumed epoch should match checkpoint"
+            assert es.best <= 0.21, "Training should continue from checkpoint state"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)

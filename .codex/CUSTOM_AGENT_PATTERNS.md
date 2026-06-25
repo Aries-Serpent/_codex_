@@ -543,7 +543,7 @@ workflow:
 
 ## Integration Pattern Performance Matrix
 
-| Pattern | Runtime | Tokens | Parallel | Best For |
+| Pattern | Runtime | Tokens | Parallel | Best For | <!-- pragma: allowlist secret -->
 |---------|---------|--------|----------|----------|
 | Sequential | Additive | Additive | No | Dependencies |
 | Parallel | Max | Additive | Yes | Independent tasks |
@@ -569,4 +569,3 @@ workflow:
 - **Patterns:** 15+
 - **Authority:** @mbaetiong
 - **Next Update:** 2026-06-22T12:00Z
-

@@ -4,7 +4,7 @@ Tests for Distributed Cache Module.
 
 import pytest
 
-pytest.importorskip('numpy')
+pytest.importorskip("numpy")
 
 from codex.rag.cache.distributed_cache import (
     CacheBackend,

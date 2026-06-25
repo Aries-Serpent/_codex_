@@ -91,7 +91,7 @@ def read_zaf(source: str | os.PathLike[str]) -> dict[str, Any]:
             for name in archive.namelist():
                 if name != "manifest.json":
                     files[name] = archive.read(name)
-    except Exception as exc:  # pragma: no cover - defensive guard
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive guard
         raise ZendeskAppPackageError(str(exc)) from exc
     return {"archive_path": path, "manifest": manifest, "files": files}
 
@@ -178,8 +178,9 @@ def _write_payload(destination: Path, entry: ZipInfo, data: bytes) -> None:
         try:
             text = data.decode("utf-8")
         except UnicodeDecodeError as e:
-            logger.debug(f"UnicodeDecodeError: {e}")
-            logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"UnicodeDecodeError: <ERROR_TYPE>")
+            logger.warning(f"UnicodeDecodeError: <ERROR_TYPE>", exc_info=True)
             destination.write_bytes(data)
             return
         destination.write_text(text, encoding="utf-8")

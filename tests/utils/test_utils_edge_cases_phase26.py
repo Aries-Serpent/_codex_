@@ -20,7 +20,7 @@ class TestPathUtilsEdgeCases:
             "../../../etc/passwd",
             "..\\..\\windows\\system32",
             "/etc/shadow",
-            "../../sensitive/data"
+            "../../sensitive/data",
         ]
 
         for path_str in dangerous_paths:
@@ -46,11 +46,7 @@ class TestPathUtilsEdgeCases:
         """Test path utils with Unicode in paths"""
         from pathlib import Path
 
-        unicode_paths = [
-            "文件.txt",
-            "файл.txt",
-            "αρχείο.txt"
-        ]
+        unicode_paths = ["文件.txt", "файл.txt", "αρχείο.txt"]
 
         for path_str in unicode_paths:
             path = Path(path_str)
@@ -58,7 +54,7 @@ class TestPathUtilsEdgeCases:
             assert len(path_str) > 0
             assert path.name == path_str
             # Verify encoding works
-            assert path.name.encode('utf-8').decode('utf-8') == path_str
+            assert path.name.encode("utf-8").decode("utf-8") == path_str
 
     def test_path_extremely_long(self):
         """Test path utils with very long paths (>260 chars Windows limit)"""
@@ -94,25 +90,30 @@ class TestStringUtilsEdgeCases:
         assert len(unicode_str) == 100
 
         # Verify multi-byte characters
-        assert all(ord(c) > 127 for c in unicode_str if c != ' ')
+        assert all(ord(c) > 127 for c in unicode_str if c != " ")
 
         # Test truncation doesn't break encoding
         truncated = unicode_str[:50]
         assert len(truncated) == 50
         # Should still be valid UTF-8
-        assert truncated.encode('utf-8').decode('utf-8') == truncated
+        assert truncated.encode("utf-8").decode("utf-8") == truncated
 
     def test_string_normalize_whitespace(self):
         """Test normalizing various whitespace characters"""
-        weird_whitespace = "test\u00A0\u2000\u2001\u2002data"
+        weird_whitespace = "test\u00a0\u2000\u2001\u2002data"
         # Should normalize all Unicode whitespace
-        assert "\u00A0" in weird_whitespace or "\u2000" in weird_whitespace
+        assert "\u00a0" in weird_whitespace or "\u2000" in weird_whitespace
 
         # Verify Unicode whitespace characters present
-        assert any(c in weird_whitespace for c in ["\u00A0", "\u2000", "\u2001", "\u2002"])
+        assert any(c in weird_whitespace for c in ["\u00a0", "\u2000", "\u2001", "\u2002"])
 
         # Test normalization to regular space
-        normalized = weird_whitespace.replace("\u00A0", " ").replace("\u2000", " ").replace("\u2001", " ").replace("\u2002", " ")
+        normalized = (
+            weird_whitespace.replace("\u00a0", " ")
+            .replace("\u2000", " ")
+            .replace("\u2001", " ")
+            .replace("\u2002", " ")
+        )
         assert " " in normalized
         assert len(normalized) == len(weird_whitespace)
 
@@ -121,7 +122,7 @@ class TestStringUtilsEdgeCases:
         xss_attempts = [
             "<script>alert('xss')</script>",
             "javascript:alert(1)",
-            "<img src=x onerror=alert(1)>"
+            "<img src=x onerror=alert(1)>",
         ]
 
         for xss in xss_attempts:
@@ -138,8 +139,8 @@ class TestStringUtilsEdgeCases:
     def test_string_encode_decode_roundtrip(self):
         """Test encode/decode roundtrip doesn't lose data"""
         original = "Test string with émojis 🔥"
-        encoded = original.encode('utf-8')
-        decoded = encoded.decode('utf-8')
+        encoded = original.encode("utf-8")
+        decoded = encoded.decode("utf-8")
         assert original == decoded
 
 
@@ -149,6 +150,7 @@ class TestCryptoUtilsEdgeCases:
     def test_hash_empty_input(self):
         """Test hashing empty input"""
         import hashlib
+
         empty_hash = hashlib.sha256(b"").hexdigest()
         # Should produce valid hash
         assert len(empty_hash) == 64
@@ -156,6 +158,7 @@ class TestCryptoUtilsEdgeCases:
     def test_hash_collision_resistance(self):
         """Test hash collision resistance"""
         import hashlib
+
         hash1 = hashlib.sha256(b"input1").hexdigest()
         hash2 = hashlib.sha256(b"input2").hexdigest()
         # Hashes should be different
@@ -184,6 +187,7 @@ class TestCryptoUtilsEdgeCases:
     def test_random_generation_uniqueness(self):
         """Test random generation produces unique values"""
         import secrets
+
         randoms = [secrets.token_hex(16) for _ in range(1000)]
         # Should be unique
         assert len(set(randoms)) == 1000
@@ -229,6 +233,7 @@ class TestDateTimeUtilsEdgeCases:
     def test_datetime_year_boundaries(self):
         """Test datetime at year boundaries"""
         from datetime import datetime
+
         boundary_dates = [
             datetime(1970, 1, 1),  # Unix epoch
             datetime(2038, 1, 19),  # 32-bit timestamp limit

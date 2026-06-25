@@ -86,7 +86,7 @@ Quality components:
   - Boundaries:        53% × 0.30 = 15.9%
   - Exceptions:        21% × 0.15 = 3.2%
   - Negative cases:    40% × 0.15 = 6.0%
-  
+
 TOTAL QUALITY SCORE = 64.7%
 (Conservative: 53.2% after adjustment factors)
 ```
@@ -105,7 +105,7 @@ TOTAL QUALITY SCORE = 64.7%
 | src/agents | 32 | 9,100 | 72% |
 | src/core | 28 | 5,500 | 80% |
 | src/utils | 18 | 3,200 | 85% |
-| src/tokenization | 12 | 4,500 | 68% |
+| src/tokenization | 12 | 4,500 | 68% | <!-- pragma: allowlist secret -->
 | src/cli | 15 | 2,800 | 70% |
 | Other modules | 87 | 14,800 | 64% |
 | **TOTAL** | **300+** | **62,500+** | **73%** |

@@ -74,9 +74,7 @@ class TestEnsureTable:
 
             conn = sqlite3.connect(str(db_path))
             cur = conn.cursor()
-            cur.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='app_log'"
-            )
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='app_log'")
             table_exists = cur.fetchone() is not None
             conn.close()
 

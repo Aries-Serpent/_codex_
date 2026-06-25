@@ -16,11 +16,15 @@ def test_safe_pickle_dump_writes_versioned_signature_header(tmp_path: Path) -> N
     key = b"k" * 32
     pickle_path = tmp_path / "signed.pkl"
 
-    safe_pickle_module.safe_pickle_dump(payload, str(pickle_path), add_signature=True, secret_key=key)
+    safe_pickle_module.safe_pickle_dump(
+        payload, str(pickle_path), add_signature=True, secret_key=key
+    )
 
     raw = pickle_path.read_bytes()
     assert raw.startswith(safe_pickle_module.SIGNED_PICKLE_MAGIC)
-    assert raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC)] == safe_pickle_module.SIGNED_PICKLE_VERSION
+    assert (
+        raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC)] == safe_pickle_module.SIGNED_PICKLE_VERSION
+    )
     assert (
         raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC) + 1]
         == safe_pickle_module.SIGNED_PICKLE_ALGO_SHA256
@@ -55,7 +59,12 @@ def test_safe_pickle_load_rejects_invalid_versioned_header(tmp_path: Path) -> No
     pickle_path = tmp_path / "invalid-header.pkl"
     pickle_path.write_bytes(
         safe_pickle_module.SIGNED_PICKLE_MAGIC
-        + bytes([safe_pickle_module.SIGNED_PICKLE_VERSION + 1, safe_pickle_module.SIGNED_PICKLE_ALGO_SHA256])
+        + bytes(
+            [
+                safe_pickle_module.SIGNED_PICKLE_VERSION + 1,
+                safe_pickle_module.SIGNED_PICKLE_ALGO_SHA256,
+            ]
+        )
         + signature
         + payload
     )

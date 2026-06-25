@@ -10,11 +10,13 @@ import pytest
 # Skip if typer is not properly installed
 try:
     import typer
-    if not hasattr(typer, 'Typer'):
+
+    if not hasattr(typer, "Typer"):
         pytest.skip("typer package not properly installed", allow_module_level=True)
     from typer.testing import CliRunner
 
     from codex import cli_knowledge
+
     TYPER_AVAILABLE = True
 except (ImportError, AttributeError):
     TYPER_AVAILABLE = False
@@ -95,16 +97,14 @@ def test_sync_mermaid_map_generates_searchable_datablobs(tmp_path: Path):
     v = qm["variables"]
     c = qm["coefficients"]
     expected_score = (
-        c["alpha"] * v["N"]
-        + c["beta"] * v["E"]
-        + c["gamma"] * v["V"]
-        + c["delta"] * v["T"]
+        c["alpha"] * v["N"] + c["beta"] * v["E"] + c["gamma"] * v["V"] + c["delta"] * v["T"]
     )
-    assert abs(qm["coherence_score"] - round(expected_score, 4)) < 1e-6, (
-        f"coherence_score {qm['coherence_score']} != expected {round(expected_score, 4)}"
-    )
+    assert (
+        abs(qm["coherence_score"] - round(expected_score, 4)) < 1e-6
+    ), f"coherence_score {qm['coherence_score']} != expected {round(expected_score, 4)}"
 
     # Validate compression roundtrip
     from codex.archive.util import zstd_decompress
+
     decompressed = zstd_decompress(compressed_path.read_bytes())
     assert json.loads(decompressed) == blob

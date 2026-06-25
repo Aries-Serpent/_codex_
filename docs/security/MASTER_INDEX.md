@@ -292,7 +292,7 @@ Before merging any code:
 
 ---
 
-## 🚨 Security Incident? 
+## 🚨 Security Incident?
 
 **Report to:** security@example.com  
 **Response Time:** <1 hour  

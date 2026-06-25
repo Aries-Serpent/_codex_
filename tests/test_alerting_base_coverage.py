@@ -185,6 +185,7 @@ class TestAlertEvent:
     def test_alert_event_fill_timestamp_empty(self):
         """Test fill_timestamp sets timestamp when empty."""
         from datetime import timedelta
+
         before = datetime.now(UTC).replace(microsecond=0)
         event = AlertEvent(
             title="Test",
@@ -194,7 +195,7 @@ class TestAlertEvent:
         assert event.timestamp == ""
 
         event.fill_timestamp()
-        after = (datetime.now(UTC).replace(microsecond=0) + timedelta(seconds=1))
+        after = datetime.now(UTC).replace(microsecond=0) + timedelta(seconds=1)
 
         assert event.timestamp != ""
         # Parse the timestamp and verify it's within expected range

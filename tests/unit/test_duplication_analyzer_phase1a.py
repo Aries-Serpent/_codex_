@@ -14,7 +14,6 @@ Comprehensive test coverage for the duplication analysis module covering:
 Tests include basic functionality, edge cases, error paths, and integration scenarios.
 """
 
-
 import hashlib
 from pathlib import Path
 
@@ -26,7 +25,6 @@ from src.codex.analysis.duplication import (
     _hash_file,
     analyze_duplication,
 )
-
 
 # =====================================================================
 # FIXTURES
@@ -122,12 +120,8 @@ class TestDuplicationReport:
             "duplication_ratio": 0.25,
             "severity": "high",
         }
-        dup_groups = [
-            {"stem": "config", "count": 3, "paths": ["config1.py", "config2.py"]}
-        ]
-        content_dups = [
-            {"hash": "abc123", "count": 2, "paths": ["file1.py", "file2.py"]}
-        ]
+        dup_groups = [{"stem": "config", "count": 3, "paths": ["config1.py", "config2.py"]}]
+        content_dups = [{"hash": "abc123", "count": 2, "paths": ["file1.py", "file2.py"]}]
         recommendations = ["Review duplicates"]
 
         report = DuplicationReport(
@@ -530,14 +524,14 @@ class TestIntegration:
         assert has_actionable or report.stats["duplication_ratio"] == 0.0
 
     def test_duplication_report_file_list_structure(self, temp_dir_with_duplicates):
-       """Test duplication report file list structure."""
-       report = analyze_duplication(temp_dir_with_duplicates)
-       # Should have duplicate_groups or similar structure
-       assert hasattr(report, "duplicate_groups") or hasattr(report, "groups")
+        """Test duplication report file list structure."""
+        report = analyze_duplication(temp_dir_with_duplicates)
+        # Should have duplicate_groups or similar structure
+        assert hasattr(report, "duplicate_groups") or hasattr(report, "groups")
 
     def test_analyze_duplication_preserves_path_integrity(self, temp_dir_with_duplicates):
-       """Test that analyze preserves path integrity."""
-       report = analyze_duplication(temp_dir_with_duplicates)
-       # Should have valid stats dictionary
-       assert isinstance(report.stats, dict)
-       assert "total_files" in report.stats or "files" in report.stats
+        """Test that analyze preserves path integrity."""
+        report = analyze_duplication(temp_dir_with_duplicates)
+        # Should have valid stats dictionary
+        assert isinstance(report.stats, dict)
+        assert "total_files" in report.stats or "files" in report.stats

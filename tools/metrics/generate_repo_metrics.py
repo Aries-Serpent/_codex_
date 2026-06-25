@@ -154,7 +154,8 @@ def _collect_files() -> list[pathlib.Path]:
         try:
             return _files_from_github()
         except Exception as exc:  # pragma: no cover - defensive guard
-            print(f"[metrics] GitHub mode failed: {exc}; falling back to local scan.")
+            error_type = type(exc).__name__
+            print(f"[metrics] GitHub mode failed: <ERROR_TYPE>; falling back to local scan.")
     return _files_from_local()
 
 

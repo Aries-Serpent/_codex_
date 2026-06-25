@@ -21,6 +21,7 @@ from codex.auth.github_app import GitHubApp, GitHubInstallation
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def github_app_config():
     """Create GitHub App config."""
@@ -48,6 +49,7 @@ def github_app(github_app_config):
 # Installation Tests
 # ============================================================================
 
+
 class TestGitHubInstallation:
     """GitHub App installation."""
 
@@ -64,8 +66,13 @@ class TestGitHubInstallation:
 
     def test_installation_with_all_permissions(self):
         permissions = [
-            "contents", "pull_requests", "issues", "deployments",
-            "checks", "statuses", "workflows",
+            "contents",
+            "pull_requests",
+            "issues",
+            "deployments",
+            "checks",
+            "statuses",
+            "workflows",
         ]
         installation = GitHubInstallation(
             installation_id="123",
@@ -77,6 +84,7 @@ class TestGitHubInstallation:
 
     def test_installation_created_at(self):
         import time
+
         before = time.time()
         installation = GitHubInstallation(
             installation_id="123",
@@ -114,7 +122,7 @@ class TestAppInstallation:
         installation_id = "987654"
         code = "installation_code_123"
 
-        with patch.object(github_app, 'exchange_code_for_token') as mock_exchange:
+        with patch.object(github_app, "exchange_code_for_token") as mock_exchange:
             mock_exchange.return_value = {
                 "access_token": "ghu_123456789",
                 "installation_id": installation_id,
@@ -126,7 +134,7 @@ class TestAppInstallation:
     def test_invalid_installation_code(self, github_app):
         code = "invalid_code"
 
-        with patch.object(github_app, 'exchange_code_for_token') as mock_exchange:
+        with patch.object(github_app, "exchange_code_for_token") as mock_exchange:
             mock_exchange.side_effect = Exception("Invalid code")
 
             with pytest.raises(Exception):
@@ -136,6 +144,7 @@ class TestAppInstallation:
 # ============================================================================
 # Permission Tests
 # ============================================================================
+
 
 class TestPermissionValidation:
     """GitHub App permission validation."""
@@ -174,10 +183,7 @@ class TestPermissionValidation:
         )
 
         required = ["contents", "pull_requests"]
-        has_all = all(
-            github_app.has_permission(installation, perm)
-            for perm in required
-        )
+        has_all = all(github_app.has_permission(installation, perm) for perm in required)
         assert has_all
 
     def test_permission_case_sensitivity(self, github_app):
@@ -189,20 +195,22 @@ class TestPermissionValidation:
         )
 
         # GitHub permissions are case-sensitive
-        assert github_app.has_permission(installation, "Contents") or \
-               not github_app.has_permission(installation, "Contents")
+        assert github_app.has_permission(installation, "Contents") or not github_app.has_permission(
+            installation, "Contents"
+        )
 
 
 # ============================================================================
 # Token Exchange Tests
 # ============================================================================
 
+
 class TestTokenExchange:
     """GitHub App token exchange."""
 
     @pytest.mark.asyncio
     async def test_exchange_code_for_token(self, github_app):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
                 "access_token": "ghu_123456789",
@@ -218,7 +226,7 @@ class TestTokenExchange:
 
     @pytest.mark.asyncio
     async def test_exchange_code_error(self, github_app):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.status_code = 401
             mock_response.json.return_value = {"error": "invalid_code"}
@@ -229,7 +237,7 @@ class TestTokenExchange:
 
     @pytest.mark.asyncio
     async def test_get_installation_token(self, github_app):
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
                 "token": "ghs_123456789",
@@ -252,7 +260,7 @@ class TestTokenExchange:
             "expires_at": "2024-01-01T00:00:00Z",
         }
 
-        with patch('httpx.AsyncClient.post') as mock_post:
+        with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
             mock_response.json.return_value = {
                 "token": "ghs_new_123456789",
@@ -260,16 +268,14 @@ class TestTokenExchange:
             }
             mock_post.return_value = mock_response
 
-            new_token = await github_app.refresh_installation_token(
-                "987654",
-                old_token
-            )
+            new_token = await github_app.refresh_installation_token("987654", old_token)
             assert new_token["token"] != old_token["token"]
 
 
 # ============================================================================
 # Webhook Tests
 # ============================================================================
+
 
 class TestWebhookHandling:
     """GitHub App webhook handling."""
@@ -280,14 +286,9 @@ class TestWebhookHandling:
 
         payload = json.dumps({"action": "opened"}).encode()
         secret = github_app.webhook_secret.encode()
-        signature = "sha256=" + hmac.new(
-            secret, payload, hashlib.sha256
-        ).hexdigest()
+        signature = "sha256=" + hmac.new(secret, payload, hashlib.sha256).hexdigest()
 
-        is_valid = github_app.verify_webhook_signature(
-            payload,
-            signature
-        )
+        is_valid = github_app.verify_webhook_signature(payload, signature)
         assert is_valid
 
     def test_invalid_webhook_signature(self, github_app):
@@ -326,6 +327,7 @@ class TestWebhookHandling:
 # App State Tests
 # ============================================================================
 
+
 class TestAppState:
     """GitHub App state and registration."""
 
@@ -348,6 +350,7 @@ class TestAppState:
 # Integration Tests
 # ============================================================================
 
+
 class TestIntegration:
     """GitHub App integration scenarios."""
 
@@ -360,7 +363,7 @@ class TestIntegration:
         code = "installation_code_123"
 
         # Exchange code for token
-        with patch.object(github_app, 'exchange_code_for_token') as mock_exchange:
+        with patch.object(github_app, "exchange_code_for_token") as mock_exchange:
             mock_exchange.return_value = {
                 "access_token": "ghu_123",
                 "installation_id": "987654",
@@ -382,10 +385,9 @@ class TestIntegration:
         # Verify signature
         import hashlib
         import hmac
+
         secret = github_app.webhook_secret.encode()
-        signature = "sha256=" + hmac.new(
-            secret, payload_bytes, hashlib.sha256
-        ).hexdigest()
+        signature = "sha256=" + hmac.new(secret, payload_bytes, hashlib.sha256).hexdigest()
 
         is_valid = github_app.verify_webhook_signature(payload_bytes, signature)
         assert is_valid
@@ -405,6 +407,7 @@ class TestIntegration:
 # ============================================================================
 # Error Handling Tests
 # ============================================================================
+
 
 class TestErrorHandling:
     """Error handling and edge cases."""
@@ -462,6 +465,7 @@ class TestErrorHandling:
 # Security Tests
 # ============================================================================
 
+
 class TestSecurity:
     """Security considerations."""
 
@@ -473,10 +477,7 @@ class TestSecurity:
         payload = b'{"action": "opened"}'
 
         # Should reject unsigned payload
-        is_valid = github_app.verify_webhook_signature(
-            payload,
-            "invalid_signature"
-        )
+        is_valid = github_app.verify_webhook_signature(payload, "invalid_signature")
         assert not is_valid
 
     def test_token_format_validation(self, github_app):

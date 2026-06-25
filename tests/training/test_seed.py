@@ -21,6 +21,7 @@ class TestEnsureGlobalSeed:
         """Import ensure_global_seed function."""
         try:
             from src.training.seed import ensure_global_seed
+
             return ensure_global_seed
         except ImportError:
             pytest.skip("src.training.seed not available")
@@ -74,6 +75,7 @@ class TestLegacySeedModule:
                 # Force reimport
                 import importlib
                 import sys
+
                 if "training.seed" in sys.modules:
                     del sys.modules["training.seed"]
                 importlib.import_module("training.seed")
@@ -88,6 +90,7 @@ class TestLegacySeedModule:
         """Test that legacy shim exports ensure_global_seed."""
         try:
             from training.seed import ensure_global_seed
+
             assert callable(ensure_global_seed)
         except ImportError:
             pytest.skip("training.seed shim not available")

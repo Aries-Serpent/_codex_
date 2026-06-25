@@ -21,7 +21,7 @@ class TestRestorePipelineLogic:
             "running": ["paused", "completed", "failed"],
             "paused": ["running", "completed"],
             "completed": [],
-            "failed": ["running"]
+            "failed": ["running"],
         }
         for state in states:
             assert state in transitions
@@ -33,7 +33,7 @@ class TestRestorePipelineLogic:
             "checkpoint_001.ckpt",
             "checkpoint_latest.ckpt",
             "checkpoint_best.ckpt",
-            "checkpoint_backup_202401.ckpt"
+            "checkpoint_backup_202401.ckpt",
         ]
         for pattern in checkpoint_patterns:
             assert ".ckpt" in pattern
@@ -45,9 +45,12 @@ class TestRestorePipelineLogic:
             "checkpoints_successful": 145,
             "checkpoints_failed": 5,
             "total_duration_seconds": 3600,
-            "avg_duration_per_checkpoint": 24
+            "avg_duration_per_checkpoint": 24,
         }
-        assert metrics["checkpoints_successful"] + metrics["checkpoints_failed"] == metrics["checkpoints_processed"]
+        assert (
+            metrics["checkpoints_successful"] + metrics["checkpoints_failed"]
+            == metrics["checkpoints_processed"]
+        )
 
     def test_pipeline_error_categories(self):
         """Test error categorization."""
@@ -55,7 +58,7 @@ class TestRestorePipelineLogic:
             "corrupted_checkpoint": 2,
             "missing_dependency": 1,
             "io_error": 1,
-            "validation_error": 1
+            "validation_error": 1,
         }
         assert sum(error_types.values()) == 5
 
@@ -65,7 +68,7 @@ class TestRestorePipelineLogic:
             "corrupted_checkpoint": "skip_and_log",
             "missing_dependency": "retry_with_backoff",
             "io_error": "fallback_to_cache",
-            "validation_error": "manual_review"
+            "validation_error": "manual_review",
         }
         assert len(strategies) > 0
         assert strategies["corrupted_checkpoint"] == "skip_and_log"
@@ -79,7 +82,7 @@ class TestRestorePipelineLogic:
             "max_retries": int,
             "timeout_seconds": int,
             "log_level": str,
-            "enable_metrics": bool
+            "enable_metrics": bool,
         }
         required_fields = ["pipeline_name", "checkpoint_dir", "output_dir"]
         for field in required_fields:
@@ -94,15 +97,13 @@ class TestRestorePipelineLogic:
 
     def test_pipeline_parallel_execution(self):
         """Test parallel execution planning."""
-        n_workers = 4
         checkpoints = list(range(100))
         batch_size = 25
-        batches = [checkpoints[i:i+batch_size] for i in range(0, len(checkpoints), batch_size)]
+        batches = [checkpoints[i : i + batch_size] for i in range(0, len(checkpoints), batch_size)]
         assert len(batches) == 4
 
     def test_pipeline_idempotency(self):
         """Test pipeline idempotency assurance."""
-        operation = "restore_checkpoint_5"
         first_result = {"status": "success", "timestamp": datetime.now()}
         second_result = {"status": "success", "timestamp": datetime.now()}
         assert first_result["status"] == second_result["status"]
@@ -125,12 +126,7 @@ class TestAudioServiceLogic:
 
     def test_audio_channel_configurations(self):
         """Test channel configurations."""
-        configs = {
-            "mono": 1,
-            "stereo": 2,
-            "5.1": 6,
-            "7.1": 8
-        }
+        configs = {"mono": 1, "stereo": 2, "5.1": 6, "7.1": 8}
         assert configs["stereo"] == 2
 
     def test_audio_normalization_algorithm(self):
@@ -142,7 +138,6 @@ class TestAudioServiceLogic:
 
     def test_noise_reduction_thresholds(self):
         """Test noise reduction threshold logic."""
-        threshold_db = -40  # dB
         signal_power = 10.0
         noise_power = 0.01
         snr = 10 * ((signal_power) / (noise_power))
@@ -162,11 +157,7 @@ class TestAudioServiceLogic:
 
     def test_transcription_accuracy_metrics(self):
         """Test transcription accuracy metrics."""
-        metrics = {
-            "word_error_rate": 0.05,
-            "character_error_rate": 0.02,
-            "confidence_score": 0.95
-        }
+        metrics = {"word_error_rate": 0.05, "character_error_rate": 0.02, "confidence_score": 0.95}
         assert metrics["word_error_rate"] < 0.1
         assert metrics["confidence_score"] > 0.9
 
@@ -180,7 +171,7 @@ class TestCognitiveBrainLogic:
             "minimum_accuracy": 0.80,
             "minimum_samples": 100,
             "maximum_duration": 3600,
-            "required_fields": ["result", "timestamp", "validator"]
+            "required_fields": ["result", "timestamp", "validator"],
         }
         assert criteria["minimum_accuracy"] > 0.75
 
@@ -201,7 +192,6 @@ class TestCognitiveBrainLogic:
         """Test confidence interval calculation."""
         mean = 0.85
         std_error = 0.02
-        confidence_level = 0.95
         margin_of_error = 1.96 * std_error  # 95% CI
         lower = mean - margin_of_error
         upper = mean + margin_of_error
@@ -219,7 +209,7 @@ class TestCognitiveBrainLogic:
             "type": "experiment_result",
             "timestamp": datetime.now().isoformat(),
             "data": {"experiment_id": "exp_001", "score": 0.88},
-            "metadata": {"validator": "human", "review_time": 120}
+            "metadata": {"validator": "human", "review_time": 120},
         }
         assert "type" in message
         assert "timestamp" in message
@@ -230,7 +220,7 @@ class TestCognitiveBrainLogic:
             {"id": 1, "stage": "initialized", "memory_used_mb": 250},
             {"id": 2, "stage": "processing", "memory_used_mb": 450},
             {"id": 3, "stage": "validation", "memory_used_mb": 350},
-            {"id": 4, "stage": "complete", "memory_used_mb": 200}
+            {"id": 4, "stage": "complete", "memory_used_mb": 200},
         ]
         assert len(checkpoints) == 4
         assert checkpoints[0]["stage"] == "initialized"
@@ -260,7 +250,7 @@ class TestUtilityLogic:
         versions = [
             "checkpoint_v1_epoch_5.pt",
             "checkpoint_v2_epoch_10.pt",
-            "checkpoint_v3_epoch_20.pt"
+            "checkpoint_v3_epoch_20.pt",
         ]
         assert len(versions) == 3
         assert "v1" in versions[0]
@@ -271,7 +261,7 @@ class TestUtilityLogic:
         tasks = [
             {"id": 1, "priority": 10, "requested_memory": 6000},
             {"id": 2, "priority": 8, "requested_memory": 5000},
-            {"id": 3, "priority": 5, "requested_memory": 3000}
+            {"id": 3, "priority": 5, "requested_memory": 3000},
         ]
         sorted_tasks = sorted(tasks, key=lambda x: x["priority"], reverse=True)
         allocated = sum(t["requested_memory"] for t in sorted_tasks[:2])
@@ -303,7 +293,7 @@ class TestUtilityLogic:
         max_retries = 5
         base_delay = 1.0
         for attempt in range(max_retries):
-            delay = base_delay * (2 ** attempt)
+            delay = base_delay * (2**attempt)
             assert delay > 0
         assert delay >= 16.0  # 2^4
 
@@ -317,7 +307,7 @@ class TestDataValidation:
             (42, int, True),
             ("hello", str, True),
             (3.14, float, True),
-            ("42", int, False)
+            ("42", int, False),
         ]
         for value, expected_type, should_match in test_cases:
             matches = isinstance(value, expected_type)
@@ -335,6 +325,7 @@ class TestDataValidation:
     def test_string_format_validation(self):
         """Test string format validation."""
         import re
+
         email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         valid_emails = ["test@example.com", "user.name@domain.co.uk"]
         for email in valid_emails:
@@ -349,12 +340,7 @@ class TestDataValidation:
 
     def test_schema_compliance(self):
         """Test schema compliance."""
-        schema = {
-            "id": int,
-            "name": str,
-            "age": int,
-            "active": bool
-        }
+        schema = {"id": int, "name": str, "age": int, "active": bool}
         data = {"id": 1, "name": "Jane", "age": 30, "active": True}
         for key, expected_type in schema.items():
             assert key in data
@@ -399,6 +385,7 @@ class TestErrorHandling:
     def test_timeout_error_handling(self):
         """Test timeout error handling."""
         import time
+
         timeout = 0.1
         start = time.time()
         elapsed = time.time() - start
@@ -430,11 +417,7 @@ class TestIntegration:
     def test_state_machine_transitions(self):
         """Test state machine through full cycle."""
         state = "idle"
-        transitions = {
-            "idle": "running",
-            "running": "completed",
-            "completed": "idle"
-        }
+        transitions = {"idle": "running", "running": "completed", "completed": "idle"}
         state = transitions[state]
         assert state == "running"
         state = transitions[state]
@@ -445,7 +428,7 @@ class TestIntegration:
         config = {
             "module_a": {"enabled": True, "threads": 4},
             "module_b": {"enabled": True, "timeout": 30},
-            "module_c": {"enabled": False, "retries": 3}
+            "module_c": {"enabled": False, "retries": 3},
         }
         enabled_modules = [k for k, v in config.items() if v.get("enabled")]
         assert len(enabled_modules) == 2
@@ -464,7 +447,7 @@ class TestIntegration:
         tasks = [
             {"id": 1, "status": "completed", "duration": 10},
             {"id": 2, "status": "completed", "duration": 15},
-            {"id": 3, "status": "completed", "duration": 12}
+            {"id": 3, "status": "completed", "duration": 12},
         ]
         total_duration = max(t["duration"] for t in tasks)  # Critical path
         assert total_duration == 15

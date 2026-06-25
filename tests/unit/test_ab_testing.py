@@ -27,16 +27,17 @@ from codex_ml.experiments import ABTest, ABTestSuite, run_ab_test
 
 # Clearly different groups: control ~10, treatment ~20
 _CTRL_HIGH_DIFF = [10.0, 10.1, 9.9, 10.05, 9.95, 10.2, 9.8, 10.15, 9.85, 10.0]
-_TRT_HIGH_DIFF  = [20.0, 20.1, 19.9, 20.05, 19.95, 20.2, 19.8, 20.15, 19.85, 20.0]
+_TRT_HIGH_DIFF = [20.0, 20.1, 19.9, 20.05, 19.95, 20.2, 19.8, 20.15, 19.85, 20.0]
 
 # Nearly identical groups: control ≈ treatment ≈ 5
-_CTRL_NO_DIFF   = [5.0, 5.01, 4.99, 5.0, 5.02, 4.98, 5.01, 4.99, 5.0, 5.0]
-_TRT_NO_DIFF    = [5.0, 5.01, 4.99, 5.0, 5.02, 4.98, 5.01, 4.99, 5.0, 5.0]
+_CTRL_NO_DIFF = [5.0, 5.01, 4.99, 5.0, 5.02, 4.98, 5.01, 4.99, 5.0, 5.0]
+_TRT_NO_DIFF = [5.0, 5.01, 4.99, 5.0, 5.02, 4.98, 5.01, 4.99, 5.0, 5.0]
 
 
 # ---------------------------------------------------------------------------
 # Test 1 — Significant difference detection
 # ---------------------------------------------------------------------------
+
 
 class TestSignificantDifference:
     """Clearly different groups must produce significant=True."""
@@ -57,6 +58,7 @@ class TestSignificantDifference:
 # ---------------------------------------------------------------------------
 # Test 2 — Inconclusive result
 # ---------------------------------------------------------------------------
+
 
 class TestInconclusiveResult:
     """Identical groups must produce winner == 'inconclusive'."""
@@ -79,14 +81,15 @@ class TestInconclusiveResult:
 # Test 3 — Effect size calculation
 # ---------------------------------------------------------------------------
 
+
 class TestEffectSize:
     """Cohen's d should be large for well-separated groups."""
 
     def test_large_effect_size_for_different_groups(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
-        assert abs(result.effect_size) > 5.0, (
-            f"Expected large Cohen's d for well-separated groups, got {result.effect_size}"
-        )
+        assert (
+            abs(result.effect_size) > 5.0
+        ), f"Expected large Cohen's d for well-separated groups, got {result.effect_size}"
 
     def test_zero_effect_size_for_identical_groups(self):
         result = run_ab_test(_CTRL_NO_DIFF, _TRT_NO_DIFF)
@@ -100,6 +103,7 @@ class TestEffectSize:
 # ---------------------------------------------------------------------------
 # Test 4 — Confidence interval excludes zero (significant result)
 # ---------------------------------------------------------------------------
+
 
 class TestConfidenceIntervalSignificant:
     """For a significant result, the CI of the mean difference must not span 0."""
@@ -126,20 +130,22 @@ class TestConfidenceIntervalSignificant:
 # Test 5 — Confidence interval straddles zero (inconclusive result)
 # ---------------------------------------------------------------------------
 
+
 class TestConfidenceIntervalInconclusive:
     """For identical groups the CI of the mean difference should span 0."""
 
     def test_ci_straddles_zero(self):
         result = run_ab_test(_CTRL_NO_DIFF, _TRT_NO_DIFF)
         ci_lo, ci_hi = result.confidence_interval
-        assert ci_lo <= 0.0 <= ci_hi, (
-            f"Expected CI to straddle 0 for identical groups, got [{ci_lo}, {ci_hi}]"
-        )
+        assert (
+            ci_lo <= 0.0 <= ci_hi
+        ), f"Expected CI to straddle 0 for identical groups, got [{ci_lo}, {ci_hi}]"
 
 
 # ---------------------------------------------------------------------------
 # Test 6 — Suite report structure
 # ---------------------------------------------------------------------------
+
 
 class TestSuiteReportStructure:
     """ABTestSuite.report() must return a well-formed dict."""
@@ -188,12 +194,13 @@ class TestSuiteReportStructure:
 # Test 7 — Alpha threshold sensitivity
 # ---------------------------------------------------------------------------
 
+
 class TestAlphaThresholdSensitivity:
     """Tighter alpha should make borderline results inconclusive."""
 
     # Groups with moderate separation → significant at alpha=0.05
     _CTRL_MOD = [10.0, 11.0, 9.0, 10.5, 9.5, 10.2, 9.8, 10.3]
-    _TRT_MOD  = [11.5, 12.5, 10.5, 12.0, 11.0, 11.8, 10.8, 12.2]
+    _TRT_MOD = [11.5, 12.5, 10.5, 12.0, 11.0, 11.8, 10.8, 12.2]
 
     def test_significant_at_default_alpha(self):
         result = run_ab_test(self._CTRL_MOD, self._TRT_MOD, alpha=0.05)
@@ -209,6 +216,7 @@ class TestAlphaThresholdSensitivity:
 # Test 8 — Treatment winner
 # ---------------------------------------------------------------------------
 
+
 class TestTreatmentWinner:
     def test_treatment_wins_when_treatment_mean_higher(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
@@ -218,6 +226,7 @@ class TestTreatmentWinner:
 # ---------------------------------------------------------------------------
 # Test 9 — Control winner
 # ---------------------------------------------------------------------------
+
 
 class TestControlWinner:
     def test_control_wins_when_control_mean_higher(self):
@@ -229,6 +238,7 @@ class TestControlWinner:
 # ---------------------------------------------------------------------------
 # Test 10 — ABTest dataclass validation
 # ---------------------------------------------------------------------------
+
 
 class TestABTestDataclassValidation:
     def test_invalid_alpha_raises(self):

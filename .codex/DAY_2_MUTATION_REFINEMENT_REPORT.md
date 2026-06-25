@@ -94,9 +94,9 @@ def test_exception_not_suppressed():
 
 def test_auth_requires_all_conditions():
     """Kill: 'and' → 'or' mutations"""
-    # Valid token AND valid user → True
+    # Valid token AND valid user → True  # pragma: allowlist secret
     assert middleware.authorize(valid_complete)
-    # Valid token BUT invalid user → False
+    # Valid token BUT invalid user → False  # pragma: allowlist secret
     assert not middleware.authorize(valid_invalid_user)
 ```
 
@@ -165,7 +165,7 @@ Stretch:      160/160 = 100% (eliminate all survivors)
 | embedding_cache.py | 86% | 92% | 94% | 8pp |
 | middleware.py | 90% | 93% | 96% | 6pp |
 | sanitizers.py | 91% | 94% | 96% | 5pp |
-| token_handler.py | 87% | 91% | 94% | 7pp |
+| token_handler.py | 87% | 91% | 94% | 7pp | <!-- pragma: allowlist secret -->
 
 ### Overall Campaign Progression
 ```
@@ -451,4 +451,3 @@ Production Target:      ≥95% (minimum requirement met)
 *Generated: 2026-06-20T15:30:00Z*  
 *Campaign Authority: @mbaetiong*  
 *Status: ✅ READY FOR FINAL EXECUTION PHASE*
-

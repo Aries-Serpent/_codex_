@@ -242,7 +242,7 @@ permissions:
 
 ### Details
 
-- **Operations:** 
+- **Operations:**
   - Triages open CodeQL alerts (line 45+)
   - Posts summary comments on PRs
   - Updates alert tracking issues
@@ -277,7 +277,7 @@ All 5 workflows have been audited for Admin Action T-03 compliance:
 **Verification Method:** Probe `/code-scanning/alerts` endpoint  
 **Expected Result:** HTTP 200 (scope available) or HTTP 403 (scope missing)
 
-**Current Status:** 
+**Current Status:**
 - ⏳ Pending token scope update (admin task)
 - ✅ All 5 workflows now have correct permissions
 - ✅ Workflows can successfully call code-scanning API when token is updated

@@ -21,6 +21,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def chaos_config() -> dict[str, Any]:
     """Configuration for chaos experiments."""
@@ -61,6 +62,7 @@ def cluster_state() -> dict[str, Any]:
 # ============================================================================
 # Network Partition Recovery Tests
 # ============================================================================
+
 
 class TestNetworkPartitionRecovery:
     """Tests for network partition recovery."""
@@ -132,6 +134,7 @@ class TestNetworkPartitionRecovery:
 # Resource Exhaustion Recovery Tests
 # ============================================================================
 
+
 class TestResourceExhaustionRecovery:
     """Tests for resource exhaustion recovery."""
 
@@ -196,6 +199,7 @@ class TestResourceExhaustionRecovery:
 # ============================================================================
 # Cascading Failure Prevention Tests
 # ============================================================================
+
 
 class TestCascadingFailurePrevention:
     """Tests for cascading failure prevention."""
@@ -266,6 +270,7 @@ class TestCascadingFailurePrevention:
 # Self-Healing Under Chaos Tests
 # ============================================================================
 
+
 class TestSelfHealingUnderChaos:
     """Tests for self-healing mechanisms under chaos."""
 
@@ -320,6 +325,7 @@ class TestSelfHealingUnderChaos:
 # Chaos Experiment Validation Tests
 # ============================================================================
 
+
 class TestChaosExperimentValidation:
     """Tests for chaos experiment validation."""
 
@@ -349,9 +355,9 @@ class TestChaosExperimentValidation:
         }
 
         # Acceptable deviation
-        availability_ok = abs(
-            steady_state_before["availability"] - steady_state_after["availability"]
-        ) < 1.0
+        availability_ok = (
+            abs(steady_state_before["availability"] - steady_state_after["availability"]) < 1.0
+        )
 
         assert availability_ok is True
 
@@ -388,6 +394,7 @@ class TestChaosExperimentValidation:
 # ============================================================================
 # Recovery Time Objective Tests
 # ============================================================================
+
 
 class TestRecoveryTimeObjectives:
     """Tests for recovery time objectives under chaos."""
@@ -429,6 +436,7 @@ class TestRecoveryTimeObjectives:
 # ============================================================================
 # Resilience Testing Tests
 # ============================================================================
+
 
 class TestResilienceTesting:
     """Tests for system resilience under chaos."""
@@ -490,6 +498,7 @@ class TestResilienceTesting:
 # ============================================================================
 # Failure Injection Recovery Tests
 # ============================================================================
+
 
 class TestFailureInjectionRecovery:
     """Tests for recovery from injected failures."""

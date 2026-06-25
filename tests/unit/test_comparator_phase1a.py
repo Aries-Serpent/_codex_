@@ -14,7 +14,6 @@ Comprehensive test coverage for the behavior comparator module covering:
 Tests include basic functionality, edge cases, integration scenarios.
 """
 
-
 import hashlib
 from pathlib import Path
 
@@ -31,7 +30,6 @@ from src.codex.verify.comparator import (
     generate_tests,
 )
 
-
 # =====================================================================
 # FIXTURES
 # =====================================================================
@@ -42,15 +40,13 @@ def temp_baseline_code(tmp_path):
     """Create temporary baseline code directory."""
     baseline_dir = tmp_path / "baseline"
     baseline_dir.mkdir()
-    (baseline_dir / "main.py").write_text(
-        """
+    (baseline_dir / "main.py").write_text("""
 def calculate(x, y):
     return x + y
 
 if __name__ == "__main__":
     print(calculate(10, 20))
-"""
-    )
+""")
     return baseline_dir
 
 
@@ -59,15 +55,13 @@ def temp_patched_code(tmp_path):
     """Create temporary patched code directory."""
     patched_dir = tmp_path / "patched"
     patched_dir.mkdir()
-    (patched_dir / "main.py").write_text(
-        """
+    (patched_dir / "main.py").write_text("""
 def calculate(x, y):
     return x + y
 
 if __name__ == "__main__":
     print(calculate(10, 20))
-"""
-    )
+""")
     return patched_dir
 
 
@@ -76,15 +70,13 @@ def temp_modified_code(tmp_path):
     """Create modified code directory."""
     modified_dir = tmp_path / "modified"
     modified_dir.mkdir()
-    (modified_dir / "main.py").write_text(
-        """
+    (modified_dir / "main.py").write_text("""
 def calculate(x, y):
     return x * y  # Changed from + to *
 
 if __name__ == "__main__":
     print(calculate(10, 20))
-"""
-    )
+""")
     return modified_dir
 
 
@@ -544,8 +536,8 @@ class TestGenerateTests:
         outputs = [tmp_path / f"output{i}.txt" for i in range(3)]
 
         for inp, out in zip(inputs, outputs):
-            inp.write_text(f"input content")
-            out.write_text(f"output content")
+            inp.write_text("input content")
+            out.write_text("output content")
 
         output_dir = tmp_path / "tests"
 

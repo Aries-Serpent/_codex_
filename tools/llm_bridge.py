@@ -125,7 +125,8 @@ def request_patch(
         with urllib.request.urlopen(req, timeout=DEFAULT_TIMEOUT) as resp:
             resp_data = json.loads(resp.read().decode("utf-8"))
     except urllib.error.URLError as exc:
-        print(f"[llm-bridge] request failed: {exc}")
+        error_type = type(exc).__name__
+        print(f"[llm-bridge] request failed: <ERROR_TYPE>")
         return None
 
     patch = _extract_patch(resp_data)

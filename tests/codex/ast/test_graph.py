@@ -5,7 +5,6 @@ This module contains tests for dependency graph and cycle detection.
 """
 
 
-
 class TestDependencyGraph:
     """Tests for DependencyGraph class."""
 

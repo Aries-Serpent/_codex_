@@ -195,8 +195,7 @@ def test_optimize_test_schedule_within_budget(optimizer):
     if len(selected) > 1:
         for i in range(len(selected) - 1):
             assert (
-                priorities[selected[i]].priority_score
-                >= priorities[selected[i + 1]].priority_score
+                priorities[selected[i]].priority_score >= priorities[selected[i + 1]].priority_score
             )
 
 
@@ -261,9 +260,7 @@ def test_compute_uncertainty_bound(optimizer):
     bound = optimizer.compute_uncertainty_bound(energy, time)
 
     assert bound == 0.24
-    assert (
-        bound >= optimizer.h_bar / 2.0 or bound < optimizer.h_bar / 2.0
-    )  # Can be either
+    assert bound >= optimizer.h_bar / 2.0 or bound < optimizer.h_bar / 2.0  # Can be either
 
 
 def test_get_statistics_empty(optimizer):
@@ -383,9 +380,7 @@ def test_integration_with_monitor():
         """)
         conn.close()
 
-        config = QuantumConfig(
-            quantum_mode=True, uncertainty=True, rollout_percentage=100
-        )
+        config = QuantumConfig(quantum_mode=True, uncertainty=True, rollout_percentage=100)
         repo = QuantumMetricRepository(db_path)
         monitor = CoherenceMonitor(config, repo)
         optimizer = UncertaintyOptimizer(config, monitor)

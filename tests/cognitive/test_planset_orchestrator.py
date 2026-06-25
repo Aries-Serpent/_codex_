@@ -38,6 +38,7 @@ from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlans
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture()
 def planset_dir(tmp_path: Path) -> Path:
     """Create a minimal .codex/plans directory with fake plansets."""
@@ -84,12 +85,14 @@ def orch(planset_dir: Path, tmp_path: Path) -> PlansetOrchestrator:
 # PlansetRecord
 # ---------------------------------------------------------------------------
 
+
 class TestPlansetRecord:
     def test_fields(self, tmp_path: Path):
         p = tmp_path / "TEST.md"
         p.write_text("# Test", encoding="utf-8")
         rec = PlansetRecord(
-            path=p, stem="TEST",
+            path=p,
+            stem="TEST",
             area=ImprovementArea.CI_SELF_HEALING,
             is_complete=False,
             status_line="🔄 IN PROGRESS",
@@ -108,6 +111,7 @@ class TestPlansetRecord:
 # ---------------------------------------------------------------------------
 # PromptSet
 # ---------------------------------------------------------------------------
+
 
 class TestPromptSet:
     def test_to_dict_round_trip(self):
@@ -130,9 +134,15 @@ class TestPromptSet:
 
     def test_to_json_valid(self):
         ps = PromptSet(
-            prompt_id="x", area="CI_SELF_HEALING",
-            source_planset="foo", agent="ci-auto-healer-agent",
-            prompt="fix CI", context={}, amplitude=0.9, order=0, step_id="CI-01",
+            prompt_id="x",
+            area="CI_SELF_HEALING",
+            source_planset="foo",
+            agent="ci-auto-healer-agent",
+            prompt="fix CI",
+            context={},
+            amplitude=0.9,
+            order=0,
+            step_id="CI-01",
         )
         data = json.loads(ps.to_json())
         assert data["agent"] == "ci-auto-healer-agent"
@@ -141,6 +151,7 @@ class TestPromptSet:
 # ---------------------------------------------------------------------------
 # OrchestrationState
 # ---------------------------------------------------------------------------
+
 
 class TestOrchestrationState:
     def test_round_trip(self):
@@ -167,6 +178,7 @@ class TestOrchestrationState:
 # PlansetOrchestrator.survey()
 # ---------------------------------------------------------------------------
 
+
 class TestOrchestratorSurvey:
     def test_returns_all_md_files(self, orch: PlansetOrchestrator):
         records = orch.survey()
@@ -184,7 +196,9 @@ class TestOrchestratorSurvey:
 
     def test_area_mapping_applied(self, orch: PlansetOrchestrator):
         records = {r.stem: r for r in orch.survey()}
-        assert records["CODEQL_ALERT_RESOLUTION_PLANSET"].area == ImprovementArea.SECURITY_REMEDIATION
+        assert (
+            records["CODEQL_ALERT_RESOLUTION_PLANSET"].area == ImprovementArea.SECURITY_REMEDIATION
+        )
         assert records["PLANSET_PHASE_23_COVERAGE_30"].area == ImprovementArea.COVERAGE_IMPROVEMENT
 
     def test_empty_dir_returns_empty(self, tmp_path: Path):
@@ -204,6 +218,7 @@ class TestOrchestratorSurvey:
 # ---------------------------------------------------------------------------
 # PlansetOrchestrator.generate_session()
 # ---------------------------------------------------------------------------
+
 
 class TestOrchestratorGenerateSession:
     def test_returns_prompt_sets(self, orch: PlansetOrchestrator):
@@ -260,6 +275,7 @@ class TestOrchestratorGenerateSession:
 # PlansetOrchestrator.next_promptset()
 # ---------------------------------------------------------------------------
 
+
 class TestOrchestratorNextPromptset:
     def test_returns_promptset(self, orch: PlansetOrchestrator):
         p = orch.next_promptset()
@@ -281,6 +297,7 @@ class TestOrchestratorNextPromptset:
 # ---------------------------------------------------------------------------
 # PlansetOrchestrator.advance()
 # ---------------------------------------------------------------------------
+
 
 class TestOrchestratorAdvance:
     def test_marks_step_complete(self, orch: PlansetOrchestrator):
@@ -314,6 +331,7 @@ class TestOrchestratorAdvance:
 # PlansetOrchestrator.summary()
 # ---------------------------------------------------------------------------
 
+
 class TestOrchestratorSummary:
     def test_returns_markdown_string(self, orch: PlansetOrchestrator):
         s = orch.summary()
@@ -323,6 +341,7 @@ class TestOrchestratorSummary:
         s = orch.summary()
         # At least one step ID pattern like SEC-01 or CI-01
         import re
+
         assert re.search(r"[A-Z]+-\d+", s)
 
     def test_empty_summary_when_all_done(self, tmp_path: Path):
@@ -337,6 +356,7 @@ class TestOrchestratorSummary:
 # ---------------------------------------------------------------------------
 # PlansetOrchestrator.save_state() / load_state()
 # ---------------------------------------------------------------------------
+
 
 class TestOrchestratorStatePersistence:
     def test_save_and_load_round_trip(self, orch: PlansetOrchestrator, tmp_path: Path):
@@ -369,11 +389,11 @@ class TestOrchestratorStatePersistence:
 # Planset mapping coverage
 # ---------------------------------------------------------------------------
 
+
 class TestPlansetMapCoverage:
     def test_all_mapped_areas_are_valid_improvement_areas(self):
         for stem, area in _PLANSET_MAP.items():
-            assert isinstance(area, ImprovementArea), \
-                f"{stem} maps to invalid area {area}"
+            assert isinstance(area, ImprovementArea), f"{stem} maps to invalid area {area}"
 
     def test_all_12_areas_have_at_least_one_mapping(self):
         mapped_areas = set(_PLANSET_MAP.values())
@@ -383,13 +403,13 @@ class TestPlansetMapCoverage:
         assert not unmapped, f"Areas without planset mapping: {unmapped}"
 
     def test_coverage_improvement_maps_to_phase_plansets(self):
-        cov_plansets = [k for k, v in _PLANSET_MAP.items()
-                        if v == ImprovementArea.COVERAGE_IMPROVEMENT]
+        cov_plansets = [
+            k for k, v in _PLANSET_MAP.items() if v == ImprovementArea.COVERAGE_IMPROVEMENT
+        ]
         assert any("COVERAGE" in p or "PHASE_14" in p for p in cov_plansets)
 
     def test_qi_testing_maps_to_quantum_plansets(self):
-        qi_plansets = [k for k, v in _PLANSET_MAP.items()
-                       if v == ImprovementArea.QI_TESTING]
+        qi_plansets = [k for k, v in _PLANSET_MAP.items() if v == ImprovementArea.QI_TESTING]
         assert any("QUANTUM" in p for p in qi_plansets)
 
 
@@ -397,12 +417,14 @@ class TestPlansetMapCoverage:
 # CLI — orchestrate.py
 # ---------------------------------------------------------------------------
 
+
 class TestOrchestrateCLI:
     """Tests for the orchestrate.py entry point."""
 
     def _run(self, argv, planset_dir: Path, tmp_path: Path):
         """Run main() with a patched orchestrator pointing to test planset_dir."""
         from scripts.cognitive.orchestrate import main
+
         state_path = tmp_path / "cli_state.json"
         with patch(
             "scripts.cognitive.orchestrate._build_orchestrator",
@@ -457,7 +479,8 @@ class TestOrchestrateCLI:
     def test_advance_exits_0(self, planset_dir: Path, tmp_path: Path):
         rc = self._run(
             ["advance", "SECURITY_REMEDIATION", "SEC-01"],
-            planset_dir, tmp_path,
+            planset_dir,
+            tmp_path,
         )
         assert rc == 0
 
@@ -479,13 +502,12 @@ class TestOrchestrateCLI:
     def test_session_with_context(self, planset_dir: Path, tmp_path: Path):
         rc = self._run(
             ["session", "--context", '{"open_alerts": 150, "coverage_pct": 40}'],
-            planset_dir, tmp_path,
+            planset_dir,
+            tmp_path,
         )
         assert rc == 0
 
-    def test_stamp_plansets_adds_footer(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture
-    ):
+    def test_stamp_plansets_adds_footer(self, tmp_path: Path, capsys: pytest.CaptureFixture):
         """stamp-plansets should add footer to every unfinished planset."""
         d = tmp_path / "plans"
         d.mkdir()
@@ -493,6 +515,7 @@ class TestOrchestrateCLI:
             "# CodeQL\n**Status:** 🚧 Active\n", encoding="utf-8"
         )
         from scripts.cognitive.orchestrate import main
+
         state_path = tmp_path / "s.json"
         orch_instance = PlansetOrchestrator(
             planset_dir=d, engine=QuantumPlansetEngine(), state_path=state_path
@@ -506,9 +529,7 @@ class TestOrchestrateCLI:
         content = (d / "CODEQL_ALERT_RESOLUTION_PLANSET.md").read_text()
         assert "QuantumPlansetEngine Integration" in content
 
-    def test_stamp_plansets_idempotent(
-        self, tmp_path: Path, capsys: pytest.CaptureFixture
-    ):
+    def test_stamp_plansets_idempotent(self, tmp_path: Path, capsys: pytest.CaptureFixture):
         """Running stamp-plansets twice should not double-stamp."""
         d = tmp_path / "plans"
         d.mkdir()
@@ -516,6 +537,7 @@ class TestOrchestrateCLI:
             "# CodeQL\n**Status:** 🚧 Active\n", encoding="utf-8"
         )
         from scripts.cognitive.orchestrate import main
+
         state_path = tmp_path / "s.json"
 
         for _ in range(2):

@@ -1,0 +1,49 @@
+# Mypy Error Analysis - 26 Total Errors
+
+## Error Category Breakdown:
+
+### ASSIGNMENT Errors (14 errors) - [assignment]
+1. src/tokenization/cli.py:21 - None → Module
+2. src/tokenization/cli.py:25 - None → Module
+3. src/codex_ml/monitoring/cli.py:31 - None → Module
+4. src/codex_ml/monitoring/cli.py:34 - None → Module
+5. src/codex_ml/eval/eval_runner.py:36 - None → Module
+6. src/codex_ml/cli/validate.py:55 - None → Module
+7. src/codex_ml/cli/validate.py:58 - None → Module
+8. src/codex_ml/cli/tracking_decide.py:44 - None → Module
+9. src/codex_ml/cli/tracking_decide.py:47 - None → Module
+10. src/codex_ml/cli/plugins_cli.py:44 - None → Module
+11. src/codex_ml/cli/plugins_cli.py:47 - None → Module
+12. src/codex_ml/cli/checkpoint_validate.py:43 - None → Module
+13. src/codex_ml/cli/checkpoint_validate.py:46 - None → Module
+14. src/codex_cli/app.py:371 - Group → Typer
+15. src/codex/cli/main.py:340 - None → Typer
+
+### ATTR-DEFINED Errors (5 errors) - [attr-defined]
+1. src/codex_ml/cli/validate.py:195 - Typer.main missing
+2. src/codex_ml/cli/tracking_decide.py:175 - Typer.main missing
+3. src/codex_ml/cli/plugins_cli.py:173 - Typer.main missing
+4. src/codex_ml/cli/checkpoint_validate.py:185 - Typer.main missing
+5. src/codex_cli/app.py:375 - Typer.add_command missing
+
+### MISC Errors (4 errors) - [misc]
+1. src/codex_cli/app.py:343 - Incompatible redefinition of track_smoke
+2. src/codex_cli/app.py:354 - Incompatible redefinition of split_smoke
+3. src/codex_cli/app.py:366 - Incompatible redefinition of checkpoint_smoke
+4. src/codex_cli/app.py:450 - Incompatible redefinition
+
+### CALL-ARG Error (1 error) - [call-arg]
+1. src/codex/archive/standardization.py:150 - Wrong parameter name cert_chain
+
+### ARG-TYPE Error (1 error) - [arg-type]
+1. src/codex_ml/cli/plugins_cli.py:166 - Sequence[str] → str
+
+## Fix Pattern Mapping:
+
+- ASSIGNMENT (None/Group mismatch): Suppress with # type: ignore[assignment]
+- ATTR-DEFINED (missing attrs): Suppress with # type: ignore[attr-defined]
+- MISC (redefinitions): Suppress with # type: ignore[misc]
+- CALL-ARG (wrong param): Suppress with # type: ignore[call-arg]
+- ARG-TYPE (type mismatch): Suppress with # type: ignore[arg-type]
+
+All are suppression candidates (MYPY-ARG-TYPE pattern).

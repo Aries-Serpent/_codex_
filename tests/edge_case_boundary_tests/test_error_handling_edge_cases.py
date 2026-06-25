@@ -9,7 +9,8 @@ Categories tested:
 - H3: Partial Failure Scenarios (cascade prevention)
 - H4: Error Message Handling (information leakage prevention)
 """
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from unittest.mock import MagicMock
 
 import pytest
@@ -20,6 +21,7 @@ class TestExceptionChaining:
 
     def test_nested_exception_handling(self):
         """Test handling of nested exceptions."""
+
         # Arrange
         class CustomException(Exception):
             pass
@@ -34,7 +36,6 @@ class TestExceptionChaining:
     def test_exception_chain_depth(self):
         """Test deep exception chain handling."""
         # Arrange
-        max_chain_depth = 100
 
         # Act
         def create_deep_chain(depth):
@@ -134,11 +135,11 @@ class TestResourceCleanup:
         # Act
         try:
             # Simulate opening multiple resources
-            resource1 = MagicMock()
-            resource2 = MagicMock()
-            resource3 = MagicMock()
+            MagicMock()
+            MagicMock()
+            MagicMock()
             raise Exception("Failure")
-        except:
+        except Exception as _err:
             cleanup_order.append("resource3")
             cleanup_order.append("resource2")
             cleanup_order.append("resource1")
@@ -280,11 +281,12 @@ class TestErrorMessages:
     def test_user_friendly_error_messages(self):
         """Test user-friendly error message generation."""
         # Arrange
-        technical_error = "AttributeError: 'NoneType' object has no attribute 'foo'"
         user_friendly_message = "An unexpected error occurred. Please try again."
 
         # Act
-        is_user_friendly = len(user_friendly_message) < 100 and ("Error" in user_friendly_message or "error" in user_friendly_message)
+        is_user_friendly = len(user_friendly_message) < 100 and (
+            "Error" in user_friendly_message or "error" in user_friendly_message
+        )
 
         # Assert
         assert is_user_friendly

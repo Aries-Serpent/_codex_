@@ -94,7 +94,7 @@ class EmbeddingPipeline:
             self._use_fallback = True
             return False
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Failed to load embedding model: %s", e)
             self._use_fallback = True
             return False
@@ -164,7 +164,7 @@ class EmbeddingPipeline:
                 raw_embedding = self._model.encode(text, normalize_embeddings=normalize)
                 embedding = raw_embedding.tolist()
                 model_name = self.config.model_name
-            except Exception as e:
+            except (ValueError, TypeError) as e:
                 logger.error("Embedding failed, using fallback: %s", e)
                 embedding = self._fallback_embedding(text)
                 model_name = "fallback-hash"
@@ -220,7 +220,7 @@ class EmbeddingPipeline:
                         )
                     )
 
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.error("Batch embedding failed, using fallback: %s", e)
                 for text in texts:
                     results.append(self.embed_text(text))

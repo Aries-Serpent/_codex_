@@ -18,7 +18,9 @@ from typing import Any
 
 import pytest
 
-ADAPTER_PATH = os.environ.get("ADAPTER_UNDER_TEST", "src.mcp.backends.mock_backend.InMemoryMockBackend")
+ADAPTER_PATH = os.environ.get(
+    "ADAPTER_UNDER_TEST", "src.mcp.backends.mock_backend.InMemoryMockBackend"
+)
 
 
 def import_adapter_class(path: str):

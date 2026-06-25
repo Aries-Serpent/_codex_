@@ -16,15 +16,12 @@ import sqlite3
 import threading
 import time
 from contextlib import contextmanager
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from .concurrency import (
-    ArchiveOperationLock,
     DeadlockRecovery,
     LockMetrics,
     SQLiteConnectionPool,
-    ReadWriteLock,
     log_error,
     save_metrics,
 )
@@ -79,7 +76,8 @@ class ThreadSafeSessionDB:
         try:
             yield conn
         except sqlite3.OperationalError as e:
-            logger.error(f"Database error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Database error: <ERROR_TYPE>")
             log_error(e, "database_operation", self.errors_path)
             raise
 
@@ -111,9 +109,7 @@ class ThreadSafeSessionDB:
             cursor = conn.cursor()
 
             # Check if sessions table exists
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name='sessions'"
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='sessions'")
             if cursor.fetchone():
                 return  # Schema already exists
 
@@ -190,14 +186,15 @@ class ThreadSafeSessionDB:
             CREATE INDEX IF NOT EXISTS idx_events_session_time ON session_events(session_id, timestamp DESC);
             CREATE INDEX IF NOT EXISTS idx_outcomes_session ON session_outcomes(session_id);
             CREATE INDEX IF NOT EXISTS idx_sessions_status_created ON sessions(status, created_at DESC);
-            """
+            """  # noqa: E501
 
             conn.executescript(schema_sql)
             conn.commit()
             logger.info(f"Schema initialized for {self.db_path}")
 
-        except Exception as e:
-            logger.error(f"Schema initialization failed: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Schema initialization failed: <ERROR_TYPE>")
             log_error(e, "schema_init", self.errors_path)
             raise
 
@@ -213,7 +210,7 @@ class ThreadSafeSessionDB:
                         INSERT INTO sessions
                         (session_id, pr_number, branch, timestamp, git_sha, status, agent_name, duration_minutes)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                        """,
+                        """,  # noqa: E501
                         (
                             session.get("session_id"),
                             session.get("pr_number"),
@@ -230,8 +227,9 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_insert, max_retries=3)
-        except Exception as e:
-            logger.error(f"Failed to insert session: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to insert session: <ERROR_TYPE>")
             log_error(e, "insert_session", self.errors_path)
             return False
 
@@ -247,8 +245,9 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_get, max_retries=3)
-        except Exception as e:
-            logger.error(f"Failed to get session {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to get session {session_id}: <ERROR_TYPE>")
             log_error(e, "get_session", self.errors_path)
             return None
 
@@ -289,8 +288,9 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_query, max_retries=3)
-        except Exception as e:
-            logger.error(f"Failed to query sessions: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to query sessions: <ERROR_TYPE>")
             log_error(e, "query_sessions", self.errors_path)
             return []
 
@@ -302,7 +302,7 @@ class ThreadSafeSessionDB:
                 with self._get_connection() as conn:
                     cursor = conn.cursor()
                     cursor.execute(
-                        "UPDATE sessions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE session_id = ?",
+                        "UPDATE sessions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE session_id = ?",  # noqa: E501
                         (new_status, session_id),
                     )
                     conn.commit()
@@ -310,8 +310,9 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_update, max_retries=3)
-        except Exception as e:
-            logger.error(f"Failed to update session {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to update session {session_id}: <ERROR_TYPE>")
             log_error(e, "update_session_status", self.errors_path)
             return False
 
@@ -337,8 +338,9 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_search, max_retries=3)
-        except Exception as e:
-            logger.error(f"Failed to search sessions: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to search sessions: <ERROR_TYPE>")
             log_error(e, "search_sessions", self.errors_path)
             return []
 
@@ -375,8 +377,9 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_archive, max_retries=3)
-        except Exception as e:
-            logger.error(f"Failed to archive session {session_id}: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Failed to archive session {session_id}: <ERROR_TYPE>")
             log_error(e, "archive_session", self.errors_path)
             return False
 
@@ -392,15 +395,16 @@ class ThreadSafeSessionDB:
             "connection_pool": self._connection_pool.metrics.to_dict(),
             "write_lock": self._metrics.to_dict(),
         }
-        save_metrics(metrics_dict, self.metrics_path)  # type: ignore[arg-type]
+        save_metrics(metrics_dict, self.metrics_path)
 
     def cleanup(self) -> None:
         """Clean up connection pool."""
         try:
             self._connection_pool.cleanup_all()
             logger.info("Connection pool cleaned up")
-        except Exception as e:
-            logger.error(f"Error during cleanup: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.error(f"Error during cleanup: <ERROR_TYPE>")
             log_error(e, "cleanup", self.errors_path)
 
     def __enter__(self):

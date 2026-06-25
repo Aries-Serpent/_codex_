@@ -19,7 +19,7 @@ from tests._codex_introspect import (
 )
 
 try:  # pragma: no cover - optional dependency
-    if importlib.util.find_spec('yaml') is None:  # pragma: no cover - used in minimal CI envs
+    if importlib.util.find_spec("yaml") is None:  # pragma: no cover - used in minimal CI envs
         raise ModuleNotFoundError("yaml not found")
 except ModuleNotFoundError:  # pragma: no cover - used in minimal CI envs
     _yaml_stub = types.ModuleType("yaml")
@@ -38,16 +38,14 @@ def _make_sqlite_db(db_path: Path, session_id: str = "SID") -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(os.fspath(db_path))
     cur = conn.cursor()
-    cur.execute(
-        """
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS session_events(
             ts REAL NOT NULL,
             session_id TEXT NOT NULL,
             role TEXT NOT NULL,
             message TEXT NOT NULL
         )
-        """
-    )
+        """)
     cur.executemany(
         "INSERT INTO session_events(ts, session_id, role, message) VALUES (?,?,?,?)",
         [(e["ts"], session_id, e["role"], e["content"]) for e in EVENTS],
@@ -182,6 +180,7 @@ def test_pool_toggle_invokes_helper(monkeypatch, tmp_path):
     # Use object-based patching to avoid string-path resolution issues.
     try:
         import codex.db.sqlite_patch as _sp_mod  # ensure loaded
+
         monkeypatch.setattr(_sp_mod, "auto_enable_from_env", spy_auto_enable_from_env)
     except ImportError:
         monkeypatch.setattr(
@@ -322,7 +321,6 @@ def test_session_logger_dedupe_wal(monkeypatch, tmp_path):
 
     monkeypatch.setenv("CODEX_SQLITE_POOL", "0")
     monkeypatch.delenv("CODEX_DB_POOL", raising=False)
-
 
     wal_calls = {"count": 0}
     orig_connect = sqlite3.connect

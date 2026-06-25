@@ -2,7 +2,6 @@
 Tests for scripts/validate_code_fences.py
 """
 
-
 from validate_code_fences import check_code_fences, fix_code_fences
 
 
@@ -13,13 +12,7 @@ class TestCheckCodeFences:
         """Test that properly matched fences are not flagged"""
         md_file = tmp_path / "test.md"
         md_file.write_text(
-            "# Header\n"
-            "\n"
-            "```python\n"
-            "code here\n"
-            "```\n"
-            "\n"
-            "Text after.\n"
+            "# Header\n" "\n" "```python\n" "code here\n" "```\n" "\n" "Text after.\n"
         )
 
         issues = check_code_fences(md_file)
@@ -29,17 +22,13 @@ class TestCheckCodeFences:
         """Test detection of unclosed fence"""
         md_file = tmp_path / "test.md"
         md_file.write_text(
-            "# Header\n"
-            "\n"
-            "```python\n"
-            "code here\n"
-            "# Missing closing fence\n"
+            "# Header\n" "\n" "```python\n" "code here\n" "# Missing closing fence\n"
         )
 
         issues = check_code_fences(md_file)
         assert len(issues) == 1
-        assert issues[0]['type'] == 'unclosed_fence'
-        assert issues[0]['line'] == 3
+        assert issues[0]["type"] == "unclosed_fence"
+        assert issues[0]["line"] == 3
 
     def test_indented_fences(self, tmp_path):
         """Test that indented fences are properly matched"""
@@ -58,42 +47,29 @@ class TestCheckCodeFences:
         issues = check_code_fences(md_file)
         # Should detect properly - indented fences not currently handled
         # This documents current behavior
-        assert len(issues) == 0 or issues[0]['type'] == 'unclosed_fence'
+        assert len(issues) == 0 or issues[0]["type"] == "unclosed_fence"
 
     def test_nested_fence_detection(self, tmp_path):
         """Test detection of nested fences"""
         md_file = tmp_path / "test.md"
         md_file.write_text(
-            "# Header\n"
-            "\n"
-            "```python\n"
-            "```bash\n"
-            "nested code\n"
-            "```\n"
-            "```\n"
+            "# Header\n" "\n" "```python\n" "```bash\n" "nested code\n" "```\n" "```\n"
         )
 
         issues = check_code_fences(md_file)
         # Should detect nested fence
-        nested = [i for i in issues if i['type'] == 'nested_fence']
+        nested = [i for i in issues if i["type"] == "nested_fence"]
         assert len(nested) >= 1
 
     def test_multiple_unclosed_fences(self, tmp_path):
         """Test detection of multiple unclosed fences"""
         md_file = tmp_path / "test.md"
         md_file.write_text(
-            "```python\n"
-            "code1\n"
-            "\n"
-            "```bash\n"
-            "code2\n"
-            "\n"
-            "```yaml\n"
-            "code3\n"
+            "```python\n" "code1\n" "\n" "```bash\n" "code2\n" "\n" "```yaml\n" "code3\n"
         )
 
         issues = check_code_fences(md_file)
-        unclosed = [i for i in issues if i['type'] == 'unclosed_fence']
+        unclosed = [i for i in issues if i["type"] == "unclosed_fence"]
         # At least one unclosed fence detected
         assert len(unclosed) >= 1
 
@@ -112,12 +88,7 @@ class TestFixCodeFences:
     def test_fix_unclosed_fence(self, tmp_path):
         """Test fixing unclosed fence"""
         md_file = tmp_path / "test.md"
-        md_file.write_text(
-            "# Header\n"
-            "\n"
-            "```python\n"
-            "code here\n"
-        )
+        md_file.write_text("# Header\n" "\n" "```python\n" "code here\n")
 
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
@@ -129,10 +100,7 @@ class TestFixCodeFences:
     def test_dry_run_returns_true(self, tmp_path):
         """Test that dry-run returns True for fixable issues"""
         md_file = tmp_path / "test.md"
-        md_file.write_text(
-            "```python\n"
-            "code\n"
-        )
+        md_file.write_text("```python\n" "code\n")
 
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=True)
@@ -145,11 +113,7 @@ class TestFixCodeFences:
     def test_no_changes_returns_false(self, tmp_path):
         """Test that no changes returns False"""
         md_file = tmp_path / "test.md"
-        md_file.write_text(
-            "```python\n"
-            "code\n"
-            "```\n"
-        )
+        md_file.write_text("```python\n" "code\n" "```\n")
 
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
@@ -159,10 +123,7 @@ class TestFixCodeFences:
     def test_fix_multiple_unclosed_fences(self, tmp_path):
         """Test fixing multiple unclosed fences"""
         md_file = tmp_path / "test.md"
-        md_file.write_text(
-            "```python\n"
-            "code1\n"
-        )
+        md_file.write_text("```python\n" "code1\n")
 
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
@@ -175,19 +136,13 @@ class TestFixCodeFences:
     def test_nested_fence_not_auto_fixed(self, tmp_path):
         """Test that nested fences are detected but file structure may still be fixed for unclosed fences"""
         md_file = tmp_path / "test.md"
-        original_content = (
-            "```python\n"
-            "```bash\n"
-            "nested\n"
-            "```\n"
-            "```\n"
-        )
+        original_content = "```python\n" "```bash\n" "nested\n" "```\n" "```\n"
         md_file.write_text(original_content)
 
         issues = check_code_fences(md_file)
         # This should detect nested fence AND unclosed fence
         assert len(issues) >= 1
-        assert any(i['type'] == 'nested_fence' for i in issues)
+        assert any(i["type"] == "nested_fence" for i in issues)
 
         result = fix_code_fences(md_file, issues, dry_run=False)
         # Result will be True because unclosed fences are fixed

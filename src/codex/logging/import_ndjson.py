@@ -45,8 +45,8 @@ from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - platform dependent
     import fcntl
-except Exception:  # pragma: no cover - windows fallback
-    fcntl = None  # type: ignore[assignment]
+except (IOError, OSError):  # pragma: no cover - windows fallback
+    fcntl = None
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
 
@@ -54,7 +54,7 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     logger.debug("Suppressed exception in handler", exc_info=True)
 
 
@@ -70,8 +70,7 @@ def _db_path(override: str | None = None) -> Path:
 
 
 def _init_db(conn: sqlite3.Connection) -> None:
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS session_events (
             session_id TEXT NOT NULL,
             ts REAL,
@@ -80,8 +79,7 @@ def _init_db(conn: sqlite3.Connection) -> None:
             seq INTEGER,
             meta TEXT
         )
-        """
-    )
+        """)
     cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
     if "seq" not in cols:
         conn.execute("ALTER TABLE session_events ADD COLUMN seq INTEGER")
@@ -96,14 +94,12 @@ def _init_db(conn: sqlite3.Connection) -> None:
     conn.execute(
         "CREATE INDEX IF NOT EXISTS session_events_sid_ts_idx ON session_events(session_id, ts)"
     )
-    conn.execute(
-        """
+    conn.execute("""
         CREATE TABLE IF NOT EXISTS session_ingest_watermark (
             session_id TEXT PRIMARY KEY,
             seq INTEGER NOT NULL
         )
-        """
-    )
+        """)
 
 
 def _parse_ts(ts: str | None) -> float | None:
@@ -117,7 +113,7 @@ def _parse_ts(ts: str | None) -> float | None:
             # Add timezone if not present
             normalized_ts += "+00:00"
         return datetime.fromisoformat(normalized_ts).timestamp()
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -134,9 +130,10 @@ def _open_locked(path: Path):
         if fcntl is not None:  # pragma: no cover - depends on platform
             try:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         f.close()
 
 
@@ -274,7 +271,7 @@ if __name__ == "__main__":
     session_ctx: Optional[Any]
     try:
         from .session_hooks import session as session_ctx
-    except Exception:  # pragma: no cover - helper optional
+    except (ImportError, AttributeError):  # pragma: no cover - helper optional
         session_ctx = None
     if session_ctx:
         with session_ctx(sys.argv):

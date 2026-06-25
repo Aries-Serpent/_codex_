@@ -15,7 +15,7 @@ from codex.autonomy.token_broker import (
     CircuitBreakerState,  # pragma: allowlist secret # pragma: allowlist secret
     TokenBroker,
     TokenCircuitBreaker,
-    TokenHealthChecker, # pragma: allowlist secret # pragma: allowlist secret
+    TokenHealthChecker,  # pragma: allowlist secret # pragma: allowlist secret
     TokenHealthStatus,
     TokenRotationScheduler,
     TokenSource,
@@ -362,10 +362,15 @@ class TestTokenResolutionMetrics:
 
     def test_resolution_includes_health_check(self, monkeypatch):
         """Resolved token includes health check result."""
-        monkeypatch.setenv("GITHUB_APP_TOKEN", _create_jwt({
-            "iat": int(time.time()),
-            "exp": int(time.time()) + 3600,
-        }))
+        monkeypatch.setenv(
+            "GITHUB_APP_TOKEN",
+            _create_jwt(
+                {
+                    "iat": int(time.time()),
+                    "exp": int(time.time()) + 3600,
+                }
+            ),
+        )
         broker = TokenBroker(registry=_reg())
 
         resolution = broker.resolve(
@@ -437,10 +442,12 @@ class TestTokenBrokerIntegration:
         """Resolution fails when token health check fails."""
         # Create expired JWT
         now = int(time.time())
-        expired_jwt = _create_jwt({
-            "iat": now - 3600,
-            "exp": now - 1,  # Expired
-        })
+        expired_jwt = _create_jwt(
+            {
+                "iat": now - 3600,
+                "exp": now - 1,  # Expired
+            }
+        )
         monkeypatch.setenv("GITHUB_APP_TOKEN", expired_jwt)
         monkeypatch.delenv("CODEX_SCOPED_PAT", raising=False)
         monkeypatch.delenv("CODEX_MASTER_KEY", raising=False)
@@ -473,16 +480,16 @@ class TestTokenBrokerIntegration:
     def test_fallback_to_master_on_github_app_failure(self, monkeypatch):
         """Falls back to CODEX_MASTER when GITHUB_APP fails health check."""
         now = int(time.time())
-        expired_jwt = _create_jwt({
-            "iat": now - 3600,
-            "exp": now - 1,  # Expired
-        })
+        expired_jwt = _create_jwt(
+            {
+                "iat": now - 3600,
+                "exp": now - 1,  # Expired
+            }
+        )
         monkeypatch.setenv("GITHUB_APP_TOKEN", expired_jwt)
         monkeypatch.setenv("CODEX_MASTER_KEY", "x" * 50)
 
-        broker = TokenBroker(registry=_reg(
-            token_resolution_order=["github_app", "codex_master"]
-        ))
+        broker = TokenBroker(registry=_reg(token_resolution_order=["github_app", "codex_master"]))
         resolution = broker.resolve(ControlClass.ADVISORY_WRITE)
 
         # Should resolve via CODEX_MASTER since GITHUB_APP failed health check
@@ -490,10 +497,15 @@ class TestTokenBrokerIntegration:
 
     def test_all_tasks_2_1_requirements_met(self, monkeypatch):
         """Verify all Phase 2.1 requirements are implemented."""
-        monkeypatch.setenv("GITHUB_APP_TOKEN", _create_jwt({
-            "iat": int(time.time()),
-            "exp": int(time.time()) + 3600,
-        }))
+        monkeypatch.setenv(
+            "GITHUB_APP_TOKEN",
+            _create_jwt(
+                {
+                    "iat": int(time.time()),
+                    "exp": int(time.time()) + 3600,
+                }
+            ),
+        )
 
         broker = TokenBroker(registry=_reg())
         resolution = broker.resolve(ControlClass.ADVISORY_WRITE)
@@ -529,14 +541,14 @@ def _create_jwt(payload: dict) -> str:
     import base64
 
     # Header
-    header = base64.urlsafe_b64encode(
-        json.dumps({"alg": "RS256", "typ": "JWT"}).encode()
-    ).rstrip(b"=").decode()
+    header = (
+        base64.urlsafe_b64encode(json.dumps({"alg": "RS256", "typ": "JWT"}).encode())
+        .rstrip(b"=")
+        .decode()
+    )
 
     # Payload
-    payload_b64 = base64.urlsafe_b64encode(
-        json.dumps(payload).encode()
-    ).rstrip(b"=").decode()
+    payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).rstrip(b"=").decode()
 
     # Signature (fake)
     signature = "fake_signature"

@@ -13,7 +13,7 @@ from typing import Any, Literal, Optional, TypeVar, get_type_hints
 import pytest
 
 # Module-level TypeVar for generic tests
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class TestPython312TypeHints:
@@ -21,41 +21,43 @@ class TestPython312TypeHints:
 
     def test_dict_syntax_type_hints(self):
         """Test dict[str, Any] syntax works in 3.12."""
+
         def sample_func(config: dict[str, Any]) -> dict[str, Any]:
             return config
 
         hints = get_type_hints(sample_func)
-        assert 'config' in hints
-        assert 'return' in hints
+        assert "config" in hints
+        assert "return" in hints
 
     def test_list_syntax_type_hints(self):
         """Test list[T] syntax works in 3.12."""
+
         def sample_func(items: list[str]) -> list[int]:
             return [len(item) for item in items]
 
         hints = get_type_hints(sample_func)
-        assert 'items' in hints
-        assert 'return' in hints
+        assert "items" in hints
+        assert "return" in hints
 
     def test_union_pipe_syntax(self):
         """Test X | None syntax works in 3.12."""
+
         def sample_func(value: str | None) -> int | None:
             return len(value) if value else None
 
         hints = get_type_hints(sample_func)
-        assert 'value' in hints
-        assert 'return' in hints
+        assert "value" in hints
+        assert "return" in hints
 
     def test_complex_nested_types(self):
         """Test complex nested type hints."""
-        def sample_func(
-            data: dict[str, list[int | str]]
-        ) -> list[dict[str, Any]]:
+
+        def sample_func(data: dict[str, list[int | str]]) -> list[dict[str, Any]]:
             return [{"key": value} for value in data.values()]
 
         hints = get_type_hints(sample_func)
-        assert 'data' in hints
-        assert 'return' in hints
+        assert "data" in hints
+        assert "return" in hints
 
     @pytest.mark.skipif(sys.version_info < (3, 12), reason="3.12+ only")
     def test_no_future_annotations_needed(self):
@@ -65,13 +67,14 @@ class TestPython312TypeHints:
         The `from __future__ import annotations` should still be
         compatible and functional in Python 3.12.
         """
+
         # This file uses __future__ annotations at the top
         # If it works, this test passes
         def test_func(x: str) -> str:
             return x
 
         hints = get_type_hints(test_func)
-        assert hints == {'x': str, 'return': str}
+        assert hints == {"x": str, "return": str}
 
 
 class TestCodexMLTypeHints:
@@ -83,7 +86,7 @@ class TestCodexMLTypeHints:
             from codex_ml.evaluation import cli
 
             # Check if module has type-hinted functions
-            if hasattr(cli, '_load_training_config'):
+            if hasattr(cli, "_load_training_config"):
                 hints = get_type_hints(cli._load_training_config)
                 assert hints  # Should have type hints
         except ImportError:
@@ -120,8 +123,8 @@ class TestGenericTypeHints:
             return x
 
         hints = get_type_hints(identity)
-        assert 'x' in hints
-        assert 'return' in hints
+        assert "x" in hints
+        assert "return" in hints
 
     def test_generic_class(self):
         """Test generic class type hints."""
@@ -135,10 +138,10 @@ class TestGenericTypeHints:
                 return self.value
 
         hints = get_type_hints(Container.__init__)
-        assert 'value' in hints
+        assert "value" in hints
 
         hints = get_type_hints(Container.get)
-        assert 'return' in hints
+        assert "return" in hints
 
     @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ feature")
     def test_pep_695_type_parameter_syntax(self):
@@ -157,7 +160,7 @@ def process[T](items: list[T]) -> T:
     return items[0]
 """
         try:
-            compile(code, '<string>', 'exec')
+            compile(code, "<string>", "exec")
         except SyntaxError:
             if sys.version_info >= (3, 12):
                 pytest.fail("PEP 695 syntax should be available in Python 3.12+")
@@ -170,6 +173,7 @@ class TestTypeHintCompatibility:
 
     def test_optional_style_variations(self):
         """Test different ways to express Optional."""
+
         # Optional is already imported at module level
         # Old style
         def func1(x: Optional[str]) -> Optional[int]:
@@ -183,11 +187,12 @@ class TestTypeHintCompatibility:
         hints2 = get_type_hints(func2)
 
         # Both should work
-        assert 'x' in hints1
-        assert 'x' in hints2
+        assert "x" in hints1
+        assert "x" in hints2
 
     def test_union_style_variations(self):
         """Test different ways to express Union."""
+
         # Union is already imported at module level
         # Old style
         def func1(x: str | int) -> str | None:
@@ -201,8 +206,8 @@ class TestTypeHintCompatibility:
         hints2 = get_type_hints(func2)
 
         # Both should work
-        assert 'x' in hints1
-        assert 'x' in hints2
+        assert "x" in hints1
+        assert "x" in hints2
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ tests")
@@ -215,6 +220,7 @@ class TestPython312SpecificFeatures:
 
         This is more of a demonstration than a functional test.
         """
+
         def typed_func(x: int) -> str:
             return str(x)
 
@@ -244,6 +250,7 @@ class TestPython312SpecificFeatures:
 
     def test_literal_types(self):
         """Test Literal types work in Python 3.12."""
+
         # Literal is already imported at module level
         def set_mode(mode: Literal["train", "eval", "test"]) -> str:
             return f"Mode: {mode}"
@@ -252,7 +259,7 @@ class TestPython312SpecificFeatures:
         assert result == "Mode: train"
 
         hints = get_type_hints(set_mode)
-        assert 'mode' in hints
+        assert "mode" in hints
 
 
 class TestRealWorldTypeHints:
@@ -264,11 +271,12 @@ class TestRealWorldTypeHints:
         def higher_order(func: Callable[[int], str]) -> Callable[[str], int]:
             def wrapper(s: str) -> int:
                 return len(func(int(s)))
+
             return wrapper
 
         hints = get_type_hints(higher_order)
-        assert 'func' in hints
-        assert 'return' in hints
+        assert "func" in hints
+        assert "return" in hints
 
     def test_async_type_hints(self):
         """Test type hints on async functions."""
@@ -279,8 +287,8 @@ class TestRealWorldTypeHints:
             return str(x)
 
         hints = get_type_hints(async_func)
-        assert 'x' in hints
-        assert 'return' in hints
+        assert "x" in hints
+        assert "return" in hints
 
     def test_decorator_with_type_hints(self):
         """Test that decorators preserve type hints."""
@@ -288,12 +296,13 @@ class TestRealWorldTypeHints:
         from functools import wraps
         from typing import TypeVar
 
-        F = TypeVar('F', bound=Callable[..., Any])
+        F = TypeVar("F", bound=Callable[..., Any])
 
         def my_decorator(func: F) -> F:
             @wraps(func)
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
+
             return wrapper  # type: ignore
 
         @my_decorator
@@ -301,4 +310,4 @@ class TestRealWorldTypeHints:
             return str(x)
 
         # Type hints should be preserved (via @wraps)
-        assert hasattr(decorated_func, '__annotations__')
+        assert hasattr(decorated_func, "__annotations__")

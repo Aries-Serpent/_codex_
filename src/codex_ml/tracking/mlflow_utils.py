@@ -45,7 +45,7 @@ try:
 except ImportError as exc:
     logger.debug("Failed to import mlflow at module load: %s", exc)
     _mlf = None
-except Exception:
+except AttributeError:
     logger.warning("Unexpected failure importing mlflow at module load", exc_info=True)
     _mlf = None
 
@@ -113,8 +113,9 @@ def _ensure_mlflow_available() -> Any:
     """
     try:
         return importlib.import_module("mlflow")
-    except Exception as exc:
-        logger.debug(f"Exception: {exc}")
+    except (IOError, OSError) as exc:
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         err = build_optional_dependency_error("mlflow", "experiment tracking")
         raise RuntimeError(err.args[0]) from exc
 
@@ -298,7 +299,7 @@ def log_metrics(
     for k, v in metrics.items():
         try:
             ml.log_metric(k, float(v), step=step)
-        except Exception:
+        except (IOError, OSError):
             logger.debug("log_metric failed for key %s; skipping", k, exc_info=True)
             # be robust; drop bad values quietly
 
@@ -333,7 +334,7 @@ def log_artifacts(
                 ml.log_artifacts(str(p))
             else:
                 ml.log_artifact(str(p))
-        except Exception as exc:  # pragma: no cover
+        except (IOError, OSError) as exc:  # pragma: no cover
             raise RuntimeError(f"Failed to log artifact {p}") from exc
 
     # Accept both single path or iterable
@@ -362,7 +363,7 @@ def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = Fa
     path = out_dir / "seeds.json"
     try:
         path.write_text(json.dumps(dict(seeds), indent=2), encoding="utf-8")
-    except Exception as exc:  # pragma: no cover
+    except (IOError, OSError) as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write seeds snapshot to {path}") from exc
 
     # Log the written file as an artifact when requested.
@@ -397,7 +398,7 @@ def ensure_local_artifacts(
     summary_path = run_dir / "summary.json"
     try:
         summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    except Exception as exc:  # pragma: no cover
+    except (IOError, OSError) as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write summary to {summary_path}") from exc
 
     # Write seeds (optionally log to MLflow)
@@ -412,7 +413,7 @@ def current_commit_hash() -> str:
 
         repo = git.Repo(search_parent_directories=True)
         return repo.head.commit.hexsha
-    except Exception:
+    except (ImportError, AttributeError):
         logger.debug("git commit hash unavailable", exc_info=True)
         return ""
 
@@ -431,7 +432,7 @@ def init_run(
         commit = current_commit_hash()
         if commit:
             ml.set_tag("git_commit", commit[:7])
-    except Exception as e:
+    except (ValueError, TypeError) as e:
         logger.debug("git_commit tag unavailable: %s", e)
 
     if config is not None:
@@ -443,7 +444,7 @@ def init_run(
                 payload = str(config)
             digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
             ml.set_tag("config_hash", digest)
-        except Exception as e:
+        except (ValueError, TypeError) as e:
             logger.debug("config_hash tag unavailable: %s", e)
 
     return run

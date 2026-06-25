@@ -32,12 +32,7 @@ def sample_sarif() -> dict[str, Any]:
         "version": "2.1.0",
         "runs": [
             {
-                "tool": {
-                    "driver": {
-                        "name": "CodeQL",
-                        "version": "2.15.0"
-                    }
-                },
+                "tool": {"driver": {"name": "CodeQL", "version": "2.15.0"}},
                 "results": [
                     {
                         "ruleId": "py/sql-injection",
@@ -46,14 +41,14 @@ def sample_sarif() -> dict[str, Any]:
                             {
                                 "physicalLocation": {
                                     "artifactLocation": {"uri": "src/codex/db.py"},
-                                    "region": {"startLine": 42}
+                                    "region": {"startLine": 42},
                                 }
                             }
-                        ]
+                        ],
                     }
-                ]
+                ],
             }
-        ]
+        ],
     }
 
 
@@ -67,12 +62,7 @@ def temp_sarif_dir(sample_sarif: dict[str, Any]) -> Generator[Path, None, None]:
         for i, name in enumerate(["core", "ml", "agents"]):
             sarif_file = tmppath / f"results-{name}.sarif"
             modified_sarif = sample_sarif.copy()
-            modified_sarif["runs"] = [
-                {
-                    **sample_sarif["runs"][0],
-                    "properties": {"chunk": name}
-                }
-            ]
+            modified_sarif["runs"] = [{**sample_sarif["runs"][0], "properties": {"chunk": name}}]
             with open(sarif_file, "w") as f:
                 json.dump(modified_sarif, f)
 
@@ -288,7 +278,7 @@ class TestCodeQLWorkflow:
         """Test that matrix strategy is configured correctly."""
         matrix_config = {
             "fail-fast": False,
-            "chunks": ["core", "ml", "agents", "training", "scripts"]
+            "chunks": ["core", "ml", "agents", "training", "scripts"],
         }
 
         assert matrix_config["fail-fast"] is False
@@ -317,10 +307,7 @@ class TestSarifValidation:
 
     def test_valid_sarif_structure(self) -> None:
         """Test validation of valid SARIF structure."""
-        valid_sarif = {
-            "version": "2.1.0",
-            "runs": []
-        }
+        valid_sarif = {"version": "2.1.0", "runs": []}
 
         assert "version" in valid_sarif
         assert "runs" in valid_sarif
@@ -458,8 +445,8 @@ class TestCodeQLIntegration:
             "runs": merged_runs,
             "properties": {
                 "mergedAt": datetime.now(timezone.utc).isoformat(),
-                "totalRuns": len(merged_runs)
-            }
+                "totalRuns": len(merged_runs),
+            },
         }
 
         # Verify merged structure

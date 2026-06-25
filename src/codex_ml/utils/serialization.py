@@ -37,7 +37,7 @@ class DictSerializable:
                     result[key] = value.to_dict()
                 # Handle lists of DictSerializable objects
                 elif isinstance(value, list) and value and isinstance(value[0], DictSerializable):
-                    result[key] = [v.to_dict() for v in value]  # type: ignore[assignment]
+                    result[key] = [v.to_dict() for v in value]
                 else:
                     result[key] = value
         return result

@@ -7,6 +7,7 @@ This module contains tests for:
 - Phase 4.3: Retrieval Optimization (retrieval_optimizer.py)
 - Phase 4.4: Workflow Optimization (workflow_optimizer.py)
 """
+
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -376,7 +377,7 @@ class TestKeyPointExtractor:
         text = "Fixed the bug in module.\nDecided to use new approach."
         points = extractor.extract(text, max_points=5)
 
-        assert isinstance(points, (list, tuple, set, dict))# May or may not find points
+        assert isinstance(points, (list, tuple, set, dict))  # May or may not find points
 
 
 class TestExtractiveSummarizer:

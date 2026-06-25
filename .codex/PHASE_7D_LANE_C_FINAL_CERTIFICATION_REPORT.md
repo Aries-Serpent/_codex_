@@ -45,7 +45,7 @@ This report provides **binding final certification** that Aries-Serpent/_codex_ 
 
 #### Remediation Summary
 - **Total HIGH findings:** 42 baseline → **1 archived (97.6% reduction)**
-- **Remediation approach:** 
+- **Remediation approach:**
   - Category A: 13 findings fixed with code changes (defensive coding patterns)
   - Category B: 28 findings suppressed with proper documentation (`# codeql[py/clear-text-*]` markers)
   - Category C: 1 finding deferred (archived artifact — out of scope)

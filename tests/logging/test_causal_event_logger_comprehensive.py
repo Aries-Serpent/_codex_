@@ -25,6 +25,7 @@ from codex.logging.session_logger import SessionLogger
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def temp_db_file():
     """Create a temporary database file."""
@@ -48,6 +49,7 @@ def db_manager(temp_db_file):
 # ============================================================================
 # Event Tests
 # ============================================================================
+
 
 class TestEventClass:
     """Test Event class."""
@@ -128,6 +130,7 @@ class TestEventClass:
 # ============================================================================
 # Causal Link Tests
 # ============================================================================
+
 
 class TestCausalLinkClass:
     """Test CausalLink class."""
@@ -268,6 +271,7 @@ class TestCausalLinkClass:
 # Session Logger Tests
 # ============================================================================
 
+
 class TestSessionLogger:
     """Test SessionLogger functionality."""
 
@@ -299,6 +303,7 @@ class TestSessionLogger:
 # Database Manager Tests
 # ============================================================================
 
+
 class TestDatabaseManager:
     """Test DatabaseManager functionality."""
 
@@ -313,7 +318,7 @@ class TestDatabaseManager:
 
     def test_db_manager_creates_file(self, temp_db_file):
         """Test that database manager creates database file."""
-        manager = DatabaseManager(db_path=temp_db_file)
+        DatabaseManager(db_path=temp_db_file)
         # Database file should exist after creating manager
         assert Path(temp_db_file).exists() or not Path(temp_db_file).exists()  # Lazy init
 
@@ -330,6 +335,7 @@ class TestDatabaseManager:
 # ============================================================================
 # Causal Event Logger Tests
 # ============================================================================
+
 
 class TestCausalEventLogging:
     """Test causal event logging functionality."""
@@ -411,6 +417,7 @@ class TestCausalEventLogging:
 # Event Serialization Tests
 # ============================================================================
 
+
 class TestEventSerialization:
     """Test event serialization."""
 
@@ -468,6 +475,7 @@ class TestEventSerialization:
 # ============================================================================
 # Edge Cases Tests
 # ============================================================================
+
 
 class TestLoggingEdgeCases:
     """Test edge cases in logging."""
@@ -536,6 +544,7 @@ class TestLoggingEdgeCases:
 # Integration Tests
 # ============================================================================
 
+
 class TestLoggingIntegration:
     """Integration tests for logging modules."""
 
@@ -589,7 +598,7 @@ class TestLoggingIntegration:
         manager1 = db_manager
 
         # Simulate data logging
-        event = Event(event_id="test", event_type="test")
+        Event(event_id="test", event_type="test")
 
         # Create second manager with same database
         # Note: removed redundant `import tempfile` (top-level import used)

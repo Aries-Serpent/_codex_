@@ -92,12 +92,11 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         tokens = adapter.encode("contract smoke test")
-    except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
-        raise
-    except Exception as exc:  # pragma: no cover - adapter-specific errors
-        raise TokenizationContractError(f"encode failed: {exc}") from exc
+    except (ValueError, TypeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"TypeError/ValueError: <ERROR_TYPE>")
+        logger.warning(f"TypeError/ValueError: <ERROR_TYPE>", exc_info=True)
+        raise TokenizationContractError(f"encode failed: {e}") from e
 
     if not isinstance(tokens, list) or not all(isinstance(t, int) for t in tokens):
         raise TokenizationContractError("encode must return a list[int]")
@@ -107,7 +106,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
     except (TypeError, ValueError) as e:
         # HuggingFace fast tokenizers raise ValueError for non-string input;
         # slow/custom tokenizers may raise TypeError.  Both are acceptable.
-        logger.debug(f"TypeError/ValueError on encode(None): {e}")
+        logger.debug(f"TypeError/ValueError on encode(None): <ERROR_TYPE>")
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError(
             "encode must reject non-string input with TypeError or ValueError"
@@ -115,7 +114,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.decode([0, 1])
-    except Exception as exc:  # pragma: no cover - adapter-specific
+    except (ValueError, TypeError) as exc:  # pragma: no cover - adapter-specific
         raise TokenizationContractError(f"decode failed for numeric ids: {exc}") from exc
 
     try:
@@ -123,7 +122,7 @@ def validate_tokenizer_contract(adapter: Any) -> None:
     except (ValueError, TypeError) as e:
         # HuggingFace fast tokenizers may raise TypeError for non-integer ids;
         # slow tokenizers may raise ValueError.  Both are acceptable.
-        logger.debug(f"ValueError/TypeError on decode(['bad']): {e}")
+        logger.debug(f"ValueError/TypeError on decode(['bad']): <ERROR_TYPE>")
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError(
             "decode must raise ValueError or TypeError for non-integer ids"

@@ -149,8 +149,9 @@ def cmd_stats(args: argparse.Namespace) -> int:
 
         return 0
 
-    except Exception as e:
-        print(f"Error getting statistics: {e}", file=sys.stderr)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        print(f"Error getting statistics: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -223,8 +224,9 @@ def cmd_export(args: argparse.Namespace) -> int:
 
         return 0
 
-    except Exception as e:
-        print(f"Error exporting: {e}", file=sys.stderr)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        print(f"Error exporting: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -258,8 +260,9 @@ def cmd_list(args: argparse.Namespace) -> int:
 
         return 0
 
-    except Exception as e:
-        print(f"Error listing analyses: {e}", file=sys.stderr)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        print(f"Error listing analyses: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

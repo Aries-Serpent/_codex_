@@ -112,16 +112,24 @@ def _install_optional_dependency_stubs():
     xml_stub = _module_spec_stub("defusedxml")
     xml_tree_stub = _module_spec_stub("defusedxml.ElementTree")
     xml_minidom_stub = _module_spec_stub("defusedxml.minidom")
+    # XXE PROTECTION: Use defusedxml stubs to prevent XXE attacks during smoke tests.
+    # defusedxml provides safe XML parsing that prevents:
+    # - External entity (XXE) attacks
+    # - Billion Laughs attacks
+    # - DTD retrieval attacks
+    # - XML bombs
     # Minimal no-op stubs that mirror the defusedxml ElementTree API without
     # importing an XML parser in this readiness smoke test.
     for attr_name, stub_impl in (
         ("Element", lambda *_, **__: SimpleNamespace()),
         ("SubElement", lambda *_, **__: SimpleNamespace()),
         ("tostring", lambda *_, **__: b""),
-        ("fromstring", lambda *_, **__: SimpleNamespace()),
+        ("fromstring", lambda *_, **__: SimpleNamespace()),  # XXE-safe parsing stub
     ):
         setattr(xml_tree_stub, attr_name, stub_impl)
-    setattr(xml_minidom_stub, "parseString", lambda *_, **__: SimpleNamespace())
+    setattr(
+        xml_minidom_stub, "parseString", lambda *_, **__: SimpleNamespace()
+    )  # XXE-safe minidom stub
     xml_stub.ElementTree = xml_tree_stub
     xml_stub.minidom = xml_minidom_stub
     _install_stub("defusedxml", xml_stub)

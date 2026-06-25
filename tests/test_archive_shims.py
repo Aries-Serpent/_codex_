@@ -188,6 +188,7 @@ class TestWriteJsonPointer:
 
             # Should be valid JSON
             import json
+
             data = json.loads(content)
             assert "$ref" in data
             assert data["$ref"] == canonical_path
@@ -364,4 +365,6 @@ class TestShimEdgeCases:
             write_json_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
             # Should have forward slashes in JSON
-            assert "docs/canonical/file.json" in content or "docs\\canonical\\file.json" not in content
+            assert (
+                "docs/canonical/file.json" in content or "docs\\canonical\\file.json" not in content
+            )

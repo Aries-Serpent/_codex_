@@ -44,10 +44,9 @@ class TestStableChecksum:
         seq1 = [1, 2, 3]
         seq2 = [1, 2, 4]
 
-        assert (
-            data_utils._stable_checksum_of_seq_repr(seq1)
-            != data_utils._stable_checksum_of_seq_repr(seq2)
-        )
+        assert data_utils._stable_checksum_of_seq_repr(
+            seq1
+        ) != data_utils._stable_checksum_of_seq_repr(seq2)
 
     def test_checksum_empty_sequence(self):
         """Test checksum for empty sequence."""
@@ -244,7 +243,7 @@ class TestRequireTorch:
         except ModuleNotFoundError:
             pytest.skip("torch not available")
 
-    @patch('training.data_utils.torch', None)
+    @patch("training.data_utils.torch", None)
     def test_require_torch_when_unavailable(self):
         """Test _require_torch raises when torch is unavailable."""
         with pytest.raises(ModuleNotFoundError, match="torch is required"):
@@ -264,6 +263,7 @@ class TestEdgeCases:
 
     def test_split_preserves_types(self):
         """Test split preserves item types."""
+
         class CustomItem:
             def __init__(self, value):
                 self.value = value

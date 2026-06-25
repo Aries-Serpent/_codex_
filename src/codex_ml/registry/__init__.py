@@ -119,7 +119,10 @@ try:
         register_trainer,
         trainer_registry,
     )
-except Exception:  # pragma: no cover - guard against circular imports in some envs
+except (
+    ImportError,
+    AttributeError,
+):  # pragma: no cover - guard against circular imports in some envs
     logger.debug("Deferred registry imports will be resolved via __getattr__", exc_info=True)
 
 

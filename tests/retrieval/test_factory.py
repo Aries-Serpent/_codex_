@@ -2,7 +2,6 @@
 Tests for Vector Store Factory and Registry
 """
 
-
 import types
 from unittest.mock import Mock
 
@@ -22,13 +21,14 @@ from src.codex.retrieval.stores.factory import (
 # Check if FAISS is available
 try:
     import faiss
+
     FAISS_AVAILABLE = True
 except ImportError:
     FAISS_AVAILABLE = False
     # Create mock faiss module for type checking
     faiss = types.SimpleNamespace()
-    faiss.IndexFlatL2 = type('IndexFlatL2', (), {})
-    faiss.IndexFlatIP = type('IndexFlatIP', (), {})
+    faiss.IndexFlatL2 = type("IndexFlatL2", (), {})
+    faiss.IndexFlatIP = type("IndexFlatIP", (), {})
 
 
 class TestVectorStoreRegistry:

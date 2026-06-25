@@ -56,7 +56,7 @@ def _to_serializable(obj: Any) -> Any:
     try:
         json.dumps(obj)
         return obj
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return str(obj)
 
@@ -124,7 +124,7 @@ def audit_repo(
     for path in _iter_py_files(root):
         try:
             results.append(audit_file(path))
-        except Exception as e:  # pragma: no cover - defensive
+        except (IOError, OSError) as e:  # pragma: no cover - defensive
             results.append(
                 {
                     "file": str(path),
@@ -163,8 +163,9 @@ def audit_repo(
         for prov in providers:
             try:
                 outcome = prov.search(q)
-            except Exception as exc:
-                logger.debug(f"Exception: {exc}")
+            except (ValueError, TypeError, RuntimeError) as exc:
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 evidence.append(
                     {
                         "provider": prov.__class__.__name__.lower(),

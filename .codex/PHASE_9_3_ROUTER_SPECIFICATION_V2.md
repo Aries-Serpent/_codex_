@@ -75,7 +75,7 @@ Agent Capabilities Indexed:       145 agents
 | **CI/CD** | 20 agents | ci-auto-healer, artifact-monitor, cache-mgmt | Pipeline automation, build health |
 | **Testing** | 15 agents | autonomous-test-healer, fragile-test-guardian, integration-test-runner | Test quality, failure diagnosis |
 | **Operations** | 12 agents | github-guru, github-app-manager, pypi-publishing-ops | Repo management, deployment |
-| **Security** | 10 agents | code-scanning-remediation, security-alert-verification, secret-detection | Vulnerability remediation, secrets |
+| **Security** | 10 agents | code-scanning-remediation, security-alert-verification, secret-detection | Vulnerability remediation, secrets | <!-- pragma: allowlist secret -->
 | **Documentation** | 10 agents | doc-freshness-checker, documentation-consolidator, link-validator | Content quality, link health |
 | **Quality** | 9 agents | code-analysis, codebase-health-guardian, json-serialization-expert | Code quality, refactoring |
 | **ML/Cognitive** | 14 agents | meta-tensor-validator, rag-freshness-loop, cognitive-brain-manager | Model validation, RAG systems |
@@ -87,7 +87,7 @@ Agent Capabilities Indexed:       145 agents
 
 #### 1.2.4 Capability Tag Ecosystem (Top 30 tags)
 
-**Frequency Analysis:** 
+**Frequency Analysis:**
 - 200+ unique capability tags across 145 agents
 - Average 2.8 tags per agent
 - High-frequency tags (8-15 agents): ci_cd, testing, documentation, operations, security, quality, cognitive, ml
@@ -143,7 +143,7 @@ SEMANTIC ROUTING ENGINE PIPELINE
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ INPUT LAYER: Task Description (Natural Language or Structured)         │
 ├─────────────────────────────────────────────────────────────────────────┤
-│ • PR comment: "CI tests failing with ImportError in tokenizer module" │
+│ • PR comment: "CI tests failing with ImportError in tokenizer module" │  # pragma: allowlist secret
 │ • Issue: "Add coverage for edge case in cache validation"             │
 │ • Job failure: [run_id=12345, job_id=67890, error_log=...]           │
 └────────────────┬─────────────────────────────────────────────────────┘
@@ -154,7 +154,7 @@ SEMANTIC ROUTING ENGINE PIPELINE
         │ 1. Parse task   │
         │ 2. Extract      │
         │    features     │
-        │ 3. Tokenize     │
+        │ 3. Tokenize     │  # pragma: allowlist secret
         │ 4. Embed via    │
         │ SentenceTransf- │
         │ ormer (384-dim) │
@@ -347,24 +347,24 @@ Parallelization Strategy:
 
 **Cycle Detection:**
 ```python
-def detect_cycles(task_graph):
+def detect_cycles(task_graph):  # pragma: allowlist secret
     """DFS-based cycle detection using 3-color algorithm"""
     WHITE, GRAY, BLACK = 0, 1, 2
-    colors = {node: WHITE for node in task_graph}
-    
+    colors = {node: WHITE for node in task_graph}  # pragma: allowlist secret
+
     def dfs(node, colors):
         colors[node] = GRAY
-        for neighbor in task_graph[node]:
+        for neighbor in task_graph[node]:  # pragma: allowlist secret
             if colors[neighbor] == GRAY:
                 raise CircularDependencyError(f"Cycle: {node} → {neighbor}")
             elif colors[neighbor] == WHITE:
                 dfs(neighbor, colors)
         colors[node] = BLACK
-    
-    for node in task_graph:
+
+    for node in task_graph:  # pragma: allowlist secret
         if colors[node] == WHITE:
             dfs(node, colors)
-    
+
     return True  # No cycles found
 ```
 
@@ -386,10 +386,10 @@ def compute_confidence_score(
     """
     Compute routing decision confidence on 0-100 scale.
     """
-    
+
     # Base score from similarity + capability match
     base_score = (similarity * 0.5 + capability_match * 0.5) * 100
-    
+
     # Maturity bonus/penalty
     maturity_factors = {
         "production": 1.0,
@@ -397,15 +397,15 @@ def compute_confidence_score(
         "alpha": 0.60,
     }
     maturity_factor = maturity_factors.get(agent_maturity, 0.5)
-    
+
     # Queue depth penalty (exponential backoff)
     queue_penalty = 1.0 - (queue_depth / 10)
-    
+
     # Autonomy compatibility check
     autonomy_factor = 1.0
     if autonomy_model == "D_CAPABLE" and base_score < 85:
         autonomy_factor = 0.5  # Require high confidence for elevated decisions
-    
+
     # Difficulty adjustment
     difficulty_factors = {
         "simple": 1.1,      # Boost confidence for simple tasks
@@ -413,10 +413,10 @@ def compute_confidence_score(
         "complex": 0.85,    # Lower confidence for complex tasks
     }
     difficulty_factor = difficulty_factors.get(decision_difficulty, 1.0)
-    
+
     # Final score
     confidence = base_score * maturity_factor * queue_penalty * autonomy_factor * difficulty_factor
-    
+
     return int(min(100, max(0, confidence)))  # Clamp to [0, 100]
 ```
 
@@ -432,10 +432,10 @@ def compute_confidence_score(
 
 **Cache Key Generation:**
 ```python
-def generate_cache_key(task_description: str, required_capabilities: list) -> str:
+def generate_cache_key(task_description: str, required_capabilities: list) -> str:  # pragma: allowlist secret
     """Generate consistent cache key for task routing decisions."""
     key_parts = [
-        hashlib.sha256(task_description.encode()).hexdigest()[:16],
+        hashlib.sha256(task_description.encode()).hexdigest()[:16],  # pragma: allowlist secret
         ",".join(sorted(required_capabilities))
     ]
     return "|".join(key_parts)
@@ -471,7 +471,7 @@ CACHE_CONFIG = {
   - Redis/RabbitMQ for task queue
   - Agent state machine (idle → working → done)
   - Backpressure handling
-  
+
 - **Task 9.3.4 (2026-07-03):** Build workload balancing rules
   - Round-robin scheduling for equal-capability agents
   - Least-loaded heuristic
@@ -543,4 +543,3 @@ These 9 agents have elevated autonomy (D_CAPABLE) and require enhanced supervisi
 **Sections Complete:** 1-2 (§3+ pending Task 9.3.3-9.3.6)  
 **ETA for Full Spec:** 2026-07-01  
 **Next Standup:** 2026-06-30T06:00:00Z (Phase 9 Kickoff)
-

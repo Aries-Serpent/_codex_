@@ -140,7 +140,7 @@ def register_mcp_session_hook(mcp_context: dict[str, Any]) -> dict[str, Any]:
             payload.injected_patterns,
         )
 
-    except Exception as exc:
+    except (ValueError, TypeError, RuntimeError) as exc:
         logger.error(
             "Cognitive brain injection failed for actor=%s: %s — returning original context.",
             actor,

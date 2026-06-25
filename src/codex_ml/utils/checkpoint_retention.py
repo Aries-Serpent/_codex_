@@ -44,7 +44,7 @@ def _epoch_sort_key(path: Path) -> tuple[int, str]:
     try:
         suffix = name.rsplit("-", 1)[-1]
         return int(suffix), name
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return (10**12, name)
 
@@ -61,8 +61,9 @@ def _is_epoch_dir(path: Path) -> bool:
     try:
         int(suffix)
     except ValueError as e:
-        logger.debug(f"ValueError: {e}")
-        logger.warning(f"ValueError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
+        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
         return False
     return True
 
@@ -73,7 +74,7 @@ def _load_metric(dir_path: Path, metric: str) -> Optional[float]:
         return None
     try:
         data = json.loads(meta_path.read_text(encoding="utf-8"))
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     value = data.get(metric)

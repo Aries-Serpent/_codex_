@@ -439,7 +439,7 @@ security-suite:
   - GitHub tokens
   - API keys
   - SSH private keys
-  
+
 ✅ Cache policies prevent:
   - .env files
   - credentials.json

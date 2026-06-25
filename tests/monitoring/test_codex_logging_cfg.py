@@ -44,8 +44,4 @@ def test_logging_bootstrap_hydra_cfg(monkeypatch, tmp_path):
     assert called["tb"] == str(tmp_path)
     assert called["wb"]["project"] == "proj" and called["wb"]["mode"] == "offline"
     assert loggers.wb == "wandb_obj"
-    assert (
-        loggers.mlflow_active
-        and called["ml_uri"] == "uri"
-        and called["ml_exp"] == "exp"
-    )
+    assert loggers.mlflow_active and called["ml_uri"] == "uri" and called["ml_exp"] == "exp"

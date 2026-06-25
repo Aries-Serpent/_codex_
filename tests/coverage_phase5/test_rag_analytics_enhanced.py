@@ -85,6 +85,7 @@ class BenchmarkRunner:
 # TEST SUITE 1: RAG Analytics Initialization
 # ============================================================================
 
+
 class TestRAGAnalyticsInitialization:
     """Test RAG analytics initialization."""
 
@@ -129,6 +130,7 @@ class TestRAGAnalyticsInitialization:
 # ============================================================================
 # TEST SUITE 2: Document Indexing
 # ============================================================================
+
 
 class TestDocumentIndexing:
     """Test document indexing with semantic assertions."""
@@ -199,6 +201,7 @@ class TestDocumentIndexing:
 # ============================================================================
 # TEST SUITE 3: Document Retrieval
 # ============================================================================
+
 
 class TestDocumentRetrieval:
     """Test document retrieval with mutation defense."""
@@ -285,6 +288,7 @@ class TestDocumentRetrieval:
 # TEST SUITE 4: Benchmark Management
 # ============================================================================
 
+
 class TestBenchmarkManagement:
     """Test benchmark registration and execution."""
 
@@ -363,6 +367,7 @@ class TestBenchmarkManagement:
 # ============================================================================
 # TEST SUITE 5: Operator Mutation Defense
 # ============================================================================
+
 
 class TestOperatorMutationDefense:
     """Test operators for mutation defense."""

@@ -345,11 +345,11 @@ jobs:
         run: |
           # Delete images older than 365 days, except last 10 releases
           # Requires GitHub CLI and registry access
-          
+
       - name: Delete old development images
         run: |
           # Delete images older than 90 days
-          
+
       - name: Delete old PR images
         run: |
           # Delete images older than 30 days

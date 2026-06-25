@@ -26,6 +26,7 @@ pytestmark = pytest.mark.regression
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
+
 def _sha256(items: list[str]) -> str:
     h = hashlib.sha256()
     for item in items:
@@ -36,6 +37,7 @@ def _sha256(items: list[str]) -> str:
 # ────────────────────────────────────────────────────────────────────────────
 # 1. Split reproducibility
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestSplitReproducibility:
     """split_dataset must be deterministic: identical inputs + seed → identical output."""
@@ -66,14 +68,15 @@ class TestSplitReproducibility:
         train_a, _ = split_dataset(items, train_ratio=0.8, seed=1)
         train_b, _ = split_dataset(items, train_ratio=0.8, seed=999)
         # With 80 items the probability of identical ordering is negligible
-        assert train_a != train_b, (
-            "Different seeds produced identical split — seeding may be broken"
-        )
+        assert (
+            train_a != train_b
+        ), "Different seeds produced identical split — seeding may be broken"
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # 2. Split ratio contract
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestSplitRatioContract:
     """Train + val sizes must sum to the original dataset length."""
@@ -83,9 +86,9 @@ class TestSplitRatioContract:
 
         items = [f"item {i}" for i in range(100)]
         train, val = split_dataset(items, train_ratio=0.8, seed=42)
-        assert len(train) + len(val) == len(items), (
-            f"train ({len(train)}) + val ({len(val)}) != total ({len(items)})"
-        )
+        assert len(train) + len(val) == len(
+            items
+        ), f"train ({len(train)}) + val ({len(val)}) != total ({len(items)})"
 
     def test_split_train_ratio_approximately_correct(self):
         """Train set should contain roughly the requested fraction."""
@@ -95,9 +98,9 @@ class TestSplitRatioContract:
         items = [f"item {i}" for i in range(n)]
         train, _ = split_dataset(items, train_ratio=0.9, seed=42)
         # Allow ±5 % tolerance
-        assert abs(len(train) / n - 0.9) < 0.05, (
-            f"train ratio {len(train)/n:.3f} deviates from requested 0.9"
-        )
+        assert (
+            abs(len(train) / n - 0.9) < 0.05
+        ), f"train ratio {len(train)/n:.3f} deviates from requested 0.9"
 
     def test_split_no_overlap_between_train_and_val(self):
         """Train and val sets must be disjoint (no item in both partitions)."""
@@ -112,6 +115,7 @@ class TestSplitRatioContract:
 # ────────────────────────────────────────────────────────────────────────────
 # 3. Transformation idempotency
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestTransformationIdempotency:
     """Applying split twice with the same params must yield the same result."""
@@ -132,6 +136,7 @@ class TestTransformationIdempotency:
 # 4. Checksum stability
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestChecksumStability:
     """Dataset content checksums must be deterministic."""
 
@@ -144,14 +149,12 @@ class TestChecksumStability:
         """SHA-256 must differ when any item changes."""
         items_a = ["alpha", "beta", "gamma"]
         items_b = ["alpha", "BETA", "gamma"]  # case mutation
-        assert _sha256(items_a) != _sha256(items_b), (
-            "Checksum did not change after content mutation"
-        )
+        assert _sha256(items_a) != _sha256(
+            items_b
+        ), "Checksum did not change after content mutation"
 
     def test_checksum_order_sensitive(self):
         """SHA-256 must differ for same items in different order."""
         items_a = ["alpha", "beta"]
         items_b = ["beta", "alpha"]
-        assert _sha256(items_a) != _sha256(items_b), (
-            "Checksum must be order-sensitive"
-        )
+        assert _sha256(items_a) != _sha256(items_b), "Checksum must be order-sensitive"

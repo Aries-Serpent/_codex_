@@ -25,6 +25,7 @@ import pytest
 @dataclass
 class CoverageSnapshot:
     """Snapshot of coverage metrics at a point in time."""
+
     timestamp: str
     commit_sha: str
     line_coverage: float
@@ -46,6 +47,7 @@ class CoverageSnapshot:
 @dataclass
 class QualityTestResult:
     """Result of a single test execution."""
+
     name: str
     passed: bool
     duration_ms: float
@@ -56,6 +58,7 @@ class QualityTestResult:
 @dataclass
 class FlakyTestReport:
     """Report on flaky test detection."""
+
     test_name: str
     total_runs: int
     passes: int
@@ -71,6 +74,7 @@ class FlakyTestReport:
 @dataclass
 class QualityMetrics:
     """Aggregate quality metrics."""
+
     coverage: float
     test_count: int
     pass_rate: float
@@ -161,10 +165,12 @@ class TestCoverageTrendTracking:
         history: list[dict[str, Any]] = []
 
         for i in range(5):
-            history.append({
-                "date": f"2026-01-{15 + i}",
-                "coverage": 70.0 + i * 3,
-            })
+            history.append(
+                {
+                    "date": f"2026-01-{15 + i}",
+                    "coverage": 70.0 + i * 3,
+                }
+            )
 
         assert len(history) == 5
         assert history[-1]["coverage"] == 82.0
@@ -317,13 +323,15 @@ class TestReliabilityMetrics:
         history: list[QualityMetrics] = []
 
         for i in range(35):
-            history.append(QualityMetrics(
-                coverage=80.0 + i * 0.1,
-                test_count=500 + i,
-                pass_rate=0.95,
-                avg_duration_ms=150.0,
-                flaky_test_count=5,
-            ))
+            history.append(
+                QualityMetrics(
+                    coverage=80.0 + i * 0.1,
+                    test_count=500 + i,
+                    pass_rate=0.95,
+                    avg_duration_ms=150.0,
+                    flaky_test_count=5,
+                )
+            )
 
             # Trim to max history
             if len(history) > max_history:
@@ -367,21 +375,25 @@ class TestQualityDashboard:
 
         # Coverage below threshold
         if coverage < 80.0:
-            alerts.append({
-                "type": "warning",
-                "message": "Coverage below 80%",
-                "metric": "coverage",
-                "value": coverage,
-            })
+            alerts.append(
+                {
+                    "type": "warning",
+                    "message": "Coverage below 80%",
+                    "metric": "coverage",
+                    "value": coverage,
+                }
+            )
 
         # High flaky test count
         if flaky_count > 5:
-            alerts.append({
-                "type": "error",
-                "message": "High number of flaky tests",
-                "metric": "flaky_tests",
-                "value": flaky_count,
-            })
+            alerts.append(
+                {
+                    "type": "error",
+                    "message": "High number of flaky tests",
+                    "metric": "flaky_tests",
+                    "value": flaky_count,
+                }
+            )
 
         assert len(alerts) == 2
 

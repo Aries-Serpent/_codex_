@@ -15,6 +15,7 @@ import pytest
 
 class TrainingState(Enum):
     """Training loop states."""
+
     IDLE = auto()
     INITIALIZING = auto()
     TRAINING = auto()
@@ -32,9 +33,21 @@ class TestTrainingStateTransitions:
         valid_transitions = {
             TrainingState.IDLE: {TrainingState.INITIALIZING},
             TrainingState.INITIALIZING: {TrainingState.TRAINING, TrainingState.FAILED},
-            TrainingState.TRAINING: {TrainingState.VALIDATING, TrainingState.CHECKPOINTING, TrainingState.FAILED},
-            TrainingState.VALIDATING: {TrainingState.TRAINING, TrainingState.CHECKPOINTING, TrainingState.FAILED},
-            TrainingState.CHECKPOINTING: {TrainingState.TRAINING, TrainingState.COMPLETED, TrainingState.FAILED},
+            TrainingState.TRAINING: {
+                TrainingState.VALIDATING,
+                TrainingState.CHECKPOINTING,
+                TrainingState.FAILED,
+            },
+            TrainingState.VALIDATING: {
+                TrainingState.TRAINING,
+                TrainingState.CHECKPOINTING,
+                TrainingState.FAILED,
+            },
+            TrainingState.CHECKPOINTING: {
+                TrainingState.TRAINING,
+                TrainingState.COMPLETED,
+                TrainingState.FAILED,
+            },
             TrainingState.COMPLETED: {TrainingState.IDLE},
             TrainingState.FAILED: {TrainingState.IDLE},
         }
@@ -53,6 +66,7 @@ class TestTrainingStateTransitions:
 
     def test_state_machine_flow(self):
         """Complete training flow follows state machine."""
+
         class TrainingStateMachine:
             def __init__(self):
                 self.state = TrainingState.IDLE
@@ -91,11 +105,12 @@ class TestEpochManagement:
 
     def test_early_stopping_condition(self):
         """Early stopping triggers on patience exhaustion."""
+
         class EarlyStopping:
             def __init__(self, patience=3):
                 self.patience = patience
                 self.counter = 0
-                self.best_loss = float('inf')
+                self.best_loss = float("inf")
 
             def should_stop(self, current_loss):
                 if current_loss < self.best_loss:
@@ -115,10 +130,11 @@ class TestEpochManagement:
         # Not improving
         assert not es.should_stop(0.85)  # counter = 1
         assert not es.should_stop(0.86)  # counter = 2
-        assert es.should_stop(0.87)       # counter = 3, stop!
+        assert es.should_stop(0.87)  # counter = 3, stop!
 
     def test_learning_rate_schedule(self):
         """Learning rate schedule follows pattern."""
+
         def step_lr(initial_lr, epoch, step_size, gamma):
             if step_size <= 0:
                 raise ValueError("step_size must be positive")
@@ -141,6 +157,7 @@ class TestEpochManagement:
 
     def test_learning_rate_schedule_edge_cases(self):
         """Learning rate schedule handles edge cases."""
+
         def step_lr(initial_lr, epoch, step_size, gamma):
             if step_size <= 0:
                 raise ValueError("step_size must be positive")
@@ -182,9 +199,10 @@ class TestCheckpointing:
 
     def test_best_model_tracking(self):
         """Best model is tracked based on validation loss."""
+
         class BestModelTracker:
             def __init__(self):
-                self.best_loss = float('inf')
+                self.best_loss = float("inf")
                 self.best_epoch = None
 
             def update(self, epoch, loss):
@@ -197,18 +215,19 @@ class TestCheckpointing:
         tracker = BestModelTracker()
 
         is_best_1 = tracker.update(1, 1.5)
-        assert is_best_1   # New best
+        assert is_best_1  # New best
         is_best_2 = tracker.update(2, 1.2)
-        assert is_best_2   # New best
+        assert is_best_2  # New best
         assert not tracker.update(3, 1.3)  # Not best
         is_best_4 = tracker.update(4, 1.0)
-        assert is_best_4   # New best
+        assert is_best_4  # New best
 
         assert tracker.best_epoch == 4
         assert tracker.best_loss == 1.0
 
     def test_checkpoint_rotation(self):
         """Old checkpoints are rotated out."""
+
         class CheckpointManager:
             def __init__(self, max_checkpoints=3):
                 self.max = max_checkpoints
@@ -282,6 +301,7 @@ class TestLossTracking:
 
     def test_running_average_loss(self):
         """Running average loss is computed correctly."""
+
         class RunningAverage:
             def __init__(self):
                 self.total = 0.0
@@ -331,6 +351,7 @@ class TestResourceManagement:
 
     def test_gpu_memory_estimation(self):
         """GPU memory usage is estimated."""
+
         def estimate_memory_mb(batch_size, model_params_m, hidden_dim):
             # Rough estimate: params + activations + gradients
             param_memory = model_params_m * 4  # 4 bytes per float32
@@ -338,9 +359,7 @@ class TestResourceManagement:
             return param_memory + activation_memory * 2
 
         memory = estimate_memory_mb(
-            batch_size=32,
-            model_params_m=100,  # 100M params
-            hidden_dim=768
+            batch_size=32, model_params_m=100, hidden_dim=768  # 100M params
         )
 
         assert memory > 0

@@ -34,7 +34,7 @@ This catalog provides complete documentation of the 159-agent ecosystem for the 
 | CI/CD & Automation | 26 | 2 | 28 | Pipeline automation, failure detection, self-healing |
 | Testing & Quality | 28 | 1 | 29 | Test coverage, mutation testing, quality gates |
 | Repository Operations | 46 | 2 | 48 | PR analysis, issue triage, branch management |
-| Security & Compliance | 17 | 1 | 18 | SAST, dependency scanning, secret detection |
+| Security & Compliance | 17 | 1 | 18 | SAST, dependency scanning, secret detection | <!-- pragma: allowlist secret -->
 | Documentation & Knowledge | 12 | 0 | 12 | Doc consolidation, link validation, freshness |
 | Domain-Specific | 19 | 1 | 20 | ML validation, infrastructure, configuration |
 | Orchestration & Multi-Agent | 1 | 0 | 1 | Multi-agent workflow coordination |
@@ -423,7 +423,7 @@ Platform-level capabilities for performance, caching, and monitoring.
 - **ID:** `test-assertion-updater`
 - **Category:** uncategorized
 - **Status:** active
-- **Description:** Fixes test alignment issues by updating tests to match API changes and ensuring test assertions are 
+- **Description:** Fixes test alignment issues by updating tests to match API changes and ensuring test assertions are
 - **Capabilities:** test_alignment, assertion_updates, api_change_tracking
 
 #### Agent 26: Utf8 Safety Linter
@@ -486,7 +486,7 @@ Platform-level capabilities for performance, caching, and monitoring.
 - **ID:** `recon-scout-agent`
 - **Category:** uncategorized
 - **Status:** active
-- **Description:** Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality 
+- **Description:** Read-only codebase reconnaissance — walks all files to surface CI blockers, security risks, quality
 - **Capabilities:** ci_blocker_detection, security_tripwire_scan, code_quality_audit, documentation_gap_detection, architecture_drift_analysis
 
 #### Agent 35: Policy Coach Agent
@@ -1046,7 +1046,7 @@ Platform-level capabilities for performance, caching, and monitoring.
 - **ID:** `memory-sync-agent`
 - **Category:** cognitive
 - **Status:** active
-- **Description:** Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library. Consolidates hot STM entries 
+- **Description:** Syncs SQLiteMemory (STM/LTM) with the cognitive brain pattern library. Consolidates hot STM entries
 - **Capabilities:** cognitive
 
 #### Agent 115: Telemetry Classifier Agent
@@ -1256,7 +1256,7 @@ Platform-level capabilities for performance, caching, and monitoring.
 - **ID:** `create-sub-pr-to-0D_base_`
 - **Category:** ci_cd
 - **Status:** active
-- **Description:** Creates a pull request from any session branch into 0D_base_ (staging integration branch). Verifies 
+- **Description:** Creates a pull request from any session branch into 0D_base_ (staging integration branch). Verifies
 - **Capabilities:** sub_pr_creation, session_branch_management, zero_d_base_routing, integration_branch_management
 
 #### Agent 145: Post Accountability to Discussion Workflow
@@ -1287,7 +1287,7 @@ Platform-level capabilities for performance, caching, and monitoring.
 #### Archived Agent 4: Coverage Gapfill Agent
 - **ID:** `coverage-gapfill-agent`
 - **Status:** ARCHIVED
-- **Description:** DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates 
+- **Description:** DEPRECATED (S174): Superseded by unified-coverage-agent. Targets low-coverage modules and generates
 
 #### Archived Agent 5: Coverage Maintenance Agent
 - **ID:** `coverage-maintenance-agent`
@@ -1352,7 +1352,7 @@ This matrix shows which agents handle which capability categories:
 | **Issue Triage** | github-guru-agent, policy-coach-agent | github-guru-agent |
 | **CI/CD Automation** | ci-auto-healer-agent, ci-failure-resolution-agent, workflow-ci-fixer | ci-failure-resolution-agent |
 | **Test Coverage** | unified-coverage-agent, test-coverage-agent, fragile-test-guardian | unified-coverage-agent |
-| **Security Scanning** | unified-security-scanner, codeql-alert-resolution-agent, secret-detection-agent | unified-security-scanner |
+| **Security Scanning** | unified-security-scanner, codeql-alert-resolution-agent, secret-detection-agent | unified-security-scanner | <!-- pragma: allowlist secret -->
 | **Documentation** | unified-doc-agent, doc-freshness-checker, link-validator-agent | unified-doc-agent |
 | **Dependency Management** | dependency-vulnerability-scanner, dependency-conflict-agent | dependency-vulnerability-scanner |
 | **Code Quality** | code-analysis-agent, test-pattern-guardian, mutation-testing-agent | code-analysis-agent |
@@ -1418,4 +1418,3 @@ This matrix shows which agents handle which capability categories:
 - **Version:** 7.0
 - **Maintainer:** @mbaetiong
 - **Next Update:** 2026-06-22T12:00Z (Phase D Launch)
-

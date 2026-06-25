@@ -27,10 +27,12 @@ class TestDBManagerImports:
 
     def test_import_db_manager_class(self) -> None:
         from codex.logging.db_manager import DBManager
+
         assert DBManager is not None
 
     def test_import_db_manager_singleton(self) -> None:
         from codex.logging.db_manager import db_manager
+
         assert db_manager is not None
 
 
@@ -39,6 +41,7 @@ class TestDBManagerInitialization:
 
     def test_init_with_default_path(self) -> None:
         from codex.logging.db_manager import DBManager
+
         dm = DBManager()
         assert dm.db_path is not None
 
@@ -149,14 +152,17 @@ class TestDBManagerPooling:
 
     def test_pool_enabled_class_attribute(self) -> None:
         from codex.logging.db_manager import DBManager
+
         assert isinstance(DBManager._POOL_ENABLED, bool)
 
     def test_connection_pool_class_attribute(self) -> None:
         from codex.logging.db_manager import DBManager
+
         assert isinstance(DBManager._CONNECTION_POOL, dict)
 
     def test_close_all_pools(self) -> None:
         from codex.logging.db_manager import DBManager
+
         # Should not raise even if no pools exist
         DBManager.close_all_pools()
 
@@ -176,7 +182,7 @@ class TestDBManagerThreadSafety:
             def init_thread():
                 try:
                     dm.init_schema()
-                except Exception as e:
+                except (IOError, OSError) as e:
                     errors.append(e)
 
             threads = [threading.Thread(target=init_thread) for _ in range(5)]
@@ -202,7 +208,7 @@ class TestDBManagerThreadSafety:
                 try:
                     with dm.connection() as conn:
                         conn.execute("SELECT 1")
-                except Exception as e:
+                except (ConnectionError, TimeoutError) as e:
                     errors.append(e)
 
             threads = [threading.Thread(target=connect_thread) for _ in range(10)]
@@ -219,10 +225,12 @@ class TestDBManagerSingleton:
 
     def test_singleton_exists(self) -> None:
         from codex.logging.db_manager import db_manager
+
         assert db_manager is not None
 
     def test_singleton_is_db_manager(self) -> None:
         from codex.logging.db_manager import DBManager, db_manager
+
         assert isinstance(db_manager, DBManager)
 
 
@@ -231,17 +239,21 @@ class TestDBManagerClassAttributes:
 
     def test_init_lock_exists(self) -> None:
         from codex.logging.db_manager import DBManager
+
         assert hasattr(DBManager, "_INIT_LOCK")
 
     def test_initialized_dbs_exists(self) -> None:
         from codex.logging.db_manager import DBManager
+
         assert hasattr(DBManager, "_INITIALIZED_DBS")
         assert isinstance(DBManager._INITIALIZED_DBS, set)
 
     def test_pool_lock_exists(self) -> None:
         from codex.logging.db_manager import DBManager
+
         assert hasattr(DBManager, "_POOL_LOCK")
 
     def test_logger_exists(self) -> None:
         from codex.logging.db_manager import DBManager
+
         assert hasattr(DBManager, "_logger")

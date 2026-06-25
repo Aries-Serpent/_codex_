@@ -1,4 +1,5 @@
 """Tests for cross-platform path utilities."""
+
 import re
 from datetime import datetime, timezone
 

@@ -71,6 +71,7 @@ def test_optimizer_steps_and_metrics(tmp_path):
     Note: May fail due to PyTorch profiler internal issue (ScriptObject vs _RecordFunction).
     This is a known PyTorch bug, not a test or code issue.
     """
+
     # Build a tiny custom model for gradient updates
     class TinyModel(torch.nn.Module):
         def __init__(self):
@@ -113,6 +114,7 @@ def test_optimizer_resume_state(tmp_path, disable_torch_profiler):
     Note: May fail due to PyTorch profiler internal issue (ScriptObject vs _RecordFunction).
     This is a known PyTorch bug, not a test or code issue.
     """
+
     class TinyModel(torch.nn.Module):
         def __init__(self):
             super().__init__()

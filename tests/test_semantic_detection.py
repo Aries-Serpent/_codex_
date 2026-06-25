@@ -76,31 +76,29 @@ def test_similar_code_detection():
         tmppath = Path(tmpdir)
 
         # Create similar files
-        (tmppath / "file1.py").write_text(
-            """
+        (tmppath / "file1.py").write_text("""
 def process_data(items):
     result = []
     for item in items:
         result.append(item * 2)
     return result
-"""
-        )
+""")
 
-        (tmppath / "file2.py").write_text(
-            """
+        (tmppath / "file2.py").write_text("""
 def transform_data(data):
     output = []
     for d in data:
         output.append(d * 2)
     return output
-"""
-        )
+""")
 
         detector = MinHashDetector(tmppath, threshold=0.5)
         groups = detector.scan()
 
         # Should find at least one similar group
-        assert isinstance(groups, (list, tuple, set, dict))  # May or may not find similarities depending on threshold
+        assert isinstance(
+            groups, (list, tuple, set, dict)
+        )  # May or may not find similarities depending on threshold
 
 
 def test_clustering():

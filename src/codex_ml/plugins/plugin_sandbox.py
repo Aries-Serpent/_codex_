@@ -99,8 +99,9 @@ class PluginHealth:
             elapsed = (datetime.now(UTC) - quarantined_time).total_seconds()
             return elapsed >= quarantine_duration
         except (ValueError, TypeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to parse quarantine timestamp: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to parse quarantine timestamp: <ERROR_TYPE>")
             return False
 
 
@@ -305,8 +306,9 @@ class PluginSandbox:
 
             return result
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             # Record failure
             error_msg = f"{type(e).__name__}: {e!s}"
             health.record_failure(error_msg)
@@ -418,9 +420,10 @@ class PluginManager:
             if not plugin.initialize():
                 logger.error(f"Plugin {plugin_name} initialization failed")
                 return False
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Plugin {plugin_name} initialization raised exception: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Plugin {plugin_name} initialization raised exception: <ERROR_TYPE>")
             return False
 
         # Register
@@ -470,9 +473,10 @@ class PluginManager:
             try:
                 plugin.cleanup()
                 logger.info(f"Plugin {plugin_name} cleanup complete")
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Plugin {plugin_name} cleanup failed: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Plugin {plugin_name} cleanup failed: <ERROR_TYPE>")
 
     def get_plugin_health_report(self) -> dict[str, Any]:
         """Get health report for all plugins.

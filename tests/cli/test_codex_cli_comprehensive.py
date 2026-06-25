@@ -18,6 +18,7 @@ class TestCodexCLIHelp:
         """Test that codex_cli module can be imported."""
         try:
             from codex_ml.cli import codex_cli
+
             assert codex_cli is not None
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
@@ -28,7 +29,7 @@ class TestCodexCLIHelp:
             [sys.executable, "-m", "codex_ml.cli.codex_cli", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # Should show help or indicate command exists
         assert result.returncode in (0, 1, 2)
@@ -37,10 +38,13 @@ class TestCodexCLIHelp:
         """Test that codex_cli has Click commands defined."""
         try:
             from codex_ml.cli import codex_cli
+
             # Check for common CLI entry points
-            assert hasattr(codex_cli, 'DEFAULT_TOKENIZER_CONFIG') or \
-                   hasattr(codex_cli, 'main') or \
-                   hasattr(codex_cli, 'cli')
+            assert (
+                hasattr(codex_cli, "DEFAULT_TOKENIZER_CONFIG")
+                or hasattr(codex_cli, "main")
+                or hasattr(codex_cli, "cli")
+            )
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 
@@ -94,6 +98,7 @@ class TestCodexCLIFunctions:
         """Test _get_tokenizer_pipeline function."""
         try:
             from codex_ml.cli.codex_cli import _get_tokenizer_pipeline
+
             # May succeed or fail depending on tokenizers availability
             try:
                 pipeline = _get_tokenizer_pipeline()
@@ -112,6 +117,7 @@ class TestCodexCLIConstants:
         """Test DEFAULT_TOKENIZER_CONFIG constant."""
         try:
             from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_CONFIG
+
             assert DEFAULT_TOKENIZER_CONFIG is not None
             assert isinstance(DEFAULT_TOKENIZER_CONFIG, str)
             # Check path contains expected component (case-insensitive)
@@ -124,6 +130,7 @@ class TestCodexCLIConstants:
         """Test DEFAULT_TOKENIZER_JSON constant."""
         try:
             from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_JSON
+
             assert DEFAULT_TOKENIZER_JSON is not None
             assert isinstance(DEFAULT_TOKENIZER_JSON, str)
             # Check path contains expected component (case-insensitive)
@@ -140,6 +147,7 @@ class TestCodexCLIIntegration:
         """Test that status_report is properly imported."""
         try:
             from codex_ml.cli.codex_cli import build_status_report
+
             assert callable(build_status_report)
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
@@ -152,6 +160,7 @@ class TestCodexCLIIntegration:
                 init_json_logging,
                 log_event,
             )
+
             assert callable(capture_exceptions)
             assert callable(init_json_logging)
             assert callable(log_event)
@@ -162,17 +171,19 @@ class TestCodexCLIIntegration:
         """Test that config utilities are properly imported."""
         try:
             from codex_ml.cli.codex_cli import ConfigError, load_app_config
+
             assert callable(load_app_config)
             assert issubclass(ConfigError, Exception)
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 
-    @patch('codex_ml.cli.codex_cli.SystemMetricsLogger')
+    @patch("codex_ml.cli.codex_cli.SystemMetricsLogger")
     def test_system_metrics_logger_available(self, mock_logger):
         """Test that SystemMetricsLogger is available."""
         mock_logger.return_value = MagicMock()
         try:
             from codex_ml.cli.codex_cli import SystemMetricsLogger
+
             assert SystemMetricsLogger is not None
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
@@ -187,7 +198,7 @@ class TestCodexCLISubcommands:
             [sys.executable, "-m", "codex_ml.cli.codex_cli", "tokenize", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # May or may not have tokenize command
         assert result.returncode in (0, 1, 2)
@@ -198,7 +209,7 @@ class TestCodexCLISubcommands:
             [sys.executable, "-m", "codex_ml.cli.codex_cli", "train", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -208,7 +219,7 @@ class TestCodexCLISubcommands:
             [sys.executable, "-m", "codex_ml.cli.codex_cli", "eval", "--help"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         assert result.returncode in (0, 1, 2)
 
@@ -222,7 +233,7 @@ class TestCodexCLIErrorHandling:
             [sys.executable, "-m", "codex_ml.cli.codex_cli", "invalid_command_xyz"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # Should fail with non-zero exit code
         assert result.returncode != 0
@@ -233,7 +244,7 @@ class TestCodexCLIErrorHandling:
             [sys.executable, "-m", "codex_ml.cli.codex_cli"],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
         # May show help or error
         assert result.returncode in (0, 1, 2)

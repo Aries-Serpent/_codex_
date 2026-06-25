@@ -102,11 +102,11 @@ class K8sPatternQueryer:
                       environment: Optional[str] = None) -> Dict[str, K8sPattern]:
         """
         Query Cognitive Brain for K8s patterns.
-        
+
         Args:
             cloud_provider: Cloud provider (aws, gcp, azure, or None for all)
             environment: Environment (dev, staging, prod, or None for all)
-            
+
         Returns:
             Dictionary of K8s patterns
         """

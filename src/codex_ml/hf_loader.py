@@ -32,8 +32,8 @@ if TYPE_CHECKING:  # pragma: no cover - import for typing only
     from transformers import PreTrainedModel as HF_PreTrainedModel
     from transformers import PreTrainedTokenizerBase as HF_PreTrainedTokenizerBase
 else:  # pragma: no cover - fall back to ``Any`` when dependency missing at runtime
-    HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any  # type: ignore[assignment]
-    HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any  # type: ignore[assignment]
+    HF_AutoModel = HF_AutoModelForCausalLM = HF_AutoTokenizer = Any
+    HF_PreTrainedModel = HF_PreTrainedTokenizerBase = Any
 
 
 transformers, _HAS_TRANSFORMERS = optional_import("transformers")
@@ -60,9 +60,9 @@ if (
         transformers.PreTrainedTokenizerBase,
     )
 else:  # pragma: no cover - optional dependency missing
-    AutoModel = None  # type: ignore[assignment]
-    AutoModelForCausalLM = None  # type: ignore[assignment]
-    AutoTokenizer = None  # type: ignore[assignment]
+    AutoModel = None
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
     PreTrainedModel = cast("type[HF_PreTrainedModel]", object)
     PreTrainedTokenizerBase = cast("type[HF_PreTrainedTokenizerBase]", object)
 
@@ -75,8 +75,8 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import torch
-except Exception:  # pragma: no cover - torch is optional at import time
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - torch is optional at import time
+    torch = None
 
 
 _CAUSAL_LM_REGISTRY: dict[str, Callable[..., Any]] = {}
@@ -169,7 +169,7 @@ def load_tokenizer(
     *,
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
-) -> PreTrainedTokenizerBase:  # type: ignore[valid-type]
+) -> PreTrainedTokenizerBase:
     if not TRANSFORMERS_AVAILABLE or AutoTokenizer is None:
         raise ImportError("transformers is required to load tokenizers")
     rev = _required_revision(repo_id, revision)
@@ -191,7 +191,7 @@ def load_model(
     revision: Optional[str] = None,
     trust_remote_code: bool = False,
     peft_path: Optional[str | os.PathLike[str]] = None,
-) -> PreTrainedModel:  # type: ignore[valid-type]
+) -> PreTrainedModel:
     """Load a base transformer model and optionally attach a PEFT adapter."""
 
     if not TRANSFORMERS_AVAILABLE or AutoModel is None:
@@ -213,7 +213,7 @@ def load_model(
         else:
             try:
                 from peft import PeftModel
-            except Exception as exc:  # pragma: no cover - optional dependency
+            except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency
                 logger.info(
                     "load_model: PEFT adapter not applied (dependency missing): %s",
                     exc,
@@ -222,7 +222,11 @@ def load_model(
                 try:
                     model = PeftModel.from_pretrained(model, str(resolved))
                     logger.info("load_model: PEFT adapter loaded from %s", resolved)
-                except Exception as exc:  # pragma: no cover - runtime failure
+                except (
+                    ValueError,
+                    TypeError,
+                    RuntimeError,
+                ) as exc:  # pragma: no cover - runtime failure
                     logger.info("load_model: PEFT adapter not applied (runtime error): %s", exc)
     return model
 
@@ -236,7 +240,7 @@ def load_causal_lm(
     dtype: Optional[str] = None,
     peft_cfg: Optional[dict[str, Any]] = None,
     peft_path: Optional[str | os.PathLike[str]] = None,
-) -> PreTrainedModel:  # type: ignore[valid-type]
+) -> PreTrainedModel:
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load causal language models")
     if isinstance(repo_id, str):
@@ -266,8 +270,9 @@ def load_causal_lm(
             **loader_kwargs,
         )
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
         # Older versions of transformers do not support the ``torch_dtype`` kwarg.
         loader_kwargs.pop("torch_dtype", None)
         model = AutoModelForCausalLM.from_pretrained(
@@ -278,18 +283,25 @@ def load_causal_lm(
     if device:
         try:
             model = model.to(device)
-        except Exception as exc:  # pragma: no cover - device mapping best-effort
+        except (
+            ImportError,
+            AttributeError,
+        ) as exc:  # pragma: no cover - device mapping best-effort
             logger.info("load_causal_lm: unable to move model to %s: %s", device, exc)
 
     if peft_cfg:
         try:
             from peft import LoraConfig, get_peft_model
-        except Exception as exc:  # pragma: no cover - optional dependency
+        except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency
             logger.info("load_causal_lm: LoRA not applied (dependency missing): %s", exc)
         else:
             try:
                 lora = LoraConfig(**peft_cfg)
-            except Exception as exc:  # pragma: no cover - invalid config values
+            except (
+                ValueError,
+                TypeError,
+                RuntimeError,
+            ) as exc:  # pragma: no cover - invalid config values
                 logger.info("load_causal_lm: LoRA config rejected: %s", exc)
             else:
                 try:
@@ -299,14 +311,14 @@ def load_causal_lm(
                         getattr(lora, "r", "?"),
                         getattr(lora, "lora_alpha", "?"),
                     )
-                except Exception as exc:  # pragma: no cover - PEFT runtime failure
+                except (IOError, OSError) as exc:  # pragma: no cover - PEFT runtime failure
                     logger.info("load_causal_lm: LoRA not applied (runtime error): %s", exc)
 
     adapter_path = peft_path or os.getenv("PEFT_ADAPTER_PATH")
     if adapter_path:
         try:
             from peft import PeftModel
-        except Exception as exc:  # pragma: no cover - optional dependency
+        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency
             logger.info(
                 "load_causal_lm: PEFT adapter not applied (dependency missing): %s",
                 exc,
@@ -318,7 +330,7 @@ def load_causal_lm(
                     "load_causal_lm: PEFT adapter loaded from %s",
                     adapter_path,
                 )
-            except Exception as exc:  # pragma: no cover - runtime failure
+            except (IOError, OSError) as exc:  # pragma: no cover - runtime failure
                 logger.info("load_causal_lm: PEFT adapter not applied (runtime error): %s", exc)
 
     return model

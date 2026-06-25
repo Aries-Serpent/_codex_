@@ -1,6 +1,5 @@
 """Tests for the metric registry utilities."""
 
-
 from __future__ import annotations
 
 import sys

@@ -25,6 +25,6 @@ def test_legacy_wrappers_emit_deprecation():
             ut.functional_training(
                 cfg=None, model=None, optimizer=None, loss_fn=None, train_loader=[]
             )
-        except Exception as _err:
+        except (ValueError, TypeError) as _err:
             # allow failure due to missing torch in minimal env
             _ = None  # suppressed: no action needed

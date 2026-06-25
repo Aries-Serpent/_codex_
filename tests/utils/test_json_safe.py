@@ -1,4 +1,5 @@
 """Unit tests for src/codex/utils/json_safe.py"""
+
 from __future__ import annotations
 
 import json
@@ -102,6 +103,7 @@ class TestSafeJsonLoads:
         import importlib
 
         import codex.utils.json_safe as jm
+
         importlib.reload(jm)
 
         raw = '{"v": "\x00"}'

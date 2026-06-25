@@ -81,7 +81,8 @@ class TestTestDiscovery:
         # Check for non-standard names
         all_py_files = list(TESTS_DIR.rglob("*.py"))
         [
-            f for f in all_py_files
+            f
+            for f in all_py_files
             if not f.name.startswith("test_")
             and f.name != "conftest.py"
             and f.name != "__init__.py"

@@ -87,6 +87,7 @@ def test_offline_trainer_missing_config(monkeypatch: pytest.MonkeyPatch, tmp_pat
 
     # Mock _repo_root to return a non-existent directory so fallback file won't be found
     from codex_ml.plugins import registries
+
     monkeypatch.setattr(registries, "_repo_root", lambda: tmp_path / "nonexistent_repo")
 
     with pytest.raises(FileNotFoundError) as excinfo:

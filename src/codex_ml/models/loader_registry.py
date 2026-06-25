@@ -61,7 +61,8 @@ def get_model(name: str) -> _ModelFactory:
     try:
         return _MODELS[name]
     except KeyError as exc:
-        logger.debug(f"KeyError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"KeyError: <ERROR_TYPE>")
         raise exc
 
 

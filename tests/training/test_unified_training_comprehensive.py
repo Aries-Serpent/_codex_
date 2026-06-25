@@ -62,7 +62,7 @@ class TestToPlainContainer:
         input_data = {
             "list": [1, 2, {"nested": [3, 4]}],
             "tuple": (5, 6),
-            "dict": {"a": {"b": "c"}}
+            "dict": {"a": {"b": "c"}},
         }
         result = _to_plain_container(input_data)
         assert isinstance(result["list"], list)
@@ -116,20 +116,12 @@ class TestContinualPhase:
     def test_continual_phase_with_dataset(self):
         """Verify phase with dataset config."""
         dataset_config = {"path": "/data", "batch_size": 32}
-        phase = ContinualPhase(
-            name="train_phase",
-            epochs=10,
-            dataset=dataset_config
-        )
+        phase = ContinualPhase(name="train_phase", epochs=10, dataset=dataset_config)
         assert phase.dataset == dataset_config
 
     def test_continual_phase_with_replay_ratio(self):
         """Verify phase with replay ratio."""
-        phase = ContinualPhase(
-            name="replay_phase",
-            epochs=3,
-            replay_ratio=0.5
-        )
+        phase = ContinualPhase(name="replay_phase", epochs=3, replay_ratio=0.5)
         assert phase.replay_ratio == 0.5
 
     def test_continual_phase_invalid_epochs(self):
@@ -164,11 +156,7 @@ class TestContinualPhase:
 
     def test_continual_phase_with_notes(self):
         """Verify notes field."""
-        phase = ContinualPhase(
-            name="documented",
-            epochs=1,
-            notes="This is a test phase"
-        )
+        phase = ContinualPhase(name="documented", epochs=1, notes="This is a test phase")
         assert phase.notes == "This is a test phase"
 
 
@@ -183,37 +171,25 @@ class TestUnifiedTrainingConfig:
 
     def test_config_with_seed(self):
         """Verify seed configuration."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            seed=42
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, seed=42)
         assert config.seed == 42
 
     def test_config_with_device(self):
         """Verify device configuration."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            device="cuda"
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, device="cuda")
         assert config.device == "cuda"
 
     def test_config_with_checkpoint_dir(self):
         """Verify checkpoint directory config."""
         config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            checkpoint_dir="/tmp/checkpoints"
+            model_name="test", epochs=1, checkpoint_dir="/tmp/checkpoints"
         )
         assert config.checkpoint_dir == "/tmp/checkpoints"
 
     def test_config_with_resume_path(self):
         """Verify resume path configuration."""
         config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            resume_from="/path/to/checkpoint.pt"
+            model_name="test", epochs=1, resume_from="/path/to/checkpoint.pt"
         )
         assert config.resume_from == "/path/to/checkpoint.pt"
 
@@ -226,19 +202,12 @@ class TestTrainingCallbacks:
     def test_callback_invocation(self, mock_seed, mock_strategy):
         """Verify callbacks are invoked."""
         mock_strategy_instance = Mock()
-        mock_strategy_instance.train.return_value = {
-            "final_loss": 0.5,
-            "epochs_completed": 1
-        }
+        mock_strategy_instance.train.return_value = {"final_loss": 0.5, "epochs_completed": 1}
         mock_strategy.return_value = mock_strategy_instance
 
         callback = Mock()
 
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            callbacks=[callback]
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, callbacks=[callback])
 
         # This would need the full run_unified_training function
         # Just testing config accepts callbacks
@@ -250,11 +219,7 @@ class TestTrainingCallbacks:
         cb2 = Mock()
         cb3 = Mock()
 
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            callbacks=[cb1, cb2, cb3]
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, callbacks=[cb1, cb2, cb3])
 
         assert len(config.callbacks) == 3
 
@@ -264,29 +229,17 @@ class TestDeviceStrategy:
 
     def test_device_strategy_cpu(self):
         """Verify CPU device strategy."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            device="cpu"
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, device="cpu")
         assert config.device == "cpu"
 
     def test_device_strategy_cuda(self):
         """Verify CUDA device strategy."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            device="cuda"
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, device="cuda")
         assert config.device == "cuda"
 
     def test_device_strategy_auto(self):
         """Verify auto device selection."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            device="auto"
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, device="auto")
         assert config.device == "auto"
 
 
@@ -305,11 +258,7 @@ class TestCheckpointHandling:
     @patch("codex_ml.training.unified_training.load_checkpoint")
     def test_checkpoint_resume(self, mock_load):
         """Verify checkpoint resume."""
-        mock_load.return_value = {
-            "epoch": 5,
-            "model_state": {},
-            "optimizer_state": {}
-        }
+        mock_load.return_value = {"epoch": 5, "model_state": {}, "optimizer_state": {}}
 
         # Verify load is callable
         assert mock_load is not None
@@ -335,11 +284,7 @@ class TestErrorHandling:
         """Verify error for invalid seed."""
         # Seeds should be non-negative integers
         with pytest.raises((TypeError, ValueError)):
-            UnifiedTrainingConfig(
-                model_name="test",
-                epochs=1,
-                seed="not_a_number"
-            )
+            UnifiedTrainingConfig(model_name="test", epochs=1, seed="not_a_number")
 
 
 class TestContinualLearning:
@@ -348,11 +293,7 @@ class TestContinualLearning:
     def test_single_phase(self):
         """Verify single continual phase."""
         phase = ContinualPhase(name="phase1", epochs=5)
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            continual_phases=[phase]
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, continual_phases=[phase])
         assert len(config.continual_phases) == 1
         assert config.continual_phases[0].name == "phase1"
 
@@ -361,13 +302,9 @@ class TestContinualLearning:
         phases = [
             ContinualPhase(name="p1", epochs=5),
             ContinualPhase(name="p2", epochs=10),
-            ContinualPhase(name="p3", epochs=3)
+            ContinualPhase(name="p3", epochs=3),
         ]
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            continual_phases=phases
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, continual_phases=phases)
         assert len(config.continual_phases) == 3
 
     def test_phases_with_replay(self):
@@ -375,13 +312,9 @@ class TestContinualLearning:
         phases = [
             ContinualPhase(name="p1", epochs=5, replay_ratio=0.0),
             ContinualPhase(name="p2", epochs=5, replay_ratio=0.3),
-            ContinualPhase(name="p3", epochs=5, replay_ratio=0.5)
+            ContinualPhase(name="p3", epochs=5, replay_ratio=0.5),
         ]
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            continual_phases=phases
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, continual_phases=phases)
         assert config.continual_phases[1].replay_ratio == 0.3
 
 
@@ -391,22 +324,14 @@ class TestDeterministicSeeding:
     @patch("codex_ml.training.unified_training.set_seed")
     def test_seed_set_called(self, mock_set_seed):
         """Verify seed setting is called."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            seed=42
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, seed=42)
 
         # Seed would be set during run_unified_training
         assert config.seed == 42
 
     def test_no_seed_allows_randomness(self):
         """Verify None seed allows randomness."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            seed=None
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, seed=None)
         assert config.seed is None
 
     def test_different_seeds(self):
@@ -425,21 +350,13 @@ class TestMLFlowIntegration:
     @patch("codex_ml.training.unified_training.log_params_safe")
     def test_mlflow_logging_enabled(self, mock_params, mock_metric, mock_init):
         """Verify MLFlow logging when enabled."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            mlflow_tracking=True
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, mlflow_tracking=True)
 
         assert config.mlflow_tracking is True
 
     def test_mlflow_logging_disabled(self):
         """Verify MLFlow can be disabled."""
-        config = UnifiedTrainingConfig(
-            model_name="test",
-            epochs=1,
-            mlflow_tracking=False
-        )
+        config = UnifiedTrainingConfig(model_name="test", epochs=1, mlflow_tracking=False)
 
         assert config.mlflow_tracking is False
 
@@ -479,7 +396,7 @@ class TestEdgeCases:
             "batch_size": 32,
             "shuffle": True,
             "num_workers": 4,
-            "transforms": ["normalize", "augment"]
+            "transforms": ["normalize", "augment"],
         }
         phase = ContinualPhase(name="test", epochs=1, dataset=dataset_config)
         assert phase.dataset["num_workers"] == 4

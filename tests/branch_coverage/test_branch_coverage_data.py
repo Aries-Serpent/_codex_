@@ -336,9 +336,7 @@ class TestDataTransformBranches:
             (0, "no_truncation"),
         ],
     )
-    def test_truncation_branches(
-        self, max_length: int | None, expected: str
-    ) -> None:
+    def test_truncation_branches(self, max_length: int | None, expected: str) -> None:
         """Test truncation branches."""
         result = "truncated" if max_length and max_length > 0 else "no_truncation"
         assert result == expected

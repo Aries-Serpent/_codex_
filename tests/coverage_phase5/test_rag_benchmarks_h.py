@@ -1,4 +1,5 @@
 """Test RAG benchmark fixtures 7."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,6 +11,7 @@ class BenchmarkResult:
     metric_name: str
     value: float
     unit: str
+
 
 class BenchmarkFixture:
     def __init__(self, name: str):
@@ -26,10 +28,12 @@ class BenchmarkFixture:
                 return r.value
         return -1.0
 
+
 def test_benchmark_fixture_7_init():
     """Test benchmark fixture initialization."""
     fixture = BenchmarkFixture("bench7")
     assert fixture.name == "bench7"
+
 
 def test_benchmark_fixture_7_record():
     """Test recording benchmark metrics."""
@@ -39,6 +43,7 @@ def test_benchmark_fixture_7_record():
     assert len(fixture.results) == 1
     assert fixture.results[0].value == 42.5
 
+
 def test_benchmark_fixture_7_retrieve():
     """Test retrieving benchmark metrics."""
     fixture = BenchmarkFixture("bench7")
@@ -46,6 +51,7 @@ def test_benchmark_fixture_7_retrieve():
 
     value = fixture.get_metric("throughput")
     assert value == 1000.0
+
 
 def test_benchmark_fixture_7_missing():
     """Test missing metric retrieval."""

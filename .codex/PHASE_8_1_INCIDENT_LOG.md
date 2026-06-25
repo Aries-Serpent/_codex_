@@ -67,7 +67,7 @@ Each incident follows this structure:
 
 **Summary:** Docker registry cache invalidation caused 3 consecutive build failures
 
-**Impact:** 
+**Impact:**
 - Affected: `build-docker.yml` workflow
 - Failed runs: 3 (fixed after 4th attempt)
 - Duration: 15 minutes (resolved)
@@ -259,7 +259,7 @@ npm registry mirror experienced transient outage (external). Recovery after 45 m
 |----------|----------|----------|
 | **Infrastructure** | API rate limits, Registry timeouts, Network issues | ci-failure-resolution-agent |
 | **Code** | Test failures, Linting errors, Type errors | ci-testing-agent |
-| **Configuration** | Workflow syntax, Cache key issues, Secrets | config-validator |
+| **Configuration** | Workflow syntax, Cache key issues, Secrets | config-validator | <!-- pragma: allowlist secret -->
 | **External** | Third-party API outages, Dependency issues | dependency-conflict-agent |
 | **Other** | Flaky tests, Performance variations | artifact-monitor-agent |
 

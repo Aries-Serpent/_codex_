@@ -12,6 +12,7 @@ class TestApiClientImports:
         """Test that the module can be imported."""
         try:
             from src.codex.api import client
+
             assert client is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -20,7 +21,8 @@ class TestApiClientImports:
         """Test module has expected attributes."""
         try:
             from src.codex.api import client
-            assert hasattr(client, '__name__')
+
+            assert hasattr(client, "__name__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -32,7 +34,8 @@ class TestApiClientInitialization:
         """Test API client creation."""
         try:
             from src.codex.api import client
-            if hasattr(client, 'ApiClient'):
+
+            if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient()
                 assert api_client is not None
         except (ImportError, AttributeError):
@@ -42,7 +45,8 @@ class TestApiClientInitialization:
         """Test client creation with base URL."""
         try:
             from src.codex.api import client
-            if hasattr(client, 'ApiClient'):
+
+            if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient(base_url="http://localhost:8000")
                 assert api_client is not None
         except (ImportError, AttributeError):
@@ -52,7 +56,8 @@ class TestApiClientInitialization:
         """Test client creation with auth token."""
         try:
             from src.codex.api import client
-            if hasattr(client, 'ApiClient'):
+
+            if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient(auth_token="test_token")
                 assert api_client is not None
         except (ImportError, AttributeError):
@@ -66,10 +71,11 @@ class TestApiClientRequests:
         """Test GET request method."""
         try:
             from src.codex.api import client
-            if hasattr(client, 'ApiClient'):
+
+            if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient()
-                if hasattr(api_client, 'get'):
-                    with patch.object(api_client, 'get') as mock_get:
+                if hasattr(api_client, "get"):
+                    with patch.object(api_client, "get") as mock_get:
                         mock_get.return_value = {"status": "ok"}
                         result = api_client.get("/test")
                         assert result["status"] == "ok"
@@ -80,10 +86,11 @@ class TestApiClientRequests:
         """Test POST request method."""
         try:
             from src.codex.api import client
-            if hasattr(client, 'ApiClient'):
+
+            if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient()
-                if hasattr(api_client, 'post'):
-                    with patch.object(api_client, 'post') as mock_post:
+                if hasattr(api_client, "post"):
+                    with patch.object(api_client, "post") as mock_post:
                         mock_post.return_value = {"id": 1}
                         result = api_client.post("/test", {"data": "value"})
                         assert result["id"] == 1
@@ -98,10 +105,11 @@ class TestApiClientErrorHandling:
         """Test handling of connection errors."""
         try:
             from src.codex.api import client
-            if hasattr(client, 'ApiClient'):
+
+            if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient()
-                if hasattr(api_client, 'get'):
-                    with patch.object(api_client, 'get', side_effect=ConnectionError):
+                if hasattr(api_client, "get"):
+                    with patch.object(api_client, "get", side_effect=ConnectionError):
                         with pytest.raises(ConnectionError):
                             api_client.get("/test")
         except (ImportError, AttributeError):
@@ -111,7 +119,8 @@ class TestApiClientErrorHandling:
         """Test handling of timeout errors."""
         try:
             from src.codex.api import client
-            if hasattr(client, 'ApiClient'):
+
+            if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient(timeout=1)
                 assert api_client is not None
         except (ImportError, AttributeError):

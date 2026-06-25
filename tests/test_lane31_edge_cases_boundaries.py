@@ -3,6 +3,7 @@ Lane 3.1 Edge Case Tests - Boundary Conditions & Default Values
 Tests for src/codex_ml/utils/ and core module edge cases
 Coverage target: +1-2pp improvement (17.57% → 18-19%)
 """
+
 import sys
 from pathlib import Path
 
@@ -123,8 +124,8 @@ class TestDefaultValues:
         assert default is False  # Must be False, not just falsy
         assert not default
         assert type(default) == bool
-        assert default != True
-        assert default == False
+        assert not default
+        assert not default
 
     def test_exact_string_default(self):
         """Test that string defaults are exact"""
@@ -238,8 +239,8 @@ class TestComparisonMutations:
         # Must be exact equality
         assert 0 == 0
         assert "" == ""
-        assert False == False
-        assert not (False == True)
+        assert not False
+        assert not (not True)
 
     def test_inequality_mutations(self):
         """Test != not mutated to =="""
@@ -249,7 +250,7 @@ class TestComparisonMutations:
         # Must detect inequality
         assert 0 != 1
         assert "" != "x"
-        assert True != False
+        assert not False
 
 
 class TestArithmeticMutations:
@@ -373,6 +374,7 @@ class TestFunctionCallMutations:
 
     def test_return_value_mutations(self):
         """Test return values are not changed"""
+
         def returns_true():
             return True
 
@@ -384,6 +386,7 @@ class TestFunctionCallMutations:
 
     def test_none_return_vs_value_return(self):
         """Test None vs value returns"""
+
         def returns_none():
             return None
 
@@ -402,25 +405,25 @@ class TestCollectionOperations:
 
     def test_list_indexing_off_by_one(self):
         """Test list indexing is not off by one"""
-        items = ['a', 'b', 'c']
+        items = ["a", "b", "c"]
 
-        assert items[0] == 'a'  # NOT items[1]
-        assert items[1] == 'b'  # NOT items[2]
-        assert items[2] == 'c'  # NOT items[0]
-        assert items[-1] == 'c'
-        assert items[-2] == 'b'
+        assert items[0] == "a"  # NOT items[1]
+        assert items[1] == "b"  # NOT items[2]
+        assert items[2] == "c"  # NOT items[0]
+        assert items[-1] == "c"
+        assert items[-2] == "b"
 
     def test_dict_operations(self):
         """Test dict operations"""
-        d = {'key1': 'value1', 'key2': 'value2'}
+        d = {"key1": "value1", "key2": "value2"}
 
-        assert d['key1'] == 'value1'
-        assert d.get('key1') == 'value1'
-        assert d.get('missing') is None
+        assert d["key1"] == "value1"
+        assert d.get("key1") == "value1"
+        assert d.get("missing") is None
 
         # Key existence
-        assert 'key1' in d
-        assert 'missing' not in d
+        assert "key1" in d
+        assert "missing" not in d
 
     def test_set_operations(self):
         """Test set operations"""

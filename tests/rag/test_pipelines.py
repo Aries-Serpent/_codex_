@@ -10,7 +10,8 @@ class TestChunkingPipeline:
         """Test that chunking module contains expected classes."""
         try:
             from src.rag.pipelines import chunking
-            assert hasattr(chunking, '__name__')
+
+            assert hasattr(chunking, "__name__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -22,7 +23,8 @@ class TestEmbeddingPipeline:
         """Test that embedding module contains expected functionality."""
         try:
             from src.rag.pipelines import embedding
-            assert hasattr(embedding, '__name__')
+
+            assert hasattr(embedding, "__name__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -34,6 +36,7 @@ class TestRetrievalPipeline:
         """Test that RetrievalPipeline class can be imported."""
         try:
             from src.rag.pipelines.retrieval import RetrievalPipeline
+
             assert RetrievalPipeline is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -42,6 +45,7 @@ class TestRetrievalPipeline:
         """Test that RetrievalConfig can be imported."""
         try:
             from src.rag.pipelines.retrieval import RetrievalConfig
+
             assert RetrievalConfig is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -50,9 +54,10 @@ class TestRetrievalPipeline:
         """Test creating a RetrievalPipeline instance."""
         try:
             from src.rag.pipelines.retrieval import RetrievalPipeline
+
             pipeline = RetrievalPipeline()
             assert pipeline is not None
-            assert hasattr(pipeline, 'retrieve')
+            assert hasattr(pipeline, "retrieve")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -64,7 +69,8 @@ class TestQuantumRetrievalPipeline:
         """Test that quantum_retrieval module has content."""
         try:
             from src.rag.pipelines import quantum_retrieval
-            assert hasattr(quantum_retrieval, '__name__')
+
+            assert hasattr(quantum_retrieval, "__name__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -76,7 +82,8 @@ class TestPipelinesInit:
         """Test that pipelines package exports modules."""
         try:
             from src.rag import pipelines
-            assert hasattr(pipelines, '__path__')
+
+            assert hasattr(pipelines, "__path__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -88,7 +95,8 @@ class TestRagPackage:
         """Test that rag package has expected structure."""
         try:
             from src import rag as _rag_mod
-            assert hasattr(_rag_mod, '__path__')
+
+            assert hasattr(_rag_mod, "__path__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -96,6 +104,7 @@ class TestRagPackage:
         """Test that pipelines subpackage is accessible."""
         try:
             from src.rag import pipelines
+
             assert pipelines is not None
         except ImportError:
             pytest.skip("Module not available")

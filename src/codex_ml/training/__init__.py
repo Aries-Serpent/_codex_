@@ -21,9 +21,7 @@ from .legacy_api import (
     sanitize_prompt,
     set_reproducible,
 )
-from .legacy_api import (
-    run_functional_training as _legacy_run_functional_training,
-)
+from .legacy_api import run_functional_training as _legacy_run_functional_training
 from .rng_checkpoint import RNGState, set_seed
 from .unified_training import UnifiedTrainingConfig, run_unified_training  # re-export
 

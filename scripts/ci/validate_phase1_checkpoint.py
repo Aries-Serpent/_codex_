@@ -17,7 +17,7 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
@@ -120,9 +120,9 @@ def validate_session_query_api() -> tuple[bool, list[str]]:
     # Try to import the module
     try:
         from codex.logging.session_query import (
-            resolve_db_path,
             detect_schema,
             fetch_rows,
+            resolve_db_path,
         )
     except ImportError as e:
         errors.append(f"Failed to import session_query: {e}")
@@ -281,7 +281,7 @@ def main(verbose: bool = False) -> int:
             f"   ✓ PASS - {jsonl_count} JSONL lines, {index_count} indexed sessions"
         )
     else:
-        print(f"   ✗ FAIL - Data integrity check failed")
+        print("   ✗ FAIL - Data integrity check failed")
         print(f"      JSONL lines: {jsonl_count}, Indexed: {index_count}")
         all_passed = False
     print()
@@ -313,10 +313,10 @@ def main(verbose: bool = False) -> int:
     # Write report
     report_path = Path(".codex/phase1_validation_report.json")
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Update report timestamp
     report["timestamp"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-    
+
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
     print(f"Report written to: {report_path}")

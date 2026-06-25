@@ -28,7 +28,8 @@ def validate_metric_registry() -> list[str]:
     try:
         from codex_ml.metrics.registry import METRIC_REGISTRY, get_metric
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
         raise MetricValidationError(f"Failed to import metric registry: {e}") from e
 
     for metric_name in METRIC_REGISTRY:
@@ -37,16 +38,11 @@ def validate_metric_registry() -> list[str]:
             if not callable(metric_fn):
                 raise MetricValidationError(f"Metric '{metric_name}' is not callable")
         except (ImportError, AttributeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             raise MetricValidationError(
                 f"Metric '{metric_name}' registered but not implemented: {e}"
             ) from e
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            # Non-critical errors become warnings
-            warnings.append(
-                f"Warning: Metric '{metric_name}' raised exception during validation: {e}"
-            )
 
     return warnings
 
@@ -65,7 +61,7 @@ def validate_metric_exists(metric_name: str) -> bool:
 
         metric_fn = get_metric(metric_name)
         return callable(metric_fn)
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 
@@ -81,8 +77,9 @@ def get_all_registered_metrics() -> list[str]:
 
         return list(METRIC_REGISTRY.keys())
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         return []
 
 

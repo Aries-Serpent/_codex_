@@ -41,9 +41,10 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as e:
-    logger.debug(f"Exception: {e}")
-    logger.warning(f"Exception: {e}", exc_info=True)
+except (IOError, OSError) as e:
+    error_type = type(e).__name__
+    logger.debug(f"Exception: <ERROR_TYPE>")
+    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 import sys  # noqa: E402
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
@@ -52,9 +53,9 @@ from typing import Any, Optional  # noqa: E402
 try:  # pragma: no cover - optional rich dependency
     from rich.console import Console
     from rich.table import Table
-except Exception:  # pragma: no cover - fallback
-    Console = None  # type: ignore[assignment, misc]
-    Table = None  # type: ignore[assignment, misc]
+except (ImportError, AttributeError):  # pragma: no cover - fallback
+    Console = None
+    Table = None
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
 from .db_utils import (  # noqa: E402
@@ -124,7 +125,7 @@ def parse_when(s: str) -> datetime:
         s2 = s2[:-1] + "+00:00"
     try:
         return datetime.fromisoformat(s2)
-    except Exception as exc:  # pragma: no cover - simple validation
+    except (IOError, OSError) as exc:  # pragma: no cover - simple validation
         raise ValueError(
             f"Invalid datetime: {s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
@@ -312,11 +313,13 @@ def main(argv: Optional[list[str]] = None) -> int:
                 _print_rich(rows, mapcol, args.show_meta)
         return 0
     except (ValueError, SystemExit) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         print(str(exc), file=sys.stderr)
         return 2
-    except Exception as exc:  # pragma: no cover - top-level guard
-        print(f"Unexpected error: {exc}", file=sys.stderr)
+    except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
+        error_type = type(exc).__name__
+        print(f"Unexpected error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -324,7 +327,7 @@ if __name__ == "__main__":  # pragma: no cover - CLI entry
     session_ctx: Optional[Any]
     try:
         from .session_hooks import session as session_ctx
-    except Exception:  # pragma: no cover - helper optional
+    except (ImportError, AttributeError):  # pragma: no cover - helper optional
         session_ctx = None
     if session_ctx:
         with session_ctx(sys.argv):

@@ -123,7 +123,7 @@ The production deployment readiness plan from Discussion #4872 is **WELL-STRUCTU
 | **CI Failure Root Cause Identified** | 171 recent failures tracked | ✅ 18/20 |
 | **Workflow Hardening Specific** | copilot-setup-steps.yml lines 141-147 exact | ✅ 18/20 |
 | **Compliance Gates Clear** | REQ-4/REQ-5 AGENT_ACCOUNTABILITY_REPORT check | ✅ 18/20 |
-| **Secrets Baseline Strategy** | Auto-sync + pragma defined | ✅ 17/20 |
+| **Secrets Baseline Strategy** | Auto-sync + pragma defined | ✅ 17/20 | <!-- pragma: allowlist secret -->
 | **Consolidation Parity** | Reference document provided (.github/workflow-archive/PARITY_CHECKLIST.md) | ✅ 12/20 |
 
 **Subtotal:** 83/100 (B+ grade)
@@ -135,7 +135,7 @@ The production deployment readiness plan from Discussion #4872 is **WELL-STRUCTU
 | Specific CI failure patterns not enumerated | High | Requires ci-log-retrieval-agent analysis first |
 | Cascade prevention (CCA deduplication) needs validation | High | Implement turn-state isolation immediately |
 | Workflow consolidation from 325 → 49 ambitious | Medium | Phase 3.4 should verify parity before consolidation |
-| Secrets baseline false-positive rate (>99%) aggressive | Low | Current rate likely 95-98%, acceptable |
+| Secrets baseline false-positive rate (>99%) aggressive | Low | Current rate likely 95-98%, acceptable | <!-- pragma: allowlist secret -->
 
 #### Codebase Readiness Assessment
 
@@ -331,7 +331,7 @@ The production deployment readiness plan from Discussion #4872 is **WELL-STRUCTU
 
 **Campaign Grade: A- (87/100)**
 
-**Final Verdict:** 
+**Final Verdict:**
 The production deployment readiness plan in Discussion #4872 is **WELL-EXECUTED for Phase 1 and WELL-STRUCTURED for Phases 2-5**. Codebase is ready to proceed immediately with Phase 2 activation. Minor refinements recommended for Phases 3 and 4.
 
 ---

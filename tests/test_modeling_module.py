@@ -10,11 +10,11 @@ import types
 
 import pytest
 
-pytest.importorskip('torch')
+pytest.importorskip("torch")
 
 try:
     import torch
-except Exception as exc:  # pragma: no cover - runtime guard
+except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
 from src import modeling
@@ -152,6 +152,7 @@ def test_load_model_requires_peft_when_lora_enabled(monkeypatch):
     monkeypatch.setattr(modeling, "get_peft_model", None)
 
     original_import = modeling.import_module
+
     def fake_import(name, *args, **kwargs):
         if name == "peft":
             raise ModuleNotFoundError(f"No module named '{name}'")

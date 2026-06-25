@@ -194,7 +194,7 @@ def store(
         language=language,
         mime_type=mime,
         tags=list(tags),
-        extra_metadata=extra,  # type: ignore[arg-type]
+        extra_metadata=extra,
     )
     payload = {
         "tombstone": result.tombstone_id,
@@ -265,7 +265,7 @@ def restore(tombstone: str, output: Path, actor: str, debug: bool) -> None:
             click.echo(f"[INFO] Archive URL: {redacted_display}", err=True)
         service.dal.list_items(limit=0)
         click.echo("[DEBUG] Backend validation: OK", err=True)
-    except Exception as validation_err:
+    except (ConnectionError, TimeoutError) as validation_err:
         logger.debug(f"Exception: {validation_err}")
         sanitized = redact_text_credentials(str(validation_err)).strip()
         detail = f"{type(validation_err).__name__}" + (f": {sanitized}" if sanitized else "")
@@ -473,7 +473,7 @@ def health_check(debug: bool) -> None:
         items = service.dal.list_items(limit=1)
         click.echo("Status: \N{CHECK MARK} OK")
         click.echo(f"Items Retrievable: {len(items)}")
-    except Exception as exc:  # pragma: no cover - diagnostics path
+    except (IOError, OSError) as exc:  # pragma: no cover - diagnostics path
         sanitized = redact_text_credentials(str(exc)).strip()
         detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
         click.echo(
@@ -525,8 +525,9 @@ def show_standardization_status() -> None:
             click.echo(f"  {status_icon} {standard.upper()}")
         click.echo()
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
 
@@ -557,8 +558,9 @@ def validate_standardization(
         from .evidence_schema import EvidenceSchemaValidator
         from .standardization import StandardizationManager
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
 
@@ -601,14 +603,15 @@ def validate_standardization(
             try:
                 validator.validate(record, version=version)
                 valid_records += 1
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 if repair and version == "1.0":
                     try:
                         validator.migrate_to_v2(record)
                         valid_records += 1
                         repaired_records += 1
-                    except Exception as repair_err:
+                    except (ValueError, TypeError, RuntimeError) as repair_err:
                         logger.debug(f"Exception: {repair_err}")
                         issues.append(
                             f"Line {line_no}: Schema error: {e} (repair failed: {repair_err})"
@@ -624,8 +627,9 @@ def validate_standardization(
                     sig_valid = manager.verify_standardization(record)
                     if not sig_valid["valid"]:
                         warnings.append(f"Line {line_no}: Signature verification failed")
-                except Exception as e:
-                    logger.debug(f"Exception: {e}")
+                except (ValueError, TypeError, RuntimeError) as e:
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
                     warnings.append(f"Line {line_no}: Could not verify signature: {e}")
 
     # Report results
@@ -662,8 +666,9 @@ def migrate_evidence_to_v2() -> None:
     try:
         from .evidence_schema import EvidenceSchemaValidator
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         click.echo("❌ Standardization module not available", err=True)
         sys.exit(1)
 
@@ -692,8 +697,9 @@ def migrate_evidence_to_v2() -> None:
                 migrated_records.append(migrated)
             else:
                 migrated_records.append(record)  # Already v2
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             errors.append(f"Line {line_no}: {e}")
 
     if errors:

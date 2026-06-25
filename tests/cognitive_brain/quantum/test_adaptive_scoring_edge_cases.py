@@ -5,7 +5,6 @@ Tests adaptive scoring with extreme inputs, invalid configurations, and edge con
 to ensure robust behavior across the full input space.
 """
 
-
 import pytest
 
 np = pytest.importorskip("numpy")
@@ -25,8 +24,14 @@ _WEIGHT_SUM_TOLERANCE = 0.01  # Floating-point tolerance for weight sum validati
 class AdaptiveScoringEngine:
     """Test adapter for AdaptiveScoringOptimizer with simplified API."""
 
-    def __init__(self, compliance_score_weight=0.38, risk_weight=0.32,
-                 cost_weight=None, impact_weight=None, learning_rate=0.12):
+    def __init__(
+        self,
+        compliance_score_weight=0.38,
+        risk_weight=0.32,
+        cost_weight=None,
+        impact_weight=None,
+        learning_rate=0.12,
+    ):
         """Initialize with explicit weights for testing."""
         # Validate weights
         if compliance_score_weight < 0 or risk_weight < 0:
@@ -56,7 +61,7 @@ class AdaptiveScoringEngine:
             compliance_score_weight=compliance_score_weight,
             risk_weight=risk_weight,
             cost_weight=cost_weight,
-            impact_weight=impact_weight
+            impact_weight=impact_weight,
         )
         self.learning_rate = learning_rate
 
@@ -86,7 +91,11 @@ class AdaptiveScoringEngine:
             features = {
                 "compliance_score": audit.score if audit.score is not None else 0.5,
                 "risk_score": _RISK_LEVEL_SCORES.get(audit.risk_level, 0.5),
-                "cost_score": min(1.0, audit.remediation_cost / _MAX_REMEDIATION_COST) if audit.remediation_cost else 0.5,
+                "cost_score": (
+                    min(1.0, audit.remediation_cost / _MAX_REMEDIATION_COST)
+                    if audit.remediation_cost
+                    else 0.5
+                ),
                 "impact_score": audit.business_impact if audit.business_impact else 0.5,
             }
             return self.optimizer.compute_score(features)
@@ -132,16 +141,12 @@ class TestAdaptiveScoringEdgeCases:
     def test_invalid_negative_weights(self):
         """Test error handling for negative weights."""
         with pytest.raises(ValueError, match="Weights must be non-negative"):
-            AdaptiveScoringEngine(
-                compliance_score_weight=-0.1, risk_weight=0.3, learning_rate=0.1
-            )
+            AdaptiveScoringEngine(compliance_score_weight=-0.1, risk_weight=0.3, learning_rate=0.1)
 
     def test_invalid_weights_sum_exceeds_one(self):
         """Test error handling when weights sum > 1.0."""
         with pytest.raises(ValueError, match="Weights must sum to 1.0"):
-            AdaptiveScoringEngine(
-                compliance_score_weight=0.6, risk_weight=0.6, learning_rate=0.1
-            )
+            AdaptiveScoringEngine(compliance_score_weight=0.6, risk_weight=0.6, learning_rate=0.1)
 
     def test_zero_learning_rate(self):
         """Test convergence with zero learning rate (no updates)."""
@@ -298,6 +303,4 @@ class TestAdaptiveScoringEdgeCases:
             + engine.impact_weight
             + engine.mitigation_weight
         )
-        assert abs(weight_sum - 1.0) < 1e-5, (
-            f"Weights sum to {weight_sum}, expected 1.0"
-        )
+        assert abs(weight_sum - 1.0) < 1e-5, f"Weights sum to {weight_sum}, expected 1.0"

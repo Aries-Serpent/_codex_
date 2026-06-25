@@ -21,9 +21,15 @@ def mock_backend() -> InMemoryMockBackend:
 def test_upsert_and_query(mock_backend: InMemoryMockBackend):
     namespace = "testns"
     items = [
-        VectorItem({"id": "a", "embedding": [1.0, 0.0], "content": "apple", "metadata": {"tag": "fruit"}}),
-        VectorItem({"id": "b", "embedding": [0.9, 0.1], "content": "apricot", "metadata": {"tag": "fruit"}}),
-        VectorItem({"id": "c", "embedding": [0.0, 1.0], "content": "banana", "metadata": {"tag": "fruit"}}),
+        VectorItem(
+            {"id": "a", "embedding": [1.0, 0.0], "content": "apple", "metadata": {"tag": "fruit"}}
+        ),
+        VectorItem(
+            {"id": "b", "embedding": [0.9, 0.1], "content": "apricot", "metadata": {"tag": "fruit"}}
+        ),
+        VectorItem(
+            {"id": "c", "embedding": [0.0, 1.0], "content": "banana", "metadata": {"tag": "fruit"}}
+        ),
     ]
     mock_backend.upsert_batch(namespace, items)
     results = mock_backend.query_top_k(namespace, [1.0, 0.0], top_k=2)

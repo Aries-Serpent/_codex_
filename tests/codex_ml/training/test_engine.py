@@ -14,6 +14,7 @@ class TestNormalizeParams:
         """Test normalizing string parameters."""
         try:
             from codex_ml.training.engine import _normalize_params
+
             result = _normalize_params({"key": "value"})
             assert result == {"key": "value"}
         except ImportError as exc:
@@ -23,6 +24,7 @@ class TestNormalizeParams:
         """Test normalizing boolean parameters."""
         try:
             from codex_ml.training.engine import _normalize_params
+
             result = _normalize_params({"flag": True, "other": False})
             assert result == {"flag": 1, "other": 0}
         except ImportError as exc:
@@ -32,6 +34,7 @@ class TestNormalizeParams:
         """Test normalizing None parameters (should be filtered)."""
         try:
             from codex_ml.training.engine import _normalize_params
+
             result = _normalize_params({"key": None})
             assert result == {}
         except ImportError as exc:
@@ -41,13 +44,10 @@ class TestNormalizeParams:
         """Test normalizing mixed types."""
         try:
             from codex_ml.training.engine import _normalize_params
-            result = _normalize_params({
-                "str": "text",
-                "int": 42,
-                "float": 3.14,
-                "bool": True,
-                "none": None
-            })
+
+            result = _normalize_params(
+                {"str": "text", "int": 42, "float": 3.14, "bool": True, "none": None}
+            )
             assert result["str"] == "text"
             assert result["int"] == 42
             assert result["float"] == 3.14
@@ -64,6 +64,7 @@ class TestTrainingEngine:
         """Test creating engine with defaults."""
         try:
             from codex_ml.training.engine import TrainingEngine
+
             engine = TrainingEngine()
             assert engine is not None
             assert engine.enable_mlflow is False
@@ -74,6 +75,7 @@ class TestTrainingEngine:
         """Test creating engine with mlflow enabled."""
         try:
             from codex_ml.training.engine import TrainingEngine
+
             engine = TrainingEngine(enable_mlflow=True)
             assert engine.enable_mlflow in [True, False]
         except ImportError as exc:
@@ -83,6 +85,7 @@ class TestTrainingEngine:
         """Test engine has start_run method."""
         try:
             from codex_ml.training.engine import TrainingEngine
+
             engine = TrainingEngine()
             assert hasattr(engine, "start_run")
             assert callable(engine.start_run)
@@ -93,6 +96,7 @@ class TestTrainingEngine:
         """Test start_run with mlflow disabled."""
         try:
             from codex_ml.training.engine import TrainingEngine
+
             engine = TrainingEngine(enable_mlflow=False)
             engine.start_run()
             assert engine._active_run is None

@@ -274,13 +274,13 @@
 #### Test Candidates
 ```
 ✓ test_auth_invalid_credentials()
-✓ test_auth_expired_token()
-✓ test_auth_token_refresh_failure()
+✓ test_auth_expired_token()  # pragma: allowlist secret
+✓ test_auth_token_refresh_failure()  # pragma: allowlist secret
 ✓ test_authz_permission_denied()
 ✓ test_authz_role_inconsistency()
 ✓ test_encryption_invalid_key()
 ✓ test_encryption_corrupted_data()
-✓ test_secret_rotation_failure()
+✓ test_secret_rotation_failure()  # pragma: allowlist secret
 ... (24-32 more tests)
 ```
 
@@ -305,8 +305,8 @@ Quick wins for consistency and edge case coverage
 ```
 ✓ test_config_file_permissions()
 ✓ test_config_encoding_issues()
-✓ test_tokenizer_unicode_normalization()
-✓ test_tokenizer_special_chars()
+✓ test_tokenizer_unicode_normalization()  # pragma: allowlist secret
+✓ test_tokenizer_special_chars()  # pragma: allowlist secret
 ✓ test_verification_checksum_mismatch()
 ✓ test_verification_timeout()
 ✓ test_agent_invalid_state()
@@ -350,7 +350,7 @@ Each test must validate:
 def test_pipeline_error_handling_missing_config():
     """
     Test that pipeline gracefully handles missing config file.
-    
+
     Validates:
     - Error type: FileNotFoundError
     - Error message contains path
@@ -360,11 +360,11 @@ def test_pipeline_error_handling_missing_config():
     # Arrange
     runner = PipelineRunner()
     missing_config = "/non/existent/config.yaml"
-    
+
     # Act & Assert
     with pytest.raises(FileNotFoundError) as exc_info:
         runner.load_config(missing_config)
-    
+
     assert "config.yaml" in str(exc_info.value)
     assert runner.state == PipelineState.UNINITIALIZED
     assert not runner.has_partial_writes()

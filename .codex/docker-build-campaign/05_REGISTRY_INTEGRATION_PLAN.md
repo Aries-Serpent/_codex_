@@ -249,7 +249,7 @@ jobs:
 **Organization-level (recommended):**
 ```
 GitHub Org (aries-serpent)
-└── GHCR Token
+└── GHCR Token  # pragma: allowlist secret
     ├── Read: Public packages
     └── Write: aries-serpent org only
 ```
@@ -345,7 +345,7 @@ on:
   workflow_run:
     workflows: ["Build and Push Docker Images"]
     types: [completed]
-  
+
 jobs:
   mirror:
     if: github.event.workflow_run.conclusion == 'success'

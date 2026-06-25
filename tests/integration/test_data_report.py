@@ -21,9 +21,7 @@ def _write_csv(path: Path, rows: list[dict[str, int]]) -> None:
 
 
 def test_data_report_smoke(tmp_path: Path) -> None:
-    build_data_drift = pytest.importorskip(
-        "hhg_logistics.monitor.data_report"
-    ).build_data_drift
+    build_data_drift = pytest.importorskip("hhg_logistics.monitor.data_report").build_data_drift
 
     reference = tmp_path / "ref.csv"
     current = tmp_path / "cur.csv"

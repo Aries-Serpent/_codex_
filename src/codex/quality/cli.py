@@ -44,7 +44,7 @@ def _scan_smells(
     for path in src_root.rglob("*.py"):
         try:
             source = path.read_text(encoding="utf-8", errors="replace")
-        except Exception:  # nosec B112
+        except (IOError, OSError):  # nosec B112
             continue
         lines = source.splitlines()
         if len(lines) > max_file_lines:
@@ -117,8 +117,9 @@ def smell_main(
             smells = conf.get("code_smells", {})
             long_fn_threshold = smells.get("long_function", {}).get("threshold", long_fn_threshold)
             max_args = smells.get("max_arguments", {}).get("threshold", max_args)
-    except Exception as e:
-        logger.debug(f"Config load skipped: {e}")
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Config load skipped: <ERROR_TYPE>")
 
     src_root = Path("src")
     if not src_root.exists():

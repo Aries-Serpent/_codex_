@@ -15,20 +15,18 @@ Tests include:
 - Edge cases and error handling
 """
 
-import unittest
 import json
-import tempfile
 import os
-from datetime import datetime, timedelta
-from pathlib import Path
-from io import StringIO
-import sys
 
 # Import the module to test
 import sys
+import tempfile
+import unittest
+from datetime import datetime, timedelta
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from scripts.ci.session_query import SessionQuery, format_json_output, format_csv_output
+from scripts.ci.session_query import SessionQuery, format_csv_output, format_json_output
 
 
 class TestSessionQuery(unittest.TestCase):
@@ -94,11 +92,11 @@ class TestSessionQuery(unittest.TestCase):
                 'tags': ['ml'],
             },
         ]
-        
+
         # Write test index file
         with open(self.index_path, 'w') as f:
             json.dump({'sessions': self.test_sessions}, f)
-    
+
     def tearDown(self):
         """Clean up test files."""
         if os.path.exists(self.index_path):
@@ -108,7 +106,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test get_session_by_id with existing session."""
         sq = SessionQuery(index_path=self.index_path)
         result = sq.get_session_by_id('session-001')
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result['session_id'], 'session-001')
         self.assertEqual(result['status'], 'complete')
@@ -118,14 +116,14 @@ class TestSessionQuery(unittest.TestCase):
         """Test get_session_by_id with non-existent session."""
         sq = SessionQuery(index_path=self.index_path)
         result = sq.get_session_by_id('nonexistent-session')
-        
+
         self.assertIsNone(result)
 
     def test_query_sessions_by_session_id(self):
         """Test query_sessions filtering by session_id."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(session_id='session-001')
-        
+
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['session_id'], 'session-001')
 
@@ -133,7 +131,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test query_sessions filtering by status."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(status='complete')
-        
+
         self.assertEqual(len(results), 2)
         for session in results:
             self.assertEqual(session['status'], 'complete')
@@ -142,7 +140,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test query_sessions filtering by agent_name."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(agent_name='ci-auto-healer-agent')
-        
+
         self.assertEqual(len(results), 2)
         for session in results:
             self.assertEqual(session['agent_name'], 'ci-auto-healer-agent')
@@ -151,7 +149,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test query_sessions filtering by pr_number."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(pr_number=3854)
-        
+
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['pr_number'], 3854)
 
@@ -162,7 +160,7 @@ class TestSessionQuery(unittest.TestCase):
             agent_name='ci-auto-healer-agent',
             status='complete'
         )
-        
+
         self.assertEqual(len(results), 2)
         for session in results:
             self.assertEqual(session['agent_name'], 'ci-auto-healer-agent')
@@ -172,14 +170,14 @@ class TestSessionQuery(unittest.TestCase):
         """Test query_sessions with limit parameter."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(limit=2)
-        
+
         self.assertEqual(len(results), 2)
 
     def test_list_recent_sessions_7_days(self):
         """Test list_recent_sessions filters correctly by date."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.list_recent_sessions(days=7)
-        
+
         # Should return sessions from last 7 days (session-001, session-002, session-004)
         self.assertGreater(len(results), 0)
         for session in results:
@@ -189,7 +187,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test list_recent_sessions with shorter timeframe."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.list_recent_sessions(days=2)
-        
+
         # Should return only very recent sessions
         self.assertGreaterEqual(len(results), 1)
 
@@ -197,7 +195,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test find_similar_sessions by tags."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.find_similar_sessions(tags=['ml'], limit=5)
-        
+
         self.assertGreater(len(results), 0)
         # All results should have 'ml' tag
         for session in results:
@@ -207,14 +205,14 @@ class TestSessionQuery(unittest.TestCase):
         """Test find_similar_sessions with multiple tags."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.find_similar_sessions(tags=['ci', 'healer'], limit=5)
-        
+
         self.assertGreater(len(results), 0)
 
     def test_find_similar_sessions_no_matches(self):
         """Test find_similar_sessions with no matching tags."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.find_similar_sessions(tags=['nonexistent'], limit=5)
-        
+
         self.assertEqual(len(results), 0)
 
     def test_get_sessions_by_agent(self):
@@ -225,7 +223,7 @@ class TestSessionQuery(unittest.TestCase):
             days=30,
             limit=50
         )
-        
+
         self.assertGreater(len(results), 0)
         for session in results:
             self.assertEqual(session['agent_name'], 'ci-auto-healer-agent')
@@ -234,7 +232,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test filter_by_status returns correct sessions."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.filter_by_status('failed')
-        
+
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['status'], 'failed')
 
@@ -242,7 +240,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test stats_summary returns correct counts."""
         sq = SessionQuery(index_path=self.index_path)
         stats = sq.stats_summary()
-        
+
         self.assertEqual(stats['total_sessions'], 4)
         self.assertIn('complete', stats['by_status'])
         self.assertIn('failed', stats['by_status'])
@@ -257,7 +255,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test stats_summary counts by agent."""
         sq = SessionQuery(index_path=self.index_path)
         stats = sq.stats_summary()
-        
+
         self.assertEqual(stats['by_agent']['ci-auto-healer-agent'], 2)
         self.assertEqual(stats['by_agent']['test-agent'], 1)
         self.assertEqual(stats['by_agent']['ml-validation-suite-agent'], 1)
@@ -266,7 +264,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test stats_summary counts by branch."""
         sq = SessionQuery(index_path=self.index_path)
         stats = sq.stats_summary()
-        
+
         self.assertEqual(stats['by_branch']['main'], 2)
         self.assertEqual(stats['by_branch']['feature'], 1)
         self.assertEqual(stats['by_branch']['develop'], 1)
@@ -275,7 +273,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test query_sessions returns empty list on no matches."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(agent_name='nonexistent-agent')
-        
+
         self.assertEqual(results, [])
         self.assertIsInstance(results, list)
 
@@ -283,7 +281,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test query_sessions returns results sorted by most recent first."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(status='complete')
-        
+
         # Check that results are sorted (most recent first)
         if len(results) > 1:
             for i in range(len(results) - 1):
@@ -296,7 +294,7 @@ class TestSessionQuery(unittest.TestCase):
         """Test JSON output formatting."""
         data = [{'session_id': 'test', 'status': 'complete'}]
         output = format_json_output(data)
-        
+
         self.assertIsInstance(output, str)
         parsed = json.loads(output)
         self.assertEqual(parsed[0]['session_id'], 'test')
@@ -308,7 +306,7 @@ class TestSessionQuery(unittest.TestCase):
             {'session_id': 'test2', 'status': 'failed'},
         ]
         output = format_csv_output(data)
-        
+
         self.assertIsInstance(output, str)
         self.assertIn('session_id', output)
         self.assertIn('status', output)
@@ -318,14 +316,14 @@ class TestSessionQuery(unittest.TestCase):
     def test_format_csv_output_empty(self):
         """Test CSV output with empty data."""
         output = format_csv_output([])
-        
+
         self.assertEqual(output, "")
 
     def test_session_query_verbose_mode(self):
         """Test SessionQuery with verbose flag."""
         sq = SessionQuery(index_path=self.index_path)
         sq.verbose = True
-        
+
         # Should not raise an error
         results = sq.query_sessions()
         self.assertIsInstance(results, list)
@@ -333,7 +331,7 @@ class TestSessionQuery(unittest.TestCase):
     def test_session_by_id_dict_populated(self):
         """Test that session_by_id dict is properly populated."""
         sq = SessionQuery(index_path=self.index_path)
-        
+
         self.assertIn('session-001', sq.session_by_id)
         self.assertIn('session-002', sq.session_by_id)
         self.assertEqual(sq.session_by_id['session-001']['session_id'], 'session-001')
@@ -341,13 +339,13 @@ class TestSessionQuery(unittest.TestCase):
     def test_query_sessions_iso8601_timestamp_filter(self):
         """Test query_sessions with ISO 8601 timestamp filter."""
         sq = SessionQuery(index_path=self.index_path)
-        
+
         # Create a timestamp 4 days ago
         cutoff = datetime.utcnow() - timedelta(days=4)
         cutoff_iso = cutoff.strftime('%Y-%m-%dT%H:%M:%SZ')
-        
+
         results = sq.query_sessions(since_timestamp=cutoff_iso)
-        
+
         # Should return only sessions newer than 4 days ago
         self.assertGreater(len(results), 0)
 
@@ -378,7 +376,7 @@ class TestSessionQueryCLI(unittest.TestCase):
                 'tags': ['test'],
             },
         ]
-        
+
         with open(self.index_path, 'w') as f:
             json.dump({'sessions': test_sessions}, f)
 
@@ -391,7 +389,7 @@ class TestSessionQueryCLI(unittest.TestCase):
         """Test CLI with --session-id flag."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(session_id='cli-test-001')
-        
+
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['session_id'], 'cli-test-001')
 
@@ -399,7 +397,7 @@ class TestSessionQueryCLI(unittest.TestCase):
         """Test CLI with --pr-number flag."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions(pr_number=100)
-        
+
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['pr_number'], 100)
 
@@ -407,7 +405,7 @@ class TestSessionQueryCLI(unittest.TestCase):
         """Test CLI with --agent-name flag."""
         sq = SessionQuery(index_path=self.index_path)
         results = sq.get_sessions_by_agent('test-agent', days=30)
-        
+
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['agent_name'], 'test-agent')
 
@@ -415,7 +413,7 @@ class TestSessionQueryCLI(unittest.TestCase):
         """Test CLI with --stats flag."""
         sq = SessionQuery(index_path=self.index_path)
         stats = sq.stats_summary()
-        
+
         self.assertEqual(stats['total_sessions'], 1)
         self.assertIn('by_status', stats)
 
@@ -424,7 +422,7 @@ class TestSessionQueryCLI(unittest.TestCase):
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions()
         output = format_json_output(results)
-        
+
         self.assertIsInstance(output, str)
         parsed = json.loads(output)
         self.assertIsInstance(parsed, list)
@@ -434,7 +432,7 @@ class TestSessionQueryCLI(unittest.TestCase):
         sq = SessionQuery(index_path=self.index_path)
         results = sq.query_sessions()
         output = format_csv_output(results)
-        
+
         self.assertIsInstance(output, str)
         self.assertIn('session_id', output)
         self.assertIn('cli-test-001', output)
@@ -463,7 +461,7 @@ class TestSessionQueryEdgeCases(unittest.TestCase):
     def test_empty_sessions_list(self):
         """Test with empty sessions list."""
         sq = SessionQuery(index_path=self.index_path)
-        
+
         self.assertEqual(len(sq.sessions), 0)
         self.assertEqual(len(sq.query_sessions()), 0)
 
@@ -471,7 +469,7 @@ class TestSessionQueryEdgeCases(unittest.TestCase):
         """Test with nonexistent index file."""
         nonexistent_path = os.path.join(self.test_dir, 'nonexistent.json')
         sq = SessionQuery(index_path=nonexistent_path)
-        
+
         # Should initialize without error
         self.assertIsNotNone(sq)
 
@@ -484,18 +482,18 @@ class TestSessionQueryEdgeCases(unittest.TestCase):
                 'first_timestamp': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 'status': 'complete',
             }]}, f)
-        
+
         sq = SessionQuery(index_path=self.index_path)
         # Invalid timestamp should be silently ignored
         results = sq.query_sessions(since_timestamp='invalid-timestamp')
-        
+
         self.assertEqual(len(results), 1)
 
     def test_stats_summary_empty_sessions(self):
         """Test stats_summary with empty sessions."""
         sq = SessionQuery(index_path=self.index_path)
         stats = sq.stats_summary()
-        
+
         self.assertEqual(stats['total_sessions'], 0)
         self.assertEqual(stats['by_status'], {})
         self.assertEqual(stats['by_agent'], {})

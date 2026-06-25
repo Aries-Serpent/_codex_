@@ -157,7 +157,7 @@ class PrometheusMetrics:
                 self.model_load_count[model_name] += 1
 
                 if model_name not in self.model_load_latency:
-                    self.model_load_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
+                    self.model_load_latency[model_name] = LatencyHistogram(
                         buckets=[100, 500, 1000, 2000, 5000, 10000, 30000]
                     )
 
@@ -179,7 +179,7 @@ class PrometheusMetrics:
             self.model_prediction_count[model_name] += num_samples
 
             if model_name not in self.model_prediction_latency:
-                self.model_prediction_latency[model_name] = LatencyHistogram(  # type: ignore[call-arg]
+                self.model_prediction_latency[model_name] = LatencyHistogram(
                     buckets=[10, 25, 50, 100, 250, 500, 1000, 2500, 5000]
                 )
 

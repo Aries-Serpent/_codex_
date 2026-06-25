@@ -245,9 +245,7 @@ _RULES: list[dict[str, Any]] = [
         "category": "code-fix-required",
         "confidence": 0.88,
         "regex": re.compile(
-            r"error\[E\d+\]:.*-->"
-            r"|cargo build.*error"
-            r"|error: could not compile",
+            r"error\[E\d+\]:.*-->" r"|cargo build.*error" r"|error: could not compile",
             re.I,
         ),
         "fix_commands": [

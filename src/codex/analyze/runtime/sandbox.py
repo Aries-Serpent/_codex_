@@ -250,14 +250,15 @@ class SandboxManager:
 
             return ExecutionResult(
                 exit_code=-1,
-                stdout=self._truncate_output(e.stdout or "") if e.stdout else "",  # type: ignore[arg-type]
+                stdout=self._truncate_output(e.stdout or "") if e.stdout else "",
                 stderr=f"Execution timed out after {self.config.timeout_seconds}s",
                 duration_ms=duration_ms,
                 timed_out=True,
             )
 
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             duration_ms = (time.time() - start_time) * 1000
 
             return ExecutionResult(
@@ -314,7 +315,8 @@ class SandboxManager:
                 raise ValueError(f"Path traversal detected in script path: {path_str}")
 
         except (ValueError, OSError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             raise ValueError(f"Path validation failed: {e}") from e
 
         # Create tracing wrapper script

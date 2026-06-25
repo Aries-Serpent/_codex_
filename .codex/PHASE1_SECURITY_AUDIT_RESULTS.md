@@ -17,7 +17,7 @@ This audit verifies Phase 1 security hardening claims against the current main b
 | Claim | Target | Finding | Status |
 |-------|--------|---------|--------|
 | ERROR-severity findings (XXE, command injection, unsafe eval) | 0 | 9 | ❌ **FAIL** |
-| HIGH-severity findings (clear-text secret logging) | 0 | 0 | ✅ **PASS** |
+| HIGH-severity findings (clear-text secret logging) | 0 | 0 | ✅ **PASS** | <!-- pragma: allowlist secret -->
 | MEDIUM-severity findings (weak crypto, pickle) | <5 | 1 | ✅ **PASS** |
 
 ---
@@ -69,7 +69,7 @@ All 9 instances found in scripts (not src/):
 - 6 instances are in test files (`test_auto_remediation.py`) - test data/assertions
 - 3 instances are comments/documentation
 
-**Assessment:** 
+**Assessment:**
 - ✅ Production source code (`src/`) has 0 unsafe command injection
 - ⚠️ Scripts contain 1 instance of shell=True that should be reviewed
 
@@ -88,7 +88,7 @@ All 9 instances found in scripts (not src/):
 - Found references only in docstrings and examples showing CORRECT USAGE (with masking)
 - Example: `src/utils/sensitive_data.py:18` shows proper masking:
   ```python
-  >>> logger.info(f"Processing token: {mask_token(api_token)}")
+  >>> logger.info(f"Processing token: {mask_token(api_token)}")  # pragma: allowlist secret
   ```
 
 **Conclusion:** All logging of sensitive data properly uses masking functions. No HIGH-severity clear-text logging found.
@@ -175,7 +175,7 @@ All 9 instances found in scripts (not src/):
 1. **9 instances of `shell=True` in scripts** - ERROR-severity
    - 1 in `scripts/ci/scan_all.py:360` requires conversion to argument list
    - 8 in test code/comments
-   
+
 2. **1 unjustified MD5 usage** - MEDIUM-severity
    - `src/codex/metrics/duplication.py:221` needs suppression or migration
 

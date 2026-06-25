@@ -55,9 +55,7 @@ class TestQuantumMetricModel:
 
     def test_create_basic_metric(self):
         """Test creating a basic quantum metric."""
-        metric = QuantumMetric(
-            feature="superposition", metric_name="coherence", metric_value=0.95
-        )
+        metric = QuantumMetric(feature="superposition", metric_name="coherence", metric_value=0.95)
 
         assert metric.feature == "superposition"
         assert metric.metric_name == "coherence"
@@ -68,9 +66,7 @@ class TestQuantumMetricModel:
     def test_invalid_feature_raises_error(self):
         """Test that invalid feature name raises ValueError."""
         with pytest.raises(ValueError, match="Invalid feature"):
-            QuantumMetric(
-                feature="invalid_feature", metric_name="coherence", metric_value=0.5
-            )
+            QuantumMetric(feature="invalid_feature", metric_name="coherence", metric_value=0.5)
 
     def test_valid_features(self):
         """Test all valid feature names."""
@@ -82,9 +78,7 @@ class TestQuantumMetricModel:
         ]
 
         for feature in valid_features:
-            metric = QuantumMetric(
-                feature=feature, metric_name="test", metric_value=1.0
-            )
+            metric = QuantumMetric(feature=feature, metric_name="test", metric_value=1.0)
             assert metric.feature == feature
 
 
@@ -93,9 +87,7 @@ class TestQuantumMetricRepositoryCRUD:
 
     def test_create_metric(self, repo):
         """Test inserting a new metric."""
-        metric = QuantumMetric(
-            feature="superposition", metric_name="coherence", metric_value=0.95
-        )
+        metric = QuantumMetric(feature="superposition", metric_name="coherence", metric_value=0.95)
 
         created = repo.create(metric)
 
@@ -104,9 +96,7 @@ class TestQuantumMetricRepositoryCRUD:
 
     def test_get_by_id(self, repo):
         """Test retrieving metric by ID."""
-        metric = QuantumMetric(
-            feature="superposition", metric_name="coherence", metric_value=0.95
-        )
+        metric = QuantumMetric(feature="superposition", metric_name="coherence", metric_value=0.95)
         created = repo.create(metric)
 
         retrieved = repo.get_by_id(created.id)
@@ -118,9 +108,7 @@ class TestQuantumMetricRepositoryCRUD:
 
     def test_delete_metric(self, repo):
         """Test deleting a metric."""
-        metric = QuantumMetric(
-            feature="superposition", metric_name="coherence", metric_value=0.95
-        )
+        metric = QuantumMetric(feature="superposition", metric_name="coherence", metric_value=0.95)
         created = repo.create(metric)
 
         deleted = repo.delete(created.id)
@@ -155,9 +143,7 @@ class TestQuantumMetricRepositoryQueries:
         # Create coherence metrics
         for value in [0.9, 0.85, 0.95, 0.88]:
             repo.create(
-                QuantumMetric(
-                    feature="superposition", metric_name="coherence", metric_value=value
-                )
+                QuantumMetric(feature="superposition", metric_name="coherence", metric_value=value)
             )
 
         stats = repo.get_coherence_stats("superposition")
@@ -182,7 +168,7 @@ class TestBatchInsert:
             feature="superposition",
             metric_name="coherence",
             metric_value=0.95,
-            agent_id="test-agent-1"
+            agent_id="test-agent-1",
         )
 
         results = repo.batch_insert([metric])
@@ -200,7 +186,7 @@ class TestBatchInsert:
                 feature="superposition",
                 metric_name="coherence",
                 metric_value=0.9 + i * 0.01,
-                agent_id=f"test-agent-{i}"
+                agent_id=f"test-agent-{i}",
             )
             for i in range(10)
         ]
@@ -224,7 +210,7 @@ class TestBatchInsert:
                 feature="entanglement",
                 metric_name="error_rate",
                 metric_value=0.01 + i * 0.0001,
-                agent_id=f"agent-{i}"
+                agent_id=f"agent-{i}",
             )
             for i in range(100)
         ]
@@ -245,7 +231,7 @@ class TestBatchInsert:
             QuantumMetric(
                 feature="uncertainty",
                 metric_name=f"latency_p99_{i}",  # Unique metric name to avoid constraint
-                metric_value=100.0 + i
+                metric_value=100.0 + i,
             )
             for i in range(20)
         ]
@@ -264,7 +250,7 @@ class TestBatchInsert:
                 feature="wave_collapse",
                 metric_name=f"accuracy_{i}",  # Unique metric name to avoid constraint
                 metric_value=0.85 + i * 0.001,
-                metadata={"test_id": i}
+                metadata={"test_id": i},
             )
             for i in range(50)
         ]
@@ -282,20 +268,14 @@ class TestBatchInsert:
         """Test backward compatibility - create() still works after batch_insert()."""
         # First do batch insert
         batch_metrics = [
-            QuantumMetric(
-                feature="superposition",
-                metric_name="coherence",
-                metric_value=0.9
-            )
+            QuantumMetric(feature="superposition", metric_name="coherence", metric_value=0.9)
             for _ in range(5)
         ]
         repo.batch_insert(batch_metrics)
 
         # Then use traditional create()
         single_metric = QuantumMetric(
-            feature="superposition",
-            metric_name="coherence",
-            metric_value=0.95
+            feature="superposition", metric_name="coherence", metric_value=0.95
         )
         created = repo.create(single_metric)
 

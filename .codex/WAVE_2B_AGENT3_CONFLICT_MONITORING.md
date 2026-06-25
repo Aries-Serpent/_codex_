@@ -204,7 +204,7 @@ diff -q previous_log.txt current_log.txt && echo "No changes" || echo "New commi
 ### Step 2: Analyze new commit (When detected)
 ```bash
 # Extract commit message and changes
-git log -1 --format="%H %s" 
+git log -1 --format="%H %s"
 git diff HEAD~1 HEAD -- requirements.txt pyproject.toml
 ```
 
@@ -369,19 +369,19 @@ For each new Agent 1 commit:
 ```
 1. Extract package changes
    → git diff HEAD~1 -- requirements.txt pyproject.toml
-   
+
 2. Identify changed packages
    → Filter for torch, transformers, cryptography, marshmallow, etc.
-   
+
 3. Validate resolver
    → pip install --dry-run -q [new_versions]
-   
+
 4. Check circular dependencies
    → pipdeptree --warn fail (if available)
-   
+
 5. Log results
    → Update WAVE_2B_CONFLICT_MONITORING.json
-   
+
 6. Escalate if needed
    → Alert Agent 1 and campaign coordinator
 ```

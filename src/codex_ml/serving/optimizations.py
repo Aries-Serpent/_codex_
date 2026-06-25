@@ -109,8 +109,9 @@ class RequestBatcher:
                 # Distribute results
                 for future, result in zip(futures, results, strict=False):
                     future.set_result(result)
-            except Exception as e:
-                logger.debug(f"Exception: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 for future in futures:
                     future.set_exception(e)
 

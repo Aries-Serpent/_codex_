@@ -63,8 +63,9 @@ class MetricsCollector:
 
             logger.info("Prometheus metrics collector initialized")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             logger.warning(
                 "prometheus_client not available. Install with: pip install prometheus-client"
             )
@@ -87,8 +88,9 @@ class MetricsCollector:
 
         try:
             self._request_counter.labels(method=method, endpoint=endpoint, status=str(status)).inc()
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ConnectionError, TimeoutError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.debug("Failed to record request metric: %s", e)
 
     def record_latency(self, duration: float, method: str = "GET", endpoint: str = "/") -> None:
@@ -104,8 +106,9 @@ class MetricsCollector:
 
         try:
             self._latency_histogram.labels(method=method, endpoint=endpoint).observe(duration)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.debug("Failed to record latency metric: %s", e)
 
     def record_error(self, error_type: str, endpoint: str = "/"):
@@ -120,8 +123,9 @@ class MetricsCollector:
 
         try:
             self._error_counter.labels(type=error_type, endpoint=endpoint).inc()
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ConnectionError, TimeoutError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.debug("Failed to record error metric: %s", e)
 
     def inc_active_requests(self):
@@ -168,8 +172,9 @@ def get_metrics_router() -> Any:
         from fastapi import APIRouter, Response
         from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         raise ImportError(
             "FastAPI and prometheus_client are required for metrics endpoint. "
             "Install with: pip install fastapi prometheus-client"
@@ -186,8 +191,9 @@ def get_metrics_router() -> Any:
         try:
             metrics_output = generate_latest()
             return Response(content=metrics_output, media_type=CONTENT_TYPE_LATEST)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             # Security: Don't expose internal error details to clients
             logger.error("Failed to generate metrics: %s", e, exc_info=True)
             return Response(

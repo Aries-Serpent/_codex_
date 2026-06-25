@@ -18,7 +18,7 @@ from typing import Annotated, Any, Optional
 
 try:  # Optional dependency used for loading curriculum presets
     import yaml
-except Exception:  # pragma: no cover - PyYAML is optional
+except (IOError, OSError):  # pragma: no cover - PyYAML is optional
     yaml = None
 
 
@@ -36,7 +36,7 @@ typer = _load_typer()
 # monkeypatch.setattr("codex_ml.cli.main.evaluate_datasets", ...).
 try:  # pragma: no cover - evaluation is optional
     from codex_ml.eval.eval_runner import evaluate_datasets
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
 
     def evaluate_datasets(*args, **kwargs):
         return None
@@ -51,14 +51,15 @@ if typer is not None:
     _tokenizer_flag = os.getenv("CODEX_ENABLE_TOKENIZER_CLI", "1").lower()
     if _tokenizer_flag in {"1", "true", "yes", "on"}:
         try:  # pragma: no cover - optional import, guard mirrors Typer discovery
-            from codex_ml.cli import tokenizer as tokenizer_cli  # type: ignore[attr-defined]
+            from codex_ml.cli import tokenizer as tokenizer_cli
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (ImportError, AttributeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
-    from codex_ml.cli import _load_training_config  # type: ignore[attr-defined]
+    from codex_ml.cli import _load_training_config
 
     def _value_from_config(
         cli_value: Any,
@@ -174,8 +175,9 @@ if typer is not None:
                     try:
                         root = cli_path.parents[depth]
                     except IndexError as e:
-                        logger.debug(f"IndexError: {e}")
-                        logger.warning(f"IndexError: {e}", exc_info=True)
+                        error_type = type(e).__name__
+                        logger.debug(f"IndexError: <ERROR_TYPE>")
+                        logger.warning(f"IndexError: <ERROR_TYPE>", exc_info=True)
                         continue
                     search_roots.append(root / "configs" / "training" / "continual")
 
@@ -358,7 +360,7 @@ if typer is not None:
         ),
     ) -> None:
         """Run evaluation using available evaluation modules."""
-        from codex_ml.cli import entrypoints as entry  # type: ignore[attr-defined]
+        from codex_ml.cli import entrypoints as entry
 
         eval_args: list[str] = []
         if dry_run:
@@ -402,8 +404,9 @@ if typer is not None:
             meta_payload = json.loads(metadata_json) if metadata_json else {}
             if not isinstance(meta_payload, dict):
                 raise ValueError("metadata must decode to a JSON object")
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (IOError, OSError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             raise typer.BadParameter(str(exc)) from exc
 
         result = build_service_package(
@@ -473,7 +476,7 @@ if typer is not None:
             app(args)
             return 0
         except SystemExit as e:
-            return e.code if e.code is not None else 0  # type: ignore[return-value]
+            return e.code if e.code is not None else 0
 
     cli = _typer_cli_wrapper
 
@@ -495,7 +498,7 @@ else:
         log_event,
         run_cmd,
     )
-    from codex_ml.pipeline import run_codex_pipeline_from_config  # type: ignore[attr-defined]
+    from codex_ml.pipeline import run_codex_pipeline_from_config
     from codex_ml.utils.optional import optional_import
 
     _ = (ArgparseJSONParser, run_cmd)
@@ -509,13 +512,13 @@ else:
 
     try:
         from omegaconf import DictConfig, OmegaConf  # pragma: no cover - optional
-    except Exception:  # pragma: no cover - optional
-        DictConfig = Any  # type: ignore
-        OmegaConf = None  # type: ignore
+    except (ImportError, AttributeError):  # pragma: no cover - optional
+        DictConfig = Any
+        OmegaConf = None
 
     try:  # pragma: no cover - optional dependency
         from codex_digest.error_capture import log_error as _log_error
-    except Exception:  # pragma: no cover
+    except (ImportError, AttributeError):  # pragma: no cover
 
         def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:  # type: ignore
             return None
@@ -529,7 +532,7 @@ else:
         if _functional_training_main is None:
             try:
                 from codex.training import main as _functional_training
-            except Exception:
+            except (ImportError, AttributeError):
                 logger.debug("codex.training.main unavailable; functional training disabled")
                 _functional_training_main = None
             else:
@@ -701,7 +704,7 @@ else:
             sys.argv = [sys.argv[0], *args, *overrides]
             try:
                 main()
-            except Exception as exc:  # pragma: no cover - logging path
+            except (IOError, OSError) as exc:  # pragma: no cover - logging path
                 _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="error")
                 raise

@@ -156,10 +156,10 @@ Lane 3.2 Status: 🚀 **ON TRACK** (no blockers)
 
 ```
 ✅ COMPLETED
-├─ 2026-06-17T16:20Z: Blocker detected (28 secrets)
+├─ 2026-06-17T16:20Z: Blocker detected (28 secrets)  # pragma: allowlist secret
 ├─ 2026-06-17T16:30Z: 3 agents delegated
 ├─ 2026-06-17T17:00Z: Monitoring deployed
-├─ 2026-06-17T17:06Z: Secret remediation COMPLETE (420s)
+├─ 2026-06-17T17:06Z: Secret remediation COMPLETE (420s)  # pragma: allowlist secret
 ├─ 2026-06-17T17:08Z: Phase 3 authorization COMPLETE (408s)
 │
 🚀 IN PROGRESS
@@ -287,8 +287,8 @@ view .codex/WAVE3_DAILY_CHECKPOINT_2026-06-18.md
 | Task | Agent | Result | Timeline |
 |------|-------|--------|----------|
 | Preload mandatory context | Manual | ✅ Complete | 5 min |
-| Identify 28 secrets | secret-detection-agent | ✅ Complete | 420s |
-| Remediate secrets | secret-detection-agent | ✅ Complete | 420s |
+| Identify 28 secrets | secret-detection-agent | ✅ Complete | 420s | <!-- pragma: allowlist secret -->
+| Remediate secrets | secret-detection-agent | ✅ Complete | 420s | <!-- pragma: allowlist secret -->
 | Deploy monitoring | artifact-monitor-agent | ✅ Complete | 269s |
 | Authorize Phase 3 | mutation-testing-agent | ✅ Complete | 408s |
 | Initiate Phase 3 | mutation-testing-agent | 🚀 Executing | 20-40h |
@@ -352,7 +352,7 @@ view .codex/WAVE3_DAILY_CHECKPOINT_2026-06-18.md
 
 **Next Critical Deadline:** 2026-06-19T14:00Z (Phase 3 completion)
 
-**Daily Monitoring Checkpoints:** 
+**Daily Monitoring Checkpoints:**
 - 09:00Z UTC (morning)
 - 21:00Z UTC (evening)
 

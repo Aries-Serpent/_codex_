@@ -1,4 +1,5 @@
 """Tests for mutation detection - conditional replacement."""
+
 from __future__ import annotations
 
 

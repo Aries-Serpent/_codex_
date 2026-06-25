@@ -80,7 +80,8 @@ def ensure_coverage_xml(path: Path = Path("coverage.xml")) -> bool:
         print("✓ Created placeholder coverage.xml")
         return True
     except Exception as e:
-        print(f"✗ Failed to create coverage.xml: {e}")
+        error_type = type(e).__name__
+        print(f"✗ Failed to create coverage.xml: <ERROR_TYPE>")
         return False
 
 
@@ -135,7 +136,8 @@ def ensure_htmlcov_dir(path: Path = Path("htmlcov")) -> bool:
         print("✓ Created placeholder htmlcov/index.html")
         return True
     except Exception as e:
-        print(f"✗ Failed to create htmlcov/: {e}")
+        error_type = type(e).__name__
+        print(f"✗ Failed to create htmlcov/: <ERROR_TYPE>")
         return False
 
 
@@ -170,7 +172,8 @@ def ensure_junit_xml(path: Path = Path("junit.xml")) -> bool:
         print("✓ Created placeholder junit.xml")
         return True
     except Exception as e:
-        print(f"✗ Failed to create junit.xml: {e}")
+        error_type = type(e).__name__
+        print(f"✗ Failed to create junit.xml: <ERROR_TYPE>")
         return False
 
 
@@ -215,7 +218,8 @@ If you see this report, verify:
         print("✓ Created placeholder test_pattern_report.txt")
         return True
     except Exception as e:
-        print(f"✗ Failed to create test_pattern_report.txt: {e}")
+        error_type = type(e).__name__
+        print(f"✗ Failed to create test_pattern_report.txt: <ERROR_TYPE>")
         return False
 
 
@@ -265,7 +269,8 @@ def ensure_bandit_reports(
             json_path.write_text(json.dumps(placeholder_json, indent=2))
             print("✓ Created placeholder bandit-report.json")
         except Exception as e:
-            print(f"✗ Failed to create bandit-report.json: {e}")
+            error_type = type(e).__name__
+            print(f"✗ Failed to create bandit-report.json: <ERROR_TYPE>")
             all_ok = False
 
     # Check text report
@@ -302,7 +307,8 @@ This is a placeholder report - no actual security scan was performed.
             txt_path.write_text(placeholder_txt)
             print("✓ Created placeholder bandit-report.txt")
         except Exception as e:
-            print(f"✗ Failed to create bandit-report.txt: {e}")
+            error_type = type(e).__name__
+            print(f"✗ Failed to create bandit-report.txt: <ERROR_TYPE>")
             all_ok = False
 
     return all_ok

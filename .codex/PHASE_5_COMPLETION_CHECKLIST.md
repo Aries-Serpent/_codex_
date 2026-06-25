@@ -102,7 +102,7 @@ Total: 10/10 PASSED ✅
 ### New Files Created
 1. **src/codex/logging/archive_manager.py** (461 lines)
    - ArchiveManager class with complete archiving lifecycle
-   - Methods: archive_session, get_archived_session, identify_archive_candidates, 
+   - Methods: archive_session, get_archived_session, identify_archive_candidates,
              purge_old_archives, update_archive_index
    - Features: LRU caching, Parquet I/O, retention policy
 
@@ -177,4 +177,3 @@ Total: 10/10 PASSED ✅
 **Phase 5 Status**: COMPLETE AND VERIFIED ✅
 **Date**: 2026-06-23T02:56:27Z
 **Implementer**: phase5-archive-implementation agent
-

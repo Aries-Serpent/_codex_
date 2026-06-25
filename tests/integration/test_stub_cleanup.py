@@ -27,11 +27,11 @@ class Base:
     def method1(self):
         # FIXME: bug here
         pass
-        
+
     def method2(self):
         # P0 TODO: critical fix
         pass
-        
+
     def method3(self):
         # P2 TODO: low priority
         pass
@@ -50,11 +50,11 @@ class AbstractBase(ABC):
 class Prot(Protocol):
     def proto_method(self):
         raise NotImplementedError
-        
+
 def standalone():
     # TODO: Add logic here
     pass
-    
+
 @abstractmethod
 def standalone_abstract():
     raise NotImplementedError
@@ -65,7 +65,7 @@ def standalone_abstract():
 class Invalid:
     def missing(self):
         raise NotImplementedError
-        
+
     def another(self):
         raise NotImplementedError()
     """)
@@ -103,6 +103,7 @@ class Invalid:
     assert "Total Stubs" in report_content
     assert "P0" in report_content
     assert "NotImplementedError" in report_content
+
 
 def test_stub_cleanup_default_dirs(monkeypatch, tmp_path):
     # Change cwd so that default dirs "src" and "training" don't analyze the real codebase
@@ -164,7 +165,7 @@ class MyABC(abc.ABC):
 class MyProto(typing.Protocol):
     def proto_impl(self):
         raise NotImplementedError("abstract proto")
-        
+
 @abc.abstractmethod
 def standalone():
     raise NotImplementedError("standalone")
@@ -174,4 +175,3 @@ def standalone():
     stubs = analyzer.analyze()
     # these are abstract, so stubs should be 0
     assert len(stubs) == 0
-

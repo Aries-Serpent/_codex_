@@ -113,12 +113,12 @@ This comprehensive security audit scanned **1,839+ production files** across 439
 | OWASP Risk | Coverage | Status | Evidence |
 |-----------|----------|--------|----------|
 | A01: Broken Access Control | 100% | ✅ PASS | RBAC implemented, all endpoints protected |
-| A02: Cryptographic Failures | 100% | ✅ PASS | Strong crypto, no hardcoded secrets |
+| A02: Cryptographic Failures | 100% | ✅ PASS | Strong crypto, no hardcoded secrets | <!-- pragma: allowlist secret -->
 | A03: Injection | 100% | ✅ PASS | Parameterized queries, safe escaping |
 | A04: Insecure Design | 100% | ✅ PASS | Threat model documented, hardening complete |
 | A05: Security Misconfiguration | 100% | ✅ PASS | Security headers, CORS validated |
 | A06: Vulnerable Components | 100% | ✅ PASS | Dependencies audited, no known CVEs |
-| A07: Authentication Failures | 100% | ✅ PASS | MFA enabled, JWT tokens secure |
+| A07: Authentication Failures | 100% | ✅ PASS | MFA enabled, JWT tokens secure | <!-- pragma: allowlist secret -->
 | A08: Data Integrity Failures | 100% | ✅ PASS | Checksums, audit logs, immutable records |
 | A09: Logging/Monitoring Gaps | 100% | ✅ PASS | Comprehensive logging, alerting enabled |
 | A10: SSRF | 100% | ✅ PASS | URL validation, request isolation |
@@ -278,4 +278,3 @@ This comprehensive security audit confirms that the _codex_ codebase is **SECURE
 **Report Generated:** 2026-06-16T15:35Z  
 **Next Review:** 2026-12-16T15:35Z (Annual)  
 **Escalation Contact:** @mbaetiong (if issues arise)
-

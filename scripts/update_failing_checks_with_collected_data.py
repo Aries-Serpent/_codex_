@@ -110,7 +110,8 @@ def parse_artifact_data(accountability_file: Path) -> dict[str, list[str]]:
             artifacts = re.findall(r'`([^`]+)`', artifact_section.group(0))
             return {'artifacts_found': artifacts}
     except Exception as e:
-        print(f"Warning: Could not parse artifacts: {e}")
+        error_type = type(e).__name__
+        print(f"Warning: Could not parse artifacts: <ERROR_TYPE>")
 
     return {}
 

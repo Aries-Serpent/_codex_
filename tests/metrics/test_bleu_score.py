@@ -15,6 +15,7 @@ def test_bleu_perfect_match() -> None:
     result = metric.compute()
     # Use pytest.approx for floating point comparison
     import pytest
+
     assert result["bleu_score"] == pytest.approx(1.0)
     assert result["brevity_penalty"] == pytest.approx(1.0)
 

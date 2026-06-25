@@ -72,7 +72,7 @@ from .middleware import (
 try:
     from .oauth_manager import OAuthConfig, OAuthManager, OAuthToken
 except ImportError:  # httpx or other optional dep missing
-    OAuthConfig = OAuthManager = OAuthToken = None  # type: ignore[assignment,misc]
+    OAuthConfig = OAuthManager = OAuthToken = None
 from .token_manager import SessionInfo, TokenClaims, TokenManager, TokenType
 from .user_store import PasswordHasher, User, UserStore
 

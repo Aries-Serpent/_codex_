@@ -71,8 +71,9 @@ def parse_command(args):
         print(json.dumps(ast_dict, indent=2))
         return 0
 
-    except Exception as e:
-        print(f"Error parsing file: {e}", file=sys.stderr)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        print(f"Error parsing file: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -101,8 +102,9 @@ def stats_command(args):
         print(json.dumps(stats, indent=2))
         return 0
 
-    except Exception as e:
-        print(f"Error getting statistics: {e}", file=sys.stderr)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        print(f"Error getting statistics: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -147,8 +149,9 @@ def query_command(args):
         print(json.dumps(result, indent=2))
         return 0
 
-    except Exception as e:
-        print(f"Error querying nodes: {e}", file=sys.stderr)
+    except (IOError, OSError) as e:
+        error_type = type(e).__name__
+        print(f"Error querying nodes: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

@@ -10,6 +10,7 @@ class TestGitHubSecretsManager:
         """Test that GitHubSecretsManager can be imported."""
         try:
             from src.agent.secrets import GitHubSecretsManager
+
             assert GitHubSecretsManager is not None
         except ImportError:
             pytest.skip("Module not available")
@@ -18,6 +19,7 @@ class TestGitHubSecretsManager:
         """Test creating GitHubSecretsManager."""
         try:
             from src.agent.secrets import GitHubSecretsManager
+
             manager = GitHubSecretsManager()
             assert manager is not None
         except ImportError:
@@ -27,6 +29,7 @@ class TestGitHubSecretsManager:
         """Test GitHubSecretsManager default values."""
         try:
             from src.agent.secrets import GitHubSecretsManager
+
             manager = GitHubSecretsManager()
             assert manager.owner is None
             assert manager.repo is None
@@ -38,11 +41,8 @@ class TestGitHubSecretsManager:
         """Test GitHubSecretsManager with custom values."""
         try:
             from src.agent.secrets import GitHubSecretsManager
-            manager = GitHubSecretsManager(
-                owner="test-owner",
-                repo="test-repo",
-                token="test-token"
-            )
+
+            manager = GitHubSecretsManager(owner="test-owner", repo="test-repo", token="test-token")
             assert manager.owner == "test-owner"
             assert manager.repo == "test-repo"
             assert manager.token == "test-token"
@@ -53,6 +53,7 @@ class TestGitHubSecretsManager:
         """Test setup_phase10_secrets method."""
         try:
             from src.agent.secrets import GitHubSecretsManager
+
             manager = GitHubSecretsManager()
             result = manager.setup_phase10_secrets()
             assert isinstance(result, dict)
@@ -63,6 +64,7 @@ class TestGitHubSecretsManager:
         """Test setup_phase10_secrets returns empty dict (stub)."""
         try:
             from src.agent.secrets import GitHubSecretsManager
+
             manager = GitHubSecretsManager()
             result = manager.setup_phase10_secrets("arg1", "arg2", key="value")
             assert result == {}
@@ -77,7 +79,8 @@ class TestModuleImports:
         """Test that GitHubSecretsManager is a dataclass."""
         try:
             from src.agent.secrets import GitHubSecretsManager
+
             # Dataclasses have a __dataclass_fields__ attribute
-            assert hasattr(GitHubSecretsManager, '__dataclass_fields__')
+            assert hasattr(GitHubSecretsManager, "__dataclass_fields__")
         except ImportError:
             pytest.skip("Module not available")

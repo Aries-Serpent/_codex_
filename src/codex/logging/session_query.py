@@ -39,7 +39,7 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as exc:  # pragma: no cover - defensive
+except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive
     logging.getLogger(__name__).debug("sqlite auto setup failed: %s", exc)
 
 from .config import DEFAULT_LOG_DB  # noqa: E402
@@ -108,8 +108,9 @@ def detect_schema(conn: sqlite3.Connection) -> tuple[str, dict[str, str]]:
         try:
             safe = _sanitize_table(table)
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
-            logger.warning(f"ValueError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
+            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
             continue
         cur = conn.execute(f"PRAGMA table_info({safe})")
         cols = [row[1] for row in cur.fetchall()]
@@ -166,8 +167,8 @@ def fetch_rows(
             sql = f"SELECT * FROM ({inner_sql}) sub ORDER BY {ts_col} {order_clause}"  # nosec B608
             params.append(last_n)
         else:
-            sql = (  # nosec B608
-                f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"  # nosec B608
+            sql = (
+                f"SELECT {select_list} FROM {table}{where_clause} ORDER BY {ts_col} {order_clause}"  # nosec B608  # nosec B608
             )
         cur = conn.cursor()
         rows = list(cur.execute(sql, params))
@@ -207,8 +208,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         rows, cols = fetch_rows(db, args.session_id, args.last, args.desc)
         print_rows(rows, cols)
         return 0
-    except Exception as exc:  # pragma: no cover - top-level guard
-        print(f"ERROR: {exc}", file=sys.stderr)
+    except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
+        error_type = type(exc).__name__
+        print(f"ERROR: <ERROR_TYPE>", file=sys.stderr)
         return 2
 
 
@@ -216,7 +218,7 @@ if __name__ == "__main__":  # pragma: no cover - CLI entry
     session_ctx: Optional[Any]
     try:
         from .session_hooks import session as session_ctx
-    except Exception:  # pragma: no cover - optional helper
+    except (ImportError, AttributeError):  # pragma: no cover - optional helper
         session_ctx = None
     if session_ctx:
         with session_ctx(sys.argv):

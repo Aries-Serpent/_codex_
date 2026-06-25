@@ -15,6 +15,7 @@ processes; the top-level `import codex.archive` in test_retry.py itself fires
 this conftest.py guarantees the import fires at conftest load time (before any
 test in the shard runs), matching the behaviour of a local full test run.
 """
+
 from __future__ import annotations
 
 import importlib

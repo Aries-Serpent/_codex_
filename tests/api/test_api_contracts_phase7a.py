@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class UserModel(BaseModel):
     """User data model"""
+
     id: int
     name: str
     email: str
@@ -27,6 +28,7 @@ class TestAPIContracts:
 
     def test_contract_validation_0(self):
         """Test contract validation 0"""
+
         class Model0(BaseModel):
             value: int = 0
 
@@ -35,6 +37,7 @@ class TestAPIContracts:
 
     def test_contract_validation_1(self):
         """Test contract validation 1"""
+
         class Model1(BaseModel):
             value: int = 1
 
@@ -43,6 +46,7 @@ class TestAPIContracts:
 
     def test_contract_validation_2(self):
         """Test contract validation 2"""
+
         class Model2(BaseModel):
             value: int = 2
 
@@ -51,6 +55,7 @@ class TestAPIContracts:
 
     def test_contract_validation_3(self):
         """Test contract validation 3"""
+
         class Model3(BaseModel):
             value: int = 3
 
@@ -59,6 +64,7 @@ class TestAPIContracts:
 
     def test_contract_validation_4(self):
         """Test contract validation 4"""
+
         class Model4(BaseModel):
             value: int = 4
 
@@ -67,6 +73,7 @@ class TestAPIContracts:
 
     def test_contract_validation_5(self):
         """Test contract validation 5"""
+
         class Model5(BaseModel):
             value: int = 5
 
@@ -75,6 +82,7 @@ class TestAPIContracts:
 
     def test_contract_validation_6(self):
         """Test contract validation 6"""
+
         class Model6(BaseModel):
             value: int = 6
 
@@ -83,6 +91,7 @@ class TestAPIContracts:
 
     def test_contract_validation_7(self):
         """Test contract validation 7"""
+
         class Model7(BaseModel):
             value: int = 7
 
@@ -91,6 +100,7 @@ class TestAPIContracts:
 
     def test_contract_validation_8(self):
         """Test contract validation 8"""
+
         class Model8(BaseModel):
             value: int = 8
 
@@ -99,6 +109,7 @@ class TestAPIContracts:
 
     def test_contract_validation_9(self):
         """Test contract validation 9"""
+
         class Model9(BaseModel):
             value: int = 9
 
@@ -107,6 +118,7 @@ class TestAPIContracts:
 
     def test_contract_validation_10(self):
         """Test contract validation 10"""
+
         class Model10(BaseModel):
             value: int = 10
 
@@ -115,6 +127,7 @@ class TestAPIContracts:
 
     def test_contract_validation_11(self):
         """Test contract validation 11"""
+
         class Model11(BaseModel):
             value: int = 11
 
@@ -123,6 +136,7 @@ class TestAPIContracts:
 
     def test_contract_validation_12(self):
         """Test contract validation 12"""
+
         class Model12(BaseModel):
             value: int = 12
 
@@ -131,6 +145,7 @@ class TestAPIContracts:
 
     def test_contract_validation_13(self):
         """Test contract validation 13"""
+
         class Model13(BaseModel):
             value: int = 13
 
@@ -139,6 +154,7 @@ class TestAPIContracts:
 
     def test_contract_validation_14(self):
         """Test contract validation 14"""
+
         class Model14(BaseModel):
             value: int = 14
 
@@ -147,6 +163,7 @@ class TestAPIContracts:
 
     def test_contract_validation_15(self):
         """Test contract validation 15"""
+
         class Model15(BaseModel):
             value: int = 15
 
@@ -155,6 +172,7 @@ class TestAPIContracts:
 
     def test_contract_validation_16(self):
         """Test contract validation 16"""
+
         class Model16(BaseModel):
             value: int = 16
 
@@ -163,6 +181,7 @@ class TestAPIContracts:
 
     def test_contract_validation_17(self):
         """Test contract validation 17"""
+
         class Model17(BaseModel):
             value: int = 17
 
@@ -171,6 +190,7 @@ class TestAPIContracts:
 
     def test_contract_validation_18(self):
         """Test contract validation 18"""
+
         class Model18(BaseModel):
             value: int = 18
 
@@ -179,6 +199,7 @@ class TestAPIContracts:
 
     def test_contract_validation_19(self):
         """Test contract validation 19"""
+
         class Model19(BaseModel):
             value: int = 19
 
@@ -187,6 +208,7 @@ class TestAPIContracts:
 
     def test_contract_validation_20(self):
         """Test contract validation 20"""
+
         class Model20(BaseModel):
             value: int = 20
 
@@ -195,6 +217,7 @@ class TestAPIContracts:
 
     def test_contract_validation_21(self):
         """Test contract validation 21"""
+
         class Model21(BaseModel):
             value: int = 21
 
@@ -203,6 +226,7 @@ class TestAPIContracts:
 
     def test_contract_validation_22(self):
         """Test contract validation 22"""
+
         class Model22(BaseModel):
             value: int = 22
 
@@ -211,6 +235,7 @@ class TestAPIContracts:
 
     def test_contract_validation_23(self):
         """Test contract validation 23"""
+
         class Model23(BaseModel):
             value: int = 23
 
@@ -219,6 +244,7 @@ class TestAPIContracts:
 
     def test_contract_validation_24(self):
         """Test contract validation 24"""
+
         class Model24(BaseModel):
             value: int = 24
 
@@ -227,6 +253,7 @@ class TestAPIContracts:
 
     def test_contract_validation_25(self):
         """Test contract validation 25"""
+
         class Model25(BaseModel):
             value: int = 25
 
@@ -235,6 +262,7 @@ class TestAPIContracts:
 
     def test_contract_validation_26(self):
         """Test contract validation 26"""
+
         class Model26(BaseModel):
             value: int = 26
 
@@ -243,6 +271,7 @@ class TestAPIContracts:
 
     def test_contract_validation_27(self):
         """Test contract validation 27"""
+
         class Model27(BaseModel):
             value: int = 27
 
@@ -251,6 +280,7 @@ class TestAPIContracts:
 
     def test_contract_validation_28(self):
         """Test contract validation 28"""
+
         class Model28(BaseModel):
             value: int = 28
 
@@ -259,6 +289,7 @@ class TestAPIContracts:
 
     def test_contract_validation_29(self):
         """Test contract validation 29"""
+
         class Model29(BaseModel):
             value: int = 29
 
@@ -267,6 +298,7 @@ class TestAPIContracts:
 
     def test_contract_validation_30(self):
         """Test contract validation 30"""
+
         class Model30(BaseModel):
             value: int = 30
 
@@ -275,6 +307,7 @@ class TestAPIContracts:
 
     def test_contract_validation_31(self):
         """Test contract validation 31"""
+
         class Model31(BaseModel):
             value: int = 31
 
@@ -283,6 +316,7 @@ class TestAPIContracts:
 
     def test_contract_validation_32(self):
         """Test contract validation 32"""
+
         class Model32(BaseModel):
             value: int = 32
 
@@ -291,6 +325,7 @@ class TestAPIContracts:
 
     def test_contract_validation_33(self):
         """Test contract validation 33"""
+
         class Model33(BaseModel):
             value: int = 33
 
@@ -299,6 +334,7 @@ class TestAPIContracts:
 
     def test_contract_validation_34(self):
         """Test contract validation 34"""
+
         class Model34(BaseModel):
             value: int = 34
 
@@ -307,6 +343,7 @@ class TestAPIContracts:
 
     def test_contract_validation_35(self):
         """Test contract validation 35"""
+
         class Model35(BaseModel):
             value: int = 35
 
@@ -315,6 +352,7 @@ class TestAPIContracts:
 
     def test_contract_validation_36(self):
         """Test contract validation 36"""
+
         class Model36(BaseModel):
             value: int = 36
 
@@ -323,6 +361,7 @@ class TestAPIContracts:
 
     def test_contract_validation_37(self):
         """Test contract validation 37"""
+
         class Model37(BaseModel):
             value: int = 37
 
@@ -331,6 +370,7 @@ class TestAPIContracts:
 
     def test_contract_validation_38(self):
         """Test contract validation 38"""
+
         class Model38(BaseModel):
             value: int = 38
 
@@ -339,6 +379,7 @@ class TestAPIContracts:
 
     def test_contract_validation_39(self):
         """Test contract validation 39"""
+
         class Model39(BaseModel):
             value: int = 39
 
@@ -347,6 +388,7 @@ class TestAPIContracts:
 
     def test_contract_validation_40(self):
         """Test contract validation 40"""
+
         class Model40(BaseModel):
             value: int = 40
 
@@ -355,6 +397,7 @@ class TestAPIContracts:
 
     def test_contract_validation_41(self):
         """Test contract validation 41"""
+
         class Model41(BaseModel):
             value: int = 41
 
@@ -363,6 +406,7 @@ class TestAPIContracts:
 
     def test_contract_validation_42(self):
         """Test contract validation 42"""
+
         class Model42(BaseModel):
             value: int = 42
 
@@ -371,6 +415,7 @@ class TestAPIContracts:
 
     def test_contract_validation_43(self):
         """Test contract validation 43"""
+
         class Model43(BaseModel):
             value: int = 43
 
@@ -379,6 +424,7 @@ class TestAPIContracts:
 
     def test_contract_validation_44(self):
         """Test contract validation 44"""
+
         class Model44(BaseModel):
             value: int = 44
 
@@ -387,6 +433,7 @@ class TestAPIContracts:
 
     def test_contract_validation_45(self):
         """Test contract validation 45"""
+
         class Model45(BaseModel):
             value: int = 45
 
@@ -395,6 +442,7 @@ class TestAPIContracts:
 
     def test_contract_validation_46(self):
         """Test contract validation 46"""
+
         class Model46(BaseModel):
             value: int = 46
 
@@ -403,6 +451,7 @@ class TestAPIContracts:
 
     def test_contract_validation_47(self):
         """Test contract validation 47"""
+
         class Model47(BaseModel):
             value: int = 47
 

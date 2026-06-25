@@ -22,6 +22,7 @@ from codex_ml.utils.stub_cleanup import (
 # Helpers
 # ---------------------------------------------------------------------------
 
+
 def _write(tmp_path: Path, name: str, source: str) -> Path:
     """Write *source* into *tmp_path/name* and return the path."""
     p = tmp_path / name
@@ -191,10 +192,14 @@ class TestAnalyzeFileNotImplementedError:
     """Tests for NotImplementedError detection in _analyze_file."""
 
     def test_plain_raise_not_implemented(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             def do_thing():
                 raise NotImplementedError("not done yet")
-        """)
+        """,
+        )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         assert len(analyzer.stubs) == 1
@@ -204,10 +209,14 @@ class TestAnalyzeFileNotImplementedError:
         assert "not done yet" in stub.message
 
     def test_raise_without_message(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             def do_thing():
                 raise NotImplementedError
-        """)
+        """,
+        )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         # line does not start with "raise NotImplementedError(" so no parentheses → message fallback
@@ -216,26 +225,34 @@ class TestAnalyzeFileNotImplementedError:
         assert analyzer.stubs[0].stub_type == "NotImplementedError"
 
     def test_abstract_method_is_skipped(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             from abc import abstractmethod
 
             class Base:
                 @abstractmethod
                 def do_thing(self):
                     raise NotImplementedError
-        """)
+        """,
+        )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         assert len(analyzer.stubs) == 0
 
     def test_abc_base_class_skipped(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             from abc import ABC
 
             class Base(ABC):
                 def do_thing(self):
                     raise NotImplementedError
-        """)
+        """,
+        )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         assert len(analyzer.stubs) == 0
@@ -312,11 +329,15 @@ class TestAnalyzeFileTodoFixme:
         assert analyzer.stubs[0].line_number == 3
 
     def test_multiple_stubs_same_file(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             # TODO: first
             # FIXME: second
             raise NotImplementedError("third")
-        """)
+        """,
+        )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         types = {s.stub_type for s in analyzer.stubs}
@@ -466,33 +487,45 @@ class TestIsAbstractMethod:
         self.analyzer = StubAnalyzer(source_dirs=[])
 
     def test_abstractmethod_decorator(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             from abc import abstractmethod
 
             class Base:
                 @abstractmethod
                 def run(self):
                     raise NotImplementedError
-        """)
+        """,
+        )
         # line 6 is "raise NotImplementedError"
         assert self.analyzer._is_abstract_method(f, 6) is True
 
     def test_abc_base_class(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             from abc import ABC
 
             class Base(ABC):
                 def run(self):
                     raise NotImplementedError
-        """)
+        """,
+        )
         assert self.analyzer._is_abstract_method(f, 5) is True
 
     def test_regular_method_not_abstract(self, tmp_path: Path) -> None:
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             class Concrete:
                 def run(self):
                     raise NotImplementedError
-        """)
+        """,
+        )
         assert self.analyzer._is_abstract_method(f, 3) is False
 
     def test_nonexistent_file_returns_false(self, tmp_path: Path) -> None:
@@ -505,36 +538,48 @@ class TestIsAbstractMethod:
 
     def test_abstractmethod_attribute_form(self, tmp_path: Path) -> None:
         """abc.abstractmethod decorator (attribute form) should be recognised."""
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             import abc
 
             class Base:
                 @abc.abstractmethod
                 def run(self):
                     raise NotImplementedError
-        """)
+        """,
+        )
         assert self.analyzer._is_abstract_method(f, 6) is True
 
     def test_abc_attribute_base(self, tmp_path: Path) -> None:
         """abc.ABC base class (attribute form) should be recognised."""
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             import abc
 
             class Base(abc.ABC):
                 def run(self):
                     raise NotImplementedError
-        """)
+        """,
+        )
         assert self.analyzer._is_abstract_method(f, 5) is True
 
     def test_standalone_function_with_abstractmethod(self, tmp_path: Path) -> None:
         """Standalone function decorated with @abstractmethod is recognised."""
-        f = _write(tmp_path, "mod.py", """\
+        f = _write(
+            tmp_path,
+            "mod.py",
+            """\
             from abc import abstractmethod
 
             @abstractmethod
             def standalone():
                 raise NotImplementedError
-        """)
+        """,
+        )
         assert self.analyzer._is_abstract_method(f, 5) is True
 
 
@@ -607,9 +652,9 @@ class TestPrioritizeStubs:
             StubInfo(fp_a, 3, "TODO", "a3", "P1"),
         ]
         result = prioritize_stubs(stubs)
-        assert result[0].line_number == 3    # a.py:3
-        assert result[1].line_number == 10   # a.py:10
-        assert result[2].line_number == 5    # b.py:5
+        assert result[0].line_number == 3  # a.py:3
+        assert result[1].line_number == 10  # a.py:10
+        assert result[2].line_number == 5  # b.py:5
 
     def test_unknown_priority_sorted_last(self, tmp_path: Path) -> None:
         fp = tmp_path / "x.py"

@@ -325,10 +325,10 @@ class TestCustomComponent:
         """Verify something works correctly."""
         # Arrange
         expected = "value"
-        
+
         # Act
         result = function_to_test()
-        
+
         # Assert
         assert result == expected
 ```
@@ -350,11 +350,11 @@ def test_database_connectivity(self):
         # Attempt database connection
         conn = get_database_connection()
         assert conn is not None
-        
+
         # Verify query works
         result = conn.execute("SELECT 1")
         assert result == 1
-        
+
         conn.close()
     except Exception as e:
         pytest.fail(f"Database test failed: {e}")

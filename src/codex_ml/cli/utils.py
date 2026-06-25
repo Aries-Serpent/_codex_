@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from codex_ml.utils import reproducibility as _repro  # type: ignore[attr-defined]
+from codex_ml.utils import reproducibility as _repro
 
 
 @dataclass

@@ -48,6 +48,7 @@ class TestEnvVarConfig:
 
         def validator(v):
             return v in ("0", "1")
+
         config = EnvVarConfig(
             name="TEST_VAR",
             validator=validator,
@@ -85,6 +86,7 @@ class TestEnvironmentManager:
     def manager(self, clean_env):
         """Create EnvironmentManager with lazy validation."""
         from codex.config.env_vars import EnvironmentManager
+
         return EnvironmentManager(lazy_validation=True)
 
     def test_instantiation_with_lazy_validation(self, clean_env):
@@ -237,9 +239,11 @@ class TestGlobalEnvManager:
     def test_global_instance_exists(self):
         """Test that global env_manager exists."""
         from codex.config.env_vars import env_manager
+
         assert env_manager is not None
 
     def test_global_instance_is_environment_manager(self):
         """Test that global instance is EnvironmentManager."""
         from codex.config.env_vars import EnvironmentManager, env_manager
+
         assert isinstance(env_manager, EnvironmentManager)

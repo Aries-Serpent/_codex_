@@ -79,11 +79,7 @@ class TestScaffoldTemplate:
         with zipfile.ZipFile(zip_path, "w") as zf:
             zf.writestr("manifest.json", json.dumps({"name": "App"}))
 
-        package = {
-            "archive_path": zip_path,
-            "manifest": {"name": "App"},
-            "files": {}
-        }
+        package = {"archive_path": zip_path, "manifest": {"name": "App"}, "files": {}}
         out_dir = tmp_path / "scaffold" / "nested"
         scaffold_template(package, out_dir)
 
@@ -93,10 +89,7 @@ class TestScaffoldTemplate:
         """Test that scaffold creates manifest.json."""
         from codex_crm.zaf_legacy.reader import scaffold_template
 
-        package = {
-            "manifest": {"name": "TestApp"},
-            "files": {}
-        }
+        package = {"manifest": {"name": "TestApp"}, "files": {}}
         out_dir = tmp_path / "scaffold"
         scaffold_template(package, out_dir)
 
@@ -149,10 +142,7 @@ class TestNormaliseManifest:
         """Test that existing API_BASE is preserved."""
         from codex_crm.zaf_legacy.reader import _normalise_manifest
 
-        manifest = {
-            "name": "App",
-            "parameters": [{"name": "API_BASE", "default": "custom"}]
-        }
+        manifest = {"name": "App", "parameters": [{"name": "API_BASE", "default": "custom"}]}
         result = _normalise_manifest(manifest)
 
         api_bases = [p for p in result["parameters"] if p["name"] == "API_BASE"]

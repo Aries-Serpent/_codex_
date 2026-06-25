@@ -348,7 +348,8 @@ class AutonomousAgent:
                     try:
                         return yaml.safe_load(f)
                     except yaml.YAMLError as e:
-                        logger.error(f"Failed to parse YAML config: {e}")
+                        error_type = type(e).__name__
+                        logger.error(f"Failed to parse YAML config: <ERROR_TYPE>")
                         return self._default_config()
                 else:
                     return json.load(f)
@@ -583,7 +584,8 @@ def main():
         try:
             agent.run_cycle()
         except Exception as e:
-            logger.error(f"Agent cycle failed: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.error(f"Agent cycle failed: <ERROR_TYPE>", exc_info=True)
 
             # Create minimal state file to ensure artifact exists
             # Wrap in try-except to ensure original exception is always re-raised

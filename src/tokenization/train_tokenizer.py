@@ -37,12 +37,13 @@ try:  # pragma: no cover - optional dependency
     try:
         import hydra
     except ImportError as e:
-        logger.debug(f"hydra not available: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"hydra not available: <ERROR_TYPE>")
         import config_legacy as hydra
     from omegaconf import MISSING
-except Exception:  # pragma: no cover - optional dependency
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     hydra = None
-    MISSING = object()  # type: ignore[assignment]
+    MISSING = object()
 
 
 if hydra is not None:
@@ -55,11 +56,11 @@ else:
 
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
-except Exception as exc:  # pragma: no cover
-    spm = None  # type: ignore[assignment]
+except (ImportError, AttributeError) as exc:  # pragma: no cover
+    spm = None
     _SPM_ERROR = exc
 else:  # pragma: no cover - import succeeded
-    _SPM_ERROR = None  # type: ignore[assignment]
+    _SPM_ERROR = None
 
 from tokenizers import (  # noqa: E402
     SentencePieceUnigramTokenizer,
@@ -76,7 +77,7 @@ DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks when streaming
 
 @dataclass
 class TrainTokenizerConfig:
-    corpus_glob: Sequence[str] | str = MISSING  # type: ignore[assignment]
+    corpus_glob: Sequence[str] | str = MISSING
     model_type: str = "unigram"  # "bpe" or "unigram"
     vocab_size: int = 8000
     character_coverage: float = 0.9995
@@ -213,7 +214,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         try:
             spm.SentencePieceTrainer.Train(**train_kwargs)
         except OSError as exc:
-            logger.debug(f"OSError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"OSError: <ERROR_TYPE>")
             if "seed_sentencepiece" not in str(exc):
                 raise
             train_kwargs.pop("seed_sentencepiece", None)
@@ -226,13 +228,13 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             # pragma: no cover - optional dependency handling
             try:
                 _sp_model_pb2 = spm.sentencepiece_model_pb2
-            except Exception:  # pragma: no cover - dependency still missing
+            except (IOError, OSError):  # pragma: no cover - dependency still missing
                 logger.warning("Exception occurred", exc_info=True)
             else:
                 sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)
         try:
             tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             processor = spm.SentencePieceProcessor()
             processor.Load(str(model_path))

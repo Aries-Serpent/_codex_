@@ -32,7 +32,7 @@
 ├── PHASE_7D_DOCKER_INVENTORY_AUDIT.md
 │   └─ Complete catalog: 12 Dockerfiles, 4 docker-compose, 1 .dockerignore
 │      Build matrix: 8 variants, dependency graph, validation matrix
-│      
+│  
 ├── PHASE_7D_DOCKER_BUILD_VALIDATION.md
 │   └─ Validation framework: 72 checks (12 variants × 6 checks each)
 │      Parse validation, layer analysis, dependency audit
@@ -40,7 +40,7 @@
 │
 ├── PHASE_7D_DOCKER_SECURITY_AUDIT.md
 │   └─ Security controls: 6 baseline checks (100% pass rate)
-│      Base image digest pinning, non-root users, secrets scan
+│      Base image digest pinning, non-root users, secrets scan  # pragma: allowlist secret
 │      CIS Docker Benchmark, OWASP Container Top 10 compliance
 │
 ├── PHASE_7D_DOCKER_OPTIMIZATION.md

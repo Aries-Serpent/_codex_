@@ -12,12 +12,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 def _parse_owner_repo(url: str) -> tuple[str, str]:
     quoted_url = shlex.quote(url)
-    script = textwrap.dedent(
-        f"""
+    script = textwrap.dedent(f"""
         source scripts/runner/common.sh
         parse_owner_repo {quoted_url}
-        """
-    ).strip()
+        """).strip()
     completed = subprocess.run(
         ["bash", "-c", script],
         check=True,

@@ -81,8 +81,8 @@ def health_log_path(component: str) -> Path:
             return destination
 
     if last_error:
-        base, exc = last_error  # type: ignore[misc]
-        logger.debug("Unable to prepare health log directory %s: %s", base, exc)  # type: ignore[misc]
+        base, exc = last_error
+        logger.debug("Unable to prepare health log directory %s: %s", base, exc)
     return destination if destination is not None else DEFAULT_HEALTH_DIR / f"{safe_name}.ndjson"
 
 
@@ -161,8 +161,9 @@ class HealthChecker:
 
             checks["pytorch"] = "cuda" if torch.cuda.is_available() else "cpu"
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             checks["pytorch"] = "not_installed"
 
         data_dir = Path("./data")

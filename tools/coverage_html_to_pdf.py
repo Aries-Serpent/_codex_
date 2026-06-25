@@ -175,7 +175,8 @@ def create_combined_html(html_files: list[Path], output_path: Path) -> None:
             if i < len(html_files) - 1:
                 combined_content.append("<div style='page-break-after: always;'></div>")
         except Exception as e:
-            print(f"Warning: Failed to read {html_file}: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            print(f"Warning: Failed to read {html_file}: <ERROR_TYPE>", file=sys.stderr)
             continue
 
     combined_content.append("</body>")
@@ -233,7 +234,8 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
     except ImportError:
         _ = None  # suppressed: no action needed
     except Exception as e:
-        print(f"pdfkit failed: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"pdfkit failed: <ERROR_TYPE>", file=sys.stderr)
 
     # Last resort: Create a simple text-based PDF
     try:

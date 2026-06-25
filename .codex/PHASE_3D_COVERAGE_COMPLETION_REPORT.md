@@ -118,7 +118,7 @@ Executed Phase 3D of the coverage campaign, implementing comprehensive testing a
 
 **Status: ✅ COMPLETE**
 
-**Files:** 
+**Files:**
 - `tests/phase3d/test_resilience_timeout.py` (26 tests)
 - `tests/phase3d/test_resilience_resources.py` (31 tests)
 

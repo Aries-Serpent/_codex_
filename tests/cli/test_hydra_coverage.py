@@ -67,6 +67,7 @@ class TestModuleImport:
         """Verify hydra_main module can be imported."""
         try:
             from codex_ml.cli import hydra_main
+
             assert hydra_main is not None
         except ImportError as e:
             pytest.skip(f"hydra_main module not available: {e}")
@@ -75,6 +76,7 @@ class TestModuleImport:
         """Verify hydra_entry module can be imported."""
         try:
             from codex_ml.cli import hydra_entry
+
             assert hydra_entry is not None
         except ImportError as e:
             pytest.skip(f"hydra_entry module not available: {e}")
@@ -100,10 +102,7 @@ class TestHydraCommandHelp:
         output = result.stdout + result.stderr
         # Should show help or Hydra info
         if result.returncode == 0:
-            assert any(
-                term in output.lower()
-                for term in ["usage", "config", "hydra", "options"]
-            )
+            assert any(term in output.lower() for term in ["usage", "config", "hydra", "options"])
 
 
 # =============================================================================
@@ -189,7 +188,9 @@ class TestHydraIntegration:
         """Test Hydra with training configuration."""
         result = subprocess.run(
             [
-                sys.executable, "-m", "codex_ml.cli.hydra_main",
+                sys.executable,
+                "-m",
+                "codex_ml.cli.hydra_main",
                 f"--config-path={temp_hydra_config}",
                 "--help",
             ],

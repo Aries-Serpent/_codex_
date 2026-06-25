@@ -10,6 +10,7 @@ without any special hardware or credentials.
 
 Resolution: DEPLOYMENT_READINESS_S92.md B-03 (partial)
 """
+
 from __future__ import annotations
 
 import importlib
@@ -191,9 +192,7 @@ class TestEnvPreflightValidator:
         mod = _ilu.module_from_spec(spec)
         sys.modules.setdefault("rvs_env_preflight", mod)  # needed for @dataclass
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
-        assert hasattr(mod, "PACKAGE_GROUPS"), (
-            "rvs_env_preflight must export PACKAGE_GROUPS"
-        )
+        assert hasattr(mod, "PACKAGE_GROUPS"), "rvs_env_preflight must export PACKAGE_GROUPS"
 
     def test_preflight_required_packages_non_empty(self):
         """PACKAGE_GROUPS must list at least the core group."""
@@ -210,9 +209,7 @@ class TestEnvPreflightValidator:
             spec.loader.exec_module(mod)  # type: ignore[union-attr]
         groups = mod.PACKAGE_GROUPS
         total = sum(len(v) for v in groups.values())
-        assert total >= 5, (
-            f"PACKAGE_GROUPS too short ({total} packages); expected ≥5 entries"
-        )
+        assert total >= 5, f"PACKAGE_GROUPS too short ({total} packages); expected ≥5 entries"
 
 
 # ---------------------------------------------------------------------------
@@ -286,7 +283,6 @@ def test_s94_cpu_readiness_checkpoint():
         except ImportError as exc:
             failed.append(f"{mod}: {exc}")
 
-    assert not failed, (
-        "S94 CPU readiness gate FAILED — critical modules not importable:\n"
-        + "\n".join(failed)
-    )
+    assert (
+        not failed
+    ), "S94 CPU readiness gate FAILED — critical modules not importable:\n" + "\n".join(failed)

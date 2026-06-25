@@ -32,12 +32,12 @@ Approval Count:
   - Minimum: 1 approval from code owners
   - Code owners: CODEOWNERS file (GitHub)
   - Exception: Owner (@mbaetiong) approval counts as 2
-  
+
 Comment Resolution:
   - All reviewer comments must be addressed
   - Resolve = dismiss comment + respond to feedback (or approve dismissal)
   - Comments can be dismissed if: deprecated, superseded, or invalid
-  
+
 Code Quality Criteria:
   - No obvious bugs or logic errors
   - Follows project style guide (linting passes)
@@ -69,7 +69,7 @@ What counts as valid approval:
   ✅ GitHub "Approve" review from code owner
   ✅ "Looks good to me" comment with approval emoji
   ✅ Code walk-through with documented sign-off
-  
+
 What does NOT count:
   ❌ Just opening the PR / commenting
   ❌ Approving without reviewing
@@ -91,16 +91,16 @@ CodeQL Analysis:
   - High/Critical issues: 0 (BLOCK)
   - Medium issues: 0 (WARN, reviewer discretion)
   - Low issues: 0 (WARN, auto-approve)
-  
+
 Secret Scanning:
   - Secrets detected: 0 (BLOCK)
   - False positives: Marked as such, auto-approved
-  
+
 Dependency Audit:
   - Critical vulnerabilities: 0 (BLOCK)
   - High vulnerabilities: 0 (BLOCK)
   - Medium/Low vulnerabilities: Reviewed by owner
-  
+
 License Compliance:
   - All dependencies use approved licenses: ✓
   - GPL/AGPL: Requires special approval
@@ -110,12 +110,12 @@ License Compliance:
 **Enforcement:**
 
 ```yaml
-Tools: 
+Tools:
   - CodeQL (GitHub Advanced Security)
   - Secret scanning (GitHub)
   - Dependabot audit (GitHub)
   - Semgrep + Bandit (custom workflows)
-  
+
 Status: ❌ HARD BLOCK (PR cannot merge)
 Timeline: <15 minutes for scan completion
 Override: Owner approval required via workflow dispatch
@@ -129,7 +129,7 @@ If CodeQL reports HIGH/CRITICAL:
   2. Author must fix or owner must dismiss
   3. Dismissal requires documented reasoning
   4. Remediation evidence: commit message + code review comment
-  
+
 If Secret detected:
   1. Immediate PR block
   2. Secret must be removed and regenerated (if real)
@@ -152,12 +152,12 @@ Coverage Threshold:
   - Minimum: CODEX_COVERAGE_THRESHOLD (default 80%)
   - New code must maintain or improve coverage
   - No coverage regression on existing code
-  
+
 Test Pass Rate:
   - All tests must pass: 0 failures
   - No skipped critical tests
   - All edge cases covered
-  
+
 Test Categories (all must pass):
   - Unit tests: 100% pass rate
   - Integration tests: 100% pass rate
@@ -185,17 +185,17 @@ Waiver Conditions (rare, requires owner approval):
 ```
 Coverage Summary:
   Overall: 82.5% (target: 80%) ✅
-  
+
   File Breakdown:
     src/auth.py:      95.2% ✅
     src/api.py:       78.9% ⚠️ (below threshold)
     src/utils.py:     88.3% ✅
-  
+
   Change Summary:
     Lines added: 245
     Lines tested: 203 (82.9%)
     Lines untested: 42 (17.1%)
-  
+
   Regression Check:
     Main branch coverage: 82.1%
     This PR coverage: 82.5%
@@ -218,18 +218,18 @@ User-Facing Features:
   - User guide updated (if applicable)
   - Examples added to documentation
   - Links updated in docs
-  
+
 API Changes:
   - CHANGELOG.md updated with change summary
   - API documentation updated
   - Breaking changes clearly marked
   - Migration guide provided (if breaking)
-  
+
 Configuration Changes:
   - Configuration documentation updated
   - Environment variable documentation updated
   - Examples updated (if applicable)
-  
+
 New Modules:
   - Module docstring added
   - README created in module directory
@@ -266,17 +266,17 @@ Deferral Language Check:
   - No blocked phrases (see POLICY_COMPLIANCE_CHECKLIST.md)
   - Proper escalation language only
   - All issues addressed or properly documented
-  
+
 Merge Conflict Check:
   - PR mergeable without manual conflict resolution
   - Base branch up-to-date
   - No unresolved conflicts in file tree
-  
+
 Integration Branch Validation:
   - PR targets correct branch (0D_base_ or main)
   - Not targeting wrong branch (old feature branches)
   - Follows integration branch model
-  
+
 Pre-Existing Issue Documentation:
   - If not fixing pre-existing issue: documented as known issue
   - Evidence in commit messages
@@ -290,7 +290,7 @@ Tools:
   - deferral-language-gate.yml (CI workflow)
   - cognitive-preflight workflow (REQ-11)
   - policy-compliance-audit.py (script)
-  
+
 Status: ❌ HARD BLOCK (PR cannot merge)
 Timeline: <2 minutes for check, 1-24 hours for remediation
 Remediation: Specific fix requirements posted as PR comment
@@ -311,7 +311,7 @@ Required Action:
   2. Replace "This is pre-existing" with approved alternative
   3. Commit any code changes addressing the issue
   4. Push to trigger re-check
-  
+
 Approved Alternatives:
   ✅ "This issue exists in the codebase and is documented in #XYZ"
   ✅ "Escalated to @person in separate issue #XYZ"
@@ -348,7 +348,7 @@ Scenario 1: ALL GATES GREEN
   - Test coverage: ✅ 82% (>80%)
   - Docs: ✅ Updated (or N/A)
   - Policy: ✅ Compliant
-  
+
   RESULT: ✅ APPROVED FOR MERGE
   Action: Auto-post approval comment
   Timeline: Immediate
@@ -360,7 +360,7 @@ Scenario 2: SECURITY GATE RED
   - Test coverage: ✅ 82%
   - Docs: ✅ Updated
   - Policy: ✅ Compliant
-  
+
   RESULT: ❌ BLOCKED FOR MERGE
   Action: Post remediation steps (fix SQL injection)
   Timeline: Author must fix, then re-check
@@ -372,7 +372,7 @@ Scenario 3: TEST COVERAGE RED
   - Test coverage: ❌ 72% (<80%)
   - Docs: ✅ Updated
   - Policy: ✅ Compliant
-  
+
   RESULT: ❌ BLOCKED FOR MERGE
   Action: Post coverage report with specific gaps
   Timeline: Author must add tests to reach 80%
@@ -384,7 +384,7 @@ Scenario 4: CODE REVIEW PENDING
   - Test coverage: ✅ 85%
   - Docs: ✅ Updated
   - Policy: ✅ Compliant
-  
+
   RESULT: ⏳ WAITING FOR CODE REVIEW
   Action: Post request for reviewer
   Timeline: 24-48 hours expected
@@ -396,7 +396,7 @@ Scenario 5: POLICY VIOLATION
   - Test coverage: ✅ 85%
   - Docs: ✅ Updated
   - Policy: ❌ Deferral language found
-  
+
   RESULT: ❌ BLOCKED FOR MERGE
   Action: Post policy violation details + fix instructions
   Timeline: Author fixes deferral language in PR description
@@ -408,7 +408,7 @@ Scenario 6: MULTIPLE GATES RED
   - Test coverage: ❌ 75% (<80%)
   - Docs: ⚠️ Update recommended
   - Policy: ✅ Compliant
-  
+
   RESULT: ❌ BLOCKED FOR MERGE (critical issues)
            ⚠️ WARNINGS (non-blocking)
   Action: Post summary of all failures with priorities
@@ -494,7 +494,7 @@ Approval Chain:
   2. Security gate: Pass (0 HIGH/CRITICAL)
   3. Test coverage: >80%
   4. Policy: Compliant
-  
+
 Required Approvers: 1 code owner (from CODEOWNERS)
 SLA: 48 hours code review, <2 min gates
 ```
@@ -516,13 +516,13 @@ Approval Chain:
   3. Test coverage: >70% (infrastructure may have fewer tests)
   4. Policy: Compliant
   5. Owner approval: @mbaetiong (for major changes)
-  
+
 Special Handling:
   - Breaking changes in pyproject.toml: Owner + 1 tech lead
   - New GitHub Actions: Owner approval mandatory
   - Secret rotation: Owner approval mandatory
   - Infra changes: Tech lead + owner approval
-  
+
 Required Approvers: Tech lead minimum, owner for major
 SLA: 48 hours, escalate to owner if tech lead unavailable
 ```
@@ -544,7 +544,7 @@ Approval Chain:
   4. Threat modeling: Reviewed (if applicable)
   5. Owner approval: @mbaetiong (mandatory)
   6. Policy: Compliant
-  
+
 Required Approvers: Security lead + owner (@mbaetiong)
 SLA: 24 hours (expedited), escalate immediately if delayed
 ```
@@ -563,12 +563,12 @@ Approval Chain:
   1. Content review: Tech lead or documentation team
   2. Policy: Compliant (links working, etc.)
   3. Link validation: Automated check
-  
+
 Special Handling:
   - User-facing feature descriptions: Product lead review
   - API changes: API maintainer approval
   - Breaking changes: Owner notification
-  
+
 Required Approvers: 1 tech lead (or doc team)
 SLA: 24 hours, relaxed timeline OK
 ```
@@ -592,7 +592,7 @@ SLA: 24 hours, relaxed timeline OK
   Documentation:      ✅ Updated
   Policy Compliance:  ✅ Deferral language check passed
   Merge Conflicts:    ✅ None
-  
+
 STATUS: ✅ APPROVED FOR MERGE
 Approved by: @reviewer1 (@code-owner)
 Ready to merge after: 2026-02-22 15:30 UTC
@@ -614,14 +614,14 @@ Actions available:
 ❌ Code Review
   - 1 unresolved comment from @reviewer1
   - Action: Resolve comment or approve dismissal
-  
+
 ❌ Test Coverage
   - Coverage: 72% (target: 80%)
   - Gap: 8% (245 lines, 42 untested)
   - Files below threshold:
     • src/api.py: 78.9% (need +1.1%)
   - Action: Add tests for untested lines
-  
+
 ⚠️ Documentation
   - API documentation not updated
   - Note: Not blocking merge, but recommended
@@ -683,4 +683,3 @@ Final Approval:
 ```
 
 ✅ **PR APPROVAL WORKFLOW: COMPLETE & OPERATIONAL**
-

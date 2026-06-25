@@ -223,16 +223,16 @@ docs/
 - `EmbeddingPipeline` - Text embedding generation
   - Methods: `embed_texts()`, `embed_documents()`
   - Parameters: model selection, batch size, normalization
-  
+
 - `ChunkingPipeline` - Document chunking
   - Methods: `chunk_text()`, `chunk_documents()`
   - Parameters: chunk size, overlap, split method
-  
+
 - `RetrieverPipeline` - Semantic search & retrieval
   - Methods: `retrieve()`, `retrieve_batch()`, `build_index()`
   - Index types: Flat, IVF, HNSW
   - Parameters: k, similarity threshold
-  
+
 - `QuantumRetrieverPipeline` - Advanced probabilistic retrieval
   - Quantum factor tuning
   - Score scaling

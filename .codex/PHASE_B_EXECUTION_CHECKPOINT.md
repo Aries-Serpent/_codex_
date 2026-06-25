@@ -192,4 +192,3 @@ All Phase B artifacts stored in `.codex/campaign-artifacts/` (repository path, N
 **Next Report:** Daily consolidated report (automated generation)
 
 *Phase B execution is proceeding nominally. 6 of 8 tracks are operationally active or queued. Track 3 encountered a temporary auth error but will be re-invoked when capacity is available. All artifact paths comply with repository policy (no temporary /tmp/ storage).*
-

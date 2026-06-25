@@ -257,4 +257,3 @@ Expected Timeline (from now):
 **Completion ETA:** 10-12 hours from campaign start  
 **Gate 1 ETA:** +5-7 hours (all 8 tracks operational)  
 **Next Report:** When Track 7 or 3 completes (automatic)
-

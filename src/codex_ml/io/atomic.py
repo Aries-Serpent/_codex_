@@ -79,16 +79,18 @@ def atomic_write_text(path: Path | str, data: str, encoding: str = "utf-8") -> N
         try:
             _fsync_dir(path.parent)
         except OSError as e:
-            logger.debug(f"OSError: {e}")
-            logger.warning(f"OSError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"OSError: <ERROR_TYPE>")
+            logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
             # Best-effort: some filesystems or platforms may not support directory fsync.
     finally:
         if tmp_path.exists():
             try:
                 tmp_path.unlink()
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"OSError: <ERROR_TYPE>")
+                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
 
 
 def atomic_write_json(path: Path | str, obj: dict[str, Any]) -> None:

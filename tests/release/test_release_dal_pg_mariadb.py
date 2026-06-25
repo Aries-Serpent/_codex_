@@ -27,9 +27,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_release_rows_insert_and_get(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-) -> None:
+def test_release_rows_insert_and_get(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     evidence_dir = tmp_path / ".codex" / "evidence"
     evidence_dir.mkdir(parents=True, exist_ok=True)
     monkeypatch.setenv("CODEX_EVIDENCE_DIR", evidence_dir.as_posix())

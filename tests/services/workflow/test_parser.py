@@ -37,13 +37,13 @@ class TestWorkflowParser:
         """Test creating WorkflowParser initializes cache."""
         parser = WorkflowParser()
         assert parser is not None
-        assert hasattr(parser, '_cache')
+        assert hasattr(parser, "_cache")
         assert len(parser._cache) == 0
 
     def test_parser_has_cache(self):
         """Test that parser cache is a dictionary."""
         parser = WorkflowParser()
-        assert hasattr(parser, '_cache')
+        assert hasattr(parser, "_cache")
         assert isinstance(parser._cache, dict)
         # Test we can add items to cache
         test_path = Path("/test/path.yml")
@@ -76,7 +76,7 @@ class TestWorkflowParser:
             "  build:\n"
             "    runs-on: ubuntu-latest\n"
             "    steps:\n"
-            "      - run: echo \"hello\"\n",
+            '      - run: echo "hello"\n',
             encoding="utf-8",
         )
 
@@ -97,7 +97,7 @@ class TestWorkflowParserCaching:
         parser = WorkflowParser()
         # Add something to cache manually
         parser._cache[Path("/test.yml")] = None
-        if hasattr(parser, 'clear_cache'):
+        if hasattr(parser, "clear_cache"):
             parser.clear_cache()
             assert len(parser._cache) == 0
         else:
@@ -126,9 +126,9 @@ class TestModuleImports:
     def test_logger_configured(self):
         """Test that logger is configured and usable."""
         assert logger is not None
-        assert hasattr(logger, 'warning')
-        assert hasattr(logger, 'error')
-        assert hasattr(logger, 'debug')
+        assert hasattr(logger, "warning")
+        assert hasattr(logger, "error")
+        assert hasattr(logger, "debug")
 
     def test_workflow_input_type(self):
         """Test WorkflowInput type is available."""

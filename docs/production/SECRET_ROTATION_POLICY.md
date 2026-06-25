@@ -583,7 +583,7 @@ Use `--early` flag: `rotate_jwt_secret.py --early`
 
 ### Q: What if rotation fails?
 
-**A**: 
+**A**:
 1. Check error logs: `tail -100 /var/log/codex/rotation.log`
 2. Run verification: `verify_rotation_complete.py`
 3. If critical failure: Rollback to old secret immediately

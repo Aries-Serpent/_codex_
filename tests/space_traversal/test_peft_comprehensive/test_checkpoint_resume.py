@@ -3,10 +3,10 @@ Test Checkpoint Resume
 
 Test module for checkpoint resume.
 """
+
 import pytest
 
 pytest.importorskip("numpy", reason="numpy required")
-
 
 
 from codex.training import TrainCfg, run_custom_trainer

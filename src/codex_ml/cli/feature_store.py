@@ -22,8 +22,9 @@ try:
     from rich.console import Console
     from rich.table import Table
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     print("Error: typer and rich are required for CLI. Install with: pip install typer rich")
     sys.exit(1)
 
@@ -71,9 +72,10 @@ def register(
         store.register_feature_group(group)
         console.print(f"[green]✓[/green] Registered feature group: {name} v{version}")
 
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]✗[/red] Error registering feature group: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]✗[/red] Error registering feature group: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -134,9 +136,10 @@ def list(
         console.print(table)
         console.print(f"\n[dim]Total features: {len(features)}[/dim]")
 
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]✗[/red] Error listing features: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]✗[/red] Error listing features: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -205,9 +208,10 @@ def health(
 
         console.print(f"\n[dim]Healthy: {healthy_count}/{total_count}[/dim]")
 
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]✗[/red] Error generating health report: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]✗[/red] Error generating health report: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -248,9 +252,10 @@ def materialize(
 
         console.print("\n[dim]Use Python API for full materialization functionality[/dim]")
 
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]✗[/red] Error materializing features: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]✗[/red] Error materializing features: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -288,9 +293,10 @@ def versions(
         console.print(table)
         console.print(f"\n[dim]Total versions: {len(versions)}[/dim]")
 
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]✗[/red] Error listing versions: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]✗[/red] Error listing versions: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -357,9 +363,10 @@ def info(
             for warning in health.warnings:
                 console.print(f"  • {warning}")
 
-    except Exception as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]✗[/red] Error getting feature info: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]✗[/red] Error getting feature info: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 

@@ -37,13 +37,7 @@ def test_prompt_to_log_sanitization_chain():
 @pytest.mark.integration
 def test_dict_sanitization_nested_depth():
     """Test deep nested dict sanitization."""
-    data = {
-        "level1": {
-            "level2": {
-                "level3": "value\nwith\nnewlines\x00"
-            }
-        }
-    }
+    data = {"level1": {"level2": {"level3": "value\nwith\nnewlines\x00"}}}
 
     sanitized = sanitize_dict_for_log(data)
 

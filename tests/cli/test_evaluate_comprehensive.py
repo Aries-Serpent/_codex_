@@ -35,10 +35,12 @@ def mock_eval_data(tmp_path):
     """Create mock evaluation data."""
     data_file = tmp_path / "eval_data.jsonl"
     data_file.write_text(
-        '\n'.join([
-            '{"input": "test1", "target": "answer1"}',
-            '{"input": "test2", "target": "answer2"}',
-        ]),
+        "\n".join(
+            [
+                '{"input": "test1", "target": "answer1"}',
+                '{"input": "test2", "target": "answer2"}',
+            ]
+        ),
         encoding="utf-8",
     )
     return data_file

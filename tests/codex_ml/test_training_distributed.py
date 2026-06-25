@@ -1,7 +1,6 @@
 """Tests for distributed training functionality in codex_ml."""
 
 
-
 class TestDistributedTraining:
     """Tests for distributed training operations."""
 

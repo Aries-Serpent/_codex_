@@ -1,0 +1,184 @@
+# Session Recovery Configuration
+# This file defines how failed Copilot sessions are detected and recovered
+
+## Global Recovery Settings
+
+# Enable automatic session recovery
+auto_recovery_enabled: true
+
+# Maximum number of consecutive auto-recovery attempts before escalation
+max_auto_recovery_attempts: 2
+
+# Escalation contact when manual recovery is needed
+escalation_contact: "@mbaetiong"
+
+# Recovery timeout (in seconds) - how long to wait before marking a recovery as failed
+recovery_timeout: 900  # 15 minutes
+
+---
+
+## Session Checkpoint Settings
+
+# Enable session checkpointing (saves state every N seconds)
+checkpoint_enabled: true
+
+# Checkpoint interval (seconds)
+checkpoint_interval: 900  # 15 minutes
+
+# Checkpoint storage location
+checkpoint_dir: ".codex/sessions/"
+
+# Checkpoint format
+checkpoint_format: "jsonl"  # JSONL (newline-delimited JSON) for streaming parsing
+
+---
+
+## Session Heartbeat Monitoring
+
+# Enable heartbeat monitoring
+heartbeat_enabled: true
+
+# Heartbeat interval (seconds) - session should emit heartbeat this often
+heartbeat_interval: 60  # 1 minute
+
+# Heartbeat timeout (seconds) - if no heartbeat in this duration, session may be stuck
+heartbeat_timeout: 300  # 5 minutes
+
+# Heartbeat storage
+heartbeat_file: ".codex/session_heartbeats.jsonl"
+
+---
+
+## Recovery Workflow Rules
+
+# Rules for detecting when a session should be recovered
+detection_rules:
+  - condition: "workflow_conclusion == 'cancelled' && duration > 300"
+    description: "Workflow cancelled after >5 minutes"
+    action: "auto_recover"
+
+  - condition: "workflow_conclusion == 'failure' && failure_type == 'timeout'"
+    description: "Workflow failed due to timeout"
+    action: "auto_recover"
+
+  - condition: "heartbeat_missing && heartbeat_timeout_exceeded"
+    description: "No heartbeat received within timeout window"
+    action: "auto_recover"
+
+---
+
+## Recovery Actions
+
+# Actions to take when recovery is triggered
+recovery_actions:
+  - log_event: true
+    destination: ".codex/session_recovery_log.jsonl"
+
+  - extract_context: true
+    context_fields:
+      - workflow_run_id
+      - branch
+      - commit_sha
+      - failure_type
+      - duration
+      - session_id
+
+  - create_recovery_log: true
+    log_file_pattern: ".codex/session_recovery_${TIMESTAMP}.md"
+
+  - backup_state: true
+    state_location: ".codex/sessions/"
+
+  - auto_retry: true
+    retry_count: 2
+    retry_delay: 30  # seconds between retries
+
+---
+
+## Session State Persistence
+
+# Persist session state for recovery
+persistence_enabled: true
+
+# Session state storage
+state_dir: ".codex/sessions/"
+
+# State file format
+state_format: "jsonl"
+
+# Required state fields (must be preserved)
+required_state_fields:
+  - session_id
+  - branch
+  - commit_sha
+  - timestamp
+  - workflow_run_id
+  - work_in_progress
+  - uncommitted_changes
+
+# Retention policy for session state
+retention_days: 30
+
+---
+
+## Escalation Policy
+
+# Conditions for escalating to human review
+escalation_conditions:
+  - consecutive_failures: 2
+    action: "notify_escalation_contact"
+
+  - recovery_timeout_exceeded: true
+    action: "notify_escalation_contact"
+
+  - state_recovery_failed: true
+    action: "notify_escalation_contact"
+
+# Escalation notification template
+escalation_template: |
+  🚨 **Session Recovery Escalation**
+
+  **Failed Session:** {session_id}
+  **Branch:** {branch}
+  **Failed Workflow Run:** {workflow_run_id}
+  **Failure Type:** {failure_type}
+  **Consecutive Failures:** {failure_count}
+
+  **Recovery Details:**
+  - Auto-recovery attempted {auto_recovery_attempts}x
+  - Last attempt: {last_attempt_time}
+  - Status: ESCALATED
+
+  **Action Required:**
+  Please review the failed session and determine appropriate recovery action.
+
+  **Resources:**
+  - Failed Workflow: https://github.com/Aries-Serpent/_codex_/actions/runs/{workflow_run_id}
+  - Recovery Log: .codex/session_recovery_log.jsonl
+  - Session State: .codex/sessions/{session_id}.jsonl
+
+---
+
+## Monitoring & Metrics
+
+# Track recovery metrics for continuous improvement
+metrics_enabled: true
+
+# Metrics storage
+metrics_file: ".codex/session_recovery_metrics.json"
+
+# Metrics to track
+tracked_metrics:
+  - total_session_failures
+  - total_recovery_attempts
+  - successful_recoveries
+  - failed_recoveries
+  - average_recovery_time
+  - escalation_count
+  - auto_recovery_success_rate
+
+---
+
+**Version:** 1.0
+**Last Updated:** 2026-06-23T22:57:43Z
+**Status:** Active

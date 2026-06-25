@@ -96,10 +96,7 @@ def sample_json_config(tmp_path: Path) -> Path:
 @pytest.fixture
 def sample_jsonl_data(tmp_path: Path) -> Path:
     """Create a sample JSONL data file."""
-    records = [
-        {"id": i, "text": f"Sample text {i}", "label": i % 3}
-        for i in range(100)
-    ]
+    records = [{"id": i, "text": f"Sample text {i}", "label": i % 3} for i in range(100)]
     data_file = tmp_path / "data.jsonl"
     data_file.write_text("\n".join(json.dumps(r) for r in records))
     return data_file
@@ -109,9 +106,7 @@ def sample_jsonl_data(tmp_path: Path) -> Path:
 def sample_csv_data(tmp_path: Path) -> Path:
     """Create a sample CSV data file."""
     csv_content = "id,text,label\n"
-    csv_content += "\n".join(
-        f"{i},Sample text {i},{i % 3}" for i in range(100)
-    )
+    csv_content += "\n".join(f"{i},Sample text {i},{i % 3}" for i in range(100))
     data_file = tmp_path / "data.csv"
     data_file.write_text(csv_content)
     return data_file
@@ -120,10 +115,7 @@ def sample_csv_data(tmp_path: Path) -> Path:
 @pytest.fixture
 def sample_dataset() -> list[dict[str, Any]]:
     """Create a sample in-memory dataset."""
-    return [
-        {"id": i, "text": f"Sample text {i}", "label": i % 3}
-        for i in range(100)
-    ]
+    return [{"id": i, "text": f"Sample text {i}", "label": i % 3} for i in range(100)]
 
 
 @pytest.fixture
@@ -135,10 +127,7 @@ def empty_dataset() -> list[dict[str, Any]]:
 @pytest.fixture
 def large_dataset() -> list[dict[str, Any]]:
     """Create a large dataset for performance testing."""
-    return [
-        {"id": i, "text": f"Sample text {i}", "label": i % 10}
-        for i in range(10000)
-    ]
+    return [{"id": i, "text": f"Sample text {i}", "label": i % 10} for i in range(10000)]
 
 
 # =============================================================================
@@ -320,6 +309,7 @@ def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
 def event_loop():
     """Create an event loop for async tests."""
     import asyncio
+
     loop = asyncio.new_event_loop()
     yield loop
     loop.close()

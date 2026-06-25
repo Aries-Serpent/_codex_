@@ -247,9 +247,7 @@ class TestExceptionHandlingSmoke:
             AgentValidationError,
         )
 
-        assert all(
-            [AgentError, AgentImportError, AgentConfigError, AgentValidationError]
-        )
+        assert all([AgentError, AgentImportError, AgentConfigError, AgentValidationError])
 
     def test_agent_import_error_message(self):
         """Test AgentImportError provides helpful message."""

@@ -37,7 +37,7 @@ PHASE 6 focuses on remediation of CVEs across all 45 dependencies in the Aries-S
 
 1. **Conflict Matrix**: All 45 dependencies analyzed for upgrade compatibility
    - Output: `.codex/wave1_dependency_conflict_matrix.json`
-   
+
 2. **Known Conflicts Documented**:
    - **marshmallow** (3.7.1→5): Conflicts with great_expectations (requires <4.0)
      - Resolution: Use optional extra `marshmallow-v4` or `ge` dependencies separately
@@ -268,7 +268,7 @@ PHASE 6 focuses on remediation of CVEs across all 45 dependencies in the Aries-S
 - **09:00-12:00 UTC (AM):** Batch 1 — 8 CVEs (cryptography, pyjwt, urllib3, jinja2, pip)
   - All 4 agents execute in parallel
   - Test gate: `nox -s tests` must pass ≥95% to proceed to PM
-  
+
 - **13:00-17:00 UTC (PM):** Batch 2 — 7 CVEs (jinja2+, pip+, twisted, idna)
   - All 4 agents execute in parallel
   - Test gate: ≥95% pass rate required to proceed to Day 3

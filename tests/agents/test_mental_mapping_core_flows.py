@@ -176,9 +176,7 @@ class TestMentalMappingCoreFlows:
         )
         assert edge_exists
 
-    def test_make_decision_low_confidence_marks_for_review(
-        self, mental_map, problem_node
-    ):
+    def test_make_decision_low_confidence_marks_for_review(self, mental_map, problem_node):
         """Test low confidence decisions are marked for review."""
         decision_node = mental_map.make_decision(
             decision_content="Uncertain choice between similar options",
@@ -310,9 +308,7 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should create learning node from failure
-        learning_nodes = [
-            n for n in mental_map.nodes.values() if n.node_type == NodeType.LEARNING
-        ]
+        learning_nodes = [n for n in mental_map.nodes.values() if n.node_type == NodeType.LEARNING]
         assert len(learning_nodes) > 0
 
     # ========== ITERATIVE REVIEW TESTS ==========
@@ -338,7 +334,9 @@ class TestMentalMappingCoreFlows:
             # If it returns a list of reviewed node IDs
             assert isinstance(review_result, list)
             # Should have reviewed at least some nodes
-            assert isinstance(review_result, (list, tuple, set, dict))  # was: len() >= 0 (always true)
+            assert isinstance(
+                review_result, (list, tuple, set, dict)
+            )  # was: len() >= 0 (always true)
         else:
             # Method executed successfully
             assert True

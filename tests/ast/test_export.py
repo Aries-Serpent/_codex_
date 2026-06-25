@@ -165,7 +165,7 @@ class TestKnowledgeGraphExporter:
         assert result.success
         assert result.content is not None
         assert "digraph" in result.content
-        assert 'mod1' in result.content
+        assert "mod1" in result.content
         assert "->" in result.content
 
     def test_export_dot_highlights_cycles(self):
@@ -334,9 +334,7 @@ class TestExportKnowledgeGraphFunction:
         assert result.success
         assert result.format == ExportFormat.JSON
 
-    def test_export_with_graph_and_metrics(
-        self, sample_nodes, sample_graph, sample_metrics
-    ):
+    def test_export_with_graph_and_metrics(self, sample_nodes, sample_graph, sample_metrics):
         """Test export with all components."""
         result = export_knowledge_graph(
             sample_nodes,
@@ -365,6 +363,11 @@ class TestExportKnowledgeGraphFunction:
 
     def test_export_different_formats(self, sample_nodes):
         """Test exporting to different formats."""
-        for fmt in [ExportFormat.JSON, ExportFormat.GRAPHML, ExportFormat.DOT, ExportFormat.MARKDOWN]:
+        for fmt in [
+            ExportFormat.JSON,
+            ExportFormat.GRAPHML,
+            ExportFormat.DOT,
+            ExportFormat.MARKDOWN,
+        ]:
             result = export_knowledge_graph(sample_nodes, format=fmt)
             assert result.success, f"Failed for format {fmt}"

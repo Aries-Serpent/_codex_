@@ -55,12 +55,12 @@ Missing branch coverage:
   - if len(stages) == 0: [UNCOVERED]
   - except FileNotFoundError: [UNCOVERED]
   - for stage in pipeline: [PARTIAL]
-  
+
 Missing path coverage:
   - load_config() → merge() → validate() [UNCOVERED]
   - init_model() → load_weights() → setup_inference() [UNCOVERED]
   - process_batch() → preprocess() → transform() → postprocess() [UNCOVERED]
-  
+
 Missing edge cases:
   - Empty dataset handling
   - Oversized batch handling
@@ -113,7 +113,7 @@ Missing branch coverage:
 Missing path coverage:
   - initialize() → configure() → validate() → start() [UNCOVERED]
   - process_event() → transform() → dispatch() → cleanup() [UNCOVERED]
-  
+
 Missing edge cases:
   - Rapid state changes
   - Concurrent requests
@@ -157,11 +157,11 @@ Missing branch coverage:
   - if dependencies is None: [UNCOVERED]
   - if service.is_healthy(): [UNCOVERED]
   - except DependencyError: [UNCOVERED]
-  
+
 Missing path coverage:
   - init() → resolve_deps() → start() [UNCOVERED]
   - on_error() → log() → notify() → shutdown() [UNCOVERED]
-  
+
 Missing edge cases:
   - Self-referencing dependencies
   - Missing dependency objects
@@ -226,13 +226,13 @@ Missing edge cases:
 
 **Key Missing Tests:**
 ```
-- Expired token handling
+- Expired token handling  # pragma: allowlist secret
 - Invalid credentials
 - Permission escalation attempts
 - Decryption with wrong key
 - Audit log completeness
 - Rate limit bypass attempts
-- Secret rotation rollback
+- Secret rotation rollback  # pragma: allowlist secret
 ```
 
 ---
@@ -322,13 +322,13 @@ src/services:
 ```
 Path 1: Configuration → Pipeline → Execution (3 steps)
   init_config() → load_config() → validate_config() → [MISSING]
-  
+
 Path 2: Error Recovery → Retry → Success (3 steps)
   on_error() → log_error() → retry() → [MISSING]
-  
+
 Path 3: State Transition → Event → Dispatch (3 steps)
   state_change() → check_valid() → dispatch_event() → [MISSING]
-  
+
 Path 4: Resource Cleanup → Verification → Confirmation (3 steps)
   cleanup() → verify_clean() → confirm() → [MISSING]
 ```

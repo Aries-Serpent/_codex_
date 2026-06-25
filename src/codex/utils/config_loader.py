@@ -37,8 +37,8 @@ try:
     _OMEGACONF_AVAILABLE = True
 except ImportError:
     logger.warning("OmegaConf not available, using dict fallback")
-    DictConfig = dict  # type: ignore[assignment, misc]
-    OmegaConf = None  # type: ignore[assignment, misc]
+    DictConfig = dict
+    OmegaConf = None
     _OMEGACONF_AVAILABLE = False
 
 # Hydra imports with robust fallbacks
@@ -60,7 +60,7 @@ if not _HYDRA_AVAILABLE:
         from config_legacy.errors import MissingConfigException
     except ImportError:
         # Define our own if neither is available
-        class MissingConfigException(FileNotFoundError):  # type: ignore[no-redef]
+        class MissingConfigException(FileNotFoundError):
             """Exception raised when a configuration file cannot be located."""
 
             def __init__(
@@ -76,6 +76,7 @@ if not _HYDRA_AVAILABLE:
                 resolved = message or f"Missing config file: {missing_cfg_file}"
                 super().__init__(resolved)
                 self.message = resolved
+
 else:
     MissingConfigException = HydraMissingConfigException
 
@@ -133,8 +134,9 @@ class ConfigLoader:
         except ImportError:
             logger.warning("PyYAML not available, using default error config")
             self.error_config = self._get_default_error_config()
-        except Exception as e:
-            logger.warning(f"Failed to load error config: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Failed to load error config: <ERROR_TYPE>")
             self.error_config = self._get_default_error_config()
 
     @staticmethod
@@ -275,8 +277,9 @@ class ConfigLoader:
                         return OmegaConf.create(container)
                     return cfg
                 return cfg
-            except Exception as e:
-                logger.warning(f"Hydra compose failed: {e}")
+            except (IOError, OSError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Hydra compose failed: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise
 
@@ -299,8 +302,9 @@ class ConfigLoader:
                 logger.error("PyYAML required for config loading")
                 if not allow_fallback:
                     raise
-            except Exception as e:
-                logger.error(f"Failed to load config: {e}")
+            except (ValueError, TypeError, RuntimeError) as e:
+                error_type = type(e).__name__
+                logger.error(f"Failed to load config: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise
 
@@ -339,7 +343,7 @@ class ConfigLoader:
                 import yaml
 
                 value = yaml.safe_load(value_str)
-            except Exception:
+            except (ValueError, TypeError):
                 value = value_str
 
             # Navigate and set value

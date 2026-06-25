@@ -8,6 +8,7 @@ This module validates all deployment scenarios:
 - Canary deployment
 - Rolling deployment
 """
+
 from unittest.mock import Mock
 
 import pytest
@@ -21,7 +22,7 @@ class TestStandardDeployment:
     def test_standard_deployment(self):
         """
         Test standard deployment procedure.
-        
+
         Actions:
         1. Deploy current version to target environment
         2. Verify health checks pass
@@ -37,28 +38,24 @@ class TestStandardDeployment:
         deployment_config = {
             "version": "1.0.0",
             "environment": "production",
-            "strategy": "standard"
+            "strategy": "standard",
         }
 
         # Configure mocks
         deployer.deploy.return_value = {
             "success": True,
             "deployment_id": "deploy_123",
-            "version": "1.0.0"
+            "version": "1.0.0",
         }
         health_check.run_checks.return_value = {
             "all_passed": True,
-            "checks": {
-                "database": "ok",
-                "cache": "ok",
-                "api": "ok"
-            }
+            "checks": {"database": "ok", "cache": "ok", "api": "ok"},
         }
         service.is_ready.return_value = True
         data_access.verify_accessibility.return_value = {
             "accessible": True,
             "read_latency_ms": 15,
-            "write_latency_ms": 25
+            "write_latency_ms": 25,
         }
 
         # Action: Execute standard deployment
@@ -85,7 +82,7 @@ class TestStandardDeployment:
     def test_deployment_with_rollback_safety(self):
         """
         Test standard deployment with rollback capability.
-        
+
         Ensure previous version can be quickly restored if needed.
         """
         deployer = Mock()
@@ -98,7 +95,7 @@ class TestStandardDeployment:
         backup_manager.backup_version.return_value = {
             "backed_up": True,
             "version": prev_version,
-            "backup_id": "bak_456"
+            "backup_id": "bak_456",
         }
 
         deployer.deploy.return_value = {"success": True, "version": new_version}
@@ -123,7 +120,7 @@ class TestCloudDeployment:
     def test_cloud_deployment_aws(self):
         """
         Test AWS cloud deployment.
-        
+
         Actions:
         1. Deploy to AWS infrastructure (EC2, RDS, S3)
         2. Verify cloud-specific health checks
@@ -141,30 +138,30 @@ class TestCloudDeployment:
             "instance_type": "t3.large",
             "autoscaling_enabled": True,
             "min_instances": 2,
-            "max_instances": 10
+            "max_instances": 10,
         }
 
         # Configure mocks
         cloud_deployer.deploy_to_aws.return_value = {
             "success": True,
             "deployment_id": "aws_deploy_789",
-            "instances_deployed": 2
+            "instances_deployed": 2,
         }
         aws_validator.validate_deployment.return_value = {
             "valid": True,
             "ec2_health": "ok",
             "rds_health": "ok",
-            "s3_health": "ok"
+            "s3_health": "ok",
         }
         autoscaler.verify_config.return_value = {
             "configured": True,
             "min_instances": 2,
             "max_instances": 10,
-            "target_cpu": 70
+            "target_cpu": 70,
         }
         replication.verify_regional_sync.return_value = {
             "synced": True,
-            "replicas": ["us-west-1", "eu-west-1"]
+            "replicas": ["us-west-1", "eu-west-1"],
         }
 
         # Action: Deploy to AWS
@@ -193,7 +190,7 @@ class TestCloudDeployment:
     def test_cloud_deployment_azure(self):
         """
         Test Azure cloud deployment.
-        
+
         Validate Azure-specific deployment components.
         """
         cloud_deployer = Mock()
@@ -203,19 +200,19 @@ class TestCloudDeployment:
             "resource_group": "production-rg",
             "region": "eastus",
             "vm_size": "Standard_D2s_v3",
-            "storage_account": "prodstg"
+            "storage_account": "prodstg",
         }
 
         cloud_deployer.deploy_to_azure.return_value = {
             "success": True,
             "deployment_id": "azure_dep_101",
-            "vms_deployed": 2
+            "vms_deployed": 2,
         }
         azure_validator.validate_deployment.return_value = {
             "valid": True,
             "vm_health": "healthy",
             "storage_health": "ok",
-            "network_health": "ok"
+            "network_health": "ok",
         }
 
         # Action: Deploy to Azure
@@ -233,7 +230,7 @@ class TestCloudDeployment:
     def test_cloud_deployment_gcp(self):
         """
         Test Google Cloud Platform deployment.
-        
+
         Validate GCP-specific deployment components.
         """
         cloud_deployer = Mock()
@@ -243,19 +240,19 @@ class TestCloudDeployment:
             "project_id": "my-project",
             "zone": "us-central1-a",
             "machine_type": "n1-standard-2",
-            "deployment": "production"
+            "deployment": "production",
         }
 
         cloud_deployer.deploy_to_gcp.return_value = {
             "success": True,
             "deployment_id": "gcp_dep_202",
-            "instances": 2
+            "instances": 2,
         }
         gcp_validator.validate_deployment.return_value = {
             "valid": True,
             "compute_health": "ok",
             "storage_health": "ok",
-            "network_health": "ok"
+            "network_health": "ok",
         }
 
         # Action: Deploy to GCP
@@ -277,21 +274,20 @@ class TestBlueGreenDeployment:
     def test_blue_green_deployment(self):
         """
         Test blue-green deployment.
-        
+
         Maintain two identical production environments.
         - Blue: Current production
         - Green: New version
-        
+
         Switch traffic after green validated.
         """
-        blue_env = Mock()
+        Mock()
         green_env = Mock()
         load_balancer = Mock()
         validator = Mock()
 
         # Setup: Blue (current) and Green (new) environments
         blue_state = {"version": "1.0.0", "traffic": 100}
-        green_state = {"version": "1.1.0", "traffic": 0}
 
         # Configure mocks
         load_balancer.get_traffic_split.return_value = blue_state
@@ -300,7 +296,7 @@ class TestBlueGreenDeployment:
         load_balancer.switch_traffic.return_value = {
             "switched": True,
             "blue_traffic": 0,
-            "green_traffic": 100
+            "green_traffic": 100,
         }
 
         # Action: Blue-green deployment
@@ -331,40 +327,33 @@ class TestCanaryDeployment:
     def test_canary_deployment(self):
         """
         Test canary deployment.
-        
+
         Deploy new version to subset of users and gradually increase traffic.
         Rollback if metrics degrade.
         """
         deployer = Mock()
         canary_controller = Mock()
         metrics = Mock()
-        traffic_manager = Mock()
+        Mock()
 
         # Setup: Canary stages
         # Stage 1: 5% traffic
         # Stage 2: 25% traffic
         # Stage 3: 100% traffic (if metrics good)
 
-        canary_config = {
-            "version": "1.1.0",
-            "initial_traffic": 5,
-            "stages": [5, 25, 100]
-        }
+        canary_config = {"version": "1.1.0", "initial_traffic": 5, "stages": [5, 25, 100]}
 
         # Configure mocks
-        deployer.deploy_canary.return_value = {
-            "success": True,
-            "canary_id": "canary_123"
-        }
+        deployer.deploy_canary.return_value = {"success": True, "canary_id": "canary_123"}
         canary_controller.advance_stage.side_effect = [
             {"stage": 1, "traffic": 5},
             {"stage": 2, "traffic": 25},
-            {"stage": 3, "traffic": 100}
+            {"stage": 3, "traffic": 100},
         ]
         metrics.get_canary_metrics.side_effect = [
             {"error_rate": 0.01, "latency_p99": 150},  # Good
             {"error_rate": 0.01, "latency_p99": 155},  # Good
-            {"error_rate": 0.01, "latency_p99": 160}   # Good
+            {"error_rate": 0.01, "latency_p99": 160},  # Good
         ]
 
         # Action: Execute canary deployment
@@ -392,7 +381,7 @@ class TestRollingDeployment:
     def test_rolling_deployment(self):
         """
         Test rolling deployment.
-        
+
         Gradually replace old instances with new version.
         - Instance 1: Deploy new version
         - Wait for health checks
@@ -439,7 +428,7 @@ class TestDeploymentWithMigration:
     def test_deployment_with_zero_downtime_migration(self):
         """
         Test deployment with zero-downtime data migration.
-        
+
         Perform schema migration while accepting traffic.
         """
         migration_executor = Mock()
@@ -447,22 +436,14 @@ class TestDeploymentWithMigration:
         traffic_handler = Mock()
 
         # Setup: Migration strategy
-        migration_plan = {
-            "schema_version": "v1 → v2",
-            "downtime_expected": 0,
-            "strategy": "background_migration"
-        }
 
         # Configure mocks
         traffic_handler.enable_write_buffering.return_value = True
         migration_executor.execute_background_migration.return_value = {
             "success": True,
-            "rows_migrated": 1000000
+            "rows_migrated": 1000000,
         }
-        deployment_manager.deploy_new_version.return_value = {
-            "deployed": True,
-            "version": "1.1.0"
-        }
+        deployment_manager.deploy_new_version.return_value = {"deployed": True, "version": "1.1.0"}
 
         # Action: Deploy with migration
         traffic_handler.enable_write_buffering()
@@ -484,7 +465,7 @@ class TestDeploymentValidation:
     def test_post_deployment_validation(self):
         """
         Test comprehensive post-deployment validation.
-        
+
         Verify all systems operational after deployment.
         """
         validator = Mock()
@@ -500,8 +481,8 @@ class TestDeploymentValidation:
             "performance_metrics": {
                 "response_time_p99": 150,
                 "error_rate": 0.001,
-                "throughput": 1000
-            }
+                "throughput": 1000,
+            },
         }
 
         # Action: Validate deployment

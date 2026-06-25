@@ -148,12 +148,12 @@ def main() -> int:
         _ensure_dir(pth.parent)
 
     with train_out.open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)  # type: ignore[assignment]
-        w.writeheader()  # type: ignore[attr-defined]
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
         w.writerows(train)
     with valid_out.open("w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fieldnames)  # type: ignore[assignment]
-        w.writeheader()  # type: ignore[attr-defined]
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
         w.writerows(valid)
 
     print(f"Wrote {len(train)} train and {len(valid)} valid rows to {out_dir}")

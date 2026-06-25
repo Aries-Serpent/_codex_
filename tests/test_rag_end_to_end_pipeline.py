@@ -17,6 +17,7 @@ np = pytest.importorskip("numpy")
 _TORCH_312_BUG: bool = False
 try:
     import torch as _torch
+
     _TORCH_312_BUG = sys.version_info >= (3, 12) and tuple(
         int(x) for x in _torch.__version__.split(".")[:2]
     ) < (2, 7)
@@ -25,7 +26,9 @@ except ImportError:
 
 _codex_rag = pytest.importorskip("codex.rag", reason="codex.rag not importable in this environment")
 indexer = _codex_rag.indexer
-_codex_rag_retriever = pytest.importorskip("codex.rag.retriever", reason="codex.rag.retriever not importable")
+_codex_rag_retriever = pytest.importorskip(
+    "codex.rag.retriever", reason="codex.rag.retriever not importable"
+)
 Retriever = _codex_rag_retriever.Retriever
 
 
@@ -68,7 +71,10 @@ class FakeFaissModule:
 
     def write_index(self, index: FakeFaissIndex, path: str) -> None:
         with open(path, "wb") as handle:
-            np.save(handle, np.vstack(index.vectors) if index.vectors else np.zeros((0, index.dimension)))
+            np.save(
+                handle,
+                np.vstack(index.vectors) if index.vectors else np.zeros((0, index.dimension)),
+            )
 
     def read_index(self, path: str) -> FakeFaissIndex:
         with open(path, "rb") as handle:
@@ -116,6 +122,7 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
     monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
     # Also patch the module-level SentenceTransformer variable in retriever module
     from codex.rag import retriever as retriever_module
+
     monkeypatch.setattr(retriever_module, "SentenceTransformer", FakeSentenceTransformer)
     return SentenceTransformerSpy(calls=calls)
 
@@ -143,7 +150,10 @@ def test_chunk_text_adjusts_overlap(sample_text: str) -> None:
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement")
+@pytest.mark.skipif(
+    _TORCH_312_BUG,
+    reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement",
+)
 def test_embed_chunks_returns_embeddings(
     sentence_transformer_spy: SentenceTransformerSpy,
 ) -> None:
@@ -155,7 +165,10 @@ def test_embed_chunks_returns_embeddings(
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement")
+@pytest.mark.skipif(
+    _TORCH_312_BUG,
+    reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement",
+)
 def test_persist_and_load_index_roundtrip(
     fake_faiss: FakeFaissModule,
     sentence_transformer_spy: SentenceTransformerSpy,
@@ -203,7 +216,10 @@ def test_build_index_from_files_empty_file(
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement")
+@pytest.mark.skipif(
+    _TORCH_312_BUG,
+    reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement",
+)
 def test_retriever_query_returns_results(
     fake_faiss: FakeFaissModule,
     sentence_transformer_spy: SentenceTransformerSpy,
@@ -227,7 +243,10 @@ def test_retriever_query_returns_results(
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement")
+@pytest.mark.skipif(
+    _TORCH_312_BUG,
+    reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement",
+)
 def test_retriever_query_min_score_filters(
     fake_faiss: FakeFaissModule,
     sentence_transformer_spy: SentenceTransformerSpy,
@@ -252,7 +271,10 @@ def test_retriever_query_min_score_filters(
 
 
 @pytest.mark.timeout(60)
-@pytest.mark.skipif(_TORCH_312_BUG, reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement")
+@pytest.mark.skipif(
+    _TORCH_312_BUG,
+    reason="PyTorch 2.x + Python 3.12: isinstance() union-type bug in model device placement",
+)
 def test_retriever_query_empty_index_returns_empty(
     fake_faiss: FakeFaissModule,
     sentence_transformer_spy: SentenceTransformerSpy,

@@ -38,7 +38,8 @@ def main() -> int:
         print("Allowlist is valid ✓")
         return 0
     except Exception as e:
-        print(f"Allowlist validation failed: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Allowlist validation failed: <ERROR_TYPE>", file=sys.stderr)
         return 2
 
 

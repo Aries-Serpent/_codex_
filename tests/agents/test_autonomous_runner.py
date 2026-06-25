@@ -315,15 +315,23 @@ class TestMainFunction:
 
             from src.agents.autonomous_runner import main
 
-            with patch.dict(os.environ, {
-                "AGENT_TASK": "Custom test task",
-                "MODEL_PREFERENCE": "gpt-4",
-            }), patch("src.agents.autonomous_runner.AutonomousAgent") as mock_agent:
+            with (
+                patch.dict(
+                    os.environ,
+                    {
+                        "AGENT_TASK": "Custom test task",
+                        "MODEL_PREFERENCE": "gpt-4",
+                    },
+                ),
+                patch("src.agents.autonomous_runner.AutonomousAgent") as mock_agent,
+            ):
                 mock_instance = MagicMock()
-                mock_instance.execute = AsyncMock(return_value=MagicMock(
-                    success=True,
-                    response="Test response",
-                ))
+                mock_instance.execute = AsyncMock(
+                    return_value=MagicMock(
+                        success=True,
+                        response="Test response",
+                    )
+                )
                 mock_instance.client.get_usage_summary.return_value = {}
                 mock_agent.return_value = mock_instance
 
@@ -377,9 +385,7 @@ class TestEdgeCases:
 
                 await agent.execute("Test", model_preference="gpt-4-turbo")
 
-                mock_client_instance.select_model.assert_called_with(
-                    preferred_model="gpt-4-turbo"
-                )
+                mock_client_instance.select_model.assert_called_with(preferred_model="gpt-4-turbo")
         except ImportError:
             pytest.skip("autonomous_runner module not available")
 
@@ -400,8 +406,6 @@ class TestEdgeCases:
 
                 await agent.execute("Test", model_preference="auto")
 
-                mock_client_instance.select_model.assert_called_with(
-                    preferred_model=None
-                )
+                mock_client_instance.select_model.assert_called_with(preferred_model=None)
         except ImportError:
             pytest.skip("autonomous_runner module not available")

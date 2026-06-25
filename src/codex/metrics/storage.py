@@ -61,8 +61,7 @@ class MetricStorage:
             cursor = conn.cursor()
 
             # Metrics table
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS metrics (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp TEXT NOT NULL,
@@ -73,12 +72,10 @@ class MetricStorage:
                     files_scanned INTEGER,
                     files_with_duplicates INTEGER
                 )
-            """
-            )
+            """)
 
             # Duplicate blocks table
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS duplicate_blocks (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     metric_id INTEGER NOT NULL,
@@ -90,12 +87,10 @@ class MetricStorage:
                     num_occurrences INTEGER,
                     FOREIGN KEY (metric_id) REFERENCES metrics(id)
                 )
-            """
-            )
+            """)
 
             # Occurrences table
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE TABLE IF NOT EXISTS occurrences (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     block_id INTEGER NOT NULL,
@@ -104,23 +99,18 @@ class MetricStorage:
                     end_line INTEGER NOT NULL,
                     FOREIGN KEY (block_id) REFERENCES duplicate_blocks(id)
                 )
-            """
-            )
+            """)
 
             # Create indexes for common queries
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_metrics_timestamp
                 ON metrics(timestamp)
-            """
-            )
+            """)
 
-            cursor.execute(
-                """
+            cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_blocks_metric
                 ON duplicate_blocks(metric_id)
-            """
-            )
+            """)
 
             conn.commit()
             logger.info(f"Initialized SQLite database at {self.sqlite_path}")
@@ -155,7 +145,7 @@ class MetricStorage:
 
         if self.enable_sqlite:
             metric_id = self._save_sqlite(ratio, commit_sha, timestamp)
-            result["sqlite_id"] = metric_id  # type: ignore[assignment]
+            result["sqlite_id"] = metric_id
 
         return result
 
@@ -270,7 +260,7 @@ class MetricStorage:
 
             conn.commit()
             logger.info(f"Saved SQLite metrics with ID {metric_id}")
-            return metric_id  # type: ignore[return-value]
+            return metric_id
 
         finally:
             conn.close()
@@ -285,15 +275,13 @@ class MetricStorage:
             cursor = conn.cursor()
 
             # Get latest metric
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT id, timestamp, commit_sha, ratio, total_lines,
                        duplicate_lines, files_scanned, files_with_duplicates
                 FROM metrics
                 ORDER BY timestamp DESC
                 LIMIT 1
-            """
-            )
+            """)
 
             row = cursor.fetchone()
             if not row:

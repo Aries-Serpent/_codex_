@@ -454,7 +454,7 @@ groups:
         annotations:
           summary: "High memory usage detected"
           description: "Memory usage is {{ $value | humanize }}"
-      
+
       - alert: SlowQuery
         expr: mysql_slow_queries > 10
         for: 5m

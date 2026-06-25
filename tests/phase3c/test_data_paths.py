@@ -23,9 +23,7 @@ class TestDataIngestion:
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
             entry = MemoryEntry(
-                content="Simple text data",
-                agent_id="ingestor",
-                session_id="ingestion-test"
+                content="Simple text data", agent_id="ingestor", session_id="ingestion-test"
             )
             backend.store(entry)
 
@@ -39,11 +37,7 @@ class TestDataIngestion:
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
             data = {"user_id": 123, "action": "login", "timestamp": "2024-01-01"}
-            entry = MemoryEntry(
-                content=data,
-                agent_id="ingestor",
-                session_id="ingestion-test"
-            )
+            entry = MemoryEntry(content=data, agent_id="ingestor", session_id="ingestion-test")
             backend.store(entry)
 
             results = backend.retrieve(MemoryQuery(limit=10))
@@ -58,9 +52,7 @@ class TestDataIngestion:
             # Ingest batch of 10 items
             for i in range(10):
                 entry = MemoryEntry(
-                    content=f"Item {i}",
-                    agent_id="batch-ingestor",
-                    session_id="batch-test"
+                    content=f"Item {i}", agent_id="batch-ingestor", session_id="batch-test"
                 )
                 backend.store(entry)
 
@@ -76,13 +68,10 @@ class TestDataIngestion:
                 "source": "api",
                 "version": "1.0",
                 "priority": "high",
-                "tags": ["important", "urgent"]
+                "tags": ["important", "urgent"],
             }
             entry = MemoryEntry(
-                content="Important data",
-                agent_id="ingestor",
-                session_id="test",
-                metadata=metadata
+                content="Important data", agent_id="ingestor", session_id="test", metadata=metadata
             )
             backend.store(entry)
 
@@ -103,11 +92,7 @@ class TestDataIngestion:
             ]
 
             for record in records:
-                entry = MemoryEntry(
-                    content=record,
-                    agent_id="csv-ingestor",
-                    session_id="csv-test"
-                )
+                entry = MemoryEntry(content=record, agent_id="csv-ingestor", session_id="csv-test")
                 backend.store(entry)
 
             results = backend.retrieve(MemoryQuery(limit=10))
@@ -122,11 +107,7 @@ class TestDataTransformation:
         raw_text = "User alice performed action login at 2024-01-01"
 
         # Simulate transformation
-        transformed = {
-            "user": "alice",
-            "action": "login",
-            "timestamp": "2024-01-01"
-        }
+        transformed = {"user": "alice", "action": "login", "timestamp": "2024-01-01"}
 
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
@@ -136,7 +117,7 @@ class TestDataTransformation:
                 content=raw_text,
                 agent_id="transformer",
                 session_id="transform-test",
-                metadata={"type": "raw"}
+                metadata={"type": "raw"},
             )
             backend.store(entry_raw)
 
@@ -145,7 +126,7 @@ class TestDataTransformation:
                 content=transformed,
                 agent_id="transformer",
                 session_id="transform-test",
-                metadata={"type": "transformed"}
+                metadata={"type": "transformed"},
             )
             backend.store(entry_transformed)
 
@@ -156,13 +137,8 @@ class TestDataTransformation:
         """Test flattening nested data structures."""
         nested_data = {
             "user": {
-                "profile": {
-                    "name": "Alice",
-                    "email": "alice@example.com"
-                },
-                "preferences": {
-                    "theme": "dark"
-                }
+                "profile": {"name": "Alice", "email": "alice@example.com"},
+                "preferences": {"theme": "dark"},
             }
         }
 
@@ -170,7 +146,7 @@ class TestDataTransformation:
         flattened_data = {
             "user.profile.name": "Alice",
             "user.profile.email": "alice@example.com",
-            "user.preferences.theme": "dark"
+            "user.preferences.theme": "dark",
         }
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -178,16 +154,12 @@ class TestDataTransformation:
 
             # Store both versions
             entry_nested = MemoryEntry(
-                content=nested_data,
-                agent_id="transformer",
-                session_id="test"
+                content=nested_data, agent_id="transformer", session_id="test"
             )
             backend.store(entry_nested)
 
             entry_flat = MemoryEntry(
-                content=flattened_data,
-                agent_id="transformer",
-                session_id="test"
+                content=flattened_data, agent_id="transformer", session_id="test"
             )
             backend.store(entry_flat)
 
@@ -205,21 +177,17 @@ class TestDataTransformation:
                     content={"value": i * 10},
                     agent_id="sensor",
                     session_id="measurements",
-                    metadata={"measurement": i}
+                    metadata={"measurement": i},
                 )
                 backend.store(entry)
 
             # Store aggregated result
-            aggregated = {
-                "count": 5,
-                "sum": 100,
-                "average": 20
-            }
+            aggregated = {"count": 5, "sum": 100, "average": 20}
             entry_agg = MemoryEntry(
                 content=aggregated,
                 agent_id="aggregator",
                 session_id="measurements",
-                metadata={"type": "aggregated"}
+                metadata={"type": "aggregated"},
             )
             backend.store(entry_agg)
 
@@ -236,7 +204,7 @@ class TestDataTransformation:
                 content="123",
                 agent_id="converter",
                 session_id="test",
-                metadata={"original_type": "string"}
+                metadata={"original_type": "string"},
             )
             backend.store(entry_str)
 
@@ -245,7 +213,7 @@ class TestDataTransformation:
                 content=123,
                 agent_id="converter",
                 session_id="test",
-                metadata={"original_type": "number"}
+                metadata={"original_type": "number"},
             )
             backend.store(entry_num)
 
@@ -262,11 +230,7 @@ class TestDataPersistence:
             file_path = Path(tmpdir) / "data.jsonl"
             backend = JSONLMemoryBackend(file_path)
 
-            entry = MemoryEntry(
-                content="Persistent data",
-                agent_id="test",
-                session_id="test"
-            )
+            entry = MemoryEntry(content="Persistent data", agent_id="test", session_id="test")
             backend.store(entry)
 
             # Verify file was created and contains data
@@ -283,11 +247,7 @@ class TestDataPersistence:
 
             # Store multiple entries
             for i in range(5):
-                entry = MemoryEntry(
-                    content=f"Entry {i}",
-                    agent_id="test",
-                    session_id="test"
-                )
+                entry = MemoryEntry(content=f"Entry {i}", agent_id="test", session_id="test")
                 backend.store(entry)
 
             # Verify all entries persisted
@@ -301,18 +261,9 @@ class TestDataPersistence:
             backend = JSONLMemoryBackend(Path(tmpdir) / "data.jsonl")
 
             # Create large data
-            large_data = {
-                "items": [
-                    {"id": i, "data": "x" * 1000}
-                    for i in range(100)
-                ]
-            }
+            large_data = {"items": [{"id": i, "data": "x" * 1000} for i in range(100)]}
 
-            entry = MemoryEntry(
-                content=large_data,
-                agent_id="test",
-                session_id="test"
-            )
+            entry = MemoryEntry(content=large_data, agent_id="test", session_id="test")
             backend.store(entry)
 
             # Retrieve and verify
@@ -327,14 +278,11 @@ class TestDataPersistence:
             metadata = {
                 "source": "production",
                 "timestamp": "2024-01-01T00:00:00Z",
-                "tags": ["critical", "audit"]
+                "tags": ["critical", "audit"],
             }
 
             entry = MemoryEntry(
-                content="Critical data",
-                agent_id="test",
-                session_id="test",
-                metadata=metadata
+                content="Critical data", agent_id="test", session_id="test", metadata=metadata
             )
             backend.store(entry)
 
@@ -357,20 +305,17 @@ class TestDataPipeline:
                 content=raw_data,
                 agent_id="ingestor",
                 session_id="pipeline",
-                metadata={"stage": "ingest"}
+                metadata={"stage": "ingest"},
             )
             backend.store(entry1)
 
             # Step 2: Transform
-            transformed_data = {
-                "event_type": "user_action",
-                "processed": True
-            }
+            transformed_data = {"event_type": "user_action", "processed": True}
             entry2 = MemoryEntry(
                 content=transformed_data,
                 agent_id="transformer",
                 session_id="pipeline",
-                metadata={"stage": "transform"}
+                metadata={"stage": "transform"},
             )
             backend.store(entry2)
 
@@ -385,9 +330,7 @@ class TestDataPipeline:
 
             # Initial data
             entry_input = MemoryEntry(
-                content={"value": 100},
-                agent_id="input",
-                session_id="pipeline"
+                content={"value": 100}, agent_id="input", session_id="pipeline"
             )
             backend.store(entry_input)
 
@@ -395,7 +338,7 @@ class TestDataPipeline:
             entry_analytics = MemoryEntry(
                 content={"processed_for": "analytics", "value": 100},
                 agent_id="analytics",
-                session_id="pipeline"
+                session_id="pipeline",
             )
             backend.store(entry_analytics)
 
@@ -403,7 +346,7 @@ class TestDataPipeline:
             entry_archive = MemoryEntry(
                 content={"processed_for": "archive", "value": 100},
                 agent_id="archiver",
-                session_id="pipeline"
+                session_id="pipeline",
             )
             backend.store(entry_archive)
 
@@ -422,7 +365,7 @@ class TestDataPipeline:
                     content={"id": i, "priority": priority},
                     agent_id="producer",
                     session_id="pipeline",
-                    metadata={"priority": priority}
+                    metadata={"priority": priority},
                 )
                 backend.store(entry)
 
@@ -440,7 +383,7 @@ class TestDataPipeline:
                 content={"status": "failed", "attempt": 1},
                 agent_id="processor",
                 session_id="pipeline",
-                metadata={"event": "failure"}
+                metadata={"event": "failure"},
             )
             backend.store(entry_fail)
 
@@ -449,7 +392,7 @@ class TestDataPipeline:
                 content={"status": "success", "attempt": 2},
                 agent_id="processor",
                 session_id="pipeline",
-                metadata={"event": "recovery"}
+                metadata={"event": "recovery"},
             )
             backend.store(entry_retry)
 
@@ -462,23 +405,12 @@ class TestDataConsistency:
 
     def test_data_consistency_round_trip(self):
         """Test data consistency in store-retrieve cycle."""
-        original_data = {
-            "complex": {
-                "nested": {
-                    "structure": [1, 2, 3],
-                    "text": "unicode: 你好"
-                }
-            }
-        }
+        original_data = {"complex": {"nested": {"structure": [1, 2, 3], "text": "unicode: 你好"}}}
 
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
 
-            entry_original = MemoryEntry(
-                content=original_data,
-                agent_id="test",
-                session_id="test"
-            )
+            entry_original = MemoryEntry(content=original_data, agent_id="test", session_id="test")
             backend.store(entry_original)
 
             results = backend.retrieve(MemoryQuery(limit=10))
@@ -489,11 +421,7 @@ class TestDataConsistency:
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
 
-            entry = MemoryEntry(
-                content="Test data",
-                agent_id="test",
-                session_id="test"
-            )
+            entry = MemoryEntry(content="Test data", agent_id="test", session_id="test")
             backend.store(entry)
 
             # Multiple retrievals should return same data
@@ -505,10 +433,7 @@ class TestDataConsistency:
     def test_serialization_deserialization(self):
         """Test serialization/deserialization consistency."""
         entry_original = MemoryEntry(
-            content={"key": "value"},
-            agent_id="test",
-            session_id="test",
-            metadata={"meta": "data"}
+            content={"key": "value"}, agent_id="test", session_id="test", metadata={"meta": "data"}
         )
 
         # Serialize
@@ -534,11 +459,7 @@ class TestDataRetention:
 
             # Store multiple records
             for i in range(5):
-                entry = MemoryEntry(
-                    content=f"Record {i}",
-                    agent_id="test",
-                    session_id="retention"
-                )
+                entry = MemoryEntry(content=f"Record {i}", agent_id="test", session_id="retention")
                 backend.store(entry)
 
             # Query should return all retained data
@@ -551,11 +472,7 @@ class TestDataRetention:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
 
             # Store data
-            entry = MemoryEntry(
-                content="Test data",
-                agent_id="test",
-                session_id="session-1"
-            )
+            entry = MemoryEntry(content="Test data", agent_id="test", session_id="session-1")
             backend.store(entry)
 
             # Clear session
@@ -573,7 +490,7 @@ class TestDataRetention:
                     content=f"Record {i}",
                     agent_id="test",
                     session_id="test",
-                    metadata={"retention": "permanent"}
+                    metadata={"retention": "permanent"},
                 )
                 backend.store(entry)
 
@@ -582,7 +499,7 @@ class TestDataRetention:
                     content=f"Temp {i}",
                     agent_id="test",
                     session_id="test",
-                    metadata={"retention": "temporary"}
+                    metadata={"retention": "temporary"},
                 )
                 backend.store(entry)
 

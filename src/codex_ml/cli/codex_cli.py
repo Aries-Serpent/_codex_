@@ -313,7 +313,7 @@ def config_sweep(
             maybe_path = loaded.get("training", {}).get("dataset", {}).get("train_path")
             if maybe_path:
                 resolved_dataset_path = Path(maybe_path)
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             resolved_dataset_path = None
     if resolved_dataset_path is not None and resolved_dataset_path.exists():
@@ -489,7 +489,7 @@ def train(
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo("Training complete")
-    except Exception as exc:  # pragma: no cover - Click handles presentation
+    except (IOError, OSError) as exc:  # pragma: no cover - Click handles presentation
         log_training_error(
             "cli.train",
             str(exc),
@@ -531,7 +531,8 @@ def resume(
     try:
         cfg_obj, raw_cfg = load_app_config(config_path, tuple())
     except ConfigError as exc:
-        logger.debug(f"ConfigError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ConfigError: <ERROR_TYPE>")
         raise click.ClickException(str(exc)) from exc
 
     training_cfg = getattr(raw_cfg, "training", raw_cfg)
@@ -553,7 +554,7 @@ def resume(
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo(f"resumed training from {checkpoint}")
-    except Exception as exc:  # pragma: no cover - Click handles presentation
+    except (IOError, OSError) as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
 
@@ -593,8 +594,9 @@ def repo_map(reasoning: bool) -> None:
     try:
         click.echo(render_repo_map(reasoning=reasoning))
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
         # Back-compat with older render_repo_map signatures lacking the flag.
         click.echo(render_repo_map())
 
@@ -637,7 +639,8 @@ def deploy(config: Path, dry_run: bool, run_metadata_dir: Path) -> None:
             run_metadata_dir=run_metadata_dir,
         )
     except RuntimeError as exc:
-        logger.debug(f"RuntimeError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"RuntimeError: <ERROR_TYPE>")
         click.secho(f"DEPLOYMENT BLOCKED: {exc}", err=True)
         raise SystemExit(1) from exc
 
@@ -763,7 +766,7 @@ def evaluate(
             }
             # Prefer explicit run_id flag; fall back to summary's run_id if present.
             NDJSONLogger(out_path, run_id=record_run_id).log(record)
-        except Exception as exc:  # pragma: no cover - Click handles presentation
+        except (IOError, OSError) as exc:  # pragma: no cover - Click handles presentation
             raise click.ClickException(f"failed to append metrics NDJSON: {exc}") from exc
 
     provenance_dir = Path(cfg_obj.evaluation.output_dir) / "provenance"

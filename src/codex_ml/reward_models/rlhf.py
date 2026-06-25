@@ -119,7 +119,7 @@ class RewardModel(RewardModelBase):
         base_metrics: dict[str, float] = {}
         try:
             maybe_metrics = self.base_model.learn(materialised)
-        except Exception as exc:  # pragma: no cover - defensive
+        except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive
             LOGGER.debug("Base reward model learn() failed: %s", exc)
         else:
             if isinstance(maybe_metrics, Mapping):

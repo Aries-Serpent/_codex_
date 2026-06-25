@@ -28,7 +28,7 @@ python .codex/enhance_phase5_tests.py --lane 1 --plan
    ```python
    # ❌ AVOID
    assert func()  # Truthy check - too vague
-   
+
    # ✅ PREFER
    assert func() == expected_value  # Exact value
    assert isinstance(result, ExpectedType)  # Type check
@@ -420,10 +420,10 @@ def test_process_data_normal():
     """Test normal data processing with valid input."""
     # Arrange
     data = [1, 2, 3]
-    
+
     # Act
     result = process(data)
-    
+
     # Assert - Multiple levels
     assert result is not None
     assert isinstance(result, list)
@@ -595,4 +595,3 @@ def test_with_mock(mock_func):
 **Created:** 2026-02-04  
 **Status:** 🔴 AWAITING unified-coverage-agent output  
 **Next Action:** Monitor for test file creation, then begin enhancement  
-

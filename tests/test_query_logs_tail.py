@@ -15,8 +15,7 @@ from pathlib import Path
 def test_tail_option(tmp_path):
     db = tmp_path / "events.sqlite"
     con = sqlite3.connect(str(db))
-    con.execute(
-        """
+    con.execute("""
         CREATE TABLE session_events(
             session_id TEXT,
             timestamp TEXT,
@@ -25,8 +24,7 @@ def test_tail_option(tmp_path):
             seq INTEGER,
             meta TEXT
         )
-        """
-    )
+        """)
     con.executemany(
         "INSERT INTO session_events(session_id, timestamp, role, message) VALUES (?,?,?,?)",
         [

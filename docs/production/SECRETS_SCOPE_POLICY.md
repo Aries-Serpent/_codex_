@@ -405,20 +405,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Check for hardcoded secrets
         run: |
           git grep -i "password\|api_key\|token" -- "*.py" "*.yaml" | \
             grep -v "\.codex" | \
             grep -v "test" | \
             grep -v "example" && exit 1 || exit 0
-      
+
       - name: Validate secrets scope
         env:
           GITHUB_ENVIRONMENT: ${{ github.environment }}
         run: |
           python3 .github/scripts/validate_secrets_scope.py
-      
+
       - name: Check for cross-environment secrets
         run: |
           python3 .github/scripts/check_cross_env_secrets.py

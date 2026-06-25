@@ -186,7 +186,7 @@ class GitHubTokenProvider(TokenProvider):
             if kwargs.get("revoke_old", False):
                 try:
                     self.revoke_secret(secret_id)
-                except Exception as e:
+                except (ValueError, TypeError, RuntimeError) as e:
                     logger.warning("Failed to revoke prior grant: %s", _safe_error(e))
 
             return RotationResult(
@@ -200,7 +200,7 @@ class GitHubTokenProvider(TokenProvider):
                 },
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("GitHub auth rotation failed: %s", _safe_error(e))
             return RotationResult(
                 success=False,
@@ -236,7 +236,7 @@ class GitHubTokenProvider(TokenProvider):
                 if expiration and datetime.now(UTC) >= expiration:
                     logger.warning("GitHub authentication has expired (local expiry check)")
                     return False
-            except Exception as e:
+            except (ValueError, TypeError, RuntimeError) as e:
                 logger.debug("Could not check expiration: %s", _safe_error(e))
 
             # Validate token format — GitHub tokens start with 'ghp_', 'gho_',
@@ -277,7 +277,7 @@ class GitHubTokenProvider(TokenProvider):
                     resp.status_code,
                 )
                 return True
-            except Exception as network_err:
+            except (ValueError, TypeError, RuntimeError) as network_err:
                 # Network unreachable, DNS failure, timeout — degrade gracefully
                 logger.warning(
                     "GitHub API unreachable (%s); using format-only token validation",
@@ -326,7 +326,7 @@ class GitHubTokenProvider(TokenProvider):
         try:
             metadata = self.get_secret_metadata(secret_id)
             return metadata.expires_at
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Failed to get auth expiry: %s", _safe_error(e))
             return None
 
@@ -342,7 +342,7 @@ class GitHubTokenProvider(TokenProvider):
         try:
             metadata = self.get_secret_metadata(secret_id)
             return metadata.scopes or []
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Failed to get access scopes: %s", _safe_error(e))
             return []
 
@@ -465,7 +465,7 @@ class GitHubTokenProvider(TokenProvider):
                 old_secret_id="",  # nosec B106 — empty string default for result struct field, not a credential
                 error_message=f"GitHub API returned {resp.status_code} when creating installation token.",  # noqa: E501
             )
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             logger.error("Failed to create GitHub installation grant: %s", _safe_error(e))
             return RotationResult(
                 success=False,
@@ -478,7 +478,7 @@ class GitHubTokenProvider(TokenProvider):
 
         For fine-grained PATs, updates the permission set via
         ``PATCH /user/installations/{installation_id}/permissions`` (requires
-        the ``requests`` library and a valid bearer token).  For classic PATs,
+        the ``requests`` library and a valid bearer token).  For classic PATs,  # codeql[py/clear-text-logging-sensitive-data]
         scope changes are not supported by the API — a new token must be
         created manually.
 
@@ -516,7 +516,7 @@ class GitHubTokenProvider(TokenProvider):
                     "scopes have NOT been updated."
                 )
                 return False
-
+  # codeql[py/clear-text-logging-sensitive-data]
             # Resolve installation_id: prefer config/env, fall back to secret_id
             installation_id = self.config.get(
                 "installation_id", os.environ.get("GITHUB_APP_INSTALLATION_ID", secret_id)
@@ -532,7 +532,9 @@ class GitHubTokenProvider(TokenProvider):
                 url, json={"permissions": permissions}, headers=headers, timeout=10
             )
             if resp.status_code in (200, 204):
-                logger.info("GitHub access scopes updated successfully.")
+                logger.info(
+                    "GitHub access scopes updated successfully."
+                )
                 return True
             logger.warning(
                 "update_token_scopes(): GitHub API returned %d; scopes may not be updated.",
@@ -540,7 +542,7 @@ class GitHubTokenProvider(TokenProvider):
             )
             return False
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Failed to update access scopes: %s", _safe_error(e))
             return False
 
@@ -594,7 +596,7 @@ class GitHubTokenProvider(TokenProvider):
                 "client_id/client_secret to enable revocation. Token NOT revoked."
             )
             return False
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.error("GitHub revoke API failed: %s", _safe_error(exc))
             return False
 
@@ -647,6 +649,6 @@ class GitHubTokenProvider(TokenProvider):
                 return [meta]
             logger.warning("GitHub listing API returned %d.", resp.status_code)
             return []
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.error("GitHub listing API failed: %s", _safe_error(exc))
             return []

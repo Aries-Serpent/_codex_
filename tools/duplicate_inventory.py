@@ -132,7 +132,8 @@ def main():
             with open(args.config, "r") as f:
                 config = yaml.safe_load(f) or {}
         except Exception as e:
-            print(f"Error loading configuration: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            print(f"Error loading configuration: <ERROR_TYPE>", file=sys.stderr)
             return 1
 
     # Update config with CLI arguments
@@ -180,7 +181,8 @@ def main():
         return 1 if inventory.metadata.total_violations > 0 else 0
 
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
         if args.verbose:
             import traceback
 

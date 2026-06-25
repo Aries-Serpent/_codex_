@@ -62,7 +62,8 @@ def run(cmd: list[str]) -> int:
         result = subprocess.run([exe, *cmd[1:]], check=True)  # nosec B603
         return result.returncode
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        print(f"error: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

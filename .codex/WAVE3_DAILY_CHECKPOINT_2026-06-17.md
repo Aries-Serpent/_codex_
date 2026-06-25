@@ -15,7 +15,7 @@
 |------|----------|--------|-----|----------|
 | 3.1 Edge Cases | 35% | 🟡 ON TRACK | Jul 4 | None |
 | 3.2 Mutations | 40% | ✅ READY | Jul 3 | None |
-| 3.3 Validation | 100% | 🔴 BLOCKED | TBD | **28 SECRETS** |
+| 3.3 Validation | 100% | 🔴 BLOCKED | TBD | **28 SECRETS** | <!-- pragma: allowlist secret -->
 | **WAVE 3** | **58%** | **⚠️ AT-RISK** | **Jul 6** | **1 CRITICAL** |
 
 ---
@@ -173,9 +173,9 @@ Lane 3.3 audit is complete, but a CRITICAL security blocker (28 hardcoded secret
 |-----------|-------|
 | **ID** | LANE33-SEC-001 |
 | **Severity** | 🔴 CRITICAL |
-| **Count** | 28 hardcoded secrets |
+| **Count** | 28 hardcoded secrets | <!-- pragma: allowlist secret -->
 | **Detected** | 2026-06-17T16:20:00Z |
-| **Owner** | secret-detection-agent / Security Lead |
+| **Owner** | secret-detection-agent / Security Lead | <!-- pragma: allowlist secret -->
 | **Deadline** | 2026-06-17T20:36:00Z (4-hour window) |
 | **Impact** | BLOCKS production deployment |
 | **Status** | 🔴 ACTIVE |
@@ -213,7 +213,7 @@ Lane 3.2: Mutations
 
 Lane 3.3: Validation
   Status: 🔴 BLOCKED by security
-  Days 1-2: Secret remediation (IF starts immediately)
+  Days 1-2: Secret remediation (IF starts immediately)  # pragma: allowlist secret
   Days 3-7: Code quality improvements
   Days 8-21: Sign-offs & deployment readiness
   → ETA: 2026-07-06 (if blocker resolved TODAY)
@@ -251,7 +251,7 @@ Lane 3.3: Validation
 |--------|------|--------|
 | ON TRACK | Lanes 3.1, 3.2 | On pace for completion by Day 21 |
 | AT-RISK | Lane 3.3 | Blocked pending security remediation |
-| CRITICAL | Secret blocker | Must resolve within 4 hours |
+| CRITICAL | Secret blocker | Must resolve within 4 hours | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -270,7 +270,7 @@ Lane 3.3: Validation
 
 | Time | Type | Focus |
 |------|------|-------|
-| 2026-06-17T20:36Z (4h) | Emergency | Secret remediation status |
+| 2026-06-17T20:36Z (4h) | Emergency | Secret remediation status | <!-- pragma: allowlist secret -->
 | 2026-06-18T09:00Z (16.5h) | Morning | Daily progress update |
 | 2026-06-18T21:00Z (28.5h) | Evening | Daily progress update |
 | 2026-06-19T09:00Z (40.5h) | Morning | 24-hour trend analysis |
@@ -322,4 +322,3 @@ Time Remaining: 4 hours exactly
 **Checkpoint Complete:** 2026-06-17T16:36:44Z  
 **Next Morning Checkpoint:** 2026-06-18T09:00:00Z  
 **Critical Deadline:** 2026-06-17T20:36:00Z
-

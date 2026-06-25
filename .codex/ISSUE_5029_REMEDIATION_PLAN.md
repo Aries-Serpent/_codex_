@@ -121,23 +121,23 @@ Replace the `Install minimal dependencies` step (lines ~41-55):
   run: |
     set -euo pipefail
     python -m pip install --upgrade pip
-    
+
     # Pin setuptools BEFORE torch (critical order)
     pip install 'setuptools<82' torch==2.12.0 --no-deps
-    
+
     # Pin pytest plugins
     pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
-    
+
     # Install package with dev extras
     pip install -e . 2>&1 | tee /tmp/install.log
-    
+
     # CRITICAL: Fail on any errors
     if grep -iE "error|conflict|impossible|failed" /tmp/install.log; then
       echo "::error::Dependency installation failed — see details above"
       cat /tmp/install.log
       exit 1
     fi
-    
+
     echo "✅ All dependencies installed successfully"
 ```
 
@@ -151,7 +151,7 @@ Insert new step before unit-tests job (after smoke-tests):
   run: |
     # Check if required test modules exist for chosen tier
     TIER="${{ needs.analyze.outputs.pr_size }}"
-    
+
     case "$TIER" in
       small)
         # Small changes: just smoke + critical unit tests
@@ -175,7 +175,7 @@ Insert new step before unit-tests job (after smoke-tests):
         }
         ;;
     esac
-    
+
     echo "✅ Required test files present"
 ```
 
@@ -197,7 +197,7 @@ Modify the "Run smoke tests" step to propagate errors:
         cat /tmp/test_count.log
         exit 1
       }
-    
+
     # Run the actual tests
     pytest tests/ -k "smoke or quick" \
       --timeout=60 \
@@ -223,19 +223,19 @@ Replace the git push section (around line ~286-290):
     set -euo pipefail
     git config user.name "github-actions[bot]"
     git config user.email "actions@github.com"
-    
+
     if git diff --quiet; then
       echo "✅ No changes to commit"
       echo "has_changes=false" >> "$GITHUB_OUTPUT"
       exit 0
     fi
-    
+
     git add -A
     git commit -m "fix(ci): auto-fix detected issues (RP-007)" || {
       echo "::warning::No changes to commit"
       exit 0
     }
-    
+
     echo "has_changes=true" >> "$GITHUB_OUTPUT"
 
 - name: Push with auto-rebase fallback
@@ -243,29 +243,29 @@ Replace the git push section (around line ~286-290):
   id: push
   run: |
     set -euo pipefail
-    
+
     MAX_RETRIES=3
     ATTEMPT=1
     BRANCH="${{ github.head_ref || github.ref_name }}"
-    
+
     while [ $ATTEMPT -le $MAX_RETRIES ]; do
       echo "🔄 Push attempt $ATTEMPT/$MAX_RETRIES"
-      
+
       if git push origin HEAD:refs/heads/"$BRANCH" 2>&1 | tee /tmp/push.log; then
         echo "✅ Push succeeded"
         exit 0
       fi
-      
+
       # Analyze failure reason
       if grep -q "rejected.*fetch first\|behind.*master\|diverged" /tmp/push.log; then
         echo "⚠️  Remote branch ahead — rebasing..."
-        
+
         # Fetch latest remote state
         git fetch origin "$BRANCH":refs/remotes/origin/"$BRANCH" || {
           echo "::error::Failed to fetch remote branch"
           exit 1
         }
-        
+
         # Rebase our commits on top
         if git rebase "origin/$BRANCH"; then
           echo "✅ Rebase successful"
@@ -283,7 +283,7 @@ Replace the git push section (around line ~286-290):
         exit 1
       fi
     done
-    
+
     echo "::error::Failed to push after $MAX_RETRIES rebase attempts"
     exit 1
 ```
@@ -297,14 +297,14 @@ Insert before the commit step:
   id: branch_check
   run: |
     BRANCH="${{ github.head_ref || github.ref_name }}"
-    
+
     # Prevent auto-commits to protected branches
     if [[ "$BRANCH" =~ ^(main|master|develop|0D_base_|release.*)$ ]]; then
       echo "::notice::Branch '$BRANCH' is protected — skipping auto-fix commit"
       echo "skip_commit=true" >> "$GITHUB_OUTPUT"
       exit 0
     fi
-    
+
     echo "skip_commit=false" >> "$GITHUB_OUTPUT"
 ```
 
@@ -334,10 +334,10 @@ Replace cache setup with stable key:
     PYTHON_VERSION="3.12"
     REQUIREMENTS_HASH=$(sha256sum requirements.txt | cut -d' ' -f1 | cut -c1-12)
     WORKFLOW_HASH=$(sha256sum .github/workflows/security-scanning-suite.yml | cut -d' ' -f1 | cut -c1-12)
-    
+
     # Don't include dynamic flags (torch=true/false) — use constant cache key
     CACHE_KEY="codeql-cache-linux-py${PYTHON_VERSION}-req${REQUIREMENTS_HASH}-wf${WORKFLOW_HASH}"
-    
+
     echo "cache_key=$CACHE_KEY" >> "$GITHUB_OUTPUT"
     echo "Cache key: $CACHE_KEY"
 
@@ -413,21 +413,21 @@ jobs:
     script: |
       const fs = require('fs');
       const { execSync } = require('child_process');
-      
+
       // Get changed files
       const changedFiles = await github.paginate(
         github.rest.pulls.listFiles,
-        { 
-          owner: context.repo.owner, 
-          repo: context.repo.repo, 
-          pull_number: context.issue.number 
+        {
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          pull_number: context.issue.number
         }
       );
-      
+
       const fileList = changedFiles
         .map(f => `- ${f.filename} (+${f.additions} -${f.deletions})`)
         .join('\n');
-      
+
       // Invoke Copilot to predict dependency issues
       const prompt = `Analyze these changed files and predict dependency conflicts:
 ${fileList}
@@ -444,10 +444,10 @@ Respond with JSON: {
   "high_risk_tier": "unit|integration|all",
   "confidence": 0.0-1.0
 }`;
-      
+
       // In production: call Copilot API
       // const prediction = await copilot.complete(prompt);
-      
+
       // For now, log the analysis
       core.notice(`Dependency analysis for ${changedFiles.length} files completed`);
 ```
@@ -473,21 +473,21 @@ Respond with JSON: {
         .trim()
         .split('\n')
         .filter(Boolean);
-      
+
       if (conflictedFiles.length === 0) {
         core.notice('No merge conflicts found');
         return;
       }
-      
+
       core.warning(`Merge conflicts in ${conflictedFiles.length} files:`);
       conflictedFiles.forEach(f => core.warning(`  - ${f}`));
-      
+
       // Suggest Copilot resolution
       const prompt = `Resolve merge conflicts in these files (prioritize auto-fix changes):
 ${conflictedFiles.map(f => `- ${f}`).join('\n')}
 
 Strategy: Keep auto-fix changes where possible. Accept remote (main) changes for test files.`;
-      
+
       core.notice('Copilot conflict analysis queued for manual review');
       // Future: Call Copilot API to suggest resolutions
 ```
@@ -511,14 +511,14 @@ jobs:
       risky_packages: ${{ steps.predict.outputs.risky_packages }}
     steps:
       - uses: actions/checkout@v7
-      
+
       - name: Copilot cache prediction
         id: predict
         uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
-            
+
             // Analyze recent cache performance
             const prompt = `Analyze these requirements and predict cache hit probability:
 ${fs.readFileSync('requirements.txt', 'utf8').split('\n').slice(0, 20).join('\n')}
@@ -529,13 +529,13 @@ Recent cache misses (last 7 days):
 - new dev dependencies (2 misses)
 
 Predict: (1) hit probability, (2) risky packages, (3) TTL recommendation`;
-            
+
             // Would call Copilot API
             // const prediction = await copilot.complete(prompt);
-            
+
             core.setOutput('hit_prob', '0.75');
             core.setOutput('risky_packages', 'torch,setuptools,cryptography');
-      
+
       - name: Pre-warm cache if needed
         if: steps.predict.outputs.cache_hit_probability < 0.6
         run: |
@@ -738,9 +738,9 @@ jobs:
           RUNS=$(gh run list --workflow progressive-validation.yml --limit 100 --json status | jq '.[] | select(.status == "completed")')
           FAILURES=$(echo "$RUNS" | jq 'select(.conclusion == "failure") | length')
           TOTAL=$(echo "$RUNS" | jq 'length')
-          
+
           FAILURE_RATE=$((FAILURES * 100 / TOTAL))
-          
+
           if [ $FAILURE_RATE -gt 10 ]; then
             echo "::error::Progressive-validation failure rate at ${FAILURE_RATE}% (threshold: 10%)"
             exit 1

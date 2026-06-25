@@ -136,7 +136,8 @@ def run_gh_cli(args: list[str]) -> Optional[str]:
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
-        logger.error(f"gh command failed: {e}")
+        error_type = type(e).__name__
+        logger.error(f"gh command failed: <ERROR_TYPE>")
         logger.error(f"stderr: {e.stderr}")
         return None
     except FileNotFoundError:
@@ -169,7 +170,8 @@ def fetch_commit_check_runs(sha: str) -> list[dict[str, Any]]:
         data = json.loads(output)
         return data if isinstance(data, list) else []
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse check runs for {sha[:7]}: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to parse check runs for {sha[:7]}: <ERROR_TYPE>")
         return []
 
 
@@ -198,7 +200,8 @@ def fetch_workflow_runs_for_commit(sha: str) -> list[dict[str, Any]]:
         data = json.loads(output)
         return data if isinstance(data, list) else []
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse workflow runs for {sha[:7]}: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to parse workflow runs for {sha[:7]}: <ERROR_TYPE>")
         return []
 
 
@@ -224,7 +227,8 @@ def fetch_artifacts_for_run(run_id: int) -> list[dict[str, Any]]:
         data = json.loads(output)
         return data if isinstance(data, list) else []
     except json.JSONDecodeError as e:
-        logger.error(f"Failed to parse artifacts for run {run_id}: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to parse artifacts for run {run_id}: <ERROR_TYPE>")
         return []
 
 

@@ -26,6 +26,7 @@ from codex.cognitive.safety_guards import (
 # Enums
 # ---------------------------------------------------------------------------
 
+
 class TestEnums:
     def test_audit_event_types(self):
         assert AuditEventType.ADJUSTMENT_PROPOSED.value == "adjustment_proposed"
@@ -40,6 +41,7 @@ class TestEnums:
 # ---------------------------------------------------------------------------
 # AuditEvent
 # ---------------------------------------------------------------------------
+
 
 class TestAuditEvent:
     def test_roundtrip(self):
@@ -74,6 +76,7 @@ class TestAuditEvent:
 # RollbackRecord
 # ---------------------------------------------------------------------------
 
+
 class TestRollbackRecord:
     def test_to_dict(self):
         now = datetime.now(timezone.utc)
@@ -93,6 +96,7 @@ class TestRollbackRecord:
 # ---------------------------------------------------------------------------
 # RateLimit
 # ---------------------------------------------------------------------------
+
 
 class TestRateLimit:
     def test_allows_within_limit(self):
@@ -128,6 +132,7 @@ class TestRateLimit:
 # ScopeRestriction
 # ---------------------------------------------------------------------------
 
+
 class TestScopeRestriction:
     def _make_adjustment(self, adj_type=AdjustmentType.PRIORITY_INCREASE, rule_id="R1"):
         return Adjustment(
@@ -159,9 +164,7 @@ class TestScopeRestriction:
         assert "blocked" in reason.lower()
 
     def test_blocks_rule(self):
-        scope = ScopeRestriction(
-            name="limited", description="test", blocked_rules=["R1"]
-        )
+        scope = ScopeRestriction(name="limited", description="test", blocked_rules=["R1"])
         adj = self._make_adjustment(rule_id="R1")
         allowed, reason = scope.check_adjustment(adj)
         assert allowed is False
@@ -179,6 +182,7 @@ class TestScopeRestriction:
 # ---------------------------------------------------------------------------
 # AuditLog
 # ---------------------------------------------------------------------------
+
 
 class TestAuditLog:
     @pytest.fixture()
@@ -235,6 +239,7 @@ class TestAuditLog:
 # ---------------------------------------------------------------------------
 # SafetyGuard
 # ---------------------------------------------------------------------------
+
 
 class TestSafetyGuard:
     @pytest.fixture()

@@ -81,7 +81,8 @@ class SignatureValidator:
                     self._check_call(node, test_file, content)
 
         except Exception as e:
-            print(f"⚠️  Error parsing {test_file}: {e}")
+            error_type = type(e).__name__
+            print(f"⚠️  Error parsing {test_file}: <ERROR_TYPE>")
 
         return self.mismatches
 

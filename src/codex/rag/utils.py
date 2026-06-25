@@ -80,7 +80,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
             import torch as _torch
 
             _is_nn_module = isinstance(model, _torch.nn.Module)
-        except Exception:
+        except (IOError, OSError):
             _is_nn_module = False
 
         if not _is_nn_module:
@@ -135,8 +135,9 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
                     return True
 
         return False
-    except Exception as e:
-        logger.warning(f"Error checking for meta tensors: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.warning(f"Error checking for meta tensors: <ERROR_TYPE>")
         return None
 
 
@@ -208,8 +209,9 @@ def safe_model_to_device(
                         try:
                             module.reset_parameters()
                             logger.debug(f"Reset parameters for {module.__class__.__name__}")
-                        except Exception as e:
-                            logger.debug(f"Could not reset parameters for {module}: {e}")
+                        except (ImportError, AttributeError) as e:
+                            error_type = type(e).__name__
+                            logger.debug(f"Could not reset parameters for {module}: <ERROR_TYPE>")
             else:
                 logger.debug("Model doesn't support modules(), skipping parameter reset")
 
@@ -269,10 +271,11 @@ def safe_model_to_device(
         if "to_empty" in str(e):
             raise
         # Otherwise, model doesn't support .to() method - return as-is
-        logger.warning(f"Model does not support device transfer: {e}")
+        logger.warning(f"Model does not support device transfer: <ERROR_TYPE>")
         return model
-    except Exception as e:
-        logger.error(f"Error moving model to device {device}: {e}")
+    except (ValueError, TypeError, RuntimeError) as e:
+        error_type = type(e).__name__
+        logger.error(f"Error moving model to device {device}: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to move model to {device}: {e}") from e
 
 
@@ -303,7 +306,7 @@ def _try_model_to(
             # Fallback: some models may not support all parameters
             try:
                 return model.to(device)  # safe-device-placement: internal implementation
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
     # Model doesn't have .to() method
     logger.warning("No device transfer method available, returning model as-is")

@@ -90,7 +90,6 @@ class TestKeyManagement:
         # Arrange
         old_key = "old_encryption_key"
         new_key = "new_encryption_key"
-        data_encrypted_with_old_key = b"encrypted_data"
 
         # Act
         key_changed = old_key != new_key
@@ -142,7 +141,6 @@ class TestKeyManagement:
         # Arrange
         old_master_key = "old_master_key"
         new_master_key = "new_master_key"
-        data_keys = ["data_key_1", "data_key_2"]
 
         # Act
         rotation_complete = old_master_key != new_master_key
@@ -200,7 +198,7 @@ class TestHashFunctions:
 
         # Act
         hash1 = hashlib.sha256(data).digest()
-        hash2 = hashlib.sha256(hash1).digest()
+        hashlib.sha256(hash1).digest()
         hash1_again = hashlib.sha256(data).digest()
 
         # Assert
@@ -240,7 +238,7 @@ class TestHMACOperations:
         key = b"secret_key"
         message = b"message"
         correct_hmac = hmac.new(key, message, hashlib.sha256).digest()
-        wrong_hmac = hmac.new(key, b"different", hashlib.sha256).digest()
+        hmac.new(key, b"different", hashlib.sha256).digest()
 
         # Act
         # Should use constant-time comparison
@@ -378,6 +376,7 @@ class TestCryptographicRandomness:
         # Act
         # Generate samples and check distribution
         import random
+
         values = [random.randint(0, 9) for _ in range(samples)]
         distribution = [values.count(i) for i in range(10)]
 

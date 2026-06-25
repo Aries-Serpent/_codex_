@@ -346,16 +346,12 @@ class TestIncidentTimeline:
         timestamps = [event["timestamp"] for event in incident_timeline]
         assert timestamps == sorted(timestamps)
 
-    def test_timeline_has_detection_event(
-        self, incident_timeline: list[dict[str, Any]]
-    ):
+    def test_timeline_has_detection_event(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline includes detection event."""
         detection_events = [e for e in incident_timeline if e["type"] == "detection"]
         assert len(detection_events) == 1
 
-    def test_timeline_has_resolution_event(
-        self, incident_timeline: list[dict[str, Any]]
-    ):
+    def test_timeline_has_resolution_event(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline includes resolution event."""
         resolution_events = [e for e in incident_timeline if e["type"] == "resolution"]
         assert len(resolution_events) == 1
@@ -367,9 +363,7 @@ class TestIncidentTimeline:
             for field in required_fields:
                 assert field in event
 
-    def test_calculate_time_to_acknowledge(
-        self, incident_timeline: list[dict[str, Any]]
-    ):
+    def test_calculate_time_to_acknowledge(self, incident_timeline: list[dict[str, Any]]):
         """Test calculating time to acknowledge."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")
         ack = next(e for e in incident_timeline if e["type"] == "acknowledgment")
@@ -417,9 +411,7 @@ class TestRunbookAutomation:
 
     def test_approval_required_steps(self, runbook_config: dict[str, Any]):
         """Test approval-required steps are identified."""
-        approval_steps = [
-            s for s in runbook_config["steps"] if s.get("requires_approval")
-        ]
+        approval_steps = [s for s in runbook_config["steps"] if s.get("requires_approval")]
         assert len(approval_steps) > 0
 
     def test_runbook_trigger_specified(self, runbook_config: dict[str, Any]):
@@ -493,9 +485,7 @@ class TestPostIncidentReview:
             # Validate date format
             datetime.fromisoformat(item["due"])
 
-    def test_incident_metrics_calculation(
-        self, incident_timeline: list[dict[str, Any]]
-    ):
+    def test_incident_metrics_calculation(self, incident_timeline: list[dict[str, Any]]):
         """Test incident metrics calculation."""
         detection = next(e for e in incident_timeline if e["type"] == "detection")
         ack = next(e for e in incident_timeline if e["type"] == "acknowledgment")
@@ -507,13 +497,9 @@ class TestPostIncidentReview:
 
         metrics = {
             "time_to_detect_minutes": 0,  # Assumed instant for alert-triggered
-            "time_to_acknowledge_minutes": (ack_time - detect_time).total_seconds()
-            / 60,
-            "time_to_resolve_minutes": (resolve_time - detect_time).total_seconds()
-            / 60,
+            "time_to_acknowledge_minutes": (ack_time - detect_time).total_seconds() / 60,
+            "time_to_resolve_minutes": (resolve_time - detect_time).total_seconds() / 60,
         }
 
         assert metrics["time_to_acknowledge_minutes"] > 0
-        assert (
-            metrics["time_to_resolve_minutes"] > metrics["time_to_acknowledge_minutes"]
-        )
+        assert metrics["time_to_resolve_minutes"] > metrics["time_to_acknowledge_minutes"]

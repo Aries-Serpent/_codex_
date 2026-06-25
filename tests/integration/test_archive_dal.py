@@ -3,6 +3,7 @@ Integration tests for codex.archive.dal module.
 
 Tests basic DAL functionality with SQLite backend.
 """
+
 import pytest
 
 from codex.archive.dal import SqliteDAL
@@ -35,9 +36,7 @@ class TestSqliteDAL:
         cursor = dal.conn.cursor()
 
         # Check that tables exist
-        cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
-        )
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
         tables = {row[0] for row in cursor.fetchall()}
 
         # Should have core tables
@@ -61,10 +60,12 @@ class TestSqliteDAL:
 
         assert isinstance(summary, dict)
         # Should have counts for artifacts
-        assert "count" in summary, \
-            f"Summary should contain 'count' key, got: {list(summary.keys())}"
-        assert "total_bytes" in summary, \
-            f"Summary should contain 'total_bytes' key, got: {list(summary.keys())}"
+        assert (
+            "count" in summary
+        ), f"Summary should contain 'count' key, got: {list(summary.keys())}"
+        assert (
+            "total_bytes" in summary
+        ), f"Summary should contain 'total_bytes' key, got: {list(summary.keys())}"
 
     def test_recent_items_returns_list(self, dal):
         """Test that recent_items returns a list."""

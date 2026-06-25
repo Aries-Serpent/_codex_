@@ -101,15 +101,15 @@ Functions with CC > 10: 241 total (from sample of ~350 files)
 Top problematic modules:
   1. src/ingestion/encoding_detect.py
      - detect_encoding(): CC = 18 (CRITICAL)
-     
+
   2. src/bridge_manager.py
      - __init__(): CC = 13
      - _read_from_socket(): CC = 12
-     
+
   3. src/workflow_refactor.py
      - ensure_self_hosted_runner(): CC = 11
      - validate_workflow(): CC = 11
-     
+
   4. src/ingestion/utils.py
      - _fallback_detect_encoding(): CC = 12
      - read_text(): CC = 11

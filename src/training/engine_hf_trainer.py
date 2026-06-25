@@ -23,6 +23,7 @@ Features:
 """
 
 from __future__ import annotations
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -46,8 +47,9 @@ def _install_accelerate_compat() -> None:
         DataLoaderConfiguration = getattr(
             getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
         )
-    except Exception as e:  # pragma: no cover
-        print(f"[codex][accelerate] failed to inspect accelerate: {e}")
+    except (ValueError, TypeError) as e:  # pragma: no cover
+        error_type = type(e).__name__
+        print(f"[codex][accelerate] failed to inspect accelerate: <ERROR_TYPE>")
         return
 
     class _CompatAccelerator(_BaseAccelerator):
@@ -121,22 +123,22 @@ import re
 import shutil
 import time
 import warnings
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 from typing import Any, Optional, cast
-from collections.abc import Iterable, Mapping
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
-except Exception:  # pragma: no cover - numpy missing
+except (IOError, OSError):  # pragma: no cover - numpy missing
     np = None
 
 try:  # pragma: no cover - optional datasets dependency
-    from datasets import Dataset  # type: ignore[attr-defined]
-except Exception:  # pragma: no cover - datasets missing
+    from datasets import Dataset
+except (ImportError, AttributeError):  # pragma: no cover - datasets missing
 
-    class Dataset:  # type: ignore[no-redef]
+    class Dataset:
         """Minimal stand-in for datasets.Dataset used in tests/offline.
 
         Provides enough surface to not explode during unit tests that don't
@@ -165,7 +167,7 @@ except Exception:  # pragma: no cover - datasets missing
             col = self._data[first_key]
             try:
                 return len(col)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 return 0
 
@@ -184,30 +186,30 @@ try:  # pragma: no cover - optional transformers dependency
     )
     from transformers import __version__ as _hf_version
     from transformers.optimization import get_scheduler
-except Exception:  # pragma: no cover - transformers missing
+except (ImportError, AttributeError):  # pragma: no cover - transformers missing
     _hf_version = "0.0.0-offline"
 
     class _MissingTransformersObject:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers dependency not available in offline mode")
 
-    AutoModelForCausalLM = _MissingTransformersObject  # type: ignore[assignment, misc]
-    AutoTokenizer = _MissingTransformersObject  # type: ignore[assignment, misc]
-    DataCollatorForLanguageModeling = _MissingTransformersObject  # type: ignore[assignment, misc]
+    AutoModelForCausalLM = _MissingTransformersObject
+    AutoTokenizer = _MissingTransformersObject
+    DataCollatorForLanguageModeling = _MissingTransformersObject
 
-    class EarlyStoppingCallback:  # type: ignore[no-redef]
+    class EarlyStoppingCallback:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers EarlyStoppingCallback unavailable in offline mode")
 
-    class TrainerCallback:  # type: ignore[no-redef]
+    class TrainerCallback:
         pass
 
-    class TrainingArguments:  # type: ignore[no-redef]
+    class TrainingArguments:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             self.args = args
             self.kwargs = kwargs
 
-    class Trainer:  # type: ignore[no-redef]
+    class Trainer:
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise ImportError("transformers.Trainer unavailable in offline mode")
 
@@ -223,7 +225,7 @@ except Exception:  # pragma: no cover - transformers missing
 
 try:  # pragma: no cover - optional torch dependency
     import torch
-except Exception:  # pragma: no cover - torch missing or stubbed out by tests
+except (ImportError, AttributeError):  # pragma: no cover - torch missing or stubbed out by tests
     import types
 
     def _noop(*args: Any, **kwargs: Any) -> None:  # pragma: no cover - fallback helper
@@ -265,7 +267,11 @@ from codex_ml.monitoring.codex_logging import (
 )
 from codex_ml.monitoring.schema import LogRecord
 from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import build_payload_bytes, load_payload, set_seed  # type: ignore[attr-defined]
+from codex_ml.utils.checkpointing import (
+    build_payload_bytes,
+    load_payload,
+    set_seed,
+)
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 from codex_ml.utils.provenance import snapshot_hydra_config
@@ -277,19 +283,19 @@ from omegaconf import OmegaConf
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
-except Exception as exc:  # pragma: no cover - missing in some envs
-    CheckpointManager = None  # type: ignore
+except (IOError, OSError) as exc:  # pragma: no cover - missing in some envs
+    CheckpointManager = None
     log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter
-except Exception:  # pragma: no cover - optional dep
+except (IOError, OSError):  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
 try:  # Optional accelerate integration
     from accelerate import Accelerator as _Accelerator
-except Exception:  # pragma: no cover - optional dep
+except (IOError, OSError):  # pragma: no cover - optional dep
     _Accelerator = None
 
 
@@ -367,8 +373,9 @@ def _log_mlflow_metrics(
             for key, value in metrics.items():
                 if isinstance(value, (int, float)):
                     mlflow_module.log_metric(key, float(value))
-    except Exception as exc:  # pragma: no cover - defensive logging
-        print(f"[codex][mlflow] skipped logging: {exc}")
+    except (IOError, OSError) as exc:  # pragma: no cover - defensive logging
+        error_type = type(exc).__name__
+        print(f"[codex][mlflow] skipped logging: <ERROR_TYPE>")
 
 
 def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
@@ -380,8 +387,9 @@ def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
     try:
         return Path(norm).expanduser().exists()
     except OSError as e:
-        logger.debug(f"OSError: {e}")
-        logger.warning(f"OSError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"OSError: <ERROR_TYPE>")
+        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
         return False
 
 
@@ -407,7 +415,8 @@ def get_hf_revision(identifier: os.PathLike[str] | str) -> str:
     try:
         revision, _ = ensure_pinned_kwargs(norm, overrides)
     except ValueError as exc:
-        logger.debug(f"ValueError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
         if env_revision:
             raise RuntimeError("HF_REVISION must be set to an immutable commit hash") from exc
         raise RuntimeError(
@@ -478,8 +487,9 @@ def build_trainer(
                 try:
                     training_steps = args.num_train_epochs * (len(train_ds) // batch_size + 1)
                 except TypeError as e:
-                    logger.debug(f"TypeError: {e}")
-                    logger.warning(f"TypeError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"TypeError: <ERROR_TYPE>")
+                    logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
                     training_steps = num_steps
             if training_steps is not None:
                 trainer.lr_scheduler = get_scheduler(
@@ -576,7 +586,7 @@ def _compute_metrics(eval_pred):
         log_probs = logits - logits.max(axis=-1, keepdims=True)
         log_probs = log_probs - np.log(np.exp(log_probs).sum(axis=-1, keepdims=True))
         loss = float(-log_probs[np.arange(logits.shape[0]), lbl].mean())
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         loss = None
     ppl = float("inf") if loss in (None, 0) else math.exp(loss)
@@ -607,7 +617,7 @@ def _seed_everything(seed: int = 42):
     except RuntimeError as e:
         try:
             torch.use_deterministic_algorithms(True, warn_only=True)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Could not enable deterministic algorithms: %s", e)
 
 
@@ -650,7 +660,7 @@ class NDJSONMetricsWriter:
                 valid_keys = {f.name for f in _dc.fields(LogRecord)}
                 filtered = {k: v for k, v in obj.items() if k in valid_keys}
                 data = LogRecord(**filtered).redacted().dict()
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj
         if self._async is not None:
@@ -666,8 +676,9 @@ class NDJSONMetricsWriter:
     def __del__(self) -> None:  # pragma: no cover - best effort
         try:
             self.close()
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
             )  # Best effort cleanup; __del__ cannot raise exceptions
@@ -957,7 +968,7 @@ def _sanitize_config_snapshot(cfg: Mapping[str, Any] | None) -> dict[str, Any] |
 
     try:
         normalized = _convert(cfg)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     return normalized if isinstance(normalized, dict) else None
@@ -1019,11 +1030,11 @@ def run_hf_trainer(
         raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
-    except Exception as exc:  # pragma: no cover - logging best effort
+    except (IOError, OSError) as exc:  # pragma: no cover - logging best effort
         log_error("env_log", str(exc), "env")
     try:
         snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)
-    except Exception as exc:  # pragma: no cover - logging best effort
+    except (IOError, OSError) as exc:  # pragma: no cover - logging best effort
         log_error("hydra_snapshot", str(exc), "env")
     resume_ckpt = Path(resume_from) if resume_from else None
     if resume_ckpt and not resume_ckpt.exists():
@@ -1043,15 +1054,17 @@ def run_hf_trainer(
         try:
             cfg = safe_load(config_path.read_text()) or {}
         except MissingPyYAMLError as exc:
-            logger.debug(f"MissingPyYAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 "PyYAML is required to parse training configs passed to EngineHfTrainer. "
                 'Install it via ``pip install "PyYAML>=6.0"`` before retrying.'
             ) from exc
         except YAMLError as exc:
-            logger.debug(f"YAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"YAMLError: <ERROR_TYPE>")
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             cfg = {}
         if config_snapshot is None and cfg:
@@ -1178,8 +1191,9 @@ def run_hf_trainer(
             if lora_task_type:
                 cfg["task_type"] = str(lora_task_type)
             model = apply_lora(model, cfg)
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (ValueError, TypeError, RuntimeError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             log_error("lora_import", str(exc), "peft")
 
     # Setup checkpoint callbacks
@@ -1232,8 +1246,9 @@ def run_hf_trainer(
                     return control
 
             callbacks = [_CheckpointCallback()]
-        except Exception as exc:
-            logger.debug(f"Exception: {exc}")
+        except (ConnectionError, TimeoutError) as exc:
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             log_error("checkpoint_init", str(exc), str(checkpoint_dir))
 
     # Initialize logging only when explicitly requested
@@ -1247,8 +1262,9 @@ def run_hf_trainer(
             os.environ.setdefault("MLFLOW_TRACKING_URI", "file:./mlruns")
             try:
                 loggers = _codex_logging_bootstrap(log_args)
-            except Exception as exc:  # pragma: no cover - bootstrap is best-effort
-                print(f"[telemetry] bootstrap skipped: {exc}")
+            except (IOError, OSError) as exc:  # pragma: no cover - bootstrap is best-effort
+                error_type = type(exc).__name__
+                print(f"[telemetry] bootstrap skipped: <ERROR_TYPE>")
 
     # If this code path needs an Accelerator (e.g., for non-Trainer ops), construct it via the shim.
     accelerate_kwargs = dict(accelerate_kwargs or {})
@@ -1285,8 +1301,9 @@ def run_hf_trainer(
             m = re.search(r"ckpt-(\d+)\.pt", custom_resume.name)
             if m:
                 trainer.state.global_step = int(m.group(1))
-        except Exception as exc:  # pragma: no cover - resume best effort
-            print(f"Failed to load checkpoint {custom_resume}: {exc}")
+        except (ValueError, TypeError) as exc:  # pragma: no cover - resume best effort
+            error_type = type(exc).__name__
+            print(f"Failed to load checkpoint {custom_resume}: <ERROR_TYPE>")
         resume_ckpt = None
 
     # Train with optional checkpoint resumption
@@ -1309,8 +1326,9 @@ def run_hf_trainer(
                 **sysd,
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
             )  # Logging failure; continue with training
@@ -1324,8 +1342,9 @@ def run_hf_trainer(
                     writer.add_scalar(k, v, trainer.state.global_step)
             writer.flush()
             writer.close()
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
             )  # TensorBoard logging failure; continue with training
@@ -1359,7 +1378,7 @@ def run_hf_trainer(
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(config_path, target_path)
             copied_resume_config = target_path
-        except Exception:
+        except (IOError, OSError):
             logger.warning("Exception occurred", exc_info=True)
             copied_resume_config = None
 

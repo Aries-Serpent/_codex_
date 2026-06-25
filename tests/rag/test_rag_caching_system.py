@@ -26,10 +26,7 @@ class TestEmbeddingCache:
             from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
-                config = EmbeddingCacheConfig(
-                    enable_disk_cache=True,
-                    disk_cache_path=tmpdir
-                )
+                config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
                 cache = EmbeddingCache(config)
                 assert cache is not None
         except (ImportError, AttributeError):
@@ -41,10 +38,7 @@ class TestEmbeddingCache:
             from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
-                config = EmbeddingCacheConfig(
-                    enable_disk_cache=True,
-                    disk_cache_path=tmpdir
-                )
+                config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
                 cache = EmbeddingCache(config)
 
                 text = "test document for caching"
@@ -67,10 +61,7 @@ class TestEmbeddingCache:
             from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
-                config = EmbeddingCacheConfig(
-                    enable_disk_cache=True,
-                    disk_cache_path=tmpdir
-                )
+                config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
                 cache = EmbeddingCache(config)
 
                 # Try to get non-existent entry
@@ -86,10 +77,7 @@ class TestEmbeddingCache:
             from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
-                config = EmbeddingCacheConfig(
-                    enable_disk_cache=True,
-                    disk_cache_path=tmpdir
-                )
+                config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
                 # Create first cache instance
                 cache1 = EmbeddingCache(config)
                 text = "persistent text"
@@ -291,7 +279,7 @@ class TestCacheInvalidation:
                 cache.set("text2", [0.2])
 
                 # Clear all
-                if hasattr(cache, 'clear'):
+                if hasattr(cache, "clear"):
                     cache.clear()
 
                     # Should be empty
@@ -313,7 +301,7 @@ class TestCacheInvalidation:
                 cache.set("text2", [0.2])
 
                 # Delete specific item
-                if hasattr(cache, 'delete'):
+                if hasattr(cache, "delete"):
                     cache.delete("text1")
 
                     # text1 should be gone
@@ -337,7 +325,7 @@ class TestCacheInvalidation:
                 cache.set("user_2_doc", [0.3])
 
                 # Invalidate by pattern
-                if hasattr(cache, 'invalidate_pattern'):
+                if hasattr(cache, "invalidate_pattern"):
                     cache.invalidate_pattern("user_1_*")
 
                     # user_1 items should be gone
@@ -477,7 +465,7 @@ class TestCacheConsistency:
                     try:
                         for i in range(10):
                             cache.set(f"thread_{thread_id}_text_{i}", [float(i)])
-                    except Exception as e:
+                    except (IOError, OSError) as e:
                         errors.append(e)
 
                 # Create multiple threads

@@ -13,10 +13,10 @@ try:  # pragma: no cover - optional dependency
     from jsonschema import ValidationError, validate
 
     _HAS_JSONSCHEMA = True
-except Exception:  # pragma: no cover
+except (ValueError, TypeError):  # pragma: no cover
     _HAS_JSONSCHEMA = False
 
-    class ValidationError(Exception):  # type: ignore[no-redef]
+    class ValidationError(Exception):
         """Fallback validation error when jsonschema is unavailable."""
 
     def validate(*_args: Any, **_kwargs: Any) -> None:
@@ -68,14 +68,15 @@ class DatasetValidator:
             LOGGER.info("✓ Manifest valid: %s", manifest_path)
             return True
         except ValidationError as exc:
-            logger.debug(f"ValidationError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ValidationError: <ERROR_TYPE>")
             # ValidationError has a 'message' attribute when jsonschema is available
             error_msg = getattr(exc, "message", str(exc))
             if not _HAS_JSONSCHEMA:
                 error_msg = f"{error_msg} (fallback validator)"
             LOGGER.error("✗ Manifest invalid (%s): %s", manifest_path, error_msg)
             return False
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             LOGGER.error("✗ Manifest validation failed: %s", exc)
             return False
 

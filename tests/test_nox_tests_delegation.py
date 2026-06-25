@@ -28,11 +28,11 @@ def test_tests_session_delegates_to_coverage():
     # Verify pytest was called with coverage (not delegated to separate session)
     # The session should call run() with pytest and --cov flags
     run_calls = [call for call in sess.run.call_args_list]
-    pytest_calls = [call for call in run_calls if 'pytest' in str(call)]
+    pytest_calls = [call for call in run_calls if "pytest" in str(call)]
 
     # Should have at least one pytest call with coverage flags
     assert len(pytest_calls) > 0, "tests session must run pytest"
 
     # Check that coverage flags are present
     all_args = str(sess.run.call_args_list)
-    assert '--cov' in all_args, "tests session must run pytest with coverage"
+    assert "--cov" in all_args, "tests session must run pytest with coverage"

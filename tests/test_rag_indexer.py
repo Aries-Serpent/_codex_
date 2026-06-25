@@ -20,6 +20,7 @@ try:
         load_index,
         persist_index,
     )
+
     RAG_INDEXER_AVAILABLE = True
 except ImportError:
     RAG_INDEXER_AVAILABLE = False
@@ -34,12 +35,13 @@ except ImportError:
 
 pytestmark = pytest.mark.skipif(
     not RAG_INDEXER_AVAILABLE or not SENTENCE_TRANSFORMERS_AVAILABLE,
-    reason="RAG indexer dependencies (sentence_transformers, faiss) not installed"
+    reason="RAG indexer dependencies (sentence_transformers, faiss) not installed",
 )
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
     import torch as _torch
+
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
     _cuda_available = False
@@ -441,10 +443,7 @@ class TestManageTenantIndices:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
-                tenant_id="test",
-                operation="invalid_op",
-                index_names=["idx1"],
-                index_dir=tmpdir
+                tenant_id="test", operation="invalid_op", index_names=["idx1"], index_dir=tmpdir
             )
             assert not result.success
             assert "Invalid operation" in result.message
@@ -456,10 +455,7 @@ class TestManageTenantIndices:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
-                tenant_id="test",
-                operation="create",
-                index_names=["idx1"],
-                index_dir=tmpdir
+                tenant_id="test", operation="create", index_names=["idx1"], index_dir=tmpdir
             )
             assert not result.success
             assert "requires 'files' parameter" in result.message
@@ -471,10 +467,7 @@ class TestManageTenantIndices:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
-                tenant_id="test",
-                operation="list",
-                index_names=[],
-                index_dir=tmpdir
+                tenant_id="test", operation="list", index_names=[], index_dir=tmpdir
             )
             assert result.success
             assert len(result.index_names) == 0
@@ -486,10 +479,7 @@ class TestManageTenantIndices:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
-                tenant_id="test",
-                operation="delete",
-                index_names=["nonexistent"],
-                index_dir=tmpdir
+                tenant_id="test", operation="delete", index_names=["nonexistent"], index_dir=tmpdir
             )
             assert not result.success
 
@@ -500,10 +490,7 @@ class TestManageTenantIndices:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
-                tenant_id="test",
-                operation="merge",
-                index_names=["idx1", "idx2"],
-                index_dir=tmpdir
+                tenant_id="test", operation="merge", index_names=["idx1", "idx2"], index_dir=tmpdir
             )
             assert not result.success
             assert "requires 'merge_name' parameter" in result.message
@@ -515,10 +502,7 @@ class TestManageTenantIndices:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
-                tenant_id="test",
-                operation="update",
-                index_names=["idx1"],
-                index_dir=tmpdir
+                tenant_id="test", operation="update", index_names=["idx1"], index_dir=tmpdir
             )
             assert not result.success
             assert "requires 'files' parameter" in result.message

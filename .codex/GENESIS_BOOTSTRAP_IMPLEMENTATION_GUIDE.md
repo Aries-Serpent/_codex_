@@ -22,7 +22,7 @@ This guide provides the **code-level implementation details** for Phase 2.2 gene
 | Item | Status | Effort | Notes |
 |------|--------|--------|-------|
 | **GENESIS_DRY_RUN input** | 📋 Design | 1 hour | Add to workflow inputs |
-| **Token health checks** | 📋 Design | 2 hours | Call TokenCircuitBreaker |
+| **Token health checks** | 📋 Design | 2 hours | Call TokenCircuitBreaker | <!-- pragma: allowlist secret -->
 | **JSON logging** | 📋 Design | 3 hours | Implement machine-readable logs |
 | **WEC integration** | 📋 Design | 1 hour | Update PR template |
 | **Approval audit trail** | 📋 Design | 1.5 hours | Create wec_approval_log.md |
@@ -82,24 +82,24 @@ env:
           import json
           import sys
           from pathlib import Path
-          
+
           # Add scripts/ci to path for imports
           sys.path.insert(0, 'scripts/ci')
-          
+
           try:
               # Import TokenCircuitBreaker from Phase 2.1
               from autonomy.token_broker import (
                   TokenCircuitBreaker,
                   TokenHealthChecker
               )
-              
+
               # Initialize health checker
               checker = TokenHealthChecker()
-              
+
               # Check MASTER KEY
               master_status = checker.check_jwt_health('${{ secrets.CODEX_MASTER_KEY }}')
               backup_status = checker.check_jwt_health('${{ secrets.CODEX_BACKUP_KEY }}')
-              
+
               # Prepare report
               report = {
                   "master_key": {
@@ -111,10 +111,10 @@ env:
                       "valid": backup_status.name == "HEALTHY"
                   }
               }
-              
+
               # Write for later steps
               Path('token_health.json').write_text(json.dumps(report, indent=2))
-              
+
               # Check circuit breaker
               if master_status.name != "HEALTHY":
                   print(f"⚠️  Master key status: {master_status.name}")
@@ -125,7 +125,7 @@ env:
                       sys.exit(1)
               else:
                   print("✅ Token health: HEALTHY")
-          
+
           except Exception as e:
               print(f"❌ Token validation failed: {e}")
               sys.exit(1)
@@ -146,14 +146,14 @@ env:
           import json
           from datetime import datetime, timezone
           from pathlib import Path
-          
+
           # Load token health (if available)
           token_health = {}
           try:
               token_health = json.loads(Path('token_health.json').read_text())
           except:
               token_health = {"status": "unknown"}
-          
+
           # Create audit entry
           audit_entry = {
               "event": {
@@ -183,11 +183,11 @@ env:
                   "timestamp": datetime.now(timezone.utc).isoformat() + "Z"
               }
           }
-          
+
           # Write to JSON log (append mode)
           log_file = Path('.codex/audit/genesis_bootstrap_log.json')
           log_file.parent.mkdir(parents=True, exist_ok=True)
-          
+
           # Append entry (one JSON object per line)
           log_file.write_text(
               log_file.read_text() if log_file.exists() else ""
@@ -195,7 +195,7 @@ env:
           with open(log_file, 'a') as f:
               json.dump(audit_entry, f)
               f.write('\n')
-          
+
           print("✅ Audit entry written")
           print(json.dumps(audit_entry, indent=2))
           PYTHON_EOF
@@ -236,19 +236,19 @@ env:
         run: |
           mkdir -p .codex/audit
           cat >> .codex/audit/wec_approval_log.md << 'EOF'
-          
+
           ## Genesis Bootstrap - ${{ github.run_id }}
-          
+
           **Timestamp:** $(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          
+
           **Approval Context:**
           - PR/Trigger: ${{ github.ref }}
           - Actor: ${{ github.actor }}
           - Run ID: ${{ github.run_id }}
           - Dry-Run Mode: ${{ env.GENESIS_DRY_RUN }}
-          
+
           **WEC Approval:** Checked via workflow-execution-gate.yml
-          
+
           EOF
 ```
 
@@ -416,9 +416,9 @@ _WEC_ALWAYS_REQUIRED = [
 
 | File | Purpose |
 |------|---------|
-| `src/codex/autonomy/token_broker.py` | TokenCircuitBreaker + TokenHealthChecker |
-| `scripts/ci/validate_token_setup.py` | Token validation script |
-| `.codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md` | Secret setup procedure |
+| `src/codex/autonomy/token_broker.py` | TokenCircuitBreaker + TokenHealthChecker | <!-- pragma: allowlist secret -->
+| `scripts/ci/validate_token_setup.py` | Token validation script | <!-- pragma: allowlist secret -->
+| `.codex/PHASE_2_1_SECRET_INJECTION_DESIGN.md` | Secret setup procedure | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -430,7 +430,7 @@ _WEC_ALWAYS_REQUIRED = [
 ✅ Audit Document Created (PHASE_2_2_GENESIS_BOOTSTRAP_AUDIT.md)
 ✅ Implementation Guide Provided (this document)
 ✅ GENESIS_DRY_RUN Input Added
-✅ Token Health Checking Integrated
+✅ Token Health Checking Integrated  # pragma: allowlist secret
 ✅ JSON Audit Logging Implemented
 ✅ WEC Integration Complete
 ✅ Approval Audit Trail Functional

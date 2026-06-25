@@ -311,10 +311,10 @@ class TestTokenExpiry:
         """Test token expires after timeout."""
         # This test is tricky due to timing
         token = token_manager_custom_timeout.create_access_token(
-            "user123",
-            expires_in=1  # 1 second
+            "user123", expires_in=1  # 1 second
         )
         import time
+
         time.sleep(1.1)
         is_expired = token_manager_custom_timeout.is_token_expired(token)
         assert is_expired is True
@@ -435,12 +435,15 @@ class TestTokenScopes:
 # ============================================================================
 
 
-@pytest.mark.parametrize("expires_in", [
-    300,    # 5 minutes
-    3600,   # 1 hour
-    86400,  # 1 day
-    604800, # 1 week
-])
+@pytest.mark.parametrize(
+    "expires_in",
+    [
+        300,  # 5 minutes
+        3600,  # 1 hour
+        86400,  # 1 day
+        604800,  # 1 week
+    ],
+)
 def test_token_creation_with_different_expiry_parametrized(token_manager, expires_in):
     """Parametrized test for token creation with different expiry times."""
     token = token_manager.create_access_token("user123", expires_in=expires_in)
@@ -448,12 +451,15 @@ def test_token_creation_with_different_expiry_parametrized(token_manager, expire
     assert token_manager.validate_token(token) is not None
 
 
-@pytest.mark.parametrize("user_id", [
-    "user1",
-    "user_with_special_chars_123",
-    "user@domain",
-    "12345",
-])
+@pytest.mark.parametrize(
+    "user_id",
+    [
+        "user1",
+        "user_with_special_chars_123",
+        "user@domain",
+        "12345",
+    ],
+)
 def test_create_token_for_different_users_parametrized(token_manager, user_id):
     """Parametrized test for creating tokens for different users."""
     token = token_manager.create_access_token(user_id)
@@ -461,12 +467,15 @@ def test_create_token_for_different_users_parametrized(token_manager, user_id):
     assert claims.get("user_id") == user_id
 
 
-@pytest.mark.parametrize("scopes", [
-    ["read:repo"],
-    ["read:repo", "write:repo"],
-    ["read:repo", "write:repo", "admin:org"],
-    [],
-])
+@pytest.mark.parametrize(
+    "scopes",
+    [
+        ["read:repo"],
+        ["read:repo", "write:repo"],
+        ["read:repo", "write:repo", "admin:org"],
+        [],
+    ],
+)
 def test_create_token_with_scopes_parametrized(token_manager, scopes):
     """Parametrized test for token creation with different scopes."""
     token = token_manager.create_access_token("user123", scopes=scopes)

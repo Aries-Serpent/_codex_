@@ -165,14 +165,14 @@ Replace git push section (around line ~286-290):
     MAX_RETRIES=3
     ATTEMPT=1
     BRANCH="${{ github.head_ref || github.ref_name }}"
-    
+
     while [ $ATTEMPT -le $MAX_RETRIES ]; do
       echo "Push attempt $ATTEMPT/$MAX_RETRIES"
       if git push origin HEAD:refs/heads/"$BRANCH" 2>&1 | tee /tmp/push.log; then
         echo "✅ Push succeeded"
         exit 0
       fi
-      
+
       if grep -q "rejected.*fetch first" /tmp/push.log; then
         echo "⚠️ Rebasing..."
         git fetch origin "$BRANCH":refs/remotes/origin/"$BRANCH" || exit 1
@@ -348,39 +348,39 @@ Insert after "analyze" job dependency resolution (new step in smoke-tests):
   with:
     script: |
       const fs = require('fs');
-      
+
       // Get changed files from PR
       const changedFiles = await github.paginate(
         github.rest.pulls.listFiles,
-        { 
-          owner: context.repo.owner, 
-          repo: context.repo.repo, 
-          pull_number: context.issue.number 
+        {
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          pull_number: context.issue.number
         }
       );
-      
+
       const isRequirementsChanged = changedFiles
         .some(f => f.filename.match(/requirements|pyproject\.toml|setup\.py/));
-      
+
       if (!isRequirementsChanged) {
         core.notice('No dependency files changed');
         return;
       }
-      
+
       const fileList = changedFiles
         .filter(f => f.filename.match(/requirements|pyproject|setup/))
         .map(f => f.filename)
         .join(', ');
-      
+
       core.notice(`Dependency files changed: ${fileList}`);
-      
+
       // In production: Call Copilot API with PR context
       // const prediction = await copilot.analyzeDependencies({
       //   changed_files: changedFiles,
       //   requirements: fs.readFileSync('requirements.txt', 'utf8'),
       //   pyproject: fs.readFileSync('pyproject.toml', 'utf8')
       // });
-      
+
       // For MVP: Log analysis request
       core.notice('Dependency analysis queued for Copilot processing');
 ```
@@ -455,12 +455,12 @@ Insert after rebase failure in auto-fix-pr-check.yml:
       echo "status=clean" >> "$GITHUB_OUTPUT"
       exit 0
     fi
-    
+
     echo "status=conflicts_found" >> "$GITHUB_OUTPUT"
     echo "files<<EOF" >> "$GITHUB_OUTPUT"
     echo "$CONFLICTS" >> "$GITHUB_OUTPUT"
     echo "EOF" >> "$GITHUB_OUTPUT"
-    
+
     # Count conflicts
     COUNT=$(echo "$CONFLICTS" | wc -l)
     echo "count=$COUNT" >> "$GITHUB_OUTPUT"
@@ -473,10 +473,10 @@ Insert after rebase failure in auto-fix-pr-check.yml:
   with:
     script: |
       const conflicts = `${{ steps.conflicts.outputs.files }}`.split('\n').filter(Boolean);
-      
+
       core.warning(`Merge conflicts in ${conflicts.length} files:`);
       conflicts.forEach(f => core.warning(`  - ${f}`));
-      
+
       // In production: Call Copilot to suggest resolutions
       // const suggestions = await copilot.suggestConflictResolution({
       //   files: conflicts,
@@ -484,7 +484,7 @@ Insert after rebase failure in auto-fix-pr-check.yml:
       //   head: 'current-branch',
       //   strategy: 'prefer-remote'  // Keep remote main changes
       // });
-      
+
       core.notice('Conflict analysis queued for Copilot processing');
       core.setOutput('needs_manual_review', 'true');
 ```
@@ -525,14 +525,14 @@ Insert at start of security-scanning-suite.yml jobs:
       ttl_days: ${{ steps.predict.outputs.ttl }}
     steps:
       - uses: actions/checkout@v7
-      
+
       - name: Analyze requirements
         id: analyze
         run: |
           # Identify risky packages (torch, setuptools, etc.)
           RISKY=$(grep -E '^(torch|setuptools|cryptography|tensorflow|jax)' requirements.txt || echo "none")
           echo "risky=$RISKY" >> "$GITHUB_OUTPUT"
-      
+
       - name: Query recent cache history
         id: history
         run: |
@@ -540,20 +540,20 @@ Insert at start of security-scanning-suite.yml jobs:
           # For now: estimate based on requirements
           echo "recent_misses=2" >> "$GITHUB_OUTPUT"
           echo "hit_rate=0.75" >> "$GITHUB_OUTPUT"
-      
+
       - name: Predict cache outcome
         id: predict
         run: |
           HIT_RATE=${{ steps.history.outputs.hit_rate }}
           RISKY_PKGS="${{ steps.analyze.outputs.risky }}"
-          
+
           # Calculate adjusted hit probability
           if [ ! -z "$RISKY_PKGS" ]; then
             # Reduce prediction by 10% for each risky package
             PENALTY=$(echo "$RISKY_PKGS" | wc -l)
             HIT_RATE=$(python3 -c "print(max(0.0, $HIT_RATE - $PENALTY * 0.1))")
           fi
-          
+
           echo "hit_prob=$HIT_RATE" >> "$GITHUB_OUTPUT"
           echo "risky_packages=$RISKY_PKGS" >> "$GITHUB_OUTPUT"
           echo "ttl=$([ $(echo "$HIT_RATE < 0.5" | bc) -eq 1 ] && echo "3" || echo "7")" >> "$GITHUB_OUTPUT"

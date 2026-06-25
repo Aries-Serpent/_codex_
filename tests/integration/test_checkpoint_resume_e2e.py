@@ -45,18 +45,14 @@ class TestCheckpointResumeFullWorkflow:
             )
 
             # Verify checkpoint created correctly
-            assert (ckpt1_dir / "weights.pt").exists(), \
-                "Weights file should be created"
-            assert (ckpt1_dir / "metadata.json").exists(), \
-                "Metadata file should be created"
+            assert (ckpt1_dir / "weights.pt").exists(), "Weights file should be created"
+            assert (ckpt1_dir / "metadata.json").exists(), "Metadata file should be created"
 
             # Phase 2: Load checkpoint to resume training
             loaded_state_1, loaded_meta_1 = load_checkpoint(str(ckpt1_dir))
 
-            assert loaded_state_1 == training_state_1, \
-                "Loaded state should match saved state"
-            assert loaded_meta_1["epoch"] == 10, \
-                "Epoch metadata should be preserved"
+            assert loaded_state_1 == training_state_1, "Loaded state should match saved state"
+            assert loaded_meta_1["epoch"] == 10, "Epoch metadata should be preserved"
 
             # Phase 3: Continue training, save new checkpoint
             ckpt2_dir = tmpdir / "epoch_020"
@@ -76,18 +72,19 @@ class TestCheckpointResumeFullWorkflow:
             # Phase 4: Verify second checkpoint
             loaded_state_2, loaded_meta_2 = load_checkpoint(str(ckpt2_dir))
 
-            assert loaded_state_2["step"] == 200, \
-                "Step should be updated in new checkpoint"
-            assert loaded_meta_2["loss"] < loaded_meta_1["loss"], \
-                "Loss should have decreased during training"
+            assert loaded_state_2["step"] == 200, "Step should be updated in new checkpoint"
+            assert (
+                loaded_meta_2["loss"] < loaded_meta_1["loss"]
+            ), "Loss should have decreased during training"
 
             # Assert schema versioning
             metadata_file = ckpt2_dir / "metadata.json"
             with open(metadata_file, encoding="utf-8") as f:
                 saved_metadata = json.load(f)
 
-            assert saved_metadata.get("_schema_version") == SCHEMA_VERSION, \
-                "Schema version should be tracked"
+            assert (
+                saved_metadata.get("_schema_version") == SCHEMA_VERSION
+            ), "Schema version should be tracked"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -128,8 +125,9 @@ class TestCheckpointResumeFullWorkflow:
             with pytest.warns(UserWarning, match="schema"):
                 loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
-                assert loaded_state == state, \
-                    "Should still load state despite schema version mismatch"
+                assert (
+                    loaded_state == state
+                ), "Should still load state despite schema version mismatch"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -164,10 +162,8 @@ class TestCheckpointResumeFullWorkflow:
             loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
             # Assert
-            assert loaded_state == state, \
-                "Should load state even with missing metadata"
-            assert loaded_meta == {}, \
-                "Should return empty metadata dict if file missing"
+            assert loaded_state == state, "Should load state even with missing metadata"
+            assert loaded_meta == {}, "Should return empty metadata dict if file missing"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -206,10 +202,8 @@ class TestCheckpointPartialRecovery:
             loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
             # Assert: All fields should be preserved
-            assert loaded_state == state, \
-                "Should preserve all fields including extra ones"
-            assert "extra_field" in loaded_state, \
-                "Extra field should be preserved"
+            assert loaded_state == state, "Should preserve all fields including extra ones"
+            assert "extra_field" in loaded_state, "Extra field should be preserved"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -243,10 +237,8 @@ class TestCheckpointPartialRecovery:
             loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
             # Assert
-            assert loaded_state == state, \
-                "Should load state without metadata"
-            assert isinstance(loaded_meta, dict), \
-                "Metadata should be empty dict"
+            assert loaded_state == state, "Should load state without metadata"
+            assert isinstance(loaded_meta, dict), "Metadata should be empty dict"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -292,10 +284,8 @@ class TestCheckpointResumeDeterminism:
             cycle2_state, cycle2_meta = load_checkpoint(str(ckpt_dir2))
 
             # Assert
-            assert cycle1_state == cycle2_state, \
-                "State should be identical after round-trip"
-            assert cycle1_state == original_state, \
-                "Loaded state should match original"
+            assert cycle1_state == cycle2_state, "State should be identical after round-trip"
+            assert cycle1_state == original_state, "Loaded state should match original"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -342,13 +332,10 @@ class TestCheckpointResumeDeterminism:
             timestamp2 = meta2.get("_created_at")
 
             # Assert
-            assert timestamp1 is not None, \
-                "First checkpoint should have timestamp"
-            assert timestamp2 is not None, \
-                "Second checkpoint should have timestamp"
+            assert timestamp1 is not None, "First checkpoint should have timestamp"
+            assert timestamp2 is not None, "Second checkpoint should have timestamp"
             # Timestamps should be different (or at least valid)
-            assert isinstance(timestamp1, str), \
-                "Timestamp should be string (ISO format)"
+            assert isinstance(timestamp1, str), "Timestamp should be string (ISO format)"
 
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
@@ -369,8 +356,9 @@ class TestCheckpointResumeErrorRecovery:
             load_checkpoint(nonexistent)
 
         error_msg = str(exc_info.value)
-        assert "weights" in error_msg.lower() or "found" in error_msg.lower(), \
-            "Error should indicate what file is missing"
+        assert (
+            "weights" in error_msg.lower() or "found" in error_msg.lower()
+        ), "Error should indicate what file is missing"
 
     def test_checkpoint_save_to_readonly_directory_error(self):
         """Verify appropriate error when save directory is read-only."""
@@ -386,7 +374,7 @@ class TestCheckpointResumeErrorRecovery:
             readonly_dir.mkdir()
 
             # Make directory read-only
-            # codeql[py/overly-permissive-file] - intentional for testing permission errors
+           - intentional for testing permission errors
             os.chmod(readonly_dir, 0o444)
 
             ckpt_dir = readonly_dir / "checkpoint"
@@ -402,14 +390,15 @@ class TestCheckpointResumeErrorRecovery:
                 pytest.skip("Read-only directory test skipped (permissions allowed)")
             except (PermissionError, OSError) as e:
                 # Expected: should raise permission error
-                assert "permission" in str(e).lower() or "access" in str(e).lower(), \
-                    "Should raise permission-related error"
+                assert (
+                    "permission" in str(e).lower() or "access" in str(e).lower()
+                ), "Should raise permission-related error"
 
         finally:
             # Restore permissions for cleanup
             readonly_dir_check = tmpdir / "readonly"
             if readonly_dir_check.exists():
-                # codeql[py/overly-permissive-file] - restoring normal permissions for cleanup
+               - restoring normal permissions for cleanup
                 os.chmod(readonly_dir_check, 0o755)
             shutil.rmtree(tmpdir, ignore_errors=True)
 

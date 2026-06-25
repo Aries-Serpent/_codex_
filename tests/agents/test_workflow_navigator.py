@@ -109,9 +109,7 @@ class TestWorkflowStep:
         """Test executing step that uses another workflow."""
         from agents.workflow_navigator import StepStatus, WorkflowStep
 
-        step = WorkflowStep(
-            id="step_1", action="call workflow", uses="other.workflow.function"
-        )
+        step = WorkflowStep(id="step_1", action="call workflow", uses="other.workflow.function")
 
         result = step.execute({})
 
@@ -122,9 +120,7 @@ class TestWorkflowStep:
         """Test handling failed command execution."""
         from agents.workflow_navigator import StepStatus, WorkflowStep
 
-        step = WorkflowStep(
-            id="step_1", action="fail command", command="exit 1", optional=False
-        )
+        step = WorkflowStep(id="step_1", action="fail command", command="exit 1", optional=False)
 
         result = step.execute({})
 
@@ -135,9 +131,7 @@ class TestWorkflowStep:
         """Test optional step with failed command."""
         from agents.workflow_navigator import StepStatus, WorkflowStep
 
-        step = WorkflowStep(
-            id="step_1", action="optional fail", command="exit 1", optional=True
-        )
+        step = WorkflowStep(id="step_1", action="optional fail", command="exit 1", optional=True)
 
         step.execute({})
 

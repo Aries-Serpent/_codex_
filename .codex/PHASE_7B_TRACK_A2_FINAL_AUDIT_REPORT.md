@@ -65,7 +65,7 @@ Track A1 successfully remediated **41/42 HIGH findings (97.6% reduction)**, leav
 
 | File | Finding Count | Approach | Status |
 |------|---|---|---|
-| `scripts/catalog_workflows.py` | 6 | Tokenized secrets with SHA256 hashing | ✅ FIXED |
+| `scripts/catalog_workflows.py` | 6 | Tokenized secrets with SHA256 hashing | ✅ FIXED | <!-- pragma: allowlist secret -->
 | Total Category A | 6 | - | ✅ COMPLETE |
 
 **Details:** Secrets are now tokenized using SHA256 hashing before any persistence or logging. No clear-text values stored.
@@ -77,11 +77,11 @@ Track A1 successfully remediated **41/42 HIGH findings (97.6% reduction)**, leav
 | File | HIGH | MEDIUM | LOW | Rationale |
 |------|------|--------|-----|-----------|
 | `.github/agents/admin-automation-agent/src/agent.py` | 4 | 0 | 5 | Masked fingerprints in logging |
-| `scripts/github_secrets_sync.py` | 12 | 0 | 0 | Hashed identifiers, count-only logging |
-| `scripts/security/verify_token_scope.py` | 8 | 0 | 5 | Redacted fingerprints, validation in place |
-| `scripts/ci/auto_fix_common_issues.py` | 14 | 0 | 0 | Summary stats only, no raw secrets |
-| `scripts/decode_workflow_secrets.py` | 13 | 0 | 0 | Token parts only, authorized operations |
-| `.github/scripts/workflow_analyzer.py` | 2 | 0 | 0 | Hashed secret identifiers |
+| `scripts/github_secrets_sync.py` | 12 | 0 | 0 | Hashed identifiers, count-only logging | <!-- pragma: allowlist secret -->
+| `scripts/security/verify_token_scope.py` | 8 | 0 | 5 | Redacted fingerprints, validation in place | <!-- pragma: allowlist secret -->
+| `scripts/ci/auto_fix_common_issues.py` | 14 | 0 | 0 | Summary stats only, no raw secrets | <!-- pragma: allowlist secret -->
+| `scripts/decode_workflow_secrets.py` | 13 | 0 | 0 | Token parts only, authorized operations | <!-- pragma: allowlist secret -->
+| `.github/scripts/workflow_analyzer.py` | 2 | 0 | 0 | Hashed secret identifiers | <!-- pragma: allowlist secret -->
 | `src/codex_ml/deployment/package.py` | 2 | 0 | 0 | SHA256 hashed identifiers |
 | **Other files (18 files)** | 35 | 0 | 0 | Per-file rationale documented |
 | **TOTAL** | **90** | **0** | **6** | **100% justified** |
@@ -137,13 +137,13 @@ _msg_fp = (str(safe_message)[:8] + "…") if safe_message else "<none>"
 logger.info("✅ Task completed: %s", _msg_fp)  # codeql[py/clear-text-logging-sensitive-data]
 
 # Pattern 2: Summary Statistics
-logger.info(f"Total secrets: {len(secrets_count)}")  # codeql[py/clear-text-logging-sensitive-data]
+logger.info(f"Total secrets: {len(secrets_count)}")  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 
 # Pattern 3: Placeholder Values
-logger.info("Status: success, secret: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data]
+logger.info("Status: success, secret: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 
 # Pattern 4: Partial Redaction
-redacted = f"Token: {token[:10]}...{token[-4:]}"  # codeql[py/clear-text-logging-sensitive-data]
+redacted = f"Token: {token[:10]}...{token[-4:]}"  # codeql[py/clear-text-logging-sensitive-data]  # pragma: allowlist secret
 ```
 
 **Verification:**
@@ -159,15 +159,15 @@ redacted = f"Token: {token[:10]}...{token[-4:]}"  # codeql[py/clear-text-logging
 **Storage Patterns Found:**
 ```python
 # Pattern 1: Hashed Identifiers
-"secrets": [
-    hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets
+"secrets": [  # pragma: allowlist secret
+    hashlib.sha256(k.encode()).hexdigest()[:16] for k in gathered_secrets  # pragma: allowlist secret
 ]  # codeql[py/clear-text-storage-sensitive-data]
 
 # Pattern 2: Encrypted Payload
 path.write_bytes(encrypted_data)  # codeql[py/clear-text-storage-sensitive-data]
 
-# Pattern 3: Tokenized Metadata
-manifest["secrets"] = [{"token": sha256_hash, "hint": "[REDACTED]"}]
+# Pattern 3: Tokenized Metadata  # pragma: allowlist secret
+manifest["secrets"] = [{"token": sha256_hash, "hint": "[REDACTED]"}]  # pragma: allowlist secret
 ```
 
 **Verification:**
@@ -225,10 +225,10 @@ manifest["secrets"] = [{"token": sha256_hash, "hint": "[REDACTED]"}]
 
 | Scenario | Suppressed Code | Mitigation | Status |
 |----------|---|---|---|
-| Extract secrets from logs | Masked fingerprints | Only 8 chars visible | ✅ SAFE |
-| Reverse-engineer stored secrets | SHA256 hashing | Cryptographic strength | ✅ SAFE |
-| Intercept secret references | Hashed tokens | Irreversible hashing | ✅ SAFE |
-| Enumerate secrets by length | Constant hints | `[REDACTED]` placeholder | ✅ SAFE |
+| Extract secrets from logs | Masked fingerprints | Only 8 chars visible | ✅ SAFE | <!-- pragma: allowlist secret -->
+| Reverse-engineer stored secrets | SHA256 hashing | Cryptographic strength | ✅ SAFE | <!-- pragma: allowlist secret -->
+| Intercept secret references | Hashed tokens | Irreversible hashing | ✅ SAFE | <!-- pragma: allowlist secret -->
+| Enumerate secrets by length | Constant hints | `[REDACTED]` placeholder | ✅ SAFE | <!-- pragma: allowlist secret -->
 | Log injection attacks | Structured fields | Input validation | ✅ SAFE |
 
 ---
@@ -369,4 +369,3 @@ IMPROVEMENT:
 **Agent:** codeql-alert-resolution-agent (Track A2)  
 **Mission ID:** phase7b-codeql-final  
 **Authority:** @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)  
-

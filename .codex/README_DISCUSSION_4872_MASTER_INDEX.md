@@ -270,4 +270,3 @@ All analysis documents in: `.codex/DISCUSSION_4872_*.md`
 **Campaign Target:** 2026-07-07 (Day 21 final gate)
 
 **Your move. Choose your action above. 👆**
-

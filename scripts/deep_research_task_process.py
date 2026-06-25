@@ -82,8 +82,9 @@ def _has_marker(p: Path, markers: Iterable[str] = _REPO_MARKERS) -> bool:
     try:
         return any((p / m).exists() for m in markers)
     except PermissionError as e:
-        logger.debug(f"PermissionError: {e}")
-        logger.warning(f"PermissionError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"PermissionError: <ERROR_TYPE>")
+        logger.warning(f"PermissionError: <ERROR_TYPE>", exc_info=True)
         return False
 
 
@@ -251,7 +252,8 @@ def _append_change(path: Path, action: str, rationale: str, new_content: str) ->
         if not DRY_RUN:
             CHANGE_LOG.open("a", encoding="utf-8").write(block)
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _log_error("log change", str(e), str(path))
 
 
@@ -300,7 +302,8 @@ def _run_command(
         logger.debug("Exception caught, returning", exc_info=True)
         return e.returncode, e.stdout or "", e.stderr or ""
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         logger.debug("Exception caught, returning", exc_info=True)
         return 1, "", str(e)
 
@@ -380,7 +383,8 @@ def phase1_preparation() -> None:
         if not DRY_RUN:
             _atomic_write_text(INVENTORY_JSON, json.dumps(items, indent=2))
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _log_error("1: Preparation - write inventory", str(e), str(INVENTORY_JSON))
     _v("Phase 1: Preparation complete")
 
@@ -552,7 +556,8 @@ jobs:
                 "- **Rationale:** Removed obsolete build workflow (merged into ci.yml)\n\n"
             )
         except Exception as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             _log_error("3.4: Unify CI workflows", str(e), str(BUILD_WORKFLOW_DISABLED))
 
 
@@ -1070,7 +1075,8 @@ def phase3_construction() -> None:
             _v(label)
             task.func()
         except Exception as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             _log_error(label, str(e), "internal task execution")
     _v("Phase 3: Construction complete")
 
@@ -1116,7 +1122,8 @@ def phase4_results() -> None:
         if not DRY_RUN:
             _atomic_write_text(RESULTS_LOG, "\n".join(lines) + "\n")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         _log_error("results summary write", str(e), str(RESULTS_LOG))
     _v("Phase 4: Results Summary complete")
 
@@ -1142,8 +1149,9 @@ def run_all() -> int:
         print("\nOperation interrupted by user. Partial changes may have been applied.")
         return 130  # Conventional for SIGINT
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        print(f"Error during execution: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        print(f"Error during execution: <ERROR_TYPE>")
         _log_error("run_all", str(e), "Unexpected top-level exception")
         return 1
     return 0

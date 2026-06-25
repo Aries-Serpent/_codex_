@@ -24,7 +24,7 @@ def _decode(out: bytes | str) -> str:
         for enc in encodings:
             try:
                 return out.decode(enc)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         return out.decode("utf-8", errors="replace")
@@ -36,7 +36,7 @@ def current_commit() -> str | None:
     try:
         out = subprocess.check_output(["git", "rev-parse", "HEAD"])
         return _decode(out).strip()
-    except Exception:
+    except (ValueError, TypeError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 

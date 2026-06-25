@@ -31,48 +31,56 @@ class TestDtypeResolution:
         """Test resolving default float32 dtype."""
         dtype = _resolve_dtype(None)
         import torch
+
         assert dtype == torch.float32
 
     def test_resolve_dtype_explicit_float32(self):
         """Test resolving explicit float32."""
         dtype = _resolve_dtype("float32")
         import torch
+
         assert dtype == torch.float32
 
     def test_resolve_dtype_fp32_alias(self):
         """Test resolving fp32 alias for float32."""
         dtype = _resolve_dtype("fp32")
         import torch
+
         assert dtype == torch.float32
 
     def test_resolve_dtype_bfloat16(self):
         """Test resolving bfloat16 dtype."""
         dtype = _resolve_dtype("bfloat16")
         import torch
+
         assert dtype == torch.bfloat16
 
     def test_resolve_dtype_bf16_alias(self):
         """Test resolving bf16 alias for bfloat16."""
         dtype = _resolve_dtype("bf16")
         import torch
+
         assert dtype == torch.bfloat16
 
     def test_resolve_dtype_float16(self):
         """Test resolving float16 dtype."""
         dtype = _resolve_dtype("float16")
         import torch
+
         assert dtype == torch.float16
 
     def test_resolve_dtype_fp16_alias(self):
         """Test resolving fp16 alias for float16."""
         dtype = _resolve_dtype("fp16")
         import torch
+
         assert dtype == torch.float16
 
     def test_resolve_dtype_half_alias(self):
         """Test resolving half alias for float16."""
         dtype = _resolve_dtype("half")
         import torch
+
         assert dtype == torch.float16
 
     def test_resolve_dtype_case_insensitive(self):
@@ -81,6 +89,7 @@ class TestDtypeResolution:
         dtype_upper = _resolve_dtype("FLOAT32")
         dtype_mixed = _resolve_dtype("Float32")
         import torch
+
         assert dtype_lower == dtype_upper == dtype_mixed == torch.float32
 
     def test_resolve_dtype_invalid_raises_error(self):
@@ -92,6 +101,7 @@ class TestDtypeResolution:
         """Test public API resolve_dtype function."""
         dtype = resolve_dtype("float32")
         import torch
+
         assert dtype == torch.float32
 
 
@@ -232,109 +242,133 @@ class TestConfigCoercion:
 
     def test_coerce_config_tokenizer_name(self):
         """Test tokenizer_name extraction."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "tokenizer_name": "gpt2",
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "tokenizer_name": "gpt2",
+            }
+        )
         assert config.tokenizer_name == "gpt2"
 
     def test_coerce_config_dtype_resolution(self):
         """Test dtype resolution in config."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "dtype": "float32",
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "dtype": "float32",
+            }
+        )
         assert config.dtype == "float32"
 
     def test_coerce_config_dtype_alias(self):
         """Test torch_dtype alias."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "torch_dtype": "float32",
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "torch_dtype": "float32",
+            }
+        )
         assert config.dtype == "float32"
 
     def test_coerce_config_device_resolution(self):
         """Test device resolution in config."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "device": "cpu",
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "device": "cpu",
+            }
+        )
         assert config.device == "cpu"
 
     def test_coerce_config_trust_remote_code(self):
         """Test trust_remote_code flag."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "trust_remote_code": True,
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "trust_remote_code": True,
+            }
+        )
         assert config.trust_remote_code is True
 
     def test_coerce_config_load_config(self):
         """Test load_config extraction."""
         load_cfg = {"load_in_4bit": True}
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "load_config": load_cfg,
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "load_config": load_cfg,
+            }
+        )
         assert config.load_config == load_cfg
 
     def test_coerce_config_load_kwargs_alias(self):
         """Test load_kwargs as alias for load_config."""
         load_cfg = {"load_in_4bit": True}
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "load_kwargs": load_cfg,
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "load_kwargs": load_cfg,
+            }
+        )
         assert config.load_config == load_cfg
 
     def test_coerce_config_lora_settings(self):
         """Test LoRA settings in config."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "lora": {
-                "enabled": True,
-                "r": 16,
-                "lora_alpha": 32,
-            },
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "lora": {
+                    "enabled": True,
+                    "r": 16,
+                    "lora_alpha": 32,
+                },
+            }
+        )
         assert config.lora.enabled is True
         assert config.lora.r == 16
         assert config.lora.alpha == 32
 
     def test_coerce_config_use_lora_shorthand(self):
         """Test use_lora shorthand flag."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "use_lora": True,
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "use_lora": True,
+            }
+        )
         assert config.lora.enabled is True
 
     def test_coerce_config_lora_rank_alias(self):
         """Test lora_rank as r alias."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "lora": {"enabled": True},
-            "lora_rank": 16,
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "lora": {"enabled": True},
+                "lora_rank": 16,
+            }
+        )
         assert config.lora.r == 16
 
     def test_coerce_config_bf16_require_capability(self):
         """Test bf16_require_capability flag."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "bf16_require_capability": True,
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "bf16_require_capability": True,
+            }
+        )
         assert config.bf16_require_capability is True
 
     def test_coerce_config_reproducibility_section(self):
         """Test bf16_require_capability in reproducibility section."""
-        config = _coerce_config({
-            "model_name": "gpt2",
-            "reproducibility": {
-                "bf16_require_capability": True,
-            },
-        })
+        config = _coerce_config(
+            {
+                "model_name": "gpt2",
+                "reproducibility": {
+                    "bf16_require_capability": True,
+                },
+            }
+        )
         assert config.bf16_require_capability is True
 
     def test_coerce_config_missing_model_name_raises_error(self):
@@ -345,18 +379,22 @@ class TestConfigCoercion:
     def test_coerce_config_invalid_lora_section_raises_error(self):
         """Test that invalid lora section raises TypeError."""
         with pytest.raises(TypeError, match="lora must be a mapping"):
-            _coerce_config({
-                "model_name": "gpt2",
-                "lora": "invalid",
-            })
+            _coerce_config(
+                {
+                    "model_name": "gpt2",
+                    "lora": "invalid",
+                }
+            )
 
     def test_coerce_config_invalid_load_config_raises_error(self):
         """Test that invalid load_config raises TypeError."""
         with pytest.raises(TypeError, match="load_config"):
-            _coerce_config({
-                "model_name": "gpt2",
-                "load_config": "invalid",
-            })
+            _coerce_config(
+                {
+                    "model_name": "gpt2",
+                    "load_config": "invalid",
+                }
+            )
 
 
 class TestNeedsBf16:
@@ -381,6 +419,7 @@ class TestNeedsBf16:
     def test_needs_bf16_by_dtype_obj(self):
         """Test bf16 detection by dtype object."""
         import torch
+
         assert _needs_bf16(None, torch.bfloat16) is True
         assert _needs_bf16(None, torch.float32) is False
 
@@ -401,5 +440,6 @@ class TestDtypeMap:
     def test_dtype_map_values_are_torch_dtypes(self):
         """Test that all values in _DTYPE_MAP are torch dtypes."""
         import torch
+
         for key, dtype in _DTYPE_MAP.items():
             assert isinstance(dtype, torch.dtype), f"Value for {key} is not a torch dtype"

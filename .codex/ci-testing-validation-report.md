@@ -169,7 +169,7 @@ concurrency:
 6. Branch isolation correctly implemented
 7. Configuration follows GitHub Actions best practices
 
-**Recommendation:** 
+**Recommendation:**
 **APPROVE FOR MERGE TO MAIN**
 
 **Next Steps:**

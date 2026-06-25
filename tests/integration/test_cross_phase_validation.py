@@ -21,6 +21,7 @@ import pytest
 # Fixtures
 # ============================================================================
 
+
 @pytest.fixture
 def phase_registry() -> dict[str, Any]:
     """Registry of all completed phases."""
@@ -53,6 +54,7 @@ def quality_thresholds() -> dict[str, Any]:
 # Phase Integration Tests
 # ============================================================================
 
+
 class TestPhaseIntegration:
     """Tests for integration across all phases."""
 
@@ -60,9 +62,7 @@ class TestPhaseIntegration:
         """Test compatibility of Phase 14-19 tests."""
         phases = ["phase_14", "phase_15", "phase_16", "phase_17", "phase_18", "phase_19"]
 
-        all_complete = all(
-            phase_registry[p]["status"] == "complete" for p in phases
-        )
+        all_complete = all(phase_registry[p]["status"] == "complete" for p in phases)
 
         assert all_complete is True
 
@@ -113,6 +113,7 @@ class TestPhaseIntegration:
 # ============================================================================
 # System Validation Tests
 # ============================================================================
+
 
 class TestSystemValidation:
     """Tests for complete system validation."""
@@ -203,15 +204,14 @@ class TestSystemValidation:
             "alerts": {"configured": True},
         }
 
-        complete_stack = all(
-            list(v.values())[0] for v in observability.values()
-        )
+        complete_stack = all(list(v.values())[0] for v in observability.values())
         assert complete_stack is True
 
 
 # ============================================================================
 # Quality Assurance Tests
 # ============================================================================
+
 
 class TestQualityAssurance:
     """Tests for quality assurance standards."""
@@ -311,6 +311,7 @@ class TestQualityAssurance:
 # Regression Prevention Tests
 # ============================================================================
 
+
 class TestRegressionPrevention:
     """Tests for regression prevention."""
 
@@ -349,6 +350,7 @@ class TestRegressionPrevention:
 # ============================================================================
 # Integration Health Tests
 # ============================================================================
+
 
 class TestIntegrationHealth:
     """Tests for overall integration health."""

@@ -36,8 +36,8 @@ from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 # Optional transformers import - do not raise at module import if missing.
 try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer as _AutoTokenizer
-except Exception:  # pragma: no cover - optional dependency
-    _AutoTokenizer = None  # type: ignore
+except (ImportError, AttributeError):  # pragma: no cover - optional dependency
+    _AutoTokenizer = None
 
 
 def _resolve_auto_tokenizer():
@@ -53,7 +53,7 @@ def _resolve_auto_tokenizer():
     if _AutoTokenizer is None:
         try:
             from transformers import AutoTokenizer as _Imported
-        except Exception:
+        except (ImportError, AttributeError):
             logger.warning("Exception occurred", exc_info=True)
             _AutoTokenizer = None  # ensure consistency if import keeps failing
         else:
@@ -419,7 +419,7 @@ class HFTokenizer(TokenizerAdapter):
                 if not tj.exists():
                     raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
                 self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))  # type: ignore
-                self._tk.add_special_tokens(  # type: ignore[attr-defined]
+                self._tk.add_special_tokens(
                     {
                         "pad_token": "[PAD]",  # nosec B105
                         "bos_token": "[BOS]",  # nosec B105
@@ -438,7 +438,7 @@ class HFTokenizer(TokenizerAdapter):
                     revision=get_hf_revision(),
                     **params,
                 )
-        except Exception as exc:  # pragma: no cover - defensive
+        except (IOError, OSError) as exc:  # pragma: no cover - defensive
             LOGGER.warning(
                 "Falling back to whitespace backend for '%s' after load failure (%s)",
                 name_or_path or artifacts_dir,
@@ -449,13 +449,13 @@ class HFTokenizer(TokenizerAdapter):
             self.padding = padding
             self.truncation = truncation
             self.max_length = max_length
-            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
             return
 
         self.padding = padding
         self.truncation = truncation
         self.max_length = max_length
-        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
+        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
 
     def _encode_call_kwargs(self, add_special_tokens: bool) -> dict[str, Any]:
         """Construct kwargs for tokenizer.encode / tokenizer.__call__."""
@@ -492,13 +492,13 @@ class HFTokenizer(TokenizerAdapter):
                     **self._encode_call_kwargs(add_special_tokens=add_special_tokens),
                 )
             )
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             # Fallback: try a minimal encode call (some tokenizers accept simple call)
             try:
                 ids = self._tk.encode(text, add_special_tokens=add_special_tokens)
                 result = list(ids)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Last resort: return empty sequence to avoid raising in user code.
                 result = []
@@ -557,14 +557,14 @@ class HFTokenizer(TokenizerAdapter):
             # Extract input_ids safely and ensure lists of ints
             input_ids = enc.get("input_ids", [])
             return [list(seq) for seq in input_ids]
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             # Graceful fallback: encode individually
             fallback: list[list[int]] = []
             for t in texts:
                 try:
                     fallback.append(self.encode(t, add_special_tokens=add_special_tokens))
-                except Exception:
+                except (ValueError, TypeError):
                     logger.warning("Exception occurred", exc_info=True)
                     fallback.append([])
             if return_dict:
@@ -582,7 +582,7 @@ class HFTokenizer(TokenizerAdapter):
         """Return a Hugging Face-style encoding dict (compatibility alias)."""
         # Accept extra kwargs for compatibility; forward to batch_encode via return_dict
         _ = kwargs  # intentionally accepted but ignored
-        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)  # type: ignore[return-value]
+        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode a list of token ids back to a string."""
@@ -616,12 +616,12 @@ class HFTokenizer(TokenizerAdapter):
             return self._fallback.decode(key, skip_special_tokens=skip_special_tokens)
         try:
             return self._tk.decode(list(key), skip_special_tokens=skip_special_tokens)
-        except Exception:
+        except (ValueError, TypeError):
             logger.warning("Exception occurred", exc_info=True)
             try:
                 tokens = [self._tk.convert_ids_to_tokens(int(i)) for i in key]
                 return self._tk.convert_tokens_to_string(tokens)
-            except Exception:
+            except (ValueError, TypeError):
                 logger.warning("Exception occurred", exc_info=True)
                 return None
 
@@ -646,7 +646,7 @@ class HFTokenizer(TokenizerAdapter):
             return _CallableInt(self._fallback.vocab_size)
         try:
             return _CallableInt(int(getattr(self._tk, "vocab_size", 0) or 0))
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return _CallableInt(0)
 
@@ -657,7 +657,7 @@ class HFTokenizer(TokenizerAdapter):
             return self._fallback.pad_token_id
         try:
             return getattr(self._tk, "pad_token_id", None)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return None
 
@@ -668,7 +668,7 @@ class HFTokenizer(TokenizerAdapter):
             return self._fallback.eos_token_id
         try:
             return getattr(self._tk, "eos_token_id", None)
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             return None
 

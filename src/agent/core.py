@@ -213,7 +213,7 @@ class AgentCore:
                 duration_ms=duration_ms,
             )
 
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.error("Task execution failed: %s", e, exc_info=True)
             return TaskResult(
                 status=TaskStatus.FAILED,
@@ -231,7 +231,7 @@ class AgentCore:
             # For now, return empty list as placeholder
             logger.debug("Retrieving context for task")
             return []
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning("RAG retrieval failed: %s", e)
             return []
 
@@ -271,7 +271,7 @@ class AgentCore:
             # For now, return placeholder score
             logger.debug("Verifying response")
             return 0.9
-        except Exception as e:
+        except (ValueError, TypeError, RuntimeError) as e:
             logger.warning("Verification failed: %s", e)
             return 0.0
 

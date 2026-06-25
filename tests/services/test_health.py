@@ -16,6 +16,7 @@ import pytest
 
 class HealthStatus(Enum):
     """Health check status."""
+
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     UNHEALTHY = "unhealthy"
@@ -26,8 +27,12 @@ class TestHealthChecks:
 
     def test_basic_health_check(self):
         """Basic health check returns status."""
+
         def health_check():
-            return {"status": HealthStatus.HEALTHY.value, "timestamp": datetime.utcnow().isoformat()}
+            return {
+                "status": HealthStatus.HEALTHY.value,
+                "timestamp": datetime.utcnow().isoformat(),
+            }
 
         result = health_check()
 
@@ -36,6 +41,7 @@ class TestHealthChecks:
 
     def test_component_health_aggregation(self):
         """Component health is aggregated correctly."""
+
         def aggregate_health(components):
             statuses = [c["status"] for c in components]
 
@@ -62,6 +68,7 @@ class TestHealthChecks:
 
     def test_health_check_timeout(self):
         """Health checks have timeouts."""
+
         class HealthChecker:
             def __init__(self, timeout_seconds=5):
                 self.timeout = timeout_seconds
@@ -84,6 +91,7 @@ class TestReadinessProbes:
 
     def test_readiness_check(self):
         """Readiness check indicates service is ready."""
+
         class ServiceReadiness:
             def __init__(self):
                 self.dependencies_ready = False
@@ -101,6 +109,7 @@ class TestReadinessProbes:
 
     def test_startup_probe(self):
         """Startup probe indicates initialization progress."""
+
         class StartupProbe:
             def __init__(self, required_steps):
                 self.required_steps = required_steps
@@ -133,6 +142,7 @@ class TestLivenessProbes:
 
     def test_liveness_check(self):
         """Liveness check indicates process is alive."""
+
         def liveness_check():
             # Check critical threads
             return {"alive": True, "uptime_seconds": 3600}
@@ -142,6 +152,7 @@ class TestLivenessProbes:
 
     def test_deadlock_detection(self):
         """Deadlock detection affects liveness."""
+
         class DeadlockDetector:
             def __init__(self):
                 self.lock_holders = {}
@@ -167,6 +178,7 @@ class TestHealthEndpoints:
 
     def test_health_endpoint_response(self):
         """Health endpoint returns proper JSON."""
+
         def health_endpoint_handler():
             return {
                 "status": "healthy",
@@ -174,7 +186,7 @@ class TestHealthEndpoints:
                 "checks": {
                     "database": {"status": "healthy", "latency_ms": 5},
                     "cache": {"status": "healthy", "latency_ms": 1},
-                }
+                },
             }
 
         response = health_endpoint_handler()
@@ -185,6 +197,7 @@ class TestHealthEndpoints:
 
     def test_health_endpoint_status_codes(self):
         """Health endpoint returns correct HTTP status."""
+
         def get_status_code(health_status):
             if health_status == HealthStatus.HEALTHY:
                 return 200
@@ -202,11 +215,12 @@ class TestDependencyHealth:
 
     def test_database_health_check(self):
         """Database health check queries db."""
+
         def check_database(connection):
             try:
                 connection.execute("SELECT 1")
                 return {"status": HealthStatus.HEALTHY, "latency_ms": 5}
-            except Exception as e:
+            except (ConnectionError, TimeoutError) as e:
                 return {"status": HealthStatus.UNHEALTHY, "error": str(e)}
 
         mock_conn = MagicMock()
@@ -217,6 +231,7 @@ class TestDependencyHealth:
 
     def test_cache_health_check(self):
         """Cache health check tests connectivity."""
+
         def check_cache(cache_client):
             try:
                 cache_client.ping()
@@ -232,6 +247,7 @@ class TestDependencyHealth:
 
     def test_external_service_health(self):
         """External service health check with timeout."""
+
         def check_external_service(url, timeout=5):
             # Mock HTTP check
             return {"status": HealthStatus.HEALTHY, "url": url, "latency_ms": 100}

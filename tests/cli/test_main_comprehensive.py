@@ -51,7 +51,9 @@ output_dir: /tmp/test_output
     return config_file
 
 
-@pytest.mark.skipif(not _MAIN_HAS_TYPER_APP, reason="main.py uses click/hydra CLI, not typer.Typer app")
+@pytest.mark.skipif(
+    not _MAIN_HAS_TYPER_APP, reason="main.py uses click/hydra CLI, not typer.Typer app"
+)
 class TestMainAppExistence:
     """Test main app initialization."""
 
@@ -239,9 +241,7 @@ class TestTrainCommand:
     def test_train_with_multiple_corpora(self, mock_run_unified, cli_runner):
         """Test train command with multiple corpora."""
         mock_run_unified.return_value = None
-        result = cli_runner.invoke(
-            main.app, ["train", "--corpus", "gsm8k", "--corpus", "math"]
-        )
+        result = cli_runner.invoke(main.app, ["train", "--corpus", "gsm8k", "--corpus", "math"])
         assert result.exit_code in (0, 1, 2)
 
     @patch("codex_ml.training.unified_training.run_unified_training")

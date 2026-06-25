@@ -15,6 +15,7 @@ from pathlib import Path
 # Coverage Configuration Validation
 # =============================================================================
 
+
 class TestCoverageConfiguration:
     """Tests for coverage configuration validation."""
 
@@ -24,9 +25,9 @@ class TestCoverageConfiguration:
         assert pyproject.exists(), "pyproject.toml should exist"
 
         content = pyproject.read_text()
-        assert "[tool.coverage" in content or "[tool.pytest" in content, (
-            "Coverage configuration should be in pyproject.toml"
-        )
+        assert (
+            "[tool.coverage" in content or "[tool.pytest" in content
+        ), "Coverage configuration should be in pyproject.toml"
 
     def test_coverage_fail_under_threshold(self) -> None:
         """Test that fail_under threshold is appropriately set."""
@@ -38,9 +39,9 @@ class TestCoverageConfiguration:
             match = re.search(r"fail_under\s*=\s*(\d+)", content)
             if match:
                 threshold = int(match.group(1))
-                assert 70 <= threshold <= 100, (
-                    f"Coverage threshold {threshold} should be between 70 and 100"
-                )
+                assert (
+                    70 <= threshold <= 100
+                ), f"Coverage threshold {threshold} should be between 70 and 100"
             else:
                 # fail_under might not be set
                 pass
@@ -52,7 +53,7 @@ class TestCoverageConfiguration:
             content = pyproject.read_text()
 
             # Look for source = [...] pattern
-            source_match = re.search(r'source\s*=\s*\[(.*?)\]', content, re.DOTALL)
+            source_match = re.search(r"source\s*=\s*\[(.*?)\]", content, re.DOTALL)
             if source_match:
                 sources = re.findall(r'"([^"]+)"', source_match.group(1))
                 for source in sources:
@@ -71,6 +72,7 @@ class TestCoverageConfiguration:
 # =============================================================================
 # Coverage Report Validation
 # =============================================================================
+
 
 class TestCoverageReportValidation:
     """Tests for coverage report validation."""
@@ -100,6 +102,7 @@ class TestCoverageReportValidation:
 # =============================================================================
 # Coverage Gap Identification
 # =============================================================================
+
 
 class TestCoverageGapIdentification:
     """Tests for identifying coverage gaps."""
@@ -139,6 +142,7 @@ class TestCoverageGapIdentification:
 # =============================================================================
 # Coverage Metrics Validation
 # =============================================================================
+
 
 class TestCoverageMetricsValidation:
     """Tests for validating coverage metrics."""
@@ -188,14 +192,15 @@ class TestCoverageMetricsValidation:
 
         if files_checked > 0:
             assertion_ratio = files_with_assertions / files_checked
-            assert assertion_ratio >= 0.9, (
-                f"Expected 90%+ of test files to have assertions, got {assertion_ratio:.1%}"
-            )
+            assert (
+                assertion_ratio >= 0.9
+            ), f"Expected 90%+ of test files to have assertions, got {assertion_ratio:.1%}"
 
 
 # =============================================================================
 # Coverage Threshold Enforcement
 # =============================================================================
+
 
 class TestCoverageThresholdEnforcement:
     """Tests for coverage threshold enforcement."""
@@ -240,6 +245,7 @@ class TestCoverageThresholdEnforcement:
 # =============================================================================
 # CI Workflow Validation
 # =============================================================================
+
 
 class TestCIWorkflowValidation:
     """Tests for validating CI workflow configuration."""

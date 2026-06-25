@@ -77,10 +77,7 @@ class TestScheduleConfiguration:
 
         # Check if date falls in blackout
         test_date = "2026-12-25"
-        is_blackout = any(
-            b["start"] <= test_date <= b["end"]
-            for b in blackouts
-        )
+        is_blackout = any(b["start"] <= test_date <= b["end"] for b in blackouts)
 
         assert is_blackout
 
@@ -236,7 +233,9 @@ class TestMaintenanceMonitoring:
 
         metrics = {
             "total_runs": len(recent_jobs),
-            "success_rate": sum(1 for j in recent_jobs if j["status"] == "success") / len(recent_jobs) * 100,
+            "success_rate": sum(1 for j in recent_jobs if j["status"] == "success")
+            / len(recent_jobs)
+            * 100,
             "avg_duration": sum(j["duration"] for j in recent_jobs) / len(recent_jobs),
             "failures": sum(1 for j in recent_jobs if j["status"] == "failed"),
         }
@@ -257,7 +256,7 @@ class TestMaintenanceMonitoring:
 
         # Estimate remaining time based on progress
         rate = job["progress_percent"] / elapsed_minutes  # percent per minute
-        estimated_remaining = remaining_percent / rate if rate > 0 else float('inf')
+        estimated_remaining = remaining_percent / rate if rate > 0 else float("inf")
 
         assert round(estimated_remaining) == 20  # ~20 more minutes
 

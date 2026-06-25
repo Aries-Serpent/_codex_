@@ -11,6 +11,7 @@ def test_agent_state_creation():
     """Test creating an AgentState instance."""
     try:
         from codex_engine import AgentState
+
         state = AgentState("agent_1", ["memory1", "memory2"])
         assert state.id == "agent_1"
         assert state.memory == ["memory1", "memory2"]
@@ -22,6 +23,7 @@ def test_agent_state_metrics():
     """Test AgentState metrics."""
     try:
         from codex_engine import AgentState
+
         state = AgentState("agent_1", [])
 
         state.set_metric("accuracy", 0.95)
@@ -67,12 +69,8 @@ def test_serialization_size():
         msgpack_bytes = serialize_state(state)
 
         # JSON for comparison
-        json_str = json.dumps({
-            "id": state.id,
-            "memory": state.memory,
-            "metrics": {}
-        })
-        json_bytes = json_str.encode('utf-8')
+        json_str = json.dumps({"id": state.id, "memory": state.memory, "metrics": {}})
+        json_bytes = json_str.encode("utf-8")
 
         # MessagePack should be smaller or comparable
         ratio = len(json_bytes) / len(msgpack_bytes)
@@ -104,11 +102,13 @@ def test_serialization_performance():
         # JSON
         start = time.time()
         for _ in range(iterations):
-            json_str = json.dumps({
-                "id": state.id,
-                "memory": state.memory,
-                "metrics": {k: state.get_metric(k) for k in state.get_metric_keys()}
-            })
+            json_str = json.dumps(
+                {
+                    "id": state.id,
+                    "memory": state.memory,
+                    "metrics": {k: state.get_metric(k) for k in state.get_metric_keys()},
+                }
+            )
             _ = json.loads(json_str)
         json_time = time.time() - start
 

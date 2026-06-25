@@ -20,7 +20,9 @@ def test_checkpoint_records_git_and_env(tmp_path):
     opt = torch.optim.SGD(model.parameters(), 0.1)
     path = tmp_path / "ckpt.pt"
     save_checkpoint(str(path), model, opt, None, epoch=0)
-    data = torch.load(path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
+    data = torch.load(
+        path, weights_only=False
+    )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
     extra = data.get("extra", {})
     # Expect modern keys saved by provenance utilities
     repo_root = Path(__file__).resolve().parents[1]

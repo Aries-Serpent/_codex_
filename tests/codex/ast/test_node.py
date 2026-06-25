@@ -33,9 +33,17 @@ class TestNodeType:
         from codex.ast.node import NodeType
 
         types = [
-            "MODULE", "FUNCTION", "ASYNC_FUNCTION", "CLASS",
-            "LAMBDA", "IMPORT", "FROM_IMPORT", "STATEMENT",
-            "EXPRESSION", "DECORATOR", "COMPREHENSION"
+            "MODULE",
+            "FUNCTION",
+            "ASYNC_FUNCTION",
+            "CLASS",
+            "LAMBDA",
+            "IMPORT",
+            "FROM_IMPORT",
+            "STATEMENT",
+            "EXPRESSION",
+            "DECORATOR",
+            "COMPREHENSION",
         ]
 
         for type_name in types:
@@ -54,7 +62,7 @@ class TestSourceLocation:
             line_start=10,
             column_start=5,
             line_end=15,
-            column_end=20
+            column_end=20,
         )
 
         assert loc.file_path == Path("/path/to/file.py")
@@ -72,7 +80,7 @@ class TestSourceLocation:
             line_start=42,
             column_start=8,
             line_end=50,
-            column_end=0
+            column_end=0,
         )
 
         result = str(loc)
@@ -90,18 +98,11 @@ class TestStandardizedASTNode:
         from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(
-            file_path=Path("test.py"),
-            line_start=1,
-            column_start=0,
-            line_end=10,
-            column_end=0
+            file_path=Path("test.py"), line_start=1, column_start=0, line_end=10, column_end=0
         )
 
         node = StandardizedASTNode(
-            node_id="node_1",
-            type=NodeType.FUNCTION,
-            name="my_function",
-            source_location=loc
+            node_id="node_1", type=NodeType.FUNCTION, name="my_function", source_location=loc
         )
 
         assert node.node_id == "node_1"
@@ -125,7 +126,7 @@ class TestStandardizedASTNode:
             type=NodeType.CLASS,
             name="MyClass",
             source_location=loc,
-            docstring="This is a test class."
+            docstring="This is a test class.",
         )
 
         assert node.docstring == "This is a test class."
@@ -141,7 +142,7 @@ class TestStandardizedASTNode:
             type=NodeType.FUNCTION,
             name="decorated_func",
             source_location=loc,
-            decorators=["@staticmethod", "@lru_cache"]
+            decorators=["@staticmethod", "@lru_cache"],
         )
 
         assert len(node.decorators) == 2
@@ -154,17 +155,11 @@ class TestStandardizedASTNode:
         loc = SourceLocation(Path("t.py"), 1, 0, 10, 0)
 
         parent = StandardizedASTNode(
-            node_id="parent",
-            type=NodeType.MODULE,
-            name="module",
-            source_location=loc
+            node_id="parent", type=NodeType.MODULE, name="module", source_location=loc
         )
 
         child = StandardizedASTNode(
-            node_id="child",
-            type=NodeType.FUNCTION,
-            name="func",
-            source_location=loc
+            node_id="child", type=NodeType.FUNCTION, name="func", source_location=loc
         )
 
         parent.add_child(child)
@@ -201,7 +196,7 @@ class TestStandardizedASTNode:
             type=NodeType.FUNCTION,
             name="typed_func",
             source_location=loc,
-            type_hints={"x": "int", "y": "str", "return": "bool"}
+            type_hints={"x": "int", "y": "str", "return": "bool"},
         )
 
         assert node.type_hints["x"] == "int"
@@ -218,7 +213,7 @@ class TestStandardizedASTNode:
             type=NodeType.FUNCTION,
             name="func",
             source_location=loc,
-            metadata={"complexity": 5, "is_public": True}
+            metadata={"complexity": 5, "is_public": True},
         )
 
         assert node.metadata["complexity"] == 5

@@ -37,7 +37,7 @@ from pathlib import Path
 
 try:
     import yaml
-except Exception:  # pragma: no cover
+except (IOError, OSError):  # pragma: no cover
     yaml = None
 
 logger = logging.getLogger(__name__)
@@ -91,7 +91,7 @@ def _find_skill_dir(skill_id: str) -> Path | None:
             data = yaml.safe_load(manifest.read_text(encoding="utf-8")) or {}
             if data.get("id") == skill_id:
                 return candidate
-        except Exception:  # nosec B112 — intentional: skip unreadable manifest candidates
+        except (IOError, OSError):  # nosec B112 — intentional: skip unreadable manifest candidates
             continue
     candidates = [d for d in base.iterdir() if d.is_dir() and d.name == slug]
     return candidates[0] if candidates else None
@@ -143,7 +143,7 @@ def compress_skill(
         try:
             data = yaml.safe_load(manifest_file.read_text(encoding="utf-8")) or {}
             version = data.get("version", "1.0.0")
-        except Exception:
+        except (IOError, OSError):
             logger.debug("Suppressed exception in handler", exc_info=True)
     size_before = _dir_size(skill_dir)
     archive_name = f"{skill_id.replace('.', '-')}-{version}"
@@ -274,7 +274,7 @@ def _update_manifest_compression(manifest_file: Path, size_before: int, size_aft
         compression["size_before"] = size_before
         compression["size_after"] = size_after
         manifest_file.write_text(yaml.safe_dump(data, default_flow_style=False), encoding="utf-8")
-    except Exception as exc:
+    except (IOError, OSError) as exc:
         logger.warning("Could not update manifest compression fields: %s", exc)
 
 

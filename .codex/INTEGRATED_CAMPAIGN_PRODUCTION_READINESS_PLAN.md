@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-15  
 **Scope:** Campaign Framework Implementation + Production Deployment Readiness (Phases 1-5)  
-**Target Achievement:** 
+**Target Achievement:**
 - ~100% production deployment readiness
 - Zero critical/high security issues
 - \>20% code coverage (from 10.7%)
@@ -189,14 +189,14 @@ campaigns:
     trigger_pattern: "manual|deployment_gate_opened"
     status: "active"
     priority: "critical"
-    
+
     objectives:
       - "Zero critical/high security vulnerabilities"
       - ">20% code coverage (from 10.7%)"
       - "CI stability <5% failure rate"
       - "100% REQ-1 to REQ-13 compliance"
       - "Production deployment certification"
-    
+
     phases:
       - id: "1"
         name: "Security Hardening"
@@ -207,7 +207,7 @@ campaigns:
         artifacts:
           - "SECURITY_FINDINGS_*.md"
           - "SECURITY_PHASE1_COMPLETE.md"
-      
+
       - id: "2"
         name: "Coverage Expansion"
         parallel_agents:
@@ -219,7 +219,7 @@ campaigns:
           - "COVERAGE_*.md"
           - "tests/unit/test_*.py"
           - "tests/integration/test_*.py"
-      
+
       - id: "3"
         name: "CI Stability"
         parallel_agents:
@@ -229,7 +229,7 @@ campaigns:
         timeout_seconds: 600
         artifacts:
           - "CI_STABILITY_*.md"
-      
+
       - id: "4"
         name: "Agent Architecture"
         parallel_agents:
@@ -238,7 +238,7 @@ campaigns:
         timeout_seconds: 2700
         artifacts:
           - "PHASE4_*.md"
-      
+
       - id: "5"
         name: "Final Validation"
         parallel_agents:
@@ -250,7 +250,7 @@ campaigns:
         artifacts:
           - "PHASE5*.md"
           - "PRODUCTION_READINESS_MERGE_CERTIFICATION.md"
-    
+
     escalation_threshold: 3  # iterations before human escalation
     success_criteria:
       - "All phases PASS"
@@ -258,7 +258,7 @@ campaigns:
       - "Coverage >= 12% (target: >20%)"
       - "CI failure rate < 5%"
       - "REQ-1 to REQ-13: 100% pass"
-    
+
     rollback_strategy: "revert_and_alert"
     created_at: "2026-06-13T00:10Z"
 ```
@@ -272,31 +272,31 @@ IDLE
       ├─ Initialize CampaignExecution
       ├─ Create artifact directory
       └─ Log to campaign_executions.jsonl
-  
+
   ACTIVATE ──> PHASE_1
       ├─ Dispatch parallel agents
       ├─ Set phase timeout
       └─ Start polling (read_agent every 10s)
-  
+
   PHASE_1 ──> [gate verification]
       ├─ [PASS] ──> PHASE_2
       ├─ [FAIL, iter < 3] ──> RETRY_1
       └─ [FAIL, iter >= 3] ──> ESCALATE
-  
+
   [Sequential through PHASE_5]
-  
+
   PHASE_5 ──> [final gate]
       ├─ [ALL_PASS] ──> COMPLETE
       ├─ [FAIL, iter < 3] ──> RETRY_N
       └─ [FAIL, iter >= 3] ──> ESCALATE
-  
+
   COMPLETE
       ├─ Aggregate results
       ├─ Update pattern_learning_store.json
       ├─ Commit campaign_artifacts/
       ├─ Update AGENT_ACCOUNTABILITY_REPORT.md
       └─ Log to campaign_executions.jsonl
-  
+
   ESCALATE
       ├─ Post escalation issue with context
       ├─ Tag @mbaetiong
@@ -356,20 +356,20 @@ class CampaignExecution:
 
 class CampaignOrchestrator:
     """Orchestrate multi-phase campaigns with parallel agent delegation."""
-    
+
     def __init__(self, campaign_def: CampaignDefinition):
         self.campaign = campaign_def
         self.execution = CampaignExecution(
             campaign_id=campaign_def.campaign_id,
             activation_time=datetime.now(timezone.utc),
         )
-    
+
     def activate_campaign(self) -> None:
         """Activate campaign and dispatch Phase 1."""
         self.execution.status = CampaignStatus.ACTIVATE
         # Log activation
         # Dispatch Phase 1
-    
+
     def execute_phase(self, phase_idx: int) -> List[str]:
         """
         Execute phase agents in parallel.
@@ -377,7 +377,7 @@ class CampaignOrchestrator:
         """
         phase = self.campaign.phases[phase_idx]
         self.execution.status = CampaignStatus.PHASE_RUNNING
-        
+
         # Launch each agent in background mode
         agent_ids = []
         for agent_id in phase.parallel_agents:
@@ -388,55 +388,55 @@ class CampaignOrchestrator:
                 mode="background"
             )
             agent_ids.append(result.agent_id)
-        
+
         return agent_ids
-    
+
     def monitor_agents(self, agent_ids: List[str], timeout: int) -> dict[str, Any]:
         """Poll agents until completion or timeout."""
         results = {}
         start = time.time()
-        
+
         while len(results) < len(agent_ids):
             if time.time() - start > timeout:
                 # Timeout: escalate remaining agents
                 break
-            
+
             for agent_id in agent_ids:
                 if agent_id not in results:
                     result = read_agent(agent_id, wait=False)
                     if result.status in ["completed", "failed"]:
                         results[agent_id] = result
                         self.execution.agent_results[agent_id] = result
-            
+
             time.sleep(10)  # Poll every 10s
-        
+
         return results
-    
+
     def verify_gate(self, phase_idx: int) -> bool:
         """Evaluate gate condition on agent results."""
         phase = self.campaign.phases[phase_idx]
         self.execution.status = CampaignStatus.GATE_CHECK
-        
+
         gate_pass = phase.gate_condition(self.execution.agent_results)
         return gate_pass
-    
+
     def collect_artifacts(self, phase_idx: int) -> None:
         """Collect artifacts from all agents in phase."""
         phase = self.campaign.phases[phase_idx]
         phase_dir = Path(f".codex/campaign_artifacts/{self.campaign.campaign_id}/phase_{phase.phase_id}")
         phase_dir.mkdir(parents=True, exist_ok=True)
-        
+
         for agent_id, result in self.execution.agent_results.items():
             artifact_files = result.get("artifacts", [])
             for artifact_path in artifact_files:
                 # Copy to phase directory
                 # Track in self.execution.artifacts_collected
                 pass
-    
+
     def escalate(self, reason: str) -> None:
         """Escalate to human with full context."""
         self.execution.status = CampaignStatus.ESCALATED
-        
+
         issue_body = f"""
 [ESCALATION] Campaign {self.campaign.campaign_id} stuck after {self.execution.iterations} iterations
 
@@ -454,11 +454,11 @@ class CampaignOrchestrator:
 """
         # Post GitHub issue with [ESCALATION] tag
         # Tag @mbaetiong
-    
+
     def finalize(self, status: CampaignStatus) -> None:
         """Finalize campaign and update pattern store."""
         self.execution.status = status
-        
+
         # Aggregate learnings from agent results
         learnings = {
             "campaign_id": self.campaign.campaign_id,
@@ -468,7 +468,7 @@ class CampaignOrchestrator:
             "duration_seconds": (datetime.now(timezone.utc) - self.execution.activation_time).total_seconds(),
             "agents_used": list(self.execution.agent_results.keys()),
         }
-        
+
         # Update pattern_learning_store.json
         # Commit campaign_artifacts/
         # Update AGENT_ACCOUNTABILITY_REPORT.md
@@ -634,7 +634,7 @@ Session 2 (Production Readiness Phases 4-5):
     - security-alert-verification-agent
     - unified-coverage-agent
     - workflow-compliance-guardian
-  
+
   All agents expected to complete within timeouts
   Escalation if any phase fails > 3 iterations
 
@@ -703,4 +703,3 @@ This integrated plan provides:
 7. ✅ **Continuation Guide** — Clear instructions for session handoff
 
 **Ready to implement?** Start with Session 1 tasks (campaign framework foundation).
-

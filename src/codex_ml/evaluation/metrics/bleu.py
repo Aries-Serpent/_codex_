@@ -22,8 +22,9 @@ try:
 
     HAS_SACREBLEU = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     HAS_SACREBLEU = False
 
 
@@ -91,10 +92,11 @@ class BleuMetric(MetricAdapter):
                 f"{self.name}_score": bleu.score,
                 f"{self.name}_precisions": bleu.precisions,
             }
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.debug("Exception caught, returning", exc_info=True)
-            return {f"{self.name}_error": str(e)}  # type: ignore[dict-item]
+            return {f"{self.name}_error": str(e)}
 
     def _compute_basic(self) -> dict[str, float]:
         """Basic BLEU approximation without sacrebleu."""
@@ -118,5 +120,5 @@ class BleuMetric(MetricAdapter):
 
         return {
             self.name: avg_score,
-            f"{self.name}_warning": "sacrebleu not installed, using basic approximation",  # type: ignore[dict-item]
+            f"{self.name}_warning": "sacrebleu not installed, using basic approximation",
         }

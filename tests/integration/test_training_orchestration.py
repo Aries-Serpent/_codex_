@@ -3,6 +3,7 @@ Integration tests for ML training orchestration.
 
 Tests curriculum learning, multi-phase training, and training state management.
 """
+
 import tempfile
 from pathlib import Path
 
@@ -21,7 +22,7 @@ class TestCurriculumLearning:
         from codex_ml.training import curriculum
 
         # Check for curriculum-related attributes
-        assert hasattr(curriculum, '__name__')
+        assert hasattr(curriculum, "__name__")
 
     def test_difficulty_progression(self):
         """Test difficulty progression in curriculum."""
@@ -223,13 +224,13 @@ class TestTrainingState:
         state = {
             "epoch": 0,
             "step": 0,
-            "best_loss": float('inf'),
+            "best_loss": float("inf"),
             "patience_counter": 0,
         }
 
         assert state["epoch"] == 0
         assert state["step"] == 0
-        assert state["best_loss"] == float('inf')
+        assert state["best_loss"] == float("inf")
 
     def test_state_update(self):
         """Test training state update."""
@@ -247,6 +248,7 @@ class TestTrainingState:
             state_file = Path(tmpdir) / "state.json"
 
             import json
+
             state = {"epoch": 5, "loss": 0.3}
 
             state_file.write_text(json.dumps(state))
@@ -260,10 +262,10 @@ class TestTrainingState:
         state = {"epoch": 10, "step": 1000}
 
         is_valid = (
-            isinstance(state["epoch"], int) and
-            isinstance(state["step"], int) and
-            state["epoch"] >= 0 and
-            state["step"] >= 0
+            isinstance(state["epoch"], int)
+            and isinstance(state["step"], int)
+            and state["epoch"] >= 0
+            and state["step"] >= 0
         )
 
         assert is_valid is True

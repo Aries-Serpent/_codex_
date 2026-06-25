@@ -59,7 +59,7 @@ These are not new conflicts but rather issues with Wave 2B patch specifications:
 | **Impact Scope** | P0 batch validation blocked |
 | **Impact Severity** | BLOCKS entire P0→P1→P2→P3 sequence |
 
-**Evidence**: 
+**Evidence**:
 ```
 File: requirements.txt
 Line 2: cryptography==49.2.0

@@ -407,4 +407,3 @@ model = pipeline.train(data)
 4. **Ongoing:** Establish maintenance procedures
 
 See `DOCUMENTATION_AUDIT_SUMMARY.md` for executive summary and implementation roadmap.
-

@@ -74,7 +74,9 @@ def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:
 
 
 def test_decode_and_validate_requires_jsonschema_when_schema_given() -> None:
-    with pytest.raises(RuntimeError, match="schema_path was provided but jsonschema is not installed"):
+    with pytest.raises(
+        RuntimeError, match="schema_path was provided but jsonschema is not installed"
+    ):
         with pytest.MonkeyPatch.context() as m:
             m.setitem(sys.modules, "jsonschema", None)
             decode_validate_and_extract.decode_and_validate(

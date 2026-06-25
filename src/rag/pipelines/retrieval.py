@@ -121,7 +121,7 @@ class PGVectorStoreBackend(VectorStoreBackend):
 
             if HAS_PSYCOPG3:
                 self._store = PGVectorStore()
-        except Exception as exc:
+        except (ValueError, TypeError, RuntimeError) as exc:
             logger.debug(
                 "PGVectorStoreBackend: failed to initialize PGVectorStore; "
                 "falling back to in-memory: %s",
@@ -133,7 +133,7 @@ class PGVectorStoreBackend(VectorStoreBackend):
             )
             self._fallback = InMemoryVectorStore()
         else:
-            self._fallback = None  # type: ignore[assignment]
+            self._fallback = None
 
     def add(self, doc_id: str, content: str, embedding: list[float], metadata: dict) -> None:
         if self._fallback is not None:

@@ -14,6 +14,7 @@ class TestCodexLogging:
         """Test _mlflow_offline_enabled function."""
         try:
             from codex_ml.monitoring.codex_logging import _mlflow_offline_enabled
+
             result = _mlflow_offline_enabled()
             assert isinstance(result, bool)
         except ImportError as exc:
@@ -25,6 +26,7 @@ class TestCodexLogging:
             from codex_ml.monitoring.codex_logging import (
                 _ensure_local_mlflow_tracking_uri_default,
             )
+
             _ensure_local_mlflow_tracking_uri_default()
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
@@ -37,6 +39,7 @@ class TestCodexLoggers:
         """Test CodexLoggers enum is available."""
         try:
             from codex_ml.monitoring._logger_types import CodexLoggers
+
             assert CodexLoggers is not None
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
@@ -49,6 +52,7 @@ class TestTelemetryComponentStatus:
         """Test TelemetryComponentStatus enum is available."""
         try:
             from codex_ml.monitoring._logger_types import TelemetryComponentStatus
+
             assert TelemetryComponentStatus is not None
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

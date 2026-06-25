@@ -122,7 +122,7 @@ class EmbeddingCache:
             self._disk_path = Path(self.config.disk_cache_path)
             self._disk_path.mkdir(parents=True, exist_ok=True)
         else:
-            self._disk_path = None  # type: ignore[assignment]
+            self._disk_path = None
 
         logger.debug(
             f"EmbeddingCache initialized: max_entries={self.config.max_entries}, "
@@ -406,8 +406,9 @@ class EmbeddingCache:
         try:
             file_path = self._disk_path / f"{key}.npy"
             np.save(file_path, entry.embedding)
-        except Exception as e:
-            logger.warning(f"Failed to save to disk cache: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Failed to save to disk cache: <ERROR_TYPE>")
 
     def _load_from_disk(self, key: str) -> Optional[np.ndarray]:
         """Load entry from disk cache."""
@@ -418,8 +419,9 @@ class EmbeddingCache:
             file_path = self._disk_path / f"{key}.npy"
             if file_path.exists():
                 return np.load(file_path)
-        except Exception as e:
-            logger.warning(f"Failed to load from disk cache: {e}")
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Failed to load from disk cache: <ERROR_TYPE>")
 
         return None
 

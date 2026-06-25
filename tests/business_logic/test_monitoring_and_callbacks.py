@@ -14,6 +14,7 @@ from enum import Enum
 
 class CallbackEvent(Enum):
     """Callback event types."""
+
     ON_TRAIN_START = "on_train_start"
     ON_EPOCH_END = "on_epoch_end"
     ON_BATCH_END = "on_batch_end"
@@ -39,9 +40,14 @@ class TestCallbackRegistration:
         """Test registering multiple callbacks."""
         callbacks = {}
 
-        def callback1(): pass
-        def callback2(): pass
-        def callback3(): pass
+        def callback1():
+            pass
+
+        def callback2():
+            pass
+
+        def callback3():
+            pass
 
         callbacks["callback1"] = callback1
         callbacks["callback2"] = callback2
@@ -68,8 +74,11 @@ class TestCallbackRegistration:
         """Test maintaining list of callbacks per event."""
         event_callbacks = {}
 
-        def callback1(): pass
-        def callback2(): pass
+        def callback1():
+            pass
+
+        def callback2():
+            pass
 
         event_callbacks["epoch_end"] = [callback1, callback2]
 
@@ -137,6 +146,7 @@ class TestCallbackExecution:
 
     def test_callback_return_value(self):
         """Test handling callback return values."""
+
         def callback():
             return "success"
 
@@ -167,11 +177,7 @@ class TestMetricCollection:
         collected_metrics = []
 
         for batch in range(5):
-            metrics = {
-                "batch": batch,
-                "loss": 0.5 - batch * 0.05,
-                "accuracy": 0.7 + batch * 0.03
-            }
+            metrics = {"batch": batch, "loss": 0.5 - batch * 0.05, "accuracy": 0.7 + batch * 0.03}
             collected_metrics.append(metrics)
 
         assert len(collected_metrics) == 5
@@ -182,7 +188,7 @@ class TestMetricCollection:
             "epoch": 1,
             "avg_loss": 0.35,
             "avg_accuracy": 0.87,
-            "batches_processed": 100
+            "batches_processed": 100,
         }
 
         assert epoch_metrics["avg_accuracy"] == 0.87
@@ -202,20 +208,14 @@ class TestMetricCollection:
     def test_metric_timestamp(self):
         """Test recording metric timestamps."""
         import time
-        metrics = {
-            "value": 0.87,
-            "timestamp": time.time(),
-            "epoch": 1
-        }
+
+        metrics = {"value": 0.87, "timestamp": time.time(), "epoch": 1}
 
         assert "timestamp" in metrics
 
     def test_cumulative_metrics(self):
         """Test cumulative metric tracking."""
-        cumulative = {
-            "total_samples": 0,
-            "total_loss": 0.0
-        }
+        cumulative = {"total_samples": 0, "total_loss": 0.0}
 
         for batch in range(5):
             batch_size = 32
@@ -300,7 +300,7 @@ class TestAlertTriggering:
         alerts = []
         patience = 3
         epochs_without_improvement = 0
-        best_loss = float('inf')
+        best_loss = float("inf")
 
         losses = [0.5, 0.4, 0.35, 0.34, 0.34, 0.34, 0.34]
 
@@ -322,7 +322,7 @@ class TestAlertTriggering:
         losses = [0.5, 0.4, 0.3, 0.25, 0.5, 1.0, 2.0]
 
         for i in range(1, len(losses)):
-            if losses[i] > losses[i-1] * 2:
+            if losses[i] > losses[i - 1] * 2:
                 alerts.append("divergence")
                 break
 
@@ -349,14 +349,11 @@ class TestLoggingAndReporting:
         """Test logging epoch summary."""
         logs = []
 
-        epoch_data = {
-            "epoch": 1,
-            "loss": 0.35,
-            "accuracy": 0.87,
-            "val_accuracy": 0.85
-        }
+        epoch_data = {"epoch": 1, "loss": 0.35, "accuracy": 0.87, "val_accuracy": 0.85}
 
-        log_entry = f"Epoch {epoch_data['epoch']}: loss={epoch_data['loss']}, acc={epoch_data['accuracy']}"
+        log_entry = (
+            f"Epoch {epoch_data['epoch']}: loss={epoch_data['loss']}, acc={epoch_data['accuracy']}"
+        )
         logs.append(log_entry)
 
         assert len(logs) == 1
@@ -380,7 +377,7 @@ class TestLoggingAndReporting:
             "total_epochs": 10,
             "best_accuracy": 0.89,
             "training_time": 3600,
-            "checkpoints_saved": 5
+            "checkpoints_saved": 5,
         }
 
         assert report["best_accuracy"] == 0.89
@@ -396,7 +393,7 @@ class TestLoggingAndReporting:
         summary = {
             "best_loss": min(m["loss"] for m in metrics_history),
             "best_accuracy": max(m["accuracy"] for m in metrics_history),
-            "total_epochs": len(metrics_history)
+            "total_epochs": len(metrics_history),
         }
 
         assert summary["best_accuracy"] == 0.85

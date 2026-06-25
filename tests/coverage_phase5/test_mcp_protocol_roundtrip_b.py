@@ -42,12 +42,7 @@ def test_float_roundtrip(value: float):
 
 @given(
     st.lists(
-        st.dictionaries(
-            st.text(min_size=1, max_size=20),
-            st.integers()
-        ),
-        min_size=0,
-        max_size=10
+        st.dictionaries(st.text(min_size=1, max_size=20), st.integers()), min_size=0, max_size=10
     )
 )
 def test_complex_nested_structure(data: list[Dict[str, int]]):

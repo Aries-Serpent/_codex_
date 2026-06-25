@@ -50,12 +50,12 @@ class CodeQLAutoFixer:
     def fix_variable_initialization(self, file_path: Path) -> bool:
         """
         Fix uninitialized variable issues.
-        
+
         Pattern 1: Variable used in nested if without default
             if condition1:
                 result = value
             return result  # May not be initialized
-        
+
         Fix: Initialize before the conditional
             result = None
             if condition1:
@@ -91,12 +91,12 @@ class CodeQLAutoFixer:
     def fix_import_consolidation(self, file_path: Path) -> bool:
         """
         Fix cyclic imports and consolidate imports.
-        
+
         Pattern 1: Scattered imports
             from module import a
             from module import b
             from module import c
-        
+
         Fix: Consolidate imports
             from module import a, b, c
         """
@@ -157,7 +157,7 @@ class CodeQLAutoFixer:
     def fix_secret_logging(self, file_path: Path) -> bool:
         """
         Fix clear-text logging of secrets.
-        
+
         Pattern: logger.debug(f"Token: {token}")
         Fix: logger.debug(f"Token: {redact_token(token)}")
         """

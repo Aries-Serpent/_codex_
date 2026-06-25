@@ -98,7 +98,8 @@ def docker_test(session):
         )
         image_exists = bool(result.stdout.strip())
     except (subprocess.SubprocessError, OSError, FileNotFoundError) as e:
-        print(f"\nWarning: Failed to check for existing Docker image: {e}")
+        error_type = type(e).__name__
+        print(f"\nWarning: Failed to check for existing Docker image: <ERROR_TYPE>")
         print("Proceeding with build...")
         image_exists = False
 
@@ -147,21 +148,24 @@ def all_enhancements(session):
         mlflow_tests(session)
         print("✅ MLflow tests passed")
     except Exception as e:
-        print(f"⚠️  MLflow tests skipped: {e}")
+        error_type = type(e).__name__
+        print(f"⚠️  MLflow tests skipped: <ERROR_TYPE>")
 
     # Run performance benchmarks
     try:
         performance_benchmarks(session)
         print("✅ Performance benchmarks passed")
     except Exception as e:
-        print(f"⚠️  Performance benchmarks failed: {e}")
+        error_type = type(e).__name__
+        print(f"⚠️  Performance benchmarks failed: <ERROR_TYPE>")
 
     # Run distributed tests
     try:
         distributed_tests(session)
         print("✅ Distributed tests passed")
     except Exception as e:
-        print(f"⚠️  Distributed tests failed: {e}")
+        error_type = type(e).__name__
+        print(f"⚠️  Distributed tests failed: <ERROR_TYPE>")
 
 
 @nox.session(name="maintenance_check")
@@ -175,7 +179,8 @@ def maintenance_check(session):
         session.run("pip-audit", "--skip-editable")
         print("✅ No dependency vulnerabilities found")
     except Exception as e:
-        print(f"⚠️  Dependency check: {e}")
+        error_type = type(e).__name__
+        print(f"⚠️  Dependency check: <ERROR_TYPE>")
 
     print("\n🔍 Checking test coverage...")
     session.run(

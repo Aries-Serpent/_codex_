@@ -40,7 +40,7 @@ from typing import Any, Optional
 
 try:  # pragma: no cover - handled in tests via importorskip
     import yaml
-except Exception:  # pragma: no cover - reported via exit code
+except (IOError, OSError):  # pragma: no cover - reported via exit code
     yaml = None
 
 
@@ -103,12 +103,13 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     try:
         text = path.read_text(encoding="utf-8")
     except OSError as e:
-        logger.debug(f"OSError: {e}")
-        logger.warning(f"OSError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"OSError: <ERROR_TYPE>")
+        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
         return {}
     try:
         data = yaml.safe_load(text)
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return {}
     return data or {}
@@ -269,8 +270,8 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
     missing_optional: list[str] = []
 
     if has_defaults:
-        has_self = "_self_" in defaults  # type: ignore[operator]
-        self_pos = _self_position(defaults)  # type: ignore[arg-type]
+        has_self = "_self_" in defaults
+        self_pos = _self_position(defaults)
         if not has_self:
             issues.append(
                 DefaultsIssue(
@@ -289,7 +290,7 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
                 )
             )
 
-        for entry in defaults:  # type: ignore[union-attr]
+        for entry in defaults:
             ref = _parse_default_entry(entry)
             if not ref:
                 continue
@@ -324,8 +325,9 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
     try:
         rel_file = str(path.relative_to(root))
     except ValueError as e:
-        logger.debug(f"ValueError: {e}")
-        logger.warning(f"ValueError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
+        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
         rel_file = str(path)
 
     return FileAudit(

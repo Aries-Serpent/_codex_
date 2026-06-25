@@ -309,9 +309,7 @@ class TestWorkflowNavigator:
         nav = WorkflowNavigator()
 
         # get_workflow_suggestions expects a Dict, not a string
-        suggestions = nav.get_workflow_suggestions(
-            {"recent_commits": False, "test_coverage": 50}
-        )
+        suggestions = nav.get_workflow_suggestions({"recent_commits": False, "test_coverage": 50})
 
         assert isinstance(suggestions, list)
 
@@ -434,7 +432,9 @@ class TestWorkflowState:
 
                 # Verify state file was created in workflow_state_dir
                 state_files = list(nav.workflow_state_dir.glob("*.json"))
-                assert isinstance(state_files, (list, tuple, set, dict))# May be 0 if dir doesn't exist yet
+                assert isinstance(
+                    state_files, (list, tuple, set, dict)
+                )  # May be 0 if dir doesn't exist yet
             except (AttributeError, NotImplementedError, TypeError) as e:
                 pytest.skip(f"State management not fully implemented: {e}")
 

@@ -64,7 +64,8 @@ def get_installed_packages() -> list[dict[str, str]]:
 
         return packages
     except subprocess.CalledProcessError as e:
-        print(f"Error getting installed packages: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Error getting installed packages: <ERROR_TYPE>", file=sys.stderr)
         return []
 
 
@@ -197,8 +198,9 @@ Examples:
         print(f"\n✅ SBOM generation complete: {sbom_path}")
         return 0
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        print(f"\n❌ SBOM generation failed: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        print(f"\n❌ SBOM generation failed: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

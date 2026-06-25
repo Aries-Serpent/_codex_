@@ -34,27 +34,27 @@ This checklist defines the comprehensive post-deployment verification procedure 
   - Deployed version: v0.1.0-final
   - Deployed to: production
   - Deployed by: @mbaetiong (automated via governance gate)
-  
+
 ☐ Version string confirmed in production
   Command: curl https://api.example.com/version
   Expected response: { "version": "v0.1.0-final", "status": "healthy" }
   Actual response: _________________________________
-  
+
 ☐ All pods/containers running
   - Expected pod count: ____________
   - Actual pod count: ____________
   - All containers Ready: YES / NO
-  
+
 ☐ Service endpoints responding
   - Health endpoint (GET /health): 200 OK? ___
   - API endpoint (GET /api/v1/status): 200 OK? ___
   - Metrics endpoint (GET /metrics): 200 OK? ___
-  
+
 ☐ Database connectivity verified
   - Can connect to production database: YES / NO
   - Can execute SELECT query: YES / NO
   - Data integrity check passed: YES / NO
-  
+
 ☐ No immediate error surge
   - Error rate < 0.5%: YES / NO
   - Exceptions in logs: ____________
@@ -168,32 +168,32 @@ Hour | Error | p95    | CPU  | Mem  | Errors | Status
   - All critical features tested: YES / NO
   - Issues found: ____________________________
   - Severity: NONE / LOW / HIGH / CRITICAL
-  
+
 ☐ Hour 4 (deployment +4h)
   - All critical features tested: YES / NO
   - Issues found: ____________________________
   - Severity: NONE / LOW / HIGH / CRITICAL
-  
+
 ☐ Hour 8 (deployment +8h)
   - All critical features tested: YES / NO
   - Issues found: ____________________________
   - Severity: NONE / LOW / HIGH / CRITICAL
-  
+
 ☐ Hour 12 (deployment +12h)
   - All critical features tested: YES / NO
   - Issues found: ____________________________
   - Severity: NONE / LOW / HIGH / CRITICAL
-  
+
 ☐ Hour 16 (deployment +16h)
   - All critical features tested: YES / NO
   - Issues found: ____________________________
   - Severity: NONE / LOW / HIGH / CRITICAL
-  
+
 ☐ Hour 20 (deployment +20h)
   - All critical features tested: YES / NO
   - Issues found: ____________________________
   - Severity: NONE / LOW / HIGH / CRITICAL
-  
+
 ☐ Hour 24 (deployment +24h)
   - All critical features tested: YES / NO
   - Issues found: ____________________________
@@ -215,7 +215,7 @@ echo "TEST 1: User Authentication"
 curl -X POST https://api.example.com/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username": "test@example.com", "password": "test"}' \
-  | jq '.token' > /dev/null && echo "✓ PASS" || echo "✗ FAIL"
+  | jq '.token' > /dev/null && echo "✓ PASS" || echo "✗ FAIL" <!-- pragma: allowlist secret -->
 
 # Test 2: Model Inference
 echo "TEST 2: Model Inference"
@@ -249,8 +249,8 @@ Hour | Connections | Slow Queries | Replication Lag | Status
 SELECT count(*) FROM pg_stat_activity WHERE state = 'active';
 
 -- Check for long-running queries (>5 minutes)
-SELECT query, NOW() - query_start 
-  FROM pg_stat_activity 
+SELECT query, NOW() - query_start
+  FROM pg_stat_activity
   WHERE NOW() - query_start > interval '5 minutes';
 
 -- Check replication lag (if applicable)
@@ -354,19 +354,19 @@ Hour | Error | p95    | CPU  | Mem  | Issues | Status
 ☐ No unauthorized access detected
   - Check audit logs for suspicious activity
   - Verify all logins are legitimate
-  
+
 ☐ No new security vulnerabilities
   - Run CodeQL scan against production build
   - Run Semgrep scan for regression patterns
-  
+
 ☐ Data encryption verified
   - Confirm TLS in transit: YES / NO
   - Confirm data at rest encryption: YES / NO
-  
+
 ☐ Rate limiting working
   - Verify rate limit headers present
   - Test rate limit enforcement
-  
+
 ☐ CORS policies enforced
   - Verify CORS headers correct
   - Test cross-origin requests blocked properly
@@ -491,19 +491,19 @@ Pod crash loop            Auto-rollback   Create ticket    @mbaetiong approval
 ☐ Application logs (first 48 hours)
   Path: /var/log/codex/app.log or similar
   Retention: Archive to .codex/post-deployment-logs/
-  
+
 ☐ System metrics (Prometheus, CloudWatch, etc.)
   Path: Monitoring platform
   Retention: Export to CSV, archive
-  
+
 ☐ Database slow query logs
   Path: Database server
   Retention: Archive for performance analysis
-  
+
 ☐ Deployment events
   Path: Kubernetes audit logs
   Retention: Archive to .codex/post-deployment-artifacts/
-  
+
 ☐ Alert history
   Path: Alerting system (PagerDuty, OpsGenie, etc.)
   Retention: Export summary to deployment report

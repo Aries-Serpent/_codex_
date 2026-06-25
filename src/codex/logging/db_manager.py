@@ -18,7 +18,7 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except Exception as exc:  # pragma: no cover
+except (ImportError, AttributeError) as exc:  # pragma: no cover
     logging.getLogger(__name__).debug("SQLite patch disabled: %s", exc)
 
 # Initialize logger early
@@ -27,8 +27,9 @@ logger = logging.getLogger(__name__)
 try:
     from .config import DEFAULT_LOG_DB
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 
@@ -125,16 +126,14 @@ class DBManager:
                 conn.execute("PRAGMA journal_mode=WAL;")
 
                 # Create session_events table
-                conn.execute(
-                    """CREATE TABLE IF NOT EXISTS session_events(
+                conn.execute("""CREATE TABLE IF NOT EXISTS session_events(
                         ts REAL NOT NULL,
                         session_id TEXT NOT NULL,
                         role TEXT NOT NULL,
                         message TEXT NOT NULL,
                         seq INTEGER,
                         meta TEXT
-                    )"""
-                )
+                    )""")
 
                 # Check and add columns if missing (for schema migrations)
                 cols = [r[1] for r in conn.execute("PRAGMA table_info(session_events)")]
@@ -221,7 +220,8 @@ class DBManager:
         try:
             conn.close()
         except sqlite3.Error as exc:
-            self._logger.debug(f"Error closing connection: {exc}")
+            error_type = type(exc).__name__
+            self._logger.debug(f"Error closing connection: <ERROR_TYPE>")
 
     @contextmanager
     def connection(self, auto_init: bool = True):
@@ -276,7 +276,8 @@ class DBManager:
                     try:
                         conn.close()
                     except sqlite3.Error as exc:
-                        cls._logger.debug(f"Error closing pooled connection: {exc}")
+                        error_type = type(exc).__name__
+                        cls._logger.debug(f"Error closing pooled connection: <ERROR_TYPE>")
             cls._CONNECTION_POOL.clear()
 
 

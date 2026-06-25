@@ -1,4 +1,5 @@
 """Tests for baseline management."""
+
 import tempfile
 from pathlib import Path
 
@@ -21,9 +22,7 @@ def test_save_and_retrieve():
         manager = BaselineManager(f"{tmpdir}/test.db")
 
         # Save baseline
-        manager.save_baseline(
-            "test.py", "abc123", 50, 10, {"author": "test"}
-        )
+        manager.save_baseline("test.py", "abc123", 50, 10, {"author": "test"})
 
         # Retrieve baseline
         baseline = manager.get_baseline("test.py")

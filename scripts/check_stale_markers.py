@@ -31,7 +31,8 @@ class StaleMarkerChecker:
                 print(f"✅ Loaded {len(self.markers)} markers from {self.registry_path}")
                 return True
         except Exception as e:
-            print(f"❌ Failed to load registry: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Failed to load registry: <ERROR_TYPE>")
             return False
 
     def check_staleness(self, max_age_days: int = 90) -> list[dict]:

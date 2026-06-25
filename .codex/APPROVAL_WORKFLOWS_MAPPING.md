@@ -30,7 +30,7 @@ This document provides comprehensive visual mapping of all approval flows, decis
 ```mermaid
 graph TD
     A["🔍 Approval Triggers (8 entry points)"]
-    
+
     A --> B["1️⃣ PR Code Review<br/>pull_request_review event<br/>review.state == 'approved'"]
     A --> C["2️⃣ PR Edited<br/>pull_request event<br/>types: synchronize, edited"]
     A --> D["3️⃣ Workflow Completion<br/>workflow_run event<br/>types: completed"]
@@ -39,7 +39,7 @@ graph TD
     A --> G["6️⃣ WEC Checkbox<br/>PR body parsed<br/>- [x] Enable Workflow"]
     A --> H["7️⃣ Label Applied<br/>GitHub label event<br/>wec:auto-approve label"]
     A --> I["8️⃣ Environment Gate<br/>Agent auth approval<br/>Owner approval needed"]
-    
+
     B --> J["Route to Hub<br/>trigger-on-approval<br/>approval_source='trigger-on-approval'"]
     C --> K["Route to Hub<br/>auto-approve-workflows<br/>on: pull_request"]
     D --> L["Route to Hub<br/>self-approve-pending-runs<br/>workflow_run cascade"]
@@ -48,7 +48,7 @@ graph TD
     G --> O["Route to Hub<br/>workflow-execution-gate<br/>WEC parser"]
     H --> P["Route to Hub<br/>auto-approve-workflows<br/>on: pull_request"]
     I --> Q["Route to Hub<br/>agent-auth-delegation<br/>approval_intent='conditional'"]
-    
+
     J --> R["✅ Unified Hub<br/>auto-approve-workflows.yml<br/>Centralized Logic"]
     K --> R
     L --> R
@@ -57,9 +57,9 @@ graph TD
     O --> R
     P --> R
     Q --> R
-    
+
     R --> S["🎯 GitHub Actions API<br/>Approve Runs<br/>Update PR Status<br/>Queue Workflows"]
-    
+
     style A fill:#e1f5ff
     style R fill:#c8e6c9
     style S fill:#fff9c4
@@ -76,25 +76,25 @@ graph TD
 ```mermaid
 graph TD
     A["Start: action_required run received"] --> B{"Is this an<br/>action_required run?"}
-    
+
     B -->|No| C["❌ Skip<br/>Not eligible"]
     B -->|Yes| D{"Has<br/>wec:auto-approve<br/>label?"}
-    
+
     D -->|Yes| E["✅ APPROVE IMMEDIATELY<br/>approval_rule='persistent_auto_approve'<br/>Approves ALL future runs<br/>until label removed"]
     D -->|No| F{"Has<br/>wec:auto-approve-once<br/>label?"}
-    
+
     F -->|Yes| G["✅ APPROVE<br/>approval_rule='one_time_auto_approve'<br/>60-minute window<br/>Remove label after"]
     F -->|No| H{"Is PR merged<br/>or closed?"}
-    
+
     H -->|Yes| I["❌ SKIP<br/>PR no longer active"]
     H -->|No| J{"Is approver<br/>a maintainer?"}
-    
+
     J -->|Yes| K["✅ APPROVE<br/>approval_rule='maintainer_approval'<br/>Implicit approval<br/>from maintainer action"]
     J -->|No| L{"Does approval reason<br/>match exemption?"}
-    
+
     L -->|Yes| M["✅ APPROVE<br/>approval_rule='exemption_match'<br/>Approved per policy:<br/>- Documentation only<br/>- Test changes only<br/>- Scheduled sweep"]
     L -->|No| N["⏳ WAIT FOR HUMAN<br/>approval_rule='requires_human'<br/>Route to manual review<br/>queue"]
-    
+
     style E fill:#c8e6c9
     style G fill:#c8e6c9
     style K fill:#c8e6c9
@@ -144,27 +144,27 @@ Run received (action_required)
 ```mermaid
 graph TD
     A["Approval Request Received"] --> B["🔐 Token Chain Resolution<br/>Select highest-privilege token available"]
-    
+
     B --> C{"Is Cognitive Brain<br/>GitHub App token<br/>available?"}
     C -->|Yes| D["✅ Use Cognitive Brain App<br/>Scope: Full org-wide admin<br/>No action_required restrictions<br/>Ideal for agent operations"]
     C -->|No| E{"Is CODEX_MASTER_KEY<br/>available?"}
-    
+
     E -->|Yes| F["✅ Use CODEX_MASTER_KEY<br/>Scope: repo + workflow + actions:write<br/>PAT with elevated permissions<br/>Preferred fallback"]
     E -->|No| G{"Is CODEX_BACKUP_KEY<br/>available?"}
-    
+
     G -->|Yes| H["⚠️ Use CODEX_BACKUP_KEY<br/>Scope: repo + actions:write<br/>Secondary fallback PAT<br/>May have limited scope"]
     G -->|No| I["🔓 Use github.token<br/>Scope: Installation token<br/>Limited to PR context<br/>May 403 on approval"]
-    
+
     D --> J["Execute Approval"]
     F --> J
     H --> J
     I --> J
-    
+
     J --> K{"Approval Succeeds?"}
     K -->|Yes| L["✅ Run approved<br/>Audit logged<br/>Workflow continues"]
     K -->|Conflict 409/422| M["✅ Idempotent Success<br/>Run already approved<br/>No error raised"]
     K -->|Permission 401/403| N["❌ Token Permission Error<br/>Approval failed<br/>Manual review required"]
-    
+
     style D fill:#a5d6a7
     style F fill:#a5d6a7
     style H fill:#ffb74d
@@ -220,7 +220,7 @@ graph LR
     H --> I["✅ Runs approved<br/>via GitHub API"]
     I --> J["Dispatch validation<br/>workflows:<br/>- validate.yml<br/>- pre-merge-validation.yml<br/>- codeql-alert-fetcher.yml"]
     J --> K["Post '@copilot<br/>continue' comment<br/>Resume agent session"]
-    
+
     style A fill:#e3f2fd
     style G fill:#c8e6c9
     style I fill:#c8e6c9
@@ -245,10 +245,10 @@ graph LR
     F -->|Yes| H["Dispatch to<br/>Unified Hub<br/>approval_source='<br/>self-approve'"]
     H --> I["Hub executes<br/>approval logic<br/>for batch"]
     I --> J["✅ All runs<br/>approved<br/>via GitHub API"]
-    
+
     L["↪️ workflow_run<br/>cascade trigger"]
     L -->|Alternative<br/>trigger| C
-    
+
     style A fill:#fff3e0
     style L fill:#fff3e0
     style H fill:#c8e6c9
@@ -278,7 +278,7 @@ graph LR
     H --> I["Dispatch to<br/>Unified Hub<br/>approval_source='<br/>agent-auth'"]
     I --> J["Hub records<br/>delegation intent<br/>with TTL"]
     J --> K["✅ Conditional<br/>approval enabled<br/>for agent"]
-    
+
     style F fill:#ffcdd2
     style I fill:#c8e6c9
     style K fill:#c8e6c9
@@ -300,7 +300,7 @@ graph LR
     E --> F["Dispatch to<br/>Unified Hub<br/>approval_source='<br/>workflow-gate'"]
     F --> G["Hub logs<br/>checkbox state<br/>and intent"]
     G --> H["Dispatch selected<br/>workflows<br/>if checked"]
-    
+
     style F fill:#c8e6c9
     style H fill:#fff9c4
 ```
@@ -323,7 +323,7 @@ graph LR
     E --> H["Log to audit trail:<br/>.codex/evidence/<br/>owner_approval.jsonl"]
     F --> H
     H --> I["Dashboard updated<br/>Metrics aggregated"]
-    
+
     style A fill:#c8e6c9
     style E fill:#a5d6a7
     style F fill:#a5d6a7
@@ -344,61 +344,61 @@ graph LR
 ```mermaid
 stateDiagram-v2
     [*] --> INITIAL: Approval request received
-    
+
     INITIAL --> AUTHORIZED: Identity validated\n(review or schedule trigger)
-    
+
     AUTHORIZED --> PENDING_GATE: Check eligibility\n(WEC checkbox, label)
-    
+
     PENDING_GATE --> PENDING_APPROVAL: Gate checks pass\nQueue approval
-    
+
     PENDING_APPROVAL --> APPROVING: Execute approval\nGitHub API call
-    
+
     APPROVING --> APPROVED: ✅ Success\nRun approved
     APPROVING --> APPROVED_IDEMPOTENT: ✅ Already approved\n(409/422 response)
     APPROVING --> BLOCKED: ❌ Token error\n(401/403)
-    
+
     BLOCKED --> TERMINATED: Manual cleanup\nor token refresh
-    
+
     PENDING_GATE --> BLOCKED: ❌ Gate denied\n(non-owner, policy)
-    
+
     APPROVED --> AUDIT_LOGGED: Log to evidence trail\nadd approval context
     APPROVED_IDEMPOTENT --> AUDIT_LOGGED
-    
+
     AUDIT_LOGGED --> [*]
     TERMINATED --> [*]
     BLOCKED --> [*]
-    
+
     note right of INITIAL
         Approval trigger received
         from any source
     end note
-    
+
     note right of AUTHORIZED
         Validate approval source
         Check token availability
     end note
-    
+
     note right of PENDING_GATE
         WEC checkbox state
         Label presence
         Policy rules
     end note
-    
+
     note right of PENDING_APPROVAL
         Approval queued
         Awaiting GitHub API call
     end note
-    
+
     note right of APPROVING
         GitHub API executing
         Actual approval happening
     end note
-    
+
     note right of APPROVED
         HTTP 200: Approval success
         Run marked as approved
     end note
-    
+
     note right of AUDIT_LOGGED
         Logged to .codex/evidence/
         owner_approval.jsonl
@@ -435,28 +435,28 @@ graph TB
         C["🔐 agent-auth-delegation.yml<br/>Owner Auth Gate"]
         D["☑️ workflow-execution-gate.yml<br/>WEC Control"]
     end
-    
+
     subgraph "Unified Hub"
         E["🔀 auto-approve-workflows.yml<br/>Central Executor"]
         F["📋 approve_pending_runs.py<br/>Approval Logic"]
         G["🔑 Token Chain Manager<br/>Cognitive Brain → PATs → github.token"]
     end
-    
+
     subgraph "GitHub Actions API"
         H["POST /actions/runs/{id}/approve<br/>Approval Execution"]
         I["GET /actions/runs<br/>Query Pending Runs"]
     end
-    
+
     subgraph "Audit & Evidence"
         J["📊 .codex/evidence/<br/>owner_approval.jsonl<br/>Approval Audit Trail"]
         K["📈 Approval Metrics<br/>Dashboard"]
     end
-    
+
     A -->|workflow_dispatch| E
     B -->|workflow_dispatch| E
     C -->|workflow_dispatch| E
     D -->|workflow_dispatch| E
-    
+
     E -->|Executes| F
     F -->|Resolves token| G
     G -->|Uses for auth| H
@@ -464,7 +464,7 @@ graph TB
     H -->|Approval result| J
     I -->|Pending count| F
     J -->|Feeds metrics| K
-    
+
     style E fill:#c8e6c9
     style F fill:#c8e6c9
     style G fill:#bbdefb
@@ -526,7 +526,7 @@ CODEX_MASTER_KEY:
   Type: Personal Access Token (PAT)
   Scope: repo, workflow, actions:write
   Used by: All approval workflows
-  
+
 # Fallback token
 CODEX_BACKUP_KEY:
   Type: Personal Access Token (PAT)

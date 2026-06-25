@@ -117,7 +117,8 @@ def main(argv=None):
             run_quality_gates()
         print("Codex Orchestrator completed.")
     except Exception as e:
-        print(f"[codex] error: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"[codex] error: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(1)
 
 

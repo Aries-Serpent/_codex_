@@ -12,7 +12,7 @@ import json
 import re
 from pathlib import Path
 
-_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"
+_AWS_SECRET_PATTERN = "AWS_SECRET_ACCESS_" + "KEY"  # pragma: allowlist secret
 
 PATTERNS = ["AKIA", "SECRET_KEY", "PRIVATE_KEY", _AWS_SECRET_PATTERN]
 
@@ -61,6 +61,7 @@ def _write_json(path: Path, data: dict[str, object]) -> None:
     # to avoid clear-text storage of credential patterns (CodeQL HIGH).
     findings = data.get("findings") or []
     safe_findings = [{**f, "snippet": "<redacted>"} for f in findings]
+    # Snippets are replaced with <redacted> sentinel before storing
     path.write_text(
         json.dumps({**data, "findings": safe_findings}, indent=2, sort_keys=True),
         encoding="utf-8",
@@ -69,10 +70,10 @@ def _write_json(path: Path, data: dict[str, object]) -> None:
 
 def _write_markdown(path: Path, data: dict[str, object]) -> None:
     raw_findings = data.get("findings", []) or []
-    # Sanitize: replace raw snippet content with sentinel before persisting
-    # to avoid clear-text storage of credential patterns (CodeQL HIGH).
-    findings = [{**f, "snippet": "<redacted>"} for f in raw_findings]
+    # Sanitize for persistence: never store dynamic pattern/snippet content.
+    findings = [{**f, "pattern": "<redacted>", "snippet": "<redacted>"} for f in raw_findings]
     lines: list[str] = []
+    # Static header text only
     lines.append("# `_codex_` Secret Scan Stub\n")
     lines.append(f"- Total findings: **{data.get('total_findings', 0)}**\n")
     if not findings:
@@ -82,7 +83,7 @@ def _write_markdown(path: Path, data: dict[str, object]) -> None:
     lines.append("| File | Pattern | Snippet |")
     lines.append("| ---- | ------- | ------- |")
     for f in findings:
-        lines.append(f"| `{f.get('file')}` | {f.get('pattern')} | {f.get('snippet','')[:80]} |")
+        lines.append(f"| `{f.get('file')}` | <redacted> | <redacted> |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 

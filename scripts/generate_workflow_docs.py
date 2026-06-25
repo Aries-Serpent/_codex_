@@ -50,7 +50,8 @@ def generate_workflow_readme(workflow_path: Path) -> Path:
         with open(workflow_path) as f:
             workflow = yaml.safe_load(f)
     except Exception as e:
-        print(f"⚠️  Error parsing {workflow_path}: {e}")
+        error_type = type(e).__name__
+        print(f"⚠️  Error parsing {workflow_path}: <ERROR_TYPE>")
         return None
 
     if not workflow:

@@ -71,7 +71,7 @@ Confidence Level:                 HIGH (85%)
 
 | Rank | Module | Score | Mutations | Killed | Survived | Status |
 |------|--------|-------|-----------|--------|----------|--------|
-| 1 | `auth/token_handler.py` | 71% | 24 | 17 | 7 | 🟡 Monitor |
+| 1 | `auth/token_handler.py` | 71% | 24 | 17 | 7 | 🟡 Monitor | <!-- pragma: allowlist secret -->
 | 2 | `cache/memory_manager.py` | 74% | 19 | 14 | 5 | 🟡 Monitor |
 | 3 | `utils/validators.py` | 76% | 25 | 19 | 6 | 🟡 Monitor |
 | 4 | `api/middleware.py` | 78% | 18 | 14 | 4 | 🟢 Good |
@@ -314,4 +314,3 @@ Warnings:      3 (non-critical)
 ---
 
 **END OF CHECKPOINT 2 REPORT**
-

@@ -223,7 +223,7 @@ class ExpansionRewriter(BaseQueryRewriter):
                         break
                     expansions.add(synonym)
 
-        expansions = list(expansions)[: self.config.max_expansions]  # type: ignore[assignment]
+        expansions = list(expansions)[: self.config.max_expansions]
 
         # Build expanded query
         if expansions:
@@ -235,7 +235,7 @@ class ExpansionRewriter(BaseQueryRewriter):
             original_query=query,
             rewritten_query=expanded_query,
             strategy=QueryRewriteStrategy.EXPAND,
-            expansions=expansions,  # type: ignore[arg-type]
+            expansions=expansions,
             metadata={"expansion_count": len(expansions)},
         )
 
@@ -427,7 +427,7 @@ class QueryRewriter:
             self._rewriter = None
         else:
             rewriter_class = self.STRATEGY_MAP.get(self.config.strategy, NormalizeRewriter)
-            self._rewriter = rewriter_class(self.config)  # type: ignore[abstract]
+            self._rewriter = rewriter_class(self.config)
 
     def rewrite(self, query: str) -> RewrittenQuery:
         """
@@ -460,7 +460,7 @@ class QueryRewriter:
                 strategy=QueryRewriteStrategy.NONE,
             )
         else:
-            result = self._rewriter.rewrite(query)  # type: ignore[union-attr]
+            result = self._rewriter.rewrite(query)
 
         # Update cache
         if self.config.enable_cache:

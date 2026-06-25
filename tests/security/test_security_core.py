@@ -14,6 +14,7 @@ from security import core
 # sanitize_for_logging
 # ---------------------------------------------------------------------------
 
+
 def test_sanitize_for_logging_basic() -> None:
     result = core.sanitize_for_logging("hello world")
     assert result == "hello world"
@@ -57,6 +58,7 @@ def test_sanitize_for_logging_removes_tabs() -> None:
 # _ensure_str (tested indirectly)
 # ---------------------------------------------------------------------------
 
+
 def test_ensure_str_via_sanitize_bytes() -> None:
     # bytes -> decoded str
     result = core.sanitize_for_logging(b"\xff\xfe hello")
@@ -71,6 +73,7 @@ def test_ensure_str_via_sanitize_int() -> None:
 # ---------------------------------------------------------------------------
 # sanitize_user_content
 # ---------------------------------------------------------------------------
+
 
 def test_sanitize_user_content_html() -> None:
     result = core.sanitize_user_content("<script>alert('x')</script>")
@@ -101,6 +104,7 @@ def test_sanitize_user_content_plain_text_unchanged() -> None:
 # ---------------------------------------------------------------------------
 # validate_input
 # ---------------------------------------------------------------------------
+
 
 def test_validate_input_sql_rejects() -> None:
     with pytest.raises(core.SecurityError):
@@ -228,6 +232,7 @@ def test_validate_input_unsupported_type_raises() -> None:
 # enforce_absolute_path
 # ---------------------------------------------------------------------------
 
+
 def test_enforce_absolute_path_valid(tmp_path: Path) -> None:
     result = core.enforce_absolute_path(str(tmp_path))
     assert result == tmp_path
@@ -247,6 +252,7 @@ def test_enforce_absolute_path_relative_raises() -> None:
 # sanitize_path
 # ---------------------------------------------------------------------------
 
+
 def test_sanitize_path_valid(tmp_path: Path) -> None:
     subdir = tmp_path / "sub"
     subdir.mkdir()
@@ -263,6 +269,7 @@ def test_sanitize_path_escape_raises(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # check_permissions
 # ---------------------------------------------------------------------------
+
 
 def test_check_permissions_nonexistent_path(tmp_path: Path) -> None:
     result = core.check_permissions(tmp_path / "nonexistent.txt", "read")
@@ -296,6 +303,7 @@ def test_check_permissions_unknown_mode(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # rate_limiter
 # ---------------------------------------------------------------------------
+
 
 def test_rate_limiter_allows_then_blocks() -> None:
     calls = []
@@ -395,6 +403,7 @@ def test_rate_limiter_async_with_key_func() -> None:
 # verify_csrf_token
 # ---------------------------------------------------------------------------
 
+
 def test_verify_csrf_token_match() -> None:
     # Should not raise
     core.verify_csrf_token("token123", "token123")
@@ -423,6 +432,7 @@ def test_verify_csrf_token_empty_string() -> None:
 # ---------------------------------------------------------------------------
 # verify_session_integrity
 # ---------------------------------------------------------------------------
+
 
 def test_verify_session_integrity_valid() -> None:
     sessions = [
@@ -519,6 +529,7 @@ def test_verify_session_integrity_no_matching_session() -> None:
 # log_security_event
 # ---------------------------------------------------------------------------
 
+
 def test_log_security_event_with_custom_logger() -> None:
     mock_logger = logging.getLogger("test_security_event")
     # Should not raise
@@ -533,6 +544,7 @@ def test_log_security_event_default_logger() -> None:
 # ---------------------------------------------------------------------------
 # hmac_compare
 # ---------------------------------------------------------------------------
+
 
 def test_hmac_compare_equal() -> None:
     assert core.hmac_compare("secret123", "secret123") is True

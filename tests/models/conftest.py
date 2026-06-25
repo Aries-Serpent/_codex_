@@ -32,5 +32,6 @@ def _isolate_hf_revision(monkeypatch):
     """
     monkeypatch.setenv("HF_REVISION", "abcdef0")
 
+
 pytest.importorskip("torch")
 pytest.importorskip("transformers")

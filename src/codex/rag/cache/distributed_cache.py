@@ -158,8 +158,9 @@ class RedisCacheBackend(BaseCacheBackend):
                 logger.warning("redis package not installed. Install with: pip install redis")
                 self._connected = False
                 return None
-            except Exception as e:
-                logger.warning(f"Failed to connect to Redis: {e}")
+            except (ConnectionError, TimeoutError) as e:
+                error_type = type(e).__name__
+                logger.warning(f"Failed to connect to Redis: <ERROR_TYPE>")
                 self._connected = False
                 return None
 
@@ -207,8 +208,9 @@ class RedisCacheBackend(BaseCacheBackend):
             if data is None:
                 return None
             return self._deserialize(data)
-        except Exception as e:
-            logger.warning(f"Redis get error: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Redis get error: <ERROR_TYPE>")
             return None
 
     def put(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
@@ -221,8 +223,9 @@ class RedisCacheBackend(BaseCacheBackend):
             data = self._serialize(value)
             client.setex(self._make_key(key), ttl, data)
             return True
-        except Exception as e:
-            logger.warning(f"Redis put error: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Redis put error: <ERROR_TYPE>")
             return False
 
     def delete(self, key: str) -> bool:
@@ -233,8 +236,9 @@ class RedisCacheBackend(BaseCacheBackend):
         try:
             result = client.delete(self._make_key(key))
             return result > 0
-        except Exception as e:
-            logger.warning(f"Redis delete error: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Redis delete error: <ERROR_TYPE>")
             return False
 
     def clear(self) -> None:
@@ -253,8 +257,9 @@ class RedisCacheBackend(BaseCacheBackend):
                 if cursor == 0:
                     break
             logger.debug("Redis cache cleared")
-        except Exception as e:
-            logger.warning(f"Redis clear error: {e}")
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Redis clear error: <ERROR_TYPE>")
 
     def contains(self, key: str) -> bool:
         client = self._get_client()
@@ -263,8 +268,9 @@ class RedisCacheBackend(BaseCacheBackend):
 
         try:
             return bool(client.exists(self._make_key(key)))
-        except Exception as e:
-            logger.warning(f"Redis contains error: {e}")
+        except (ConnectionError, TimeoutError) as e:
+            error_type = type(e).__name__
+            logger.warning(f"Redis contains error: <ERROR_TYPE>")
             return False
 
     def get_stats(self) -> dict[str, Any]:
@@ -279,7 +285,7 @@ class RedisCacheBackend(BaseCacheBackend):
                 "keyspace_hits": info.get("keyspace_hits", 0),
                 "keyspace_misses": info.get("keyspace_misses", 0),
             }
-        except Exception as e:
+        except (ConnectionError, TimeoutError) as e:
             return {"connected": False, "error": str(e)}
 
 
@@ -317,7 +323,7 @@ class DistributedCache:
         if self.config.backend in (CacheBackend.REDIS, CacheBackend.HYBRID):
             self._redis_backend = RedisCacheBackend(self.config)
         else:
-            self._redis_backend = None  # type: ignore[assignment]
+            self._redis_backend = None
 
         logger.info(f"DistributedCache initialized with backend: {self.config.backend.value}")
 
@@ -429,7 +435,7 @@ class DistributedCache:
             return self._redis_backend.contains(key)
 
         # Hybrid: check both
-        return self._memory_backend.contains(key) or (  # type: ignore[return-value]
+        return self._memory_backend.contains(key) or (
             self._redis_backend and self._redis_backend.contains(key)
         )
 

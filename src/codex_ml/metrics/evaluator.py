@@ -11,16 +11,16 @@ from collections.abc import Iterable, Mapping  # noqa: E402
 
 try:  # pragma: no cover - torch optional in tests
     import torch
-except Exception:  # pragma: no cover - torch optional in tests
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover - torch optional in tests
+    torch = None
 
 
 def _safe_float(value: object) -> float:
     try:
         if hasattr(value, "item"):
             return float(value.item())
-        return float(value)  # type: ignore[arg-type]
-    except Exception:
+        return float(value)
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return 0.0
 
@@ -30,7 +30,7 @@ def _perplexity(avg_loss: float) -> float:
         import math
 
         return float(math.exp(avg_loss))
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return float("inf")
 
@@ -126,20 +126,21 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
             target = labels
             if hasattr(target, "to") and getattr(target, "device", None) != preds.device:
                 target = target.to(preds.device)
-            common = min(preds.shape[-1], target.shape[-1])  # type: ignore[union-attr]
+            common = min(preds.shape[-1], target.shape[-1])
             if common > 0:
                 # Create mask to ignore -100 labels (standard ignore_index)
-                mask = target[..., :common] != -100  # type: ignore[index]
+                mask = target[..., :common] != -100
                 if mask.any():
                     masked_preds = preds[..., :common][mask]
-                    masked_target = target[..., :common][mask]  # type: ignore[index]
+                    masked_target = target[..., :common][mask]
                     accuracy_tensor = (masked_preds == masked_target).float()
                     record["token_accuracy"] = float(accuracy_tensor.mean().item())
                 else:
                     record["token_accuracy"] = 0.0
-        except Exception as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     text_preds = _as_str_list(getattr(outputs, "predictions", None))
     if text_preds is None and isinstance(outputs, Mapping):

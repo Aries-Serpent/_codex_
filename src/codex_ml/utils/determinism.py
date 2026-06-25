@@ -9,13 +9,13 @@ from typing import Optional
 
 try:  # pragma: no cover - optional dependency guards
     import numpy as np
-except Exception:  # pragma: no cover
+except (ImportError, AttributeError):  # pragma: no cover
     np = None
 
 try:  # pragma: no cover - optional dependency guards
     import torch
-except Exception:  # pragma: no cover
-    torch = None  # type: ignore[assignment]
+except (ImportError, AttributeError):  # pragma: no cover
+    torch = None
 
 __all__ = [
     "enable_determinism",
@@ -45,18 +45,18 @@ def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
         if hasattr(torch, "cuda"):
             try:
                 torch.cuda.manual_seed_all(seed)
-            except Exception:  # pragma: no cover - optional CUDA path
+            except (IOError, OSError):  # pragma: no cover - optional CUDA path
                 logger.debug("torch.cuda.manual_seed_all unavailable", exc_info=True)
         if deterministic:
             try:
                 torch.use_deterministic_algorithms(True, warn_only=False)
-            except Exception:
+            except (IOError, OSError):
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
             try:
                 torch.backends.cudnn.deterministic = True
                 torch.backends.cudnn.benchmark = False
-            except Exception:
+            except (ValueError, TypeError, RuntimeError):
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.backends.cudnn unavailable", exc_info=True)
             os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
@@ -69,7 +69,7 @@ def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
         return
     try:
         backend = torch.backends.cudnn
-    except Exception:  # pragma: no cover - backend unavailable
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - backend unavailable
         logger.debug("torch.backends.cudnn missing", exc_info=True)
         return
     try:
@@ -79,7 +79,7 @@ def set_cudnn_deterministic(enable: bool, benchmark: bool = False) -> None:
             logger.warning(
                 "CUDNN determinism requested but benchmark=True may reintroduce non-determinism."
             )
-    except Exception:  # pragma: no cover - device specific
+    except (ConnectionError, TimeoutError):  # pragma: no cover - device specific
         logger.debug("failed to set CuDNN determinism", exc_info=True)
 
 
@@ -115,7 +115,7 @@ def enable_determinism(
         try:
             torch.set_num_threads(int(num_threads))
             state["torch_num_threads"] = int(num_threads)
-        except Exception:  # pragma: no cover - depends on build
+        except (IOError, OSError):  # pragma: no cover - depends on build
             logger.debug("torch.set_num_threads unavailable", exc_info=True)
 
     set_cudnn_deterministic(bool(deterministic), benchmark=not deterministic)

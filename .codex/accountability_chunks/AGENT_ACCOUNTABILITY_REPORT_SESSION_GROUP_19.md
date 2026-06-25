@@ -2,7 +2,7 @@
 
 **Group:** 19 of 32  
 **Sessions:** auto-pda-2026-06-16 to S1034-workflow-portfolio-expansion  
-**Date Range:** 2026-06-16 to   
+**Date Range:** 2026-06-16 to  
 **Total Sessions in Group:** 10  
 
 ---
@@ -23,7 +23,7 @@
 | --- | --- | --- | --- | --- | --- |
 | 1. auto-pda-2026-06-16 | None | success | 2026-06-16T03:27:00Z |  |
 | 2. auto-pda-2026-06-17 | None | success | 2026-06-17T01:32:00Z |  |
-| 3. S_PR4973_CI_RESCUE | 4973 | resolved | 2026-06-18T00:59:00Z | Token expiration timestamps are considered sensitive data by |
+| 3. S_PR4973_CI_RESCUE | 4973 | resolved | 2026-06-18T00:59:00Z | Token expiration timestamps are considered sensitive data by | <!-- pragma: allowlist secret -->
 | 4. auto-pda-2026-06-18 | None | success | 2026-06-18T00:59:00Z |  |
 | 5. S_unknown_302 | None | pending | 2026-06-19T00:03:14Z |  |
 | 6. phase7b-planning | None | success | 2026-06-19T19:23:00Z |  |
@@ -90,7 +90,7 @@
 
 **Summary:**
 ```
-Token expiration timestamps are considered sensitive data by CodeQL. Even if not the token itself, m
+Token expiration timestamps are considered sensitive data by CodeQL. Even if not the token itself, m  # pragma: allowlist secret
 ```
 
 **Tags:** None  
@@ -194,7 +194,7 @@ Token expiration timestamps are considered sensitive data by CodeQL. Even if not
 ### PR4580-code-quality-fixes — PR #None
 
 **Status:** pending  
-**Timestamp:**   
+**Timestamp:**  
 **Branch:** None  
 **Duration:** 0 min  
 
@@ -216,7 +216,7 @@ Token expiration timestamps are considered sensitive data by CodeQL. Even if not
 ### PR4580-code-quality-fixes — PR #None
 
 **Status:** pending  
-**Timestamp:**   
+**Timestamp:**  
 **Branch:** None  
 **Duration:** 0 min  
 
@@ -238,7 +238,7 @@ Token expiration timestamps are considered sensitive data by CodeQL. Even if not
 ### S1034-workflow-portfolio-expansion — PR #None
 
 **Status:** pending  
-**Timestamp:**   
+**Timestamp:**  
 **Branch:** copilot/analyze-workflows-data-again  
 **Duration:** 0 min  
 

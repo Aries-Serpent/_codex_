@@ -129,21 +129,21 @@ Steps:
      - Describe use case and security requirements
      - Identify system that requires the secret
      - Propose rotation schedule
-  
+
   2. Security review (24-48 hours)
      - Evaluate necessity and risk
      - Approve or request modifications
-  
+
   3. Owner creates secret via GitHub Actions:
      - No direct CLI exposure (use GitHub web UI only)
      - Value stored in GitHub's encrypted vault
      - Only accessible to marked workflows
-  
+
   4. Audit log entry created (manual)
      - Creator: @mbaetiong
      - Creation reason: documented
      - Initial rotation date: set for 90-180 days
-  
+
   5. Access control documented
      - Workflows that can access it
      - Human accounts with visibility (none)
@@ -163,24 +163,24 @@ Trigger: Scheduled quarterly security audit
 
 Steps:
   1. Owner creates issue: "Quarterly rotation: [SECRET_NAME]"
-  
+
   2. Generate new secret value
      - Use cryptographically secure random generation
      - Ensure compliance with service requirements
-  
+
   3. Update GitHub Actions secret via web UI
      - Override existing value
      - Automatic audit logging
-  
+
   4. Notify dependent services
      - Post message to #infrastructure
      - Verify dependent systems still functioning
      - Check logs for authentication errors
-  
+
   5. Destroy old secret value
      - Secure deletion (not just deletion)
      - Confirm destruction in audit log
-  
+
   6. Audit entry created
      - Timestamp: rotation date
      - Old value: [REDACTED in all logs]
@@ -230,15 +230,15 @@ Steps:
      - New value: [proposed value]
      - Reason: "CI failure rate increased to 35% (threshold: 30%)"
      - Justification: Scientific evidence (trend graph)
-  
+
   2. Auto-approval window: 24 hours
      - If no objection from tech lead → change approved
      - If objection posted → escalate to manual review
-  
+
   3. Agent applies change (self-authorized after 24h)
      - Update variable in GitHub Actions
      - Automatic audit logging (agent-recorded)
-  
+
   4. Audit entry created (automatic)
      - Changed by: [agent name]
      - Session ID: [copilot session or automation ID]
@@ -267,16 +267,16 @@ Steps:
      - Justification: [detailed reasoning]
      - Testing evidence: [staging results, metrics]
      - Rollback plan: [if needed]
-  
+
   2. Tech lead reviews (24 hours)
      - Evaluate business justification
      - Verify testing in staging
      - Approve or request modifications
-  
+
   3. Owner or automated process applies change
      - Update variable via GitHub Actions
      - Link to PR/issue in commit message
-  
+
   4. Audit entry created (manual or automated)
      - Changed by: [who applied it]
      - Approval: [PR/issue link]
@@ -310,24 +310,24 @@ Steps:
      - New version: v22.x.x
      - Reason: LTS release, security patches, performance
      - Migration testing: [staging results]
-  
+
   2. Testing phase (1-2 weeks)
      - Update in staging: `NODE_JS_VERSION=22`
      - Run full test suite
      - Verify no breaking changes
      - Document incompatibilities (if any)
-  
+
   3. Approval (24-48 hours)
      - Owner + Tech lead approval required
      - Both must review migration testing
-  
+
   4. Gradual rollout
      - Apply to 10% of jobs first
      - Monitor for 24 hours
      - Apply to 50% of jobs
      - Monitor for 24 hours
      - Apply to 100% of jobs
-  
+
   5. Audit entry created
      - Changed by: [owner]
      - Approval: [PR/issue link]
@@ -359,21 +359,21 @@ Steps:
      - Describe system change
      - Rationale for variable adjustment
      - Expected impact
-  
+
   2. Integration testing (1 week)
      - Test in staging environment
      - Verify all agent sessions working
      - Monitor system stability
-  
+
   3. Owner approval
      - Review all testing evidence
      - Approve or request changes
-  
+
   4. Deployment
      - Apply to production
      - Monitor for 48 hours
      - Ready for automatic rollback if needed
-  
+
   5. Audit entry (automatic system log)
      - Changed by: [system account]
      - Reason: [from issue]
@@ -452,17 +452,17 @@ Secret Variables (Category A):
   - Read access: Owner only
   - Write access: Owner only
   - Audit access: Owner + Security team
-  
+
 Health Metrics (Category B):
   - Read access: All agents + tech lead
   - Write access: Designated agents only
   - Audit access: Tech lead + owner
-  
+
 Infrastructure Config (Category C):
   - Read access: All runners
   - Write access: Tech lead + owner
   - Audit access: Tech lead + owner
-  
+
 Cognitive Brain (Category D):
   - Read access: All agents
   - Write access: System only
@@ -638,4 +638,3 @@ Compliance Status:
 3. Set up monitoring dashboard
 4. Train team on procedures
 5. Begin historical audit log migration
-

@@ -11,9 +11,7 @@ Tests the full embeddings pipeline including:
 
 import json
 import time
-from pathlib import Path
 
-import numpy as np
 import pytest
 
 from codex.logging.session_embeddings import SessionEmbeddings
@@ -183,8 +181,7 @@ class TestPhase4EmbeddingsIntegration:
     def test_batch_operations(self, embeddings):
         """Test batch session operations."""
         sessions = [
-            (f"S{i:03d}", f"Session {i} summary", [f"P-{i}"], [f"tag{i}"])
-            for i in range(20)
+            (f"S{i:03d}", f"Session {i} summary", [f"P-{i}"], [f"tag{i}"]) for i in range(20)
         ]
 
         for session_id, summary, patterns, tags in sessions:

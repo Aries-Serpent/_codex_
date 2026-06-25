@@ -17,7 +17,6 @@ import json
 import tempfile
 import threading
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 import pytest
@@ -295,7 +294,7 @@ class TestSimilaritySearch:
 
             # Find similar to S001 (should not return S001 itself)
             similar = embeddings.find_similar("S001", k=2)
-            session_ids = [s[0] for s in similar]
+            [s[0] for s in similar]
             # S001 should not be in results
             # (though this depends on implementation; may vary)
 
@@ -404,10 +403,7 @@ class TestThreading:
                 for i in range(count):
                     embeddings.add_session(f"S{start_idx + i:03d}", f"Session {start_idx + i}")
 
-            threads = [
-                threading.Thread(target=add_sessions, args=(i * 10, 10))
-                for i in range(5)
-            ]
+            threads = [threading.Thread(target=add_sessions, args=(i * 10, 10)) for i in range(5)]
             for t in threads:
                 t.start()
             for t in threads:
@@ -434,8 +430,7 @@ class TestThreading:
                 results.append(res)
 
             threads = [
-                threading.Thread(target=search_sessions, args=(f"session {i}",))
-                for i in range(5)
+                threading.Thread(target=search_sessions, args=(f"session {i}",)) for i in range(5)
             ]
             for t in threads:
                 t.start()
@@ -456,9 +451,7 @@ class TestGetMetadata:
                 embeddings_path=f"{tmpdir}/embeddings.faiss",
                 metadata_path=f"{tmpdir}/metadata.json",
             )
-            embeddings.add_session(
-                "S001", "Test summary", patterns=["P-001"], tags=["tag1"]
-            )
+            embeddings.add_session("S001", "Test summary", patterns=["P-001"], tags=["tag1"])
 
             meta = embeddings.get_metadata("S001")
             assert meta["summary"] == "Test summary"
@@ -526,6 +519,7 @@ class TestErrorHandling:
 
 
 # Integration tests
+
 
 class TestIntegration:
     """Integration tests combining multiple operations."""

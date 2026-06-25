@@ -96,10 +96,11 @@ class TestCompatibilityShim:
         """Test importing training module and accessing exports."""
         try:
             import codex_ml.training
+
             assert codex_ml.training is not None
 
             # Test that we can access exported items if available
-            if hasattr(codex_ml.training, '__all__'):
+            if hasattr(codex_ml.training, "__all__"):
                 for item in codex_ml.training.__all__:
                     assert hasattr(codex_ml.training, item), f"Missing export: {item}"
         except ImportError:
@@ -109,6 +110,7 @@ class TestCompatibilityShim:
         """Test from-import pattern works."""
         try:
             from codex_ml import training
+
             assert training is not None
         except ImportError:
             pytest.skip("training module not fully configured")

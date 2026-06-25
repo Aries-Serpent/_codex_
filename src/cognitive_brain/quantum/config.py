@@ -137,18 +137,24 @@ class QuantumConfig:
 
         return cls(
             quantum_mode=quantum_mode,
-            superposition=parse_bool(os.getenv("CODEX_QUANTUM_SUPERPOSITION"), False)
-            if quantum_mode
-            else False,
-            entanglement=parse_bool(os.getenv("CODEX_QUANTUM_ENTANGLEMENT"), False)
-            if quantum_mode
-            else False,
-            uncertainty=parse_bool(os.getenv("CODEX_QUANTUM_UNCERTAINTY"), False)
-            if quantum_mode
-            else False,
-            wave_collapse=parse_bool(os.getenv("CODEX_QUANTUM_WAVE_COLLAPSE"), False)
-            if quantum_mode
-            else False,
+            superposition=(
+                parse_bool(os.getenv("CODEX_QUANTUM_SUPERPOSITION"), False)
+                if quantum_mode
+                else False
+            ),
+            entanglement=(
+                parse_bool(os.getenv("CODEX_QUANTUM_ENTANGLEMENT"), False)
+                if quantum_mode
+                else False
+            ),
+            uncertainty=(
+                parse_bool(os.getenv("CODEX_QUANTUM_UNCERTAINTY"), False) if quantum_mode else False
+            ),
+            wave_collapse=(
+                parse_bool(os.getenv("CODEX_QUANTUM_WAVE_COLLAPSE"), False)
+                if quantum_mode
+                else False
+            ),
             rollout_percentage=parse_int(os.getenv("CODEX_QUANTUM_ROLLOUT_PCT"), 0),
             # Phase 3: Noise simulation parameters
             noise_enabled=parse_bool(os.getenv("CODEX_QUANTUM_NOISE"), False),

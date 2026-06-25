@@ -21,7 +21,7 @@ try:  # pragma: no cover
     from codex_ml.tokenization.sentencepiece_adapter import (
         SentencePieceAdapter as _CanonicalSentencePieceAdapter,
     )
-except Exception:  # pragma: no cover - defensive placeholders
+except (ImportError, AttributeError):  # pragma: no cover - defensive placeholders
 
     def load_sentencepiece_model(*_args, **_kwargs):
         raise RuntimeError("SentencePiece not available")
@@ -35,10 +35,10 @@ except Exception:  # pragma: no cover - defensive placeholders
             raise RuntimeError("SentencePiece not available")
 
 else:
-    SentencePieceAdapter = _CanonicalSentencePieceAdapter  # type: ignore[misc]
+    SentencePieceAdapter = _CanonicalSentencePieceAdapter
     SentencePieceAdapter.__doc__ = getattr(_CanonicalSentencePieceAdapter, "__doc__", None)
 
-    def load_sentencepiece_model(  # type: ignore[misc]
+    def load_sentencepiece_model(
         model_path: str | Path,
     ) -> _CanonicalSentencePieceAdapter:
         adapter = _CanonicalSentencePieceAdapter(Path(model_path))

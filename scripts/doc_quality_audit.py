@@ -214,7 +214,8 @@ def analyze_python_file(filepath: Path) -> Optional[ModuleStats]:
 
         return analyzer.stats
     except Exception as e:
-        print(f"Warning: Could not analyze {filepath}: {e}")
+        error_type = type(e).__name__
+        print(f"Warning: Could not analyze {filepath}: <ERROR_TYPE>")
         return None
 
 
@@ -285,7 +286,8 @@ def analyze_markdown_docs(root_dir: Path) -> dict[str, any]:
                 stats['architecture_files'] += 1
 
         except Exception as e:
-            print(f"Warning: Could not read {md_file}: {e}")
+            error_type = type(e).__name__
+            print(f"Warning: Could not read {md_file}: <ERROR_TYPE>")
 
     return stats
 
@@ -320,7 +322,8 @@ def check_cli_documentation(root_dir: Path) -> dict[str, any]:
                 cli_stats['cli_commands_with_help'] += len(help_strings)
                 cli_stats['cli_commands_without_help'] += max(0, len(commands) - len(help_strings))
         except Exception as e:
-            print(f"Warning: Could not analyze CLI file {cli_file}: {e}")
+            error_type = type(e).__name__
+            print(f"Warning: Could not analyze CLI file {cli_file}: <ERROR_TYPE>")
 
     return cli_stats
 

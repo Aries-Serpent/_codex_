@@ -82,9 +82,11 @@ def merge_sarif_files(input_dir: Path, output_file: Path) -> dict[str, Any]:
                 logger.warning(f"No 'runs' found in {sarif_file}")
 
         except json.JSONDecodeError as e:
-            logger.error(f"Invalid JSON in {sarif_file}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Invalid JSON in {sarif_file}: <ERROR_TYPE>")
         except OSError as e:
-            logger.error(f"Error reading {sarif_file}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error reading {sarif_file}: <ERROR_TYPE>")
 
     # Add merge metadata
     merged["properties"] = {
@@ -184,7 +186,8 @@ Examples:
     try:
         merged = merge_sarif_files(args.input_dir, args.output)
     except Exception as e:
-        logger.error(f"Error merging SARIF files: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Error merging SARIF files: <ERROR_TYPE>")
         return 1
 
     # Optionally validate output

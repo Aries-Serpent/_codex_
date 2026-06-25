@@ -8,6 +8,7 @@ Tests complete training workflows across configuration, execution, and checkpoin
 
 Part of Post-Completion Phase 1.2: Training Pipeline Integration Tests
 """
+
 from __future__ import annotations
 
 import pytest
@@ -19,12 +20,14 @@ from unittest.mock import Mock
 # Test availability flags
 try:
     from codex.utils.config_loader import load_config
+
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
 
 try:
     import torch
+
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
@@ -70,11 +73,7 @@ checkpoint:
 
             # Step 3: Mock trainer initialization
             mock_trainer = Mock()
-            mock_trainer.train.return_value = {
-                "loss": 0.5,
-                "accuracy": 0.85,
-                "epochs_completed": 1
-            }
+            mock_trainer.train.return_value = {"loss": 0.5, "accuracy": 0.85, "epochs_completed": 1}
 
             # Step 4: Execute training (mocked)
             result = mock_trainer.train()
@@ -106,7 +105,7 @@ checkpoint:
             "model_state_dict": model_state,
             "optimizer_state_dict": optimizer_state,
             "loss": 0.25,
-            "config": {"model": "test"}
+            "config": {"model": "test"},
         }
 
         # Step 3: Save checkpoint
@@ -119,12 +118,15 @@ checkpoint:
             assert checkpoint_path.exists()
 
             # Step 5: Load and validate checkpoint
-            loaded = torch.load(checkpoint_path, weights_only=False)  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
+            loaded = torch.load(
+                checkpoint_path, weights_only=False
+            )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
             assert loaded["epoch"] == 5
             assert loaded["loss"] == 0.25
         else:
             # Mock save without torch
             import json
+
             checkpoint_path.write_text(json.dumps(checkpoint))
             assert checkpoint_path.exists()
 

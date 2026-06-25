@@ -1,6 +1,5 @@
 """Tests for distributed training module."""
 
-
 import os
 
 import pytest

@@ -12,6 +12,7 @@ class TestSigstoreClientImports:
         """Test that the module can be imported."""
         try:
             from src.codex.archive import sigstore_client
+
             assert sigstore_client is not None
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
@@ -20,7 +21,8 @@ class TestSigstoreClientImports:
         """Test module has expected attributes."""
         try:
             from src.codex.archive import sigstore_client
-            assert hasattr(sigstore_client, '__name__')
+
+            assert hasattr(sigstore_client, "__name__")
         except ImportError:
             pytest.skip("Module not available")
 
@@ -32,7 +34,8 @@ class TestSigstoreClientOperations:
         """Test sigstore client initialization."""
         try:
             from src.codex.archive import sigstore_client
-            if hasattr(sigstore_client, 'SigstoreClient'):
+
+            if hasattr(sigstore_client, "SigstoreClient"):
                 client = sigstore_client.SigstoreClient()
                 assert client is not None
         except (ImportError, AttributeError):
@@ -42,9 +45,10 @@ class TestSigstoreClientOperations:
         """Test artifact signing."""
         try:
             from src.codex.archive import sigstore_client
-            if hasattr(sigstore_client, 'sign_artifact'):
+
+            if hasattr(sigstore_client, "sign_artifact"):
                 # Mock the signing operation
-                with patch.object(sigstore_client, 'sign_artifact') as mock_sign:
+                with patch.object(sigstore_client, "sign_artifact") as mock_sign:
                     mock_sign.return_value = {"signature": "abc123"}
                     result = sigstore_client.sign_artifact(b"test data")
                     assert "signature" in result
@@ -55,8 +59,9 @@ class TestSigstoreClientOperations:
         """Test signature verification."""
         try:
             from src.codex.archive import sigstore_client
-            if hasattr(sigstore_client, 'verify_signature'):
-                with patch.object(sigstore_client, 'verify_signature') as mock_verify:
+
+            if hasattr(sigstore_client, "verify_signature"):
+                with patch.object(sigstore_client, "verify_signature") as mock_verify:
                     mock_verify.return_value = True
                     result = sigstore_client.verify_signature(b"test", "sig")
                     assert result is True
@@ -71,7 +76,8 @@ class TestSigstoreClientConfiguration:
         """Test default configuration values."""
         try:
             from src.codex.archive import sigstore_client
-            if hasattr(sigstore_client, 'DEFAULT_CONFIG'):
+
+            if hasattr(sigstore_client, "DEFAULT_CONFIG"):
                 assert sigstore_client.DEFAULT_CONFIG is not None
         except (ImportError, AttributeError):
             pytest.skip("DEFAULT_CONFIG not available")
@@ -80,7 +86,8 @@ class TestSigstoreClientConfiguration:
         """Test custom configuration."""
         try:
             from src.codex.archive import sigstore_client
-            if hasattr(sigstore_client, 'SigstoreClient'):
+
+            if hasattr(sigstore_client, "SigstoreClient"):
                 config = {"timeout": 30}
                 client = sigstore_client.SigstoreClient(config=config)
                 assert client is not None
@@ -95,7 +102,8 @@ class TestSigstoreClientErrors:
         """Test error handling for invalid artifacts."""
         try:
             from src.codex.archive import sigstore_client
-            if hasattr(sigstore_client, 'sign_artifact'):
+
+            if hasattr(sigstore_client, "sign_artifact"):
                 with pytest.raises((TypeError, ValueError)):
                     sigstore_client.sign_artifact(None)
         except (ImportError, AttributeError):
@@ -105,10 +113,11 @@ class TestSigstoreClientErrors:
         """Test handling of connection errors."""
         try:
             from src.codex.archive import sigstore_client
-            if hasattr(sigstore_client, 'SigstoreClient'):
+
+            if hasattr(sigstore_client, "SigstoreClient"):
                 client = sigstore_client.SigstoreClient()
-                if hasattr(client, 'connect'):
-                    with patch.object(client, 'connect', side_effect=ConnectionError):
+                if hasattr(client, "connect"):
+                    with patch.object(client, "connect", side_effect=ConnectionError):
                         with pytest.raises(ConnectionError):
                             client.connect()
         except (ImportError, AttributeError):

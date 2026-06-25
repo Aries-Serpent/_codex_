@@ -325,9 +325,7 @@ class TestMemoryInterface:
         }
 
         # Search for observations
-        observations = [
-            (k, v) for k, v in memory.items() if v.get("type") == "observation"
-        ]
+        observations = [(k, v) for k, v in memory.items() if v.get("type") == "observation"]
 
         assert len(observations) == 2
 

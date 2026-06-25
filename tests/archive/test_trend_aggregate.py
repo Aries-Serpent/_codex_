@@ -25,18 +25,14 @@ def setup():
                 {"id": "beta", "score": 0.4 + i * 0.01},
             ]
         }
-        (ART / f"capabilities_scored_{i}.json").write_text(
-            json.dumps(data), encoding="utf-8"
-        )
+        (ART / f"capabilities_scored_{i}.json").write_text(json.dumps(data), encoding="utf-8")
 
 
 def test_trend():
     setup()
     env = os.environ.copy()
     env["TREND_SPARKLINE"] = "1"
-    subprocess.run(
-        [sys.executable, "scripts/archive/trend_aggregate.py"], check=True, env=env
-    )
+    subprocess.run([sys.executable, "scripts/archive/trend_aggregate.py"], check=True, env=env)
     out = ART / "trend_scores.json"
     assert out.exists()
     data = json.loads(out.read_text())

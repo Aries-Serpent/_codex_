@@ -15,6 +15,7 @@ import pytest
 @dataclass
 class TrainingConfig:
     """Training configuration."""
+
     model_name: str
     learning_rate: float = 1e-4
     batch_size: int = 32
@@ -44,12 +45,7 @@ class TestConfigParsing:
 
     def test_config_override(self):
         """Config values can be overridden."""
-        config = TrainingConfig(
-            model_name="gpt2",
-            learning_rate=5e-5,
-            batch_size=16,
-            epochs=3
-        )
+        config = TrainingConfig(model_name="gpt2", learning_rate=5e-5, batch_size=16, epochs=3)
 
         assert config.learning_rate == 5e-5
         assert config.batch_size == 16
@@ -57,6 +53,7 @@ class TestConfigParsing:
 
     def test_config_from_dict(self):
         """Config can be created from dictionary."""
+
         def config_from_dict(d):
             return TrainingConfig(**d)
 
@@ -77,6 +74,7 @@ class TestConfigValidation:
 
     def test_learning_rate_validation(self):
         """Learning rate must be positive."""
+
         def validate_learning_rate(lr):
             if lr <= 0:
                 raise ValueError("Learning rate must be positive")
@@ -94,6 +92,7 @@ class TestConfigValidation:
 
     def test_batch_size_validation(self):
         """Batch size must be positive integer."""
+
         def validate_batch_size(batch_size):
             if not isinstance(batch_size, int):
                 raise TypeError("Batch size must be integer")
@@ -113,6 +112,7 @@ class TestConfigValidation:
 
     def test_epochs_validation(self):
         """Epochs must be at least 1."""
+
         def validate_epochs(epochs):
             if epochs < 1:
                 raise ValueError("Epochs must be at least 1")
@@ -129,6 +129,7 @@ class TestConfigMerging:
 
     def test_merge_configs(self):
         """Configs can be merged with priority."""
+
         def merge_configs(base, override):
             result = {**base}
             for key, value in override.items():
@@ -147,6 +148,7 @@ class TestConfigMerging:
 
     def test_nested_config_merge(self):
         """Nested configs merge correctly."""
+
         def deep_merge(base, override):
             result = {**base}
             for key, value in override.items():
@@ -156,14 +158,8 @@ class TestConfigMerging:
                     result[key] = value
             return result
 
-        base = {
-            "training": {"lr": 1e-4, "batch_size": 32},
-            "model": {"hidden_size": 768}
-        }
-        override = {
-            "training": {"lr": 5e-5},
-            "model": {"dropout": 0.1}
-        }
+        base = {"training": {"lr": 1e-4, "batch_size": 32}, "model": {"hidden_size": 768}}
+        override = {"training": {"lr": 5e-5}, "model": {"dropout": 0.1}}
 
         merged = deep_merge(base, override)
 
@@ -187,6 +183,7 @@ class TestConfigSerialization:
 
     def test_config_to_yaml(self):
         """Config can be serialized to YAML-like format."""
+
         def to_yaml_lines(config_dict, indent=0):
             lines = []
             for key, value in config_dict.items():

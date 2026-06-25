@@ -38,12 +38,12 @@ def _json_mode_requested(args: Sequence[str]) -> bool:
 def _list_models_safe() -> list[str]:
     try:
         from codex_ml.registry import list_models
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
     try:
         return sorted({str(model) for model in list_models()})
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
 
@@ -51,12 +51,12 @@ def _list_models_safe() -> list[str]:
 def _list_tokenizers_safe() -> list[str]:
     try:
         from codex_ml.registry import list_tokenizers
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
     try:
         return sorted({str(tokenizer) for tokenizer in list_tokenizers()})
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
 
@@ -64,12 +64,12 @@ def _list_tokenizers_safe() -> list[str]:
 def _list_datasets_safe() -> list[str]:
     try:
         from codex_ml.data.registry import list_datasets
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
     try:
         return sorted({str(dataset) for dataset in list_datasets()})
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return []
 
@@ -78,13 +78,13 @@ def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
     snapshot: dict[str, Any] = {"names": [], "discovered": []}
     try:
         from codex_ml.plugins import programmatic
-    except Exception:
+    except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return snapshot
 
     try:
         registry = programmatic.registry()
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         return snapshot
 
@@ -92,7 +92,7 @@ def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
     if discover:
         try:
             discovered = registry.discover()
-        except Exception:
+        except (ValueError, TypeError, RuntimeError):
             logger.warning("Exception occurred", exc_info=True)
             discovered_items = []
         else:
@@ -109,7 +109,7 @@ def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
             iterable = registry.names()
         else:
             iterable = [plugin.name() for plugin in registry.all()]
-    except Exception:
+    except (ValueError, TypeError, RuntimeError):
         logger.warning("Exception occurred", exc_info=True)
         iterable = []
     snapshot["names"] = sorted({str(item) for item in iterable if item})

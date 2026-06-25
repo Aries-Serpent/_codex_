@@ -17,22 +17,22 @@ from codex_ml.utils.optional import optional_dependency_error
 
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
-except Exception:  # pragma: no cover - fall back to a stub
+except (IOError, OSError):  # pragma: no cover - fall back to a stub
     SummaryWriter = None
 
 try:  # pragma: no cover - MLflow is optional for offline smoke tests
     import mlflow
-except Exception:  # pragma: no cover - guard offline runs that skip mlflow install
+except (IOError, OSError):  # pragma: no cover - guard offline runs that skip mlflow install
     mlflow = None
 
 try:  # pragma: no cover - optional runtime dependency
     import psutil
-except Exception:  # pragma: no cover - allow execution without psutil
+except (ImportError, AttributeError):  # pragma: no cover - allow execution without psutil
     psutil = None
 
 try:  # pragma: no cover - optional GPU metrics dependency
     import pynvml
-except Exception:  # pragma: no cover - allow execution without NVML bindings
+except (ImportError, AttributeError):  # pragma: no cover - allow execution without NVML bindings
     pynvml = None
 
 
@@ -102,12 +102,12 @@ def _create_tensorboard_writer(log_dir: str | Path) -> SummaryWriter | None:
     try:
         path = Path(log_dir)
         path.mkdir(parents=True, exist_ok=True)
-    except Exception as exc:  # pragma: no cover - propagate context
+    except (IOError, OSError) as exc:  # pragma: no cover - propagate context
         LOGGER.warning("Unable to create TensorBoard log directory '%s': %s", log_dir, exc)
         return None
     try:
         return SummaryWriter(str(path))
-    except Exception as exc:  # pragma: no cover - e.g. tensorboard not installed
+    except (IOError, OSError) as exc:  # pragma: no cover - e.g. tensorboard not installed
         LOGGER.warning("Failed to initialise TensorBoard writer: %s", exc)
         return None
 
@@ -193,7 +193,7 @@ def _start_mlflow_run(config: LoggingConfig) -> bool:
                 tracking_path.mkdir(parents=True, exist_ok=True)
             mlflow.set_tracking_uri(f"file:{tracking_path.resolve()}")
         mlflow.start_run(run_name=config.mlflow_run_name)
-    except Exception as exc:  # pragma: no cover - offline guard
+    except (IOError, OSError) as exc:  # pragma: no cover - offline guard
         LOGGER.warning("Failed to start MLflow run '%s': %s", config.mlflow_run_name, exc)
         return False
     return True
@@ -206,7 +206,7 @@ def _create_fallback_writer(config: LoggingConfig) -> FallbackMetricsWriter | No
         return None
     try:
         return FallbackMetricsWriter(Path(config.fallback_metrics_path))
-    except Exception as exc:  # pragma: no cover - best-effort fallback
+    except (IOError, OSError) as exc:  # pragma: no cover - best-effort fallback
         LOGGER.debug(
             "Unable to initialise fallback metrics writer at '%s': %s",
             config.fallback_metrics_path,
@@ -271,7 +271,7 @@ def _init_mlflow_experiment(
             tags=dict(tags) if tags else None,
         )
         return mlflow, run
-    except Exception as exc:  # pragma: no cover - offline guard
+    except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - offline guard
         LOGGER.warning("Failed to initialise MLflow for '%s': %s", experiment_name, exc)
         return mlflow, None
 
@@ -319,10 +319,10 @@ def setup_logging(
             # Use asdict() for dataclasses to handle slots=True compatibility
             # Fall back to dict() for regular mappings
             if hasattr(config, "__dataclass_fields__"):
-                data = asdict(config)  # type: ignore[call-overload]
+                data = asdict(config)
             else:
                 data = dict(config)
-        resolved = LoggingConfig(**data)  # type: ignore[arg-type]
+        resolved = LoggingConfig(**data)
 
     writer = (
         _create_tensorboard_writer(resolved.tensorboard_log_dir)
@@ -345,7 +345,7 @@ def log_scalar_tb(writer: SummaryWriter | None, tag: str, value: float, step: in
         return
     try:
         writer.add_scalar(tag, value, global_step=step)
-    except Exception:  # pragma: no cover - robustness guard
+    except (IOError, OSError):  # pragma: no cover - robustness guard
         LOGGER.debug("TensorBoard scalar logging failed", exc_info=True)
 
 
@@ -361,7 +361,7 @@ def log_params_mlflow(params: Mapping[str, Any]) -> None:
                 for key, value in params.items()
             }
         )
-    except Exception:  # pragma: no cover - robustness guard
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - robustness guard
         LOGGER.debug("MLflow parameter logging failed", exc_info=True)
 
 
@@ -372,7 +372,7 @@ def log_metrics_mlflow(metrics: Mapping[str, float], step: int | None = None) ->
         return
     try:
         mlflow.log_metrics({k: float(v) for k, v in metrics.items()}, step=step)
-    except Exception:  # pragma: no cover - robustness guard
+    except (ValueError, TypeError, RuntimeError):  # pragma: no cover - robustness guard
         LOGGER.debug("MLflow metric logging failed", exc_info=True)
 
 
@@ -385,12 +385,12 @@ def log_metrics(session: LoggingSession, metrics: Mapping[str, float], step: int
         for key, value in metrics.items():
             try:
                 session.tensorboard.add_scalar(key, value, step)
-            except Exception as exc:  # pragma: no cover - robustness guard
+            except (IOError, OSError) as exc:  # pragma: no cover - robustness guard
                 LOGGER.debug("TensorBoard logging failed for %s=%s: %s", key, value, exc)
     if session.mlflow_active and mlflow is not None:
         try:
             mlflow.log_metrics({k: float(v) for k, v in metrics.items()}, step=step)
-        except Exception as exc:  # pragma: no cover - offline guard
+        except (IOError, OSError) as exc:  # pragma: no cover - offline guard
             LOGGER.debug("MLflow logging failed at step %s: %s", step, exc)
     if session.fallback_writer is not None:
         session.fallback_writer.write(metrics, step)
@@ -403,12 +403,12 @@ def shutdown_logging(session: LoggingSession) -> None:
         try:
             session.tensorboard.flush()
             session.tensorboard.close()
-        except Exception as exc:  # pragma: no cover - flush errors should not raise
+        except (IOError, OSError) as exc:  # pragma: no cover - flush errors should not raise
             LOGGER.debug("TensorBoard writer shutdown encountered an error: %s", exc)
     if session.mlflow_active and mlflow is not None:
         try:
             mlflow.end_run()
-        except Exception as exc:  # pragma: no cover - offline guard
+        except (IOError, OSError) as exc:  # pragma: no cover - offline guard
             LOGGER.debug("Failed to end MLflow run cleanly: %s", exc)
 
 
@@ -446,7 +446,7 @@ def mlflow_run(
     finally:
         try:
             mlflow.end_run()
-        except Exception:  # pragma: no cover - best-effort shutdown
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - best-effort shutdown
             LOGGER.debug("Failed to end MLflow run via context manager", exc_info=True)
 
 
@@ -466,7 +466,11 @@ def system_metrics() -> dict[str, Any]:
                     "ram_total_bytes": int(memory.total),
                 }
             )
-        except Exception:  # pragma: no cover - psutil metrics best-effort
+        except (
+            ValueError,
+            TypeError,
+            RuntimeError,
+        ):  # pragma: no cover - psutil metrics best-effort
             LOGGER.debug("psutil metrics collection failed", exc_info=True)
 
     if pynvml is not None:
@@ -485,12 +489,12 @@ def system_metrics() -> dict[str, Any]:
                     }
                 )
             snapshot["gpus"] = gpus
-        except Exception:  # pragma: no cover - NVML metrics best-effort
+        except (ValueError, TypeError, RuntimeError):  # pragma: no cover - NVML metrics best-effort
             LOGGER.debug("NVML metrics collection failed", exc_info=True)
         finally:
             try:
                 pynvml.nvmlShutdown()
-            except Exception:  # pragma: no cover - best-effort shutdown
+            except (IOError, OSError):  # pragma: no cover - best-effort shutdown
                 LOGGER.debug("NVML shutdown failed", exc_info=True)
 
     return snapshot

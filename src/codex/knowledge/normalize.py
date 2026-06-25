@@ -35,7 +35,7 @@ def html_to_markdown(s: str) -> str:
     for n in range(1, 7):
         t = re.sub(
             rf"<h{n}[^>]*>(.*?)</h{n}>",
-            lambda m, level=n: "\n" + "#" * level + " " + strip_tags(m.group(1)) + "\n",  # type: ignore[misc]
+            lambda m, level=n: "\n" + "#" * level + " " + strip_tags(m.group(1)) + "\n",
             t,
             flags=re.I | re.S,
         )
@@ -56,7 +56,7 @@ def pdf_to_text_bytes(p: Path) -> bytes:
 
         txt = extract_text(p.as_posix()) or ""
         return txt.encode("utf-8")
-    except Exception:
+    except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
         raw = p.read_bytes()
         return b"[PDF_EXTRACTOR_MISSING]\n" + raw

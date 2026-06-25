@@ -93,7 +93,7 @@ FROM python:3.12-slim (preview-base)
   - Safe stubs (no src shadow): `agents`, `codex_addons`, `codex_digest`, `codex_regression`, `configs`, `interfaces`, `tools`, `examples`, `cli`
   - Direct COPY (with sub-packages): `services/`, `codex_utils/`
   - Reason: services/mcp, services/audio have discoverable sub-packages; need full directory copy for editable install
-  
+
 - **Multi-stage Inheritance:** preview-dev extends preview (efficient)
 
 **Validation Status:** ✅ **PRODUCTION READY**
@@ -444,7 +444,7 @@ specialization variants
 |---------|--------|----------|
 | SHA256-pinned bases | ✅ PASS | 12/12 (100%) |
 | Non-root users | ✅ PASS | 12/12 (100%) |
-| No hardcoded secrets | ✅ PASS | 12/12 (100%) |
+| No hardcoded secrets | ✅ PASS | 12/12 (100%) | <!-- pragma: allowlist secret -->
 | APT cleanup | ✅ PASS | 12/12 (100%) |
 
 ---

@@ -10,17 +10,12 @@ Tests cover:
 """
 
 
-
 class TestOptimizationBasics:
     """Test optimization algorithm basics."""
 
     def test_optimizer_initialization(self):
         """Test optimizer initialization."""
-        optimizer = {
-            "learning_rate": 0.001,
-            "momentum": 0.9,
-            "name": "SGD"
-        }
+        optimizer = {"learning_rate": 0.001, "momentum": 0.9, "name": "SGD"}
 
         assert optimizer["learning_rate"] == 0.001
 
@@ -68,11 +63,7 @@ class TestAdamOptimizer:
 
     def test_adam_beta_parameters(self):
         """Test Adam beta parameters."""
-        adam = {
-            "beta_1": 0.9,  # Momentum
-            "beta_2": 0.999,  # RMSprop
-            "epsilon": 1e-8
-        }
+        adam = {"beta_1": 0.9, "beta_2": 0.999, "epsilon": 1e-8}  # Momentum  # RMSprop
 
         assert adam["beta_1"] == 0.9
         assert adam["beta_2"] == 0.999
@@ -86,7 +77,7 @@ class TestAdamOptimizer:
         beta_2 = 0.999
 
         m = beta_1 * m + (1 - beta_1) * gradient
-        v = beta_2 * v + (1 - beta_2) * (gradient ** 2)
+        v = beta_2 * v + (1 - beta_2) * (gradient**2)
 
         assert m > 0
         assert v > 0
@@ -99,8 +90,8 @@ class TestAdamOptimizer:
         beta_1 = 0.9
         beta_2 = 0.999
 
-        m_hat = m / (1 - beta_1 ** t)
-        v_hat = v / (1 - beta_2 ** t)
+        m_hat = m / (1 - beta_1**t)
+        v / (1 - beta_2**t)
 
         assert m_hat > m  # Should be larger after bias correction
 
@@ -136,7 +127,7 @@ class TestLearningRateScheduling:
 
         lrs = []
         for epoch in range(10):
-            lr = initial_lr * (decay_rate ** epoch)
+            lr = initial_lr * (decay_rate**epoch)
             lrs.append(lr)
 
         assert lrs[0] > lrs[-1]
@@ -144,15 +135,14 @@ class TestLearningRateScheduling:
     def test_cosine_annealing(self):
         """Test cosine annealing schedule."""
         import math
+
         max_lr = 0.1
         min_lr = 0.0001
         total_epochs = 100
 
         lrs = []
         for epoch in range(total_epochs):
-            lr = (min_lr +
-                  (max_lr - min_lr) *
-                  (1 + math.cos(math.pi * epoch / total_epochs)) / 2)
+            lr = min_lr + (max_lr - min_lr) * (1 + math.cos(math.pi * epoch / total_epochs)) / 2
             lrs.append(lr)
 
         assert lrs[0] > lrs[50]
@@ -181,7 +171,7 @@ class TestGradientComputation:
         dx = 0.0001
 
         # f(x) = x^2
-        f_x = x ** 2
+        f_x = x**2
         f_x_plus = (x + dx) ** 2
 
         gradient = (f_x_plus - f_x) / dx
@@ -241,7 +231,7 @@ class TestBatchProcessing:
         batch = [1.0, 2.0, 3.0, 4.0]
 
         mean = sum(batch) / len(batch)
-        variance = sum((x - mean) ** 2 for x in batch) / len(batch)
+        sum((x - mean) ** 2 for x in batch) / len(batch)
 
         assert mean == 2.5
 
@@ -282,7 +272,7 @@ class TestEpochManagement:
     def test_early_stopping(self):
         """Test early stopping based on metric."""
         patience = 3
-        best_loss = float('inf')
+        best_loss = float("inf")
         epochs_without_improvement = 0
 
         losses = [0.5, 0.4, 0.35, 0.34, 0.35, 0.36, 0.37]
@@ -320,7 +310,7 @@ class TestConvergenceDetection:
 
         plateaued = False
         for i in range(1, len(losses)):
-            if abs(losses[i] - losses[i-1]) < threshold:
+            if abs(losses[i] - losses[i - 1]) < threshold:
                 plateaued = True
 
         assert plateaued is True
@@ -349,7 +339,7 @@ class TestConvergenceDetection:
 
         no_improvement = True
         for i in range(1, len(metric_history)):
-            if metric_history[i] - metric_history[i-1] > min_improvement:
+            if metric_history[i] - metric_history[i - 1] > min_improvement:
                 no_improvement = False
 
         assert no_improvement is True

@@ -90,9 +90,7 @@ Tests reference: tests/unit/test_example.py
 """.strip(),
     )
     _write_file(docs / "guide.md", "# Guide\n")
-    _write_file(
-        repo / "tests" / "unit" / "test_example.py", "def test_example():\n    pass\n"
-    )
+    _write_file(repo / "tests" / "unit" / "test_example.py", "def test_example():\n    pass\n")
 
     payload = run_audit(repo)
 

@@ -44,7 +44,7 @@ if _OV_AVAILABLE:
         _core = Core()
         DEVICES = _core.available_devices  # e.g. ['CPU', 'GPU', 'NPU']
         logger.debug("OpenVINO available. Devices: %s", DEVICES)
-    except Exception:
+    except (IOError, OSError):
         logger.debug("OpenVINO installed but Core() init failed; disabling.")
         _OV_AVAILABLE = False
 

@@ -38,8 +38,9 @@ class TrainingEventEmitter:
                 logger.info("Using Azure Event Grid publisher")
                 return AzureEventPublisher()
             except ImportError as e:
-                logger.debug(f"ImportError: {e}")
-                logger.warning(f"ImportError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"ImportError: <ERROR_TYPE>")
+                logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
                 logger.warning("Azure Event Grid configured but package not installed")
 
         # Try AWS EventBridge
@@ -50,8 +51,9 @@ class TrainingEventEmitter:
                 logger.info("Using AWS EventBridge publisher")
                 return AWSEventPublisher()
             except ImportError as e:
-                logger.debug(f"ImportError: {e}")
-                logger.warning(f"ImportError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"ImportError: <ERROR_TYPE>")
+                logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
                 logger.warning("AWS EventBridge configured but package not installed")
 
         # Fallback to local EventBus

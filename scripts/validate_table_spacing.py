@@ -22,7 +22,8 @@ def check_table_spacing(file_path: Path) -> list[dict[str, Any]]:
         with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
-        print(f"Error reading {file_path}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Error reading {file_path}: <ERROR_TYPE>", file=sys.stderr)
         return []
 
     issues = []
@@ -73,7 +74,8 @@ def fix_table_spacing(
         with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
     except Exception as e:
-        print(f"Error reading {file_path}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Error reading {file_path}: <ERROR_TYPE>", file=sys.stderr)
         return False
 
     # Sort issues by line index in reverse order to maintain correct indices
@@ -95,7 +97,8 @@ def fix_table_spacing(
             f.writelines(lines)
         return True
     except Exception as e:
-        print(f"Error writing {file_path}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Error writing {file_path}: <ERROR_TYPE>", file=sys.stderr)
         return False
 
 
