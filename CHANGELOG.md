@@ -1,4 +1,16 @@
 # Changelog
+## [Unreleased] — 2026-06-25T03:27Z
+
+### Fixed (Test Syntax Error Correction)
+- **Python syntax error in test file:** Fixed malformed comment in `tests/tokenization/test_roundtrip_basic.py` (commit 60148528)
+  - Issue: Line 31 had incomplete comment causing syntax error: `out = None Assigned in try block, except branches skip test`
+  - Fix: Converted to proper Python comment: `out = None  # Assigned in try block; except branches skip test`
+  - Impact: Resolves test collection failure and syntax validation errors
+
+### Governance (REQ-4/REQ-5)
+- Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md with latest fix documentation
+
+---
 ## [Unreleased] — 2026-06-25T02:50Z
 
 ### Security
