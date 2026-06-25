@@ -68,15 +68,15 @@ jobs:
           import os
           import re
           import sys
-           
+
           # Input validation: Sanitize comment body
           comment = os.environ.get("COMMENT_BODY", "")
-           
+
           # Guard 1: Check comment body length (max 1MB to prevent DoS)
           if len(comment) > 1048576:
               print("::error::agent-handoff-gate: Comment body exceeds size limit (>1MB)")
               sys.exit(1)
-           
+
           # Guard 2: Validate comment body contains only expected characters
           # Allow printable ASCII, common Unicode symbols, and newlines
           if not all(ord(c) < 128 or ord(c) > 127 for c in comment if ord(c) >= 32 or c in '\n\r\t'):
@@ -84,7 +84,7 @@ jobs:
               suspicious_count = sum(1 for c in comment if ord(c) > 127)
               if suspicious_count > len(comment) * 0.5:  # More than 50% non-ASCII
                   print(f"::warning::agent-handoff-gate: Comment contains {suspicious_count} non-ASCII characters")
-           
+
           pr_number = os.environ.get("PR_NUMBER", "unknown")
           # P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.
           try:

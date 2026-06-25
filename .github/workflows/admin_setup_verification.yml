@@ -49,25 +49,25 @@ jobs:
         run: |
           # Validate pr_number input — must be empty or a valid integer
           PR_INPUT="${{ github.event.inputs.pr_number }}"
-          
+
           if [ -z "$PR_INPUT" ]; then
             # No input provided — use default
             echo "pr_number=3401" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          
+
           # Validate that pr_number is a non-negative integer
           if ! echo "$PR_INPUT" | grep -qE '^[0-9]+$'; then
             echo "::error::Invalid pr_number input: '$PR_INPUT' — must be an integer"
             exit 1
           fi
-          
+
           # Prevent injection by ensuring it's a reasonable PR number (less than 1M)
           if [ "$PR_INPUT" -gt 999999 ]; then
             echo "::error::Invalid pr_number input: '$PR_INPUT' — exceeds reasonable limit"
             exit 1
           fi
-          
+
           echo "pr_number=$PR_INPUT" >> "$GITHUB_OUTPUT"
 
   verify-setup:
