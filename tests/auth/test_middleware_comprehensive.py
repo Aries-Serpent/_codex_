@@ -11,7 +11,7 @@ Tests cover:
 - CORS and security headers
 """
 
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -31,9 +31,15 @@ def token_manager():
 
 
 @pytest.fixture
-def middleware(token_manager):
+def mock_app():
+    """Create mock ASGI application."""
+    return AsyncMock()
+
+
+@pytest.fixture
+def middleware(mock_app, token_manager):
     """Create authentication middleware."""
-    return AuthMiddleware(token_manager=token_manager)
+    return AuthMiddleware(app=mock_app, token_manager=token_manager)
 
 
 @pytest.fixture

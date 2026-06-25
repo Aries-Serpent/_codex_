@@ -9,6 +9,8 @@ Tests cover:
 - Performance
 """
 
+from unittest.mock import AsyncMock
+
 import pytest
 
 from codex.auth.middleware import AuthMiddleware
@@ -22,7 +24,8 @@ class TestAuthMiddlewareAdv:
     def middleware(self):
         """Create middleware."""
         token_manager = TokenManager(secret_key="middleware-test")
-        return AuthMiddleware(token_manager)
+        mock_app = AsyncMock()
+        return AuthMiddleware(app=mock_app, token_manager=token_manager)
 
     def test_bearer_token_extraction(self, middleware):
         """Extract ******"""
