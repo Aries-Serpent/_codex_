@@ -1,21 +1,5 @@
 # Changelog
 
-## [Unreleased] — 2026-06-25T01:38Z
-
-### Security (Regression Fix #2)
-- **REVERTED**: Commits with hardcoded cryptographic salts (085b9de8, bf948b97, 19ef5d84, cd8f22b0)
-  - Issue: PBKDF2 calls used hardcoded salts which defeats key derivation purpose
-  - Files: cognitive_app/src/server/cli_api_server.py, scripts/catalog_workflows.py
-  - Impact: Removed +2 HIGH severity alerts (57→50 expected)
-  - Lesson: Never hardcode salts in crypto; use os.urandom() or secrets module
-
-### Governance (REQ-4/REQ-5)
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with regression #2 diagnosis
-- Updated CHANGELOG.md with remediation details
-
----
-
-
 ## [Unreleased] — 2026-06-25T01:23Z
 
 ### Security

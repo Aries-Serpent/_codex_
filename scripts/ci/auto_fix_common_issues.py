@@ -173,6 +173,7 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
     # Resolve the parent of the agent commit (so ``git diff <parent> HEAD``
     # includes that commit's changes). If the parent is unreachable in a
     # shallow clone, fall back to None and let the caller use HEAD~1.
+    parent = None
     try:
         parent = _sp.run(
             ["git", "rev-parse", f"{agent_sha}^"],
@@ -180,9 +181,9 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
         )
     except (OSError, _sp.TimeoutExpired):
         return None
-    if parent.returncode != 0:
+    if parent and parent.returncode != 0:
         return None
-    return parent.stdout.strip() or None
+    return parent.stdout.strip() or None if parent else None
 
 
 # ---------------------------------------------------------------------------
@@ -622,14 +623,14 @@ class CommonIssueFixer:
             # ── Cascade detection circuit breaker (S85 pattern prevention) ──
             # Check if this pattern's circuit is broken (exceeded max retries)
             if self.cascade_detector.should_skip_pattern(num):
-               - pattern names are hardcoded constants, not secrets
-                print(f"Pattern {num}: {name}")
-                print("  ⛔ Circuit breaker BROKEN — skipping (cascaded >3 times)")
-                self.cascade_detector.report_broken_circuit(num, name)
-                print()
-                continue
+               # pattern names are hardcoded constants, not secrets
+               print(f"Pattern {num}: {name}")
+               print("  ⛔ Circuit breaker BROKEN — skipping (cascaded >3 times)")
+               self.cascade_detector.report_broken_circuit(num, name)
+               print()
+               continue
 
-           - pattern names are hardcoded constants, not secrets
+            # pattern names are hardcoded constants, not secrets
             print(f"Pattern {num}: {name}")
 
             # Run the pattern fix and capture issues
@@ -3263,7 +3264,7 @@ class CommonIssueFixer:
             _sys.path.insert(0, str(swa_path.parent))
             spec = _ilu.spec_from_file_location("session_wrapup_autofix", swa_path)
             swa = _ilu.module_from_spec(spec)  # type: ignore[arg-type]
-            spec.loader.exec_module(swa) - safe: module loaded from verified file path
+            spec.loader.exec_module(swa)  # safe: module loaded from verified file path
         except Exception as exc:
             print(f"⚠  Pattern 30 (Merge Readiness): failed to import session_wrapup_autofix: {exc}")
             return issues

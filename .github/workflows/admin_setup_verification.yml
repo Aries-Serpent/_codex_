@@ -38,42 +38,9 @@ permissions:
 
 
 jobs:
-  validate-inputs:
-    name: Validate workflow inputs
-    runs-on: ubuntu-latest
-    outputs:
-      pr_number: ${{ steps.validate.outputs.pr_number }}
-    steps:
-      - name: Validate and sanitize inputs
-        id: validate
-        run: |
-          # Validate pr_number input — must be empty or a valid integer
-          PR_INPUT="${{ github.event.inputs.pr_number }}"
-
-          if [ -z "$PR_INPUT" ]; then
-            # No input provided — use default
-            echo "pr_number=3401" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Validate that pr_number is a non-negative integer
-          if ! echo "$PR_INPUT" | grep -qE '^[0-9]+$'; then
-            echo "::error::Invalid pr_number input: '$PR_INPUT' — must be an integer"
-            exit 1
-          fi
-
-          # Prevent injection by ensuring it's a reasonable PR number (less than 1M)
-          if [ "$PR_INPUT" -gt 999999 ]; then
-            echo "::error::Invalid pr_number input: '$PR_INPUT' — exceeds reasonable limit"
-            exit 1
-          fi
-
-          echo "pr_number=$PR_INPUT" >> "$GITHUB_OUTPUT"
-
   verify-setup:
     name: Verify Admin Setup
     runs-on: ubuntu-latest
-    needs: validate-inputs
     timeout-minutes: 30
 
     steps:
@@ -94,7 +61,6 @@ jobs:
         id: test_master
         env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY }}
-          PR_NUMBER: ${{ needs.validate-inputs.outputs.pr_number }}
         run: |
           {
             echo "## §3a CODEX_MASTER_KEY Verification"
@@ -130,7 +96,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -d "{\"body\":\"🔑 **[CODEX_MASTER_KEY verification probe]** — S108 admin setup verification. This comment confirms \`CODEX_MASTER_KEY\` has \`issues:write\` scope and autonomous @copilot commands can post comments. — copilot-swe-agent[bot]\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" 2>/dev/null)
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.inputs.pr_number || '3401' }}/comments" 2>/dev/null)
 
           if [ "$WRITE_STATUS" = "201" ]; then
             COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/master_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
@@ -146,7 +112,6 @@ jobs:
         id: test_backup
         env:
           CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
-          PR_NUMBER: ${{ needs.validate-inputs.outputs.pr_number }}
         run: |
           {
             echo ""
@@ -182,7 +147,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -d "{\"body\":\"🔑 **[CODEX_BACKUP_KEY verification probe]** — S108 admin setup verification. This comment confirms \`CODEX_BACKUP_KEY\` has \`issues:write\` scope and is operational as fallback. — copilot-swe-agent[bot]\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" 2>/dev/null)
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.inputs.pr_number || '3401' }}/comments" 2>/dev/null)
 
           if [ "$WRITE_STATUS" = "201" ]; then
             COMMENT_URL=$(python3 -c "import json,sys; d=json.load(open('/tmp/backup_write.json')); print(d.get('html_url','?'))" 2>/dev/null || echo "?")
