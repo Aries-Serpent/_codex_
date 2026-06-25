@@ -131,7 +131,7 @@ class GitHubSecretsManager:
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
                 logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # codeql[py/clear-text-logging-sensitive-data]
-                print(f"✗ Failed to rotate secret ({secret_ref})")
+                print("✗ Failed to rotate secret")
                 results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
 
         # Save results
