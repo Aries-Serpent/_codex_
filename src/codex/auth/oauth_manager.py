@@ -10,7 +10,7 @@ import hashlib
 import secrets
 import time
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from urllib.parse import urlencode
 
@@ -53,7 +53,13 @@ class OAuthToken:
             True if token is expired or will expire soon
         """
         if self.expires_at is not None:
-            return datetime.now() >= self.expires_at
+            if self.expires_at.tzinfo is not None:
+                now = datetime.now(timezone.utc)
+                expires_at = self.expires_at.astimezone(timezone.utc)
+            else:
+                now = datetime.now()
+                expires_at = self.expires_at
+            return now >= expires_at
         if self.expires_in <= 0:
             return False
         elapsed = time.time() - self.created_at

@@ -121,15 +121,9 @@ class UserStore:
                 required field is empty.
             ValueError: If *password* does not meet minimum requirements.
         """
-        username = username.strip()
-        email = email.strip().lower()
-
-        if not username:
-            raise ValueError("Username must not be empty")
-        if not email:
-            raise ValueError("Email must not be empty")
-        if not password:
-            raise ValueError("Password must not be empty")
+        username = self._require_non_empty(username, "Username")
+        email = self._require_non_empty(email, "Email").lower()
+        password = self._require_non_empty(password, "Password")
 
         self._validate_email_format(email)
         self._validate_password_strength(password)
@@ -224,7 +218,10 @@ class UserStore:
         Raises:
             KeyError: If *user_id* does not exist.
         """
-        self._repository.delete(user_id)
+        try:
+            self._repository.delete(user_id)
+        except (UserNotFoundError, KeyError) as exc:  # pragma: no cover - compatibility shim
+            raise KeyError(f"User '{user_id}' not found") from exc
 
     # ------------------------------------------------------------------ #
     # Read / query operations                                              #
@@ -295,7 +292,8 @@ class UserStore:
             InvalidCredentialsError: If the credentials are wrong or the
                 account is not active.
         """
-        identifier = username_or_email.strip()
+        identifier = self._require_non_empty(username_or_email, "Username or email")
+        password = self._require_non_empty(password, "Password")
 
         user = self.find_by_username(identifier)
         if user is None:
@@ -326,6 +324,18 @@ class UserStore:
         if user is None:
             raise KeyError(f"User '{user_id}' not found")
         return user
+
+    @staticmethod
+    def _require_non_empty(value: Optional[str], field_name: str) -> str:
+        """Validate that a required string value is present and non-blank."""
+        if value is None:
+            raise ValueError(f"{field_name} must not be empty")
+        if not isinstance(value, str):
+            raise ValueError(f"{field_name} must be a string")
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError(f"{field_name} must not be empty")
+        return normalized
 
     @staticmethod
     def _validate_password_strength(password: str) -> None:

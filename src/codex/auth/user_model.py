@@ -30,15 +30,24 @@ _HASH_BYTES = 32
 class User:
     """Mutable user identity record (password, active flag, and updated_at are updated in-place)."""
 
-    user_id: str
-    username: str
-    email: str
-    password_hash: str  # "<salt_hex>:<hash_hex>"
+    user_id: Optional[str] = None
+    username: str = ""
+    email: str = ""
+    password_hash: str = ""  # "<salt_hex>:<hash_hex>"
     created_at: float = field(default_factory=time.time)
     updated_at: float = field(default_factory=time.time)
     is_active: bool = True
     roles: list[str] = field(default_factory=lambda: ["user"])
     display_name: Optional[str] = None
+    id: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        if self.user_id is None and self.id is not None:
+            self.user_id = self.id
+        elif self.user_id is None:
+            self.user_id = ""
+        if self.id is None:
+            self.id = self.user_id
 
     # ------------------------------------------------------------------ #
     # Convenience                                                          #

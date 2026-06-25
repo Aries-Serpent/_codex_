@@ -100,7 +100,13 @@ class TokenManager:
     REFRESH_TOKEN_EXPIRY = 604800  # 7 days
     SESSION_TOKEN_EXPIRY = 2592000  # 30 days
 
-    def __init__(self, secret_key: Optional[str] = None):
+    def __init__(
+        self,
+        secret_key: Optional[str] = None,
+        access_token_timeout: Optional[int] = None,
+        refresh_token_timeout: Optional[int] = None,
+        session_token_timeout: Optional[int] = None,
+    ):
         """
         Initialize token manager.
 
@@ -109,6 +115,9 @@ class TokenManager:
                        If None, generates a random key (NOT recommended for production).
                        In production, ALWAYS provide an explicit secret key via
                        environment variable or secure configuration.
+            access_token_timeout: Optional legacy override for access-token expiry.
+            refresh_token_timeout: Optional legacy override for refresh-token expiry.
+            session_token_timeout: Optional legacy override for session-token expiry.
 
         Warning:
             Auto-generated keys are only for development/testing.
@@ -129,6 +138,9 @@ class TokenManager:
         self._secret_key = secret_key
         self._revoked_tokens: set[str] = set()  # Use Redis in production
         self._sessions: dict[str, SessionInfo] = {}  # Use database in production
+        self._access_token_expiry = access_token_timeout or self.ACCESS_TOKEN_EXPIRY
+        self._refresh_token_expiry = refresh_token_timeout or self.REFRESH_TOKEN_EXPIRY
+        self._session_token_expiry = session_token_timeout or self.SESSION_TOKEN_EXPIRY
 
     def _encode_token(self, claims: TokenClaims) -> str:
         """
@@ -238,7 +250,7 @@ class TokenManager:
         claims = TokenClaims(
             sub=user_id,
             iat=now,
-            exp=now + self.ACCESS_TOKEN_EXPIRY,
+            exp=now + self._access_token_expiry,
             type=TokenType.ACCESS,
             scope=scope,
             jti=jti,
@@ -262,12 +274,38 @@ class TokenManager:
         claims = TokenClaims(
             sub=user_id,
             iat=now,
-            exp=now + self.REFRESH_TOKEN_EXPIRY,
+            exp=now + self._refresh_token_expiry,
             type=TokenType.REFRESH,
             jti=jti,
         )
 
         return self._encode_token(claims)
+
+    def create_access_token(
+        self,
+        user_id: str,
+        scope: Optional[str] = None,
+        expires_in: Optional[int] = None,
+    ) -> str:
+        """Backward-compatible alias for :meth:`generate_access_token`."""
+        if expires_in is not None:
+            return self.create_token(
+                user_id,
+                TokenType.ACCESS,
+                expires_in=expires_in,
+                scope=scope,
+            )
+        return self.generate_access_token(user_id, scope=scope)
+
+    def create_refresh_token(
+        self,
+        user_id: str,
+        expires_in: Optional[int] = None,
+    ) -> str:
+        """Backward-compatible alias for :meth:`generate_refresh_token`."""
+        if expires_in is not None:
+            return self.create_token(user_id, TokenType.REFRESH, expires_in=expires_in)
+        return self.generate_refresh_token(user_id)
 
     def generate_session_token(
         self,
@@ -308,7 +346,7 @@ class TokenManager:
         claims = TokenClaims(
             sub=user_id,
             iat=now,
-            exp=now + self.SESSION_TOKEN_EXPIRY,
+            exp=now + self._session_token_expiry,
             type=TokenType.SESSION,
             jti=session_id,
         )
@@ -393,9 +431,9 @@ class TokenManager:
         """Create a token with optional custom expiry for compatibility."""
         now = time.time()
         expiry_map = {
-            TokenType.ACCESS: self.ACCESS_TOKEN_EXPIRY,
-            TokenType.REFRESH: self.REFRESH_TOKEN_EXPIRY,
-            TokenType.SESSION: self.SESSION_TOKEN_EXPIRY,
+            TokenType.ACCESS: self._access_token_expiry,
+            TokenType.REFRESH: self._refresh_token_expiry,
+            TokenType.SESSION: self._session_token_expiry,
         }
         if token_type not in expiry_map:
             raise ValueError(f"Unsupported token type: {token_type!r}")

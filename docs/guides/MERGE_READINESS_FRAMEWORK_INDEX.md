@@ -29,22 +29,22 @@ The **PR Merge Readiness Framework** provides a comprehensive, quantitative appr
 
 **Key Functions:**
 ```python
-# Read-before-write pattern
-build_pr_description_with_wec(
-    checklist_text: str,
-    pr_number: int,
-    repo_owner: str = "Aries-Serpent",
-    repo_name: str = "_codex_",
-    session_id: Optional[str] = None,
-    turn_number: Optional[int] = None,
-    merge_readiness_score: Optional[int] = None
-) -> str
+from scripts.ci.pr_description_helper import build_pr_description_with_wec
 
-# Supporting utilities
-extract_and_preserve_wec_state(pr_body: str) -> Dict[str, bool]
-build_wec_block(existing_state: Optional[Dict[str, bool]] = None) -> str
-calculate_merge_readiness_score(gates: Dict[str, bool]) -> int
-record_wec_checkpoint(pr_number, wec_state, body_hash, ...) -> bool
+# Read-before-write pattern
+progress_checklist = "## Progress\n- [x] Phase 1 complete"
+example_pr_number = 4662
+pr_description = build_pr_description_with_wec(
+    checklist_text=progress_checklist,
+    pr_number=example_pr_number,
+    repo_owner="Aries-Serpent",
+    repo_name="_codex_",
+    session_id="S_12345",
+    turn_number=1,
+    merge_readiness_score=85,
+)
+
+print(pr_description)
 ```
 
 **Usage:**
