@@ -15,7 +15,7 @@ from datetime import datetime, timedelta  # pragma: allowlist secret # pragma: a
 class TestBridgeProtocol:
     """Test bridge protocol communication logic."""
 
-    def test_message_type_enumeration(self): # pragma: allowlist secret
+    def test_message_type_enumeration(self): # pragma: allowlist secret # pragma: allowlist secret
         """Test message type enumeration."""
         message_types = ["QUERY", "RESPONSE", "ERROR", "HEARTBEAT", "CONTROL"]
         assert len(message_types) == 5

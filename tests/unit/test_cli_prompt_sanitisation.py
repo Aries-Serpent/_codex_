@@ -15,7 +15,7 @@ pytest.importorskip("hydra")
 pytest.importorskip("omegaconf")
 
 os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
- # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 try:  # pragma: no cover - hydra stub may omit utils
     if importlib.util.find_spec("hydra") is None:
         raise ModuleNotFoundError("hydra not found")

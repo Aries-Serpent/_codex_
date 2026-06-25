@@ -15,7 +15,7 @@ from typing import Any
 from unittest.mock import patch
 
 import pytest
- # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret
 from tests.branch_coverage import branch_input
 
 # ============================================================================

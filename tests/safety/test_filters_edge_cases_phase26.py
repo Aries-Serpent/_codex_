@@ -15,7 +15,7 @@ Part of Phase 26: Coverage 70% → 75-80%
 from unittest.mock import Mock, patch
 
 import pytest
- # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret
 from codex_ml.safety.filters import (
     REDACT_PLACEHOLDER,
     SafetyFilters,

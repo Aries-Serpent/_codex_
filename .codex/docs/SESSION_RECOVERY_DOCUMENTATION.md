@@ -15,7 +15,7 @@ The Session Recovery System automatically detects, logs, and recovers from faile
 
 - 🔍 **Automatic Failure Detection** — Monitors GitHub Actions workflow runs for failures, cancellations, and timeouts
 - 💾 **Session State Persistence** — Checkpoints session state every 15 minutes to `.codex/sessions/`
-- 🫀 **Heartbeat Monitoring** — Detects stalled sessions through periodic heartbeat monitoring # pragma: allowlist secret
+- 🫀 **Heartbeat Monitoring** — Detects stalled sessions through periodic heartbeat monitoring # pragma: allowlist secret # pragma: allowlist secret
 - 🔄 **Auto-Recovery** — Automatically triggers recovery for up to 2 consecutive failures
 - 📊 **Metrics Tracking** — Tracks recovery success rates and failure patterns
 - 🚨 **Human Escalation** — Notifies @mbaetiong after 2 consecutive auto-recovery failures

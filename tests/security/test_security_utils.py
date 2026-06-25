@@ -15,7 +15,7 @@ from codex.security_utils import (
 
 
 class TestRedactSensitiveValue:
-    """Test redaction of sensitive values.""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    """Test redaction of sensitive values.""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
     def test_redact_without_preview(self):
         """Test basic redaction without preview."""

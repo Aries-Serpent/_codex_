@@ -15,7 +15,7 @@
 
 ### Secondary Objectives   # pragma: allowlist secret # pragma: allowlist secret
 3. ✅ Implement hardened automated solution for auto-fixing frequently failing checks
-4. ✅ Leverage issue #5041 findings for strategist pattern solution # pragma: allowlist secret
+4. ✅ Leverage issue #5041 findings for strategist pattern solution # pragma: allowlist secret # pragma: allowlist secret
 5. ✅ Update batch-ci-triage.yml with improved Copilot cloud agent prompts
 
 ---

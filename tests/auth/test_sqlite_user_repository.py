@@ -15,7 +15,7 @@ from codex.auth.user_store import User
 
 
 def _make_user(
-    username: str = "alice", # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    username: str = "alice", # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     email: str = "alice@example.com",
     user_id: str | None = None,
 ) -> User:

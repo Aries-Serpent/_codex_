@@ -15,7 +15,7 @@ import pytest
 
 
 class TestGitHubClientCheckRuns:
-    """Test GitHub client check run methods.""" # pragma: allowlist secret
+    """Test GitHub client check run methods.""" # pragma: allowlist secret # pragma: allowlist secret
 
     @pytest.fixture
     def mock_check_run_data(self):

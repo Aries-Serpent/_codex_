@@ -15,7 +15,7 @@ try:
     import torch
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
-except ImportError: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+except ImportError: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     _TORCH_312_BUG = False
 
 fastapi = pytest.importorskip("fastapi")

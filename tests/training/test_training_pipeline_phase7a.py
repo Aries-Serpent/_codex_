@@ -15,7 +15,7 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import pytest # pragma: allowlist secret
+import pytest # pragma: allowlist secret # pragma: allowlist secret
 
 try:
     import torch

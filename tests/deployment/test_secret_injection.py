@@ -15,7 +15,7 @@ def test_compose_does_not_embed_secrets() -> None:
     # Check that secret values are not hardcoded
     # Allow environment variable placeholders: ${VAR}, ${VAR:-default}, $VAR
     # Disallow hardcoded values like: API_KEY: "actual-secret-value"
- # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret
     # Find all lines with API_KEY that are not environment variable references
     for line in compose.split("\n"):
         if "API_KEY" not in line:

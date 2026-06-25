@@ -15,7 +15,7 @@ from unittest.mock import patch
 class TestInputValidation:
     """Tests for input validation (environment-isolated)."""
 
-    def test_email_validation_basic(self): # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    def test_email_validation_basic(self): # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
         """Email validation with standard format."""
         import re
 

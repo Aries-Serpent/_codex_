@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import os
 from unittest.mock import patch
- # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
 
 
