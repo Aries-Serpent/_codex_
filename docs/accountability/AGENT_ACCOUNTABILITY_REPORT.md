@@ -1,5 +1,32 @@
 # Agent Accountability Report — Index (Phase 2.3 Refactored)
 
+---
+
+## 📋 CAMPAIGN CONTEXT — 2026-06-25T22:26Z [POST-MERGE GROUNDWORK CAMPAIGN]
+
+**Campaign**: Post-Merge Copilot Agent Session Campaign
+**Objective**: Establish baseline documentation and validation framework for post-merge sessions to handle pre-existing environmental issues and validate copilot-setup-steps.yml stability
+
+**Artifacts Created in `.codex/`** (all checked into repository, not /tmp):
+- ✅ `POST_MERGE_ENVIRONMENT_BASELINE.md` — Pre-existing dependency gaps (zstandard, sqlalchemy)
+- ✅ `POST_MERGE_COPILOT_SETUP_VALIDATION.md` — 6-gate validation checklist for workflow stability
+- ✅ `POST_MERGE_REVERSION_PROTOCOL.md` — Decision tree for when/how to revert post-merge
+- ✅ `POST_MERGE_MISSING_DEPS_INSTALL.md` — Playbook for installing missing optional deps
+- ✅ `POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md` — Comprehensive guide for next session
+- ✅ `PRE_MERGE_COPILOT_SETUP_STATE.yml` — Snapshot of working copilot-setup-steps.yml
+- ✅ `PRE_MERGE_TEST_COLLECTION_STATUS.json` — Baseline for post-merge test collection comparison
+
+**Key Principles**:
+1. **No Ambiguity on Pre-Existing Issues**: Explicitly baseline zstandard/sqlalchemy gaps before merge
+2. **Reversion is Terminal**: Not a retry mechanism; requires human review if triggered
+3. **YAML Fragility Acknowledged**: Lines 141-147 documented as no-refactor zone
+4. **Artifact Location Hardened**: All files in .codex/ (per user preference, never /tmp/)
+5. **Session Continuation Clarity**: Explicit "expected failures" list to prevent wasted cycles
+
+**Reference**: Use `.codex/POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md` as entry point for next session
+
+---
+
 ## SESSION SUMMARY — 2026-06-25T16:21Z [PR MERGE READINESS PRE-FLIGHT CHECKLIST]
 
 **Session:** copilot-pr5081-prefly-checks | **Run:** 28184401996 | **Date:** 2026-06-25T16:21Z
