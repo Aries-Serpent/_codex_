@@ -176,15 +176,15 @@ jobs:
           # Use Python script for safe input validation instead of shell logic
           # This prevents code injection via shell metacharacters in inputs
           # See .github/scripts/validate_workflow_inputs.py for validation logic
-          
+
           # Validate manifest_path if provided
           MANIFEST_VALIDATION=$(python3 .github/scripts/validate_workflow_inputs.py \
             --type manifest-path \
             --value "${{ github.event.inputs.manifest_path }}" \
             2>/dev/null || echo '{"valid": false, "mode": "direct"}')
-          
+
           MODE=$(echo "$MANIFEST_VALIDATION" | python3 -c "import sys,json; print(json.load(sys.stdin)['mode'])")
-          
+
           if [[ "$MODE" == "manifest" ]]; then
             MANIFEST_PATH=$(echo "$MANIFEST_VALIDATION" | python3 -c "import sys,json; print(json.load(sys.stdin)['path'])")
             echo "mode=manifest" >> "$GITHUB_OUTPUT"
