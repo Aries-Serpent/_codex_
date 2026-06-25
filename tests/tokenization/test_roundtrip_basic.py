@@ -28,7 +28,7 @@ def test_roundtrip_basic(tmp_path):
         seed=123,
         workers=1,
     )
-    out = None Assigned in try block, except branches skip test
+    out = None  # Assigned in try block; except branches skip test
     try:
         out = train(cfg)
     except OSError as exc:  # pragma: no cover - env missing sentencepiece
