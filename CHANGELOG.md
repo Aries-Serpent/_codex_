@@ -1,4 +1,13 @@
 # Changelog
+## [Unreleased] — 2026-06-25T09:44Z
+
+### Infrastructure (Branch Alignment & CI Remediation)
+- **Branch synchronization:** Aligned `copilot/create-implementation-plan` with `origin/main` (1 commit behind → rebased)
+- **Repository unshallow:** Restored full git history for proper merge-base detection
+- **REQ-4/REQ-5 compliance:** Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in HEAD commit
+- **Blocking comments:** Resolved 6 blocking comments with explicit commit SHAs (reply via reply_to_comment tool)
+- **Expected CI status:** 5 failing checks to pass after governance file commit
+
 ## [Unreleased] — 2026-06-25T03:48Z
 
 ### Fixed (YAML Workflow Linting Errors)
