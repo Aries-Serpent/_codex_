@@ -1,32 +1,32 @@
-# Session Context — 2026-06-25T16:20:36Z
-**Branch:** `copilot/fix-ci-failure-rag-module-tests`  **PR:** #5081  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-25T21:04:17Z
+**Branch:** `copilot/fix-ci-failure-triage-report`  **PR:** #5084  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4565` (✅)
-- GraphQL remaining: `4956` (✅)
+- REST remaining: `4769` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5081 — Implement PR merge readiness framework with WEC preservation and 10-gate validation model
-State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
+## 📋 PR #5084 — Restore backward-compatible MFA behavior for auth callers
+State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-triage-report` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Unified Governance Check** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
 
 ## 📝 Recent Commits
-- `682b80fa` chore: Update AGENT_ACCOUNTABILITY_REPORT.md - session wrapup compliance — copilot-swe-agent[bot] (2026-06-25)
-- `9e8ab3d2` fix: Address PR #5081 review comments — copilot-swe-agent[bot] (2026-06-25)
-- `8c5f424c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-25)
-- `6e0423e1` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-25)
-- `3eeccb17` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
-- `05e1fbed` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
-- `ed99dbc0` WIP: Initial plan for addressing PR #5081 review comments — copilot-swe-agent[bot] (2026-06-25)
-- `dfd5ee6c` Potential fix for pull request finding 'Unused import' — Statix (2026-06-25)
+- `94fb3c12` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-25)
+- `5b9f8077` Initial plan — copilot-swe-agent[bot] (2026-06-25)
+- `59ae12be` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-25)
+- `85b05c66` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-25)
+- `5e4b1095` Merge pull request #5083 from Aries-Serpent/copilot/fix-ci-failure-rag-module-te — Statix (2026-06-25)
+- `5c105847` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
+- `1e62389c` Fix auth review feedback for password and token handling — copilot-swe-agent[bot] (2026-06-25)
+- `11ef77a1` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
