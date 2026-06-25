@@ -277,15 +277,16 @@ class CachedEmbeddingProvider:
         if cache_file.exists() and metadata_file.exists():
             if self._is_cache_valid(metadata_file, metadata):
                 try:
-                    # Load from cache
-                    data = np.load(cache_file)
+                    # Load from cache with allow_pickle=True for compatibility
+                    data = np.load(cache_file, allow_pickle=True)
                     embeddings = data["embeddings"]
                     self.cache_hits += 1
                     logger.debug(f"Cache hit for key: {cache_key}")
                     return embeddings
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ValueError) as e:
                     error_type = type(e).__name__
                     logger.warning(f"Error loading cache: <ERROR_TYPE>")
+                    # Continue to regenerate cache
 
         # Cache miss - generate embeddings
         self.cache_misses += 1
@@ -424,7 +425,7 @@ def create_embedding_provider(
             if use_cache:
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
-        except (ImportError, AttributeError) as e:
+        except (ImportError, AttributeError, RuntimeError) as e:
             error_type = type(e).__name__
             logger.debug(f"sentence-transformers unavailable: <ERROR_TYPE>")
 

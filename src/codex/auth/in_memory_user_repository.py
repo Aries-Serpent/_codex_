@@ -82,6 +82,10 @@ class InMemoryUserRepository(UserRepository):
             self._users[user.user_id] = user
         return user
 
+    def create_user(self, user: User) -> User:
+        """Alias for :meth:`create` for backward compatibility."""
+        return self.create(user)
+
     def update(self, user: User) -> User:
         """Overwrite the stored record for *user.user_id*.
 
@@ -133,3 +137,12 @@ class InMemoryUserRepository(UserRepository):
     def list_all(self) -> list[User]:
         with self._lock:
             return list(self._users.values())
+
+    def list_users(self) -> list[User]:
+        """Alias for :meth:`list_all` for backward compatibility."""
+        return self.list_all()
+
+    def get_user_count(self) -> int:
+        """Return the total number of users in the repository."""
+        with self._lock:
+            return len(self._users)

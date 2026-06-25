@@ -88,6 +88,15 @@ class SQLiteUserRepository(UserRepository):
         """Return the cached connection (same connection for the lifetime of this instance)."""
         return self._conn
 
+    def _get_connection(self) -> sqlite3.Connection:
+        """Alias for :meth:`_get_conn` for backward compatibility."""
+        return self._get_conn()
+
+    def close(self) -> None:
+        """Close the database connection."""
+        if self._conn:
+            self._conn.close()
+
     def _init_schema(self) -> None:
         with self._lock, self._get_conn() as conn:
             conn.executescript(_SCHEMA)
@@ -135,6 +144,10 @@ class SQLiteUserRepository(UserRepository):
                     ) from exc
                 raise ValueError(str(exc)) from exc
         return user
+
+    def create_user(self, user: User) -> User:
+        """Alias for :meth:`create` for backward compatibility."""
+        return self.create(user)
 
     def update(self, user: User) -> User:
         """Update an existing user record.
@@ -206,3 +219,13 @@ class SQLiteUserRepository(UserRepository):
         with self._lock, self._get_conn() as conn:
             rows = conn.execute("SELECT * FROM users").fetchall()
         return [_row_to_user(r) for r in rows]
+
+    def list_users(self) -> list[User]:
+        """Alias for :meth:`list_all` for backward compatibility."""
+        return self.list_all()
+
+    def get_user_count(self) -> int:
+        """Return the total number of users in the database."""
+        with self._lock, self._get_conn() as conn:
+            row = conn.execute("SELECT COUNT(*) as count FROM users").fetchone()
+        return row["count"] if row else 0

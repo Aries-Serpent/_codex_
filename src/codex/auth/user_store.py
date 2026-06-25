@@ -331,32 +331,34 @@ class UserStore:
         Enforce a minimum password policy.
 
         Requirements:
-            - At least 8 characters, or
-            - At least 6 characters when containing uppercase, lowercase,
-              numeric, and non-alphanumeric characters.
+            - At least 8 characters long
+            - Must contain at least one uppercase letter
+            - Must contain at least one lowercase letter
+            - Must contain at least one digit
+            - Must contain at least one special character
 
         Raises:
             ValueError: If the policy is not satisfied.
         """
-        if len(password) >= 8:
-            return
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters long")
 
-        has_alpha = any(ch.isalpha() for ch in password)
         has_upper = any(ch.isupper() for ch in password)
         has_lower = any(ch.islower() for ch in password)
         has_digit = any(ch.isdigit() for ch in password)
         has_symbol = any(not ch.isalnum() for ch in password)
-        has_case_mix = has_upper and has_lower
-        has_alpha_no_case_mix = has_alpha and not has_case_mix
-        if (
-            len(password) >= 6
-            and (has_case_mix or has_alpha_no_case_mix)
-            and has_digit
-            and has_symbol
-        ):
-            return
 
-        raise ValueError(
-            "Password must be at least 8 characters, or at least 6 with upper/lowercase, "
-            "number, and symbol"
-        )
+        errors = []
+        if not has_upper:
+            errors.append("uppercase letter")
+        if not has_lower:
+            errors.append("lowercase letter")
+        if not has_digit:
+            errors.append("digit")
+        if not has_symbol:
+            errors.append("special character")
+
+        if errors:
+            raise ValueError(
+                f"Password must contain at least one {', '.join(errors)}"
+            )
