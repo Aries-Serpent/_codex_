@@ -143,7 +143,8 @@ class ContextDistiller:
             with open(file_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
         except (IOError, OSError) as e:
-            logger.error(f"Failed to read {file_path}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to read {file_path}: <ERROR_TYPE>")
             return {}
 
         structure = {

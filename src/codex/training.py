@@ -72,8 +72,9 @@ from codex_utils.repro import log_env_info  # noqa: E402
 try:
     from training.functional_training import TrainCfg, run_custom_trainer  # type: ignore
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     # Provide compatibility stubs when training module is not available
     from dataclasses import dataclass
     from typing import Any, Optional
@@ -179,8 +180,9 @@ def save_checkpoint(
         if write_metadata is not None:
             write_metadata(p, extra={"epoch": epoch, "keys": list(payload.keys())})
     except (IOError, OSError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     return str(p)
 
 
@@ -334,7 +336,8 @@ def run_functional_training(
             try:
                 sanitized_text = filters.enforce(sanitized_text, stage="prompt")
             except SafetyViolation as exc:
-                logger.debug(f"SafetyViolation: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"SafetyViolation: <ERROR_TYPE>")
                 ctx = json.dumps(
                     {
                         "stage": "prompt",
@@ -368,8 +371,9 @@ def run_functional_training(
             try:
                 dataset_paths.append(Path(entry))
             except TypeError as e:
-                logger.debug(f"TypeError: {e}")
-                logger.warning(f"TypeError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"TypeError: <ERROR_TYPE>")
+                logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
                 continue
 
     if artifact_root is not None:
@@ -395,8 +399,9 @@ def run_functional_training(
                 try:
                     key = str(candidate.resolve()) if candidate.exists() else str(candidate)
                 except OSError as e:
-                    logger.debug(f"OSError: {e}")
-                    logger.warning(f"OSError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"OSError: <ERROR_TYPE>")
+                    logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
                     key = str(candidate)
                 if key in seen:
                     continue
@@ -630,9 +635,10 @@ def _run_minilm_training(
                     if epoch is not None:
                         print(f"Resumed training from checkpoint epoch {epoch}")
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 # Non-fatal: continue training anew if resume fails
-                print(f"Warning: failed to resume from {resume_from}: {e}")
+                print(f"Warning: failed to resume from {resume_from}: <ERROR_TYPE>")
 
     inputs = data[:, :-1].to(dev)
     targets = data[:, 1:].to(dev)
@@ -725,8 +731,9 @@ def _run_minilm_training(
             }
             _codex_log_all(epoch + 1, scalars, loggers)
         except (IOError, OSError) as exc:
-            logger.debug(f"Exception: {exc}")
-            print(f"[monitoring-error] {exc}", file=sys.stderr)
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"[monitoring-error] <ERROR_TYPE>", file=sys.stderr)
 
         if mgr:
             try:
@@ -739,8 +746,9 @@ def _run_minilm_training(
                     metrics={"loss": loss_val, "accuracy": acc, "perplexity": ppl},
                 )
             except (IOError, OSError) as e:
-                logger.debug(f"Exception: {e}")
-                print(f"Warning: checkpoint save failed at epoch {epoch + 1}: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                print(f"Warning: checkpoint save failed at epoch {epoch + 1}: <ERROR_TYPE>")
 
         if writer:
             writer.add_scalar("loss", loss_val, epoch)
@@ -778,8 +786,9 @@ def _run_minilm_training(
                 }
                 _codex_log_all(epoch + 1, val_metrics, loggers)
             except (IOError, OSError) as exc:
-                logger.debug(f"Exception: {exc}")
-                print(f"[monitoring-error] {exc}", file=sys.stderr)
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                print(f"[monitoring-error] <ERROR_TYPE>", file=sys.stderr)
             emit_validation_metric_record(
                 str(metrics_file),
                 {
@@ -800,8 +809,9 @@ def _run_minilm_training(
             writer.flush()
             writer.close()
         except (IOError, OSError) as exc:
-            logger.debug(f"Exception: {exc}")
-            print(f"[monitoring-error] {exc}", file=sys.stderr)
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"[monitoring-error] <ERROR_TYPE>", file=sys.stderr)
 
     if system_metrics_logger is not None:
         system_metrics_logger.stop()
@@ -1180,16 +1190,18 @@ def _codex_apply_training_integration(args, train_loop_fn, config: dict):
                 try:
                     clip_grad_norm_(model.parameters(), grad_clip)
                 except (ValueError, TypeError, RuntimeError) as e:
-                    logger.debug(f"Exception: {e}")
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
             if optimizer is not None and sched_name and last_sched is None:
                 last_sched = _codex_maybe_scheduler(optimizer, sched_name)
             if last_sched is not None:
                 try:
                     last_sched.step()
                 except (ValueError, TypeError, RuntimeError) as e:
-                    logger.debug(f"Exception: {e}")
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
             rec = {
                 "ts": int(time.time()),
                 "epoch": int(epoch),
@@ -1280,8 +1292,9 @@ def codex_train_step(
                 scaler.unscale_(optimizer)
                 clip_grad_norm_(model.parameters(), grad_clip)
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         scaler.step(optimizer)
         scaler.update()
     else:
@@ -1289,8 +1302,9 @@ def codex_train_step(
             try:
                 clip_grad_norm_(model.parameters(), grad_clip)
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         optimizer.step()
 
     if scheduler:

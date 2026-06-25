@@ -75,8 +75,9 @@ class PooledConnectionProxy:
             try:
                 self._conn.rollback()
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         # Returning False ensures exceptions propagate like the standard
         # sqlite3 context manager.
         return False
@@ -96,8 +97,9 @@ class PooledConnectionProxy:
                 try:
                     _CONN_POOL.remove(self._conn)
                 except ValueError as e:
-                    logger.debug(f"ValueError: {e}")
-                    logger.warning(f"ValueError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"ValueError: <ERROR_TYPE>")
+                    logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
         return self._conn.close()
 
 
@@ -184,8 +186,9 @@ def _close_all():
             try:
                 conn.close()
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
         if hasattr(_CONN_POOL, "clear"):
             _CONN_POOL.clear()

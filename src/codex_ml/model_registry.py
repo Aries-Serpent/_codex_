@@ -138,8 +138,9 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                     set_active(adapter_name)
                     return
                 except (IOError, OSError) as e:
-                    logger.debug(f"Exception: {e}")
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     try:
         model.lora_adapter_path = adapter_path
     except (IOError, OSError):
@@ -314,15 +315,17 @@ def get_model(
             try:
                 model = model.to(dtype=torch_dtype)
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     normalised_device = _normalise_device(device)
     if isinstance(normalised_device, str):
         try:
             model = model.to(device=normalised_device)
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     if lora_adapter:
         _activate_lora_adapter(model, lora_adapter)

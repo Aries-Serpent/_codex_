@@ -228,7 +228,8 @@ class ExternalWebSearch(SearchProvider):
             status_code = getattr(response, "status_code", None)
             response.raise_for_status()
         except (ValueError, TypeError, RuntimeError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             result["status"] = "error"
             if status_code is not None:
                 result["status_code"] = status_code
@@ -249,7 +250,8 @@ class ExternalWebSearch(SearchProvider):
             try:
                 payload = response.json()
             except (ValueError, TypeError) as exc:
-                logger.debug(f"Exception: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 result["status"] = "error"
                 result["error"] = f"invalid-json: {exc}"
                 return result
@@ -264,14 +266,16 @@ class ExternalWebSearch(SearchProvider):
         try:
             raw_text = path.read_text(encoding="utf-8")
         except FileNotFoundError as e:
-            logger.debug(f"FileNotFoundError: {e}")
-            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             result["status"] = "error"
             result["reason"] = "offline-missing"
             result["error"] = f"offline index not found: {path}"
             return result
         except OSError as exc:
-            logger.debug(f"OSError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"OSError: <ERROR_TYPE>")
             result["status"] = "error"
             result["reason"] = "offline-unreadable"
             result["error"] = str(exc)
@@ -284,7 +288,8 @@ class ExternalWebSearch(SearchProvider):
             try:
                 payload = json.loads(raw_text)
             except (ValueError, TypeError) as exc:
-                logger.debug(f"Exception: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 result["status"] = "error"
                 result["reason"] = "offline-invalid"
                 result["error"] = str(exc)

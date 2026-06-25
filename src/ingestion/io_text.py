@@ -89,7 +89,8 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
             logger.debug("Exception caught, continuing", exc_info=True)
             continue
         except (OSError, UnicodeError, ValueError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logging.getLogger(__name__).debug("fallback decode with %s failed", enc, exc_info=exc)
             continue
 
@@ -165,7 +166,8 @@ def read_text(path: Path | str, encoding: str = "utf-8", errors: str = "strict")
     try:
         text = text.replace("\r\n", "\n").replace("\r", "\n").lstrip("\ufeff")
     except (AttributeError, UnicodeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         logging.getLogger(__name__).debug("text normalization skipped", exc_info=exc)
 
     return text, used_encoding

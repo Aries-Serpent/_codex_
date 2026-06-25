@@ -75,7 +75,8 @@ class LinkValidator:
                 content = md_file.read_text(encoding="utf-8")
                 self.heading_anchors[md_file] = self.extract_headings(content)
             except Exception as e:
-                print(f"Warning: Failed to index {md_file}: {e}")
+                error_type = type(e).__name__
+                print(f"Warning: Failed to index {md_file}: <ERROR_TYPE>")
 
     def extract_links(
         self, content: str, source_file: Path
@@ -266,7 +267,8 @@ class LinkValidator:
                         )
 
             except Exception as e:
-                print(f"Warning: Failed to process {md_file}: {e}")
+                error_type = type(e).__name__
+                print(f"Warning: Failed to process {md_file}: <ERROR_TYPE>")
 
     def apply_fixes(self) -> None:
         """Apply high-confidence fixes to markdown files."""
@@ -297,7 +299,8 @@ class LinkValidator:
                     processed_files.add(md_file)
 
             except Exception as e:
-                print(f"Warning: Failed to apply fixes to {md_file}: {e}")
+                error_type = type(e).__name__
+                print(f"Warning: Failed to apply fixes to {md_file}: <ERROR_TYPE>")
 
     def generate_report(self) -> Dict[str, Any]:
         """Generate comprehensive audit report."""

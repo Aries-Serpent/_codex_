@@ -29,7 +29,8 @@ from pathlib import Path  # noqa: E402
 try:
     from defusedxml.ElementTree import fromstring as safe_xml_fromstring
 except ImportError as exc:
-    logger.debug(f"ImportError: {exc}")
+    error_type = type(exc).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
     raise ImportError(
         "defusedxml is required for safe XML handling in solution_xml; install it via pip"
     ) from exc
@@ -272,7 +273,8 @@ def emit_solution_xml(config: SolutionManifestConfig) -> str:
     try:
         safe_xml_fromstring(xml)
     except (ValueError, TypeError) as exc:
-        logger.error(f"XML validation failed: {exc}")
+        error_type = type(exc).__name__
+        logger.error(f"XML validation failed: <ERROR_TYPE>")
         raise ValueError(f"Generated XML failed validation: {exc}") from exc
 
     return xml

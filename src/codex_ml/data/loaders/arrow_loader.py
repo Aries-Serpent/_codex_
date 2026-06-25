@@ -28,8 +28,9 @@ try:
 
     ARROW_AVAILABLE = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     ARROW_AVAILABLE = False
     logger.warning("PyArrow not installed. Install: pip install pyarrow")
 
@@ -76,7 +77,8 @@ class ArrowLoader:
                     self.schema = reader.schema
                     self.num_batches = reader.num_record_batches
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid Arrow IPC file: {e}") from e
 
     def load(self) -> list[dict[str, Any]]:

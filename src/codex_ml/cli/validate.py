@@ -141,7 +141,8 @@ def _run_validation(config_path: Path, *, echo, exit_cls) -> None:
     except exit_cls:
         raise
     except ValidationError as exc:
-        logger.debug(f"ValidationError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ValidationError: <ERROR_TYPE>")
         echo("Invalid configuration:\n" + _format_validation_error(exc), err=True)
         raise exit_cls(code=2) from exc
     except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover - defensive fallback

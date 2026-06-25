@@ -48,7 +48,8 @@ def run_task(name: str, cmd: list[str]) -> int:
         print(f"{name}: command not found", file=sys.stderr)
         return 127
     except Exception as exc:  # pragma: no cover - unexpected runtime errors
-        print(f"{name}: {exc}", file=sys.stderr)
+        error_type = type(exc).__name__
+        print(f"{name}: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

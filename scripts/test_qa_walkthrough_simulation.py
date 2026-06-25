@@ -138,7 +138,7 @@ class QAWalkthroughSimulator:
         except Exception as e:
             result["status"] = "error"
             result["message"] = str(e)
-            print(f"  {RED}✗ Scan failed: {e}{RESET}")
+            print(f"  {RED}✗ Scan failed: <ERROR_TYPE>{RESET}")
 
         return result
 
@@ -211,7 +211,7 @@ class QAWalkthroughSimulator:
         except Exception as e:
             result["status"] = "error"
             result["message"] = str(e)
-            print(f"  {RED}✗ Check failed: {e}{RESET}")
+            print(f"  {RED}✗ Check failed: <ERROR_TYPE>{RESET}")
 
         return result
 
@@ -272,7 +272,7 @@ class QAWalkthroughSimulator:
         except Exception as e:
             result["status"] = "error"
             result["message"] = str(e)
-            print(f"  {RED}✗ Check failed: {e}{RESET}")
+            print(f"  {RED}✗ Check failed: <ERROR_TYPE>{RESET}")
 
         return result
 
@@ -361,7 +361,7 @@ class QAWalkthroughSimulator:
         except Exception as e:
             result["status"] = "error"
             result["message"] = str(e)
-            print(f"  {RED}✗ Tests failed: {e}{RESET}")
+            print(f"  {RED}✗ Tests failed: <ERROR_TYPE>{RESET}")
 
         return result
 

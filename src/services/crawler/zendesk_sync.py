@@ -176,12 +176,14 @@ class ZendeskKnowledgeSyncService:
                     try:
                         cache[url] = ArticleMetadata(**meta_dict)
                     except (TypeError, ValueError) as e:
-                        logger.warning(f"Invalid cache entry for {url}: {e}")
+                        error_type = type(e).__name__
+                        logger.warning(f"Invalid cache entry for {url}: <ERROR_TYPE>")
 
             logger.info(f"Loaded {len(cache)} cached articles from {self.api_index_path}")
             return cache
         except (json.JSONDecodeError, OSError) as e:
-            logger.error(f"Failed to load cache: {e}, starting fresh")
+            error_type = type(e).__name__
+            logger.error(f"Failed to load cache: <ERROR_TYPE>, starting fresh")
             return {}
 
     def _save_cache(self) -> None:
@@ -200,7 +202,8 @@ class ZendeskKnowledgeSyncService:
 
             logger.info(f"Saved cache with {len(self._cache)} articles to {self.api_index_path}")
         except OSError as e:
-            logger.error(f"Failed to save cache: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to save cache: <ERROR_TYPE>")
 
     def _slug(self, text: str) -> str:
         """Convert text to a safe filename slug."""
@@ -408,7 +411,8 @@ class ZendeskKnowledgeSyncService:
                             logger.error(f"HTTP error {e.code} syncing {url}: {e}")
                             failed += 1
                     except (ConnectionError, TimeoutError) as e:
-                        logger.error(f"Failed to sync {url}: {e}")
+                        error_type = type(e).__name__
+                        logger.error(f"Failed to sync {url}: <ERROR_TYPE>")
                         failed += 1
 
         # Save updated cache
@@ -601,7 +605,8 @@ class ZendeskKnowledgeSyncService:
                 failed += len(articles) if "articles" in locals() else 0
                 break
             except (ConnectionError, TimeoutError) as e:
-                logger.error(f"Failed to fetch page {page_num}: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Failed to fetch page {page_num}: <ERROR_TYPE>")
                 failed += len(articles) if "articles" in locals() else 0
                 break
 
@@ -682,7 +687,8 @@ class ZendeskKnowledgeSyncService:
                 articles.append(article_data)
 
             except (IOError, OSError) as e:
-                logger.warning(f"Failed to process {html_file}: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Failed to process {html_file}: <ERROR_TYPE>")
 
         # Write JSON dataset
         dataset_path.parent.mkdir(parents=True, exist_ok=True)
@@ -837,7 +843,8 @@ def main() -> int:
         return 0 if result.failed == 0 else 1
 
     except (ValueError, TypeError) as e:
-        logger.error(f"Sync failed: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.error(f"Sync failed: <ERROR_TYPE>", exc_info=True)
         return 2
 
 

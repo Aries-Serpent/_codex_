@@ -53,18 +53,21 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except (ConnectionError, TimeoutError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     try:
         conn.execute("PRAGMA synchronous=NORMAL;")
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
     except (IOError, OSError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 @contextlib.contextmanager

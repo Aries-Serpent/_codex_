@@ -92,7 +92,7 @@ def main(argv: Iterable[str] | None = None) -> None:
     except HFModelUnavailableError as exc:
         # Model not in cache and network unavailable — exit 2 so callers
         # (e.g. tests) can distinguish "model unavailable" from real errors.
-        print(f"SKIP: {exc}", file=sys.stderr)
+        print(f"SKIP: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(2)
     print(json.dumps(metrics))
     if args.metrics_log:

@@ -73,8 +73,9 @@ def _resolve_connector_cache_root() -> Path:
         try:
             return Path(override).expanduser().resolve()
         except OSError as e:
-            logger.debug(f"OSError: {e}")
-            logger.warning(f"OSError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"OSError: <ERROR_TYPE>")
+            logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
             return Path(override).expanduser()
     return _DEFAULT_CONNECTOR_CACHE
 
@@ -83,8 +84,9 @@ def _run_connector_coro(coro):
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError as e:
-        logger.debug(f"RuntimeError: {e}")
-        logger.warning(f"RuntimeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"RuntimeError: <ERROR_TYPE>")
+        logger.warning(f"RuntimeError: <ERROR_TYPE>", exc_info=True)
         return asyncio.run(coro)
     if loop.is_running():  # pragma: no cover - defensive for event-loop environments
         new_loop = asyncio.new_event_loop()
@@ -107,7 +109,8 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
     try:
         connector = get_connector(name)
     except KeyError as exc:
-        logger.debug(f"KeyError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"KeyError: <ERROR_TYPE>")
         raise ValueError(f"unknown connector: {name}") from exc
 
     cache_base = (cache_root or _resolve_connector_cache_root()).expanduser() / name
@@ -123,7 +126,8 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         else:
             remote_files = list(_run_connector_coro(connector.list_files(normalized)))
     except ConnectorError as exc:
-        logger.debug(f"ConnectorError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ConnectorError: <ERROR_TYPE>")
         raise RuntimeError(f"connector list failed for {uri}: {exc}") from exc
 
     if not remote_files:
@@ -139,7 +143,8 @@ def _materialize_connector_uri(uri: str, *, cache_root: Path | None = None) -> l
         try:
             payload = _run_connector_coro(connector.read_file(remote_file))
         except ConnectorError as exc:
-            logger.debug(f"ConnectorError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ConnectorError: <ERROR_TYPE>")
             raise RuntimeError(f"connector read failed for {uri}: {exc}") from exc
         destination.write_bytes(payload)
         materialized.append(destination)

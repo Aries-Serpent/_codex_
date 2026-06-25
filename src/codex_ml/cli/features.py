@@ -51,8 +51,9 @@ def list_features(
             console.print(f"  • {name}")
         console.print()
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]Error: {e}[/red]")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -111,8 +112,9 @@ def check_health(
 
         console.print(table)
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]Error: {e}[/red]")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -136,8 +138,9 @@ def export_metadata(
 
         console.print(f"✅ Exported metadata for {len(metadata)} features to {output}")
     except (IOError, OSError) as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]Error: {e}[/red]")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -151,8 +154,9 @@ def clear_cache(
         store.clear_cache()
         console.print("✅ Feature cache cleared")
     except (IOError, OSError) as e:
-        logger.debug(f"Exception: {e}")
-        console.print(f"[red]Error: {e}[/red]")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        console.print(f"[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 

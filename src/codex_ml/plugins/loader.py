@@ -26,8 +26,9 @@ def _iter_entry_points(group: str) -> Iterable[Any]:
     try:
         return metadata.entry_points(group=group)
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
         # Python <3.10 compatibility: entry_points() returns dict-like object
         try:
             eps = metadata.entry_points()
@@ -63,8 +64,8 @@ def _call_plugin_hook(target: Any, register: Optional[RegisterFn]) -> bool:
             return True
         except (ValueError, TypeError, RuntimeError) as e:
             if isinstance(e, TypeError):
-                logger.debug(f"TypeError: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+                logger.debug(f"TypeError: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
             return False
 
     return False
@@ -80,8 +81,9 @@ def _register_direct(register: Optional[RegisterFn], name: str, target: Any) -> 
         register(name, target)
         return True
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
         try:
             decorator = register(name)
             decorator(target)

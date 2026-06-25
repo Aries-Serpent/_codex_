@@ -95,8 +95,9 @@ class VectorStoreFactory:
             logger.info(f"Successfully created {store_type} store")
             return instance
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to create {store_type} store: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to create {store_type} store: <ERROR_TYPE>")
             raise
 
     @staticmethod
@@ -143,8 +144,9 @@ try:
 
     VectorStoreRegistry.register("faiss", FAISSStore)
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     logger.warning("FAISS store not available for registration")
 
 # Auto-register Pinecone store
@@ -153,8 +155,9 @@ try:
 
     VectorStoreRegistry.register("pinecone", PineconeStore)
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     logger.warning("Pinecone store not available for registration")
 
 # Auto-register Weaviate store
@@ -163,8 +166,9 @@ try:
 
     VectorStoreRegistry.register("weaviate", WeaviateStore)
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     logger.warning("Weaviate store not available for registration")
 
 # Auto-register PGVector store
@@ -173,8 +177,9 @@ try:
 
     VectorStoreRegistry.register("pgvector", PGVectorStore)
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     logger.warning("PGVector store not available for registration")
 
 

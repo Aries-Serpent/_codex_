@@ -8,7 +8,8 @@ def run(*args):
     try:
         subprocess.check_call(list(args))
     except Exception as e:
-        print(f"[warn] {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"[warn] <ERROR_TYPE>", file=sys.stderr)
 
 
 def main():

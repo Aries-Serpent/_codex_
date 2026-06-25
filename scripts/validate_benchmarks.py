@@ -79,7 +79,8 @@ def load_criterion_results(criterion_dir: Path) -> dict[str, Any]:
                 with open(estimates_file) as f:
                     results[bench_dir.name] = json.load(f)
             except Exception as e:
-                print(f"⚠️  Failed to load {bench_dir.name}: {e}")
+                error_type = type(e).__name__
+                print(f"⚠️  Failed to load {bench_dir.name}: <ERROR_TYPE>")
 
     return results
 

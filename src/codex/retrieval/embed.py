@@ -44,15 +44,17 @@ class EmbeddingModel:
             )
             logger.info("Embedding model loaded successfully")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             logger.error(
                 "sentence-transformers not installed. Install with: pip install sentence-transformers"  # noqa: E501
             )
             raise
         except (ValueError, TypeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Error loading embedding model: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Error loading embedding model: <ERROR_TYPE>")
             raise
 
     def encode(
@@ -104,7 +106,8 @@ class KnowledgeBaseLoader:
                     doc = json.loads(line)
                     documents.append(doc)
                 except json.JSONDecodeError as e:
-                    logger.warning(f"Error parsing line {line_num} in {file_path}: {e}")
+                    error_type = type(e).__name__
+                    logger.warning(f"Error parsing line {line_num} in {file_path}: <ERROR_TYPE>")
 
         logger.info(f"Loaded {len(documents)} documents from {file_path}")
         return documents

@@ -153,8 +153,9 @@ class CodexLLMClient:
                 else:
                     logger.warning("OPENAI_API_KEY not set, LLM features disabled")
             except ImportError as e:
-                logger.debug(f"ImportError: {e}")
-                logger.warning(f"ImportError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"ImportError: <ERROR_TYPE>")
+                logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
                 logger.warning("openai package not installed, LLM features disabled")
 
     def _rate_limit(self) -> None:
@@ -304,7 +305,8 @@ Return ONLY valid JSON, no explanation or markdown."""
         except ModerationRejection:
             raise
         except (ValueError, TypeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.error("LLM call failed: %s", e)
             return None
 
@@ -352,6 +354,7 @@ Be concise and factual. Do not invent functionality not present in the code."""
         except ModerationRejection:
             raise
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.error("Summarization failed: %s", e)
             return None

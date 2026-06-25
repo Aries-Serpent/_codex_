@@ -106,11 +106,11 @@ def filter_modules(modules: list[str]) -> tuple[list[str], list[str]]:
                 logger.warning(f"Skipping {module}: module not found")
         except (ImportError, ModuleNotFoundError, ValueError) as e:
             missing_modules.append(module)
-            logger.warning(f"Skipping {module}: {e}")
+            logger.warning(f"Skipping {module}: <ERROR_TYPE>")
         except Exception as e:
             # Catch other exceptions (e.g., AttributeError during spec lookup)
             missing_modules.append(module)
-            logger.warning(f"Skipping {module} due to error: {e}")
+            logger.warning(f"Skipping {module} due to error: <ERROR_TYPE>")
 
     return available_modules, missing_modules
 
@@ -176,7 +176,8 @@ def build_docs(output_dir: Path, modules: list[str]) -> None:
             logger.debug(f"pdoc stderr: {result.stderr}")
 
     except subprocess.CalledProcessError as e:
-        logger.error(f"Failed to build API docs: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to build API docs: <ERROR_TYPE>")
         if e.stdout:
             logger.error(f"stdout: {e.stdout}")
         if e.stderr:

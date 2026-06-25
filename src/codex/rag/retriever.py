@@ -72,11 +72,13 @@ class Retriever:
             )
             logger.info(f"Loaded index '{self.index_name}' with {len(self.chunks_metadata)} chunks")
         except FileNotFoundError as e:
-            logger.warning(f"Index not found: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Index not found: <ERROR_TYPE>")
             logger.warning("Use indexer.py to build an index first")
             # Allow initialization without an index for testing
         except (IOError, OSError) as e:
-            logger.error(f"Error loading index: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error loading index: <ERROR_TYPE>")
             raise
 
     def _load_model(self):
@@ -96,10 +98,12 @@ class Retriever:
             self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
-            logger.error(f"Failed to load query embedding model: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to load query embedding model: <ERROR_TYPE>")
             raise
         except TypeError as e:
-            logger.error(f"Error loading embedding model: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error loading embedding model: <ERROR_TYPE>")
             raise
 
     def query(
@@ -301,7 +305,8 @@ class MultiIndexRetriever:
                         f"Skipping index {idx_config.get('index_name')}: no index loaded"
                     )
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.warning(f"Failed to load index {idx_config.get('index_name')}: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Failed to load index {idx_config.get('index_name')}: <ERROR_TYPE>")
 
         logger.info(f"Initialized with {len(self.retrievers)} indices")
 
@@ -331,7 +336,8 @@ class MultiIndexRetriever:
                     r["tenant_id"] = retriever.tenant_id
                 all_results.extend(results)
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.warning(f"Error querying index {retriever.index_name}: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Error querying index {retriever.index_name}: <ERROR_TYPE>")
 
         # Sort by score (lower is better for L2 distance)
         all_results.sort(key=lambda x: x["score"])

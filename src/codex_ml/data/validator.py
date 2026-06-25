@@ -68,7 +68,8 @@ class DatasetValidator:
             LOGGER.info("✓ Manifest valid: %s", manifest_path)
             return True
         except ValidationError as exc:
-            logger.debug(f"ValidationError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ValidationError: <ERROR_TYPE>")
             # ValidationError has a 'message' attribute when jsonschema is available
             error_msg = getattr(exc, "message", str(exc))
             if not _HAS_JSONSCHEMA:

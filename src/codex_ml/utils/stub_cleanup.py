@@ -154,8 +154,9 @@ class StubAnalyzer:
                                     return True
 
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.debug(f"Failed to parse {file_path} for abstract method detection: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>")
 
         return False
 
@@ -239,8 +240,9 @@ class StubAnalyzer:
                     )
 
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to analyze {file_path}: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to analyze {file_path}: <ERROR_TYPE>")
 
     def _determine_priority(self, line: str) -> str:
         """Determine priority from line content.

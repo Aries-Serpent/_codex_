@@ -2600,7 +2600,8 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     except RuntimeError as exc:
-        print(f"❌ {exc}", file=sys.stderr)
+        error_type = type(exc).__name__
+        print(f"❌ <ERROR_TYPE>", file=sys.stderr)
         return 1
     except urllib.error.HTTPError as exc:
         print(f"❌ GitHub API error {exc.code}: {exc.reason}", file=sys.stderr)

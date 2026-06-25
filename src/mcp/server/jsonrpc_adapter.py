@@ -126,7 +126,8 @@ async def _dispatch_method(p: dict[str, Any], adapter: BackendAdapter) -> dict[s
                     )
                     return {"jsonrpc": "2.0", "result": {"hits": results}, "id": req_id}
                 except (ValueError, TypeError) as exc:
-                    logger.debug(f"Exception: {exc}")
+                    error_type = type(exc).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
                     logger.exception("Adapter query failed: %s", exc)
                     return {
                         "jsonrpc": "2.0",

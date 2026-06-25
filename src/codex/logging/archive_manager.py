@@ -123,7 +123,8 @@ class ArchiveManager:
             return archive_record
 
         except (IOError, OSError) as e:
-            logger.error(f"Error archiving session {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error archiving session {session_id}: <ERROR_TYPE>")
             return None
 
     def get_archived_session(self, session_id: str) -> Optional[Dict[str, Any]]:
@@ -210,7 +211,8 @@ class ArchiveManager:
             return session_data
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.error(f"Error retrieving archived session {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error retrieving archived session {session_id}: <ERROR_TYPE>")
             return None
 
     def identify_archive_candidates(self, days: int = 90) -> List[str]:
@@ -248,7 +250,8 @@ class ArchiveManager:
             return candidates
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.error(f"Error identifying archive candidates: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error identifying archive candidates: <ERROR_TYPE>")
             return []
 
     def purge_old_archives(self, iterations: int = 30) -> Dict[str, Any]:
@@ -317,7 +320,8 @@ class ArchiveManager:
             return report
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.error(f"Error purging old archives: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error purging old archives: <ERROR_TYPE>")
             return report
 
     def update_archive_index(self) -> Dict[str, Any]:
@@ -352,7 +356,8 @@ class ArchiveManager:
                         }
                     )
                 except (IOError, OSError) as e:
-                    logger.warning(f"Error processing {parquet_file}: {e}")
+                    error_type = type(e).__name__
+                    logger.warning(f"Error processing {parquet_file}: <ERROR_TYPE>")
                     continue
 
             # Build index
@@ -381,7 +386,8 @@ class ArchiveManager:
             return index
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.error(f"Error updating archive index: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error updating archive index: <ERROR_TYPE>")
             return {"sessions": [], "statistics": {}}
 
     # Private methods
@@ -419,7 +425,8 @@ class ArchiveManager:
             return session_data
 
         except (IOError, OSError) as e:
-            logger.error(f"Error extracting session {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error extracting session {session_id}: <ERROR_TYPE>")
             return None
 
     def _get_archive_path(self, session_id: str, created_at: str) -> Path:
@@ -456,7 +463,8 @@ class ArchiveManager:
             conn.commit()
             conn.close()
         except (IOError, OSError) as e:
-            logger.error(f"Error updating archive metadata for {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error updating archive metadata for {session_id}: <ERROR_TYPE>")
 
     def _mark_session_deleted(self, session_id: str) -> None:
         """Mark session as deleted in SQLite."""
@@ -476,7 +484,8 @@ class ArchiveManager:
             conn.commit()
             conn.close()
         except (ValueError, TypeError) as e:
-            logger.error(f"Error marking session deleted: {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error marking session deleted: {session_id}: <ERROR_TYPE>")
 
     def _add_to_cache(self, session_id: str, session_data: Dict[str, Any]) -> None:
         """Add session to LRU cache."""
@@ -513,4 +522,5 @@ class ArchiveManager:
                 json.dump(retention_log, f, indent=2)
 
         except (IOError, OSError) as e:
-            logger.error(f"Error logging retention action: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error logging retention action: <ERROR_TYPE>")

@@ -97,7 +97,8 @@ class SessionEmbeddings:
                 self._model = SentenceTransformer(self.MODEL_NAME)
                 logger.info(f"Loaded model: {self.MODEL_NAME}")
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.warning(f"Failed to load model: {e}; using mock embeddings")
+                error_type = type(e).__name__
+                logger.warning(f"Failed to load model: <ERROR_TYPE>; using mock embeddings")
                 self._model = None
         else:
             logger.info("Using mock embeddings (sentence-transformers not available)")
@@ -141,7 +142,8 @@ class SessionEmbeddings:
             try:
                 embedding = self._model.encode(text, convert_to_numpy=True)
             except (ValueError, TypeError) as e:
-                logger.error(f"Embedding failed for '{text[:50]}': {e}")
+                error_type = type(e).__name__
+                logger.error(f"Embedding failed for '{text[:50]}': <ERROR_TYPE>")
                 raise
 
         embedding = embedding.astype(np.float32)
@@ -167,7 +169,8 @@ class SessionEmbeddings:
                 try:
                     self._load_from_disk()
                 except (IOError, OSError) as e:
-                    logger.warning(f"Failed to load index: {e}; creating new index")
+                    error_type = type(e).__name__
+                    logger.warning(f"Failed to load index: <ERROR_TYPE>; creating new index")
                     self._create_index()
                     self._metadata = {}
             else:
@@ -296,7 +299,8 @@ class SessionEmbeddings:
                 return True
 
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.error(f"Failed to add session {session_id}: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Failed to add session {session_id}: <ERROR_TYPE>")
                 return False
 
     def find_similar(self, session_id: str, k: int = 5) -> list[tuple[str, float]]:
@@ -340,7 +344,8 @@ class SessionEmbeddings:
                 embedding = self._generate_embedding(query_text)
                 return self._search(embedding, k)
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.error(f"Failed to search: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Failed to search: <ERROR_TYPE>")
                 return []
 
     def _search(
@@ -444,7 +449,8 @@ class SessionEmbeddings:
                 return True
 
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.error(f"Rebuild failed: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Rebuild failed: <ERROR_TYPE>")
                 self._metadata = old_metadata
                 return False
 

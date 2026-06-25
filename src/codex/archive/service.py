@@ -178,7 +178,8 @@ class ArchiveService:
             try:
                 payload = self._get_restore_payload(tombstone_id)
             except LookupError as exc:
-                logger.debug(f"LookupError: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"LookupError: <ERROR_TYPE>")
                 self._record_restore_failure(
                     tombstone_id=tombstone_id,
                     actor=actor,
@@ -219,7 +220,8 @@ class ArchiveService:
                 with timer("decompress") as decompress_timer:
                     restored = decompress_payload(blob, codec)
             except (RuntimeError, ValueError) as exc:
-                logger.debug(f"Exception: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 self._record_restore_failure(
                     tombstone_id=tombstone_id,
                     actor=actor,

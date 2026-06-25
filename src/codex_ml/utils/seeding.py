@@ -36,8 +36,9 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
         except (ImportError, AttributeError):
             logger.debug("register_seed_snapshot unavailable; numpy seed set via np.random.seed()")
     except (ImportError, AttributeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     try:
         import torch
 
@@ -46,8 +47,9 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
             try:
                 torch.cuda.manual_seed_all(seed)
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         try:
             backend = torch.backends.cudnn
             backend.deterministic = deterministic
@@ -62,11 +64,13 @@ def set_reproducible(seed: int | None = None, *, deterministic: bool = True) -> 
                 with contextlib.suppress(Exception):
                     torch.use_deterministic_algorithms(False)
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 def set_deterministic(enabled: bool = True) -> None:
@@ -82,11 +86,13 @@ def set_deterministic(enabled: bool = True) -> None:
             backend.deterministic = enabled
             backend.benchmark = not enabled
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 __all__ = ["set_deterministic", "set_reproducible"]

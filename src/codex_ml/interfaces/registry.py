@@ -45,8 +45,9 @@ def _error_capture(step_no: str, step_desc: str, err_msg: str, ctx: str) -> None
         with ERRORS_PATH.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record) + "\n")
     except (IOError, OSError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     sys.stderr.write(
         f"Question for ChatGPT @codex {ts}:\n"
         f"While performing [{step_no}:{step_desc}], encountered the following error:\n"

@@ -232,7 +232,8 @@ def auto_remediate(
                 return func(*args, **kwargs)
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             last_exception = e
             attempt += 1
 

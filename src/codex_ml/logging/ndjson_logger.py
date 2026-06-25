@@ -145,8 +145,9 @@ class NDJSONLogger:
                 try:
                     size = self.path.stat().st_size
                 except FileNotFoundError as e:
-                    logger.debug(f"FileNotFoundError: {e}")
-                    logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+                    logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
                     size = 0
                 if size > 0:
                     self._rotate()
@@ -158,8 +159,9 @@ class NDJSONLogger:
         try:
             size = self.path.stat().st_size
         except FileNotFoundError as e:
-            logger.debug(f"FileNotFoundError: {e}")
-            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             return
         if size + incoming_bytes <= self.max_bytes:
             return
@@ -170,8 +172,9 @@ class NDJSONLogger:
             try:
                 self.path.unlink()
             except FileNotFoundError as e:
-                logger.debug(f"FileNotFoundError: {e}")
-                logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+                logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             self._rollover_ts = time.time()
             return
 
@@ -242,8 +245,9 @@ class NDJSONLogger:
         try:
             return self.path.stat().st_mtime
         except FileNotFoundError as e:
-            logger.debug(f"FileNotFoundError: {e}")
-            logger.warning(f"FileNotFoundError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             return time.time()
 
     @staticmethod

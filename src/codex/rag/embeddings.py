@@ -92,7 +92,8 @@ class LocalSentenceTransformerProvider:
             )
             raise
         except (ValueError, TypeError) as e:
-            logger.error(f"Error loading local embedding model: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error loading local embedding model: <ERROR_TYPE>")
             raise
 
     def encode(
@@ -199,7 +200,8 @@ class OpenAIEmbeddingProvider:
                 embeddings.extend(batch_embeddings)
 
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.error(f"Error encoding batch {i}-{i + len(batch)}: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Error encoding batch {i}-{i + len(batch)}: <ERROR_TYPE>")
                 raise
 
         return np.array(embeddings)
@@ -282,7 +284,8 @@ class CachedEmbeddingProvider:
                     logger.debug(f"Cache hit for key: {cache_key}")
                     return embeddings
                 except (IOError, OSError) as e:
-                    logger.warning(f"Error loading cache: {e}")
+                    error_type = type(e).__name__
+                    logger.warning(f"Error loading cache: <ERROR_TYPE>")
 
         # Cache miss - generate embeddings
         self.cache_misses += 1
@@ -308,7 +311,8 @@ class CachedEmbeddingProvider:
             logger.debug(f"Saved embeddings to cache: {cache_key}")
 
         except (IOError, OSError) as e:
-            logger.warning(f"Error saving to cache: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Error saving to cache: <ERROR_TYPE>")
 
         return embeddings
 
@@ -340,7 +344,8 @@ class CachedEmbeddingProvider:
             return True
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.warning(f"Error validating cache: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Error validating cache: <ERROR_TYPE>")
             return False
 
     def get_dimension(self) -> int:
@@ -420,7 +425,8 @@ def create_embedding_provider(
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
         except (ImportError, AttributeError) as e:
-            logger.debug(f"sentence-transformers unavailable: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"sentence-transformers unavailable: <ERROR_TYPE>")
 
         # Priority 2: Try Ollama (good quality, local server)
         try:
@@ -436,7 +442,8 @@ def create_embedding_provider(
                 return provider
             logger.debug("Ollama server not running")
         except (IOError, OSError) as e:
-            logger.debug(f"Ollama unavailable: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Ollama unavailable: <ERROR_TYPE>")
 
         # Priority 3: Try llama.cpp (excellent performance, requires model file)
         if "model_path" in kwargs:
@@ -450,7 +457,8 @@ def create_embedding_provider(
                     return CachedEmbeddingProvider(provider, cache_dir)
                 return provider
             except (ImportError, AttributeError) as e:
-                logger.debug(f"llama.cpp unavailable: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"llama.cpp unavailable: <ERROR_TYPE>")
 
         # Priority 4: Try GPT4All (easy setup, good quality)
         try:
@@ -464,7 +472,8 @@ def create_embedding_provider(
                 return CachedEmbeddingProvider(provider, cache_dir)
             return provider
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"GPT4All unavailable: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"GPT4All unavailable: <ERROR_TYPE>")
 
         # Priority 5: Fall back to TF-IDF (always works, offline)
         logger.info("Falling back to TF-IDF provider (offline-capable)")
@@ -637,7 +646,8 @@ class TfidfEmbeddingProvider:
                     f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
                 )
             except (ValueError, TypeError) as e:
-                logger.error(f"Error fitting TF-IDF vectorizer: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Error fitting TF-IDF vectorizer: <ERROR_TYPE>")
                 raise
 
         # Transform texts to embeddings
@@ -646,7 +656,8 @@ class TfidfEmbeddingProvider:
             logger.debug(f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)")
             return embeddings
         except (ValueError, TypeError) as e:
-            logger.error(f"Error transforming texts with TF-IDF: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error transforming texts with TF-IDF: <ERROR_TYPE>")
             raise
 
     def get_dimension(self) -> int:

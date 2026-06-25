@@ -94,8 +94,9 @@ def generate_scores(input_path: Path, rubric: QARubric, output_path: Path) -> No
                 try:
                     value = float(raw_value) if raw_value not in (None, "") else None
                 except ValueError as e:
-                    logger.debug(f"ValueError: {e}")
-                    logger.warning(f"ValueError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"ValueError: <ERROR_TYPE>")
+                    logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
                     value = None
                 scores[criterion.id] = value
                 if value is not None:

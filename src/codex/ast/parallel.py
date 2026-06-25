@@ -71,7 +71,8 @@ class ParallelParser:
                     if node:
                         results[file_path] = node
                 except (IOError, OSError) as e:
-                    logger.error(f"Failed to parse {file_path}: {e}")
+                    error_type = type(e).__name__
+                    logger.error(f"Failed to parse {file_path}: <ERROR_TYPE>")
 
                 # Update progress
                 completed += 1
@@ -85,7 +86,8 @@ class ParallelParser:
         try:
             return parse_python(file_path)
         except (IOError, OSError) as e:
-            logger.debug(f"Parse error in {file_path}: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Parse error in {file_path}: <ERROR_TYPE>")
             return None
 
     def parse_directory(

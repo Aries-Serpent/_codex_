@@ -76,7 +76,8 @@ class ThreadSafeSessionDB:
         try:
             yield conn
         except sqlite3.OperationalError as e:
-            logger.error(f"Database error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Database error: <ERROR_TYPE>")
             log_error(e, "database_operation", self.errors_path)
             raise
 
@@ -192,7 +193,8 @@ class ThreadSafeSessionDB:
             logger.info(f"Schema initialized for {self.db_path}")
 
         except (IOError, OSError) as e:
-            logger.error(f"Schema initialization failed: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Schema initialization failed: <ERROR_TYPE>")
             log_error(e, "schema_init", self.errors_path)
             raise
 
@@ -226,7 +228,8 @@ class ThreadSafeSessionDB:
         try:
             return DeadlockRecovery.retry_with_backoff(_insert, max_retries=3)
         except (IOError, OSError) as e:
-            logger.error(f"Failed to insert session: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to insert session: <ERROR_TYPE>")
             log_error(e, "insert_session", self.errors_path)
             return False
 
@@ -243,7 +246,8 @@ class ThreadSafeSessionDB:
         try:
             return DeadlockRecovery.retry_with_backoff(_get, max_retries=3)
         except (IOError, OSError) as e:
-            logger.error(f"Failed to get session {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to get session {session_id}: <ERROR_TYPE>")
             log_error(e, "get_session", self.errors_path)
             return None
 
@@ -285,7 +289,8 @@ class ThreadSafeSessionDB:
         try:
             return DeadlockRecovery.retry_with_backoff(_query, max_retries=3)
         except (IOError, OSError) as e:
-            logger.error(f"Failed to query sessions: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to query sessions: <ERROR_TYPE>")
             log_error(e, "query_sessions", self.errors_path)
             return []
 
@@ -306,7 +311,8 @@ class ThreadSafeSessionDB:
         try:
             return DeadlockRecovery.retry_with_backoff(_update, max_retries=3)
         except (IOError, OSError) as e:
-            logger.error(f"Failed to update session {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to update session {session_id}: <ERROR_TYPE>")
             log_error(e, "update_session_status", self.errors_path)
             return False
 
@@ -333,7 +339,8 @@ class ThreadSafeSessionDB:
         try:
             return DeadlockRecovery.retry_with_backoff(_search, max_retries=3)
         except (IOError, OSError) as e:
-            logger.error(f"Failed to search sessions: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to search sessions: <ERROR_TYPE>")
             log_error(e, "search_sessions", self.errors_path)
             return []
 
@@ -371,7 +378,8 @@ class ThreadSafeSessionDB:
         try:
             return DeadlockRecovery.retry_with_backoff(_archive, max_retries=3)
         except (IOError, OSError) as e:
-            logger.error(f"Failed to archive session {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to archive session {session_id}: <ERROR_TYPE>")
             log_error(e, "archive_session", self.errors_path)
             return False
 
@@ -395,7 +403,8 @@ class ThreadSafeSessionDB:
             self._connection_pool.cleanup_all()
             logger.info("Connection pool cleaned up")
         except (IOError, OSError) as e:
-            logger.error(f"Error during cleanup: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error during cleanup: <ERROR_TYPE>")
             log_error(e, "cleanup", self.errors_path)
 
     def __enter__(self):

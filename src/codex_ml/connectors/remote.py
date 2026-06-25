@@ -81,7 +81,8 @@ class RemoteConnector(Connector):
         try:
             entries = await self._local.list_files(path)
         except ConnectorError as exc:
-            logger.debug(f"ConnectorError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ConnectorError: <ERROR_TYPE>")
             record_health_event(
                 "connectors.remote",
                 "list_failed",
@@ -100,7 +101,8 @@ class RemoteConnector(Connector):
         try:
             data = await self._local.read_file(path)
         except ConnectorError as exc:
-            logger.debug(f"ConnectorError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ConnectorError: <ERROR_TYPE>")
             record_health_event(
                 "connectors.remote",
                 "read_failed",

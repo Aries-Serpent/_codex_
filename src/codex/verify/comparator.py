@@ -185,7 +185,8 @@ def _run_script(
         logger.debug("Exception caught, returning", exc_info=True)
         return "", f"Timeout after {timeout}s", -1
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         logger.debug("Exception caught, returning", exc_info=True)
         return "", str(e), -1
 

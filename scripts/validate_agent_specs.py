@@ -92,7 +92,8 @@ def parse_agent_spec(path: Path) -> dict[str, Any] | None:
                     return yaml.safe_load(parts[1]) or {}
             return None
     except Exception as e:
-        logger.error(f"Failed to parse {path}: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to parse {path}: <ERROR_TYPE>")
         return None
 
     # Explicit return for unhandled file extensions

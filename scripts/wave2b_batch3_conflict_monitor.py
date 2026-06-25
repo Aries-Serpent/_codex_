@@ -157,7 +157,8 @@ class ConflictMonitor:
             return False, "Resolver timeout exceeded 150s"
 
         except Exception as e:
-            logger.error(f"  ❌ Error checking resolver: {e}")
+            error_type = type(e).__name__
+            logger.error(f"  ❌ Error checking resolver: <ERROR_TYPE>")
             return False, f"Error: {str(e)}"
 
     def check_circular_dependencies(self) -> Tuple[bool, str]:
@@ -204,7 +205,8 @@ class ConflictMonitor:
             logger.error("  ⚠️  pipdeptree timeout")
             return False, "pipdeptree analysis timeout"
         except Exception as e:
-            logger.warning(f"  ⚠️  Could not verify circular deps: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"  ⚠️  Could not verify circular deps: <ERROR_TYPE>")
             # Don't fail on this - it's a nice-to-have check
             return True, "Circular dep check skipped (pipdeptree unavailable)"
 
@@ -251,7 +253,8 @@ class ConflictMonitor:
             return True, "All constraints resolvable (OK)"
 
         except Exception as e:
-            logger.error(f"  ❌ Error checking constraints: {e}")
+            error_type = type(e).__name__
+            logger.error(f"  ❌ Error checking constraints: <ERROR_TYPE>")
             return False, f"Error: {str(e)}"
 
     def check_security_cves(self) -> Tuple[bool, str]:
@@ -309,7 +312,8 @@ class ConflictMonitor:
                 return True, "Security audit passed (OK)"
 
         except Exception as e:
-            logger.warning(f"  ⚠️  Could not run pip-audit: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"  ⚠️  Could not run pip-audit: <ERROR_TYPE>")
             return True, "CVE check skipped (pip-audit unavailable)"
 
     def check_test_suite(self) -> Tuple[bool, str]:
@@ -366,7 +370,8 @@ class ConflictMonitor:
             logger.warning("  ⚠️  Test suite timeout")
             return False, "Test suite timeout"
         except Exception as e:
-            logger.warning(f"  ⚠️  Could not run tests: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"  ⚠️  Could not run tests: <ERROR_TYPE>")
             return True, "Test check skipped"
 
     def check_coverage_regression(self) -> Tuple[bool, str]:
@@ -411,7 +416,8 @@ class ConflictMonitor:
                 return True, "Coverage check skipped (no coverage.json)"
 
         except Exception as e:
-            logger.warning(f"  ⚠️  Could not check coverage: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"  ⚠️  Could not check coverage: <ERROR_TYPE>")
             return True, "Coverage check skipped"
 
     def _generate_report(self, results: List[Tuple[str, bool, str]]) -> str:

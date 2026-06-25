@@ -131,8 +131,9 @@ def _open_locked(path: Path):
             try:
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
             except (IOError, OSError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         f.close()
 
 

@@ -331,7 +331,8 @@ def apply(
     try:
         validate_plan({"resource": resource, "operations": operations_list})
     except ValidationError as exc:
-        logger.debug(f"ValidationError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ValidationError: <ERROR_TYPE>")
         raise typer.BadParameter(f"Invalid plan for resource '{resource}': {exc}") from exc
 
     handlers = _APPLY_HANDLERS
@@ -345,10 +346,12 @@ def apply(
         if not dry_run:
             update_artifact_version(f"zendesk/{resource}", operations_list)
     except ValueError as exc:
-        logger.debug(f"ValueError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
         raise typer.BadParameter(str(exc)) from exc
     except ImportError as exc:
-        logger.debug(f"ImportError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
         if dry_run:
             typer.echo(f"SDK missing but continuing due to --dry-run: {exc}", err=True)
         else:
@@ -508,7 +511,8 @@ def _coerce_model_sequence(
             else:
                 models.append(model_cls.model_validate(item))
         except ValidationError as exc:
-            logger.debug(f"ValidationError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ValidationError: <ERROR_TYPE>")
             raise typer.BadParameter(f"Invalid {resource} entry in {source}: {exc}") from exc
     return models
 
@@ -558,8 +562,9 @@ def _collect_objects(client: object, attribute: str) -> list[Any]:
     try:
         return list(result)
     except TypeError as e:
-        logger.debug(f"TypeError: {e}")
-        logger.warning(f"TypeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
         return []
 
 

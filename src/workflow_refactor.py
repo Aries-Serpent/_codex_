@@ -89,7 +89,8 @@ class WorkflowRefactorer:
         try:
             data = yaml.safe_load(content)
         except yaml.YAMLError as e:
-            logger.error(f"Failed to parse {workflow_path.name}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to parse {workflow_path.name}: <ERROR_TYPE>")
             return False
 
         if not isinstance(data, dict) or "on" not in data:
@@ -138,7 +139,8 @@ class WorkflowRefactorer:
         try:
             data = yaml.safe_load(content)
         except yaml.YAMLError as e:
-            logger.error(f"Failed to parse {workflow_path.name}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to parse {workflow_path.name}: <ERROR_TYPE>")
             return {"modified": False, "error": str(e)}
 
         if not isinstance(data, dict) or "jobs" not in data:
@@ -212,7 +214,8 @@ class WorkflowRefactorer:
         try:
             data = yaml.safe_load(content)
         except yaml.YAMLError as e:
-            logger.error(f"Failed to parse {workflow_path.name}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to parse {workflow_path.name}: <ERROR_TYPE>")
             return False
 
         if not isinstance(data, dict) or "jobs" not in data:
@@ -284,7 +287,8 @@ class WorkflowRefactorer:
                     results["digest_added"] += 1
 
             except (IOError, OSError) as e:
-                logger.error(f"Error processing {workflow_path.name}: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Error processing {workflow_path.name}: <ERROR_TYPE>")
                 results["errors"].append({"workflow": workflow_path.name, "error": str(e)})
 
         return results

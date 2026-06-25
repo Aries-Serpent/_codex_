@@ -132,7 +132,8 @@ class FenceFixerConfig:
         except ImportError:
             print("Warning: PyYAML not available, using defaults", file=sys.stderr)
         except Exception as e:
-            print(f"Warning: Error loading config: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            print(f"Warning: Error loading config: <ERROR_TYPE>", file=sys.stderr)
 
 
 class LanguageDetector:
@@ -274,7 +275,7 @@ class FenceFixer:
             text = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, IOError) as e:
             if self.verbose:
-                print(f"Warning: Could not read {path}: {e}", file=sys.stderr)
+                print(f"Warning: Could not read {path}: <ERROR_TYPE>", file=sys.stderr)
             return (False, 0)
 
         original_text = text

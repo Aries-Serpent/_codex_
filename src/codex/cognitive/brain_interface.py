@@ -347,7 +347,8 @@ class AgentBrainInterface:
                     self._patterns = data.get("patterns", {})
                     logger.debug(f"Loaded {len(self._patterns)} patterns")
             except (OSError, json.JSONDecodeError) as e:
-                logger.warning(f"Failed to load patterns: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Failed to load patterns: <ERROR_TYPE>")
                 self._patterns = {}
         else:
             logger.debug("Pattern store not found, starting with empty patterns")
@@ -375,7 +376,8 @@ class AgentBrainInterface:
                         self._session_state["phase"] = line.split("**")[-1].strip()
 
             except OSError as e:
-                logger.warning(f"Failed to load session state: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Failed to load session state: <ERROR_TYPE>")
                 self._session_state = {}
         else:
             self._session_state = {}
@@ -405,7 +407,8 @@ class AgentBrainInterface:
                         in_objectives = False
 
             except OSError as e:
-                logger.warning(f"Failed to load objectives: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Failed to load objectives: <ERROR_TYPE>")
                 self._objectives = []
         else:
             self._objectives = []
@@ -637,7 +640,8 @@ class AgentBrainInterface:
 
             logger.debug("Patterns saved successfully")
         except OSError as e:
-            logger.error(f"Failed to save patterns: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to save patterns: <ERROR_TYPE>")
 
     # =========================================================================
     # Objective Alignment

@@ -41,7 +41,8 @@ def _capture_command(args: Sequence[str]) -> str | None:
             [resolved, *args[1:]], text=True, stderr=subprocess.STDOUT, timeout=5
         ).strip()
     except (ValueError, TypeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         LOGGER.debug("Failed to capture command %s: %s", args, exc)
         return None
 
@@ -74,7 +75,8 @@ def _yaml_dumps(data: Any) -> str:
     try:  # pragma: no cover - optional dependency
         import yaml
     except (ValueError, TypeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         LOGGER.debug("PyYAML unavailable; falling back to JSON: %s", exc)
         return json.dumps(data, indent=2, sort_keys=True)
     return yaml.safe_dump(data, sort_keys=False)
@@ -94,7 +96,8 @@ def _git_commit() -> str | None:
                 break
         return subprocess.check_output([git_bin, "rev-parse", "HEAD"], cwd=root, text=True).strip()
     except (ValueError, TypeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         LOGGER.debug("Unable to capture git commit for provenance: %s", exc)
         return None
 
@@ -107,7 +110,8 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
         if logical is not None:
             details["logical_cores"] = int(logical)
     except (IOError, OSError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         LOGGER.debug("Failed to read logical cpu count: %s", exc)
 
     try:
@@ -123,7 +127,8 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
             if getattr(freq, "min", None):
                 details["min_frequency_mhz"] = round(float(freq.min), 3)
     except (ValueError, TypeError, RuntimeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         LOGGER.debug("Failed to collect psutil CPU metadata: %s", exc)
 
     brand = platform.processor()
@@ -156,8 +161,9 @@ def _gpu_metadata() -> MutableMapping[str, Any]:
                 torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())
             ]
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     query = _capture_command(
         [
@@ -237,8 +243,9 @@ def environment_summary() -> dict[str, Any]:
 
         info["system_metrics"] = _codex_sample_system()
     except (ValueError, TypeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     return info
 
 

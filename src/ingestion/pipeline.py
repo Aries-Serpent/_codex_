@@ -434,7 +434,8 @@ class IngestionPipeline:
             )
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             duration = time.time() - start_time
             errors.append(str(e))
             logger.error("Pipeline error: %s", e)
@@ -570,7 +571,8 @@ def ingest_directory(
             try:
                 yield from pipeline.stream(file_path)
             except (IOError, OSError) as e:
-                logger.debug(f"Exception: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 logger.warning("Error processing %s: %s", file_path, e)
 
 

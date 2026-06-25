@@ -246,7 +246,8 @@ class LinkValidator:
             with open(CACHE_FILE, 'w') as f:
                 json.dump(cache, f, indent=2)
         except Exception as e:
-            print(f"   ⚠️  Failed to save cache: {e}")
+            error_type = type(e).__name__
+            print(f"   ⚠️  Failed to save cache: <ERROR_TYPE>")
 
     def get_file_mtime(self, path: Path) -> float:
         """Get file modification timestamp."""

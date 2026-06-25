@@ -262,8 +262,9 @@ def cmd_ingest(args: argparse.Namespace) -> int:
         try:
             _validate_with_jsonschema(input_path, schema_path)
         except ValueError as exc:
-            logger.debug(f"ValueError: {exc}")
-            print(f"[metrics-cli] {exc}", file=sys.stderr)
+            error_type = type(exc).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
+            print(f"[metrics-cli] <ERROR_TYPE>", file=sys.stderr)
             return 3
 
     rows = _flatten_records(_iter_ndjson(input_path), run_id=run_id)
@@ -331,8 +332,9 @@ def _summarize(path: Path) -> dict[str, Any]:
             try:
                 epochs.add(int(record["epoch"]))
             except (IOError, OSError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         for key, value in record.items():
             if key == "epoch":
                 continue

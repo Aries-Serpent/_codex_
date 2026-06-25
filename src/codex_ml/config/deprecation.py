@@ -45,8 +45,9 @@ def check_legacy_config_usage():
     try:
         repo_root = find_repo_root()
     except RuntimeError as e:
-        logger.debug(f"RuntimeError: {e}")
-        logger.warning(f"RuntimeError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"RuntimeError: <ERROR_TYPE>")
+        logger.warning(f"RuntimeError: <ERROR_TYPE>", exc_info=True)
         return  # Cannot determine root, skip check
 
     for legacy in ["conf", "config"]:
@@ -62,8 +63,9 @@ def check_legacy_config_usage():
                         stacklevel=2,
                     )
             except (PermissionError, NotADirectoryError, OSError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.debug(f"Could not check legacy directory {legacy}: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug(f"Could not check legacy directory {legacy}: <ERROR_TYPE>")
                 continue
 
 

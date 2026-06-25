@@ -91,7 +91,7 @@ class QuantumTest:
         except (ValueError, TypeError, RuntimeError) as exc:
             self.state = TestState.FAILED
             self.error = exc
-            logger.error(f"Test '{self.name}' exception: {exc}")
+            logger.error(f"Test '{self.name}' exception: <ERROR_TYPE>")
         finally:
             self.execution_time = time.time() - start_time
 

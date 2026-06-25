@@ -164,7 +164,8 @@ class MLPScorer:
                     attention_mask=attention_mask,
                 )
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.error(f"Error during forward pass: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Error during forward pass: <ERROR_TYPE>")
                 raise
 
         # Remove hooks

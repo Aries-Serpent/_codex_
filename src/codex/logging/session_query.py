@@ -108,8 +108,9 @@ def detect_schema(conn: sqlite3.Connection) -> tuple[str, dict[str, str]]:
         try:
             safe = _sanitize_table(table)
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
-            logger.warning(f"ValueError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
+            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
             continue
         cur = conn.execute(f"PRAGMA table_info({safe})")
         cols = [row[1] for row in cur.fetchall()]
@@ -208,7 +209,8 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         print_rows(rows, cols)
         return 0
     except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
-        print(f"ERROR: {exc}", file=sys.stderr)
+        error_type = type(exc).__name__
+        print(f"ERROR: <ERROR_TYPE>", file=sys.stderr)
         return 2
 
 

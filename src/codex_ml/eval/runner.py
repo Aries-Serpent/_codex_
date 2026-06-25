@@ -202,7 +202,8 @@ def _coerce_token_sequence(record: dict[str, Any], key: str, index: int) -> list
     try:
         coerced = [int(token) for token in tokens]
     except (TypeError, ValueError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         raise EvaluationError(f"Record {index} has invalid '{key}' values: {exc}") from exc
     return coerced
 
@@ -282,11 +283,13 @@ def _invoke_registry_metric(
         try:
             return attempt()
         except TypeError as exc:
-            logger.debug(f"TypeError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"TypeError: <ERROR_TYPE>")
             last_type_error = exc
             continue
         except (ValueError, RuntimeError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             append_error_entry(
                 "metric.execute",
                 str(exc),
@@ -324,7 +327,8 @@ def _compute_metrics(
                     get_registered_metric(registered_name),
                 )
             except (ValueError, TypeError, RuntimeError) as exc:
-                logger.debug(f"Exception: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 append_error_entry(
                     "metric-registry.load",
                     str(exc),
@@ -332,7 +336,8 @@ def _compute_metrics(
                     "Should this registry metric be reviewed or disabled?",
                 )
     except (ValueError, TypeError, RuntimeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         append_error_entry(
             "metric-registry.enumerate",
             str(exc),
@@ -607,13 +612,15 @@ def run_evaluation(
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
             except (IOError, OSError) as e:
-                logger.debug(f"Exception: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # Silently ignore param logging errors
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)  # Silently ignore MLflow errors
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)  # Silently ignore MLflow errors
 
     # For the pluggable sink feature, use the first sink if multiple are specified
     # The remaining sinks will be handled by the dedicated writers later
@@ -655,7 +662,8 @@ def run_evaluation(
                 fieldnames=fieldnames if sink_kind == "csv" else None,
             )
     except (ImportError, AttributeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         sink_stack.close()
         raise EvaluationError(f"Failed to initialise metrics sink: {exc}") from exc
 
@@ -693,8 +701,9 @@ def run_evaluation(
     try:
         run_int = int(run_id, 16)
     except ValueError as e:
-        logger.debug(f"ValueError: {e}")
-        logger.warning(f"ValueError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ValueError: <ERROR_TYPE>")
+        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
         # Fall back to hashing for non-hexadecimal run_ids
         run_int = int(hashlib.sha256(run_id.encode("utf-8")).hexdigest()[:16], 16)
     seconds_range = 3153600000  # ~100 years in seconds

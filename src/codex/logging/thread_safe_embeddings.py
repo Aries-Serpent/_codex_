@@ -104,7 +104,8 @@ class ThreadSafeSessionEmbeddings:
                 self._metadata = {}
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to load/create index: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to load/create index: <ERROR_TYPE>")
             log_error(e, "load_index", self.errors_path)
             if HAS_FAISS:
                 self._index = faiss.IndexFlatL2(self.DIMENSION)
@@ -126,7 +127,8 @@ class ThreadSafeSessionEmbeddings:
             return embedding.astype(np.float32)
 
         except (ValueError, TypeError) as e:
-            logger.warning(f"Failed to get embedding: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Failed to get embedding: <ERROR_TYPE>")
             if HAS_NUMPY:
                 return np.random.rand(self.DIMENSION).astype(np.float32)
             return None
@@ -178,7 +180,8 @@ class ThreadSafeSessionEmbeddings:
                 return result
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to add session {session_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to add session {session_id}: <ERROR_TYPE>")
             log_error(e, "add_session", self.errors_path)
             return False
 
@@ -242,7 +245,8 @@ class ThreadSafeSessionEmbeddings:
                 return _find()
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to find similar sessions: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to find similar sessions: <ERROR_TYPE>")
             log_error(e, "find_similar", self.errors_path)
             return []
 
@@ -267,7 +271,8 @@ class ThreadSafeSessionEmbeddings:
                 embedding = self._index.reconstruct(int(idx))
                 return embedding.astype(np.float32)
             except (IOError, OSError) as e:
-                logger.warning(f"Failed to reconstruct embedding for {session_id}: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Failed to reconstruct embedding for {session_id}: <ERROR_TYPE>")
                 return None
 
         try:
@@ -275,7 +280,8 @@ class ThreadSafeSessionEmbeddings:
                 return _get()
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to get embedding: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to get embedding: <ERROR_TYPE>")
             log_error(e, "get_embedding", self.errors_path)
             return None
 
@@ -298,7 +304,8 @@ class ThreadSafeSessionEmbeddings:
             return True
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to save index: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to save index: <ERROR_TYPE>")
             log_error(e, "save_index", self.errors_path)
             return False
 

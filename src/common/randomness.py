@@ -88,7 +88,8 @@ def set_seed(seed: int | None) -> int:
                         backends.cudnn.deterministic = True
                         backends.cudnn.benchmark = False
                     except (ValueError, TypeError, RuntimeError) as exc:
-                        logger.debug(f"Exception: {exc}")
+                        error_type = type(exc).__name__
+                        logger.debug(f"Exception: <ERROR_TYPE>")
                         logger.debug("Unable to set CuDNN deterministic flags: %s", exc)
 
     return seed

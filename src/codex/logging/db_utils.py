@@ -24,8 +24,9 @@ try:
 
     _codex_sqlite_auto()
 except (IOError, OSError) as e:
-    logger.debug(f"Exception: {e}")
-    logger.warning(f"Exception: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"Exception: <ERROR_TYPE>")
+    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 from typing import Optional  # noqa: E402
 
 # Common column name variants seen in repo/README and typical SQLite logs.
@@ -50,8 +51,9 @@ def open_db(
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         return conn
     for k in env_keys:
         v = os.getenv(k)
@@ -60,8 +62,9 @@ def open_db(
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
             except (ConnectionError, TimeoutError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
             return conn
     # Probe a few common locations used within this repository
     for guess in (
@@ -75,16 +78,18 @@ def open_db(
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
             except (IOError, OSError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
             return conn
     # Fallback to an in-memory database so callers can still operate
     conn = sqlite3.connect(":memory:")
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
     except (ConnectionError, TimeoutError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
     return conn
 
 
@@ -141,8 +146,9 @@ def infer_probable_table(
         try:
             cols = get_columns(con, t)
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
-            logger.warning(f"ValueError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
+            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
             continue
         score = 0
         for _, cand in LIKELY_MAP.items():

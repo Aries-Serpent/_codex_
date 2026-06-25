@@ -361,7 +361,8 @@ def _initialize_reasoning_runtime(
     try:
         reasoning_cfg = _coerce_reasoning_config(raw_cfg)
     except ConfigError as exc:
-        logger.debug(f"ConfigError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ConfigError: <ERROR_TYPE>")
         logger.warning("Invalid reasoning configuration: %s", exc)
         return model, None
     if reasoning_cfg is None or not reasoning_cfg.enabled:
@@ -584,7 +585,8 @@ def _resolve_device(device: Optional[str]):
     try:
         return torch.device(device)
     except (TypeError, ValueError, RuntimeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         logger.warning("Invalid device '%s': %s. Falling back to CPU.", device, exc)
         return torch.device("cpu")
 
@@ -1227,7 +1229,8 @@ def run_training(
                 try:
                     dp_kwargs[field_name] = float(raw)
                 except ValueError as e:
-                    logger.debug(f"ValueError: {e}")
+                    error_type = type(e).__name__
+                    logger.debug(f"ValueError: <ERROR_TYPE>")
                     logger.debug("Unable to parse %s env var %s", field_name, env_name)
             secure_rng_flag = os.getenv("CODEX_DP_SECURE_RNG")
             if secure_rng_flag and secure_rng_flag.lower() in {
@@ -1240,7 +1243,8 @@ def run_training(
             try:
                 dp_settings = DifferentialPrivacyConfig(**dp_kwargs)
             except ImportError as exc:
-                logger.debug(f"ImportError: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"ImportError: <ERROR_TYPE>")
                 logger.warning("Differential privacy disabled: %s", exc)
                 dp_settings = None
 
@@ -1289,7 +1293,8 @@ def run_training(
         try:
             metrics_port_value = int(metrics_env_port)
         except ValueError as e:
-            logger.debug(f"ValueError: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
             logger.debug("Invalid CODEX_METRICS_PORT value '%s'", metrics_env_port)
     if metrics_port_value is None and telemetry_port is not None:
         metrics_port_value = int(telemetry_port)
@@ -1487,7 +1492,8 @@ def run_training(
             if reasoning_runtime is not None:
                 reasoning_runtime.bind_model(model)
         except ImportError as exc:
-            logger.debug(f"ImportError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
             logger.warning("Differential privacy disabled: %s", exc)
             dp_settings = None
         except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path

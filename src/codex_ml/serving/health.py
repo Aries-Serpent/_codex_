@@ -54,11 +54,13 @@ def readiness_check() -> dict[str, Any]:
         if disk_free_gb < 1.0:
             all_ready = False
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         checks["disk_space"] = {"status": "skipped", "reason": "psutil not available"}
     except (IOError, OSError) as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         checks["disk_space"] = {"status": "error", "error": str(e)}
         all_ready = False
 
@@ -102,8 +104,9 @@ def get_health_router():
     try:
         from fastapi import APIRouter
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         raise ImportError(
             "FastAPI is required for health endpoints. Install with: pip install fastapi"
         ) from e

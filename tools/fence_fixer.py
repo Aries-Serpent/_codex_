@@ -70,7 +70,8 @@ def fix_fence_in_file(filepath: Path, dry_run: bool = False) -> tuple[bool, int]
     try:
         content = filepath.read_text(encoding="utf-8")
     except (UnicodeDecodeError, IOError) as e:
-        print(f"Warning: Could not read {filepath}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"Warning: Could not read {filepath}: <ERROR_TYPE>", file=sys.stderr)
         return False, 0
 
     original = content

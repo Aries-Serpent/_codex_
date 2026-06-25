@@ -55,8 +55,9 @@ if typer is not None:
 
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except (ImportError, AttributeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Exception: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
     from codex_ml.cli import _load_training_config
 
@@ -174,8 +175,9 @@ if typer is not None:
                     try:
                         root = cli_path.parents[depth]
                     except IndexError as e:
-                        logger.debug(f"IndexError: {e}")
-                        logger.warning(f"IndexError: {e}", exc_info=True)
+                        error_type = type(e).__name__
+                        logger.debug(f"IndexError: <ERROR_TYPE>")
+                        logger.warning(f"IndexError: <ERROR_TYPE>", exc_info=True)
                         continue
                     search_roots.append(root / "configs" / "training" / "continual")
 
@@ -403,7 +405,8 @@ if typer is not None:
             if not isinstance(meta_payload, dict):
                 raise ValueError("metadata must decode to a JSON object")
         except (IOError, OSError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             raise typer.BadParameter(str(exc)) from exc
 
         result = build_service_package(

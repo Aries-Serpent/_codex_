@@ -22,8 +22,8 @@ try:
     MLFLOW_AVAILABLE = True
 except ImportError as e:
     mlflow = None  # sentinel for type checkers; use MLFLOW_AVAILABLE for runtime checks
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     MLFLOW_AVAILABLE = False
     logger.info("MLflow not installed. Install with: pip install mlflow")
 
@@ -96,7 +96,8 @@ class MLflowTracker:
                 f"MLflow tracking enabled: {self.tracking_uri}, experiment: {self.experiment_name}"
             )
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.warning(
                 f"MLflow initialization failed: {e}. Continuing without MLflow tracking."
             )
@@ -120,8 +121,9 @@ class MLflowTracker:
             self.run_id = mlflow.active_run().info.run_id
             logger.info(f"Started MLflow run: {self.run_id}")
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to start MLflow run: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to start MLflow run: <ERROR_TYPE>")
             self.active = False
 
     def end_run(self):
@@ -134,8 +136,9 @@ class MLflowTracker:
             logger.info(f"Ended MLflow run: {self.run_id}")
             self.run_id = None
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to end MLflow run: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to end MLflow run: <ERROR_TYPE>")
 
     def log_metrics(self, metrics: dict[str, float], step: Optional[int] = None):
         """Log metrics to MLflow.
@@ -150,8 +153,9 @@ class MLflowTracker:
         try:
             mlflow.log_metrics(metrics, step=step)
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log metrics to MLflow: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log metrics to MLflow: <ERROR_TYPE>")
 
     def log_params(self, params: dict[str, Any]):
         """Log parameters to MLflow.
@@ -167,8 +171,9 @@ class MLflowTracker:
             str_params = {k: str(v) for k, v in params.items()}
             mlflow.log_params(str_params)
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log params to MLflow: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log params to MLflow: <ERROR_TYPE>")
 
     def log_artifact(self, local_path: str, artifact_path: Optional[str] = None):
         """Log an artifact (file) to MLflow.
@@ -187,8 +192,9 @@ class MLflowTracker:
 
             mlflow.log_artifact(local_path, artifact_path)
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log artifact to MLflow: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log artifact to MLflow: <ERROR_TYPE>")
 
     def log_artifacts(self, local_dir: str, artifact_path: Optional[str] = None):
         """Log multiple artifacts (directory) to MLflow.
@@ -207,8 +213,9 @@ class MLflowTracker:
 
             mlflow.log_artifacts(local_dir, artifact_path)
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to log artifacts to MLflow: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to log artifacts to MLflow: <ERROR_TYPE>")
 
     def set_tags(self, tags: dict[str, str]):
         """set tags for the current run.
@@ -222,8 +229,9 @@ class MLflowTracker:
         try:
             mlflow.set_tags(tags)
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to set MLflow tags: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to set MLflow tags: <ERROR_TYPE>")
 
     def __enter__(self):
         """Context manager entry."""

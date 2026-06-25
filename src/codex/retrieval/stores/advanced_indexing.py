@@ -148,8 +148,9 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for HNSW indexing. "
                 "Install with: pip install faiss-cpu (or faiss-gpu for GPU support)"
@@ -251,8 +252,9 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e
 
         faiss.write_index(self._index, filepath)
@@ -267,8 +269,9 @@ class HNSWIndex:
         try:
             import faiss
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e
 
         self._index = faiss.read_index(filepath)
@@ -326,8 +329,9 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError(
                 "FAISS is required for IVF-PQ indexing. "
                 "Install with: pip install faiss-cpu (or faiss-gpu for GPU support)"
@@ -370,8 +374,9 @@ class IVFPQIndex:
         try:
             __import__("numpy")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
 
         if training_vectors.shape[1] != self.dimension:
@@ -404,8 +409,9 @@ class IVFPQIndex:
         try:
             __import__("numpy")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
 
         if vectors.shape[1] != self.dimension:
@@ -437,8 +443,9 @@ class IVFPQIndex:
         try:
             __import__("numpy")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("NumPy is required. Install with: pip install numpy") from e
 
         if query.ndim == 1:
@@ -478,8 +485,9 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e
 
         faiss.write_index(self._index, filepath)
@@ -494,8 +502,9 @@ class IVFPQIndex:
         try:
             import faiss
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise RuntimeError("FAISS is required") from e
 
         self._index = faiss.read_index(filepath)

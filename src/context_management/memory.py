@@ -136,7 +136,8 @@ class ContextMemory:
                 try:
                     summary = self._summarizer(chunk_content)
                 except (ConnectionError, TimeoutError) as exc:
-                    logger.debug(f"Exception: {exc}")
+                    error_type = type(exc).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
                     logger.warning(
                         "Failed to summarize chunk; storing without summary",
                         exc_info=exc,
@@ -161,7 +162,8 @@ class ContextMemory:
                 try:
                     self._embeddings[chunk_id] = self._embedder(chunk_content)
                 except (ValueError, TypeError, RuntimeError) as exc:
-                    logger.debug(f"Exception: {exc}")
+                    error_type = type(exc).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
                     logger.warning(
                         "Failed to embed chunk %s; proceeding without embedding",
                         chunk_id,
@@ -262,7 +264,8 @@ class ContextMemory:
                     chunk.summary = summary
                     summaries.append(summary)
                 except (ValueError, TypeError, RuntimeError) as exc:
-                    logger.debug(f"Exception: {exc}")
+                    error_type = type(exc).__name__
+                    logger.debug(f"Exception: <ERROR_TYPE>")
                     logger.warning(
                         "Chunk summarization failed; using fallback content",
                         exc_info=exc,
@@ -277,7 +280,8 @@ class ContextMemory:
         try:
             return self._summarizer(combined)
         except (ValueError, TypeError, RuntimeError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.warning(
                 "Failed to summarize combined content; returning raw aggregation",
                 exc_info=exc,
@@ -428,7 +432,8 @@ class ContextMemory:
         try:
             query_embedding = self._embedder(query)
         except (ValueError, TypeError, RuntimeError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.warning("Query embedding failed; falling back to existing order", exc_info=exc)
             return chunks
 
@@ -509,5 +514,6 @@ class ContextMemory:
                 self._chunks[cid] = chunk
                 self._total_tokens += chunk.token_count
         except (IOError, OSError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.error("Failed to load memory from %s", path, exc_info=exc)

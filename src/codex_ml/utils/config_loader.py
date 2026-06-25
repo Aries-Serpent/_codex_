@@ -42,8 +42,9 @@ try:  # pragma: no cover - optional dependency
         from hydra import compose, initialize_config_dir
         from hydra.errors import MissingConfigException
     except ImportError as e:
-        logger.debug(f"ImportError: {e}")
-        logger.warning(f"ImportError: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
         from config_legacy import compose, initialize_config_dir
         from config_legacy.errors import MissingConfigException
 
@@ -142,8 +143,9 @@ finally:  # pragma: no cover - cleanup guard
     try:
         del _TEST_CFG
     except (ImportError, AttributeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Exception: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
 
 class _AttrDictConfig(DictConfig):
@@ -200,7 +202,8 @@ def _read_yaml_mapping(path: Path) -> dict[str, Any]:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            logger.debug(f"MissingPyYAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
                 f"before loading {path}."
@@ -221,7 +224,8 @@ def _apply_overrides_to_mapping(
         try:
             parsed = safe_load(value)
         except MissingPyYAMLError as exc:
-            logger.debug(f"MissingPyYAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'YAML overrides require PyYAML. Install it via ``pip install "PyYAML>=6.0"`` '
                 "before specifying overrides."
@@ -323,7 +327,8 @@ def load_config(*, config_path: str) -> DictConfig:
         try:
             data = safe_load(fh) or {}
         except MissingPyYAMLError as exc:
-            logger.debug(f"MissingPyYAMLError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
             raise RuntimeError(
                 'PyYAML is required to parse configuration files. Install it via ``pip install "PyYAML>=6.0"`` '  # noqa: E501
                 f"before loading {config_path}."

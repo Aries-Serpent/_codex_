@@ -211,7 +211,8 @@ def get_recent_commits(count: int = 10) -> list[dict[str, str]]:
         return commits
 
     except subprocess.CalledProcessError as e:
-        logger.error(f"Failed to get git commits: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to get git commits: <ERROR_TYPE>")
         return []
 
 

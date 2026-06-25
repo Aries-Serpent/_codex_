@@ -127,22 +127,26 @@ def main() -> None:
     try:
         update_readme()
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         log_error("1.update_readme", e)
     try:
         search_for_gaps()
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         log_error("2.search_for_gaps", e)
     try:
         run_quality_gates()
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         log_error("3.run_quality_gates", e)
     try:
         append_changelog()
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         log_error("4.append_changelog", e)
     print(
         "Codex maintenance tasks complete. See docs/gaps_report.md, logs/error_captures.log, and docs/CHANGELOG.md for details."

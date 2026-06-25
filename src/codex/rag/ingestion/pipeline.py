@@ -271,7 +271,7 @@ class IngestionPipeline:
         except (ValueError, TypeError, RuntimeError) as e:
             result.status = IngestionStatus.FAILED
             result.error_message = str(e)
-            logger.error(f"Ingestion failed for {document_id}: {e}")
+            logger.error(f"Ingestion failed for {document_id}: <ERROR_TYPE>")
 
         finally:
             result.processing_time_seconds = time.time() - start_time
@@ -371,7 +371,7 @@ class IngestionPipeline:
         except (IOError, OSError) as e:
             result.status = IngestionStatus.FAILED
             result.error_message = str(e)
-            logger.error(f"Ingestion failed for {path}: {e}")
+            logger.error(f"Ingestion failed for {path}: <ERROR_TYPE>")
 
         finally:
             result.processing_time_seconds = time.time() - start_time

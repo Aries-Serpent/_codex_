@@ -626,10 +626,12 @@ def load_app_config(
     try:
         file_cfg = OmegaConf.load(str(config_path))
     except FileNotFoundError as exc:
-        logger.debug(f"FileNotFoundError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
         raise ConfigError("config", f"configuration file not found: {config_path}") from exc
     except (IOError, OSError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
 
     def _to_plain(mapping: Mapping[str, Any]) -> dict[str, Any]:
@@ -712,19 +714,22 @@ def load_app_config(
                             if isinstance(current, float):
                                 return float(text)
                         except (ValueError, TypeError, RuntimeError) as e:
-                            logger.debug(f"Exception: {e}")
-                            logger.warning(f"Exception: {e}", exc_info=True)
+                            error_type = type(e).__name__
+                            logger.debug(f"Exception: <ERROR_TYPE>")
+                            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
                     return new_value
 
                 coerced = _coerce(current_value, value)
                 setattr(instance, key, coerced)
             return instance
         except ConfigError as e:
-            logger.debug(f"ConfigError: {e}")
-            logger.warning(f"ConfigError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ConfigError: <ERROR_TYPE>")
+            logger.warning(f"ConfigError: <ERROR_TYPE>", exc_info=True)
             raise
         except ValueError as exc:
-            logger.debug(f"ValueError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"ValueError: <ERROR_TYPE>")
             parts: list[str] = []
             for chunk in str(exc).split(";"):
                 chunk = chunk.strip()
@@ -853,7 +858,8 @@ def get_config(
     try:
         import hydra
     except ImportError as exc:
-        logger.debug(f"ImportError: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"ImportError: <ERROR_TYPE>")
         raise ImportError(
             "hydra-core is required for unified config loading. "
             "Install with: pip install hydra-core"

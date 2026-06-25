@@ -64,8 +64,9 @@ class FileCache:
             logger.debug(f"Cached file ({len(content)} bytes): {file_path}")
             return True
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to cache file {file_path}: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to cache file {file_path}: <ERROR_TYPE>")
             return False
 
     def get(self, file_path: str, auto_refresh: bool = True) -> Optional[str]:

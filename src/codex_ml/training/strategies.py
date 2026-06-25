@@ -116,7 +116,8 @@ class FunctionalStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
         functional_overrides: dict[str, Any] = {}
         if isinstance(getattr(config, "extra", None), dict):
@@ -194,7 +195,8 @@ class FunctionalStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except (ValueError, TypeError, RuntimeError) as e:
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         else:
             for cb in callbacks:
                 try:
@@ -204,7 +206,8 @@ class FunctionalStrategy:
                         {"metrics": metrics or {}, "trained": bool(train_texts)},
                     )
                 except (ValueError, TypeError, RuntimeError) as e:
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
 
         if functional_overrides:
             extra_payload["unused_overrides"] = functional_overrides
@@ -240,7 +243,8 @@ class LegacyStrategy:
             try:
                 cb.on_epoch_start(0, {"resume_from": resume_from})
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.warning(f"Exception: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         try:
             _legacy(
                 epochs=config.epochs,
@@ -256,7 +260,8 @@ class LegacyStrategy:
                 try:
                     cb.on_epoch_end(0, {"error": 1.0}, {"exception": repr(exc)})
                 except (ValueError, TypeError, RuntimeError) as e:
-                    logger.warning(f"Exception: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
         return TrainingResult(
             status=status,
             backend=self.backend_name,
@@ -325,8 +330,9 @@ class ContinualReplayStrategy:
             try:
                 payload = target_path.read_text(encoding="utf-8")
             except OSError as e:
-                logger.debug(f"OSError: {e}")
-                logger.warning(f"OSError: {e}", exc_info=True)
+                error_type = type(e).__name__
+                logger.debug(f"OSError: <ERROR_TYPE>")
+                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
                 return [], []
             texts = [line.strip() for line in payload.splitlines() if line.strip()]
             return texts, []
@@ -361,8 +367,9 @@ class ContinualReplayStrategy:
                 try:
                     resolved.append(dict(phase))
                 except TypeError as e:
-                    logger.debug(f"TypeError: {e}")
-                    logger.warning(f"TypeError: {e}", exc_info=True)
+                    error_type = type(e).__name__
+                    logger.debug(f"TypeError: <ERROR_TYPE>")
+                    logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
                     resolved.append(dict(vars(phase)))
         return resolved
 

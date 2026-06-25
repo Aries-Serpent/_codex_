@@ -193,7 +193,8 @@ class SQLiteConnectionPool:
             conn.close()
             logger.info(f"WAL mode enabled for {self.db_path}")
         except sqlite3.Error as e:
-            logger.warning(f"Failed to enable WAL mode: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Failed to enable WAL mode: <ERROR_TYPE>")
 
     def get_connection(self) -> sqlite3.Connection:
         """Get thread-local connection (creates if needed)."""
@@ -229,7 +230,8 @@ class SQLiteConnectionPool:
                     conn.close()
                     logger.debug(f"Closed connection for thread {thread_id}")
                 except sqlite3.Error as e:
-                    logger.warning(f"Error closing connection: {e}")
+                    error_type = type(e).__name__
+                    logger.warning(f"Error closing connection: <ERROR_TYPE>")
                 finally:
                     del self._connections[thread_id]
                     self._thread_ids.discard(thread_id)
@@ -309,7 +311,8 @@ class ArchiveOperationLock:
                 break
 
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.error(f"Archive lock error for {session_id}: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Archive lock error for {session_id}: <ERROR_TYPE>")
                 raise
 
 
@@ -360,7 +363,8 @@ def save_metrics(
             json.dump(metrics_dict, f, indent=2, default=str)
         logger.info(f"Metrics saved to {output_path}")
     except (IOError, OSError) as e:
-        logger.error(f"Failed to save metrics: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to save metrics: <ERROR_TYPE>")
 
 
 def log_error(
@@ -377,4 +381,5 @@ def log_error(
         with open(error_file, "a") as f:
             f.write(f"[{timestamp}] {context}: {error}\n")
     except (IOError, OSError) as e:
-        logger.error(f"Failed to log error: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to log error: <ERROR_TYPE>")

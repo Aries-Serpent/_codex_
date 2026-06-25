@@ -42,8 +42,9 @@ def _load_config(path: Path) -> dict[str, Any]:
         try:
             import tomllib
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             import tomli as tomllib  # type: ignore
         return tomllib.loads(text)
     typer.echo("Unsupported config format (use .json or .toml)", err=True)

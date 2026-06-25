@@ -17,8 +17,9 @@ try:
 
     _HAS_BOTO3 = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     _HAS_BOTO3 = False
     logger.warning("boto3 not installed. AWS EventBridge support disabled.")
 
@@ -50,8 +51,9 @@ class AWSEventPublisher(EventPublisher):
             self.client = boto3.client("events", region_name=self.region_name)
             logger.info(f"AWS EventBridge client initialized (region={self.region_name})")
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.warning(f"Failed to initialize AWS EventBridge client: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.warning(f"Failed to initialize AWS EventBridge client: <ERROR_TYPE>")
             self.client = None
 
     def publish(self, event: Event) -> bool:
@@ -88,8 +90,9 @@ class AWSEventPublisher(EventPublisher):
             return True
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to publish to AWS EventBridge: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to publish to AWS EventBridge: <ERROR_TYPE>")
             return False
 
     def publish_batch(self, events: list[Event]) -> bool:
@@ -134,8 +137,9 @@ class AWSEventPublisher(EventPublisher):
                     logger.info(f"Published {len(batch)} events to AWS EventBridge")
 
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Failed to publish batch to AWS EventBridge: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Failed to publish batch to AWS EventBridge: <ERROR_TYPE>")
                 all_success = False
 
         return all_success

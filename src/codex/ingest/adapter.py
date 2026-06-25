@@ -132,7 +132,8 @@ def _validate_path(path: Path, base_dir: Optional[Path] = None) -> None:
             if not str(resolved).startswith(str(base_resolved)):
                 raise ValueError(f"Path traversal detected: {path}")
     except (IOError, OSError) as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         raise ValueError(f"Invalid path: {path} - {e}") from e
 
 

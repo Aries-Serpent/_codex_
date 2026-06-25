@@ -133,7 +133,8 @@ class TextClassificationDataset(BaseDataset):
                         text, label = line.split("\t", maxsplit=1)
                         self.samples.append((text, int(label)))
                     except (IOError, OSError) as exc:
-                        logger.debug(f"Exception: {exc}")
+                        error_type = type(exc).__name__
+                        logger.debug(f"Exception: <ERROR_TYPE>")
                         append_error(
                             "3.5",
                             "dataset parse",
@@ -141,7 +142,8 @@ class TextClassificationDataset(BaseDataset):
                             f"path={self.file_path} line={line_number}",
                         )
         except (IOError, OSError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             append_error("3.5", "dataset load", str(exc), str(self.file_path))
             raise
         if not self.samples:
@@ -172,7 +174,8 @@ def _collate_text_batch(
             return_tensors="pt",
         )
     except (ValueError, TypeError, RuntimeError) as exc:
-        logger.debug(f"Exception: {exc}")
+        error_type = type(exc).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         append_error("3.5", "tokenize batch", str(exc), f"texts={len(texts)}")
         raise
     input_ids = encodings.get("input_ids")

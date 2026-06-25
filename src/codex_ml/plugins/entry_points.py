@@ -82,8 +82,9 @@ class PluginValidator:
                         f"but {self.codex_version} is installed"
                     )
             except (ValueError, TypeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Failed to parse version for {plugin_info.name}: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Failed to parse version for {plugin_info.name}: <ERROR_TYPE>")
 
         # Check dependencies
         for dep in plugin_info.dependencies:
@@ -175,8 +176,9 @@ class EntryPointPluginRegistry:
                         self.load_plugin(group, ep.name)
 
             except (ConnectionError, TimeoutError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.error(f"Failed to discover plugins in group {group}: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.error(f"Failed to discover plugins in group {group}: <ERROR_TYPE>")
 
         return discovered
 
@@ -210,8 +212,9 @@ class EntryPointPluginRegistry:
                 **metadata,
             )
         except (ImportError, AttributeError) as e:
-            logger.debug(f"Exception: {e}")
-            logger.error(f"Failed to load entry point {entry_point.name}: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.error(f"Failed to load entry point {entry_point.name}: <ERROR_TYPE>")
             return PluginInfo(
                 name=entry_point.name,
                 entry_point_group=group,
@@ -274,7 +277,8 @@ class EntryPointPluginRegistry:
             return instance
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             error_msg = f"Failed to load plugin {name}: {e}"
             plugin_info.error = error_msg
             logger.error(error_msg)

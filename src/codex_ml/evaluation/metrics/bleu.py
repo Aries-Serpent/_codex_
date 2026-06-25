@@ -22,8 +22,9 @@ try:
 
     HAS_SACREBLEU = True
 except ImportError as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     HAS_SACREBLEU = False
 
 
@@ -92,7 +93,8 @@ class BleuMetric(MetricAdapter):
                 f"{self.name}_precisions": bleu.precisions,
             }
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.debug("Exception caught, returning", exc_info=True)
             return {f"{self.name}_error": str(e)}
 

@@ -90,7 +90,8 @@ class PineconeAdapter(BackendAdapter):
             self._connected = True
             logger.info("Connected to Pinecone index %s", self._index_name)
         except (ConnectionError, TimeoutError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             logger.exception("Failed to initialize Pinecone: %s", exc)
             self._connected = False
 

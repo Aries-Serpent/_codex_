@@ -71,8 +71,9 @@ try:
     _ = torch.Tensor  # type: ignore
     TORCH_AVAILABLE = True
 except (ImportError, AttributeError) as e:
-    logger.debug(f"ImportError: {e}")
-    logger.warning(f"ImportError: {e}", exc_info=True)
+    error_type = type(e).__name__
+    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
     TORCH_AVAILABLE = False
     # Define mock classes for offline/testing
     FSDP = None

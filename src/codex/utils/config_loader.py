@@ -135,7 +135,8 @@ class ConfigLoader:
             logger.warning("PyYAML not available, using default error config")
             self.error_config = self._get_default_error_config()
         except (IOError, OSError) as e:
-            logger.warning(f"Failed to load error config: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Failed to load error config: <ERROR_TYPE>")
             self.error_config = self._get_default_error_config()
 
     @staticmethod
@@ -277,7 +278,8 @@ class ConfigLoader:
                     return cfg
                 return cfg
             except (IOError, OSError) as e:
-                logger.warning(f"Hydra compose failed: {e}")
+                error_type = type(e).__name__
+                logger.warning(f"Hydra compose failed: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise
 
@@ -301,7 +303,8 @@ class ConfigLoader:
                 if not allow_fallback:
                     raise
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.error(f"Failed to load config: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Failed to load config: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise
 

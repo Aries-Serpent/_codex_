@@ -132,7 +132,7 @@ class QuantumPlugin:
 
         except (ImportError, AttributeError) as exc:
             self.state = PluginState.DECOHERENT
-            logger.error(f"Plugin '{self.name}' decoherence: {exc}")
+            logger.error(f"Plugin '{self.name}' decoherence: <ERROR_TYPE>")
             raise
 
     def get_amplitude(self) -> float:
@@ -262,7 +262,8 @@ class QuantumPluginRegistry:
                 try:
                     loaded_modules[p_name] = plugin.observe()
                 except (ImportError, AttributeError) as exc:
-                    logger.warning(f"Failed to load dependency '{p_name}': {exc}")
+                    error_type = type(exc).__name__
+                    logger.warning(f"Failed to load dependency '{p_name}': <ERROR_TYPE>")
 
         return loaded_modules.get(plugin_name)
 

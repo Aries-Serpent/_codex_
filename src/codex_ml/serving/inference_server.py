@@ -145,11 +145,13 @@ class AuthManager:
 
             return jwt.decode(token, self.jwt_secret, algorithms=[self.jwt_algorithm])
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             raise AuthenticationError("python-jose not installed for JWT support") from e
         except JWTError as e:
-            logger.debug(f"JWTError: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"JWTError: <ERROR_TYPE>")
             raise AuthenticationError(f"Invalid JWT token: {e}") from e
 
     @staticmethod
@@ -241,8 +243,9 @@ class ModelServer:
             self.circuit_breaker = CircuitBreaker(CircuitBreakerConfig(failure_threshold=5))
             logger.info("Circuit breaker enabled")
         except ImportError as e:
-            logger.debug(f"ImportError: {e}")
-            logger.warning(f"ImportError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
             self.circuit_breaker = None
             logger.warning("Circuit breaker not available (resilience module not found)")
 
@@ -263,7 +266,8 @@ class ModelServer:
                 }
             return self.model
         except (IOError, OSError) as exc:
-            logger.debug(f"Exception: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             self.load_errors.append(str(exc))
             raise
 
@@ -535,7 +539,8 @@ if FASTAPI_AVAILABLE:
             except RuntimeError as e:
                 raise HTTPException(status_code=500, detail=str(e)) from e
             except (ConnectionError, TimeoutError) as e:
-                logger.debug(f"Exception: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 if "Circuit breaker" in str(e):
                     raise HTTPException(status_code=503, detail=str(e)) from e
                 raise

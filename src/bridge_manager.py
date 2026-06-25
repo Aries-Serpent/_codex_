@@ -181,7 +181,8 @@ class BridgeLock:
                 self.lock_fd = None
             return False
         except (IOError, OSError) as e:
-            logger.error(f"Lock acquisition error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Lock acquisition error: <ERROR_TYPE>")
             if self.lock_fd:
                 os.close(self.lock_fd)
                 self.lock_fd = None
@@ -226,7 +227,8 @@ class BridgeLock:
                     os.close(self.lock_fd)
                     logger.debug(f"Lock released: {self.lock_path}")
             except (IOError, OSError) as e:
-                logger.error(f"Lock release error: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Lock release error: <ERROR_TYPE>")
             finally:
                 self.lock_fd = None
 
@@ -414,7 +416,8 @@ class BridgeManager:
             logger.info(f"Named pipe created: {self.pipe_path}")
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to create named pipe: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to create named pipe: <ERROR_TYPE>")
             raise
 
     def _init_unix_socket(self) -> None:
@@ -428,7 +431,8 @@ class BridgeManager:
             logger.info(f"Unix socket path prepared: {self.socket_path}")
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to prepare unix socket: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to prepare unix socket: <ERROR_TYPE>")
             raise
 
     def _validate_tls_config(self) -> None:
@@ -499,7 +503,8 @@ class BridgeManager:
                 f.write(json.dumps(log_entry) + "\n")
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to write audit log: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to write audit log: <ERROR_TYPE>")
 
     def _verify_auth_token(self, message: ContextMessage) -> bool:
         """
@@ -590,11 +595,13 @@ class BridgeManager:
                 return result
 
         except TimeoutError as e:
-            logger.error(f"Bridge write timeout: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Bridge write timeout: <ERROR_TYPE>")
             self._audit_log("WRITE_TIMEOUT", {"error": str(e), "source": message.source})
             return False
         except (IOError, OSError) as e:
-            logger.error(f"Bridge write error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Bridge write error: <ERROR_TYPE>")
             self._audit_log("WRITE_ERROR", {"error": str(e), "source": message.source})
             return False
 
@@ -622,7 +629,8 @@ class BridgeManager:
             return True
 
         except (IOError, OSError) as e:
-            logger.error(f"Pipe write error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Pipe write error: <ERROR_TYPE>")
             return False
 
     def _write_to_socket(self, message: ContextMessage) -> bool:
@@ -648,7 +656,8 @@ class BridgeManager:
             return True
 
         except (IOError, OSError) as e:
-            logger.error(f"Socket write error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Socket write error: <ERROR_TYPE>")
             return False
 
     # ==================== Protocol v2 Methods ====================
@@ -749,11 +758,13 @@ class BridgeManager:
                 return None
 
         except TimeoutError as e:
-            logger.warning(f"Bridge read timeout: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Bridge read timeout: <ERROR_TYPE>")
             self._audit_log("READ_TIMEOUT", {"error": str(e)})
             return None
         except (IOError, OSError) as e:
-            logger.error(f"Bridge read error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Bridge read error: <ERROR_TYPE>")
             self._audit_log("READ_ERROR", {"error": str(e)})
             return None
 
@@ -786,7 +797,8 @@ class BridgeManager:
             return None
 
         except (IOError, OSError) as e:
-            logger.error(f"Pipe read error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Pipe read error: <ERROR_TYPE>")
             return None
 
     def _read_from_socket(self) -> Optional[ContextMessage]:
@@ -850,7 +862,8 @@ class BridgeManager:
             return None
 
         except (IOError, OSError) as e:
-            logger.error(f"Socket read error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Socket read error: <ERROR_TYPE>")
             return None
 
     def cleanup(self) -> None:
@@ -872,7 +885,8 @@ class BridgeManager:
             logger.info("Bridge cleaned up")
 
         except (IOError, OSError) as e:
-            logger.error(f"Bridge cleanup error: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Bridge cleanup error: <ERROR_TYPE>")
             self._audit_log("CLEANUP_ERROR", {"error": str(e)})
 
 

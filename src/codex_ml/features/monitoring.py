@@ -528,8 +528,9 @@ class FeatureHealthMonitor:
                                     e,
                                 )
             except (ValueError, TypeError) as e:
-                logger.debug(f"Exception: {e}")
-                logger.warning(f"Could not load features from store: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.warning(f"Could not load features from store: <ERROR_TYPE>")
                 feature_names = list(self.feature_updates.keys())
 
         # Check health of all features

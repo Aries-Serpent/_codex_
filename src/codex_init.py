@@ -155,7 +155,8 @@ class ConfigLoader:
                 return self._load_yaml(file_path)
 
         except (IOError, OSError) as e:
-            logger.error(f"Failed to load {file_path}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to load {file_path}: <ERROR_TYPE>")
             raise
 
     def _load_yaml(self, file_path: Path) -> dict[str, Any]:

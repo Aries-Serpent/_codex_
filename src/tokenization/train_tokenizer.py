@@ -37,7 +37,8 @@ try:  # pragma: no cover - optional dependency
     try:
         import hydra
     except ImportError as e:
-        logger.debug(f"hydra not available: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"hydra not available: <ERROR_TYPE>")
         import config_legacy as hydra
     from omegaconf import MISSING
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
@@ -213,7 +214,8 @@ def train(cfg: TrainTokenizerConfig) -> Path:
         try:
             spm.SentencePieceTrainer.Train(**train_kwargs)
         except OSError as exc:
-            logger.debug(f"OSError: {exc}")
+            error_type = type(exc).__name__
+            logger.debug(f"OSError: <ERROR_TYPE>")
             if "seed_sentencepiece" not in str(exc):
                 raise
             train_kwargs.pop("seed_sentencepiece", None)

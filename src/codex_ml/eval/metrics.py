@@ -114,7 +114,8 @@ def perplexity(
             try:
                 nll_values.append(float(value))
             except (TypeError, ValueError) as exc:
-                logger.debug(f"Exception: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 raise MetricError("perplexity", f"invalid NLL value: {exc}") from exc
     if not nll_values:
         raise MetricError("perplexity", "no valid loss values to average")

@@ -212,7 +212,7 @@ class ThermodynamicOrchestrator:
 
             except (ValueError, TypeError, RuntimeError) as exc:
                 results["failed"].append({"name": task.name, "error": str(exc)})
-                logger.error(f"Task '{task.name}' failed: {exc}")
+                logger.error(f"Task '{task.name}' failed: <ERROR_TYPE>")
 
         # Calculate final system temperature (cooling after work)
         if results["total_energy_used"] > 0:

@@ -64,7 +64,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         result = subprocess.run(cmd, check=False)
     except Exception as exc:  # pragma: no cover
-        print(f"[pip-audit] wrapper failed: {exc}", file=sys.stderr)
+        error_type = type(exc).__name__
+        print(f"[pip-audit] wrapper failed: <ERROR_TYPE>", file=sys.stderr)
         return 0
 
     if result.returncode == 0 or args.offline:

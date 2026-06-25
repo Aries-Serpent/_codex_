@@ -84,7 +84,8 @@ class IntelligentAudioAnalyzer:
                 metadata=self._extract_metadata(file_path),
             )
         except (IOError, OSError) as e:
-            self.logger.error(f"Analysis failed: {e}")
+            error_type = type(e).__name__
+            self.logger.error(f"Analysis failed: <ERROR_TYPE>")
             raise
 
     def _classify_content(self, audio: Optional[np.ndarray], features: dict[str, Any]) -> str:

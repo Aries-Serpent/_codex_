@@ -106,7 +106,8 @@ class GitHubActionsCollector:
             data = response.json()
             return data.get("check_runs", [])
         except Exception as e:
-            logger.error(f"Failed to get check runs for {sha[:7]}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to get check runs for {sha[:7]}: <ERROR_TYPE>")
             return []
 
     def get_workflow_runs(self, sha: str) -> list[dict[str, Any]]:
@@ -119,7 +120,8 @@ class GitHubActionsCollector:
             data = response.json()
             return data.get("workflow_runs", [])
         except Exception as e:
-            logger.error(f"Failed to get workflow runs for {sha[:7]}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to get workflow runs for {sha[:7]}: <ERROR_TYPE>")
             return []
 
     def get_run_artifacts(self, run_id: int) -> list[dict[str, Any]]:
@@ -131,7 +133,8 @@ class GitHubActionsCollector:
             data = response.json()
             return data.get("artifacts", [])
         except Exception as e:
-            logger.error(f"Failed to get artifacts for run {run_id}: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Failed to get artifacts for run {run_id}: <ERROR_TYPE>")
             return []
 
     def is_check_failing(self, check: dict[str, Any]) -> bool:
@@ -293,7 +296,8 @@ def main():
         return 0
 
     except Exception as e:
-        logger.error(f"Fatal error: {e}", exc_info=True)
+        error_type = type(e).__name__
+        logger.error(f"Fatal error: <ERROR_TYPE>", exc_info=True)
         return 1
 
 

@@ -237,7 +237,8 @@ class AgentOrchestrator:
             return result
 
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             async with self._lock:
                 agent.status = AgentStatus.ERROR
 

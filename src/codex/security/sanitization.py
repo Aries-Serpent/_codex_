@@ -118,7 +118,8 @@ def sanitize_integer(
         return result
 
     except (ValueError, TypeError, AttributeError) as e:
-        logger.debug(f"Integer sanitization failed for '{value}': {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Integer sanitization failed for '{value}': <ERROR_TYPE>")
         return default
 
 

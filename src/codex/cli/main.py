@@ -72,7 +72,8 @@ if TYPER_AVAILABLE:
             typer.echo(f"   Location: {snapshot.snapshot_dir}")
             typer.echo(f"   Hash: {snapshot.content_hash[:16]}...")
         except (IOError, OSError) as e:
-            logger.debug(f"Exception: {e}")
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
             typer.echo(f"❌ Error: {e}", err=True)
             raise typer.Exit(1) from e
 
