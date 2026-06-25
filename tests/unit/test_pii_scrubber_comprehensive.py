@@ -15,7 +15,7 @@ from codex.knowledge.pii import (
     RedactionMode,
     scrub,
     scrub_for_embedding,
-) # pragma: allowlist secret
+) # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestEmailScrubbing:

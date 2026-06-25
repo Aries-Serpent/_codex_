@@ -15,7 +15,7 @@ class TestCheckpointRecovery:
     def test_checkpoint_load_basic(self):
         """Test basic checkpoint loading."""
         # Arrange
-        checkpoint_path = "checkpoints/model_epoch_5.pt" # pragma: allowlist secret
+        checkpoint_path = "checkpoints/model_epoch_5.pt" # pragma: allowlist secret # pragma: allowlist secret
 
         # Assert
         assert "epoch_5" in checkpoint_path

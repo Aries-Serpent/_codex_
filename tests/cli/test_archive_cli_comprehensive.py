@@ -15,7 +15,7 @@ from click.testing import CliRunner
 
 # ==================== Fixtures ====================
 
- # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 @pytest.fixture
 def cli_runner():
     """Provide Click CLI test runner."""

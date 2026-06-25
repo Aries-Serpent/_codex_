@@ -15,7 +15,7 @@
 5. [On-Call Scheduling](#on-call-scheduling)
 6. [Runbook Templates](#runbook-templates)
 7. [Alert Deduplication](#alert-deduplication)
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 ---
 
 ## Executive Summary

@@ -15,7 +15,7 @@ class TestSqliteDAL:
     @pytest.fixture
     def dal(self, tmp_path):
         """Create a temporary SQLite DAL for testing."""
-        db_path = tmp_path / "test_archive.db" # pragma: allowlist secret
+        db_path = tmp_path / "test_archive.db" # pragma: allowlist secret # pragma: allowlist secret
         url = f"sqlite:///{db_path}"
         return SqliteDAL.from_url(url)
 

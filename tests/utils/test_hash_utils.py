@@ -15,7 +15,7 @@ class TestEigenstateHashPatterns:
     """Tests applying Eigenstate Pattern to hash utilities."""
 
     def test_sha256_deterministic(self):
-        """Hash of same input always produces same output (eigenstate).""" # pragma: allowlist secret
+        """Hash of same input always produces same output (eigenstate).""" # pragma: allowlist secret # pragma: allowlist secret
         data = b"test data for hashing"
         hash1 = hashlib.sha256(data).hexdigest()
         hash2 = hashlib.sha256(data).hexdigest()

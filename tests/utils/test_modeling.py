@@ -15,7 +15,7 @@ transformers = pytest.importorskip("transformers")
 if not hasattr(transformers, "AutoTokenizer"):
     pytest.skip("transformers missing AutoTokenizer", allow_module_level=True)
 
- # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret
 def test_invalid_dtype():
     mod = importlib.import_module("codex_ml.utils.modeling")
     with pytest.raises(ValueError):

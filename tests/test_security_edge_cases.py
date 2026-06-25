@@ -15,7 +15,7 @@ from uuid import uuid4
 import pytest  # pragma: allowlist secret # pragma: allowlist secret
 
 
-class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist secret
+class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     """Test token security edge cases."""
 
     def test_token_with_empty_access_token(self):

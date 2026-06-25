@@ -15,7 +15,7 @@ class TestPlanEntry:
         from codex.archive.plan import PlanEntry
 
         entry = PlanEntry(
-            path="src/old_module.py", # pragma: allowlist secret
+            path="src/old_module.py", # pragma: allowlist secret # pragma: allowlist secret
             reason="dead",
             age_days=200,
             ref_count=0,
