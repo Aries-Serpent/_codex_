@@ -674,7 +674,7 @@ def manage_tenant_indices(
                         all_metadata.append(metadata)
 
                     logger.info(f"Loaded {index.ntotal} vectors from '{index_name}'")
-                except (ValueError, TypeError, RuntimeError) as e:
+                except (ValueError, TypeError, RuntimeError, IOError, OSError) as e:
                     error_type = type(e).__name__
                     logger.error(f"Failed to load index '{index_name}': <ERROR_TYPE>")
 
