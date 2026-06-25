@@ -173,6 +173,7 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
     # Resolve the parent of the agent commit (so ``git diff <parent> HEAD``
     # includes that commit's changes). If the parent is unreachable in a
     # shallow clone, fall back to None and let the caller use HEAD~1.
+    parent = None
     try:
         parent = _sp.run(
             ["git", "rev-parse", f"{agent_sha}^"],
@@ -180,9 +181,9 @@ def _resolve_acct_diff_base(repo_root: "Path", max_lookback: int = 10) -> Option
         )
     except (OSError, _sp.TimeoutExpired):
         return None
-    if parent.returncode != 0:
+    if parent and parent.returncode != 0:
         return None
-    return parent.stdout.strip() or None
+    return parent.stdout.strip() or None if parent else None
 
 
 # ---------------------------------------------------------------------------

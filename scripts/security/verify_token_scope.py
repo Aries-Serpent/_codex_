@@ -165,26 +165,26 @@ class TokenScopeVerifier:
                 "timestamp": datetime.now(UTC).isoformat()
             }
 
-            logger.info(f"Token verification complete: {len(scopes)} scopes found")
+            logger.info("Token verification complete: %d scopes found", len(scopes))
             if not required_met:
-                logger.warning(f"Missing {len(missing_required)} required scopes")
+                logger.warning("Missing %d required scopes", len(missing_required))
                 # Debug-level logging for actual scope details (useful for troubleshooting)
-                logger.debug(f"Missing required scopes: {missing_required}")
+                logger.debug("Missing required scopes: %s", missing_required)
             if not recommended_met:
-                logger.info(f"Missing {len(missing_recommended)} recommended scopes")
-                logger.debug(f"Missing recommended scopes: {missing_recommended}")
+                logger.info("Missing %d recommended scopes", len(missing_recommended))
+                logger.debug("Missing recommended scopes: %s", missing_recommended)
 
             return self.verification_results
 
         except requests.RequestException as e:
-            logger.error(f"Token verification failed: {type(e).__name__}")
+            logger.error("Token verification failed: %s", type(e).__name__)
             return {
                 "error": f"API request failed: {type(e).__name__}",
                 "status": "error",
                 "timestamp": datetime.now(UTC).isoformat()
             }
         except Exception as e:
-            logger.error(f"Unexpected error during verification: {type(e).__name__}")
+            logger.error("Unexpected error during verification: %s", type(e).__name__)
             return {
                 "error": f"Verification error: {type(e).__name__}",
                 "status": "error",
