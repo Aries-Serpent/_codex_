@@ -277,8 +277,8 @@ class CachedEmbeddingProvider:
         if cache_file.exists() and metadata_file.exists():
             if self._is_cache_valid(metadata_file, metadata):
                 try:
-                    # Load from cache with allow_pickle=True for compatibility
-                    data = np.load(cache_file, allow_pickle=True)
+                    # Load from cache without allow_pickle
+                    data = np.load(cache_file, allow_pickle=False)
                     embeddings = data["embeddings"]
                     self.cache_hits += 1
                     logger.debug(f"Cache hit for key: {cache_key}")

@@ -6,7 +6,9 @@ Purpose
 -------
 Provides utilities for building PR descriptions while preserving Workflow Execution
 Checklist (WEC) state across agent turns. Implements the "read-before-write" pattern
-to prevent loss of maintainer-selected checkboxes.
+to prevent loss of maintainer-selected checkboxes. Also handles CI workflow updates
+(secrets-baseline-enforcer push logic), RAG cache loading semantics, and auth
+email validation.
 
 Functions
 ---------
@@ -73,9 +75,6 @@ def read_pr_body(pr_number: int, repo_owner: str = REPO_OWNER, repo_name: str = 
 
     Returns:
         PR body content as string, or empty string if fetch fails
-
-    Raises:
-        subprocess.CalledProcessError: If gh command fails
     """
     try:
         result = subprocess.run(
@@ -126,7 +125,9 @@ def extract_and_preserve_wec_state(
         WEC formats.
     """
     try:
-        sys.path.insert(0, str(REPO_ROOT / "scripts" / "ci"))
+        ci_path = str(REPO_ROOT / "scripts" / "ci")
+        if ci_path not in sys.path:
+            sys.path.insert(0, ci_path)
         import session_wrapup_autofix as swa
 
         existing_state = swa._extract_wec_state(pr_body)
@@ -162,7 +163,9 @@ def build_wec_block(existing_state: Optional[Dict[str, bool]] = None) -> str:
         to ensure consistency with the authoritative WEC builder.
     """
     try:
-        sys.path.insert(0, str(REPO_ROOT / "scripts" / "ci"))
+        ci_path = str(REPO_ROOT / "scripts" / "ci")
+        if ci_path not in sys.path:
+            sys.path.insert(0, ci_path)
         import session_wrapup_autofix as swa
 
         wec_block = swa._build_wec_block(existing_state=existing_state)
@@ -218,7 +221,7 @@ def record_wec_checkpoint(
             state_data = {
                 "session_metadata": {
                     "session_id": session_id,
-                    "created_at": datetime.now(timezone.utc).isoformat() + "Z",
+                    "created_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                     "updated_at": None,
                     "pr_number": pr_number,
                     "branch": None,
@@ -228,7 +231,7 @@ def record_wec_checkpoint(
 
         # Add checkpoint
         checkpoint = {
-            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "source": "report_progress",
             "session_id": session_id,
             "turn_number": turn_number,
@@ -260,16 +263,19 @@ def calculate_merge_readiness_score(
     Calculate merge readiness score (0–100) from 10 pre-merge gates.
 
     Args:
-        gates: Dictionary mapping gate names to pass/fail status
+        gates: Dictionary mapping gate names to boolean pass/fail status
             {
                 "code_quality": True,
                 "test_coverage": True,
                 ...
             }
+            Each gate receives full credit (weight) if True, zero if False.
         gate_weights: Optional custom weights (default: standard weights)
 
     Returns:
-        Composite merge readiness score (0–100)
+        Composite merge readiness score as integer (0–100).
+        Note: Partial credit (e.g., 0.5×) is not currently supported;
+        each gate is binary (pass/fail with full weight or zero).
 
     Gate Weights (default):
         - code_quality: 12 pts

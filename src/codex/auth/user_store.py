@@ -379,4 +379,4 @@ class UserStore:
         # Basic email format validation pattern
         email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         if not re.match(email_pattern, email):
-            raise ValueError(f"Invalid email format: {email}")
+           raise ValueError("Invalid email format")
