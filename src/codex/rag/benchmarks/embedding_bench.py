@@ -85,8 +85,11 @@ def _get_provider(name: str):
     if name == "transformers":
         try:
             return create_embedding_provider("transformers")
-        except Exception:
+        except Exception as e:  # codeql[py/catch-all-except]
             # Fallback to TF-IDF if transformers not available
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Transformers provider failed, falling back to TF-IDF: {type(e).__name__}: {e}")
             return create_embedding_provider("tfidf")
     elif name == "ollama":
         return create_embedding_provider("ollama")

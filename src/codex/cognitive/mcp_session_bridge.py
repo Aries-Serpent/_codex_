@@ -51,7 +51,8 @@ def validate_actor(actor: str) -> bool:
     # Primary: StructuralPolicyManager RBAC check with audit log
     try:
         return default_policy_manager.evaluate_permission(actor, "inject_session_context")
-    except Exception:
+    except Exception as e:  # codeql[py/catch-all-except]
+        logger.warning(f"Policy manager unavailable for actor '{actor}', falling back to allowlist: {type(e).__name__}: {e}")
         return actor in ALLOWED_ACTORS
 
 
