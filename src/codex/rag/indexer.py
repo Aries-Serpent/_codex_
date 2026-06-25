@@ -368,11 +368,11 @@ def build_index_from_files(
 
         except UnicodeDecodeError as e:
             error_type = type(e).__name__
-            logger.error(f"Error processing {file_path}: <ERROR_TYPE> - unable to read file with UTF-8 encoding")
+            logger.error(f"Error processing {file_path}: {error_type} - unable to read file with UTF-8 encoding")
             processing_errors.append(str(file_path))
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error processing {file_path}: <ERROR_TYPE>")
+            logger.error(f"Error processing {file_path}: {error_type}")
             processing_errors.append(str(file_path))
 
     if not all_chunks:

@@ -285,7 +285,7 @@ class CachedEmbeddingProvider:
                     return embeddings
                 except (IOError, OSError, ValueError) as e:
                     error_type = type(e).__name__
-                    logger.warning(f"Error loading cache: <ERROR_TYPE>")
+                    logger.warning(f"Error loading cache: {error_type}")
                     # Continue to regenerate cache
 
         # Cache miss - generate embeddings
@@ -427,7 +427,7 @@ def create_embedding_provider(
             return provider
         except (ImportError, AttributeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"sentence-transformers unavailable: <ERROR_TYPE>")
+            logger.debug(f"sentence-transformers unavailable: {error_type}")
 
         # Priority 2: Try Ollama (good quality, local server)
         try:
