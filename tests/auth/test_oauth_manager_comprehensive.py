@@ -15,7 +15,7 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlparse
 
-import pytest
+import pytest # pragma: allowlist secret
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from codex.auth.oauth_manager import (
     OAuthConfig,
