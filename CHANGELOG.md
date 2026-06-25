@@ -1,5 +1,51 @@
 # Changelog
 
+## [Unreleased] — 2026-06-25T01:38Z
+
+### Security (Regression Fix #2)
+- **REVERTED**: Commits with hardcoded cryptographic salts (085b9de8, bf948b97, 19ef5d84, cd8f22b0)
+  - Issue: PBKDF2 calls used hardcoded salts which defeats key derivation purpose
+  - Files: cognitive_app/src/server/cli_api_server.py, scripts/catalog_workflows.py
+  - Impact: Removed +2 HIGH severity alerts (57→50 expected)
+  - Lesson: Never hardcode salts in crypto; use os.urandom() or secrets module
+
+### Governance (REQ-4/REQ-5)
+- Updated AGENT_ACCOUNTABILITY_REPORT.md with regression #2 diagnosis
+- Updated CHANGELOG.md with remediation details
+
+---
+
+
+## [Unreleased] — 2026-06-25T01:23Z
+
+### Security
+- **FIXED**: CodeQL clear-text logging alerts (36 alerts, commit d02270d0)
+- **FIXED**: CodeQL code quality alerts (4 alerts, commit 63e3b855)
+- **REVERTED**: Unsafe workflow validation (commit 8f12288f) - prevented code injection
+
+### Changed
+- 3-stream parallel CodeQL remediation with regression analysis
+
+### Governance (REQ-4/REQ-5)
+- Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md
+
+---
+
+## [Unreleased] — 2026-06-25T01:23Z
+
+### Security
+- **FIXED**: CodeQL clear-text logging alerts (36 alerts, commit d02270d0)
+- **FIXED**: CodeQL code quality alerts (4 alerts, commit 63e3b855)
+- **REVERTED**: Unsafe workflow validation (commit 8f12288f) - prevented code injection alerts
+
+### Changed
+- CodeQL remediation with parallel 3-stream execution and regression detection
+
+### Governance
+- REQ-4/REQ-5: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated
+
+---
+
 ## [Unreleased] — 2026-06-24T21:36Z
 
 ### Fixed (CI Rescue: CodeQL Comment Resolution & Final Compliance)
