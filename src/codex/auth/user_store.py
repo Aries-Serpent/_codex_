@@ -21,6 +21,7 @@ Security notes:
 
 import logging
 import os
+import re
 import secrets
 import threading
 import time
@@ -130,6 +131,7 @@ class UserStore:
         if not password:
             raise ValueError("Password must not be empty")
 
+        self._validate_email_format(email)
         self._validate_password_strength(password)
 
         user = User(
@@ -362,3 +364,19 @@ class UserStore:
             raise ValueError(
                 f"Password must contain at least one {', '.join(errors)}"
             )
+
+    @staticmethod
+    def _validate_email_format(email: str) -> None:
+        """
+        Validate email format.
+
+        Args:
+            email: Email address to validate.
+
+        Raises:
+            ValueError: If the email format is invalid.
+        """
+        # Basic email format validation pattern
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(email_pattern, email):
+            raise ValueError(f"Invalid email format: {email}")
