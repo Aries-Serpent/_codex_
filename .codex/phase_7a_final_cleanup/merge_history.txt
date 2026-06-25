@@ -1,0 +1,1 @@
+1ad7cadf fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [skip ci]

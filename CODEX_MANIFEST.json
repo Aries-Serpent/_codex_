@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-24T00:38:18Z",
+  "generated_at": "2026-06-25T10:24:56Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1066,22 +1066,22 @@
     {
       "name": "automated-monitoring-setup",
       "enforcement_tier": "PARTIAL",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "automated-post-deployment-verification",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "automated-release-creation",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "automated-rollback-generation",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "autonomous-agent",
@@ -1236,7 +1236,7 @@
     {
       "name": "cognitive-k8s-provisioning",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "cognitive-perception",
@@ -1246,7 +1246,7 @@
     {
       "name": "cognitive-registry-validation",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "cognitive_brain_ci_feedback",
@@ -1844,6 +1844,16 @@
       "has_concurrency": true
     },
     {
+      "name": "session-recovery-continuous-monitoring",
+      "enforcement_tier": "PARTIAL",
+      "has_concurrency": true
+    },
+    {
+      "name": "session-recovery-handler",
+      "enforcement_tier": "SOFT",
+      "has_concurrency": true
+    },
+    {
       "name": "session-watchdog",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -2296,6 +2306,10 @@
       "type": "enforcement"
     },
     {
+      "path": ".codex/docs/SESSION_RECOVERY_DOCUMENTATION.md",
+      "type": "enforcement"
+    },
+    {
       "path": ".codex/docs/SESSION_RESTORE_GROUNDED_FOLLOWUP.md",
       "type": "enforcement"
     },
@@ -2349,5 +2363,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "dc7805546f653f62de25cabd573890ea23c17f870381f5e670909300a4aaf965"
+  "integrity_sha256": "6f6d7356c7d43c64957f97c7419d01f6cde85814a30e3cba0195e0f153f1f5a9"
 }
