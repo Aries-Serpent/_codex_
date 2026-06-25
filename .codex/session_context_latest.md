@@ -1,32 +1,32 @@
-# Session Context — 2026-06-25T16:20:36Z
-**Branch:** `copilot/fix-ci-failure-rag-module-tests`  **PR:** #5081  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-25T22:32:00Z
+**Branch:** `copilot/fix-ci-failure-triage-report`  **PR:** #5084  **Access:** `rest, graphql`
 
 ## 🔌 Access Strategy
-- Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4565` (✅)
-- GraphQL remaining: `4956` (✅)
-- gh CLI: ✅
+- Recommended method chain: `rest → graphql`
+- REST remaining: `4357` (✅)
+- GraphQL remaining: `4982` (✅)
+- gh CLI: ❌
 - CodeQL CLI: ❌
 
-## 📋 PR #5081 — Implement PR merge readiness framework with WEC preservation and 10-gate validation model
-State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
+## 📋 PR #5084 — Add post-merge session campaign groundwork: baseline validation framework and reversion protocol
+State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-triage-report` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Workflow Execution Gate** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
+- **PR Comment Review Gate** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
+- **Validation Pipeline** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
+- **Resilient Validation Suite** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
 
 ## 📝 Recent Commits
-- `682b80fa` chore: Update AGENT_ACCOUNTABILITY_REPORT.md - session wrapup compliance — copilot-swe-agent[bot] (2026-06-25)
-- `9e8ab3d2` fix: Address PR #5081 review comments — copilot-swe-agent[bot] (2026-06-25)
-- `8c5f424c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-25)
-- `6e0423e1` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-25)
-- `3eeccb17` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
-- `05e1fbed` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
-- `ed99dbc0` WIP: Initial plan for addressing PR #5081 review comments — copilot-swe-agent[bot] (2026-06-25)
-- `dfd5ee6c` Potential fix for pull request finding 'Unused import' — Statix (2026-06-25)
+- `9aa1eda7` Add campaign artifact index for post-merge navigation — copilot-swe-agent[bot] (2026-06-25)
+- `ed1cf940` Implementation complete: Post-merge campaign groundwork documented — copilot-swe-agent[bot] (2026-06-25)
+- `8d0c55bf` Initial: Outline post-merge campaign implementation checklist — copilot-swe-agent[bot] (2026-06-25)
+- `68488fd1` Add post-merge Copilot agent execution prompt — copilot-swe-agent[bot] (2026-06-25)
+- `a6a47db2` Create post-merge validation campaign groundwork — copilot-swe-agent[bot] (2026-06-25)
+- `8f9195e4` Apply remaining changes — copilot-swe-agent[bot] (2026-06-25)
+- `1d3f521f` chore: Update compliance tracking files (AGENT_ACCOUNTABILITY_REPORT.md, CHANGEL — copilot-swe-agent[bot] (2026-06-25)
+- `e61e4178` fix(auth): Address review comments on MFA and token manager security issues — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

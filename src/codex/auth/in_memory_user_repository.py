@@ -134,3 +134,8 @@ class InMemoryUserRepository(UserRepository):
         """Return the total number of users in the repository."""
         with self._lock:
             return len(self._users)
+
+    # Legacy backward-compatibility methods using the new names
+    def get_user(self, user_id: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`get_by_id`."""
+        return self.get_by_id(user_id)

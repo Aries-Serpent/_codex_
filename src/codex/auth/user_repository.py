@@ -87,3 +87,7 @@ class UserRepository(ABC):
     @abstractmethod
     def list_all(self) -> list[User]:
         """Return all user records (active and inactive)."""
+
+    def list(self) -> list[User]:
+        """Backward-compatible alias for :meth:`list_all`."""
+        return self.list_all()
