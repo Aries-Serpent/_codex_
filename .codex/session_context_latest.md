@@ -1,32 +1,32 @@
-# Session Context — 2026-06-25T21:04:17Z
+# Session Context — 2026-06-25T21:20:52Z
 **Branch:** `copilot/fix-ci-failure-triage-report`  **PR:** #5084  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4769` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4681` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5084 — Restore backward-compatible MFA behavior for auth callers
-State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-triage-report` → `main`
+## 📋 PR #5084 — Fix authentication module backward compatibility regression
+State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-triage-report` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 - **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Unified Governance Check** — `failure` on `copilot/fix-ci-failure-triage-report` (2026-06-25)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
+- `d089cb21` Implement backward compatibility wrappers for auth module — copilot-swe-agent[bot] (2026-06-25)
+- `8ce66b39` Plan: Add backward compatibility wrappers to auth module — copilot-swe-agent[bot] (2026-06-25)
 - `94fb3c12` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-25)
 - `5b9f8077` Initial plan — copilot-swe-agent[bot] (2026-06-25)
 - `59ae12be` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-25)
 - `85b05c66` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-25)
 - `5e4b1095` Merge pull request #5083 from Aries-Serpent/copilot/fix-ci-failure-rag-module-te — Statix (2026-06-25)
 - `5c105847` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
-- `1e62389c` Fix auth review feedback for password and token handling — copilot-swe-agent[bot] (2026-06-25)
-- `11ef77a1` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
