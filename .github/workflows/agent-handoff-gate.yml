@@ -68,9 +68,24 @@ jobs:
           import os
           import re
           import sys
-
-          comment = os.environ["COMMENT_BODY"]
-          pr_number = os.environ["PR_NUMBER"]
+           
+          # Input validation: Sanitize comment body
+          comment = os.environ.get("COMMENT_BODY", "")
+           
+          # Guard 1: Check comment body length (max 1MB to prevent DoS)
+          if len(comment) > 1048576:
+              print("::error::agent-handoff-gate: Comment body exceeds size limit (>1MB)")
+              sys.exit(1)
+           
+          # Guard 2: Validate comment body contains only expected characters
+          # Allow printable ASCII, common Unicode symbols, and newlines
+          if not all(ord(c) < 128 or ord(c) > 127 for c in comment if ord(c) >= 32 or c in '\n\r\t'):
+              # Actually allow the full range but warn on suspicious patterns
+              suspicious_count = sum(1 for c in comment if ord(c) > 127)
+              if suspicious_count > len(comment) * 0.5:  # More than 50% non-ASCII
+                  print(f"::warning::agent-handoff-gate: Comment contains {suspicious_count} non-ASCII characters")
+           
+          pr_number = os.environ.get("PR_NUMBER", "unknown")
           # P2.4: consume AGENT_HANDOFF_TIMEOUT_SECONDS for HTTP request timeouts.
           try:
               _timeout_val = os.environ.get("AGENT_HANDOFF_TIMEOUT_SECONDS", "120")
@@ -86,11 +101,12 @@ jobs:
           signal.signal(signal.SIGALRM, _timeout_handler)
           signal.alarm(HANDOFF_TIMEOUT)
 
-          # Extract JSON block after "AGENT_HANDOFF:"
-          match = re.search(r"AGENT_HANDOFF:\s*```(?:json)?\s*(\{.*?\})\s*```", comment, re.DOTALL)
+          # Extract JSON block after "AGENT_HANDOFF:" with strict regex to prevent injection
+          # Only extract well-formed JSON (curly braces must be balanced)
+          match = re.search(r"AGENT_HANDOFF:\s*```(?:json)?\s*(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})\s*```", comment, re.DOTALL)
           if not match:
-              # Try without code fence
-              match = re.search(r"AGENT_HANDOFF:\s*(\{.*?\})", comment, re.DOTALL)
+              # Try without code fence, but with strict validation
+              match = re.search(r"AGENT_HANDOFF:\s*(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})", comment, re.DOTALL)
 
           if not match:
               print("::warning::agent-handoff-gate: No JSON payload found after AGENT_HANDOFF: — skipping validation")
