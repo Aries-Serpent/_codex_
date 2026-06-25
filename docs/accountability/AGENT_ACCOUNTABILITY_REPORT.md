@@ -3,6 +3,13 @@
 
 
 
+
+
+## SESSION SUMMARY — 2026-06-25T16:17Z [auto-generated]
+
+**Session:** auto-20260625T1617-run5046 | **Run:** 28183992411 | **Date:** 2026-06-25
+
+Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to satisfy `agent-auth-delegation.yml` REQ-4 requirement (CI Triage #3911). All previously-completed work from this session is captured in `CHANGELOG.md` and `.codex/aftermath/pda_iterations.jsonl`.
 ## SESSION SUMMARY — 2026-06-25T14:05Z [CODEQL SECURITY FIXES — PHASE 1]
 
 **Session:** copilot-codeql-fixes-5078 | **Run:** 28175847666+ | **Date:** 2026-06-25T14:05Z
@@ -3623,3 +3630,13 @@ and the CI gate requirement.
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
 ---
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `pre-merge-validation.yml` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `comment-review-gate.yml` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `deferral-language-gate.yml` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `agent-auth-delegation.yml` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `workflow-execution-gate.yml` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `cost-gate.yml` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `auto-approve-workflows` — detected 2026-06-25T16:18:13Z @ 6320b967 — sticky [x] maintained by all future agent sessions
