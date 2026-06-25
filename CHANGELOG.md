@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased] — 2026-06-25T02:25Z
+
+### Fixed (CI Rescue: Actionlint Workflow Compliance)
+- **Actionlint Workflow Audit failure:** Fixed reusable workflow call violation (commit 14ad32b8)
+  - Issue: `check-t03` job called reusable workflow but had `timeout-minutes` (not allowed)
+  - Fix: Removed `runs-on` and `timeout-minutes` from reusable workflow call in `.github/workflows/admin-action-t03.yml`
+  - Impact: Resolves Actionlint audit failure on commit 808d87bd9049
+
+### Governance (REQ-4/REQ-5)
+- Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md
+
+---
+
 ## [Unreleased] — 2026-06-25T01:23Z
 
 ### Security
