@@ -1,5 +1,11 @@
 # Changelog
-## [Unreleased] — 2026-06-25T03:40Z
+## [Unreleased] — 2026-06-25T03:48Z
+
+### Fixed (YAML Workflow Linting Errors)
+- **Trailing spaces in workflow YAML:** Removed trailing spaces from `.github/workflows/discussion-cleanup.yml` (lines 179, 185, 187)
+- **Excessive blank lines in workflow YAML:** Fixed blank line linting issue in `.github/workflows/progressive-validation.yml` (line 52)
+- **Validation:** All workflow files now pass yamllint validation with no errors
+- **Commit:** `ddd7b715`
 
 ### Security (CodeQL Remediation Protocol — All 5 Phases Complete)
 - **CODEQL_REMEDIATION_PROTOCOL.md Execution:** Full 5-phase workflow with 3-stream parallel execution (commits 33824995, 60148528, 905da9d3, e5f882aa, 4f729a1e, a1f2488c, 7b1b5914)
