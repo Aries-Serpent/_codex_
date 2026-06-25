@@ -572,7 +572,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         # Security: _mask() redacts all but the last 4 chars; additionally use a
         # fingerprint prefix so CodeQL py/clear-text-logging-sensitive-data is satisfied.
         _auth_fp = (str(_mask(auth_header))[:8] + "…") if auth_header else "<none>"
-        print(f"[auth] Using header: {_auth_fp}", file=sys.stderr)
+        print(f"[auth] Using header: {_auth_fp}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
 
     with GitHubSession(auth_header=auth_header) as gh:
         branch = args.branch

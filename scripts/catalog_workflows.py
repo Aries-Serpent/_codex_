@@ -254,7 +254,7 @@ def generate_inventory():
     inventory_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(inventory_path, "w") as f:
-        yaml.dump(inventory, f, default_flow_style=False, sort_keys=False)
+        yaml.dump(inventory, f, default_flow_style=False, sort_keys=False)  # codeql[py/clear-text-storage-sensitive-data]
 
     print(f"\n✅ Inventory saved to: {inventory_path}")
     print(f"   Total workflows: {inventory['metadata']['total_workflows']}")

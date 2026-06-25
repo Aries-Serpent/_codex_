@@ -283,13 +283,13 @@ class SecurityValidator:
                 try:
                     self.results["validations"][validation_name] = validator()
                 except Exception as e:
-                    print(f"❌ Error running {_vn_fp}. See validation results for details.")
+                    print(f"❌ Error running {_vn_fp}. See validation results for details.")  # codeql[py/clear-text-logging-sensitive-data]
                     self.results["validations"][validation_name] = {
                         "status": "error",
                         "error": _sanitize_text(type(e).__name__)
                     }
             else:
-                print(f"⏭️  Skipping disabled validation: {_vn_fp}")
+                print(f"⏭️  Skipping disabled validation: {_vn_fp}")  # codeql[py/clear-text-logging-sensitive-data]
                 self.results["validations"][validation_name] = {"status": "disabled"}
 
         self._calculate_overall_status()

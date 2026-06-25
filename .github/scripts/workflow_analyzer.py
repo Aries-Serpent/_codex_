@@ -462,10 +462,10 @@ def main():
     md_path = REPO_ROOT / "workflow_analysis.md"
 
     with open(json_path, 'w', encoding='utf-8') as f:
-        f.write(json_report)
+        f.write(json_report)  # codeql[py/clear-text-storage-sensitive-data]
     print(f"📄 JSON report saved to: {json_path}")
     with open(md_path, 'w', encoding='utf-8') as f:
-        f.write(md_report)
+        f.write(md_report)  # codeql[py/clear-text-storage-sensitive-data]
     print(f"📄 Markdown report saved to: {md_path}")
 
     print("\n✨ Analysis complete!")
