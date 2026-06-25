@@ -1,14 +1,14 @@
-# Session Context — 2026-06-25T15:26:45Z
+# Session Context — 2026-06-25T15:49:07Z
 **Branch:** `copilot/fix-ci-failure-rag-module-tests`  **PR:** #5081  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4939` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4752` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5081 — [WIP] Fix CI failure on main: RAG Module Tests
+## 📋 PR #5081 — fix: Resolve 328 failing tests across RAG, Auth modules and Secrets workflow stability
 State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
@@ -19,14 +19,14 @@ State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-rag-module-tests` 
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
+- `7fabf4bd` fix(code-review): Replace ERROR_TYPE placeholders and fix git merge-base logic i — copilot-swe-agent[bot] (2026-06-25)
+- `5ab84089` Add email format validation to UserStore.create_user() — copilot-swe-agent[bot] (2026-06-25)
+- `3dfc43b6` Fix 314 auth module test failures: hash_password alias, password validation, rep — copilot-swe-agent[bot] (2026-06-25)
+- `c0750c61` Fix 14 failing RAG module tests — copilot-swe-agent[bot] (2026-06-25)
+- `075e0892` fix(ci): add fetch+rebase retry logic to secrets-baseline-enforcer workflow — copilot-swe-agent[bot] (2026-06-25)
+- `75396a0a` ci(plan): Strategic fix plan for three critical CI failures - RAG, Auth, Secrets — copilot-swe-agent[bot] (2026-06-25)
 - `6cad08c3` Initial plan — copilot-swe-agent[bot] (2026-06-25)
 - `e72c0388` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-25)
-- `01d7722c` Merge pull request #5078 from Aries-Serpent/copilot/fix-authentication-and-rag-j — Statix (2026-06-25)
-- `86d7af38` chore(compliance): Update accountability and changelog for CodeQL fixes (REQ-4/R — copilot-swe-agent[bot] (2026-06-25)
-- `a914ef64` Fix CodeQL violations: authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
-- `cd41732d` Phase 1 CodeQL Fixes: Authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
-- `5150874e` refactor(accountability): Final session summary and compliance verification — copilot-swe-agent[bot] (2026-06-25)
-- `90f758ae` docs(codeql): Add comprehensive security alert analysis and remediation plan — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
