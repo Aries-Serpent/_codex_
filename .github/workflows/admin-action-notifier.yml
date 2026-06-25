@@ -238,11 +238,12 @@ jobs:
       - name: Step summary
         if: always()
         env:
-          GAP_ID:       ${{ inputs.gap_id }}
-          SCOPE_OK:     ${{ steps.probe.outputs.scope_ok }}
-          ISSUE_NUM:    ${{ steps.notify.outputs.issue_number }}
-          HTTP_STATUS:  ${{ steps.probe.outputs.http_status }}
-          RESPONSE_MSG: ${{ steps.probe.outputs.response_msg }}
+          GAP_ID:         ${{ inputs.gap_id }}
+          SCOPE_OK:       ${{ steps.probe.outputs.scope_ok }}
+          ISSUE_NUM:      ${{ steps.notify.outputs.issue_number }}
+          HTTP_STATUS:    ${{ steps.probe.outputs.http_status }}
+          EXPECTED_OK:    ${{ inputs.expected_ok_status }}
+          RESPONSE_MSG:   ${{ steps.probe.outputs.response_msg }}
         run: |
           {
             echo "## 🔐 Admin Action Gate — \`${GAP_ID}\`"
@@ -251,12 +252,21 @@ jobs:
             echo "|-------|-------|"
             echo "| Gap ID | \`${GAP_ID}\` |"
             echo "| Probe HTTP status | \`${HTTP_STATUS}\` |"
+            echo "| Expected status | \`${EXPECTED_OK}\` |"
             echo "| Gap status | \`${SCOPE_OK}\` |"
             [ -n "${ISSUE_NUM}" ] && echo "| Issue | #${ISSUE_NUM} |"
             echo ""
             case "${SCOPE_OK}" in
-              true)    echo "### ✅ Gap CLOSED — admin action completed" ;;
-              false)   echo "### ⚠️ Gap OPEN — admin action required (issue created/updated)" ;;
-              unknown) echo "### ℹ️ Inconclusive probe — check workflow logs" ;;
+              true)    echo "### ✅ Gap CLOSED — probe returned expected status (HTTP ${EXPECTED_OK})" ;;
+              false)   echo "### ⚠️ Gap OPEN — admin action required (HTTP ${HTTP_STATUS} instead of ${EXPECTED_OK})"
+                       echo ""
+                       echo "**Error Details:** \`${RESPONSE_MSG}\`"
+                       [ -n "${ISSUE_NUM}" ] && echo "**Fix Steps:** See issue #${ISSUE_NUM} for click-by-click instructions"
+                       ;;
+              unknown) echo "### ℹ️ Inconclusive probe — unexpected HTTP ${HTTP_STATUS}"
+                       echo ""
+                       echo "**Error Details:** \`${RESPONSE_MSG}\`"
+                       echo "**Action:** Check workflow logs for details, or run workflow again"
+                       ;;
             esac
           } >> "$GITHUB_STEP_SUMMARY"
