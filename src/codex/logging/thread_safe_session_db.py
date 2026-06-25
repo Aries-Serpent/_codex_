@@ -419,5 +419,6 @@ class ThreadSafeSessionDB:
         """Cleanup on deletion."""
         try:
             self.cleanup()
-        except Exception:
-            pass
+        except (IOError, OSError) as e:  # codeql[py/catch-all-except]
+            logger.error(f"OSError during cleanup on deletion: {type(e).__name__}: {e}")
+            log_error(e, "__del__", getattr(self, "errors_path", ".codex/errors.log"))

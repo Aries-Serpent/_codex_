@@ -1,15 +1,25 @@
-# Session Context — 2026-06-25T11:27:36Z
-**Branch:** `copilot/create-implementation-plan`  **PR:** #5077  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-25T14:04:30Z
+**Branch:** `copilot/fix-authentication-and-rag-jobs`  **PR:** #5078  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4336` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4981` (✅)
+- GraphQL remaining: `4978` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5077 — Hotfix after Merge #5071 to main
-State: `open`  Draft: `False`  Branch: `copilot/create-implementation-plan` → `main`
+## 📋 PR #5078 — Fix CodeQL violations: add exception logging and suppress bare catches
+State: `open`  Draft: `False`  Branch: `copilot/fix-authentication-and-rag-jobs` → `main`
+
+### ❌ 15 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
+- `Post Execution Plan` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `💰 PR Cost Check` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
@@ -19,14 +29,14 @@ State: `open`  Draft: `False`  Branch: `copilot/create-implementation-plan` → 
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
-- `b1d436a9` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
-- `e4e07845` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-25)
-- `f4082ce1` Merge branch 'main' into copilot/create-implementation-plan — Statix (2026-06-25)
-- `d137cdc8` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-25)
-- `167e839b` Merge pull request #5076 from Aries-Serpent/copilot/hot-fix-followup-prompt — Statix (2026-06-25)
-- `a2192732` Merge pull request #5075 from Aries-Serpent/copilot/hot-fix-followup-prompt — Statix (2026-06-25)
-- `7e040405` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-25)
-- `42a9c219` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-25)
+- `a914ef64` Fix CodeQL violations: authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
+- `cd41732d` Phase 1 CodeQL Fixes: Authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
+- `5150874e` refactor(accountability): Final session summary and compliance verification — copilot-swe-agent[bot] (2026-06-25)
+- `90f758ae` docs(codeql): Add comprehensive security alert analysis and remediation plan — copilot-swe-agent[bot] (2026-06-25)
+- `d2479ac8` refactor(accountability): Final session documentation update - comprehensive hea — copilot-swe-agent[bot] (2026-06-25)
+- `6c1aa2cb` improve(admin-action-notifier): Enhance error messaging with expected vs actual  — copilot-swe-agent[bot] (2026-06-25)
+- `b63bd4b3` fix(docs): Add pragma allowlist secret to markdown tables — copilot-swe-agent[bot] (2026-06-25)
+- `b0c5b9bb` docs(escalation): Add T-03 token scope admin action escalation guide — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
@@ -37,9 +47,9 @@ State: `open`  Draft: `False`  Branch: `copilot/create-implementation-plan` → 
 - `COPILOT_AGENT_FIREWALL_ENABLED` = `true`
 
 ## 🔁 PDA Loop — Last 5 Iterations
-- [2026-06-23] `RP-003`: ?
 - [2026-06-23] `?`: ?
 - [2026-06-24] `PDA-AUTO-20260624`: ?
+- [2026-06-25] `PDA-AUTO-20260625`: ?
 
 ## 📜 Codebase Agency Policy (excerpt)
 ```
