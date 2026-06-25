@@ -43,7 +43,7 @@ These require human judgment and may lead to reversion:
 
 | Failure Type | Detection | Action |
 |--------------|-----------|--------|
-| **Secret Injection Failure** | `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` not injected | Verify secrets are configured in GitHub; do NOT revert workflow |
+| **Secret Injection Failure** | `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY` not injected | Verify secrets are configured in GitHub; do NOT revert workflow | <!-- pragma: allowlist secret -->
 | **LFS Policy Broken** | `GIT_LFS_SKIP_SMUDGE` not respected | Verify LFS settings; may need git config reset |
 | **Environment Variable Loss** | CCA version lock vars missing | Check copilot-setup-steps.yml env block intact |
 
@@ -73,7 +73,7 @@ These require human judgment and may lead to reversion:
 │  └─ YES → Document and proceed (Category B)
 │
 ├─ Secret/LFS/environment variable failure?
-│  └─ YES → Investigate, escalate (Category C)
+│  └─ YES → Investigate, escalate (Category C) <!-- pragma: allowlist secret -->
 │
 └─ All checks pass or only pre-existing issues?
    └─ YES → PROCEED to next phase

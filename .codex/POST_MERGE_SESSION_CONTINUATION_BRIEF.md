@@ -172,10 +172,10 @@ These are NOT in scope for post-merge session:
 
 ### If environment variables missing:
 ```
-→ Check GitHub Actions secret injection
+→ Check GitHub Actions secret injection <!-- pragma: allowlist secret -->
 → If not @mbaetiong responsibility → Escalate
 → Do NOT revert workflow (this is external config)
-```
+``` <!-- pragma: allowlist secret -->
 
 ### If pre-existing issues only:
 ```

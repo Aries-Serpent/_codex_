@@ -299,7 +299,7 @@ def inspect(tokenizer_path: Path) -> None:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Exception: {error_type}")
             _append_error_block(
                 "inspect",
                 f"Failed to parse manifest.json: {exc}",
@@ -329,7 +329,7 @@ def inspect(tokenizer_path: Path) -> None:
                 tokenizer_cfg = json.loads(config_path.read_text(encoding="utf-8"))
             except (IOError, OSError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug(f"Exception: {error_type}")
                 _append_error_block(
                     "inspect",
                     f"Failed to parse tokenizer.json: {exc}",
@@ -382,7 +382,7 @@ def encode(
             payload = input_path.read_text(encoding="utf-8")
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug(f"Exception: {error_type}")
             _fail(
                 "encode",
                 f"Failed to read input text from {input_path}: {exc}",
