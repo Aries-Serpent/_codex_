@@ -33,12 +33,12 @@ Run this FIRST to see what collection errors exist with minimal deps:
 cd /home/runner/work/_codex_/_codex_
 
 # Collection in current environment (may have missing deps)
-echo "=== TEST COLLECTION (Current Environment) ===" >> /tmp/collection_diagnostic.log
-pytest --collect-only --tb=short 2>&1 | tee -a /tmp/collection_diagnostic.log
+echo "=== TEST COLLECTION (Current Environment) ===" >> .codex/collection-diagnostic.log
+pytest --collect-only --tb=short 2>&1 | tee -a .codex/collection-diagnostic.log
 
 # Count errors
 COLLECTION_ERRORS=$(pytest --collect-only --tb=no 2>&1 | grep -c "ERROR\|ImportError\|ModuleNotFoundError" || echo "0")
-echo "Collection Errors: $COLLECTION_ERRORS" | tee -a /tmp/collection_diagnostic.log
+echo "Collection Errors: $COLLECTION_ERRORS" | tee -a .codex/collection-diagnostic.log
 ```
 
 ### Step 2: Identify Specific Missing Imports
@@ -98,12 +98,12 @@ python3 -c "import sqlalchemy; print(f'sqlalchemy: {sqlalchemy.__version__}')"
 
 ```bash
 # Re-run collection after installing deps
-echo "=== TEST COLLECTION (After Installing Missing Deps) ===" >> /tmp/collection_diagnostic.log
-pytest --collect-only --tb=short 2>&1 | tee -a /tmp/collection_diagnostic.log
+echo "=== TEST COLLECTION (After Installing Missing Deps) ===" >> .codex/collection-diagnostic.log
+pytest --collect-only --tb=short 2>&1 | tee -a .codex/collection-diagnostic.log
 
 # Count errors again
 NEW_COLLECTION_ERRORS=$(pytest --collect-only --tb=no 2>&1 | grep -c "ERROR\|ImportError\|ModuleNotFoundError" || echo "0")
-echo "Collection Errors After: $NEW_COLLECTION_ERRORS" | tee -a /tmp/collection_diagnostic.log
+echo "Collection Errors After: $NEW_COLLECTION_ERRORS" | tee -a .codex/collection-diagnostic.log
 
 # Compare
 if [ "$NEW_COLLECTION_ERRORS" -lt "$COLLECTION_ERRORS" ]; then

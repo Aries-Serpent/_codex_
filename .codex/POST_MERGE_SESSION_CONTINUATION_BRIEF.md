@@ -36,7 +36,6 @@
 ### ☐ Phase 1: Setup Validation (5 min)
 **Run**:
 ```bash
-cd /home/runner/work/_codex_/_codex_
 yamllint .github/workflows/copilot-setup-steps.yml
 echo "Exit code: $?"
 ```

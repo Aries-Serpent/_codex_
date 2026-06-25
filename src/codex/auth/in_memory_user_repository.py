@@ -139,11 +139,3 @@ class InMemoryUserRepository(UserRepository):
     def get_user(self, user_id: str) -> Optional[User]:
         """Backward-compatible alias for :meth:`get_by_id`."""
         return self.get_by_id(user_id)
-
-    def get_username(self, username: str) -> Optional[User]:
-        """Backward-compatible alias for :meth:`get_by_username`."""
-        return self.get_by_username(username)
-
-    def get_email(self, email: str) -> Optional[User]:
-        """Backward-compatible alias for :meth:`get_by_email`."""
-        return self.get_by_email(email)

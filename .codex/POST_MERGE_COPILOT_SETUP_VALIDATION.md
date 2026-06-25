@@ -159,7 +159,7 @@ grep "COPILOT_AGENT_TURN_ISOLATION_ENABLED" .github/workflows/copilot-setup-step
 
 **Check 1: pyproject.toml**
 ```bash
-grep "requires-python" /home/runner/work/_codex_/_codex_/pyproject.toml
+grep "requires-python" pyproject.toml
 ```
 
 **Expected**: `requires-python = ">=3.12"`

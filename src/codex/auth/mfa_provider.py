@@ -259,7 +259,7 @@ class MFAProvider:
         self,
         secret: str,
         code: str,
-        user_id: str | None = None,
+        user_id: str,
         window: int = 1,
         period: int = 30,
         digits: int = 6,
@@ -271,7 +271,7 @@ class MFAProvider:
         Args:
             secret: Base32-encoded secret
             code: TOTP code to verify
-            user_id: User identifier for rate limiting (optional for backward compatibility)
+            user_id: User identifier for rate limiting (required)
             window: Number of time periods to check before/after current
             period: Time period in seconds
             digits: Number of digits in token
@@ -280,11 +280,7 @@ class MFAProvider:
         Returns:
             True if code is valid, False otherwise
         """
-        # Use stable per-secret identifier for backward compatibility if user_id not provided
-        if user_id is None:
-            effective_user_id = f"secret_{hashlib.sha256(secret.encode()).hexdigest()[:16]}"
-        else:
-            effective_user_id = user_id
+        effective_user_id = user_id
         
         # Check if user is locked out
         if self._is_locked_out(effective_user_id):
