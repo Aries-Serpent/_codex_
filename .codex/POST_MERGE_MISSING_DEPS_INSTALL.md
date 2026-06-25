@@ -39,6 +39,10 @@ pytest --collect-only --tb=short 2>&1 | tee -a .codex/collection-diagnostic.log
 # Count errors
 COLLECTION_ERRORS=$(pytest --collect-only --tb=no 2>&1 | grep -c "ERROR\|ImportError\|ModuleNotFoundError" || echo "0")
 echo "Collection Errors: $COLLECTION_ERRORS" | tee -a .codex/collection-diagnostic.log
+
+# Note: The .codex/collection-diagnostic.log file is repository-tracked and should be cleaned up
+# between sessions by removing or archiving old diagnostic logs (retention policy: keep last 3 sessions)
+
 ```
 
 ### Step 2: Identify Specific Missing Imports
