@@ -15,7 +15,7 @@ from datetime import datetime
 
 import pytest
 
-from codex.auth.token_manager import TokenManager, TokenType # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.token_manager import TokenManager, TokenType # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 # ============================================================================
 # FIXTURES

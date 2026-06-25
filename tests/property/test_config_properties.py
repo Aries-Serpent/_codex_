@@ -15,7 +15,7 @@ import pytest
 
 try:
     from hypothesis import given
-    from hypothesis import strategies as st # pragma: allowlist secret # pragma: allowlist secret
+    from hypothesis import strategies as st # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
     HAS_HYPOTHESIS = True
 except ImportError:

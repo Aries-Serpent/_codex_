@@ -15,7 +15,7 @@
 5. [Stability Criteria](#stability-criteria)
 6. [Manual Testing Procedures](#manual-testing-procedures)
 
---- # pragma: allowlist secret # pragma: allowlist secret
+--- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 ## Executive Summary
 

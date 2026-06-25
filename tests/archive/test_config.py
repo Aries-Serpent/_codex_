@@ -15,7 +15,7 @@ from codex.archive import config as archive_config
 
 def test_archive_app_config_defaults(tmp_path: Path) -> None:
     cfg = archive_config.ArchiveAppConfig.load(env={})
-    assert cfg.backend.backend == "sqlite" # pragma: allowlist secret # pragma: allowlist secret
+    assert cfg.backend.backend == "sqlite" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     assert cfg.backend.url.endswith(".codex/archive.sqlite")
     assert cfg.logging.level == "info"
     assert cfg.retry.max_attempts == 5

@@ -15,7 +15,7 @@ from codex.ast_adapters import (
     PythonASTAdapter,
     StandardizedASTNode,
     YAMLASTAdapter,
-) # pragma: allowlist secret # pragma: allowlist secret
+) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestCrossAdapterIntegration:

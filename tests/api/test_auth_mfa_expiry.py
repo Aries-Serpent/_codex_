@@ -15,7 +15,7 @@ import time
 from unittest.mock import patch
 
 import pytest
- # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 pytest.importorskip("fastapi")
 from fastapi import FastAPI
 from fastapi.testclient import TestClient

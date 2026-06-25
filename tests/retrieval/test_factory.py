@@ -15,7 +15,7 @@ from src.codex.retrieval.stores.factory import (
     VectorStoreType,
     auto_detect_store,
     create_auto_store,
-    get_default_store, # pragma: allowlist secret # pragma: allowlist secret
+    get_default_store, # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 
 # Check if FAISS is available

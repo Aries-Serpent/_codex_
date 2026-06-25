@@ -15,7 +15,7 @@ class TestAgentCoreMinimal:
         assert agent_config["name"] == "test_agent"
         assert agent_config["enabled"] is True
 
-    def test_agent_lifecycle_state_transitions(self): # pragma: allowlist secret # pragma: allowlist secret
+    def test_agent_lifecycle_state_transitions(self): # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
         """Test agent state transitions."""
         states = ["created", "initialized", "running", "stopped"]
 

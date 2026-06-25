@@ -15,7 +15,7 @@ from unittest.mock import patch
 
 class TestIntentInferer:
     """Tests for intent inference functionality."""
- # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     def test_infer_cli_tool(self):
         """Test inferring intent for a CLI tool."""
         from codex.intent.inferer import infer_intent

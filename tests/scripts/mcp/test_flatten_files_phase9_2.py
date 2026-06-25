@@ -15,7 +15,7 @@ Tests cover:
 
 from __future__ import annotations
 
-import hashlib # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import hashlib # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from pathlib import Path
 
 

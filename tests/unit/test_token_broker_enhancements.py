@@ -15,7 +15,7 @@ from codex.autonomy.token_broker import (
     CircuitBreakerState,  # pragma: allowlist secret # pragma: allowlist secret
     TokenBroker,
     TokenCircuitBreaker,
-    TokenHealthChecker,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    TokenHealthChecker,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     TokenHealthStatus,
     TokenRotationScheduler,
     TokenSource,

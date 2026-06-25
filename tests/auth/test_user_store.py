@@ -15,7 +15,7 @@ class TestPasswordHasher:
         h = PasswordHasher()
         result = h.hash("MyP@ssword1")
         assert isinstance(result, str)
-        assert ":" in result # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+        assert ":" in result # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
     def test_verify_correct_password(self):
         h = PasswordHasher()

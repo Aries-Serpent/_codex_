@@ -15,7 +15,7 @@ from codex.auth.oauth_manager import (
     OAuthToken,
 )
 
- # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 class TestOAuthToken:
     """Tests for OAuthToken data structure."""
 

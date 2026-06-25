@@ -15,7 +15,7 @@ import os
 import random
 from collections.abc import Generator
 from pathlib import Path
-from typing import Any # pragma: allowlist secret # pragma: allowlist secret
+from typing import Any # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from unittest.mock import MagicMock
 
 import pytest

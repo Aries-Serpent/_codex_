@@ -15,7 +15,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from tests.branch_coverage import branch_input
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+ # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # ============================================================================
 # Branch Coverage: Scope Validator
 # ============================================================================

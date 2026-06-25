@@ -15,7 +15,7 @@ from codex.auth.middleware import (
     APIKeyValidator,
     AuthConfig,
 )
-from codex.auth.token_manager import TokenManager, TokenType # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.token_manager import TokenManager, TokenType # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestPermissionChecks:

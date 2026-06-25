@@ -15,7 +15,7 @@ import click
 import pytest
 
 from codex.archive.cli import (
-    _batch_progress_logger, # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    _batch_progress_logger, # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     _load_config,
     _parse_metadata,
     _resolve_commit,

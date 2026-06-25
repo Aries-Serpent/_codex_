@@ -15,7 +15,7 @@ from typing import Any
 
 import pytest
 
-try: # pragma: allowlist secret # pragma: allowlist secret
+try: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     from hypothesis import assume, given
     from hypothesis import strategies as st
 

@@ -15,7 +15,7 @@ class TestJSONASTAdapter:
     @pytest.fixture
     def adapter(self):
         """Create adapter instance"""
-        return JSONASTAdapter() # pragma: allowlist secret # pragma: allowlist secret
+        return JSONASTAdapter() # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
     def test_init(self, adapter):
         """Test adapter initialization"""
