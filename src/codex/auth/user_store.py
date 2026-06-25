@@ -260,6 +260,52 @@ class UserStore:
             return users
         return [u for u in users if u.is_active]
 
+    def get_user_by_id(self, user_id: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`get_user`."""
+        return self.get_user(user_id)
+
+    def get_user_by_username(self, username: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`find_by_username`."""
+        return self.find_by_username(username)
+
+    def get_user_by_email(self, email: str) -> Optional[User]:
+        """Backward-compatible alias for :meth:`find_by_email`."""
+        return self.find_by_email(email)
+
+    def get_all_users(self) -> list[User]:
+        """Backward-compatible alias for :meth:`list_users`."""
+        return self.list_users(include_inactive=True)
+
+    def get_users_by_role(self, role: str) -> list[User]:
+        """Return all users with a specific role."""
+        return [u for u in self.list_users(include_inactive=True) if role in u.roles]
+
+    def delete_user_by_username(self, username: str) -> None:
+        """Delete a user by username.
+
+        Args:
+            username: Username to delete
+
+        Raises:
+            KeyError: If user with username is not found
+        """
+        user = self.find_by_username(username)
+        if user is None:
+            raise KeyError(f"User '{username}' not found")
+        self.delete_user(user.user_id)
+
+    def verify_password(self, user: User, password: str) -> bool:
+        """Verify a password against a user's stored hash.
+
+        Args:
+            user: User object
+            password: Plain-text password to verify
+
+        Returns:
+            True if password matches, False otherwise
+        """
+        return self._hasher.verify(password, user.password_hash)
+
     def add_role(self, user_id: str, role: str) -> None:
         """Add a role to a user if it is not already present."""
         with self._lock:

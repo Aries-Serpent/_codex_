@@ -259,7 +259,7 @@ class MFAProvider:
         self,
         secret: str,
         code: str,
-        user_id: str,
+        user_id: str | None = None,
         window: int = 1,
         period: int = 30,
         digits: int = 6,
@@ -271,7 +271,7 @@ class MFAProvider:
         Args:
             secret: Base32-encoded secret
             code: TOTP code to verify
-            user_id: User identifier for rate limiting
+            user_id: User identifier for rate limiting (optional for backward compatibility)
             window: Number of time periods to check before/after current
             period: Time period in seconds
             digits: Number of digits in token
@@ -280,8 +280,11 @@ class MFAProvider:
         Returns:
             True if code is valid, False otherwise
         """
+        # Use default user_id for backward compatibility if not provided
+        effective_user_id = user_id or "default"
+        
         # Check if user is locked out
-        if self._is_locked_out(user_id):
+        if self._is_locked_out(effective_user_id):
             return False
 
         current_time = time.time()
@@ -292,11 +295,11 @@ class MFAProvider:
             expected_code = self.generate_totp(secret, check_time, period, digits, algorithm)
 
             if secrets.compare_digest(code, expected_code):
-                self._record_attempt(user_id, True)
+                self._record_attempt(effective_user_id, True)
                 return True
 
         # Code didn't match
-        self._record_attempt(user_id, False)
+        self._record_attempt(effective_user_id, False)
         return False
 
     def verify_totp_code(
@@ -482,6 +485,14 @@ class MFAProvider:
             True if MFA is enabled
         """
         return user_id in self._secret_store
+
+    def is_user_enrolled(self, user_id: str) -> bool:
+        """Backward-compatible alias for :meth:`is_mfa_enabled`."""
+        return self.is_mfa_enabled(user_id)
+
+    def enroll_user(self, user_id: str, issuer: str = "Codex", algorithm: str = "SHA256") -> MFASecret:
+        """Backward-compatible alias for :meth:`generate_totp_secret`."""
+        return self.generate_totp_secret(user_id=user_id, issuer=issuer, algorithm=algorithm)
 
     def get_secret(self, user_id: str) -> Optional["MFASecret"]:
         """

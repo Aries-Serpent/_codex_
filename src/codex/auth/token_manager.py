@@ -461,6 +461,14 @@ class TokenManager:
             )
         return self._encode_token(claims)
 
+    def create_session_token(self, user_id: str, **kwargs) -> str:
+        """Backward-compatible wrapper for :meth:`generate_session_token`.
+        
+        Returns only the token (not the tuple).
+        """
+        token, _ = self.generate_session_token(user_id, **kwargs)
+        return token
+
     def revoke_token(self, token: str) -> bool:
         """
         Revoke a token.
@@ -486,6 +494,22 @@ class TokenManager:
             return False
 
         return False
+
+    def revoke_by_jti(self, jti: str) -> bool:
+        """
+        Revoke a token by its JTI (JWT ID).
+
+        Args:
+            jti: Token ID to revoke
+
+        Returns:
+            True if token was revoked
+        """
+        self._revoked_tokens.add(jti)
+        # If session token, remove session
+        if jti in self._sessions:
+            del self._sessions[jti]
+        return True
 
     def revoke_all_user_tokens(self, user_id: str) -> int:
         """

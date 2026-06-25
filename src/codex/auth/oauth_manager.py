@@ -127,19 +127,40 @@ class OAuthManager:
         state: str = "",
         scopes: Optional[list[str]] = None,
         config: Optional["OAuthConfig"] = None,
+        scope: Optional[str] = None,
+        use_pkce: Optional[bool] = None,
     ) -> str:
-        """Return the authorization redirect URL."""
+        """Return the authorization redirect URL.
+        
+        Args:
+            state: State parameter for CSRF protection
+            scopes: List of scopes (preferred)
+            config: OAuth configuration (uses self.config if not provided)
+            scope: Legacy string parameter with space-separated scopes
+            use_pkce: Legacy parameter for PKCE support (ignored, always used)
+        
+        Returns:
+            Authorization URL with all parameters encoded
+        """
         cfg = config or self.config
         if cfg is None:
             raise ValueError("OAuth configuration is required")
         if not state:
             state = self.generate_state()
-        scope = " ".join(scopes) if scopes else (cfg.scope or " ".join(cfg.scopes or []))
+        
+        # Prefer scopes parameter, fall back to scope string, then config
+        if scopes:
+            final_scope = " ".join(scopes)
+        elif scope:
+            final_scope = scope
+        else:
+            final_scope = cfg.scope or " ".join(cfg.scopes or [])
+        
         params = {
             "client_id": cfg.client_id,
             "redirect_uri": cfg.redirect_uri,
             "state": state,
-            "scope": scope,
+            "scope": final_scope,
             "response_type": "code",
         }
         base = cfg.authorization_url or cfg.authorize_url or ""
@@ -241,6 +262,14 @@ class OAuthManager:
         digest = hashlib.sha256(verifier.encode()).digest()
         # Base64 URL-safe encoding without padding
         return base64.urlsafe_b64encode(digest).decode().rstrip("=")
+
+    def _generate_pkce_verifier(self) -> str:
+        """Backward-compatible alias for :meth:`_generate_code_verifier`."""
+        return self._generate_code_verifier()
+
+    def _generate_pkce_challenge(self, verifier: str) -> str:
+        """Backward-compatible alias for :meth:`_generate_code_challenge`."""
+        return self._generate_code_challenge(verifier)
 
     def generate_code_verifier(self) -> str:
         """Public wrapper for generating a PKCE verifier."""
