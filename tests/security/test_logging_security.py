@@ -94,7 +94,7 @@ class TestEmailRedaction:
         assert "john" not in redacted
         assert "doe" not in redacted
         assert (
-            "example.com" in redacted  # codeql[py/clear-text-logging-sensitive-data]
+            "example.com" in redacted
         )  # pragma: allowlist secret
         assert redacted.startswith("j")
 

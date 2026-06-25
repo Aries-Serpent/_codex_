@@ -630,7 +630,6 @@ class CommonIssueFixer:
                print()
                continue
 
-            # pattern names are hardcoded constants, not secrets
             print(f"Pattern {num}: {name}")
 
             # Run the pattern fix and capture issues

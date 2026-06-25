@@ -222,7 +222,7 @@ class TestSecurityCompliance:
 
         logger = logging.getLogger(__name__)
         logger.info(
-            "Secret value: %s", safe_value  # codeql[py/clear-text-logging-sensitive-data]
+            "Secret value: %s", safe_value
         )
 
         # Confirm the raw token is absent from captured log output
