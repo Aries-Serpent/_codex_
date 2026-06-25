@@ -1,42 +1,32 @@
-# Session Context — 2026-06-25T14:04:30Z
-**Branch:** `copilot/fix-authentication-and-rag-jobs`  **PR:** #5078  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-25T15:26:45Z
+**Branch:** `copilot/fix-ci-failure-rag-module-tests`  **PR:** #5081  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4981` (✅)
-- GraphQL remaining: `4978` (✅)
+- REST remaining: `4939` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5078 — Fix CodeQL violations: add exception logging and suppress bare catches
-State: `open`  Draft: `False`  Branch: `copilot/fix-authentication-and-rag-jobs` → `main`
-
-### ❌ 15 Failing CI Check(s)
-- `Governance Compliance` (failure)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
-- `Post Execution Plan` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `💰 PR Cost Check` (cancelled)
+## 📋 PR #5081 — [WIP] Fix CI failure on main: RAG Module Tests
+State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
+- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
+- `6cad08c3` Initial plan — copilot-swe-agent[bot] (2026-06-25)
+- `e72c0388` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-25)
+- `01d7722c` Merge pull request #5078 from Aries-Serpent/copilot/fix-authentication-and-rag-j — Statix (2026-06-25)
+- `86d7af38` chore(compliance): Update accountability and changelog for CodeQL fixes (REQ-4/R — copilot-swe-agent[bot] (2026-06-25)
 - `a914ef64` Fix CodeQL violations: authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
 - `cd41732d` Phase 1 CodeQL Fixes: Authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
 - `5150874e` refactor(accountability): Final session summary and compliance verification — copilot-swe-agent[bot] (2026-06-25)
 - `90f758ae` docs(codeql): Add comprehensive security alert analysis and remediation plan — copilot-swe-agent[bot] (2026-06-25)
-- `d2479ac8` refactor(accountability): Final session documentation update - comprehensive hea — copilot-swe-agent[bot] (2026-06-25)
-- `6c1aa2cb` improve(admin-action-notifier): Enhance error messaging with expected vs actual  — copilot-swe-agent[bot] (2026-06-25)
-- `b63bd4b3` fix(docs): Add pragma allowlist secret to markdown tables — copilot-swe-agent[bot] (2026-06-25)
-- `b0c5b9bb` docs(escalation): Add T-03 token scope admin action escalation guide — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
