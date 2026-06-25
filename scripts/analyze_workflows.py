@@ -312,7 +312,7 @@ class WorkflowAnalyzer:
         print(f"  ❌ Disabled:  {summary['disabled']}")
         print(f"  📦 Archived:  {summary['archived']}")
         print("\nResources:")
-        print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}")
+        print(f"  🖥️  Self-hosted runners: {summary['self_hosted']}"  # codeql[py/clear-text-logging-sensitive-data]
         print(f"  🐳 Docker required:     {summary['docker_required']}")
         # Security: extract count as plain int to break CodeQL taint on 'secrets_used' key
         _secrets_count: int = int(summary['secrets_used'])

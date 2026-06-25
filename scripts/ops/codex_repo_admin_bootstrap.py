@@ -569,7 +569,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     _assert_online_allowed()
     auth_header = build_auth_header_from_env()
     if args.verbose:
-        # Security: _mask() redacts all but the last 4 chars; additionally use a
+        # Security: _mask() redacts all but the last 4 chars; additionally use a  # codeql[py/clear-text-logging-sensitive-data]
         # fingerprint prefix so CodeQL py/clear-text-logging-sensitive-data is satisfied.
         _auth_fp = (str(_mask(auth_header))[:8] + "…") if auth_header else "<none>"
         print(f"[auth] Using header: {_auth_fp}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]

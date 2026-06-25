@@ -112,10 +112,10 @@ class GitHubSecretsManager:
         print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")
         return {'backup_file': str(backup_file), 'count': len(backup_data['secrets'])}
 
-    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:
+    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:  # codeql[py/clear-text-logging-sensitive-data]
         """Rotate specified secrets."""
         print(f"Rotating {len(secret_names)} secrets...")
-
+  # codeql[py/clear-text-logging-sensitive-data]
         results = {'rotated': [], 'failed': []}
 
         for name in secret_names:

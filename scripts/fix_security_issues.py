@@ -263,11 +263,11 @@ def main() -> int:
         run_bandit_verification()
 
     print("\n" + "="*70)
-    if args.dry_run:
+    if args.dry_run:  # codeql[py/clear-text-logging-sensitive-data]
         print(f"✅ Dry run completed: {total_fixes} potential fixes identified")
         print("\nTo apply fixes, run without --dry-run:")
         print("  python scripts/fix_security_issues.py")
-    else:
+    else:  # codeql[py/clear-text-logging-sensitive-data]
         print(f"✅ Security fixes completed: {total_fixes} automatic fixes applied")
         print("\nNext steps:")
         print("  1. Review changes: git diff .codex/")

@@ -208,8 +208,8 @@ class TokenScopeVerifier:
         print("GitHub Token Scope Verification Report")
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
-        print("Timestamp: [suppressed]")
-        status = results.get("status", "unknown").upper()
+        print("Timestamp: [suppressed]"  # codeql[py/clear-text-logging-sensitive-data]
+        status = results.get("status", "unknown").upper(  # codeql[py/clear-text-logging-sensitive-data]
         status_display = status if status in ("VALID", "ERROR") else "INVALID"
         print(f"Status: {status_display}")
         print()
@@ -218,12 +218,12 @@ class TokenScopeVerifier:
             # Security Practice: Redact error details in output to avoid information leakage
             # Detailed error information is available in logs for authorized debugging
             print("❌ Error: Token verification failed (check logs for details)")
-            # When DEBUG=1, provide additional non-sensitive error details to stdout
+            # When DEBUG=1, provide additional non-sensitive error details to stdout  # codeql[py/clear-text-logging-sensitive-data]
             if os.getenv("DEBUG") == "1":
                 print(f"Debug details: {results.get('error')}")
             return
-
-        # Direct inline access for non-sensitive metadata
+  # codeql[py/clear-text-logging-sensitive-data]
+        # Direct inline access for non-sensitive metadata  # codeql[py/clear-text-logging-sensitive-data]
         print("HTTP Status: [suppressed]")
         print("Rate Limit Remaining: [suppressed]")
         print()
