@@ -1,7 +1,7 @@
 # Changelog
 ## [Unreleased] — 2026-06-25T13:24Z
 
-### Infrastructure (Codebase Health & CI Remediation)
+### Infrastructure (Codebase Health & CI Remediation — Phase 2-4 Complete)
 - **PR #5078 Review Fixes:** Fixed unused imports (AsyncMock, pytest, AuthMiddleware, TokenManager) in `tests/auth/test_middleware_advanced.py` (lines 12-17)
   - Fix commit: `742fdd4`
 - **PR #5078 Review Fixes:** Fixed error message placeholder in `src/codex/rag/indexer.py` (line 679)
@@ -10,12 +10,29 @@
 - **Codebase Health Diagnostic:** Ran `auto_fix_common_issues.py --check-only` and generated health report (`.codex/health_report.json`)
   - Pattern 6 (catch-all exceptions): 4 issues identified
   - Pattern 25 (accountability): 1 issue — accountability freshness compliance
-- **Issue #5072 Analysis:** 2527 total issues → 2151 auto-fixable, 350 manual-review
   - Current status: 0 critical issues after recent auto-fixes
-- **Issue #5073 Analysis:** CI failure "Admin Action — T-03 security_events Scope Gate"
+- **Issue #5072 Analysis:** 2527 total issues → 2151 auto-fixable, 350 manual-review
+  - Root cause: Manual exceptions requiring domain expertise
+  - Status: Delegated to codeql-alert-resolution-agent for CodeQL-based analysis
+- **Issue #5073 Analysis & Escalation:** CI failure "Admin Action — T-03 security_events Scope Gate"
   - Root cause: CODEX_MASTER_KEY token lacks `security_events` OAuth scope
-  - Status: Non-blocking admin action, workflow will auto-close on token rotation
-- **REQ-4/REQ-5 Compliance:** Updated both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md
+  - Documentation: Created comprehensive `.codex/T03_ADMIN_ACTION_ESCALATION.md` with step-by-step fix instructions
+  - Status: Non-blocking admin action; workflow will auto-close on token rotation
+  - Enhanced workflow: ci-failure-resolution-agent improved admin-action-notifier error messaging
+  - Commit: `6c1aa2c`
+- **REQ-4/REQ-5 Compliance:** Updated both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md with comprehensive session work
+
+### Documentation (Admin Action & Workflow Patterns)
+- **T-03 Token Scope Escalation Guide** (`.codex/T03_ADMIN_ACTION_ESCALATION.md`)
+  - Clear 5-step action items for token scope update
+  - Verification procedures via token-probe.yml
+  - Auto-resolution triggers and downstream workflow activation
+  - Risk mitigation matrix
+  - Reference links to token review documentation
+  - Timeline: 5-10 minutes for token update + verification
+- **Workflow Enhancement** — admin-action-notifier error messaging
+  - Improved expected vs actual status comparison for diagnostic clarity
+  - Better visibility for token scope failures
 
 ## [Unreleased] — 2026-06-25T11:28Z
 
