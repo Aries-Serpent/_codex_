@@ -73,11 +73,11 @@ Once token scope is updated:
 
 ## Reference Documentation
 
-| Document | Section | Purpose |
-|----------|---------|---------|
-| `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | § T-03 | Full token review and scopes |
-| `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` | Admin Actions | Workflow pattern documentation |
-| `.github/workflows/admin-action-t03.yml` | Lines 39-62 | Full fix instructions (embedded) |
+| Document | Section | Purpose |  
+|----------|---------|---------|  
+| `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` | § T-03 | Full token review and scopes |  
+| `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md` | Admin Actions | Workflow pattern documentation |  
+| `.github/workflows/admin-action-t03.yml` | Lines 39-62 | Full fix instructions (embedded) |  
 
 ---
 
@@ -119,9 +119,10 @@ The following workflows will automatically execute once the token is rotated:
 
 | Risk | Mitigation |
 |------|-----------|
-| Token rotation breaks other workflows | Token update maintains `repo` and `workflow` scopes; only adds `security_events` |
+| Token rotation breaks other workflows | Token update maintains `repo` and `workflow` scopes; only adds `security_events` |  <!-- pragma: allowlist secret -->
 | Token expiry disrupts automation | 90-day expiry provides 3-month window; reminder set at day 80 |
-| Scope change introduces security risk | `security_events` is read-only for CodeQL alerts (no mutation capability) |
+| Scope change introduces security risk | `security_events` is read-only for CodeQL alerts (no mutation capability) |  <!-- pragma: allowlist secret -->
+
 
 ---
 
