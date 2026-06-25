@@ -47,7 +47,8 @@ def run_command(cmd: list[str], description: str, check: bool = False) -> tuple[
         print(f"⚠️  {description} - Completed with warnings (exit code {result.returncode})")
         return True, output
     except Exception as e:
-        print(f"❌ {description} - FAILED: {e}")
+        error_type = type(e).__name__
+        print(f"❌ {description} - FAILED: <ERROR_TYPE>")
         return False, str(e)
 
 
@@ -72,7 +73,8 @@ def get_ruff_statistics() -> dict:
 
         return stats
     except Exception as e:
-        print(f"⚠️  Could not get statistics: {e}")
+        error_type = type(e).__name__
+        print(f"⚠️  Could not get statistics: <ERROR_TYPE>")
         return {}
 
 

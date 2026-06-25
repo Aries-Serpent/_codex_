@@ -76,7 +76,8 @@ def main():
                 print(f"Error fetching workflow {wf_id}: {result.stderr}", file=sys.stderr)
 
         except Exception as e:
-            print(f"Exception fetching workflow {wf_id}: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            print(f"Exception fetching workflow {wf_id}: <ERROR_TYPE>", file=sys.stderr)
 
     # Print summary
     print("=" * 80)

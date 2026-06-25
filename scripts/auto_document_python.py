@@ -53,7 +53,8 @@ def analyze_module(file_path: Path) -> tuple[bool, list[str]]:
         try:
             tree = ast.parse(f.read())
         except SyntaxError as e:
-            print(f"⚠️  Syntax error in {file_path}: {e}")
+            error_type = type(e).__name__
+            print(f"⚠️  Syntax error in {file_path}: <ERROR_TYPE>")
             return False, []
 
     # Check module docstring
@@ -170,7 +171,7 @@ def process_directory(directory: Path) -> dict:
                 print(f"✓  {py_file} already documented")
         except Exception as e:
             stats['errors'] += 1
-            print(f"❌ Error processing {py_file}: {e}")
+            print(f"❌ Error processing {py_file}: <ERROR_TYPE>")
 
     return stats
 

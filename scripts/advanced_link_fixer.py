@@ -152,7 +152,8 @@ def apply_advanced_fixes() -> Dict[str, Any]:
             )
 
         except Exception as e:
-            print(f"Warning: Failed to fix {file_path}: {e}")
+            error_type = type(e).__name__
+            print(f"Warning: Failed to fix {file_path}: <ERROR_TYPE>")
 
     return {"fixed_count": fixed_count, "fixes": fix_details}
 

@@ -59,7 +59,8 @@ def apply_fixes_from_suggestions() -> Dict[str, Any]:
             fixed_count += 1
 
         except Exception as e:
-            print(f"Warning: Failed to fix {file_path}: {e}")
+            error_type = type(e).__name__
+            print(f"Warning: Failed to fix {file_path}: <ERROR_TYPE>")
 
     return {"fixed_count": fixed_count, "file_changes": file_changes}
 

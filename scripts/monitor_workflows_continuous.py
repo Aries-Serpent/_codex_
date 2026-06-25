@@ -90,7 +90,8 @@ class WorkflowMonitor:
 
             return json.loads(result.stdout)
         except Exception as e:
-            print(f"Exception getting runs: {e}")
+            error_type = type(e).__name__
+            print(f"Exception getting runs: <ERROR_TYPE>")
             return {}
 
     def categorize_failure(self, workflow_name: str, error_msg: str = "") -> str:
@@ -322,7 +323,8 @@ class WorkflowMonitor:
         except KeyboardInterrupt:
             print("\n[Interrupted by user]")
         except Exception as e:
-            print(f"\n[ERROR] {e}")
+            error_type = type(e).__name__
+            print(f"\n[ERROR] <ERROR_TYPE>")
 
         finally:
             self.finalize()

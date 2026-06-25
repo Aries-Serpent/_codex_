@@ -164,7 +164,8 @@ def audit_repo(
             try:
                 outcome = prov.search(q)
             except (ValueError, TypeError, RuntimeError) as exc:
-                logger.debug(f"Exception: {exc}")
+                error_type = type(exc).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 evidence.append(
                     {
                         "provider": prov.__class__.__name__.lower(),

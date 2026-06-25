@@ -76,7 +76,8 @@ class PrintDetector(ast.NodeVisitor):
             try:
                 context = ast.unparse(node) if HAS_AST_UNPARSE else "print(...)"
             except Exception as e:
-                logger.debug(f"Exception: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
                 context = "print(...)"
 
             self.print_calls.append((node.lineno, context, level))
@@ -126,8 +127,9 @@ def analyze_file(file_path: Path) -> tuple[bool, list[tuple[int, str, str]]]:
         return detector.has_logging_import, detector.print_calls
 
     except (SyntaxError, UnicodeDecodeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Could not parse {file_path}: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Could not parse {file_path}: <ERROR_TYPE>")
         return False, []
 
 
@@ -174,8 +176,9 @@ def convert_print_to_logger(
         return changes_made
 
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.error(f"Failed to convert {file_path}: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.error(f"Failed to convert {file_path}: <ERROR_TYPE>")
         return False
 
 
@@ -277,8 +280,9 @@ def add_logging_import(file_path: Path, dry_run: bool = True) -> bool:
         return True
 
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.error(f"Failed to add logging import to {file_path}: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.error(f"Failed to add logging import to {file_path}: <ERROR_TYPE>")
         return False
 
 

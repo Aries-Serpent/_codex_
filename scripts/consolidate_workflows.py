@@ -73,7 +73,8 @@ class WorkflowConsolidator:
             shutil.copy2(source, backup_dir / workflow_file)
             print(f"  ✅ Backed up to: {backup_dir / workflow_file}")
         except Exception as e:
-            print(f"  ❌ Backup failed: {e}")
+            error_type = type(e).__name__
+            print(f"  ❌ Backup failed: <ERROR_TYPE>")
             return False
 
         # Move to disabled
@@ -81,7 +82,8 @@ class WorkflowConsolidator:
             shutil.move(str(source), str(destination))
             print(f"  ✅ Moved to: {destination}")
         except Exception as e:
-            print(f"  ❌ Move failed: {e}")
+            error_type = type(e).__name__
+            print(f"  ❌ Move failed: <ERROR_TYPE>")
             return False
 
         # Add metadata

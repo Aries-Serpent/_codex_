@@ -238,7 +238,8 @@ def main():
         stats = process_stage1()
         return 0 if stats['files_modified'] >= 0 else 1
     except Exception as e:
-        print(f"❌ Error: {e}")
+        error_type = type(e).__name__
+        print(f"❌ Error: <ERROR_TYPE>")
         import traceback
         traceback.print_exc()
         return 1

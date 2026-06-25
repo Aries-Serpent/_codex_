@@ -165,8 +165,9 @@ def analyze_file(file_path: Path) -> dict[str, Any]:
         }
 
     except (SyntaxError, UnicodeDecodeError) as e:
-        logger.debug(f"Exception: {e}")
-        logger.warning(f"Could not parse {file_path}: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.warning(f"Could not parse {file_path}: <ERROR_TYPE>")
         return {"error": str(e)}
 
 
@@ -259,8 +260,9 @@ def fix_imports(file_path: Path, analysis: dict, dry_run: bool = True) -> bool:
         return True
 
     except Exception as e:
-        logger.debug(f"Exception: {e}")
-        logger.error(f"Failed to fix {file_path}: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.error(f"Failed to fix {file_path}: <ERROR_TYPE>")
         return False
 
 

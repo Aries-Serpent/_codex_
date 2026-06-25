@@ -103,7 +103,8 @@ class RetentionMaintenance:
                     })
 
                 except Exception as e:
-                    logger.error(f"Error deleting {session_id}: {e}")
+                    error_type = type(e).__name__
+                    logger.error(f"Error deleting {session_id}: <ERROR_TYPE>")
                     failed.append({
                         "session_id": session_id,
                         "error": str(e)
@@ -159,7 +160,8 @@ class RetentionMaintenance:
 
             logger.info(f"Retention log updated: {self.log_path}")
         except Exception as e:
-            logger.error(f"Error logging retention: {e}")
+            error_type = type(e).__name__
+            logger.error(f"Error logging retention: <ERROR_TYPE>")
 
     def get_retention_stats(self) -> dict:
         """Get retention statistics"""

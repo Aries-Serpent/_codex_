@@ -123,7 +123,8 @@ class WorkflowDeprecator:
                             'type': 'documentation'
                         })
                 except Exception as e:
-                    print(f"⚠️  Could not read {file_path}: {e}")
+                    error_type = type(e).__name__
+                    print(f"⚠️  Could not read {file_path}: <ERROR_TYPE>")
 
         return references
 
@@ -167,7 +168,8 @@ class WorkflowDeprecator:
             print(f"✅ Disabled workflow: {disabled_path}")
             return True
         except Exception as e:
-            print(f"❌ Failed to disable workflow: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Failed to disable workflow: <ERROR_TYPE>")
             return False
 
     def archive_workflow(self) -> bool:
@@ -196,7 +198,8 @@ class WorkflowDeprecator:
             print(f"✅ Archived workflow to: {archive_path}")
             return True
         except Exception as e:
-            print(f"❌ Failed to archive workflow: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Failed to archive workflow: <ERROR_TYPE>")
             return False
 
     def create_deprecation_record(self, suite_file: str, references: list[dict[str, str]]) -> bool:
@@ -245,7 +248,8 @@ class WorkflowDeprecator:
             print(f"✅ Updated deprecation log: {self.deprecation_log}")
             return True
         except Exception as e:
-            print(f"❌ Failed to update deprecation log: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Failed to update deprecation log: <ERROR_TYPE>")
             return False
 
     def generate_redirect_doc(self, suite_file: str) -> bool:
@@ -297,7 +301,8 @@ If you were referencing `{self.workflow_file}` in your code or documentation:
             print(f"✅ Created redirect document: {redirect_path}")
             return True
         except Exception as e:
-            print(f"❌ Failed to create redirect document: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Failed to create redirect document: <ERROR_TYPE>")
             return False
 
     def run(self, consolidated_suite: Optional[str] = None) -> bool:

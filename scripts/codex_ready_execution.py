@@ -95,8 +95,9 @@ def scan_repository(patterns: Sequence[str]) -> list[SearchResult]:
                         )
                         break
         except UnicodeDecodeError as e:
-            logger.debug(f"UnicodeDecodeError: {e}")
-            logger.warning(f"UnicodeDecodeError: {e}", exc_info=True)
+            error_type = type(e).__name__
+            logger.debug(f"UnicodeDecodeError: <ERROR_TYPE>")
+            logger.warning(f"UnicodeDecodeError: <ERROR_TYPE>", exc_info=True)
             continue
     return results
 

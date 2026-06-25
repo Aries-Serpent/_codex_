@@ -89,7 +89,8 @@ def find_markers_in_file(filepath: Path) -> set[str]:
         markers.update(PYTESTMARK_PATTERN.findall(content))
 
     except Exception as e:
-        print(f"⚠ Warning: Could not process {filepath}: {e}", file=sys.stderr)
+        error_type = type(e).__name__
+        print(f"⚠ Warning: Could not process {filepath}: <ERROR_TYPE>", file=sys.stderr)
 
     return markers
 

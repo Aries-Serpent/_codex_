@@ -80,7 +80,8 @@ def require_clean_worktree() -> None:
         if out.strip():
             raise RuntimeError("Working tree not clean. Commit or stash before running.")
     except FileNotFoundError as e:
-        logger.debug(f"FileNotFoundError: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
         sys.stderr.write(
             f"WARNING: Git is required for this operation. Please install Git (https://git-scm.com/) and ensure this script is run inside a Git repository. Details: {str(e)}\n"
         )
@@ -476,7 +477,8 @@ def main() -> None:
         ROOT = git_root()
         require_clean_worktree()
     except Exception as e:  # pragma: no cover - environment validation
-        print(f"[warn] {e}")
+        error_type = type(e).__name__
+        print(f"[warn] <ERROR_TYPE>")
     codex_dir = ensure_codex_dir(ROOT)
     CHANGELOG = (codex_dir / "change_log.md").as_posix()
     ERRORS = (codex_dir / "errors.ndjson").as_posix()
@@ -518,14 +520,16 @@ def main() -> None:
             "Add tests for context manager, helper, and CLI",
         )
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         log_error("3.2 implement modules", e, context="writing files")
 
     # Phase 3.3: docs
     try:
         patch_readme(ROOT / "README.md")
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         log_error("3.3 update README", e, context="README patch")
 
     # Phase 4: controlled pruning
@@ -542,7 +546,8 @@ def main() -> None:
                     f"- Potential duplication detected in: {dupes}. Construction preserved; evaluate and prune if truly redundant.\n"
                 )
     except Exception as e:
-        logger.debug(f"Exception: {e}")
+        error_type = type(e).__name__
+        logger.debug(f"Exception: <ERROR_TYPE>")
         log_error("4.x prune analysis", e, context="duplication scan")
 
     # Phase 6: results

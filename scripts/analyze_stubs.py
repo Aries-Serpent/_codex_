@@ -80,8 +80,9 @@ def scan_for_stubs(source_dirs):
                         stubs.append((py_file, i, "NotImplementedError", message, "P0"))
 
             except Exception as e:
-                logger.debug(f"Exception: {e}")
-                print(f"Warning: Failed to scan {py_file}: {e}")
+                error_type = type(e).__name__
+                logger.debug(f"Exception: <ERROR_TYPE>")
+                print(f"Warning: Failed to scan {py_file}: <ERROR_TYPE>")
 
     return stubs
 

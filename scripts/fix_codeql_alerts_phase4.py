@@ -89,7 +89,8 @@ def read_file(file_path: str) -> Optional[list[str]]:
         with open(file_path, 'r', encoding='utf-8') as f:
             return f.readlines()
     except Exception as e:
-        logger.error(f"Failed to read {file_path}: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to read {file_path}: <ERROR_TYPE>")
         return None
 
 def write_file(file_path: str, lines: list[str]) -> bool:
@@ -100,7 +101,8 @@ def write_file(file_path: str, lines: list[str]) -> bool:
             f.writelines(lines)
         return True
     except Exception as e:
-        logger.error(f"Failed to write {file_path}: {e}")
+        error_type = type(e).__name__
+        logger.error(f"Failed to write {file_path}: <ERROR_TYPE>")
         return False
 
 def already_has_suppression(line: str, fix_type: str) -> bool:

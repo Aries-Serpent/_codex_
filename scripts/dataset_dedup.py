@@ -55,8 +55,9 @@ class ContentDeduplicator:
                     sha256.update(chunk)
             return sha256.hexdigest()
         except Exception as e:
-            logger.debug(f"Exception: {e}")
-            print(f"Warning: Could not read {filepath}: {e}", file=sys.stderr)
+            error_type = type(e).__name__
+            logger.debug(f"Exception: <ERROR_TYPE>")
+            print(f"Warning: Could not read {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return ""
 
     def scan_directory(self, skip_patterns: Optional[set[str]] = None) -> int:

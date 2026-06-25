@@ -88,7 +88,8 @@ def migrate_sessions(dry_run: bool = False, verbose: bool = False) -> dict:
                 except ValueError:
                     pass
         except Exception as e:
-            logger.warning(f"Error reading {jsonl_file}: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Error reading {jsonl_file}: <ERROR_TYPE>")
 
     logger.info(f"Found {len(candidates)} archive candidates")
 
@@ -119,7 +120,8 @@ def migrate_sessions(dry_run: bool = False, verbose: bool = False) -> dict:
                 if verbose:
                     logger.info(f"  → {archive_path}")
             except Exception as e:
-                logger.error(f"Failed to archive {session_id}: {e}")
+                error_type = type(e).__name__
+                logger.error(f"Failed to archive {session_id}: <ERROR_TYPE>")
                 failed.append({"session_id": session_id, "error": str(e)})
 
     if dry_run:
@@ -193,7 +195,8 @@ def build_archive_index():
                     "created_at": str(parquet_file.stat().st_ctime)
                 })
         except Exception as e:
-            logger.warning(f"Error indexing {parquet_file}: {e}")
+            error_type = type(e).__name__
+            logger.warning(f"Error indexing {parquet_file}: <ERROR_TYPE>")
 
     # Add statistics
     archive_index["statistics"] = {

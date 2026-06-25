@@ -44,7 +44,8 @@ try:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
     from codex.auth import MFAProvider
 except ImportError as e:
-    print(f"Error: {e}")
+    error_type = type(e).__name__
+    print(f"Error: <ERROR_TYPE>")
     sys.exit(1)
 
 class MFAEnrollmentAutomator:
@@ -127,7 +128,7 @@ class MFAEnrollmentAutomator:
                 print(f"✓ Enrolled: {username}")
             except Exception as e:
                 results['failed'].append({'username': username, 'error': str(e)})
-                print(f"✗ Failed: {username} - {e}")
+                print(f"✗ Failed: {username} - <ERROR_TYPE>")
 
         # Save results
         with open('enrollment_results.json', 'w') as f:

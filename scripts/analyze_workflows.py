@@ -70,7 +70,8 @@ class WorkflowAnalyzer:
                 if workflow_info:
                     self.workflows.append(workflow_info)
             except Exception as e:
-                print(f"⚠️  Error analyzing {workflow_file.name}: {e}")
+                error_type = type(e).__name__
+                print(f"⚠️  Error analyzing {workflow_file.name}: <ERROR_TYPE>")
 
     def analyze_workflow(self, workflow_file: Path) -> Optional[WorkflowInfo]:
         """Analyze a single workflow file."""
@@ -183,7 +184,8 @@ class WorkflowAnalyzer:
             )
 
         except Exception as e:
-            print(f"❌ Error processing {workflow_file.name}: {e}")
+            error_type = type(e).__name__
+            print(f"❌ Error processing {workflow_file.name}: <ERROR_TYPE>")
             return None
 
     def load_failure_patterns(self) -> None:
