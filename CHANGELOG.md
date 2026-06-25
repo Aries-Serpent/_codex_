@@ -7,6 +7,14 @@
 - **PR #5078 Review Fixes:** Fixed error message placeholder in `src/codex/rag/indexer.py` (line 679)
   - Replaced literal `<ERROR_TYPE>` with actual error_type variable and exception message
   - Fix commit: `742fdd4`
+- **CodeQL Security Analysis & Remediation Plan** (`.codex/CODEQL_SECURITY_ANALYSIS.md`)
+  - Analyzed 26 exception handlers; 14 require fixes for security/reliability
+  - CRITICAL findings: mcp_session_bridge.py:54 (RBAC authorization bypass), embedding_bench.py:88 (error masking)
+  - HIGH priority: thread_safe_session_db.py:422, performance_monitor.py:134, train_loop.py (5 instances)
+  - Exemplary code: src/codex/rag/indexer.py (to be used as pattern)
+  - Implementation roadmap: Phase 1-3 with 40/90/60 minute effort estimates
+  - All recommendations maintain 100% backward compatibility
+  - Commit: `90f758a`
 - **Codebase Health Diagnostic:** Ran `auto_fix_common_issues.py --check-only` and generated health report (`.codex/health_report.json`)
   - Pattern 6 (catch-all exceptions): 4 issues identified
   - Pattern 25 (accountability): 1 issue — accountability freshness compliance
