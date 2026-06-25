@@ -113,26 +113,17 @@ class InMemoryUserRepository(UserRepository):
     # Read / query operations                                              #
     # ------------------------------------------------------------------ #
 
-    def get_by_id(self, user_id: str) -> User:
+    def get_by_id(self, user_id: str) -> Optional[User]:
         with self._lock:
-            user = self._users.get(user_id)
-            if user is None:
-                raise UserNotFoundError(f"User '{user_id}' not found")
-            return user
+            return self._users.get(user_id)
 
-    def get_by_username(self, username: str) -> User:
+    def get_by_username(self, username: str) -> Optional[User]:
         with self._lock:
-            user = self._find_by_username(username)
-        if user is None:
-            raise UserNotFoundError(f"User with username '{username.strip()}' not found")
-        return user
+            return self._find_by_username(username)
 
-    def get_by_email(self, email: str) -> User:
+    def get_by_email(self, email: str) -> Optional[User]:
         with self._lock:
-            user = self._find_by_email(email)
-        if user is None:
-            raise UserNotFoundError(f"User with email '{email.strip().lower()}' not found")
-        return user
+            return self._find_by_email(email)
 
     def list_all(self) -> list[User]:
         with self._lock:
