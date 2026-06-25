@@ -9,13 +9,6 @@ Tests cover:
 - Performance
 """
 
-from unittest.mock import AsyncMock
-
-import pytest
-
-from codex.auth.middleware import AuthMiddleware
-from codex.auth.token_manager import TokenManager
-
 
 class TestResponseHeaders:
     """Response header testing."""

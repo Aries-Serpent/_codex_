@@ -676,7 +676,7 @@ def manage_tenant_indices(
                     logger.info(f"Loaded {index.ntotal} vectors from '{index_name}'")
                 except (ValueError, TypeError, RuntimeError, IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.error(f"Failed to load index '{index_name}': <ERROR_TYPE>")
+                    logger.error(f"Failed to load index '{index_name}': {error_type}: {str(e)}")
 
             if not all_embeddings:
                 return TenantOperationResult(
