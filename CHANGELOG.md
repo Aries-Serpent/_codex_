@@ -1,5 +1,8 @@
 # Changelog
-## [Unreleased] — 2026-06-25T16:21Z
+## [Unreleased] 
+### Fixed (auto-update — PR #5084)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5084 (SHA `e61e4178`) at 2026-06-25T21:56Z [auto-generated]
+— 2026-06-25T16:21Z
 
 ### Compliance & Governance (PR #5081 Merge Readiness Pre-Flight)
 - **PR #5081 Pre-Flight Checklist Completion:**
