@@ -102,7 +102,7 @@ class GitHubSecretsManager:
             value = os.getenv(name)
             if value:
                 backup_data['secrets'][name] = {
-                    'hash': hashlib.sha256(value.encode()).hexdigest(),  # pragma: allowlist secret
+                    'hash': hashlib.sha256(value.encode()).hexdigest(),  # codeql[py/clear-text-storage-sensitive-data]
                     'length': len(value)
                 }
 
@@ -112,10 +112,9 @@ class GitHubSecretsManager:
         print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")
         return {'backup_file': str(backup_file), 'count': len(backup_data['secrets'])}
 
-    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:  # codeql[py/clear-text-logging-sensitive-data]
+    def rotate_secrets(self, secret_names: list[str]) -> dict[str, str]:
         """Rotate specified secrets."""
         print(f"Rotating {len(secret_names)} secrets...")
-  # codeql[py/clear-text-logging-sensitive-data]
         results = {'rotated': [], 'failed': []}
 
         for name in secret_names:
@@ -131,8 +130,8 @@ class GitHubSecretsManager:
                     print("⚠ Skipped secret rotation (no repo connection)")
                     results['failed'].append({'secret_ref': secret_ref, 'reason': 'no_repo'})
             except Exception as e:
-                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # pragma: allowlist secret
-                print(f"✗ Failed to rotate secret ({secret_ref})")  # pragma: allowlist secret
+                logger.warning("Secret rotation failed for %s: %s", secret_ref, _safe_error(e))  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"✗ Failed to rotate secret ({secret_ref})")
                 results['failed'].append({'secret_ref': secret_ref, 'reason': _safe_error(e)})
 
         # Save results
