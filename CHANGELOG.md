@@ -1,4 +1,19 @@
 # Changelog
+## [Unreleased] — 2026-06-25T11:28Z
+
+### Fixed (CodeQL Syntax Error Remediation)
+- **Python syntax errors in test files:** Fixed malformed comments in `tests/integration/test_checkpoint_resume_e2e.py` (lines 377, 401)
+  - Issue: Lines had incomplete comment markers with dashes instead of proper `#` comments
+  - Fix: Converted to valid Python comments with proper `#` syntax
+- **Python syntax errors in middleware:** Fixed malformed comment in `services/msp_gateway/middleware/tenant_context.py` (line 226)
+  - Issue: Line had colon-prefixed comment instead of proper `#` comment
+  - Fix: Converted to valid Python comment syntax
+- **Python syntax errors in security module:** Fixed invalid em-dash characters in `services/ita/app/security.py` (lines 203, 204)
+  - Issue: Lines contained Unicode em-dash (U+2014) characters instead of proper comment syntax
+  - Fix: Replaced em-dashes with standard hyphen and proper `#` comment markers
+- **Validation:** All 6301 Python files now compile successfully; CodeQL analysis no longer blocked by syntax errors
+- **Commit:** `e8c6c4a`
+
 ## [Unreleased] — 2026-06-25T10:11Z
 
 ### Infrastructure (Post-Merge Validation & Documentation Sync)
