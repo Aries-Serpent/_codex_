@@ -1,32 +1,42 @@
-# Session Context — 2026-06-25T13:47:37Z
+# Session Context — 2026-06-25T14:04:30Z
 **Branch:** `copilot/fix-authentication-and-rag-jobs`  **PR:** #5078  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4497` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4981` (✅)
+- GraphQL remaining: `4978` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5078 — Fix authentication tests and establish codebase health remediation with CI escalation pattern
+## 📋 PR #5078 — Fix CodeQL violations: add exception logging and suppress bare catches
 State: `open`  Draft: `False`  Branch: `copilot/fix-authentication-and-rag-jobs` → `main`
+
+### ❌ 15 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `Post rescue comment on failure` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
+- `Post Execution Plan` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `💰 PR Cost Check` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Validation Pipeline** — `failure` on `copilot/fix-authentication-and-rag-jobs` (2026-06-25)
-- **Pre-Merge Validation** — `failure` on `copilot/fix-authentication-and-rag-jobs` (2026-06-25)
-- **Resilient Validation Suite** — `failure` on `copilot/fix-authentication-and-rag-jobs` (2026-06-25)
-- **Unified Governance Check** — `failure` on `copilot/fix-authentication-and-rag-jobs` (2026-06-25)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
+- `a914ef64` Fix CodeQL violations: authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
+- `cd41732d` Phase 1 CodeQL Fixes: Authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
 - `5150874e` refactor(accountability): Final session summary and compliance verification — copilot-swe-agent[bot] (2026-06-25)
 - `90f758ae` docs(codeql): Add comprehensive security alert analysis and remediation plan — copilot-swe-agent[bot] (2026-06-25)
 - `d2479ac8` refactor(accountability): Final session documentation update - comprehensive hea — copilot-swe-agent[bot] (2026-06-25)
 - `6c1aa2cb` improve(admin-action-notifier): Enhance error messaging with expected vs actual  — copilot-swe-agent[bot] (2026-06-25)
 - `b63bd4b3` fix(docs): Add pragma allowlist secret to markdown tables — copilot-swe-agent[bot] (2026-06-25)
 - `b0c5b9bb` docs(escalation): Add T-03 token scope admin action escalation guide — copilot-swe-agent[bot] (2026-06-25)
-- `ad697923` refactor(accountability): Update documentation for codebase health remediation s — copilot-swe-agent[bot] (2026-06-25)
-- `21d603bf` Phase 1: Plan and analyze codebase health issues — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
