@@ -1,32 +1,39 @@
-# Session Context — 2026-06-25T15:54:32Z
+# Session Context — 2026-06-25T16:11:58Z
 **Branch:** `copilot/fix-ci-failure-rag-module-tests`  **PR:** #5081  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4712` (✅)
-- GraphQL remaining: `4986` (✅)
+- REST remaining: `4824` (✅)
+- GraphQL remaining: `4967` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5081 — docs: PR merge readiness implementation plan (100% target with WEC integration)
-State: `open`  Draft: `True`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
+## 📋 PR #5081 — Implement PR merge readiness framework with WEC preservation and 10-gate validation model
+State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
+
+### ❌ 5 Failing CI Check(s)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `Governance Compliance` (failure)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-25)
-- **🚨 CI Failure Issue Creator** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
+- **Code Example Validation** — `failure` on `copilot/fix-ci-failure-rag-module-tests` (2026-06-25)
+- **Unified Governance Check** — `failure` on `copilot/fix-ci-failure-rag-module-tests` (2026-06-25)
 
 ## 📝 Recent Commits
+- `dfd5ee6c` Potential fix for pull request finding 'Unused import' — Statix (2026-06-25)
+- `30c74bb1` fix(secrets): annotate doc-example false positives [skip ci] (RP-007) — github-actions[bot] (2026-06-25)
+- `74441396` Complete: Add comprehensive framework index and finalize implementation — copilot-swe-agent[bot] (2026-06-25)
+- `7e9ef7dd` Complete: Implement all PR merge readiness framework artifacts — copilot-swe-agent[bot] (2026-06-25)
+- `89e730aa` Initialize PR merge readiness implementation plan execution — copilot-swe-agent[bot] (2026-06-25)
 - `2d76b255` Apply remaining changes — copilot-swe-agent[bot] (2026-06-25)
 - `7fabf4bd` fix(code-review): Replace ERROR_TYPE placeholders and fix git merge-base logic i — copilot-swe-agent[bot] (2026-06-25)
 - `5ab84089` Add email format validation to UserStore.create_user() — copilot-swe-agent[bot] (2026-06-25)
-- `3dfc43b6` Fix 314 auth module test failures: hash_password alias, password validation, rep — copilot-swe-agent[bot] (2026-06-25)
-- `c0750c61` Fix 14 failing RAG module tests — copilot-swe-agent[bot] (2026-06-25)
-- `075e0892` fix(ci): add fetch+rebase retry logic to secrets-baseline-enforcer workflow — copilot-swe-agent[bot] (2026-06-25)
-- `75396a0a` ci(plan): Strategic fix plan for three critical CI failures - RAG, Auth, Secrets — copilot-swe-agent[bot] (2026-06-25)
-- `6cad08c3` Initial plan — copilot-swe-agent[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
