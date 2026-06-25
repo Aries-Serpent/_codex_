@@ -208,8 +208,8 @@ class TokenScopeVerifier:
         print("GitHub Token Scope Verification Report")
         print("="*60)
         # Direct inline access to avoid CodeQL taint tracking false positives
-        print("Timestamp: [suppressed]"  # codeql[py/clear-text-logging-sensitive-data]
-        status = results.get("status", "unknown").upper(  # codeql[py/clear-text-logging-sensitive-data]
+        print("Timestamp: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data]
+        status = results.get("status", "unknown").upper()  # codeql[py/clear-text-logging-sensitive-data]
         status_display = status if status in ("VALID", "ERROR") else "INVALID"
         print(f"Status: {status_display}")
         print()

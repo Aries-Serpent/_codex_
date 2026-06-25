@@ -277,8 +277,8 @@ def generate_summary_report(inventory: dict):
         f.write(f"**Generated**: {inventory['metadata']['generated_at']}\n\n")
         f.write(f"**Total Workflows**: {inventory['metadata']['total_workflows']}\n\n")
 
-        # Category breakdown  # codeql[py/clear-text-logging-sensitive-data]
-        f.write("## Workflows by Category\n\n"  # codeql[py/clear-text-logging-sensitive-data]
+        # Category breakdown
+        f.write("## Workflows by Category\n\n")  # codeql[py/clear-text-logging-sensitive-data]
         by_category = defaultdict(list)
         for workflow in inventory["workflows"]:
             by_category[workflow.get("category", "other")].append(workflow)
@@ -294,7 +294,7 @@ def generate_summary_report(inventory: dict):
         # Consolidation candidates
         candidates = [w for w in inventory["workflows"] if w.get("consolidation_candidate")]
         if candidates:
-            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n"  # codeql[py/clear-text-logging-sensitive-data]
+            f.write(f"## Consolidation Candidates ({len(candidates)} workflows)\n\n")  # codeql[py/clear-text-logging-sensitive-data]
             for workflow in candidates:  # codeql[py/clear-text-logging-sensitive-data]
                 f.write(f"### `{workflow['filename']}`\n\n")
                 f.write(f"**Reason**: {workflow.get('consolidation_plan', 'N/A')}\n\n")

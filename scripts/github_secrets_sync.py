@@ -106,7 +106,7 @@ class GitHubSecretsManager:
                     'length': len(value)
                 }
 
-        with open(backup_file, 'w') as f: Backup only stores hashes and lengths, not secrets
+        with open(backup_file, 'w') as f:  # Backup only stores hashes and lengths, not secrets
             json.dump(backup_data, f, indent=2)
 
         print(f"✓ Backed up {len(backup_data['secrets'])} secrets to: {backup_file}")

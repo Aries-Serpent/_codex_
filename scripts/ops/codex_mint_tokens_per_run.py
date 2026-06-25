@@ -446,7 +446,7 @@ def main(argv: Iterable[str] | None = None) -> int:
     token, expires_at = _exchange_installation_token(app_jwt, inst_id, body=body)
 
     if args.verbose:
-        print("[info] Installation token minted successfully"  # codeql[py/clear-text-logging-sensitive-data]
+        print("[info] Installation token minted successfully")  # codeql[py/clear-text-logging-sensitive-data]
 
     session = GitHubSession(token)
 

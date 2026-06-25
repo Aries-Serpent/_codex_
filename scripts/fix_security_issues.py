@@ -116,7 +116,7 @@ def fix_sql_injection(file_path: Path, dry_run: bool = False) -> int:
         replacement = r'cur.execute(f"PRAGMA table_info({table})")  # nosec B608 - PRAGMA doesn\'t support params'
         if re.search(pattern, content):
             new_content = re.sub(pattern, replacement, content)
-            file_path_str = str(file_path) - sanitize path for logging
+            file_path_str = str(file_path)  # sanitize path for logging
             if dry_run:
                 print(f"  [DRY RUN] Would fix B608 in {file_path_str}")
             else:
