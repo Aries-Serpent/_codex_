@@ -143,7 +143,7 @@ engine_tools_report_progress(
 |---|------|--------|------|-----------|
 | 1 | Code Quality (ruff+mypy) | 12 pts | Required | CI/CD |
 | 2 | Test Coverage (≥95%) | 12 pts | Required | CI/CD |
-| 3 | Security & Secrets (CodeQL+detect-secrets) | 15 pts | Required | CI/CD |
+| 3 | Security & Secrets (CodeQL+detect-secrets) | 15 pts | Required | CI/CD | <!-- pragma: allowlist secret -->
 | 4 | WEC Integrity (9 items, 6 required) | 14 pts | Required | Agent |
 | 5 | Deferral Language Policy (20+ phrases) | 10 pts | Required | CI/CD |
 | 6 | Comment Review (blocking comments) | 12 pts | Required | CI/CD |
