@@ -1,4 +1,27 @@
 # Changelog
+## [Unreleased] — 2026-06-25T16:21Z
+
+### Compliance & Governance (PR #5081 Merge Readiness Pre-Flight)
+- **PR #5081 Pre-Flight Checklist Completion:**
+  - Verified all 5 code review comments from copilot-pull-request-reviewer resolved with fixes in commit a95ca2e
+  - Pre-flight gate confirms "5/5 comments addressed" (comment #4801624906)
+  - Agent token delegation activated (comment #4801763234)
+  - Branch rebase status verified — no conflicts, up-to-date with origin
+  - Identified and tracking merge readiness compliance blockers (REQ-4, REQ-5)
+  - Posted explicit phase execution plan per pre-flight requirement #5
+  
+- **Merge Readiness Status:**
+  - Scorecard: 85/100 (NOT READY)
+  - Blocking dimension: auto_fix (0 auto-fixable issues)
+  - Compliance gates verified: pre-merge-validation, comment-review-gate, deferral-language-gate, agent-auth-delegation
+  - WEC (Workflow Execution Checklist) state preserved and validated
+  - Script: `session_wrapup_autofix.py --pr-number 5081` available for merge readiness scoring
+
+- **REQ Compliance Updates:**
+  - REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md updated with current session
+  - REQ-5: This CHANGELOG entry ensures freshness in latest commit (2026-06-25T16:21Z)
+  - REQ-13: All comments from @mbaetiong and bots addressed before new commits
+
 ## [Unreleased] — 2026-06-25T14:05Z
 
 ### Security (CodeQL Vulnerability Fixes — Phase 1 Complete)

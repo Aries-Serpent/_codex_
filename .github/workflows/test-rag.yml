@@ -95,7 +95,9 @@ jobs:
       - name: Install dependencies
         run: |
           PYTHON_BIN="${VENV_PYTHON:-python}"
-          "$PYTHON_BIN" -m pip install --upgrade pip setuptools wheel
+          "$PYTHON_BIN" -m pip install --upgrade pip wheel
+          # Install setuptools <82 BEFORE upgrading other packages (torch requires <82)
+          "$PYTHON_BIN" -m pip install 'setuptools<82'
           # Upgrade cryptography and pyOpenSSL first to fix compatibility issues
           # with transformers/sentence-transformers on Python 3.12
           # (S228: fixes OpenSSL/cryptography mismatch in system packages)

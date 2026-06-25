@@ -1,25 +1,15 @@
-# Session Context — 2026-06-25T14:04:30Z
-**Branch:** `copilot/fix-authentication-and-rag-jobs`  **PR:** #5078  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-25T16:20:36Z
+**Branch:** `copilot/fix-ci-failure-rag-module-tests`  **PR:** #5081  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4981` (✅)
-- GraphQL remaining: `4978` (✅)
+- REST remaining: `4565` (✅)
+- GraphQL remaining: `4956` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5078 — Fix CodeQL violations: add exception logging and suppress bare catches
-State: `open`  Draft: `False`  Branch: `copilot/fix-authentication-and-rag-jobs` → `main`
-
-### ❌ 15 Failing CI Check(s)
-- `Governance Compliance` (failure)
-- `Post rescue comment on failure` (cancelled)
-- `⚡ Approve action_required runs (post-delegation)` (cancelled)
-- `Activate token delegation` (cancelled)
-- `⚡ Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode }})` (cancelled)
-- `Post Execution Plan` (cancelled)
-- `Post rescue comment on failure` (cancelled)
-- `💰 PR Cost Check` (cancelled)
+## 📋 PR #5081 — Implement PR merge readiness framework with WEC preservation and 10-gate validation model
+State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-rag-module-tests` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
@@ -29,14 +19,14 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-authentication-and-rag-jobs`
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
-- `a914ef64` Fix CodeQL violations: authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
-- `cd41732d` Phase 1 CodeQL Fixes: Authorization bypass, error masking, OSError logging — copilot-swe-agent[bot] (2026-06-25)
-- `5150874e` refactor(accountability): Final session summary and compliance verification — copilot-swe-agent[bot] (2026-06-25)
-- `90f758ae` docs(codeql): Add comprehensive security alert analysis and remediation plan — copilot-swe-agent[bot] (2026-06-25)
-- `d2479ac8` refactor(accountability): Final session documentation update - comprehensive hea — copilot-swe-agent[bot] (2026-06-25)
-- `6c1aa2cb` improve(admin-action-notifier): Enhance error messaging with expected vs actual  — copilot-swe-agent[bot] (2026-06-25)
-- `b63bd4b3` fix(docs): Add pragma allowlist secret to markdown tables — copilot-swe-agent[bot] (2026-06-25)
-- `b0c5b9bb` docs(escalation): Add T-03 token scope admin action escalation guide — copilot-swe-agent[bot] (2026-06-25)
+- `682b80fa` chore: Update AGENT_ACCOUNTABILITY_REPORT.md - session wrapup compliance — copilot-swe-agent[bot] (2026-06-25)
+- `9e8ab3d2` fix: Address PR #5081 review comments — copilot-swe-agent[bot] (2026-06-25)
+- `8c5f424c` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-25)
+- `6e0423e1` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-25)
+- `3eeccb17` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
+- `05e1fbed` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
+- `ed99dbc0` WIP: Initial plan for addressing PR #5081 review comments — copilot-swe-agent[bot] (2026-06-25)
+- `dfd5ee6c` Potential fix for pull request finding 'Unused import' — Statix (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

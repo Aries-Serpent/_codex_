@@ -82,6 +82,10 @@ class InMemoryUserRepository(UserRepository):
             self._users[user.user_id] = user
         return user
 
+    def create_user(self, user: User) -> User:
+        """Alias for :meth:`create` for backward compatibility."""
+        return self.create(user)
+
     def update(self, user: User) -> User:
         """Overwrite the stored record for *user.user_id*.
 
@@ -109,27 +113,27 @@ class InMemoryUserRepository(UserRepository):
     # Read / query operations                                              #
     # ------------------------------------------------------------------ #
 
-    def get_by_id(self, user_id: str) -> User:
+    def get_by_id(self, user_id: str) -> Optional[User]:
         with self._lock:
-            user = self._users.get(user_id)
-            if user is None:
-                raise UserNotFoundError(f"User '{user_id}' not found")
-            return user
+            return self._users.get(user_id)
 
-    def get_by_username(self, username: str) -> User:
+    def get_by_username(self, username: str) -> Optional[User]:
         with self._lock:
-            user = self._find_by_username(username)
-        if user is None:
-            raise UserNotFoundError(f"User with username '{username.strip()}' not found")
-        return user
+            return self._find_by_username(username)
 
-    def get_by_email(self, email: str) -> User:
+    def get_by_email(self, email: str) -> Optional[User]:
         with self._lock:
-            user = self._find_by_email(email)
-        if user is None:
-            raise UserNotFoundError(f"User with email '{email.strip().lower()}' not found")
-        return user
+            return self._find_by_email(email)
 
     def list_all(self) -> list[User]:
         with self._lock:
             return list(self._users.values())
+
+    def list_users(self) -> list[User]:
+        """Alias for :meth:`list_all` for backward compatibility."""
+        return self.list_all()
+
+    def get_user_count(self) -> int:
+        """Return the total number of users in the repository."""
+        with self._lock:
+            return len(self._users)

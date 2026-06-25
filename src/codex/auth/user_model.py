@@ -110,6 +110,21 @@ class PasswordHasher:
         )
         return f"{salt.hex()}:{digest.hex()}"
 
+    def hash_password(self, password: str) -> str:
+        """
+        Alias for :meth:`hash` for backward compatibility.
+
+        Args:
+            password: Plain-text password.
+
+        Returns:
+            Salted hash string suitable for storage.
+
+        Raises:
+            ValueError: If *password* is empty.
+        """
+        return self.hash(password)
+
     def verify(self, password: str, stored_hash: str) -> bool:
         """
         Verify *password* against *stored_hash*.
