@@ -12,12 +12,9 @@ import threading
 from typing import Optional
 
 from ..security_utils import sanitize_log_message
+from .exceptions import UserNotFoundError
 from .user_model import User
 from .user_repository import UserRepository
-
-
-class UserNotFoundError(Exception):
-    """Raised when a user is not found in the repository."""
 
 
 class InMemoryUserRepository(UserRepository):

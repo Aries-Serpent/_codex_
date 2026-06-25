@@ -30,15 +30,33 @@ _HASH_BYTES = 32
 class User:
     """Mutable user identity record (password, active flag, and updated_at are updated in-place)."""
 
-    user_id: str
-    username: str
-    email: str
-    password_hash: str  # "<salt_hex>:<hash_hex>"
+    user_id: Optional[str] = None
+    username: str = ""
+    email: str = ""
+    password_hash: str = ""  # "<salt_hex>:<hash_hex>"
     created_at: float = field(default_factory=time.time)
     updated_at: float = field(default_factory=time.time)
     is_active: bool = True
     roles: list[str] = field(default_factory=lambda: ["user"])
     display_name: Optional[str] = None
+    id: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        resolved_user_id = self.user_id if self.user_id is not None and self.user_id != "" else None
+        resolved_id = self.id if self.id is not None and self.id != "" else None
+
+        if resolved_user_id is None and resolved_id is None:
+            raise ValueError("At least one identifier (user_id or id) must be provided")
+        if resolved_user_id is not None and resolved_id is not None and resolved_user_id != resolved_id:
+            raise ValueError("user_id and id must match when both are provided")
+
+        if resolved_user_id is None:
+            resolved_user_id = resolved_id
+        if resolved_id is None:
+            resolved_id = resolved_user_id
+
+        self.user_id = resolved_user_id
+        self.id = resolved_id
 
     # ------------------------------------------------------------------ #
     # Convenience                                                          #

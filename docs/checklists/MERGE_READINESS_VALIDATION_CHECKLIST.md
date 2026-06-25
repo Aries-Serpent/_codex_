@@ -135,7 +135,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 **Responsibility:** `deferral-language-gate.yml` + agent
 
 **Scan Locations:** PR body, commits, comments  
-**Prohibited Phrases:** 20+ patterns (see list in [MERGE_READINESS_10_GATES.md](./MERGE_READINESS_10_GATES.md))
+**Prohibited Phrases:** 20+ patterns (see list in [MERGE_READINESS_10_GATES.md](../ci/MERGE_READINESS_10_GATES.md))
 
 **Manual Checklist:**
 - [ ] PR body uses affirmative language (no "will defer", "pre-existing", etc.)
@@ -300,7 +300,7 @@ yamllint .github/workflows/ --config-file .yamllint.yml
 |--------|-----------|--------|----------|--------|-------|
 | 1 | Code Quality | 12 | ✅ | [ ] | [ ]/12 |
 | 2 | Test Coverage | 12 | ✅ | [ ] | [ ]/12 |
-| 3 | Security & Secrets | 15 | ✅ | [ ] | [ ]/15 |
+| 3 | Security & Secrets | 15 | ✅ | [ ] | [ ]/15 | <!-- pragma: allowlist secret -->
 | 4 | WEC Integrity | 14 | ✅ | [ ] | [ ]/14 |
 | 5 | Deferral Language | 10 | ✅ | [ ] | [ ]/10 |
 | 6 | Comment Review | 12 | ✅ | [ ] | [ ]/12 |
@@ -337,7 +337,7 @@ Before clicking "Merge", confirm:
 
 | Reference | Purpose |
 |-----------|---------|
-| [10 Pre-Merge Gates](./MERGE_READINESS_10_GATES.md) | Detailed gate documentation |
+| [10 Pre-Merge Gates](../ci/MERGE_READINESS_10_GATES.md) | Detailed gate documentation |
 | [PR Body Template](../templates/PR_BODY_TEMPLATE_MERGE_READINESS.md) | Template for PR sections |
 | [Agent Integration Guide](../agent/AGENT_MERGE_READINESS_INTEGRATION.md) | Agent implementation patterns |
 | [WEC Conflicts Guide](../../docs/workflows/WEC_PR_BODY_CONFLICTS.md) | WEC preservation details |

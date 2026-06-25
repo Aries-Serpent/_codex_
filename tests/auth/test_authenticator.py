@@ -61,6 +61,20 @@ class TestRegister:
 # ---------------------------------------------------------------------------
 
 
+class TestTokenManager:
+
+    def test_zero_timeout_override_is_preserved(self):
+        manager = TokenManager(
+            secret_key="test-secret-key",
+            access_token_timeout=0,
+            refresh_token_timeout=0,
+            session_token_timeout=0,
+        )
+        assert manager._access_token_expiry == 0
+        assert manager._refresh_token_expiry == 0
+        assert manager._session_token_expiry == 0
+
+
 class TestLogin:
 
     def test_login_returns_login_result(self):

@@ -11,6 +11,7 @@ Tests cover:
 """
 
 import time
+from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlparse
 
@@ -170,6 +171,17 @@ class TestTokenExpiration:
         assert token.is_expired(buffer_seconds=300)
         # Should not be expired with 100 second buffer
         assert not token.is_expired(buffer_seconds=100)
+
+    def test_token_expiration_with_buffer_and_explicit_expires_at(self):
+        expires_at = datetime.now(timezone.utc) + timedelta(seconds=120)
+        token = OAuthToken(
+            access_token="token123",
+            token_type="Bearer",
+            expires_in=3600,
+            expires_at=expires_at,
+        )
+        assert token.is_expired(buffer_seconds=300)
+        assert not token.is_expired(buffer_seconds=60)
 
 
 # ============================================================================

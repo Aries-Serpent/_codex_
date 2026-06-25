@@ -244,6 +244,17 @@ class MFAProvider:
         # Generate HOTP with counter
         return self._get_hotp_token(secret, counter, digits, algorithm)
 
+    def generate_totp_code(
+        self,
+        secret: str,
+        timestamp: Optional[float] = None,
+        period: int = 30,
+        digits: int = 6,
+        algorithm: str = "SHA256",
+    ) -> str:
+        """Backward-compatible alias for :meth:`generate_totp`."""
+        return self.generate_totp(secret, timestamp, period, digits, algorithm)
+
     def verify_totp(
         self,
         secret: str,
@@ -287,6 +298,19 @@ class MFAProvider:
         # Code didn't match
         self._record_attempt(user_id, False)
         return False
+
+    def verify_totp_code(
+        self,
+        secret: str,
+        code: str,
+        user_id: str,
+        window: int = 1,
+        period: int = 30,
+        digits: int = 6,
+        algorithm: str = "SHA256",
+    ) -> bool:
+        """Backward-compatible alias for :meth:`verify_totp`."""
+        return self.verify_totp(secret, code, user_id, window, period, digits, algorithm)
 
     def _is_locked_out(self, user_id: str) -> bool:
         """Check if user is locked out due to failed attempts."""
