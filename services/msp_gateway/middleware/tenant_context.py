@@ -223,7 +223,7 @@ class TenantRegistry:
         # Fallback: search in SQLite
         if self.backend == "sqlite":
             import json
-          : legacy SHA-256 for backward-compat
+            # legacy SHA-256 for backward-compat
             # lookup only; any SHA-256 match is immediately re-hashed to PBKDF2 below.
             api_key_hashes = candidate_api_key_hashes(api_key)  # (pbkdf2_hash, sha256_hash)
 

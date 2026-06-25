@@ -172,8 +172,8 @@ def _hmac_sha256_hash_key(candidate_bytes: bytes) -> str:
             "Legacy API key material exceeds the maximum allowed length (512 bytes)."
         )
     pepper = _load_hash_pepper()
-    h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324 — migration-only
-    h.update(candidate_bytes) — migration-only; not used for new keys
+    h = hmac.new(pepper, digestmod=hashlib.sha256)  # nosec B324  # migration-only
+    h.update(candidate_bytes)  # migration-only; not used for new keys
     return h.hexdigest()
 
 
@@ -200,8 +200,8 @@ def _blake2b_hash_key(candidate_bytes: bytes) -> str:
         )
     pepper = _load_hash_pepper()
     key = pepper[:64]
-    h = hashlib.blake2b(key=key)  # nosec B324 — migration-only
-    h.update(candidate_bytes) — migration-only; not used for new keys
+    h = hashlib.blake2b(key=key)  # nosec B324  # migration-only
+    h.update(candidate_bytes)  # migration-only; not used for new keys
     return h.hexdigest()
 
 
