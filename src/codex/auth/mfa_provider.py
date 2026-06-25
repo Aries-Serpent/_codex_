@@ -280,8 +280,11 @@ class MFAProvider:
         Returns:
             True if code is valid, False otherwise
         """
-        # Use default user_id for backward compatibility if not provided
-        effective_user_id = user_id or "default"
+        # Use stable per-secret identifier for backward compatibility if user_id not provided
+        if user_id is None:
+            effective_user_id = f"secret_{hashlib.sha256(secret.encode()).hexdigest()[:16]}"
+        else:
+            effective_user_id = user_id
         
         # Check if user is locked out
         if self._is_locked_out(effective_user_id):

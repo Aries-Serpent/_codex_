@@ -1,10 +1,10 @@
-# Session Context — 2026-06-25T21:20:52Z
+# Session Context — 2026-06-25T21:28:15Z
 **Branch:** `copilot/fix-ci-failure-triage-report`  **PR:** #5084  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4681` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4641` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -19,6 +19,7 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-triage-report` �
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-25)
 
 ## 📝 Recent Commits
+- `7e6a3838` Apply remaining changes — copilot-swe-agent[bot] (2026-06-25)
 - `d089cb21` Implement backward compatibility wrappers for auth module — copilot-swe-agent[bot] (2026-06-25)
 - `8ce66b39` Plan: Add backward compatibility wrappers to auth module — copilot-swe-agent[bot] (2026-06-25)
 - `94fb3c12` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-25)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `copilot/fix-ci-failure-triage-report` �
 - `59ae12be` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-06-25)
 - `85b05c66` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-25)
 - `5e4b1095` Merge pull request #5083 from Aries-Serpent/copilot/fix-ci-failure-rag-module-te — Statix (2026-06-25)
-- `5c105847` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-25)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
