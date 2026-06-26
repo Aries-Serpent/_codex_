@@ -49,8 +49,8 @@ OR: Manual API POST to /repos/{owner}/{repo}/releases
 
 Payload:
 {
-  "tag_name": "v0.1.0-final",  <!-- pragma: allowlist secret -->
-  "target_commitish": "fa4509a7bf191cb749cd93ddbef88bdc2dae90c4",
+  "tag_name": "v0.1.0-final",
+  "target_commitish": "fa4509a7bf191cb749cd93ddbef88bdc2dae90c4",  <!-- pragma: allowlist secret -->
   "name": "Release v0.1.0-final — Production Ready",
   "body": "[RELEASE_NOTES_CONTENT]",
   "draft": false,
