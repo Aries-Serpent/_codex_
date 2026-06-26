@@ -65,8 +65,8 @@ _log = logging.getLogger(__name__)
 
 def _utcnow_iso() -> str:
     """Return the current UTC time as an ISO-8601 string with 'Z' suffix."""
-    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.") + \
-           f"{datetime.now(tz=timezone.utc).microsecond // 1000:03d}Z"
+    utc_now = datetime.now(tz=timezone.utc)
+    return utc_now.strftime("%Y-%m-%dT%H:%M:%S.") + f"{utc_now.microsecond // 1000:03d}Z"
 
 
 def _build_record(
