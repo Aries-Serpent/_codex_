@@ -357,7 +357,7 @@ jobs:
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
       - name: Send Slack Notification
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v3
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           payload: |
