@@ -346,7 +346,7 @@ def test_api_request_validation_performance():
     elapsed = time.perf_counter() - start
 
     validations_per_second = 10000 / elapsed
-    assert (validations_per_second > 1000
+    assert (validations_per_second > 1000, "validations_per_second must be greater than zero"
     ), f"Validation throughput {validations_per_second:.0f}/s too low"
 
 

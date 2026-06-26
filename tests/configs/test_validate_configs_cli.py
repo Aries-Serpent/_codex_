@@ -92,7 +92,7 @@ def test_malformed_config_is_rejected() -> None:
         text=True,
     )
     assert result.returncode != 0, "Result must not be empty"
-    assert (
+    assert (, "Condition must be true"
         "failed to load config" in result.stdout
         or "required property" in result.stdout
         or "failed to load config" in result.stderr

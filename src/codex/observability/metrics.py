@@ -49,25 +49,27 @@ from typing import Any
 
 # Build on the existing Histogram infrastructure
 try:
-    from codex.monitoring import Histogram, metrics as _global_registry
+    from codex.monitoring import Histogram
+    from codex.monitoring import metrics as _global_registry
 
     _MONITORING_AVAILABLE = True
 except Exception:  # pragma: no cover – graceful degradation
     _MONITORING_AVAILABLE = False
-    _global_registry = None  # type: ignore[assignment]
-    Histogram = None  # type: ignore[assignment]
+    _global_registry = None
+    Histogram = None
 
 
 # ── Data structures ───────────────────────────────────────────────────────────
+
 
 @dataclass
 class _ExecutionRecord:
     """Single execution event stored in the sliding window."""
 
-    timestamp: float        # time.monotonic() at recording time
-    wall_time: float        # time.time() at recording time
-    duration_ms: float      # wall-clock duration in milliseconds
-    success: bool           # True if execution succeeded
+    timestamp: float  # time.monotonic() at recording time
+    wall_time: float  # time.time() at recording time
+    duration_ms: float  # wall-clock duration in milliseconds
+    success: bool  # True if execution succeeded
 
 
 @dataclass
@@ -79,20 +81,21 @@ class AgentMetrics:
 
     agent_id: str
     total_executions: int = 0
-    window_executions: int = 0      # executions within the sliding window
+    window_executions: int = 0  # executions within the sliding window
     latency_p50_ms: float = 0.0
     latency_p95_ms: float = 0.0
     latency_p99_ms: float = 0.0
     latency_min_ms: float = 0.0
     latency_max_ms: float = 0.0
     latency_mean_ms: float = 0.0
-    success_rate: float = 0.0       # fraction successful
-    error_rate: float = 0.0         # fraction failed
+    success_rate: float = 0.0  # fraction successful
+    error_rate: float = 0.0  # fraction failed
     throughput_per_min: float = 0.0  # executions per minute over last 60 s
-    last_seen_at: float = 0.0       # wall time of most recent execution
+    last_seen_at: float = 0.0  # wall time of most recent execution
 
 
 # ── Percentile helper ─────────────────────────────────────────────────────────
+
 
 def _percentile(sorted_values: list[float], p: float) -> float:
     """Return the *p*-th percentile (0–100) of *sorted_values* (already sorted).
@@ -108,6 +111,7 @@ def _percentile(sorted_values: list[float], p: float) -> float:
 
 
 # ── MetricsCollector ──────────────────────────────────────────────────────────
+
 
 class MetricsCollector:
     """In-memory metrics collector for the Codex agent ecosystem.
@@ -274,15 +278,11 @@ class MetricsCollector:
             total_routing = self._routing_total
             accurate_routing = self._routing_accurate
 
-        per_agent: dict[str, AgentMetrics] = {
-            aid: self.get_agent_metrics(aid) for aid in agent_ids
-        }
+        per_agent: dict[str, AgentMetrics] = {aid: self.get_agent_metrics(aid) for aid in agent_ids}
         active = sum(1 for m in per_agent.values() if m.window_executions > 0)
         failed = sum(1 for m in per_agent.values() if m.error_rate > 0.0)
         total_tasks = sum(m.total_executions for m in per_agent.values())
-        routing_accuracy = (
-            accurate_routing / total_routing if total_routing > 0 else 1.0
-        )
+        routing_accuracy = accurate_routing / total_routing if total_routing > 0 else 1.0
 
         return {
             "total_tasks_executed": total_tasks,
@@ -326,7 +326,13 @@ class MetricsCollector:
         summary = self.get_ecosystem_summary()
         lines: list[str] = []
 
-        def _gauge(name: str, value: float | int, labels: dict[str, str] | None = None, help_text: str = "", type_hint: str = "gauge") -> None:
+        def _gauge(
+            name: str,
+            value: float | int,
+            labels: dict[str, str] | None = None,
+            help_text: str = "",
+            type_hint: str = "gauge",
+        ) -> None:
             if help_text:
                 lines.append(f"# HELP {name} {help_text}")
             lines.append(f"# TYPE {name} {type_hint}")
@@ -361,14 +367,46 @@ class MetricsCollector:
 
         # ── Per-agent ──────────────────────────────────────────────────────
         per_agent_metrics = [
-            ("codex_agent_latency_p50_ms",   "latency_p50_ms",   "P50 agent task execution latency in milliseconds."),
-            ("codex_agent_latency_p95_ms",   "latency_p95_ms",   "P95 agent task execution latency in milliseconds."),
-            ("codex_agent_latency_p99_ms",   "latency_p99_ms",   "P99 agent task execution latency in milliseconds."),
-            ("codex_agent_latency_mean_ms",  "latency_mean_ms",  "Mean agent task execution latency in milliseconds."),
-            ("codex_agent_success_rate",     "success_rate",     "Fraction of executions that succeeded (0.0–1.0)."),
-            ("codex_agent_error_rate",       "error_rate",       "Fraction of executions that failed (0.0–1.0)."),
-            ("codex_agent_throughput_per_min", "throughput_per_min", "Agent executions per minute over last 60 s."),
-            ("codex_agent_total_executions", "total_executions",  "Lifetime execution count for the agent."),
+            (
+                "codex_agent_latency_p50_ms",
+                "latency_p50_ms",
+                "P50 agent task execution latency in milliseconds.",
+            ),
+            (
+                "codex_agent_latency_p95_ms",
+                "latency_p95_ms",
+                "P95 agent task execution latency in milliseconds.",
+            ),
+            (
+                "codex_agent_latency_p99_ms",
+                "latency_p99_ms",
+                "P99 agent task execution latency in milliseconds.",
+            ),
+            (
+                "codex_agent_latency_mean_ms",
+                "latency_mean_ms",
+                "Mean agent task execution latency in milliseconds.",
+            ),
+            (
+                "codex_agent_success_rate",
+                "success_rate",
+                "Fraction of executions that succeeded (0.0–1.0).",
+            ),
+            (
+                "codex_agent_error_rate",
+                "error_rate",
+                "Fraction of executions that failed (0.0–1.0).",
+            ),
+            (
+                "codex_agent_throughput_per_min",
+                "throughput_per_min",
+                "Agent executions per minute over last 60 s.",
+            ),
+            (
+                "codex_agent_total_executions",
+                "total_executions",
+                "Lifetime execution count for the agent.",
+            ),
         ]
 
         for metric_name, field_name, help_text in per_agent_metrics:

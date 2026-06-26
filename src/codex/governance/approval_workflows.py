@@ -341,9 +341,7 @@ class ApprovalWorkflowEngine:
             )
         )
         req.status = ApprovalStatus.REJECTED
-        self._audit_event(
-            "reject", req, extra={"approver": approver, "reason": reason}
-        )
+        self._audit_event("reject", req, extra={"approver": approver, "reason": reason})
         return req
 
     # ------------------------------------------------------------------
@@ -389,9 +387,7 @@ class ApprovalWorkflowEngine:
         Returns:
             Number of requests removed.
         """
-        resolved_ids = [
-            rid for rid, r in self._requests.items() if r.is_resolved
-        ]
+        resolved_ids = [rid for rid, r in self._requests.items() if r.is_resolved]
         for rid in resolved_ids:
             del self._requests[rid]
         return len(resolved_ids)
@@ -437,10 +433,7 @@ class ApprovalWorkflowEngine:
                 ApprovalDecision(
                     approver="__system__",
                     decision=ApprovalStatus.EXPIRED,
-                    reason=(
-                        f"Request expired after {actual_timeout:.0f}s "
-                        f"without resolution."
-                    ),
+                    reason=(f"Request expired after {actual_timeout:.0f}s without resolution."),
                 )
             )
             self._audit_event("expire", req)
@@ -453,15 +446,9 @@ class ApprovalWorkflowEngine:
         """
         if not req.approvers:
             # Any one approval resolves it
-            return any(
-                d.decision == ApprovalStatus.APPROVED for d in req.decisions
-            )
+            return any(d.decision == ApprovalStatus.APPROVED for d in req.decisions)
 
-        approved_by = {
-            d.approver
-            for d in req.decisions
-            if d.decision == ApprovalStatus.APPROVED
-        }
+        approved_by = {d.approver for d in req.decisions if d.decision == ApprovalStatus.APPROVED}
         required = set(req.approvers)
         return required.issubset(approved_by)
 

@@ -383,7 +383,7 @@ class TestQuantumOrchestratorCLIEndToEnd:
 
         # Assert
         assert result.exit_code == 0 or result.exit_code is None, "Result must not be empty"
-        assert ("usage" in result.output.lower()
+        assert ("usage" in result.output.lower(), "Result must not be empty"
             or "commands" in result.output.lower()
             or len(result.output) > 0
         )

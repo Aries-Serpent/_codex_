@@ -26,7 +26,6 @@ from typing import Any
 
 from ..authz import AuditLogger, PermissionValidator, RoleManager
 
-
 # ---------------------------------------------------------------------------
 # Domain enumerations
 # ---------------------------------------------------------------------------
@@ -249,8 +248,7 @@ class PermissionDeniedError(PermissionError):
         self.action = action
         self.resource = resource
         super().__init__(
-            f"User '{user_id}' is not permitted to perform '{action}' "
-            f"on resource '{resource}'."
+            f"User '{user_id}' is not permitted to perform '{action}' on resource '{resource}'."
         )
 
 
@@ -375,7 +373,9 @@ class RBACEnforcer:
                 f"Role '{role_value}' not found in RoleManager. "
                 "This is a bootstrap inconsistency — please report."
             )
-        self._audit_logger._data[f"assign:{user_id}:{role_value}:{int(time.time() * 1000)}"] = time.time()
+        self._audit_logger._data[f"assign:{user_id}:{role_value}:{int(time.time() * 1000)}"] = (
+            time.time()
+        )
 
     def revoke_role(self, user_id: str, role: CodexRole | str) -> None:
         """Revoke *role* from *user_id*.
@@ -390,10 +390,10 @@ class RBACEnforcer:
         role_value = role.value if isinstance(role, CodexRole) else role
         revoked = self._role_manager.revoke_role(user_id, role_value)
         if not revoked:
-            raise ValueError(
-                f"Role '{role_value}' was not assigned to user '{user_id}'."
-            )
-        self._audit_logger._data[f"revoke:{user_id}:{role_value}:{int(time.time() * 1000)}"] = time.time()
+            raise ValueError(f"Role '{role_value}' was not assigned to user '{user_id}'.")
+        self._audit_logger._data[f"revoke:{user_id}:{role_value}:{int(time.time() * 1000)}"] = (
+            time.time()
+        )
 
     def get_user_roles(self, user_id: str) -> list[str]:
         """Return the list of role names currently assigned to *user_id*.
@@ -440,15 +440,11 @@ class RBACEnforcer:
         user_roles = self._role_manager.get_user_roles(user_id)
         for role_name in user_roles:
             if self._permission_validator.has_permission(role_name, perm_str):
-                self._audit_logger._data[
-                    f"allow:{user_id}:{perm_str}:{time.time()}"
-                ] = True
+                self._audit_logger._data[f"allow:{user_id}:{perm_str}:{time.time()}"] = True
                 return True
 
         # Permission denied
-        self._audit_logger._data[
-            f"deny:{user_id}:{perm_str}:{time.time()}"
-        ] = False
+        self._audit_logger._data[f"deny:{user_id}:{perm_str}:{time.time()}"] = False
 
         if raise_on_deny:
             raise PermissionDeniedError(user_id, action_value, resource_value)

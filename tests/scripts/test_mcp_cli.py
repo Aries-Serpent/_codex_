@@ -278,7 +278,7 @@ class TestCLIEdgeCases:
 
         # Should show error
         assert result.returncode != 0, "Result must not be empty"
-        assert ("not found" in result.stderr.lower()
+        assert ("not found" in result.stderr.lower(), "Result must not be empty"
             or "not found" in result.stdout.lower()
             or "git repository" in result.stderr.lower()
             or "git repository" in result.stdout.lower()
@@ -302,7 +302,7 @@ class TestCLIEdgeCases:
         )
 
         if result.returncode != 0:
-            assert any(
+            assert any(, "Condition must be true"
                 text in (result.stderr + result.stdout).lower()
                 for text in ("unknown", "not found", "no such file", "error")
             )
