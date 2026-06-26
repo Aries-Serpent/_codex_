@@ -536,7 +536,7 @@ class ComplianceDashboard:
         return {
             "governance_status": status,
             "compliance_score": round(score, 4),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "requirements": {req: res.to_dict() for req, res in self._results.items()},
             "violations": violations,
             "warnings": warnings,
