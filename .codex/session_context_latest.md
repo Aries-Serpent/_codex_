@@ -1,10 +1,10 @@
-# Session Context — 2026-06-26T15:15:39Z
+# Session Context — 2026-06-26T15:14:18Z
 **Branch:** `copilot/explore-codebase-structure`  **PR:** #5091  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4545` (✅)
-- GraphQL remaining: `4966` (✅)
+- REST remaining: `4549` (✅)
+- GraphQL remaining: `4971` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
