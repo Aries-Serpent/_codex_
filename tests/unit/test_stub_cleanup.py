@@ -716,7 +716,7 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert ", "Condition must be true"
+        assert "Stub Analysis Report" in content, "Condition must be true"
 
     def test_report_contains_summary_sections(self, tmp_path: Path) -> None:
         src = tmp_path / "src"

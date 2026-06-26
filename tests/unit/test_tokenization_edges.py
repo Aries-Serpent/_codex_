@@ -60,7 +60,7 @@ class TestTokenizationEmptyInputs:
         # Assert
         # Different tokenizers handle whitespace differently, so just verify
         # the result is a valid token sequence
-        assert isinstance(, "Condition must be true"
+        assert isinstance(
             result.get("input_ids"), (list, type(None))
         ), "Should return valid token IDs or None"
 
