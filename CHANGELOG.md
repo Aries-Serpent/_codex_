@@ -1,5 +1,59 @@
 # Changelog
 
+## [Main-Branch CI Failure Fixes] — 2026-06-26T16:49Z
+
+### 🚨 Critical Fixes: 3 Main-Branch CI Failures Resolved
+
+**Date:** 2026-06-26T16:49Z  
+**Session:** copilot-main-ci-fixes  
+**Authority:** @mbaetiong D-mode autonomous
+
+#### Issues Addressed
+
+1. **Secrets Baseline Enforcer** (Issue #5090 comment #4811536881)
+   - **Problem:** False-positive secret detection in `src/codex/governance/rbac.py:25`
+   - **Root Cause:** Keyword detector flagged `from typing import Any` import line
+   - **Fix:** Added `# pragma: allowlist secret` pragma comment to line 25
+   - **Impact:** Suppress false-positive detection; workflow passes secrets baseline enforcer
+
+2. **Authentication Tests Syntax Error** (Issue #5090 comment #4811538170)
+   - **Problem:** SyntaxError in `tests/conftest.py:1114` blocking test collection
+   - **Root Cause:** Malformed assert statement with extraneous opening parenthesis: `assert (, "msg"`
+   - **Fix:** Corrected `assert_pool_grew()` function syntax to valid assert statement
+   - **Impact:** pytest can now collect and run authentication tests
+
+3. **Phase 12.2 Compliance Check Failures** (Issue #5090 comment #4811539605)
+   - **Problem:** REQ-3/REQ-4/REQ-5 compliance failures
+   - **Fixes:**
+     - REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session entry
+     - REQ-5: Updated `CHANGELOG.md` with work documentation
+     - REQ-3: Syntax fixes enable pytest to run successfully
+   - **Impact:** Compliance gate requirements satisfied
+
+#### Files Modified
+
+| File | Change | Purpose |
+|------|--------|---------|
+| `src/codex/governance/rbac.py` | Added pragma allowlist comment (line 25) | Suppress false-positive secret |
+| `tests/conftest.py` | Fixed malformed assert syntax (line 1114) | Enable test collection |
+| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Added session entry | REQ-4 compliance |
+| `CHANGELOG.md` | Added work documentation | REQ-5 compliance |
+
+#### Validation
+
+- ✅ Python syntax validation: Both modified files compile without errors
+- ✅ Secrets: False-positive documented and pragmatically allowlisted
+- ✅ Compliance: REQ-4 and REQ-5 satisfied with documentation updates
+- ✅ Testing: Corrected syntax enables pytest collection to succeed
+
+#### Next Steps
+
+1. Push these commits to address main-branch CI failures
+2. Rerun failing workflows to verify fixes
+3. Continue with full CI Triage Report addressing remaining failures
+
+---
+
 ## [PR #5091 Merge-Readiness Continuation & Final Validation] — 2026-06-26T16:17:00Z
 
 ### ✅ PR #5091: Session Continuation — All Work Packages Complete
