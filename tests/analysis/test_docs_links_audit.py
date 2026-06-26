@@ -23,8 +23,7 @@ def test_audit_flags_missing_nav_and_links(tmp_path: Path) -> None:
 
     _write_file(
         repo / "configs" / "development" / "pytest.ini",
-        """[pytest]\naddopts = -q --cov=src\n""",
-    )
+        """[pytest]\naddopts = -q --cov=src\n""")
     _write_file(
         repo / "mkdocs.yml",
         """
@@ -32,8 +31,7 @@ site_name: Example
 nav:
   - Home: index.md
   - Guide: guide.md
-""".strip(),
-    )
+""".strip())
     _write_file(
         docs / "index.md",
         """
@@ -42,8 +40,7 @@ nav:
 See the [guide](guide.md) for details.
 
 Tests reference: tests/unit/test_example.py
-""".strip(),
-    )
+""".strip())
     # The guide document is intentionally missing to trigger detection.
 
     payload = run_audit(repo)
@@ -67,8 +64,7 @@ def test_audit_succeeds_when_everything_present(tmp_path: Path) -> None:
 
     _write_file(
         repo / "configs" / "development" / "pytest.ini",
-        """[pytest]\naddopts = -q --cov=src/codex_ml\n""",
-    )
+        """[pytest]\naddopts = -q --cov=src/codex_ml\n""")
     _write_file(
         repo / "mkdocs.yml",
         """
@@ -77,7 +73,7 @@ nav:
   - Home: index.md
   - Guide: guide.md
 """.strip(
-    ), )
+    ))
     _write_file(
         docs / "index.md",
         """
@@ -86,8 +82,7 @@ nav:
 See the [guide](guide.md) for details.
 
 Tests reference: tests/unit/test_example.py
-""".strip(),
-    )
+""".strip())
     _write_file(docs / "guide.md", "# Guide\n")
     _write_file(repo / "tests" / "unit" / "test_example.py", "def test_example():\n    pass\n")
 

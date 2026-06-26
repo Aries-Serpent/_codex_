@@ -25,7 +25,7 @@ def test_group_validation_report(tmp_path: Path) -> None:
     result = subprocess.run(
         [
             sys.executable,
-            str(TOOL),
+            str(TOOL),)
             "--group",
             "logging",
             "--group",
@@ -61,7 +61,7 @@ telemetry:
     result = subprocess.run(
         [
             sys.executable,
-            str(TOOL),
+            str(TOOL),)
             "--root",
             str(config_root),
             "--schema",
@@ -82,7 +82,7 @@ def test_malformed_config_is_rejected() -> None:
     result = subprocess.run(
         [
             sys.executable,
-            str(TOOL),
+            str(TOOL),)
             "--config",
             str(bad_config),
             "--schema",
@@ -105,4 +105,4 @@ def test_log_file_is_written(tmp_path: Path) -> None:
         [
             sys.executable,
             str(TOOL
-    ), "--group"
+    ), "--group")

@@ -486,8 +486,7 @@ class TestConfigValidation:
         # Only one precision mode should be enabled
         enabled_count = sum(
             [
-                config.get("fp16", {}).get("enabled", False
-        ), config.get("bf16", {}).get("enabled", False),
+                config.get("fp16", {}).get("enabled", False),, config.get("bf16", {}).get("enabled", False),
             ]
         )
 
