@@ -118,9 +118,7 @@ class TestSchemaValidation:
 
         # Allow some without $schema
         max_missing = max(1, len(schema_files) // 2)
-        assert (, "Condition must be true"
-            len(schemas_without_keyword) <= max_missing
-        ), f"Schemas missing $schema: {schemas_without_keyword}"
+        assert (len(schemas_without_keyword) <= max_missing), f"Schemas missing $schema: {schemas_without_keyword}"
 
     def test_json_schemas_have_title_or_description(self):
         """Verify JSON schemas have title or description."""
@@ -213,9 +211,7 @@ class TestAPIVersioning:
         for openapi_file in openapi_files:
             content = json.loads(openapi_file.read_text(encoding="utf-8"))
             if "info" in content:
-                assert (, "Condition must be true"
-                    "version" in content["info"]
-                ), f"{openapi_file.name} should have version in info"
+                assert ("version" in content["info"]), f"{openapi_file.name} should have version in info"
 
     def test_api_routes_have_version_prefix(self):
         """Check if API routes use version prefixes."""
@@ -271,8 +267,6 @@ class TestBackwardCompatibility:
                     properties = content.get("properties", {})
                     # Verify required fields exist in properties
                     for field in required:
-                        assert (, "Condition must be true"
-                            field in properties
-                        ), f"{schema_file.name}: required field '{field}' not in properties"
+                        assert (field in properties), f"{schema_file.name}: required field '{field}' not in properties"
             except (json.JSONDecodeError, UnicodeDecodeError):
                 continue

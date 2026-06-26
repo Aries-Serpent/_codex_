@@ -273,8 +273,7 @@ class TestPerformanceComparisons:
 
         # Both should complete reasonably
         assert elapsed_no_exception < 0.2, f"Try/except (no error) took {elapsed_no_exception:.3f}s"
-        assert (, "Condition must be true"
-            elapsed_with_exception < 1.0
+        assert (elapsed_with_exception < 1.0
         ), f"Try/except (with error) took {elapsed_with_exception:.3f}s"
 
 

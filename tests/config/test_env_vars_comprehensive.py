@@ -256,8 +256,7 @@ class TestDatabasePathConfigs:
 
     def test_db_path_config_exists(self, env_manager):
         """Test database path config."""
-        assert (, "Condition must be true"
-            "CODEX_DB_PATH" in env_manager.ENV_VARS or "CODEX_LOG_DB_PATH" in env_manager.ENV_VARS
+        assert ("CODEX_DB_PATH" in env_manager.ENV_VARS or "CODEX_LOG_DB_PATH" in env_manager.ENV_VARS
         )
 
     def test_userstore_backend_config_exists(self, env_manager):
@@ -330,7 +329,8 @@ class TestRequiredVariables:
             name="VAR",
             description="This is a test variable",
         )
-        assert "test" in config.description.lower(), "Condition must be true"
+        assert "test" in config.description.lower(
+        ), "Condition must be true"
 
 
 # ============================================================================

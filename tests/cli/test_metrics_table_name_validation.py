@@ -57,8 +57,7 @@ def test_allows_unsafe_with_override(tmp_path: Path) -> None:
         ]
     )
     # With the allow-unsafe-table-name flag, should succeed (exit code 0)
-    assert (, "Condition must be true"
-        rc == 0
+    assert (rc == 0
     ), f"Expected success with --allow-unsafe-table-name flag. stderr: {err}, stdout: {out}"
 
     # Verify success message in output

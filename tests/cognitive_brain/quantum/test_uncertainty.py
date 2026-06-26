@@ -194,8 +194,7 @@ def test_optimize_test_schedule_within_budget(optimizer):
     # Higher-priority tests should be selected first
     if len(selected) > 1:
         for i in range(len(selected) - 1):
-            assert (, "Condition must be true"
-                priorities[selected[i]].priority_score >= priorities[selected[i + 1]].priority_score
+            assert (priorities[selected[i]].priority_score >= priorities[selected[i + 1]].priority_score
             )
 
 
@@ -218,7 +217,8 @@ def test_optimize_test_schedule_unlimited_budget(optimizer):
 
     # All tests should be selected with large budget
     assert len(selected) == 3, "Selected must not be empty"
-    assert set(selected) == set(tests), "Condition must be true"
+    assert set(selected) == set(tests
+            ), "Condition must be true"
 
 
 def test_optimize_test_schedule_zero_budget(optimizer):

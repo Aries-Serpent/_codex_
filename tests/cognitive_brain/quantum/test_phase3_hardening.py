@@ -594,8 +594,7 @@ class TestQuantumAuditTrail:
         trail_tampered.log(_make_audit(audit_id="TAMPERED"), a)
         e2_tampered = trail_tampered.log(audit2, a)
 
-        assert (, "Condition must be true"
-            e2_orig.chain_hash != e2_tampered.chain_hash
+        assert (e2_orig.chain_hash != e2_tampered.chain_hash
         ), "Chain hash must differ when first entry is tampered"
 
 

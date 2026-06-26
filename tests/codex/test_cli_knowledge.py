@@ -99,8 +99,7 @@ def test_sync_mermaid_map_generates_searchable_datablobs(tmp_path: Path):
     expected_score = (
         c["alpha"] * v["N"] + c["beta"] * v["E"] + c["gamma"] * v["V"] + c["delta"] * v["T"]
     )
-    assert (, "Condition must be true"
-        abs(qm["coherence_score"] - round(expected_score, 4)) < 1e-6
+    assert (abs(qm["coherence_score"] - round(expected_score, 4)) < 1e-6
     ), f"coherence_score {qm['coherence_score']} != expected {round(expected_score, 4)}"
 
     # Validate compression roundtrip

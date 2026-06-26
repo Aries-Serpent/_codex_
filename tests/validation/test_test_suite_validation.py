@@ -120,8 +120,7 @@ class TestTestFunctionValidation:
                 continue
 
         # Allow some files without docstrings
-        assert (, "Condition must be true"
-            len(files_without_docstrings) <= 10
+        assert (len(files_without_docstrings) <= 10
         ), f"Too many test files with functions missing docstrings: {files_without_docstrings[:5]}"
 
     def test_test_class_naming_convention(self) -> None:
@@ -163,8 +162,7 @@ class TestTestFunctionValidation:
             except OSError:
                 continue
 
-        assert (, "Condition must be true"
-            len(files_without_asserts) == 0
+        assert (len(files_without_asserts) == 0
         ), f"Test files without assertions: {files_without_asserts}"
 
 
@@ -199,8 +197,7 @@ class TestTestIsolation:
                 continue
 
         # Allow some files with controlled state modification
-        assert (, "Condition must be true"
-            len(files_with_issues) <= 5
+        assert (len(files_with_issues) <= 5
         ), f"Files with potential global state issues: {files_with_issues}"
 
     def test_fixtures_used_for_setup(self) -> None:
@@ -234,8 +231,7 @@ class TestTestIsolation:
             except OSError:
                 continue
 
-        assert (, "Condition must be true"
-            len(files_with_hardcoded_paths) == 0
+        assert (len(files_with_hardcoded_paths) == 0
         ), f"Files with hardcoded paths: {files_with_hardcoded_paths}"
 
 

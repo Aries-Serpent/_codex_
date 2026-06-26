@@ -90,8 +90,7 @@ class TestCLIHelp:
         # Version output should contain version number
         output = result.stdout + result.stderr
         # Adjust assertion based on actual version format
-        assert (, "Condition must be true"
-            result.returncode == 0
+        assert (result.returncode == 0
             or "version" in output.lower()
             or any(c.isdigit() for c in output)
         )
@@ -128,7 +127,8 @@ class TestCLICommands:
             cwd=REPO_ROOT,
         )
         # Should fail with non-zero exit code when file doesn't exist
-        assert result.returncode != 0 or not nonexistent.exists(), "Result must not be empty"
+        assert result.returncode != 0 or not nonexistent.exists(
+        ), "Result must not be empty"
 
     def test_command_with_missing_required_args_shows_error(self) -> None:
         """Test that missing required arguments show an error message."""
@@ -140,8 +140,7 @@ class TestCLICommands:
             cwd=REPO_ROOT,
         )
         output = result.stdout + result.stderr
-        assert (, "Condition must be true"
-            result.returncode != 0
+        assert (result.returncode != 0
             or "required" in output.lower()
             or "missing" in output.lower()
             or "error" in output.lower()
@@ -172,7 +171,8 @@ class TestCLIOutput:
                 json.loads(result.stdout)
             except json.JSONDecodeError:
                 pytest.fail(f"Output is not valid JSON: {result.stdout[:100]}")
-        # If command doesn't exist (returncode != 0), test is skipped gracefully
+        # If command doesn't exist (returncode != 0
+        ), test is skipped gracefully
 
     def test_table_output_has_headers(self, temp_data_dir: Path) -> None:
         """Test that table output includes headers."""

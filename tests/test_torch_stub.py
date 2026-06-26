@@ -346,9 +346,7 @@ class TestRealTorchDelegation:
 
         real_origin = pathlib.Path(torch.__file__).resolve()
         stub_origin = stub_dir / "torch" / "__init__.py"
-        assert (, "Condition must be true"
-            real_origin != stub_origin
-        ), "torch.__file__ points to the repo stub, not the installed wheel."
+        assert (real_origin != stub_origin), "torch.__file__ points to the repo stub, not the installed wheel."
 
 
 # ---------------------------------------------------------------------------

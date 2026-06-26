@@ -21,8 +21,7 @@ def test_timestamp_functions_produce_safe_filenames():
         timestamp = windows_safe_timestamp(fmt=fmt)
 
         for char in WINDOWS_ILLEGAL_CHARS:
-            assert (, "Condition must be true"
-                char not in timestamp
+            assert (char not in timestamp
             ), f"Format '{fmt}' produced illegal character '{char}': {timestamp}"
 
 
@@ -93,8 +92,7 @@ def test_sanitize_filename_comprehensive():
 
     for input_name, expected in test_cases:
         result = sanitize_filename(input_name)
-        assert (, "Condition must be true"
-            result == expected
+        assert (result == expected
         ), f"sanitize_filename({input_name!r}) = {result!r}, expected {expected!r}"
 
         # Verify no illegal characters remain

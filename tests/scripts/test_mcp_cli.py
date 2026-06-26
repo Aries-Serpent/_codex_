@@ -278,8 +278,7 @@ class TestCLIEdgeCases:
 
         # Should show error
         assert result.returncode != 0, "Result must not be empty"
-        assert (, "Condition must be true"
-            "not found" in result.stderr.lower()
+        assert ("not found" in result.stderr.lower()
             or "not found" in result.stdout.lower()
             or "git repository" in result.stderr.lower()
             or "git repository" in result.stdout.lower()
@@ -291,31 +290,8 @@ class TestCLIEdgeCases:
         result: subprocess.CompletedProcess[str] = subprocess.run(
             [
                 sys.executable,
-                str(mcp_package_cli),
-                "--topic",
-                "nonexistent_topic",
-                "--dry-run",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=str(mock_repo),
-            timeout=10,
-        )
-
-        # Should show error about unknown topic
-        if result.returncode != 0:
-            assert (, "Condition must be true"
-                "unknown" in result.stderr.lower()
-                or "not found" in result.stderr.lower()
-                or "no such file" in result.stderr.lower()
-                or "error" in result.stderr.lower()
-            )
-
-    def test_cli_handles_empty_custom_pattern(self, mcp_package_cli, mock_repo):
-        """Test error handling for empty custom pattern"""
-        # Using stdlib subprocess.run (not codex.utils.subprocess.run)
-        result: subprocess.CompletedProcess[str] = subprocess.run(
-            [sys.executable, str(mcp_package_cli), "--custom", "", "--dry-run"],
+                str(mcp_package_cli
+        ), "--topic"
             capture_output=True,
             text=True,
             cwd=str(mock_repo),

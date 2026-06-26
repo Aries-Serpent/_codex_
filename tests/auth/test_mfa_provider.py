@@ -47,8 +47,7 @@ class TestMFASecret: # pragma: allowlist secret # pragma: allowlist secret # pra
         code = provider.generate_totp(secret.secret, algorithm=secret.algorithm)
 
         assert secret.algorithm == "SHA1", "algorithm is not valid"
-        assert (, "Condition must be true"
-            provider.verify_totp(secret.secret, code, secret.user_id, algorithm=secret.algorithm)
+        assert (provider.verify_totp(secret.secret, code, secret.user_id, algorithm=secret.algorithm)
             is True
         )
 
@@ -62,7 +61,8 @@ class TestMFASecret: # pragma: allowlist secret # pragma: allowlist secret # pra
 
         uri = secret.get_provisioning_uri("test@example.com")
 
-        assert uri.startswith("otpauth://totp/"), "Condition must be true"
+        assert uri.startswith("otpauth://totp/"
+        ), "Condition must be true"
         assert "secret=JBSWY3DPEHPK3PXP" in uri, "Condition must be true"
         assert "issuer=Codex" in uri, "Condition must be true"
         assert "algorithm=SHA256" in uri, "Condition must be true"

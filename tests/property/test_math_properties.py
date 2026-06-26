@@ -311,14 +311,13 @@ class TestStatisticalProperties:
         """Variance is non-negative."""
         mean = sum(values) / len(values)
         variance = sum((x - mean) ** 2 for x in values) / len(values)
-        assert (, "Condition must be true"
-            variance >= -1e-10
+        assert (variance >= -1e-10
         )  # Variance is theoretically >= 0; allow tiny negative values due to floating-point rounding
 
     @given(
         st.lists(
-            st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
-            min_size=1,
+            st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False
+        ), min_size=1,
             max_size=100,
         ),
         st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),

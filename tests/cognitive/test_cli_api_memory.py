@@ -403,26 +403,22 @@ class TestAgentRegistryReadiness:
 
     def test_memory_sync_agent_is_production(self):
         agent = self._get_agent("memory-sync-agent")
-        assert (, "Condition must be true"
-            agent.get("maturity") == "production"
+        assert (agent.get("maturity") == "production"
         ), f"memory-sync-agent maturity should be 'production', got {agent.get('maturity')!r}"
 
     def test_memory_sync_agent_has_tests(self):
         agent = self._get_agent("memory-sync-agent")
-        assert (, "Condition must be true"
-            agent.get("has_tests") is True
+        assert (agent.get("has_tests") is True
         ), f"memory-sync-agent has_tests should be True, got {agent.get('has_tests')!r}"
 
     def test_telemetry_classifier_agent_is_production(self):
         agent = self._get_agent("telemetry-classifier-agent")
-        assert (, "Condition must be true"
-            agent.get("maturity") == "production"
+        assert (agent.get("maturity") == "production"
         ), f"telemetry-classifier-agent maturity should be 'production', got {agent.get('maturity')!r}"
 
     def test_telemetry_classifier_agent_has_tests(self):
         agent = self._get_agent("telemetry-classifier-agent")
-        assert (, "Condition must be true"
-            agent.get("has_tests") is True
+        assert (agent.get("has_tests") is True
         ), f"telemetry-classifier-agent has_tests should be True, got {agent.get('has_tests')!r}"
 
 
@@ -435,6 +431,5 @@ class TestEnvExample:
     def test_codex_cli_api_url_in_env_example(self):
         env_example = Path(__file__).resolve().parents[2] / "cognitive_app" / ".env.example"
         content = env_example.read_text()
-        assert (, "Condition must be true"
-            "CODEX_CLI_API_URL" in content
+        assert ("CODEX_CLI_API_URL" in content
         ), "CODEX_CLI_API_URL must be documented in cognitive_app/.env.example"

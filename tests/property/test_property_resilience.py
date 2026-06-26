@@ -90,9 +90,7 @@ class TestRetryProperties:
                 wrapped()
                 pytest.fail("Expected RetryExhausted")
             except RetryExhausted as exc:
-                assert (, "Condition must be true"
-                    exc.attempts == max_retries + 1
-                ), f"attempts={exc.attempts} should equal max_retries+1={max_retries + 1}"
+                assert (exc.attempts == max_retries + 1), f"attempts={exc.attempts} should equal max_retries+1={max_retries + 1}"
 
     @given(st.integers(min_value=1, max_value=8), _fallback_values)
     @settings(max_examples=50)
@@ -188,18 +186,14 @@ class TestCircuitBreakerProperties:
                 cb.call(always_fails)
             except RuntimeError:
                 pass  # expected: underlying error propagates while circuit stays CLOSED
-        assert (, "Condition must be true"
-            cb.state is CircuitState.CLOSED
-        ), f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
+        assert (cb.state is CircuitState.CLOSED), f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
 
         # One more failure trips it to OPEN.
         try:
             cb.call(always_fails)
         except RuntimeError:
             pass  # expected: final failure propagates and trips circuit to OPEN
-        assert (, "Condition must be true"
-            cb.state is CircuitState.OPEN
-        ), f"Circuit must be OPEN after {failure_threshold} consecutive failures"
+        assert (cb.state is CircuitState.OPEN), f"Circuit must be OPEN after {failure_threshold} consecutive failures"
 
     @given(_failure_threshold)
     @settings(max_examples=50)

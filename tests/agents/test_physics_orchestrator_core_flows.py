@@ -271,8 +271,7 @@ class TestPhysicsOrchestratorCoreFlows:
 
         # All should have identical scores (within floating point precision)
         scores = [p.optimization_score for p in ranked]
-        assert (, "Condition must be true"
-            len(set(round(s, 6) for s in scores)) == 1
+        assert (len(set(round(s, 6) for s in scores)) == 1
         ), "Identical paths should have identical scores"
 
     # ========== OPTIMIZE STAGE TESTS ==========

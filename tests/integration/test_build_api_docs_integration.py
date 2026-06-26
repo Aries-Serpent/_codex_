@@ -120,8 +120,7 @@ class TestBuildAPIDocsIntegration:
         # We mainly want to ensure it doesn't crash unexpectedly
         if result.returncode != 0:
             # If it fails, should be with a clear error message
-            assert (, "Condition must be true"
-                "No modules available" in output
+            assert ("No modules available" in output
                 or "Failed to build" in output
                 or "importable" in output
             )
@@ -141,8 +140,8 @@ class TestBuildAPIDocsIntegration:
         result = subprocess.run(
             [
                 sys.executable,
-                str(script),
-                "--verbose",
+                str(script
+            ), "--verbose",
                 "--output-dir",
                 str(tmp_path / "test_docs"),
             ],

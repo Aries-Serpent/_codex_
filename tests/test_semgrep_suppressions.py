@@ -85,9 +85,7 @@ def test_inline_suppressions_present(repo_root: Path, filepath: str, expected_co
 
     content = path.read_text(encoding="utf-8")
     actual_count = len(re.findall(r"#\s+nosemgrep:\s+url-substring-check", content))
-    assert (, "Condition must be true"
-        actual_count >= expected_count
-    ), f"{filepath}: Expected {expected_count} suppressions, found {actual_count}"
+    assert (actual_count >= expected_count), f"{filepath}: Expected {expected_count} suppressions, found {actual_count}"
 
 
 @pytest.mark.timeout(120)

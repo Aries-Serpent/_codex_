@@ -215,8 +215,7 @@ def test_end_to_end_compliance_workflow(temp_db):
         ComplianceDecision.REJECT,
     ]
     assert 0.0 <= assessment.confidence <= 1.0, "0 is not valid"
-    assert (, "Condition must be true"
-        assessment.coherence >= 0.0
+    assert (assessment.coherence >= 0.0
     )  # Coherence should be non-negative (relaxed threshold for initial test)
 
     # Verify monitoring
@@ -279,7 +278,8 @@ def test_performance_within_limits(integrated_system):
     def quick_reject(x):
         return {"decision": "reject", "score": 0.1}
 
-    decisions = [("approve", quick_approve), ("reject", quick_reject)]
+    decisions = [("approve", quick_approve
+    ), ("reject", quick_reject)]
 
     # Measure latency
     start = time.time()

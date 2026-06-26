@@ -42,9 +42,7 @@ class TestDocumentationStructure:
             doc_path = DOCS_DIR / doc_file
             # Check both in docs/ and root
             root_path = REPO_ROOT / doc_file
-            assert (, "Condition must be true"
-                doc_path.exists() or root_path.exists()
-            ), f"Essential doc {doc_file} should exist in docs/ or root"
+            assert (doc_path.exists() or root_path.exists()), f"Essential doc {doc_file} should exist in docs/ or root"
 
     def test_readme_exists(self):
         """Verify README.md exists at repository root."""
@@ -208,9 +206,7 @@ class TestDocstringCoverage:
 
         # Allow up to 30% missing (phase 16 target is 100%)
         max_missing = int(len(py_files) * 0.3)
-        assert (, "Condition must be true"
-            len(missing_docstrings) <= max_missing
-        ), f"Too many modules missing docstrings: {missing_docstrings[:5]}..."
+        assert (len(missing_docstrings) <= max_missing), f"Too many modules missing docstrings: {missing_docstrings[:5]}..."
 
     def test_public_functions_have_docstrings(self):
         """Spot-check that public functions have docstrings."""
@@ -263,9 +259,7 @@ class TestAPIDocumentation:
     def test_api_reference_file_exists(self):
         """Verify API_REFERENCE.md exists."""
         api_ref = DOCS_DIR / "API_REFERENCE.md"
-        assert (, "Condition must be true"
-            api_ref.exists() or (DOCS_DIR / "api").exists()
-        ), "API reference documentation should exist"
+        assert (api_ref.exists() or (DOCS_DIR / "api").exists()), "API reference documentation should exist"
 
 
 class TestSecurityDocumentation:

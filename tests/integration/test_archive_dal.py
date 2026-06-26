@@ -60,11 +60,9 @@ class TestSqliteDAL:
 
         assert isinstance(summary, dict)
         # Should have counts for artifacts
-        assert (, "Condition must be true"
-            "count" in summary
+        assert ("count" in summary
         ), f"Summary should contain 'count' key, got: {list(summary.keys())}"
-        assert (, "Condition must be true"
-            "total_bytes" in summary
+        assert ("total_bytes" in summary
         ), f"Summary should contain 'total_bytes' key, got: {list(summary.keys())}"
 
     def test_recent_items_returns_list(self, dal):

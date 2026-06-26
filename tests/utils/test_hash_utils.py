@@ -190,8 +190,7 @@ class TestContentDigest:
         json2 = json.dumps(data2, sort_keys=True)
 
         assert json1 == json2, "json1 is not valid"
-        assert (, "Condition must be true"
-            hashlib.sha256(json1.encode()).hexdigest() == hashlib.sha256(json2.encode()).hexdigest()
+        assert (hashlib.sha256(json1.encode()).hexdigest() == hashlib.sha256(json2.encode()).hexdigest()
         )
 
     def test_binary_digest_chunked(self):
@@ -204,7 +203,8 @@ class TestContentDigest:
         # Chunked hash
         h = hashlib.sha256()
         chunk_size = 256
-        for i in range(0, len(data), chunk_size):
+        for i in range(0, len(data
+        ), chunk_size):
             h.update(data[i : i + chunk_size])
         chunked_hash = h.hexdigest()
 

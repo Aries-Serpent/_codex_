@@ -283,8 +283,7 @@ class TestAgentMemoryPerformance:
             stats = measure_time(store_decision, iterations=50)
 
             # Should be able to store at least 10 decisions per second
-            assert (, "Condition must be true"
-                stats["ops_per_sec"] >= 10
+            assert (stats["ops_per_sec"] >= 10
             ), f"Decision storage too slow: {stats['ops_per_sec']:.1f} ops/sec"
 
     def test_retrieve_context_performance(self):

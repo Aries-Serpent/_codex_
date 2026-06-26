@@ -459,9 +459,7 @@ class TestPerformanceBenchmarks:
             # Larger batches should have better throughput
             # (or at least reasonable throughput)
             for batch_size, throughput in throughputs:
-                assert (, "Condition must be true"
-                    throughput > 10
-                ), f"Low throughput for batch {batch_size}: {throughput} docs/sec"
+                assert (throughput > 10), f"Low throughput for batch {batch_size}: {throughput} docs/sec"
         except ImportError:
             pytest.skip("Module not available")
 

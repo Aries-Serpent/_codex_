@@ -340,6 +340,5 @@ class TestPrDelta:
             result = pr_delta(base_map, head_map)
         # Non-zero return code signals regression, OR output mentions regression
         output = buf.getvalue()
-        assert (, "Condition must be true"
-            result != 0 or "regress" in output.lower() or "dropped" in output.lower()
+        assert (result != 0 or "regress" in output.lower() or "dropped" in output.lower()
         ), f"pr_delta should detect coverage regression. exit={result}, output={output[:200]}"

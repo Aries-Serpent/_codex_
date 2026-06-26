@@ -65,8 +65,7 @@ def test_determinism_dual_run():
         )
 
         # Results should be identical
-        assert (, "Condition must be true"
-            result1["loss"] == result2["loss"]
+        assert (result1["loss"] == result2["loss"]
         ), f"Loss mismatch: {result1['loss']} vs {result2['loss']}"
         assert result1["count"] == result2["count"], "Result must not be empty"
         assert result1["batches"] == result2["batches"], "Result must not be empty"

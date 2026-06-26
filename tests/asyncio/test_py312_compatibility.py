@@ -184,8 +184,7 @@ class TestAsyncDataLoaders:
             and "event loop" in str(w.message).lower()
         ]
 
-        assert (, "Condition must be true"
-            len(event_loop_warnings) == 0
+        assert (len(event_loop_warnings) == 0
         ), f"Unexpected event loop warnings: {event_loop_warnings}"
 
 

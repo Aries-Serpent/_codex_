@@ -162,8 +162,7 @@ class TestModelServing:
             "float16": {"bits": 16, "size_reduction": 0.5},
             "float32": {"bits": 32, "size_reduction": 1.0},
         }
-        assert (, "Condition must be true"
-            quantization_modes["int8"]["size_reduction"]
+        assert (quantization_modes["int8"]["size_reduction"]
             < quantization_modes["float32"]["size_reduction"]
         )
 
@@ -201,123 +200,8 @@ class TestModelServing:
         """Test health check mechanism."""
         health = {
             "status": "healthy",
-            "last_check": datetime.now(),
-            "consecutive_failures": 0,
-            "failure_threshold": 3,
-        }
-        assert health["status"] in ["healthy", "degraded", "unhealthy"]
-
-
-class TestTrainingStateManagement:
-    """Test training state and checkpoint management."""
-
-    def test_training_state_initialization(self):
-        """Test training state initialization."""
-        state = {
-            "epoch": 0,
-            "step": 0,
-            "loss": None,
-            "best_loss": float("inf"),
-            "status": "initialized",
-        }
-        assert state["epoch"] == 0, "Condition must be true"
-        assert state["status"] == "initialized", "Condition must be true"
-
-    def test_training_checkpoint_saving(self):
-        """Test checkpoint saving process."""
-        checkpoint = {
-            "epoch": 5,
-            "step": 1000,
-            "model_state": {"weights": []},
-            "optimizer_state": {"lr": 0.001},
-            "timestamp": datetime.now(),
-        }
-        assert checkpoint["epoch"] > 0, "Value must be greater than zero"
-        assert "model_state" in checkpoint, "Condition must be true"
-
-    def test_training_checkpoint_loading(self):
-        """Test checkpoint loading and restoration."""
-        saved_checkpoint = {"epoch": 5, "step": 1000, "model_state": {"weights": [0.1, 0.2, 0.3]}}
-        loaded_state = {"epoch": saved_checkpoint["epoch"], "step": saved_checkpoint["step"]}
-        assert loaded_state["epoch"] == saved_checkpoint["epoch"], "Condition must be true"
-
-    def test_learning_rate_scheduling(self):
-        """Test learning rate scheduling."""
-        schedule = {
-            "type": "exponential_decay",
-            "initial_lr": 0.001,
-            "decay_rate": 0.96,
-            "decay_steps": 1000,
-        }
-        assert schedule["initial_lr"] > 0, "Value must be greater than zero"
-        assert schedule["decay_rate"] < 1.0, "Condition must be true"
-
-    def test_gradient_accumulation(self):
-        """Test gradient accumulation configuration."""
-        accumulation = {"enabled": True, "steps": 4, "max_accumulated_gradients": 100}
-        assert accumulation["steps"] > 0, "Value must be greater than zero"
-
-    def test_mixed_precision_training(self):
-        """Test mixed precision training config."""
-        mixed_precision = {
-            "enabled": True,
-            "dtype": "float16",
-            "loss_scale": 1024,
-            "loss_scale_window": 1000,
-        }
-        assert mixed_precision["enabled"], "Condition must be true"
-        assert mixed_precision["loss_scale"] > 0, "Value must be greater than zero"
-
-    def test_training_early_stopping(self):
-        """Test early stopping configuration."""
-        early_stop = {
-            "enabled": True,
-            "patience": 5,
-            "min_delta": 0.001,
-            "metric": "validation_loss",
-        }
-        assert early_stop["patience"] > 0, "Value must be greater than zero"
-        assert early_stop["min_delta"] >= 0, "Value must be greater than zero"
-
-    def test_training_regularization(self):
-        """Test regularization techniques."""
-        regularization = {
-            "dropout_rate": 0.2,
-            "weight_decay": 0.0001,
-            "label_smoothing": 0.1,
-            "mixup_alpha": 0.2,
-        }
-        assert regularization["dropout_rate"] >= 0, "Value must be greater than zero"
-        assert regularization["weight_decay"] >= 0, "Value must be greater than zero"
-
-    def test_training_metrics_tracking(self):
-        """Test training metrics tracking."""
-        metrics = {
-            "train_loss": [2.5, 2.3, 2.1, 1.9, 1.8],
-            "val_loss": [2.6, 2.4, 2.2, 2.0, 1.95],
-            "train_accuracy": [0.5, 0.6, 0.7, 0.75, 0.78],
-            "val_accuracy": [0.48, 0.58, 0.68, 0.72, 0.75],
-        }
-        assert len(metrics["train_loss"]) == 5, "Collection must not be empty"
-        assert metrics["train_loss"][-1] < metrics["train_loss"][0], "Condition must be true"
-
-    def test_training_resume_from_checkpoint(self):
-        """Test resuming training from checkpoint."""
-        checkpoint = {"epoch": 10, "step": 5000, "best_loss": 1.5}
-        resume_config = {
-            "resume_from_checkpoint": True,
-            "checkpoint_epoch": checkpoint["epoch"],
-            "checkpoint_step": checkpoint["step"],
-        }
-        assert resume_config["checkpoint_epoch"] == checkpoint["epoch"], "Condition must be true"
-
-
-class TestModelValidation:
-    """Test model validation and verification."""
-
-    def test_model_input_validation(self):
-        """Test input validation."""
-        validator = {"expected_shape": (None, 512), "dtype": "int64", "valid_range": (0, 30522)}
+            "last_check": datetime.now(
+        ), "consecutive_failures"
         assert validator["expected_shape"] is not None, "validat must be initialized"
         assert validator["valid_range"][1] > validator["valid_range"][0], "validat must be greater than zero"
 

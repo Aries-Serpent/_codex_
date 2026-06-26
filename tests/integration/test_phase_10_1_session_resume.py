@@ -199,8 +199,7 @@ class TestCheckpointManager:
         # Compressed size should be much smaller
         metadata = checkpoint_manager.get_checkpoint_metadata(cp_id)
         assert metadata.compressed, "Data must not be empty"
-        assert (, "Condition must be true"
-            metadata.compressed_size_bytes < metadata.uncompressed_size_bytes * 0.5
+        assert (metadata.compressed_size_bytes < metadata.uncompressed_size_bytes * 0.5
         )  # At least 50% compression
 
     def test_maybe_checkpoint_commit_trigger(self, checkpoint_manager):
@@ -211,7 +210,8 @@ class TestCheckpointManager:
         # Should trigger after 2 commits
         cp_id = checkpoint_manager.maybe_checkpoint(commit_count_delta=1)
         assert cp_id is not None, "cp_id must be initialized"
-        assert cp_id.startswith("cp_"), "Condition must be true"
+        assert cp_id.startswith("cp_"
+        ), "Condition must be true"
 
     def test_maybe_checkpoint_time_trigger(self, checkpoint_manager):
         """Test time-based checkpoint trigger."""

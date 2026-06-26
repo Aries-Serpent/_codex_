@@ -261,8 +261,7 @@ class TestSessionMetrics:
 
         assert result["active"] >= 1, "Value must be greater than zero"
         assert result["archived"] >= 1, "Value must be greater than zero"
-        assert (, "Condition must be true"
-            result["total"]
+        assert (result["total"]
             == result["active"]
             + result["completed"]
             + result["error"]
@@ -293,7 +292,8 @@ class TestSessionMetrics:
 
         captured = capsys.readouterr()
         assert rc == 0, "rc is not valid"
-        assert "Archived" in captured.out or "archived" in captured.out.lower(), "Condition must be true"
+        assert "Archived" in captured.out or "archived" in captured.out.lower(
+        ), "Condition must be true"
         assert "Total" in captured.out or "total" in captured.out.lower(), "Condition must be true"
 
     def test_cmd_metrics_json_output(self, tmp_path, capsys):

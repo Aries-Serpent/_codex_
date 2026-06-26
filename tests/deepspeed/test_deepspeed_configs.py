@@ -375,8 +375,7 @@ class TestDeepSpeedIntegration:
         assert config["scheduler"]["type"] == "WarmupDecayLR", "Condition must be true"
         assert config["scheduler"]["params"]["warmup_num_steps"] > 0, "Value must be greater than zero"
         assert config["scheduler"]["params"]["total_num_steps"] > 0, "Value must be greater than zero"
-        assert (, "Condition must be true"
-            config["scheduler"]["params"]["warmup_num_steps"]
+        assert (config["scheduler"]["params"]["warmup_num_steps"]
             < config["scheduler"]["params"]["total_num_steps"]
         )
 
@@ -487,8 +486,8 @@ class TestConfigValidation:
         # Only one precision mode should be enabled
         enabled_count = sum(
             [
-                config.get("fp16", {}).get("enabled", False),
-                config.get("bf16", {}).get("enabled", False),
+                config.get("fp16", {}).get("enabled", False
+        ), config.get("bf16", {}).get("enabled", False),
             ]
         )
 

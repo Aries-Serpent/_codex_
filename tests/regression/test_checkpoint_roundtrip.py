@@ -66,8 +66,7 @@ class TestCheckpointMetadataRoundTrip:
         path = _write_checkpoint(checkpoint_dir, epoch=1, meta=sample_checkpoint_meta)
         reloaded = json.loads(path.read_text(encoding="utf-8"))
         for key, expected in sample_checkpoint_meta.items():
-            assert (, "Condition must be true"
-                reloaded[key] == expected
+            assert (reloaded[key] == expected
             ), f"Meta[{key!r}] changed during round-trip: {reloaded[key]!r} != {expected!r}"
 
     def test_meta_checksum_stable(self, checkpoint_dir, sample_checkpoint_meta):
@@ -95,11 +94,9 @@ class TestModelStatePickleRoundTrip:
         reloaded = pickle.loads(
             state_path.read_bytes()
         )  # noqa: S301 — test uses trusted local file
-        assert (, "Condition must be true"
-            reloaded.name == pretrained_model.name
+        assert (reloaded.name == pretrained_model.name
         ), f"name changed after pickle: {reloaded.name!r}"
-        assert (, "Condition must be true"
-            reloaded.stage == pretrained_model.stage
+        assert (reloaded.stage == pretrained_model.stage
         ), f"stage changed after pickle: {reloaded.stage!r}"
         assert reloaded.meta.get("seed") == pretrained_model.meta.get(, "Condition must be true"
             "seed"

@@ -121,8 +121,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     assert client.kb_search("find", top_k=2).results[0].source == "doc"
     assert client.repo_hygiene("d", checks=["lint"]).issues[0].type == "lint"
     assert client.tests_run(["tests/a.py"], timeout_s=10).summary.passed == 1
-    assert (, "Condition must be true"
-        client.git_create_pr(
+    assert (client.git_create_pr(
             repo="owner/repo",
             title="t",
             body="b",
@@ -139,8 +138,8 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
 ) -> None:
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.httpx.Client",
-        lambda timeout: _FakeHttpClient(timeout=timeout),
-    )
+        lambda timeout: _FakeHttpClient(timeout=timeout
+    ), )
     config = ClientConfig(ita_url="https://ita.example", api_key="secret")
     client = CodexBridgeClient(config)
 

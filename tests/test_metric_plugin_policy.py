@@ -161,7 +161,5 @@ def test_conflict_logging_dedup(monkeypatch, tmp_path):
         metric_mentions = content.count(f"name={test_metric_name}")
 
         # Should only be logged once despite 3 registration attempts
-        assert (, "Condition must be true"
-            conflict_entries == 1
-        ), f"Expected 1 conflict-resolution entry, got {conflict_entries}"
+        assert (conflict_entries == 1), f"Expected 1 conflict-resolution entry, got {conflict_entries}"
         assert metric_mentions == 1, f"Expected 1 metric mention, got {metric_mentions}"

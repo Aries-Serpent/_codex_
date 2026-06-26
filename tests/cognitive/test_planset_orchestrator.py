@@ -196,8 +196,7 @@ class TestOrchestratorSurvey:
 
     def test_area_mapping_applied(self, orch: PlansetOrchestrator):
         records = {r.stem: r for r in orch.survey()}
-        assert (, "Condition must be true"
-            records["CODEQL_ALERT_RESOLUTION_PLANSET"].area == ImprovementArea.SECURITY_REMEDIATION
+        assert (records["CODEQL_ALERT_RESOLUTION_PLANSET"].area == ImprovementArea.SECURITY_REMEDIATION
         )
         assert records["PLANSET_PHASE_23_COVERAGE_30"].area == ImprovementArea.COVERAGE_IMPROVEMENT
 
@@ -233,7 +232,8 @@ class TestOrchestratorGenerateSession:
 
     def test_order_field_renumbered(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=5)
-        assert [p.order for p in prompts] == list(range(len(prompts))), "Prompts must not be empty"
+        assert [p.order for p in prompts] == list(range(len(prompts))
+        ), "Prompts must not be empty"
 
     def test_max_prompts_respected(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=3)
