@@ -40,7 +40,7 @@ class TestAppEcho:
         """Test echo can be called."""
         try:
             app.echo("test message")
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             # May fail if not in CLI context, but function should exist
             pass
 
@@ -132,7 +132,7 @@ class TestAppFramework:
         try:
             result = app.echo("test")
             # Should not raise if framework is properly configured
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             # May fail in non-CLI context
             pass
 

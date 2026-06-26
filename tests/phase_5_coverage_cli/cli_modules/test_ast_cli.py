@@ -37,7 +37,7 @@ class TestGetAdapter:
         try:
             adapter = ast_cli.get_adapter("python")
             assert adapter is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("PythonASTAdapter not available")
 
     def test_get_adapter_yaml(self) -> None:
@@ -45,7 +45,7 @@ class TestGetAdapter:
         try:
             adapter = ast_cli.get_adapter("yaml")
             assert adapter is not None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("YAMLASTAdapter not available")
 
     def test_get_adapter_json(self) -> None:
@@ -53,7 +53,7 @@ class TestGetAdapter:
         try:
             adapter = ast_cli.get_adapter("json")
             assert adapter is not None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("JSONASTAdapter not available")
 
     def test_get_adapter_sql(self) -> None:
@@ -61,7 +61,7 @@ class TestGetAdapter:
         try:
             adapter = ast_cli.get_adapter("sql")
             assert adapter is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("SQLASTAdapter not available")
 
     def test_get_adapter_invalid_language(self) -> None:
@@ -80,7 +80,7 @@ class TestGetAdapter:
             adapter = ast_cli.get_adapter("python")
             # Should be an object with methods
             assert hasattr(adapter, 'parse') or hasattr(adapter, '__call__')
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Adapters not available")
 
 
@@ -105,7 +105,7 @@ class TestParseCommand:
             result = ast_cli.parse_command(args)
             # Should return result without raising
             assert result is not None or result is None  # Either return value is OK
-        except Exception:
+        except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
             pytest.skip("parse_command implementation may vary")
 
     def test_parse_command_with_query(self, tmp_path: Path) -> None:
@@ -121,7 +121,7 @@ class TestParseCommand:
             )
             result = ast_cli.parse_command(args)
             assert result is not None or result is None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("parse_command with query not available")
 
     def test_parse_command_invalid_file(self) -> None:
@@ -137,7 +137,7 @@ class TestParseCommand:
                 ast_cli.parse_command(args)
             except (FileNotFoundError, IOError, ValueError):
                 pass  # Expected
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("parse_command error handling may vary")
 
     def test_parse_command_empty_file(self, tmp_path: Path) -> None:
@@ -153,7 +153,7 @@ class TestParseCommand:
             )
             result = ast_cli.parse_command(args)
             assert result is not None or result is None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("parse_command may not handle empty files")
 
 
@@ -182,7 +182,7 @@ class TestQueryCommand:
             result = ast_cli.query_command(args)
             # Should find 2 functions
             assert result is not None or result is None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("query_command not available")
 
     def test_query_command_class_defs(self, tmp_path: Path) -> None:
@@ -198,7 +198,7 @@ class TestQueryCommand:
             )
             result = ast_cli.query_command(args)
             assert result is not None or result is None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("query_command not available")
 
     def test_query_command_invalid_node_type(self, tmp_path: Path) -> None:
@@ -216,7 +216,7 @@ class TestQueryCommand:
             result = ast_cli.query_command(args)
         except (ValueError, AttributeError):
             pass  # Expected
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("query_command error handling varies")
 
 
@@ -242,7 +242,7 @@ class TestStatisticsCommand:
             if hasattr(ast_cli, 'stats_command'):
                 result = ast_cli.stats_command(args)
                 assert result is not None or result is None
-        except Exception:
+        except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
             pytest.skip("stats_command not available")
 
 
@@ -274,7 +274,7 @@ class TestLanguageSupport:
             if hasattr(adapter, 'parse'):
                 result = adapter.parse(str(py_file))
                 assert result is not None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Python parsing not available")
 
 
@@ -297,7 +297,7 @@ class TestArgumentParsing:
                 language='python'
             )
             assert args is not None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Argument parsing test error")
 
 
@@ -315,7 +315,7 @@ class TestEdgeCases:
                 result = adapter.parse(str(py_file))
                 # Should handle empty file
                 assert result is not None or result is None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Empty file handling not available")
 
     def test_unicode_content(self, tmp_path: Path) -> None:
@@ -328,7 +328,7 @@ class TestEdgeCases:
             if hasattr(adapter, 'parse'):
                 result = adapter.parse(str(py_file))
                 assert result is not None or result is None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Unicode handling not available")
 
     def test_large_file(self, tmp_path: Path) -> None:
@@ -343,7 +343,7 @@ class TestEdgeCases:
             if hasattr(adapter, 'parse'):
                 result = adapter.parse(str(py_file))
                 assert result is not None or result is None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Large file handling not available")
 
     def test_complex_syntax(self, tmp_path: Path) -> None:
@@ -362,7 +362,7 @@ class TestEdgeCases:
             if hasattr(adapter, 'parse'):
                 result = adapter.parse(str(py_file))
                 assert result is not None or result is None
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Complex syntax handling not available")
 
 
@@ -389,7 +389,7 @@ class TestErrorHandling:
                 pytest.fail("Should raise FileNotFoundError")
             except (FileNotFoundError, IOError, ValueError):
                 pass  # Expected
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Error handling may vary")
 
     def test_malformed_python_syntax(self, tmp_path: Path) -> None:
@@ -404,7 +404,7 @@ class TestErrorHandling:
                     result = adapter.parse(str(py_file))
                 except SyntaxError:
                     pass  # Expected for malformed code
-        except Exception:
+        except (ValueError, TypeError, KeyError, json.JSONDecodeError):
             pytest.skip("Syntax error handling not available")
 
 

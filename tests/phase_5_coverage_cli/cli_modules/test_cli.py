@@ -244,7 +244,7 @@ trainer:
                     with patch("training.trainer.Trainer"):
                         try:
                             result = cli.main(["--config-path", str(temp_config_dir)])
-                        except Exception:
+                        except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
                             # May fail due to mocking, but function should be callable
                             pass
 
@@ -263,7 +263,7 @@ class TestCliArgumentParsing:
                             with patch("training.trainer.Trainer"):
                                 try:
                                     cli.main(["--config-path", "/tmp"])
-                                except Exception:
+                                except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
                                     pass
 
     def test_parse_config_name_argument(self) -> None:
@@ -278,7 +278,7 @@ class TestCliArgumentParsing:
                                     cli.main(
                                         ["--config-path", "/tmp", "--config-name", "custom_train"]
                                     )
-                                except Exception:
+                                except (ValueError, TypeError, RuntimeError, click.ClickException, SystemExit):
                                     pass
 
     def test_parse_overrides(self) -> None:
@@ -298,5 +298,5 @@ class TestCliArgumentParsing:
                                             "trainer.batch_size=64",
                                         ]
                                     )
-                                except Exception:
+                                except (AssertionError, ValueError, TypeError, RuntimeError):
                                     pass

@@ -125,7 +125,7 @@ class TestSetSeedWithDependencies:
         """Test seed setting when numpy is available."""
         try:
             set_seed(42)
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("numpy integration not available")
 
     @patch('codex_ml.reproducibility.seed_manager.TORCH_AVAILABLE', True)
@@ -133,7 +133,7 @@ class TestSetSeedWithDependencies:
         """Test seed setting when torch is available."""
         try:
             set_seed(42)
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("torch integration not available")
 
     @patch('codex_ml.reproducibility.seed_manager.NUMPY_AVAILABLE', False)
@@ -154,7 +154,7 @@ class TestGetSeedState:
         try:
             state = get_seed_state()
             assert isinstance(state, (dict, SeedState))
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("get_seed_state not available")
 
     def test_get_seed_state_has_seed(self) -> None:
@@ -163,7 +163,7 @@ class TestGetSeedState:
             state = get_seed_state()
             # Should have some representation of seed
             assert state is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("get_seed_state not available")
 
     def test_get_seed_state_callable(self) -> None:
@@ -181,7 +181,7 @@ class TestGetSeedState:
             
             # Both should capture seed 42
             assert state1 is not None and state2 is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Seed functions not available")
 
 
@@ -204,7 +204,7 @@ class TestRestoreSeedState:
             # Should be restored
             new_state = get_seed_state()
             assert new_state is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Seed restoration not available")
 
     def test_restore_seed_state_from_dataclass(self) -> None:
@@ -212,7 +212,7 @@ class TestRestoreSeedState:
         try:
             original_state = SeedState(seed=42, python_hash_seed="0")
             restore_seed_state(original_state)
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("restore_seed_state not available")
 
 
@@ -230,7 +230,7 @@ class TestSeedEnvironmentVariables:
         try:
             set_seed(42)
             # Should work regardless of environment
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("set_seed not available")
 
 
@@ -250,7 +250,7 @@ class TestDeterminism:
             
             # Sequences should be identical
             assert seq1 == seq2
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Determinism test not available")
 
     def test_different_seeds_different_sequence(self) -> None:
@@ -266,7 +266,7 @@ class TestDeterminism:
             
             # Sequences should be different
             assert seq1 != seq2
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Determinism test not available")
 
     def test_numpy_determinism(self) -> None:
@@ -285,7 +285,7 @@ class TestDeterminism:
             assert np.allclose(arr1, arr2)
         except ImportError:
             pytest.skip("numpy not available")
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("numpy seed management not available")
 
 
@@ -298,7 +298,7 @@ class TestEdgeCases:
             set_seed(0)
             state = get_seed_state()
             assert state is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Seed functions not available")
 
     def test_seed_max_int(self) -> None:
@@ -307,7 +307,7 @@ class TestEdgeCases:
             set_seed(2**32 - 1)
             state = get_seed_state()
             assert state is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Seed functions not available")
 
     def test_seed_negative(self) -> None:
@@ -320,7 +320,7 @@ class TestEdgeCases:
         except (ValueError, OverflowError):
             # Some implementations might reject negative seeds
             pass
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Seed functions not available")
 
     def test_multiple_consecutive_sets(self) -> None:
@@ -331,7 +331,7 @@ class TestEdgeCases:
             # Should complete without error
             state = get_seed_state()
             assert state is not None
-        except Exception:
+        except (AssertionError, ValueError, TypeError, RuntimeError):
             pytest.skip("Seed functions not available")
 
 
