@@ -1,3 +1,4 @@
+import os
 from __future__ import annotations
 
 import base64
@@ -26,7 +27,7 @@ class ProviderFactoryCoverageTests(unittest.TestCase):
     def test_validate_config_branches(self) -> None:
         self.assertTrue(
             ProviderFactory.validate_config(
-                ProviderConfig(provider_type=ProviderType.GITHUB, token="tok")
+                ProviderConfig(provider_type=ProviderType.GITHUB, token=os.environ.get("TEST_GITHUB_TOKEN", "mock_token"))
             )
         )
         with self.assertRaises(ProviderConfigError):
