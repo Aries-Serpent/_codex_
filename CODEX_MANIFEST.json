@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-26T05:12:23Z",
+  "generated_at": "2026-06-26T12:44:10Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1616,11 +1616,6 @@
       "has_concurrency": true
     },
     {
-      "name": "phase-9-daily-standup",
-      "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
-    },
-    {
       "name": "post-accountability-to-discussion",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
@@ -2380,5 +2375,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "1c4345a17972ba3f8914c9e92b4ca83c6e122971f12c963591edbbf662a6540d"
+  "integrity_sha256": "1b5309f529e5318096d0327a0e585caf283dcbd71636d1349b0cb300ca9cb79e"
 }
