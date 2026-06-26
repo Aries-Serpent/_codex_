@@ -178,10 +178,16 @@ jobs:
           # See .github/scripts/validate_workflow_inputs.py for validation logic
 
           # Validate manifest_path if provided
+          # Capture stdout only (stderr goes to /dev/null) to ensure clean JSON
           MANIFEST_VALIDATION=$(python3 .github/scripts/validate_workflow_inputs.py \
             --type manifest-path \
             --value "${{ github.event.inputs.manifest_path }}" \
-            2>/dev/null || echo '{"valid": false, "mode": "direct"}')
+            2>/dev/null)
+          
+          # Fallback if script fails or returns nothing
+          if [[ -z "$MANIFEST_VALIDATION" ]]; then
+            MANIFEST_VALIDATION='{"valid": false, "mode": "direct"}'
+          fi
 
           MODE=$(echo "$MANIFEST_VALIDATION" | python3 -c "import sys,json; print(json.load(sys.stdin)['mode'])")
 

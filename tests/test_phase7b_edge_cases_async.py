@@ -26,6 +26,7 @@ class TestAsyncInitialization:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_context_empty_resource(self):
         """Should handle async context with no resource"""
         from codex.api.rag_api import RAGAPI
@@ -37,6 +38,7 @@ class TestAsyncInitialization:
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_async_context_exception_cleanup(self):
@@ -52,6 +54,7 @@ class TestAsyncInitialization:
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_nested_async_contexts(self):
@@ -71,6 +74,7 @@ class TestAsyncConcurrency:
     """Test concurrent async operations"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_concurrent_api_operations(self):
@@ -98,6 +102,7 @@ class TestAsyncConcurrency:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_timeout_handling(self):
         """Should handle async operation timeout"""
 
@@ -109,6 +114,7 @@ class TestAsyncConcurrency:
             await asyncio.wait_for(slow_operation(), timeout=0.1)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_async_cancellation(self):
@@ -416,6 +422,7 @@ class TestEndToEndWorkflows:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_api_chain(self):
         """Test chained async API calls"""
         try:
@@ -558,6 +565,7 @@ class TestEdgeCaseCombinations:
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_async_with_timeout_and_cancellation(self):

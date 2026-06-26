@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+_No entries yet — fixes in progress._
+
 ## [Main-Branch CI Failure Fixes] — 2026-06-26T16:49Z
 
 ### 🚨 Critical Fixes: 3 Main-Branch CI Failures Resolved
