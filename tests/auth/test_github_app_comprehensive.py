@@ -213,6 +213,7 @@ class TestTokenExchange:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_exchange_code_for_token(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -230,6 +231,7 @@ class TestTokenExchange:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_exchange_code_error(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -241,6 +243,7 @@ class TestTokenExchange:
                 await github_app.exchange_code_for_token("invalid_code")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_get_installation_token(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
@@ -260,6 +263,7 @@ class TestTokenExchange:
             assert token["token"] == "ghs_123456789", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_refresh_installation_token(self, github_app):
         old_token = {
@@ -380,6 +384,7 @@ class TestIntegration:
             assert token["installation_id"] == "987654", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_webhook_and_permission_check(self, github_app):
         # Receive webhook

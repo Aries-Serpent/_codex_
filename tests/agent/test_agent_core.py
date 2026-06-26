@@ -37,6 +37,7 @@ class TestAgentCore:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_execute_empty_task(self, agent):
         """Test executing empty task."""
         result = await agent.execute("")
@@ -45,6 +46,7 @@ class TestAgentCore:
         assert result.error is not None, "error must be initialized"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_execute_simple_task(self, agent):
         """Test executing a simple task."""
@@ -75,6 +77,7 @@ class TestMockAdapter:
 
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_complete(self, adapter):
         """Test completion with mock adapter."""
         from agent.adapters.base_adapter import CompletionRequest
@@ -86,6 +89,7 @@ class TestMockAdapter:
         assert response.model is not None, "model must be initialized"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_health_check(self, adapter):
         """Test health check always returns True."""
