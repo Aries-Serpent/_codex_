@@ -14,6 +14,7 @@ Investigated the PR #5106 blocking comment-review and validation failures from c
 - ✅ **Workflow Lint Repair** — Removed the stray blank line in `.github/workflows/phase-12-2-compliance-check.yml` that was tripping `yamllint` in Fast Validation.
 - ✅ **Phase 6-7 Script Fixes** — Corrected WEC health monitor REQ parsing, workflow pass-rate semantics, merge-speed scoring, and dead CLI/documentation surface; corrected Phase 7 overall scoring and minutes formatting.
 - ✅ **WEC Compliance Hardening** — Updated `validate_wec_compliance()` to inspect the PR head branch and require `agent-auth-delegation.yml` only for `copilot/` / `feature/` PRs; fixed the verbose remediation command interpolation.
+- ✅ **Verification Follow-up** — Restored the top-level `json` import in `session_wrapup_autofix.py` after the first local `--check-wec-compliance` verification exposed the regression immediately.
 - ✅ **Documentation Accuracy** — Fixed `--pr-number` command examples and corrected the Phase 6-7 sample metrics/output so the documented thresholds and pass/fail markers are internally consistent.
 
 ### Validation
