@@ -171,8 +171,7 @@ class TestCLIOutput:
                 json.loads(result.stdout)
             except json.JSONDecodeError:
                 pytest.fail(f"Output is not valid JSON: {result.stdout[:100]}")
-        # If command doesn't exist (returncode != 0
-        ), test is skipped gracefully
+        # If command doesn't exist (returncode != 0), test is skipped gracefully
 
     def test_table_output_has_headers(self, temp_data_dir: Path) -> None:
         """Test that table output includes headers."""

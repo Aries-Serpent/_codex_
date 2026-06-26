@@ -93,10 +93,8 @@ class TestEmailRedaction:
 
         assert "john" not in redacted, "Condition must be true"
         assert "doe" not in redacted, "Condition must be true"
-        assert ("example.com" in redacted
-        )  # pragma: allowlist secret
-        assert redacted.startswith("j"
-        ), "Condition must be true"
+        assert "example.com" in redacted, "Condition must be true"  # pragma: allowlist secret
+        assert redacted.startswith("j"), "Condition must be true"
 
     def test_redact_email_short_local(self):
         """Verify short local part redaction."""

@@ -461,8 +461,7 @@ class TestMemoryPatternLibraryIntegration:
         matches = library.match_patterns("test", min_success_rate=0.5)
         matched_ids = {m["pattern"]["pattern_id"] for m in matches}
 
-        # Should include p1 (0.5
-        ), p2 (0.7), p3 (0.9)
+        # Should include p1 (0.5), p2 (0.7), p3 (0.9)
         # Should exclude p0 (0.3)
         assert "p0" not in matched_ids, "Condition must be true"
         assert "p1" in matched_ids, "Condition must be true"
