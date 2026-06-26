@@ -45,8 +45,16 @@ updates:
         versions: [">=7.0.0"]  # v7 has breaking changes causing conflicts
       - dependency-name: "torch"
         versions: [">=2.3.0"]  # Avoid bleeding edge torch versions
-    # Group non-security updates to reduce PR noise
+    # Group non-security updates to reduce resolver complexity and PR noise
     groups:
+      critical-dependencies:
+        dependency-type: "production"
+        patterns:
+          - "pyjwt*"
+          - "starlette*"
+          - "fastapi*"
+          - "pydantic*"
+          - "cryptography*"
       development-dependencies:
         dependency-type: "development"
         patterns:
@@ -68,9 +76,14 @@ updates:
           - "numpy*"
           - "scikit-learn*"
           - "duckdb*"
+      async-dependencies:
+        patterns:
+          - "aiohttp*"
+          - "asyncio*"
+          - "httpx*"
     # Allow both direct and indirect updates
     versioning-strategy: "increase"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     # Security updates always opened immediately
     # Non-security updates batched per schedule
 
