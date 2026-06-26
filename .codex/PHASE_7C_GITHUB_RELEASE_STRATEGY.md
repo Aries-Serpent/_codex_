@@ -15,7 +15,7 @@
 ```
 Repository: Aries-Serpent/_codex_
 Latest Release: None (404 on get_latest_release — clean slate)
-Current HEAD: fa4509a7bf191cb749cd93ddbef88bdc2dae90c4 # pragma: allowlist secret
+Current HEAD: fa4509a7bf191cb749cd93ddbef88bdc2dae90c4 # pragma: allowlist secret # pragma: allowlist secret
 Branch: copilot/post-merge-validation-setup
 Target Version: v0.1.0-final
 ```

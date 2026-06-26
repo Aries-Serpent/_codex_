@@ -15,7 +15,7 @@ Tests:
 - Relative path validation
 - SHA256 hash format validation
 - JSON structure integrity
-"""
+""" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 import json
 from pathlib import Path
