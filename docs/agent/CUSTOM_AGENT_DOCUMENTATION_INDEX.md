@@ -149,7 +149,7 @@ REPEATABLE_PROCESSES.md
 | **CI/CD** | ci-auto-healer-agent | 4 available | Workflow failures, test failures, build issues |
 | **Testing** | unified-coverage-agent | 8 available | Test failures, coverage gaps, flaky tests |
 | **Documentation** | unified-doc-agent | 5 available | Doc structure, links, freshness, terminology |
-| **Security** | unified-security-scanner | 7 available | CodeQL, GHAS, deps, secrets |
+| **Security** | unified-security-scanner | 7 available | CodeQL, GHAS, deps, secrets | <!-- pragma: allowlist secret -->
 | **Configuration** | config-validator | 5 available | Config validation, migration, PyTorch |
 
 ### Multi-Lane Execution Model
@@ -166,7 +166,7 @@ Lanes:
 All lanes execute in parallel:
   Total time ≈ max(lane1_time, lane2_time, lane3_time, lane4_time)
   vs. sequential ≈ lane1_time + lane2_time + lane3_time + lane4_time
-  
+
 Efficiency gain: 2-4x faster with careful parallelization
 ```
 
@@ -175,7 +175,7 @@ Efficiency gain: 2-4x faster with careful parallelization
 ```
 State transitions:
   IDLE → RECEIVING → VALIDATING → EXECUTING → VERIFYING → RETURNING → IDLE
-  
+
 Key gates:
   VALIDATING: Prerequisite check (if fails → ESCALATING)
   EXECUTING: Work in progress (if blocker → ESCALATING)

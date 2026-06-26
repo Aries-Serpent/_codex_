@@ -2,6 +2,39 @@
 
 ## [Unreleased]
 
+### Review Remediation + PR #5093 Documentation Import — 2026-06-26T18:30Z
+
+**Campaign:** PR #5092 review closure + PR #5093 documentation import  
+**Session:** copilot-pr5092-review-remediation  
+**Date:** 2026-06-26T18:30Z  
+**Authority:** Copilot Coding Agent (autonomous)
+
+#### Executive Summary
+
+Resolved the remaining bot-review findings called out on PR #5092, fixed the `enforce_actions_versions.py --json` stdout/stderr bug that was breaking the action-version workflow parser, and cherry-picked the complete custom-agent documentation diff from PR #5093 into this branch.
+
+#### Changes
+
+- ✅ **Review-finding resolution (`8dcd5c5b`)**
+  - Fixed workflow permission/version issues in `.github/workflows/copilot-issue-triage.yml` and `.github/workflows/phase-8-2-issue-triage.yml`
+  - Repaired syntax/assertion regressions across `tests/verification/test_cove.py`, `tests/scripts/test_mcp_cli.py`, `tests/test_phase2_track2_codex_ml_models.py`, `tests/configs/test_validate_configs_cli.py`, `tests/deepspeed/test_deepspeed_configs.py`, and `tests/unit/test_stub_cleanup.py`
+  - Corrected optional-import/scan concerns in `coverage_tests/test_security_providers_unittest.py`, `coverage_tests/test_phase7_tier5_final.py`, `src/codex/governance/rbac.py`, and `src/codex_ml/utils/__init__.py`
+  - Removed generated artifact `test-junit.xml` and ignored future copies
+- ✅ **Additional robustness fix**
+  - `src/codex_ml/utils/stub_cleanup.py` now returns `False` on `SyntaxError` during abstract-method detection
+  - `scripts/ci/enforce_actions_versions.py` keeps JSON output clean on stdout while sending human-readable notices to stderr
+- ✅ **Imported PR #5093 docs stack**
+  - Cherry-picked `da1ba8d2`, `4041af3a`, `a5012dd3`, `2bf91106`, `542ba2bd`, `519bc15f`
+  - Added comprehensive custom-agent methodology docs under `docs/agent/`
+
+#### Validation
+
+- ✅ `python3 -m pytest tests/verification/test_cove.py tests/scripts/test_mcp_cli.py tests/test_phase2_track2_codex_ml_models.py coverage_tests/test_phase7_tier5_final.py::TestSecurityStorage::test_store_large_secret tests/deepspeed/test_deepspeed_configs.py tests/configs/test_validate_configs_cli.py tests/unit/test_stub_cleanup.py -q`
+- ✅ `python3 -m nox -s tests -- tests/verification/test_cove.py tests/scripts/test_mcp_cli.py tests/test_phase2_track2_codex_ml_models.py coverage_tests/test_phase7_tier5_final.py::TestSecurityStorage::test_store_large_secret tests/deepspeed/test_deepspeed_configs.py tests/configs/test_validate_configs_cli.py tests/unit/test_stub_cleanup.py`
+- ✅ `python3 scripts/ci/enforce_actions_versions.py --summary --json`
+
+---
+
 ### CodeQL & Syntax Remediation — 2026-06-26T17:41Z (Final Compliance Fixes)
 
 **Campaign:** PR #5092 CodeQL Alert Resolution  
@@ -723,7 +756,7 @@ python -m codex --version  # Should output: 0.1.0-final
 
 ---
 
-## [Unreleased] 
+## [Unreleased]
 ### Fixed (auto-update — PR #5091)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5091 (SHA `cc759f1d`) at 2026-06-26T15:18Z [auto-generated]
 
@@ -735,26 +768,26 @@ python -m codex --version  # Should output: 0.1.0-final
   - 460 broken links identified (all non-critical: templates, archives, missing files)
   - 0 broken links in critical documentation (README, CHANGELOG, AGENT_ACCOUNTABILITY_REPORT, agent docs, admin docs)
   - Created comprehensive `.codex/PHASE_4_LINK_VALIDATION_REPORT.md` with remediation guidance
-  
+
 - **Freshness Audit**: All 4,592 documentation files analyzed
   - 64 critical docs fresh (<1 day old)
   - 119 high-priority campaign docs fresh (<1 day old)
   - 0 files stale (>90 days old) — 100% freshness compliance
   - SLA compliance verified (all critical docs < 30 days old)
-  
+
 - **GitHub Pages Readiness**: Production deployment validated
   - MkDocs configuration valid and complete
   - Navigation tree complete and accessible
   - Build validation passed
   - Ready for production deployment
-  
+
 - **Documentation Maintenance Roadmap**: Created `.codex/PHASE_4_DOC_MAINTENANCE_ROADMAP.md`
   - Identified high-priority broken script references (Issue H-1)
   - Documented medium-priority template archive references (Issue M-1)
   - Identified low-priority absolute path conversion (Issue L-1)
   - Created quarterly documentation evolution plan (Q2-Q4 2026)
   - Assigned maintenance tasks with timeline and ownership
-  
+
 - **Compliance Gates**: REQ-4 and REQ-5 verification complete
   - REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated and in latest commit ✅
   - REQ-5: CHANGELOG.md updated and in latest commit ✅
@@ -789,7 +822,7 @@ python -m codex --version  # Should output: 0.1.0-final
 
 ---
 
-## [Unreleased] 
+## [Unreleased]
 ### Fixed (auto-update — PR #5084)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5084 (SHA `e61e4178`) at 2026-06-25T21:56Z [auto-generated]
 — 2026-06-25T16:21Z
@@ -802,7 +835,7 @@ python -m codex --version  # Should output: 0.1.0-final
   - Branch rebase status verified — no conflicts, up-to-date with origin
   - Identified and tracking merge readiness compliance blockers (REQ-4, REQ-5)
   - Posted explicit phase execution plan per pre-flight requirement #5
-  
+
 - **Merge Readiness Status:**
   - Scorecard: 85/100 (NOT READY)
   - Blocking dimension: auto_fix (0 auto-fixable issues)
@@ -1047,12 +1080,12 @@ python -m codex --version  # Should output: 0.1.0-final
   - Clear-text logging alerts (14 instances): Resolved with masked fingerprint + `# codeql[py/clear-text-logging-sensitive-data]` suppressions
   - Clear-text storage alerts (2 instances): Resolved with redaction patterns + `# codeql[py/clear-text-storage-sensitive-data]` suppressions
   - All fixes applied in commits: `dde2b39f`, `cdada7ef`, `4dd89aba`, `8c89c7aa`
-  
+
 - **Governance Compliance (REQ-4/REQ-5/REQ-14):** Updated with current session entry
   - REQ-4: Updated docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T21:36Z)
   - REQ-5: Updated CHANGELOG.md (this entry)
   - REQ-14: Valid Agents Used entry maintained for @copilot
-  
+
 - **CodeQL Remediation Verification:** Confirmed all 66 security alerts comprehensively remediated
   - 36 HIGH severity: Information disclosure alerts (30 logging + 6 storage)
   - 30 MEDIUM severity: Log injection (6), code quality (15), security vulnerabilities (9)
@@ -1074,7 +1107,7 @@ python -m codex --version  # Should output: 0.1.0-final
   - Updated docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md with current session entry (2026-06-24T20:41Z)
   - Updated CHANGELOG.md with current session entry and all prior work
   - REQ-14: Valid Agents Used entry maintained
-  
+
 - **CodeQL Security Alert Remediation (66 alerts):**
   - All 66 CodeQL alerts comprehensively remediated (36 HIGH, 30 MEDIUM severity)
   - Phase 1: Alert inventory & classification complete (`.codex/security/codeql_alert_inventory.json`)
@@ -1106,15 +1139,15 @@ python -m codex --version  # Should output: 0.1.0-final
     - Created `.codex/security/codeql_alert_inventory.json` with all 66 alerts
     - Classified alerts by severity, category, and remediability strategy
     - Generated remediation runbook at `.codex/CODEQL_REMEDIATION_RUNBOOK.md`
-  
+
   - Phase 2: Targeted remediation applied (code fixes + inline suppressions)
     - Wave 1 (36 HIGH): Information disclosure (30 logging + 6 storage alerts)
     - Wave 2 (30 MEDIUM): Log injection (6), code quality (15), security vulnerabilities (9)
-  
+
   - Phase 3: Verification complete
     - CodeQL re-scan on merged main: ✅ PASSED (66 → 0 alerts)
     - No new alerts introduced, all tests passing
-  
+
   - Phase 4: Documentation & accountability
     - Created comprehensive remediation summary and follow-up PR template
 
@@ -1141,7 +1174,7 @@ python -m codex --version  # Should output: 0.1.0-final
 - **Merge Integration:** Successfully merged remote branch changes
   - Conflict Resolution: .codex/session_context_latest.md resolved (accepted remote)
   - Commit: `fe2d48b2`
-  
+
 - **Governance Compliance (REQ-4/REQ-5/REQ-14):** Final verification complete
   - Accountability report updated with merge integration session entry
   - CHANGELOG updated with merge integration session entry
@@ -1162,7 +1195,7 @@ python -m codex --version  # Should output: 0.1.0-final
   - Issue: Cascade detector was preventing Pattern 6 fixes on test files that had no actual issues
   - Resolution: Cleared cascade detector state to allow clean re-runs
   - Commit: `0ebe281a`
-  
+
 - **Governance Compliance (REQ-4/REQ-5/REQ-14):** All requirements verified passing
   - Accountability report updated with current session entry
   - CHANGELOG updated with current session entry  
@@ -12333,4 +12366,3 @@ Resolved blocking CI failures (Commit 9681901e) and responded to all 6 unanswere
 
 **Updated at:** 2026-06-26T15:22:36Z
 **Last compliance check:** ✅ PASS (REQ-4, REQ-5, REQ-14)
-

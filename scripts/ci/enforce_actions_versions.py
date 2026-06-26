@@ -211,6 +211,7 @@ def main(argv: list[str] | None = None) -> int:
             files_by_path[str(wf_path)] = violations
 
     # ── Output ─────────────────────────────────────────────────────────────────
+    log_stream = sys.stderr if args.json_out else sys.stdout
     if args.json_out:
         print(json.dumps({"violations": all_violations, "total": len(all_violations)}, indent=2))
 
@@ -219,7 +220,7 @@ def main(argv: list[str] | None = None) -> int:
         for path_str, viols in files_by_path.items():
             if fix_file(Path(path_str), viols):
                 fixed_count += 1
-                print(f"✅ Fixed {len(viols)} violation(s) in {path_str}")
+                print(f"✅ Fixed {len(viols)} violation(s) in {path_str}", file=log_stream)
 
     # ── Annotations ────────────────────────────────────────────────────────────
     for v in all_violations:
@@ -227,12 +228,14 @@ def main(argv: list[str] | None = None) -> int:
         if args.fix and fixed_count:
             print(
                 f"::notice file={v['file']},line={v['line']}::"
-                f"Fixed {action_str}: {v['found']} → {v['expected']}"
+                f"Fixed {action_str}: {v['found']} → {v['expected']}",
+                file=log_stream,
             )
         else:
             print(
                 f"::error file={v['file']},line={v['line']}::"
-                f"{action_str} uses @{v['found']} but expected @{v['expected']}"
+                f"{action_str} uses @{v['found']} but expected @{v['expected']}",
+                file=log_stream,
             )
 
     # ── Summary ────────────────────────────────────────────────────────────────
@@ -294,7 +297,7 @@ def main(argv: list[str] | None = None) -> int:
         total = len(collect_workflows())
         print(
             f"✅ {total} workflow file(s) checked — all action versions approved.",
-            file=sys.stderr if args.json_out else sys.stdout,
+            file=log_stream,
         )
 
     return 0

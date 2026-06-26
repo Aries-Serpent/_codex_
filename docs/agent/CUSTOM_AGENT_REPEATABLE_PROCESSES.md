@@ -34,36 +34,36 @@
    □ Load task backlog from PR/issue
    □ Check prior session state (.codex/AGENT_ACCOUNTABILITY_REPORT.md)
    □ Verify repository state (no uncommitted changes)
-   
+
 2. IDENTIFY AVAILABLE LANES
    □ Count CI/CD capacity available
    □ Assess concurrent task limit (typically 4-6 agents)
    □ Verify no blocking dependencies
    □ Check session time budget (estimate: 30-120 min)
-   
+
 3. CLASSIFY TASKS BY DOMAIN
    □ Scan backlog for CI/CD issues
    □ Scan backlog for testing issues
    □ Scan backlog for documentation issues
    □ Scan backlog for security issues
    □ Scan backlog for configuration issues
-   
+
    Result: Domain-labeled task list, prioritized
-   
+
 4. BUILD EXECUTION PLAN
    □ Group tasks by parallelizability
    □ Assign agents to each task
    □ Define success criteria for each task
    □ Estimate duration per task
-   
+
    Result: Structured plan with phases and lane assignments
-   
+
 5. VALIDATE PLAN
    □ Confirm all agent selections match capabilities
    □ Verify no circular dependencies
    □ Check for resource conflicts
    □ Confirm time allocation realistic
-   
+
    Output: Execution plan approved, ready for dispatch
 ```
 
@@ -122,21 +122,21 @@ Deploy multiple agents across domains in parallel.
    Lane 2: autonomous-test-healer-agent (Fix failing tests)
    Lane 3: unified-coverage-agent (Coverage gaps)
    Lane 4: unified-doc-agent (Doc structure issues)
-   
+
 2. DISPATCH ALL AGENTS
    - Send task context to each agent
    - Confirm receipt and parsing
    - Monitor execution
-   
+
 3. AWAIT COMPLETION
    - Monitor progress asynchronously
    - Timeout: phase_duration or first_completion + buffer
-   
+
 4. AGGREGATE RESULTS
    - Collect output from all 4 agents
    - Verify consistency
    - Identify any failures
-   
+
    Expected outcome: 60-70% of backlog resolved
 ```
 
@@ -149,19 +149,19 @@ Address remaining issues with more specialized agents.
    □ Which items still failing?
    □ Which domains need more work?
    □ What prerequisites unblock new tasks?
-   
+
 2. REASSIGN LANES
    Lane 1: fragile-test-guardian (Flaky test stabilization)
    Lane 2: test-enhancement-agent (Edge case addition)
    Lane 3: link-validator-agent (Doc link health)
    Lane 4: codeql-alert-resolution-agent (Security audit)
-   
+
 3. DISPATCH PHASE 2 AGENTS
    - Different specialists targeting different issues
    - May reuse agents from Phase 1 if available
-   
+
 4. COLLECT PHASE 2 RESULTS
-   
+
    Expected outcome: 90-95% of backlog resolved
 ```
 
@@ -174,15 +174,15 @@ Clean up any stragglers and optimization.
    □ What's left in the backlog?
    □ What requires manual intervention?
    □ What optimization can be done quickly?
-   
+
 2. FINAL AGENT ASSIGNMENTS
    Lane 1: Active specialists for quick wins
    Lane 2-3: Idle (if no remaining work)
-   
+
 3. EXECUTE FINAL ITEMS
-   
+
    Expected outcome: 95-99% resolution
-   
+
 4. PREPARE FOR CLOSURE
    - Archive final artifacts
    - Generate summary report
@@ -204,18 +204,18 @@ Lanes:
     Progress: 45%
     ItemsProcessed: 3/7
     EstimatedCompletion: 2026-06-26T18:35:00Z
-    
+
   Lane2:
     Agent: autonomous-test-healer-agent
     Status: EXECUTING
     Progress: 60%
     ItemsProcessed: 4/7
     EstimatedCompletion: 2026-06-26T18:33:00Z
-    
+
   Lane3:
     Agent: unified-coverage-agent
     Status: QUEUED
-    
+
   Lane4:
     Agent: unified-doc-agent
     Status: IDLE
@@ -297,7 +297,7 @@ Examples:
    Lane 2: Check doc links (independent)
    Lane 3: Validate config (independent)
    Result: All can run simultaneously
-   
+
 ❌ BAD PARALLELISM:
    Lane 1: config-migration-assistant (generates config)
    Lane 2: config-validator (needs config from Lane 1)
@@ -340,19 +340,19 @@ Steps:
    □ Is agent currently IDLE?
    □ Does agent have required capabilities?
    □ Are prerequisites met?
-   
+
 2. PREPARE TASK CONTEXT
    □ Package task with all needed info
    □ Include success criteria
    □ Set timeout
    □ Include backoff strategy
-   
+
 3. DISPATCH AGENT
    □ Send delegation signal to agent
    □ Confirm receipt
    □ Mark lane as QUEUED
    □ Record dispatch timestamp
-   
+
 4. MONITOR EXECUTION
    □ Poll for progress updates
    □ Log interim metrics
@@ -374,13 +374,13 @@ Steps:
      □ Get progress percentage
      □ Check for errors
      □ Estimate time to completion
-     
+
 2. AGGREGATE STATUS
    □ Total lanes: 4
    □ Active lanes: N
    □ Idle lanes: 4-N
    □ Failed lanes: M
-   
+
 3. DETECT ISSUES
    □ Timeout? (Phase time expired)
      → Escalate to human / trigger failsafe
@@ -388,7 +388,7 @@ Steps:
      → Log and attempt retry (with backoff)
    □ Hung agent?
      → Signal timeout, move to next task
-     
+
 4. ADJUST IF NEEDED
    □ Any idle lanes available?
      → Assign next task from backlog
@@ -413,17 +413,17 @@ Steps:
    □ Results well-formed (JSON parseable)?
    □ Artifacts properly stored?
    □ Commit SHAs recorded?
-   
+
 2. INTEGRATE RESULTS
    □ Merge into consolidated result set
    □ Check for conflicts with other lanes
    □ Update success metrics
-   
+
 3. ARCHIVE & LOG
    □ Store results in .codex/results/
    □ Record completion timestamp
    □ Log metrics (time taken, items processed)
-   
+
 4. MARK LANE READY
    □ Set lane state to IDLE
    □ Clear task context
@@ -451,14 +451,14 @@ Steps:
      □ Parse JSON/structured format
      □ Validate schema
      □ Extract key metrics
-     
+
 2. CHECK FOR CONFLICTS
    □ Did any two lanes touch same file?
      → Inspect for conflicts
      → Log warning if conflict
    □ Did any two lanes make contradictory changes?
      → Flag for manual review
-     
+
 3. MERGE COHERENTLY
    ├─ Metrics: Sum/aggregate
    │  Example: tests_fixed_lane1=5, tests_fixed_lane2=3
@@ -473,7 +473,7 @@ Steps:
       Example: lane1 commits [sha1, sha2]
                lane2 commits [sha3]
                → combined [sha1, sha2, sha3]
-               
+
 4. GENERATE MERGED REPORT
    {
      "status": "success",
@@ -500,36 +500,36 @@ Conflict Scenarios & Resolution
 
    Scenario: Lane 1 (ci-auto-healer) modifies tests/test_x.py
              Lane 2 (autonomous-test-healer) modifies tests/test_x.py
-             
+
    Detection:
      □ File appears in both lane results
-     
+
    Resolution:
      Step 1: Fetch both versions
      Step 2: Use git merge to combine
      Step 3: Manual review if merge conflicts
      Step 4: Accept resolved version
-     
+
 2. CONTRADICTORY CHANGES
 
    Scenario: Lane 1 sets config value A=true
              Lane 2 sets config value A=false
-             
+
    Detection:
      □ Conflicting assignments in same key
-     
+
    Resolution:
      Step 1: Flag as HIGH PRIORITY
      Step 2: Examine each agent's rationale
      Step 3: Determine correct value based on context
      Step 4: Select winner, document rationale
      Step 5: Log decision for future reference
-     
+
 3. DEPENDENCY VIOLATION
 
    Scenario: Lane 1 (config-migration) output should feed to Lane 2 (config-validator)
              But Lane 2 executed in parallel, used old config
-             
+
    Resolution:
      Step 1: Detect ordering issue
      Step 2: Re-run Lane 2 with Lane 1 output
@@ -549,27 +549,27 @@ Error Type → Recovery Strategy
    Symptom: Lane still EXECUTING after 30min
    Action: Signal agent to complete & return interim results
    Strategy: Partial success is acceptable, move to next task
-   
+
 2. CAPABILITY MISMATCH (agent can't do task)
    Symptom: Agent returns "not capable" status
    Action: Reselect agent, try different agent
    Strategy: Fall back to more generalist agent or escalate
-   
+
 3. PREREQUISITE MISSING (dependencies not met)
    Symptom: Agent can't proceed without input
    Action: Fulfill prerequisite first, retry agent
    Strategy: Reorder tasks or request human intervention
-   
+
 4. PARTIAL FAILURE (agent completes some work, fails on rest)
    Symptom: Agent returns mixed success/failure
    Action: Accept completed work, handle failures
    Strategy: Log failures, attempt retry, escalate if critical
-   
+
 5. RESOURCE EXHAUSTED (out of memory, disk space, etc.)
    Symptom: Agent reports resource error
    Action: Free resources (delete artifacts, etc.)
    Strategy: Retry agent or move to next task
-   
+
 6. EXECUTION HANG (agent not responding)
    Symptom: No progress updates for 5+ minutes
    Action: Force timeout, move to next task
@@ -585,19 +585,19 @@ For retriable errors:
 
 Attempt 1: Retry immediately
   Delay: 0 seconds
-  
+
 Attempt 2: Wait then retry
   Delay: 30 seconds
-  
+
 Attempt 3: Wait longer then retry
   Delay: 90 seconds
-  
+
 Attempt 4: Wait much longer then retry
   Delay: 300 seconds (5 min)
-  
+
 Attempt 5+: Give up
   Action: Escalate to human or next lane
-  
+
 Max retries: 4
 Total retry time: ~425 seconds (~7 minutes)
 
@@ -618,17 +618,17 @@ Abort early if:
    □ Set session time budget to ZERO
    □ No new agent delegations
    □ Complete in-flight agents (wait for results)
-   
+
 2. WAIT FOR IN-FLIGHT COMPLETIONS
    □ Poll all active lanes
    □ Set timeout: 5 minutes max
    □ Force timeout if exceeded
-   
+
 3. COLLECT FINAL RESULTS
    □ Gather outputs from all agents
    □ Perform final merge
    □ Resolve any last conflicts
-   
+
 4. GENERATE SESSION REPORT
    □ Total tasks completed
    □ Total commits
@@ -636,12 +636,12 @@ Abort early if:
    □ Failures/escalations
    □ Time spent
    □ Efficiency score
-   
+
 5. UPDATE DOCUMENTATION
    □ Commit changes to AGENT_ACCOUNTABILITY_REPORT.md
    □ Update CHANGELOG.md with summary
    □ Archive session context
-   
+
 6. FINALIZE BRANCH
    □ All commits pushed
    □ PR updated with results
@@ -663,19 +663,19 @@ Execution:
   Phase2Items: 2/10 (20%)
   Phase3Items: 1/10 (10%)
   TotalCompleted: 10/10 (100%)
-  
+
 Metrics:
   CommitsGenerated: 12
   FilesModified: 45
   LinesChanged: 1200
   TestsFixed: 8
   CoverageGain: 0.12
-  
+
 ParallelExecution:
   LanedTasks: 4
   SequentialTasks: 6
   ParallelEfficiency: 1.8x (vs sequential)
-  
+
 Agents:
   - ci-auto-healer-agent: 2 tasks, 100% success
   - autonomous-test-healer-agent: 2 tasks, 100% success
@@ -683,13 +683,13 @@ Agents:
   - unified-doc-agent: 1 task, 100% success
   - link-validator-agent: 1 task, 100% success
   - codeql-alert-resolution-agent: 2 tasks, 100% success
-  
+
 Failures:
   - None
-  
+
 Escalations:
   - None
-  
+
 Outcome: SUCCESS
 Status: Ready for merge
 ```
@@ -778,5 +778,5 @@ Status: Ready for merge
 - [Custom Agent Selection Framework](./CUSTOM_AGENT_SELECTION_FRAMEWORK.md)
 - [Multi-Agent Interaction Protocol](./CUSTOM_AGENT_INTERACTION_PROTOCOL.md)
 - [Agent Workflow Coordination](./CUSTOM_AGENT_COORDINATION_WORKFLOWS.md)
-- [AGENT_REGISTRY.yaml](../.github/agents/AGENT_REGISTRY.yaml)
+- [AGENT_REGISTRY.yaml](../../.github/agents/AGENT_REGISTRY.yaml)
 - [Operational Guidelines](./OPERATIONAL_GUIDELINES.md)

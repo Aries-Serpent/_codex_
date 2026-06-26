@@ -184,13 +184,13 @@ Output: Primary domain (may be secondary)
 ```
 Simple (single module, <100 loc)
   → Specialist agent preferred
-  
+
 Moderate (multiple modules, <1000 loc)
   → Specialist + optional helper
-  
+
 Complex (major refactor, >1000 loc)
   → Unified entry point + specialists
-  
+
 Multi-phase (staged delivery)
   → Orchestrator + specialists in sequence/parallel
 ```
@@ -200,10 +200,10 @@ Multi-phase (staged delivery)
 ```
 Independent tasks
   → Delegate to 2-4 agents in parallel
-  
+
 Sequential dependencies
   → Chain: Agent A → output → Agent B input
-  
+
 Blocking operations
   → Single agent until unblock
 ```
@@ -213,7 +213,7 @@ Blocking operations
 ```
 Does agent's declared capabilities
   match task requirements?
-  
+
 YES → Select agent
 NO  → Try next candidate
      or escalate to orchestrator
@@ -304,7 +304,7 @@ delegate → ci-testing-agent (wait for complete)
 Total time: 3x
 
 CORRECT:
-delegate → [ci-testing-agent, fragile-test-guardian, 
+delegate → [ci-testing-agent, fragile-test-guardian,
             unified-coverage-agent] (parallel)
 Total time: 1x + coordination overhead
 
@@ -341,7 +341,7 @@ Selection: autonomous-test-healer-agent
 ```
 WRONG:
 "Fix all CI/CD issues" → ci-auto-healer-agent
-(tries to handle workflow syntax, test failures, 
+(tries to handle workflow syntax, test failures,
  config errors, dependency issues in one pass)
 
 CORRECT:
@@ -454,5 +454,5 @@ All agents referenced here are defined in `.github/agents/AGENT_REGISTRY.yaml` w
 - [Multi-Agent Interaction Protocol](./CUSTOM_AGENT_INTERACTION_PROTOCOL.md)
 - [Agent Workflow Coordination](./CUSTOM_AGENT_COORDINATION_WORKFLOWS.md)
 - [Repeatable Processes](./CUSTOM_AGENT_REPEATABLE_PROCESSES.md)
-- [AGENT_REGISTRY.yaml](../.github/agents/AGENT_REGISTRY.yaml)
+- [AGENT_REGISTRY.yaml](../../.github/agents/AGENT_REGISTRY.yaml)
 - [Operational Guidelines](./OPERATIONAL_GUIDELINES.md)

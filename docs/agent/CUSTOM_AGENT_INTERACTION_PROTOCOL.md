@@ -397,7 +397,7 @@ Agent B (dependent)
 1. config-migration-assistant
    ↓ migrates legacy config to Hydra
    ↓ returns: migrated config files
-   
+
 2. config-validator (receives migrated files)
    ↓ validates Hydra format correctness
    ↓ returns: validation report + any needed fixes
@@ -454,7 +454,7 @@ def verify_results(results, success_criteria):
             for commit_sha in results.get('applied_shas', [])
         )
     }
-    
+
     if all(checks.values()):
         return {'status': 'VERIFIED', 'checks': checks}
     else:
@@ -599,7 +599,7 @@ Delegator receives escalation
       ├─ RETURNING
       │
       ▼ (A's output)
-      
+
    Delegator
       │
       ├─ [Validate A's output]
@@ -607,7 +607,7 @@ Delegator receives escalation
       ├─ [Package for B]
       │
       ▼ (dispatch B)
-      
+
    Agent-B
       │
       ├─ RECEIVING (gets A's output)
@@ -619,7 +619,7 @@ Delegator receives escalation
       ├─ RETURNING
       │
       ▼
-      
+
    Delegator
       │
       └─ [Merge final results]
@@ -632,4 +632,4 @@ Delegator receives escalation
 - [Custom Agent Selection Framework](./CUSTOM_AGENT_SELECTION_FRAMEWORK.md)
 - [Agent Workflow Coordination](./CUSTOM_AGENT_COORDINATION_WORKFLOWS.md)
 - [Repeatable Processes](./CUSTOM_AGENT_REPEATABLE_PROCESSES.md)
-- [AGENT_REGISTRY.yaml](../.github/agents/AGENT_REGISTRY.yaml)
+- [AGENT_REGISTRY.yaml](../../.github/agents/AGENT_REGISTRY.yaml)
