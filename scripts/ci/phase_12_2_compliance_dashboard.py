@@ -180,9 +180,8 @@ class ComplianceDashboard:
         """
         REQ-1: Session summary exists in .codex/sessions/.
 
-        Pass condition: at least one .md file in the sessions directory exists
-        (any file — sessions accumulate over time; we just need the directory
-        to exist and be non-empty to confirm the workflow is active).
+        Pass condition: at least one .md file in the sessions directory
+        was modified within the lookback window.
         """
         if not SESSIONS_DIR.exists():
             return ComplianceResult(
@@ -208,9 +207,27 @@ class ComplianceDashboard:
                 ),
             )
 
+        # Check modification time within lookback window
+        lookback_window_seconds = self.sessions_lookback_days * 86400
+        now = datetime.now(timezone.utc).timestamp()
+        recent_files = [
+            f for f in active_files
+            if (now - f.stat().st_mtime) <= lookback_window_seconds
+        ]
+
+        if not recent_files:
+            return ComplianceResult(
+                passed=False,
+                details=f"No session files modified within {self.sessions_lookback_days} days",
+                remediation=(
+                    "Create or update a .codex/sessions/<session-id>.md file "
+                    "to confirm active session tracking."
+                ),
+            )
+
         return ComplianceResult(
             passed=True,
-            details=f"Found {len(active_files)} session summary file(s) in .codex/sessions/",
+            details=f"Found {len(recent_files)} session file(s) modified within {self.sessions_lookback_days} days",
         )
 
     def check_req2(self) -> ComplianceResult:
