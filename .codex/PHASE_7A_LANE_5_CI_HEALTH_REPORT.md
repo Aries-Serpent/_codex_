@@ -278,7 +278,7 @@ All detected issues are:
 | Timeout Configuration | 185 | 100% |
 | Concurrency Control | 185 | 100% |
 | Cache Optimization | 185 | 98% |
-| Secrets Management | 185 | 100% |
+| Secrets Management | 185 | 100% | <!-- pragma: allowlist secret -->
 
 **Overall Compliance:** 98.9% ✅ **PASS**
 
@@ -389,7 +389,7 @@ RP-001: Unused Imports           ✅ PASS
 RP-002: Unused Variables         ✅ PASS
 RP-003: YAML Indentation         ✅ PASS
 RP-004: Coverage Thresholds      ✅ PASS
-RP-005: Tokenizer Fallbacks      ✅ PASS
+RP-005: Tokenizer Fallbacks      ✅ PASS  # pragma: allowlist secret
 RP-006: Test Assertions          ⚠️  HEALING (46 issues → auto-fixed)
 RP-007: Redundant Imports        ✅ PASS
 RP-008: CodeQL Alerts            ✅ PASS (skipped: API error)
@@ -407,11 +407,11 @@ RP-019: Src Absolute Imports     ✅ PASS
 RP-020: YAML Multiline           ✅ PASS
 RP-021: Node.js 20 Actions       ✅ PASS
 RP-022: Tracked File Sync        ✅ PASS
-RP-023: Secrets Baseline         ✅ PASS
-RP-024: Codecov Token            ✅ PASS
+RP-023: Secrets Baseline         ✅ PASS  # pragma: allowlist secret
+RP-024: Codecov Token            ✅ PASS  # pragma: allowlist secret
 RP-025: Last-Commit Account.     ⚠️  HEALING (1 issue → auto-fix ready)
 RP-026: Auto-Post Rebase         ✅ PASS
-RP-027: Secrets False Positive   ✅ PASS
+RP-027: Secrets False Positive   ✅ PASS  # pragma: allowlist secret
 RP-028: Copilot Sandbox Guard    ✅ PASS
 RP-029: PR Comment Triage        ✅ PASS
 RP-030: Merge Readiness          ✅ PASS
