@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0  
 **Last Updated:** 2026-06-26  
-**Source of Truth:** `scripts/ci/session_wrapup_autofix.py` lines [retrieve after inspection]  
+**Source of Truth:** `scripts/ci/session_wrapup_autofix.py` (line numbers to be verified in Phase 3.1 implementation)  
 **Status:** APPROVED for all PRs merging to main or 0D_base_
 
 ---

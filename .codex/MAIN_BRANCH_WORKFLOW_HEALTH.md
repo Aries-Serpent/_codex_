@@ -258,8 +258,8 @@ Use this as a checklist when reviewing PRs for potential issues:
 ## Tool Dependencies
 
 This document is updated by:
-- `scripts/ci/calculate_workflow_health.py` (metrics calculation)
-- `scripts/ci/workflow_health_monitor.py` (daily monitoring)
+- `scripts/ci/calculate_workflow_health.py` (metrics calculation) — **TBD Phase 6 Implementation**
+- `scripts/ci/workflow_health_monitor.py` (daily monitoring) — **TBD Phase 6 Implementation**
 - Copilot Agent `session_wrapup_autofix.py` (compliance tracking)
 
 ### Related Documents

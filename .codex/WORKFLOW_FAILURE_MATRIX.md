@@ -94,7 +94,7 @@ git push --force-with-lease
 - ✅ Blocks merge until issue is resolved
 
 ### Related Issues
-- GitHub Issue: [CI Phase 12.2 Compliance Failures](https://github.com/Aries-Serpent/_codex_/issues/5100)
+- GitHub Issue: [CI Phase 12.2 Compliance Failures](https://github.com/Aries-Serpent/_codex_/issues/5100) *(Reference example; actual issue number may vary)*
 - Related Document: `.codex/WEC_SESSION_INVARIANT.md` §PHASE 3
 - Script: `scripts/ci/session_wrapup_autofix.py` --auto-update mode
 
