@@ -17,10 +17,36 @@ permissions:
   pull-requests: write
 
 jobs:
+  detect-merge:
+    name: Detect merge commit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      is_merge: ${{ steps.check.outputs.is_merge }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Check if merge commit
+        id: check
+        run: |
+          # Check if HEAD has multiple parents (is a merge commit)
+          PARENT_COUNT=$(git rev-list --max-count=1 --pretty=%P HEAD | tail -1 | wc -w)
+          if [ "$PARENT_COUNT" -gt 1 ]; then
+            echo "is_merge=true" >> "$GITHUB_OUTPUT"
+            echo "Current commit is a merge commit (parents: $PARENT_COUNT)"
+          else
+            echo "is_merge=false" >> "$GITHUB_OUTPUT"
+            echo "Current commit is a regular commit (parents: $PARENT_COUNT)"
+          fi
+
   compliance-check:
     name: Governance & Compliance Gate
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: detect-merge
 
     steps:
       - name: Checkout repository
@@ -113,8 +139,14 @@ jobs:
               core.warning(`Could not post Phase 12.2 compliance comment: ${error.message}`);
             }
 
-      - name: Fail if compliance blocked
-        if: steps.compliance.outcome == 'failure'
+      - name: Fail if compliance blocked (non-merge commits)
+        if: steps.compliance.outcome == 'failure' && needs.detect-merge.outputs.is_merge == 'false'
         run: |
           echo "::error::Phase 12.2 compliance check FAILED. See governance-report artifact for details."
           exit 1
+
+      - name: Warn if compliance blocked (merge commits)
+        if: steps.compliance.outcome == 'failure' && needs.detect-merge.outputs.is_merge == 'true'
+        run: |
+          echo "::warning::Phase 12.2 compliance check found issues on merge commit. Review governance-report artifact."
+

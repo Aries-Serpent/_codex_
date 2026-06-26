@@ -5,6 +5,18 @@ phase_12_2_compliance_dashboard.py — Phase 12.2 Governance & Compliance Dashbo
 Checks REQ-1 through REQ-6 for the Codex agent ecosystem and produces
 structured JSON + Markdown compliance reports.
 
+Merge Commit Handling
+---------------------
+REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) have special
+handling for merge commits:
+
+  - Regular commits: Strict check — files must appear in the commit's changeset
+  - Merge commits: Lenient check — files just need to exist and have content
+
+This is because merge commits don't introduce new file changes; they combine
+two branches. The required files should already exist (modified in the feature
+branch before PR merge).
+
 Usage
 -----
     # Check mode — exits non-zero if any requirement fails
@@ -129,6 +141,27 @@ _SECRET_HEURISTIC_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"(?i)AKIA[0-9A-Z]{16}"),  # AWS access key
     re.compile(r"(?i)sk-[A-Za-z0-9]{32,}"),  # OpenAI / generic secret key
 ]
+
+
+def _is_merge_commit() -> bool:
+    """
+    Check if HEAD is a merge commit (has more than one parent).
+
+    Returns True if HEAD has multiple parents, False otherwise.
+    """
+    rc, output, _ = _git("rev-list", "--max-count=1", "--pretty=%P", "HEAD")
+    if rc != 0:
+        logger.debug("Could not determine if HEAD is a merge commit")
+        return False
+
+    # Extract the parent info from the pretty output (last line)
+    lines = output.splitlines()
+    if not lines:
+        return False
+
+    parent_line = lines[-1]
+    parents = parent_line.split()
+    return len(parents) > 1
 
 
 def _heuristic_secret_scan_diff() -> tuple[bool, str]:
@@ -364,6 +397,10 @@ class ComplianceDashboard:
 
         Pass condition: AGENT_ACCOUNTABILITY_REPORT.md appears in the list of
         files changed by HEAD commit.
+
+        Special handling for merge commits: Merge commits automatically combine
+        two branches and may not have this file in their own changelist. For
+        merge commits, we check if the file exists and has content instead.
         """
         rc, changed_files, _ = _git("show", "--name-only", "--format=", "HEAD")
         if rc != 0:
@@ -374,10 +411,34 @@ class ComplianceDashboard:
             )
 
         accountability_path = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
-        if accountability_path in changed_files:
+        # Parse the output line-by-line to avoid substring matching issues
+        changed_files_list = [
+            line.strip() for line in changed_files.splitlines() if line.strip()
+        ]
+
+        if accountability_path in changed_files_list:
             return ComplianceResult(
                 passed=True,
                 details=f"{accountability_path} was updated in the last commit",
+            )
+
+        # Check if this is a merge commit (which may not directly modify the file)
+        if _is_merge_commit():
+            # For merge commits, check if the file exists and has content
+            if ACCOUNTABILITY_REPORT.exists():
+                content = ACCOUNTABILITY_REPORT.read_text(encoding="utf-8", errors="replace")
+                if content.strip():
+                    return ComplianceResult(
+                        passed=True,
+                        details=f"{accountability_path} exists with content (merge commit)",
+                    )
+            return ComplianceResult(
+                passed=False,
+                details=f"{accountability_path} does not exist or is empty (merge commit)",
+                remediation=(
+                    f"Create {accountability_path} and add an accountability entry, "
+                    "then re-merge."
+                ),
             )
 
         # Check if the file exists at all
@@ -405,6 +466,11 @@ class ComplianceDashboard:
         REQ-5: CHANGELOG.md updated in the last commit.
 
         Pass condition: CHANGELOG.md appears in the files changed by HEAD.
+
+        Special handling for merge commits: Merge commits automatically combine
+        two branches and may not have this file in their own changelist. For
+        merge commits, we check if the file exists and has an [Unreleased]
+        section instead.
         """
         rc, changed_files, _ = _git("show", "--name-only", "--format=", "HEAD")
         if rc != 0:
@@ -414,10 +480,33 @@ class ComplianceDashboard:
                 remediation="Ensure the repository has at least one commit.",
             )
 
-        if "CHANGELOG.md" in changed_files:
+        # Parse the output line-by-line to avoid substring matching issues
+        changed_files_list = [
+            line.strip() for line in changed_files.splitlines() if line.strip()
+        ]
+
+        if "CHANGELOG.md" in changed_files_list:
             return ComplianceResult(
                 passed=True,
                 details="CHANGELOG.md was updated in the last commit",
+            )
+
+        # Check if this is a merge commit (which may not directly modify the file)
+        if _is_merge_commit():
+            # For merge commits, check if CHANGELOG.md exists with an [Unreleased] section
+            if CHANGELOG.exists():
+                text = CHANGELOG.read_text(encoding="utf-8", errors="replace")
+                if _UNRELEASED_MARKER in text:
+                    return ComplianceResult(
+                        passed=True,
+                        details="CHANGELOG.md exists with [Unreleased] section (merge commit)",
+                    )
+            return ComplianceResult(
+                passed=False,
+                details="CHANGELOG.md missing or lacks [Unreleased] section (merge commit)",
+                remediation=(
+                    "Ensure CHANGELOG.md has a ## [Unreleased] section before merging."
+                ),
             )
 
         return ComplianceResult(
