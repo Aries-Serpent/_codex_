@@ -37,7 +37,6 @@ class TestConnectionPooling:
                 except (ValueError, AttributeError):
                     pass
             # Should be able to create multiple
-            assert len(connections) >= 0, "Connections must not be empty"
         except (NotImplementedError, AttributeError):
             pass
 

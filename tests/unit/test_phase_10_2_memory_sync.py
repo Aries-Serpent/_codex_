@@ -253,7 +253,6 @@ class TestPatternDiscovery:
         promoted = discovery.get_promoted_patterns(score_threshold=0.60)
 
         # All patterns with sufficient frequency should be promoted
-        assert len(promoted) >= 0, "Promoted must not be empty"
 
     def test_metrics_calculation(self):
         """Test metrics calculation."""
@@ -685,7 +684,6 @@ class TestPatternGraph:
         graph = builder.build_complete_graph(patterns)
 
         assert len(graph.nodes) == 5, "Collection must not be empty"
-        assert len(graph.edges) >= 0, "Collection must not be empty"
 
 
 class TestIntegration:
@@ -710,7 +708,6 @@ class TestIntegration:
 
         # Get promoted patterns
         promoted = discovery.get_promoted_patterns(score_threshold=0.5)
-        assert len(promoted) >= 0, "Promoted must not be empty"
 
         # Build graph
         builder = GraphBuilder()
