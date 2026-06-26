@@ -36,7 +36,7 @@ import logging
 import re
 import subprocess
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -319,8 +319,9 @@ class ComplianceDashboard:
                             passed=True,
                             details=f"CI run in progress or inconclusive: status={status}, conclusion={conclusion}. Assuming pass.",
                         )
-        except (FileNotFoundError, subprocess.TimeoutExpired, json.JSONDecodeError, KeyError):
-            pass
+        except (FileNotFoundError, subprocess.TimeoutExpired, json.JSONDecodeError, KeyError) as exc:
+            # Log that gh CLI check failed; will fall back to local pytest
+            logging.debug(f"gh CLI check failed ({type(exc).__name__}: {exc}); trying local pytest fallback")
 
         # Fallback: attempt local pytest with strict time-limit
         try:

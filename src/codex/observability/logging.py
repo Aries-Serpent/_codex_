@@ -44,7 +44,6 @@ from typing import Any
 
 # Integration with existing session_logger (best-effort; degrades gracefully)
 try:
-    from codex.logging.session_logger import SessionLogger as _SessionLogger
     from codex.logging.session_logger import get_session_id as _get_session_id
     from codex.logging.session_logger import log_event as _session_log_event
 
@@ -53,7 +52,6 @@ except Exception:  # pragma: no cover – optional integration
     _SESSION_LOGGER_AVAILABLE = False
     _get_session_id = None  # type: ignore[assignment]
     _session_log_event = None  # type: ignore[assignment]
-    _SessionLogger = None  # type: ignore[assignment]
 
 
 # ── Internal Python logger (standard library) ─────────────────────────────────

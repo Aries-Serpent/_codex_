@@ -44,7 +44,7 @@ import math
 import threading
 import time
 from collections import defaultdict, deque
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 # Build on the existing Histogram infrastructure

@@ -140,7 +140,8 @@ class AgentHealthRecord:
                 if ts >= cutoff:
                     result.append(e)
             except ValueError:
-                pass
+                # Skip events with malformed timestamps
+                continue
         return result
 
 
