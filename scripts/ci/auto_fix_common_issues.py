@@ -2,7 +2,7 @@
 """
 Automated fix script for common CI issues detected by workflows.
 
-This script automatically fixes the 30 most common patterns that cause workflow failures:
+This script automatically fixes the 38 most common patterns that cause workflow failures:
 1.  Unused imports
 2.  Unused variables
 3.  YAML indentation
@@ -41,13 +41,23 @@ Copilot cloud agent hardening patterns (designed for the GitHub Copilot coding a
     Comment Review Gate) and auto-applies remediations where possible
 30. Merge readiness dimension auto-fix — runs the full 10-dimension merge-readiness scorecard
     and auto-fixes failing dimensions (ruff, sync_tracked_files, accountability, Pattern 27)
+31. Stale type: ignore comments — detects and removes unused # type: ignore annotations
+32. Bare type: ignore on optional imports — normalizes bare ignores to specific ones
+33. Rate limit checkpoint detection — detects unresolved rate-limit recovery checkpoints
+34. Missing newline at EOF — ensures all Python files end with newline
+35. Markdown false-positive secrets — annotates example credentials in doc code blocks
+
+Phase 5 CI Enhancement Patterns (RP-031/032/033):
+36. Assert messages without context — injects descriptive messages into assertions (RP-031)
+37. Async tests without timeout — injects @pytest.mark.timeout(30) on async tests (RP-032)
+38. Mock object cleanup missing — injects cleanup code for uncleaned Mock() objects (RP-033)
 
 Usage:
     python scripts/ci/auto_fix_common_issues.py [--check-only] [--pattern PATTERN]
 
 Options:
     --check-only    Only detect issues, don't fix them
-    --pattern N     Only apply pattern N (1-26)
+    --pattern N     Only apply pattern N (1-38)
     --dry-run       Show what would be changed without making changes
 """
 
