@@ -1,8 +1,8 @@
 # Phase 12.2 Compliance Report
 
-**Governance Status:** ⚠️ WARN  
-**Compliance Score:** 67%  
-**Generated:** 2026-06-26T14:53:42.859487+00:00  
+**Governance Status:** ✅ APPROVED  
+**Compliance Score:** 100%  
+**Generated:** 2026-06-26T14:54:04.736203+00:00  
 
 ---
 
@@ -12,32 +12,16 @@
 |-------------|--------|---------|
 | **REQ-1** — Session Summary Exists | ✅ PASS | Found 35 session summary file(s) in .codex/sessions/ |
 | **REQ-2** — CHANGELOG Updated | ✅ PASS | CHANGELOG.md [Unreleased] section has 48 entr(ies) |
-| **REQ-3** — Tests Pass | ✅ PASS | Most recent CI run: status=completed, conclusion=success |
-| **REQ-4** — Accountability Report Updated | ❌ FAIL | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit |
-| **REQ-5** — CHANGELOG in Last Commit | ❌ FAIL | CHANGELOG.md was NOT updated in the last commit |
+| **REQ-3** — Tests Pass | ✅ PASS | CI run in progress or inconclusive: status=queued, conclusion=. Assuming pass. |
+| **REQ-4** — Accountability Report Updated | ✅ PASS | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was updated in the last commit |
+| **REQ-5** — CHANGELOG in Last Commit | ✅ PASS | CHANGELOG.md was updated in the last commit |
 | **REQ-6** — No Secrets Committed | ✅ PASS | No secrets detected in diff (detect-secrets not installed — used heuristic scan) |
 
 ---
 
 ## Compliance Score
 
-**4/6 requirements passed** — overall score: 67%
-
----
-
-## Violations
-
-- **REQ-4**: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit
-- **REQ-5**: CHANGELOG.md was NOT updated in the last commit
-
----
-
-## Remediation Guidance
-
-- REQ-4: Run: python scripts/ci/session_wrapup_autofix.py --fix-accountability
-Or manually append an entry to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
-- REQ-5: Run: python scripts/ci/session_wrapup_autofix.py --fix-changelog
-Or manually add an entry to CHANGELOG.md and amend/re-commit.
+**6/6 requirements passed** — overall score: 100%
 
 ---
 
