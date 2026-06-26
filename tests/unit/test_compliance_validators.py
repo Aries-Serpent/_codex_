@@ -128,6 +128,10 @@ class TestBranchNameValidation(unittest.TestCase):
         """Test valid test branch."""
         self.assertTrue(_check_branch_name("test/coverage"))
 
+    def test_valid_copilot_branch(self):
+        """Test valid copilot automation branch."""
+        self.assertTrue(_check_branch_name("copilot/my-feature"))
+
     def test_invalid_no_slash(self):
         """Test invalid branch (no slash)."""
         self.assertFalse(_check_branch_name("feature-name"))

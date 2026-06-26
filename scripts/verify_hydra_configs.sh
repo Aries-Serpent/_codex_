@@ -5,8 +5,25 @@ set -e
 
 echo "🔍 Analyzing Hydra config coverage..."
 
-# Extract config references from tests (use -h to suppress filenames)
-config_refs=$(grep -rh "experiment=" tests/ 2>/dev/null | grep -o "experiment=[a-z_]*" | cut -d= -f2 | sort -u)
+# Extract Hydra override references from tests / docs examples.
+# Match quoted strings like "experiment=debug" or "+experiment=debug" but
+# ignore unrelated keyword arguments such as experiment="exp".
+config_refs=$(
+  python - <<'PY'
+from pathlib import Path
+import re
+
+pattern = re.compile(r"""['"\[]\+?experiment=([a-z_][a-z0-9_]*)['"]""")
+refs = set()
+for path in Path("tests").rglob("*.py"):
+    try:
+        refs.update(pattern.findall(path.read_text(encoding="utf-8", errors="ignore")))
+    except OSError:
+        continue
+for ref in sorted(refs):
+    print(ref)
+PY
+)
 
 if [ -z "$config_refs" ]; then
     echo "ℹ️  No experiment config references found in tests"

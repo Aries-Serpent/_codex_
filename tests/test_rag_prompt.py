@@ -188,7 +188,7 @@ class TestPromptTemplate:
         template = PromptTemplate(config=config)
         docs = [{"content": "Doc content", "metadata": {"source_id": "d1"}}]
         result = template._build_context_section(docs)
-        assert ", "Condition must be true"
+        assert config.context_header in result, "Result must include the configured context header"
         assert "RETRIEVED CONTEXT START" not in result, "Result must not be empty"
 
     def test_build_context_section_token_budget(self):
@@ -270,7 +270,7 @@ class TestPromptTemplate:
 
         prompt = template.assemble_rag_prompt(query, docs)
 
-        assert ", "Condition must be true"
+        assert config.prompt_header in prompt, "Prompt must include the configured prompt header"
         assert "USER QUERY START" not in prompt, "Condition must be true"
 
     def test_assemble_simple_prompt(self):
@@ -433,6 +433,6 @@ def test_config_custom_headers():
 
     prompt = template.assemble_rag_prompt(query, docs, instructions=instructions)
 
-    assert ", "Condition must be true"
-    assert ", "Condition must be true"
-    assert ", "Condition must be true"
+    assert "## Retrieved Documents" in prompt, "Prompt must include the configured context header"
+    assert "## Task" in prompt, "Prompt must include the configured instructions header"
+    assert "## User Question" in prompt, "Prompt must include the configured prompt header"
