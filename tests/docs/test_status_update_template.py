@@ -122,9 +122,5 @@ def test_reproducibility_table_placeholders() -> None:
 def test_error_capture_placeholder_present() -> None:
     text = read_status()
     assert "{{error_capture_summary}}" in text, "Error capture placeholder missing"
-    assert (, "Condition must be true"
-        "{{task_sequence_error_capture_step_1}}" in text
-    ), "Error capture phase placeholder missing"
-    assert (, "Condition must be true"
-        "Question for ChatGPT @codex" not in text
-    ), "Template should not contain filled error capture block"
+    assert ("{{task_sequence_error_capture_step_1}}" in text), "Error capture phase placeholder missing"
+    assert ("Question for ChatGPT @codex" not in text), "Template should not contain filled error capture block"

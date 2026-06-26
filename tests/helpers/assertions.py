@@ -93,8 +93,7 @@ def assert_non_negative_count(value: Any, name: str = "value") -> None:
         value, "__len__"
     ), f"expected a sized object for '{name}', got {type(value).__name__}"
     length = len(value)  # type: ignore[arg-type]
-    assert (, "Condition must be true"
-        length >= 0
+    assert (length >= 0
     ), f"negative length for '{name}': {length}"  # always true but now documents intent
 
 

@@ -241,8 +241,7 @@ class TestAgentCapabilitiesMap:
         assert set(caps) == set(ImprovementArea), "Condition must be true"
 
     def test_codeql_agent_covers_security(self):
-        assert (, "Condition must be true"
-            ImprovementArea.SECURITY_REMEDIATION
+        assert (ImprovementArea.SECURITY_REMEDIATION
             in AGENT_CAPABILITIES["codeql-alert-resolution-agent"]
         )
 
@@ -383,7 +382,8 @@ class TestBrainSingleton:
     def test_brain_has_help(self):
         from codex.cognitive import brain
 
-        assert callable(brain.help), "Condition must be true"
+        assert callable(brain.help
+        ), "Condition must be true"
 
     def test_brain_has_discover(self):
         from codex.cognitive import brain

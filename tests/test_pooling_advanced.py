@@ -107,9 +107,7 @@ class TestPoolingBehavior:
         total_uses = len(connection_ids)
 
         # Should have reused connections (fewer unique than total uses)
-        assert (, "Condition must be true"
-            unique_connections < total_uses
-        ), f"Expected connection reuse (unique: {unique_connections}, uses: {total_uses})"
+        assert (unique_connections < total_uses), f"Expected connection reuse (unique: {unique_connections}, uses: {total_uses})"
 
 
 class TestPoolingDisabled:

@@ -229,9 +229,7 @@ class TestErrorHandling:
 
         error_msg = str(exc_info.value).lower()
         assert "2.0" in str(exc_info.value), "Error must mention required version"
-        assert (, "Condition must be true"
-            "jsonrpc" in error_msg or "rpc" in error_msg or "version" in error_msg
-        ), "Error must specify version issue"
+        assert ("jsonrpc" in error_msg or "rpc" in error_msg or "version" in error_msg), "Error must specify version issue"
 
     def test_reject_missing_method(self):
         """✅ PATTERN: Edge case - missing required method."""

@@ -55,9 +55,7 @@ def test_l1_no_test_imports(layer_dir: str) -> None:
         for mod in _imports_from(f):
             if mod == "tests":
                 violations.append(str(f.relative_to(ROOT)))
-    assert (, "Condition must be true"
-        not violations
-    ), f"Layer 1 ({layer_dir}) imports 'tests' — prohibited upward dependency:\n" + "\n".join(
+    assert (not violations), f"Layer 1 ({layer_dir}) imports 'tests' — prohibited upward dependency:\n"
         violations
     )
 
@@ -173,25 +171,15 @@ def test_copilot_setup_steps_session_preload_block_intact() -> None:
 
     block = "\n".join(lines[step_start:step_end])
 
-    assert (, "Condition must be true"
-        "run: |" in block
-    ), "'Session Context Pre-load' step: expected canonical 'run: |' block scalar form"
-    assert (, "Condition must be true"
-        "python3 .github/scripts/session_preload.py" in block
-    ), "'Session Context Pre-load' step: expected session_preload.py invocation"
+    assert ("run: |" in block), "'Session Context Pre-load' step: expected canonical 'run: |' block scalar form"
+    assert ("python3 .github/scripts/session_preload.py" in block), "'Session Context Pre-load' step: expected session_preload.py invocation"
     assert "session_preload.py failed (non-blocking)" in block, (
         "'Session Context Pre-load' step: fallback echo is missing — "
         "the non-blocking error message must be preserved"
     )
-    assert (, "Condition must be true"
-        "SESSION_PRELOAD_STATUS=failed" in block
-    ), "'Session Context Pre-load' step: expected SESSION_PRELOAD_STATUS env var export on failure"
-    assert (, "Condition must be true"
-        "::group::Session Context Pre-load" in block
-    ), "'Session Context Pre-load' step: expected ::group:: log grouping marker"
-    assert (, "Condition must be true"
-        "::endgroup::" in block
-    ), "'Session Context Pre-load' step: expected ::endgroup:: closing marker"
+    assert ("SESSION_PRELOAD_STATUS=failed" in block), "'Session Context Pre-load' step: expected SESSION_PRELOAD_STATUS env var export on failure"
+    assert ("::group::Session Context Pre-load" in block), "'Session Context Pre-load' step: expected ::group:: log grouping marker"
+    assert ("::endgroup::" in block), "'Session Context Pre-load' step: expected ::endgroup:: closing marker"
 
 
 def test_copilot_setup_steps_session_preload_step_nonblocking() -> None:

@@ -136,8 +136,7 @@ class TestExpansionGateMeasured:
     def test_from_measured_gate_open(self):
         """from_measured() must produce an open gate (all 4 conditions met)."""
         result = ExpansionGate.from_measured().evaluate()
-        assert (, "Condition must be true"
-            result.enabled
+        assert (result.enabled
         ), f"Phase 1-5 measured gate is CLOSED — blocking: {result.blocking_conditions}"
 
     def test_measured_gi_at_target(self):

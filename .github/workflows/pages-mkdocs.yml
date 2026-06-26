@@ -214,6 +214,33 @@ jobs:
     needs: build
 
     steps:
+      - name: Wait for previous deployments to complete
+        id: wait-deployment
+        timeout-minutes: 15
+        continue-on-error: true
+        run: |
+          # Check for in-progress GitHub Pages deployments and wait for completion
+          echo "🔍 Checking for in-progress deployments..."
+          
+          for i in {1..30}; do
+            DEPLOYMENTS=$(gh api repos/${{ github.repository }}/deployments \
+              --jq '.[] | select(.environment=="github-pages") | select(.state=="in_progress")' 2>/dev/null | wc -l)
+            
+            if [ "$DEPLOYMENTS" -eq 0 ]; then
+              echo "✅ No in-progress deployments found"
+              exit 0
+            fi
+            
+            echo "⏳ In-progress deployments detected. Waiting... (attempt $i/30)"
+            sleep 30
+          done
+          
+          echo "⚠️ Previous deployments still in progress after 15 minutes"
+          echo "Proceeding with deployment (will retry if needed)"
+          exit 0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128  # v5

@@ -32,14 +32,14 @@ def test_pull_request_simulation_to_message_handles_labels() -> None:
 
 def test_build_pr_url_uses_default_github_domain(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("GITHUB_SERVER_URL", raising=False)
-    assert (, "Condition must be true"
-        _build_pr_url("octo/repo", "feature/tests")
+    assert (_build_pr_url("octo/repo", "feature/tests")
         == "https://github.com/octo/repo/pull/new/feature/tests"
     )
 
 
 def test_simulate_pull_request_dry_run() -> None:
-    response = simulate_pull_request(_payload(), dry_run=True, confirm=False)
+    response = simulate_pull_request(_payload(
+    ), dry_run=True, confirm=False)
     assert response.simulated is True, "Response must not be empty"
     assert response.pr_url is None, "Response must not be empty"
 

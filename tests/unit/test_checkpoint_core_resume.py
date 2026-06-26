@@ -83,8 +83,7 @@ class TestCheckpointCoreBasics:
         with pytest.raises(FileNotFoundError) as exc_info:
             load_checkpoint(str(nonexistent_path))
 
-        assert (, "Condition must be true"
-            "weights not found" in str(exc_info.value).lower()
+        assert ("weights not found" in str(exc_info.value).lower()
         ), "Error message should indicate missing weights file"
 
     def test_checkpoint_round_trip_preserves_state(self):
@@ -259,8 +258,7 @@ class TestCheckpointErrorHandling:
         with pytest.raises(RuntimeError) as exc_info:
             _require_torch_attr("nonexistent_torch_function")
 
-        assert (, "Condition must be true"
-            "missing required attribute" in str(exc_info.value).lower()
+        assert ("missing required attribute" in str(exc_info.value).lower()
         ), "Error should indicate missing torch attribute"
 
     def test_checkpoint_save_to_nonexistent_parent(self):
@@ -281,9 +279,9 @@ class TestCheckpointErrorHandling:
 
         # Assert
         assert Path(result).exists(), "Nested checkpoint directory should be created"
-        assert (, "Condition must be true"
-            Path(result) / "weights.pt"
-        ).exists(), "Weights file should exist in nested directory"
+        assert (Path(result) / "weights.pt"
+        ).exists(
+        ), "Weights file should exist in nested directory"
 
 
 if __name__ == "__main__":

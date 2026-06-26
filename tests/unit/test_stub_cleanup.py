@@ -365,28 +365,36 @@ class TestDeterminePriority:
         self.analyzer = StubAnalyzer(source_dirs=[])
 
     def test_p0_keyword(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("P0: critical issue")
+        assert result == "P0", "Condition must be true"
 
     def test_critical_keyword(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("CRITICAL: system failure")
+        assert result == "P0", "Condition must be true"
 
     def test_blocking_keyword(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("BLOCKING: merge blocker")
+        assert result == "P0", "Condition must be true"
 
     def test_p1_keyword(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("P1: high priority")
+        assert result == "P1", "Condition must be true"
 
     def test_high_keyword(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("HIGH: high priority")
+        assert result == "P1", "Condition must be true"
 
     def test_important_keyword(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("IMPORTANT: important fix")
+        assert result == "P1", "Condition must be true"
 
     def test_default_p2(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("some random text")
+        assert result == "P2", "Condition must be true"
 
     def test_case_insensitive(self) -> None:
-        assert self.analyzer._determine_priority(", "Condition must be true"
+        result = self.analyzer._determine_priority("critical: lowercase critical")
+        assert result == "P0", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -700,7 +708,7 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert ", "Condition must be true"
+        assert "Stub Analysis Report" in content, "Condition must be true"
 
     def test_report_contains_summary_sections(self, tmp_path: Path) -> None:
         src = tmp_path / "src"

@@ -159,8 +159,7 @@ class TestAdapterInterface:
         sig = inspect.signature(adapter.process)
 
         assert "payload" in sig.parameters, "Condition must be true"
-        assert (, "Condition must be true"
-            "timeout" in sig.parameters
+        assert ("timeout" in sig.parameters
             or sig.parameters["payload"].default != inspect.Parameter.empty
         )
         assert sig.return_annotation != inspect.Parameter.empty or True, "return_annotation is not valid"
@@ -513,76 +512,8 @@ def create_router(config=None):
             return {
                 "jsonrpc": "2.0",
                 "result": None,
-                "id": request.get("id"),
-                "status": "processed",
-            }
-
-        def handle_batch(self, batch):
-            return [self.handle_request(r) for r in batch]
-
-    return Router(config)
-
-
-def create_adapter():
-    """Imaginary adapter factory."""
-
-    class Adapter:
-        def process(self, payload):
-            return {"status": "success", "processed_at": "2026-02-04", "record_count": 1}
-
-        def handle_error(self, error):
-            return {
-                "error_type": type(error).__name__,
-                "error_message": str(error),
-                "recovered": True,
-            }
-
-        def validate(self, data):
-            return "type" in data and data.get("type") == "valid"
-
-        def close(self):
-            pass
-
-    return Adapter()
-
-
-def create_worker(config=None):
-    """Imaginary worker factory."""
-
-    class Worker:
-        def __init__(self, config=None):
-            config = config or {}
-            self.max_workers = config.get("max_workers")
-            if self.max_workers is None:
-                raise ValueError("max_workers is required")
-            self.timeout = config.get("timeout", 30)
-            self.retry_count = config.get("retry", 0)
-            self.state = "initialized"
-            self.running = False
-            self.started_at = None
-            self.stopped_at = None
-            self.tasks_processed = 0
-            self.last_task_id = None
-            self.last_processed_at = None
-            self.pending_count = 0
-
-        def start(self):
-            self.state = "running"
-            self.running = True
-            self.started_at = "2026-02-04T00:00:00Z"
-
-        def stop(self, graceful=False):
-            self.state = "stopped"
-            self.running = False
-            self.stopped_at = "2026-02-04T00:00:10Z"
-
-        def process_task(self, task):
-            if not self.running:
-                raise RuntimeError("worker is not running")
-            self.tasks_processed += 1
-            self.last_task_id = task.get("id")
-            self.last_processed_at = "2026-02-04T00:00:05Z"
-            return {"task_id": task.get("id"), "status": "completed"}
+                "id": request.get("id"
+        ), "status"
 
         def queue_task(self, task):
             self.pending_count += 1

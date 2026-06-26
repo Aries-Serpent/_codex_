@@ -92,9 +92,7 @@ def test_total_space_calculation(sizes):
     result_mb = float(result[:-2])
 
     # Should match within floating point precision
-    assert (, "Condition must be true"
-        abs(result_mb - expected_mb) < 0.01
-    ), f"Expected {expected_mb:.2f}MB, got {result_mb:.2f}MB"
+    assert (abs(result_mb - expected_mb) < 0.01), f"Expected {expected_mb:.2f}MB, got {result_mb:.2f}MB"
 
 
 @pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
@@ -185,9 +183,7 @@ def test_metadata_json_structure():
         actual_mb_str = total_space[:-2].lstrip("~")
         actual_mb = float(actual_mb_str)
 
-        assert (, "Condition must be true"
-            abs(actual_mb - expected_mb) < 0.01
-        ), f"total_space_archived ({actual_mb:.2f}MB) doesn't match sum of size_bytes ({expected_mb:.2f}MB)"
+        assert (abs(actual_mb - expected_mb) < 0.01), f"total_space_archived ({actual_mb:.2f}MB) doesn't match sum of size_bytes ({expected_mb:.2f}MB)"
 
     # Validate paths are relative
     for file_entry in files:

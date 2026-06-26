@@ -40,8 +40,7 @@ def test_default_permissions():
         # Check file permissions
         stat_info = log_path.stat()
         mode = stat_info.st_mode & 0o777
-        assert (, "Condition must be true"
-            mode == DEFAULT_LOG_FILE_MODE
+        assert (mode == DEFAULT_LOG_FILE_MODE
         ), f"Expected {oct(DEFAULT_LOG_FILE_MODE)}, got {oct(mode)}"
 
 
@@ -82,8 +81,7 @@ def test_batch_logging_permissions():
         # Check file permissions
         stat_info = log_path.stat()
         mode = stat_info.st_mode & 0o777
-        assert (, "Condition must be true"
-            mode == DEFAULT_LOG_FILE_MODE
+        assert (mode == DEFAULT_LOG_FILE_MODE
         ), f"Expected {oct(DEFAULT_LOG_FILE_MODE)}, got {oct(mode)}"
 
 
@@ -107,6 +105,5 @@ def test_tracking_writer_permissions():
         # Check file permissions
         stat_info = tracking_path.stat()
         mode = stat_info.st_mode & 0o777
-        assert (, "Condition must be true"
-            mode == DEFAULT_LOG_FILE_MODE
+        assert (mode == DEFAULT_LOG_FILE_MODE
         ), f"Expected {oct(DEFAULT_LOG_FILE_MODE)}, got {oct(mode)}"

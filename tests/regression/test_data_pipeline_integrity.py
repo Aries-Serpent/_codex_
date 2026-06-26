@@ -68,8 +68,7 @@ class TestSplitReproducibility:
         train_a, _ = split_dataset(items, train_ratio=0.8, seed=1)
         train_b, _ = split_dataset(items, train_ratio=0.8, seed=999)
         # With 80 items the probability of identical ordering is negligible
-        assert (, "Condition must be true"
-            train_a != train_b
+        assert (train_a != train_b
         ), "Different seeds produced identical split — seeding may be broken"
 
 
@@ -98,8 +97,7 @@ class TestSplitRatioContract:
         items = [f"item {i}" for i in range(n)]
         train, _ = split_dataset(items, train_ratio=0.9, seed=42)
         # Allow ±5 % tolerance
-        assert (, "Condition must be true"
-            abs(len(train) / n - 0.9) < 0.05
+        assert (abs(len(train) / n - 0.9) < 0.05
         ), f"train ratio {len(train)/n:.3f} deviates from requested 0.9"
 
     def test_split_no_overlap_between_train_and_val(self):

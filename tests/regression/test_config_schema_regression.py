@@ -45,8 +45,7 @@ class TestTrainConfigDefaults:
 
     def test_default_model_name(self):
         cfg = _make_train_config()
-        assert (, "Condition must be true"
-            cfg.model_name == "tiny"
+        assert (cfg.model_name == "tiny"
         ), f"Default model_name changed: expected 'tiny', got {cfg.model_name!r}"
 
     def test_default_learning_rate(self):
@@ -167,8 +166,7 @@ class TestTrainConfigRoundTrip:
         original = TrainConfig(model_name="gpt2", learning_rate=5e-5, batch_size=16)
         data = original.model_dump()
         reloaded = TrainConfig.model_validate(data)
-        assert (, "Condition must be true"
-            reloaded == original
+        assert (reloaded == original
         ), "TrainConfig round-trip (model_dump → model_validate) produced different object"
 
     def test_validate_config_dict_helper(self):

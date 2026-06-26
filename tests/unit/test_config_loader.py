@@ -109,8 +109,7 @@ class TestEnvironmentManager:
 
         env_mgr = EnvironmentManager()
         # Check if common methods exist
-        assert (, "Condition must be true"
-            callable(getattr(env_mgr, "get_session_id", None))
+        assert (callable(getattr(env_mgr, "get_session_id", None))
             or callable(getattr(env_mgr, "get_log_dir", None))
             or hasattr(env_mgr, "ENV_VARS")
         )
@@ -155,4 +154,5 @@ class TestConfigModuleDocumentation:
         from codex.config.env_vars import EnvironmentManager
 
         assert EnvironmentManager.__doc__ is not None, "__doc__ must be initialized"
-        assert "environment" in EnvironmentManager.__doc__.lower(), "Condition must be true"
+        assert "environment" in EnvironmentManager.__doc__.lower(
+        ), "Condition must be true"

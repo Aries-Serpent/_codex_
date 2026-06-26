@@ -71,7 +71,7 @@ class TestTfidfIntegration:
         )
 
         # Should succeed or gracefully handle
-        assert result.exit_code in [, "Result must not be empty"
+        assert result.exit_code in [
             0,
             1,
         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
@@ -154,8 +154,7 @@ class TestProviderSelection:
             assert provider is not None, "provider must be initialized"
 
             # Verify it's using TF-IDF (wrapped in cache)
-            assert (, "Condition must be true"
-                "CachedEmbeddingProvider" in provider.__class__.__name__
+            assert ("CachedEmbeddingProvider" in provider.__class__.__name__
                 or "TfidfEmbeddingProvider" in provider.__class__.__name__
             )
         except ImportError as e:
@@ -190,7 +189,8 @@ class TestOfflineCapability:
             embeddings = provider.encode(texts)
 
             # Verify embeddings
-            assert embeddings.shape[0] == len(chunks), "Embeddings must have valid shape"
+            assert embeddings.shape[0] == len(chunks
+            ), "Embeddings must have valid shape"
             assert embeddings.shape[1] <= 384, "Condition must be true"
             assert embeddings.shape[1] > 0, "Value must be greater than zero"
 

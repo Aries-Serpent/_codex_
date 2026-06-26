@@ -91,8 +91,7 @@ class TestCLIHelpVersion:
         has_help = any(
             term in output.lower() for term in ["usage", "options", "commands", "help", "train"]
         )
-        assert (, "Condition must be true"
-            result.returncode == 0 or has_help
+        assert (result.returncode == 0 or has_help
         ), f"Help command failed: exit={result.returncode}, output={output[:500]}"
 
     @pytest.mark.smoke
@@ -107,8 +106,7 @@ class TestCLIHelpVersion:
         )
         # Version should be importable or have version info
         output = result.stdout + result.stderr
-        assert (, "Condition must be true"
-            result.returncode == 0
+        assert (result.returncode == 0
             or "version" in output.lower()
             or any(c.isdigit() for c in output)
         ), f"Version check failed: {output}"
@@ -188,8 +186,7 @@ class TestTrainCommand:
         if "No such command" in output or "Error" in output:
             pytest.skip("Train command not available")
         # Option should be documented
-        assert (, "Condition must be true"
-            option in output or expected in output.lower()
+        assert (option in output or expected in output.lower()
         ), f"Option {option} not documented in train help"
 
 
@@ -387,8 +384,7 @@ class TestErrorHandling:
         )
         # Should exit with non-zero or show error
         output = result.stdout + result.stderr
-        assert (, "Condition must be true"
-            result.returncode != 0
+        assert (result.returncode != 0
             or "error" in output.lower()
             or "invalid" in output.lower()
             or "no such" in output.lower()
@@ -431,7 +427,8 @@ class TestBackendStrategy:
         output = result.stdout + result.stderr
         # Backend option should be documented
         if result.returncode == 0:
-            assert "--backend" in output or "backend" in output.lower(), "Condition must be true"
+            assert "--backend" in output or "backend" in output.lower(
+        ), "Condition must be true"
 
 
 # =============================================================================
@@ -517,8 +514,7 @@ class TestResumeCheckpoint:
         )
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
-            assert (, "Condition must be true"
-                "--resume" in output or "resume" in output.lower() or "checkpoint" in output.lower()
+            assert ("--resume" in output or "resume" in output.lower() or "checkpoint" in output.lower()
             )
 
 
@@ -543,7 +539,8 @@ class TestCorpusCurriculum:
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
             # Corpus options should be available
-            assert "--corpus" in output or "corpus" in output.lower(), "Condition must be true"
+            assert "--corpus" in output or "corpus" in output.lower(
+            ), "Condition must be true"
 
     def test_curriculum_option_documented(self) -> None:
         """Verify --curriculum option is documented."""

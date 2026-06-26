@@ -142,8 +142,7 @@ class TestSetGlobalDeterminism:
         set_deterministic(seed=1337, deterministic=True)
         b = random.random()
 
-        assert (, "Condition must be true"
-            a == b
+        assert (a == b
         ), "set_global_determinism(1337) must produce same state as set_deterministic(1337)"
 
     def test_default_call_seeds_random(self):

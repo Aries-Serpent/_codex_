@@ -62,9 +62,7 @@ def test_api_docs_build_and_validate(tmp_path: Path):
     # Strong pass requires ok=True; allow soft pass for environments without pdoc
     if "pdoc unavailable" not in payload["build_report"].get("notes", ""):
         # If pdoc is available, the build should succeed
-        assert (, "Condition must be true"
-            payload["ok"] is True or len(payload["import_report"].get("errors", [])) == 0
-        ), f"Build failed with errors: {payload['import_report'].get('errors')}"
+        assert (payload["ok"] is True or len(payload["import_report"].get("errors", [])) == 0), f"Build failed with errors: {payload['import_report'].get('errors')}"
 
 
 @pytest.mark.skipif(

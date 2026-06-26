@@ -67,9 +67,7 @@ class TestPSIProperties:
         # With identical inputs the PSI formula gives exactly 0 before smoothing;
         # epsilon smoothing makes reference == current so the result stays 0.
         assert result.score >= 0.0, "score must be greater than zero"
-        assert (, "Condition must be true"
-            result.score < 1e-6
-        ), f"PSI of identical distributions should be ~0, got {result.score}"
+        assert (result.score < 1e-6), f"PSI of identical distributions should be ~0, got {result.score}"
 
     @given(_paired_pos_float_lists())
     @settings(max_examples=50)
@@ -138,9 +136,7 @@ class TestKLProperties:
         detector = DataDriftDetector(kl_threshold=0.5)
         result = detector.detect_kl(vals, vals)
         assert result.score >= 0.0, "score must be greater than zero"
-        assert (, "Condition must be true"
-            result.score < 1e-6
-        ), f"KL of identical distributions should be ~0, got {result.score}"
+        assert (result.score < 1e-6), f"KL of identical distributions should be ~0, got {result.score}"
 
     @given(_paired_pos_float_lists())
     @settings(max_examples=50)
@@ -223,9 +219,7 @@ class TestThresholdMonotonicity:
         # If the loose detector flags drift, so must the strict one
         # (the score is the same; only the threshold differs)
         if loose_result.drifted:
-            assert (, "Condition must be true"
-                strict_result.drifted
-            ), "Strict detector should flag drift whenever loose detector does"
+            assert (strict_result.drifted), "Strict detector should flag drift whenever loose detector does"
 
 
 # ---------------------------------------------------------------------------

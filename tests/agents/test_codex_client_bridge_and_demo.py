@@ -50,9 +50,7 @@ def test_bridge_request_builds_url_headers_and_closes(monkeypatch: pytest.Monkey
     )
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.uuid.uuid4",
-        _MockUUID,
-    )
-
+        _MockUUID)
     config = ClientConfig(ita_url="https://ita.example", api_key="secret", request_timeout=12.5)
     with CodexBridgeClient(config) as client:
         assert client.base_headers == {"X-API-Key": "secret"}, "base_headers is not valid"
@@ -74,9 +72,7 @@ def test_bridge_request_builds_url_headers_and_closes(monkeypatch: pytest.Monkey
 def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.httpx.Client",
-        lambda timeout: _FakeHttpClient(timeout=timeout),
-    )
-
+        lambda timeout: _FakeHttpClient(timeout=timeout))
     config = ClientConfig(ita_url="https://ita.example", api_key="secret")
     client = CodexBridgeClient(config)
 
@@ -121,8 +117,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     assert client.kb_search("find", top_k=2).results[0].source == "doc"
     assert client.repo_hygiene("d", checks=["lint"]).issues[0].type == "lint"
     assert client.tests_run(["tests/a.py"], timeout_s=10).summary.passed == 1
-    assert (, "Condition must be true"
-        client.git_create_pr(
+    assert (client.git_create_pr(
             repo="owner/repo",
             title="t",
             body="b",
@@ -139,8 +134,8 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
 ) -> None:
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.httpx.Client",
-        lambda timeout: _FakeHttpClient(timeout=timeout),
-    )
+        lambda timeout: _FakeHttpClient(timeout=timeout
+    ))
     config = ClientConfig(ita_url="https://ita.example", api_key="secret")
     client = CodexBridgeClient(config)
 
@@ -178,10 +173,7 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
             "base": "main",
             "head": "feature",
         },
-        {"dry_run": False, "confirm": True},
-    )
-
-
+        {"dry_run": False, "confirm": True})
 class _FakeModel:
     def __init__(self, payload: dict) -> None:
         self._payload = payload
@@ -231,9 +223,7 @@ def test_demo_main_outputs_all_sections(
     monkeypatch.setattr(
         demo.ClientConfig,
         "from_environment",
-        classmethod(lambda cls: ClientConfig("http://ita", "k")),
-    )
-
+        classmethod(lambda cls: ClientConfig("http://ita", "k")))
     created: list[_FakeDemoClient] = []
 
     def make_client(config: ClientConfig) -> _FakeDemoClient:
@@ -265,8 +255,7 @@ def test_demo_main_skips_tests_section_without_targets(
     monkeypatch.setattr(
         demo.ClientConfig,
         "from_environment",
-        classmethod(lambda cls: ClientConfig("http://ita", "k")),
-    )
+        classmethod(lambda cls: ClientConfig("http://ita", "k")))
     monkeypatch.setattr(demo, "CodexBridgeClient", _FakeDemoClient)
 
     rc = demo.main(["--query", "needle"])
@@ -291,17 +280,14 @@ def test_bridge_request_propagates_http_errors(monkeypatch: pytest.MonkeyPatch) 
             raise httpx.HTTPStatusError(
                 "boom",
                 request=httpx.Request("GET", "https://ita.example/x"),
-                response=httpx.Response(500),
-            )
-
+                response=httpx.Response(500))
     class _ErrClient(_FakeHttpClient):
         def request(self, method: str, url: str, *, json=None, params=None, headers=None):
             return _ErrResponse({})
 
     monkeypatch.setattr(
         "agents.codex_client.codex_client.bridge.httpx.Client",
-        lambda timeout: _ErrClient(timeout=timeout),
-    )
+        lambda timeout: _ErrClient(timeout=timeout))
     config = ClientConfig(ita_url="https://ita.example", api_key="secret")
     client = CodexBridgeClient(config)
 

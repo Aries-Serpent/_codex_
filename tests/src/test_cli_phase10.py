@@ -85,8 +85,7 @@ class TestTaskCommands:
     def test_run_unknown_task_fails(self, runner):
         result = runner.invoke(cli, ["run", "does-not-exist"])
         assert result.exit_code != 0, "Result must not be empty"
-        assert (, "Condition must be true"
-            "not allowed" in result.output.lower() or "not allowed" in (result.stderr or "").lower()
+        assert ("not allowed" in result.output.lower() or "not allowed" in (result.stderr or "").lower()
         )
 
     def test_run_valid_task_executes(self, runner):
@@ -225,7 +224,8 @@ class TestHelpers:
     def test_allowed_tasks_has_entries(self):
         assert len(ALLOWED_TASKS) >= 1, "Allowed_tasks must not be empty"
         for name, (func, desc) in ALLOWED_TASKS.items():
-            assert callable(func), "Condition must be true"
+            assert callable(func
+        ), "Condition must be true"
             assert isinstance(desc, str)
 
 

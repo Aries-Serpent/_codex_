@@ -326,7 +326,7 @@ class TestDeepSpeedIntegration:
         }
 
         # Validate relationship
-        assert config["train_batch_size"] == (, "Condition must be true"
+        assert config["train_batch_size"] == (
             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
         )
 
@@ -375,8 +375,7 @@ class TestDeepSpeedIntegration:
         assert config["scheduler"]["type"] == "WarmupDecayLR", "Condition must be true"
         assert config["scheduler"]["params"]["warmup_num_steps"] > 0, "Value must be greater than zero"
         assert config["scheduler"]["params"]["total_num_steps"] > 0, "Value must be greater than zero"
-        assert (, "Condition must be true"
-            config["scheduler"]["params"]["warmup_num_steps"]
+        assert (config["scheduler"]["params"]["warmup_num_steps"]
             < config["scheduler"]["params"]["total_num_steps"]
         )
 

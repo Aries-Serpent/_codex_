@@ -606,11 +606,9 @@ def _compute_merge_readiness_score():
 
         fixer.run_all_patterns()
 
-        assert (, "Condition must be true"
-            "fix_unused_imports" in called
+        assert ("fix_unused_imports" in called
         ), "Pattern 1 (fix_unused_imports) should have been called"
-        assert (, "Condition must be true"
-            "fix_merge_readiness_dims" not in called
+        assert ("fix_merge_readiness_dims" not in called
         ), "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
 
     def test_pattern_30_skips_auto_fix_self_reference_dimension(self, tmp_path):

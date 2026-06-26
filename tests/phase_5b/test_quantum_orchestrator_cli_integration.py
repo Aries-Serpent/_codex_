@@ -383,8 +383,7 @@ class TestQuantumOrchestratorCLIEndToEnd:
 
         # Assert
         assert result.exit_code == 0 or result.exit_code is None, "Result must not be empty"
-        assert (, "Condition must be true"
-            "usage" in result.output.lower()
+        assert ("usage" in result.output.lower()
             or "commands" in result.output.lower()
             or len(result.output) > 0
         )
@@ -395,7 +394,8 @@ class TestQuantumOrchestratorCLIEndToEnd:
         try:
             from codex.quantum_orchestrator import cli as qft_cli
 
-            assert hasattr(qft_cli, "cli"), "CLI entrypoint should exist"
+            assert hasattr(qft_cli, "cli"
+        ), "CLI entrypoint should exist"
         except ImportError:
             pytest.skip("CLI module not available")
 

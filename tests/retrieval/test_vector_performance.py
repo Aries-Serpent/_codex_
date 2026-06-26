@@ -58,8 +58,7 @@ class TestVectorStorePerformance:
 
         # Batch should be faster than individual
         vectors_per_second = num_vectors / elapsed
-        assert (, "Condition must be true"
-            vectors_per_second > 1000
+        assert (vectors_per_second > 1000
         ), f"Batch insert too slow: {vectors_per_second:.0f} vectors/sec"
 
     def test_search_performance(self, tmp_path):

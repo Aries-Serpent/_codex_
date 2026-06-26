@@ -240,8 +240,7 @@ class TestAdaptiveScoringOptimized:
         assert results1.coherence == pytest.approx(, "Result must not be empty"
             results2.coherence, abs=0.001
         ), "Coherence differs between runs with same seed"
-        assert (, "Condition must be true"
-            results1.total_scenarios == results2.total_scenarios
+        assert (results1.total_scenarios == results2.total_scenarios
         ), "Total scenarios differ between runs with same seed"
 
         # Different seed should produce different results (non-deterministic across seeds)

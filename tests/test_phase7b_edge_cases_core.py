@@ -284,6 +284,7 @@ class TestGitHubLogsAPIErrors:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_github_logs_network_timeout(self):
         """Should handle network timeouts gracefully"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -449,6 +450,7 @@ class TestAsyncConcurrencyPatterns:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_concurrent_api_calls(self):
         """Should handle multiple concurrent API calls"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -466,6 +468,7 @@ class TestAsyncConcurrencyPatterns:
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_async_timeout_handling(self):

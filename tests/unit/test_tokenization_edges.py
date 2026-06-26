@@ -60,7 +60,7 @@ class TestTokenizationEmptyInputs:
         # Assert
         # Different tokenizers handle whitespace differently, so just verify
         # the result is a valid token sequence
-        assert isinstance(, "Condition must be true"
+        assert isinstance(
             result.get("input_ids"), (list, type(None))
         ), "Should return valid token IDs or None"
 
@@ -117,7 +117,7 @@ class TestTokenizationSpecialCharacters:
             assert "input_ids" in result, "Should produce valid tokenization even with null byte"
         except ValueError as e:
             # It's acceptable to reject null bytes with clear error
-            assert (, "Condition must be true"
+            assert (
                 "null" in str(e).lower() or "encoding" in str(e).lower()
             ), "Should provide clear error for problematic input"
 
@@ -229,9 +229,7 @@ class TestTokenizationLengthBoundaries:
         # Assert
         assert "input_ids" in result, "Should handle highly repetitive input"
         # Repetitive input should compress well (fewer tokens than length)
-        assert len(result["input_ids"]) < len(, "Collection must not be empty"
-            repetitive_text
-        ), "Repetitive input should compress to fewer tokens"
+        assert len(result["input_ids"]) < len(repetitive_text), "Repetitive input should compress to fewer tokens"
 
     def test_tokenize_max_length_truncation(self):
         """Verify truncation when max_length is specified."""
@@ -256,7 +254,7 @@ class TestTokenizationLengthBoundaries:
         result = tokenizer(text, max_length=max_length, truncation=True)
 
         # Assert
-        assert (, "Condition must be true"
+        assert (
             len(result["input_ids"]) <= max_length
         ), f"Should truncate to max_length={max_length}, got {len(result['input_ids'])}"
 

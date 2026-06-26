@@ -167,6 +167,7 @@ class TestAsync:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_method(self):
         pass
 """)

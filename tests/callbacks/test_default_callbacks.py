@@ -23,8 +23,7 @@ def test_default_callbacks_auto_added() -> None:
     assert spy.state_reference is not None, "Training did not produce state"
     history = spy.state_reference.get("epoch_history")
     assert isinstance(history, list) and history, "epoch_history not present or empty"
-    assert (, "Condition must be true"
-        "epoch" in history[0] and "status" in history[0]
+    assert ("epoch" in history[0] and "status" in history[0]
     ), "LoggingCallback did not log expected metrics"
 
 
@@ -38,6 +37,5 @@ def test_disable_default_callbacks() -> None:
     spy = SpyCallback()
     _ = unified_training.run_unified_training(cfg, callbacks=[spy])
     assert spy.state_reference is not None, "state_reference must be initialized"
-    assert (, "Condition must be true"
-        "epoch_history" not in spy.state_reference
+    assert ("epoch_history" not in spy.state_reference
     ), "LoggingCallback was added despite disable flag"

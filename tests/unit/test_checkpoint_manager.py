@@ -65,8 +65,7 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
     assert "python" in state, "Condition must be true"
     assert "numpy" not in state, "Condition must be true"
     assert "torch" not in state, "Condition must be true"
-    assert (, "Condition must be true"
-        "Failed to import build_payload_bytes/dump_rng_state "
+    assert ("Failed to import build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback."
     ) in caplog.text
 
@@ -100,7 +99,8 @@ def test_checkpoint_helper_import_passthrough_uses_real_module(monkeypatch):
     try:
         payload = module.build_payload_bytes(None)
     except RuntimeError as exc:  # pragma: no cover - torch-optional environment
-        assert "torch is required" in str(exc), "torch is not valid"
+        assert "torch is required" in str(exc
+    ), "torch is not valid"
     else:
         assert isinstance(payload, bytes)  # pragma: no cover - torch-optional environment
     assert "python" in module.dump_rng_state(), "Condition must be true"

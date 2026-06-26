@@ -12,6 +12,7 @@ on:
 permissions:
   issues: write
   contents: read
+  pull-requests: read
 
 concurrency:
   group: phase-8-2-issue-triage-${{ github.ref }}

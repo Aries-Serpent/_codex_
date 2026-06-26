@@ -1458,8 +1458,7 @@ class TestCheckTokenHealth:
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.check_token_health()
         assert result["healthy"] is False, "Result must not be empty"
-        assert (, "Condition must be true"
-            "expired" in str(result["expiry_warning"]).lower()
+        assert ("expired" in str(result["expiry_warning"]).lower()
             or "invalid" in str(result["expiry_warning"]).lower()
         )
 
@@ -1524,7 +1523,8 @@ class TestCheckTokenHealth:
         result = poster.check_token_health()
         assert result["healthy"] is False, "Result must not be empty"
         assert result["expiry_warning"] is not None, "Value must be initialized"
-        assert "missing" in str(result["expiry_warning"]).lower(), "Result must not be empty"
+        assert "missing" in str(result["expiry_warning"]).lower(
+        ), "Result must not be empty"
 
     def test_token_source_tracking(self, monkeypatch):
         """Token source is tracked correctly for each env var."""

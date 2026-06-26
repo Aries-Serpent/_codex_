@@ -34,8 +34,7 @@ def test_structured_warning_on_psutil_import_failure(caplog) -> None:
         payload = reloaded.sample_system_metrics()
         assert "cpu_percent" in payload, "Condition must be true"
         structured = [r for r in caplog.records if r.__dict__.get("dependency") == "psutil"]
-        assert (, "Condition must be true"
-            structured
+        assert (structured
             and structured[0].__dict__.get("event") == "system_metrics.dependency_missing"
         )
     finally:
@@ -71,7 +70,8 @@ def test_config_disable_gpu_polling(monkeypatch) -> None:
     monkeypatch.setattr(system_metrics, "_NVML_DISABLED", False)
 
     payload = system_metrics.sample_system_metrics()
-    assert payload.get("gpus"), "Condition must be true"
+    assert payload.get("gpus"
+        ), "Condition must be true"
     assert payload.get("gpu_count") == 1, "Count must be greater than zero"
 
     system_metrics.configure_system_metrics(poll_gpu=False)

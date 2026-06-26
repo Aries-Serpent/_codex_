@@ -40,8 +40,7 @@ class TestCodexCLIHelp:
             from codex_ml.cli import codex_cli
 
             # Check for common CLI entry points
-            assert (, "Condition must be true"
-                hasattr(codex_cli, "DEFAULT_TOKENIZER_CONFIG")
+            assert (hasattr(codex_cli, "DEFAULT_TOKENIZER_CONFIG")
                 or hasattr(codex_cli, "main")
                 or hasattr(codex_cli, "cli")
             )
@@ -148,7 +147,8 @@ class TestCodexCLIIntegration:
         try:
             from codex_ml.cli.codex_cli import build_status_report
 
-            assert callable(build_status_report), "Condition must be true"
+            assert callable(build_status_report
+            ), "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 

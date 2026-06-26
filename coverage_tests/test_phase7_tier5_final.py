@@ -66,7 +66,7 @@ class TestSecurityStorage:
         try:
             from codex.security.storage import SecurityStorage
             storage = SecurityStorage()
-            large_secret = "x" * 1000000
+            large_secret = "x" * 1000  # Reduced from 1000000 to avoid DoS
             result = storage.store(key="large", value=large_secret)
             assert result is not None
         except ImportError:

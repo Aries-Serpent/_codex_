@@ -25,7 +25,7 @@ class TestCoverageConfiguration:
         assert pyproject.exists(), "pyproject.toml should exist"
 
         content = pyproject.read_text()
-        assert (, "Condition must be true"
+        assert (
             "[tool.coverage" in content or "[tool.pytest" in content
         ), "Coverage configuration should be in pyproject.toml"
 
@@ -39,7 +39,7 @@ class TestCoverageConfiguration:
             match = re.search(r"fail_under\s*=\s*(\d+)", content)
             if match:
                 threshold = int(match.group(1))
-                assert (, "Condition must be true"
+                assert (
                     70 <= threshold <= 100
                 ), f"Coverage threshold {threshold} should be between 70 and 100"
             else:
@@ -192,7 +192,7 @@ class TestCoverageMetricsValidation:
 
         if files_checked > 0:
             assertion_ratio = files_with_assertions / files_checked
-            assert (, "Condition must be true"
+            assert (
                 assertion_ratio >= 0.9
             ), f"Expected 90%+ of test files to have assertions, got {assertion_ratio:.1%}"
 
@@ -208,7 +208,7 @@ class TestCoverageThresholdEnforcement:
     def test_coverage_threshold_in_pyproject(self) -> None:
         """Test that coverage threshold is in pyproject.toml."""
         pyproject = Path("pyproject.toml")
-        assert pyproject.exists(), "Condition must be true"
+        assert pyproject.exists(), "pyproject.toml should exist"
 
         content = pyproject.read_text()
         assert "fail_under" in content, "fail_under threshold should be configured"

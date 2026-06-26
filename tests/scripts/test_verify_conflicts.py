@@ -134,15 +134,9 @@ policy:
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
         # Verify results
-        assert (, "Condition must be true"
-            len(findings["duplicates"]) == 3
-        ), f"Expected 3 duplicates, got {len(findings['duplicates'])}"
-        assert (, "Condition must be true"
-            len(findings["whitelisted"]) == 3
-        ), f"Expected 3 whitelisted, got {len(findings['whitelisted'])}"
-        assert (, "Condition must be true"
-            len(findings["violations"]) == 0
-        ), f"Expected 0 violations, got {len(findings['violations'])}: {findings['violations']}"
+        assert (len(findings["duplicates"]) == 3), f"Expected 3 duplicates, got {len(findings['duplicates'])}"
+        assert (len(findings["whitelisted"]) == 3), f"Expected 3 whitelisted, got {len(findings['whitelisted'])}"
+        assert (len(findings["violations"]) == 0), f"Expected 0 violations, got {len(findings['violations'])}: {findings['violations']}"
 
         # Verify specific entries
         whitelisted_modules = {entry["module"] for entry in findings["whitelisted"]}
@@ -197,15 +191,9 @@ policy:
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
         # Verify results
-        assert (, "Condition must be true"
-            len(findings["duplicates"]) == 1
-        ), f"Expected 1 duplicate, got {len(findings['duplicates'])}"
-        assert (, "Condition must be true"
-            len(findings["whitelisted"]) == 0
-        ), f"Expected 0 whitelisted, got {len(findings['whitelisted'])}"
-        assert (, "Condition must be true"
-            len(findings["violations"]) == 1
-        ), f"Expected 1 violation, got {len(findings['violations'])}"
+        assert (len(findings["duplicates"]) == 1), f"Expected 1 duplicate, got {len(findings['duplicates'])}"
+        assert (len(findings["whitelisted"]) == 0), f"Expected 0 whitelisted, got {len(findings['whitelisted'])}"
+        assert (len(findings["violations"]) == 1), f"Expected 1 violation, got {len(findings['violations'])}"
 
         # Verify violation details
         violation = findings["violations"][0]

@@ -219,8 +219,7 @@ class TestIngestionPipeline:
 
         assert not result.is_success, "Result must not be empty"
         assert result.status == IngestionStatus.FAILED, "Result must not be empty"
-        assert (, "Condition must be true"
-            "not found" in result.error_message.lower() or "error" in result.error_message.lower()
+        assert ("not found" in result.error_message.lower() or "error" in result.error_message.lower()
         )
 
     def test_ingest_files_batch(self, pipeline, temp_dir_with_files):
@@ -257,7 +256,8 @@ class TestIngestionPipeline:
 
         assert result1.is_success, "Result must not be empty"
         assert result2.status == IngestionStatus.SKIPPED, "Result must not be empty"
-        assert "duplicate" in result2.error_message.lower(), "Result must not be empty"
+        assert "duplicate" in result2.error_message.lower(
+        ), "Result must not be empty"
 
     def test_deduplication_disabled(self):
         """Test with deduplication disabled."""

@@ -105,6 +105,7 @@ class TestRequestBatcherAsyncContext:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_request_batcher_import(self):
         """Test that RequestBatcher can be imported."""
         try:
@@ -115,6 +116,7 @@ class TestRequestBatcherAsyncContext:
             pytest.skip("RequestBatcher not available in this environment")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_request_batcher_async_context(self):
@@ -140,6 +142,7 @@ class TestAsyncDataLoaders:
     @pytest.mark.asyncio
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
+    @pytest.mark.timeout(30)
     async def test_async_data_loader_import(self):
         """Test that async data loaders can be imported."""
         try:
@@ -150,6 +153,7 @@ class TestAsyncDataLoaders:
             pytest.skip("Data loaders not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     @pytest.mark.timeout(30)
     async def test_async_pattern_no_event_loop_warning(self):
@@ -180,8 +184,7 @@ class TestAsyncDataLoaders:
             and "event loop" in str(w.message).lower()
         ]
 
-        assert (, "Condition must be true"
-            len(event_loop_warnings) == 0
+        assert (len(event_loop_warnings) == 0
         ), f"Unexpected event loop warnings: {event_loop_warnings}"
 
 

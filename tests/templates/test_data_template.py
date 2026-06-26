@@ -151,8 +151,7 @@ class TestDataValidation:
         validation_rules = {"score": {"min": 0.0, "max": 1.0}}
         valid_record = {"score": 0.5}
         invalid_record = {"score": 1.5}
-        assert (, "Condition must be true"
-            validation_rules["score"]["min"]
+        assert (validation_rules["score"]["min"]
             <= valid_record["score"]
             <= validation_rules["score"]["max"]
         )
@@ -267,7 +266,8 @@ class TestDataStreaming:
         """Test batching a stream."""
         records = [json.loads(ln) for ln in sample_jsonl_file.read_text().splitlines() if ln]
         batch_size = 2
-        batches = [records[i : i + batch_size] for i in range(0, len(records), batch_size)]
+        batches = [records[i : i + batch_size] for i in range(0, len(records
+        ), batch_size)]
         assert len(batches) == 2, "Batches must not be empty"
 
 

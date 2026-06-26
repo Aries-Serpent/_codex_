@@ -574,8 +574,7 @@ class TestQITesting:
         ]
         for child_id, parent_id in pairs:
             child = step_by_id[child_id]
-            assert (, "Condition must be true"
-                parent_id in child.entangled_with
+            assert (parent_id in child.entangled_with
             ), f"{child_id} should be entangled with {parent_id}"
 
     def test_collapse_starts_with_highest_amplitude_step(self, engine):
@@ -596,8 +595,7 @@ class TestQITesting:
         path = engine.collapse(ps)
         ids = [s.step_id for s in path]
         qi02_idx = ids.index("QI-02")
-        assert (, "Condition must be true"
-            ids[qi02_idx + 1] == "QI-01"
+        assert (ids[qi02_idx + 1] == "QI-01"
         ), f"Expected QI-01 after QI-02 (entanglement promotion), got {ids[qi02_idx + 1]}"
 
     def test_qi_planset_serialise_round_trip(self, tmp_path, engine):

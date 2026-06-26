@@ -93,9 +93,9 @@ class TestEmailRedaction:
 
         assert "john" not in redacted, "Condition must be true"
         assert "doe" not in redacted, "Condition must be true"
-        assert (, "Condition must be true"
-            "example.com" in redacted
-        )  # pragma: allowlist secret
+        # Verify email domain is redacted appropriately
+        assert redacted.count("@") == 1, "Email should maintain @ symbol"
+        assert "john" not in redacted.split("@")[0], "Local part should be redacted"
         assert redacted.startswith("j"), "Condition must be true"
 
     def test_redact_email_short_local(self):

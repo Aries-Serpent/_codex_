@@ -145,8 +145,7 @@ class TestHealthCheckWorkflow:
     def test_health_check_workflow_has_schedule(self) -> None:
         """Workflow must have a schedule trigger for rolling window."""
         content = self.HEALTH_CHECK_WORKFLOW.read_text(encoding="utf-8")
-        assert (, "Condition must be true"
-            "schedule" in content or "workflow_dispatch" in content
+        assert ("schedule" in content or "workflow_dispatch" in content
         ), "agent-health-check.yml must have schedule or workflow_dispatch trigger"
 
     def test_compliance_log_exists(self) -> None:
