@@ -478,9 +478,9 @@ Add enterprise features, governance, auditability
 
 | Phase | Track | Status | Agent | ETA | Blockers |
 |-------|-------|--------|-------|-----|----------|
-| **8** | 8.1: Health Monitoring | 🟡 READY | artifact-monitor-agent | 2026-06-29 | None |
-| **8** | 8.2: Issue Triage | 🟡 READY | ci-triage-pipeline-agent | 2026-06-29 | None |
-| **8** | 8.3: Performance | 🟡 READY | performance-monitor-agent | 2026-06-29 | None |
+| **8** | 8.1: Health Monitoring | ✅ COMPLETE | artifact-monitor-agent | 2026-06-29 | None |
+| **8** | 8.2: Issue Triage | ✅ COMPLETE | ci-triage-pipeline-agent | 2026-06-29 | None |
+| **8** | 8.3: Performance | ✅ COMPLETE | performance-monitor-agent | 2026-06-29 | None |
 | **9** | 9.1: D_CAPABLE | 🔴 BLOCKED | orchestrator-agent | 2026-07-07 | Phase 8 |
 | **9** | 9.2: Self-Healing | 🔴 BLOCKED | self-healing-orchestrator-agent | 2026-07-07 | Phase 8 |
 | **9** | 9.3: Parallel Exec | 🔴 BLOCKED | agent-orchestrator | 2026-07-07 | Phase 8 |
@@ -525,7 +525,7 @@ All Phase 8-12 work tracked in `.codex/`:
 - `.codex/PHASE_10_*_*.md` - Phase 10 deliverables
 - `.codex/PHASE_11_*_*.md` - Phase 11 deliverables
 - `.codex/PHASE_12_*_*.md` - Phase 12 deliverables
-- `.codex/PHASE_8_12_EXECUTION_COORDINATION_DASHBOARD.md` - Real-time status
+- `.codex/PHASE_9_COORDINATION_DASHBOARD.md` - Real-time status (Phase 9 operational dashboard)
 
 ---
 
