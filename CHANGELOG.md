@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (CI Rescue Follow-up Compliance Refresh — PR #5103)
+- Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in the latest commit after the PR #5103 follow-up check-in commit (`2e57fa23`) re-triggered REQ-4/REQ-5 freshness enforcement.
+- Preserved the functional PR #5103 CI rescue fix set from `8e905c6b`; this follow-up only restores commit-level Phase 12.2 compliance for the latest push.
+
 ### Fixed (CI Rescue Continuation — PR #5103)
 - Resolved the current PR #5103 CI rescue set by syncing `.secrets.baseline`, allowing `copilot/` governance branches, and hardening governance/compliance workflows against non-fatal PR comment permission failures.
 - Repaired malformed RAG test assertions that were breaking `pytest` collection in `tests/test_rag_prompt.py`, `tests/rag/test_ingestion_preprocessor.py`, `tests/rag/test_rag_security_comprehensive.py`, and `tests/rag/test_security.py`.
