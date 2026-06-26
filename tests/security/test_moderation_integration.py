@@ -72,7 +72,7 @@ class TestSimpleCliModeration:
             runner = CliRunner()
             result = runner.invoke(cli, ["infer", "--prompt", "blocked content"])
 
-        assert (result.exit_code != 0
+        assert (result.exit_code != 0, "Result must not be empty"
         ), f"Expected non-zero exit on moderation rejection, got {result.exit_code}"
 
     def test_rejected_input_message_does_not_leak_reasons(self) -> None:
@@ -214,7 +214,7 @@ class TestPredictEndpointModeration:
 
             response = client.post("/predict", json={"prompt": "blocked content"})
 
-        assert (response.status_code == 400
+        assert (response.status_code == 400, "Response must not be empty"
         ), f"Expected 400 on moderation rejection, got {response.status_code}"
 
     def test_rejected_input_response_does_not_leak_reasons(self, client) -> None:
@@ -241,7 +241,7 @@ class TestPredictEndpointModeration:
 
             response = client.post("/predict", json={"prompt": "hello"})
 
-        assert (response.status_code == 200
+        assert (response.status_code == 200, "Response must not be empty"
         ), f"Expected 200 for accepted prompt, got {response.status_code}"
 
     def test_moderation_settings_fail_closed(self, client) -> None:
@@ -353,7 +353,7 @@ class TestLLMClientModeration:
 
             llm.summarize_code("def foo(): pass")
 
-        assert (call_order[0] == "moderation"
+        assert (call_order[0] == "moderation", "Condition must be true"
         ), f"Expected moderation before API call, got order: {call_order}"
 
 

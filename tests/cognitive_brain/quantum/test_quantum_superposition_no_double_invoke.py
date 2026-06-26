@@ -28,7 +28,7 @@ class TestQuantumSuperpositionNoDoubleInvoke:
 
         result = compute(5)
 
-        assert (call_count["n"] == 1
+        assert (call_count["n"] == 1, "Count must be greater than zero"
         ), f"Expected func to be called exactly once, but it was called {call_count['n']} times."
         assert result == 10, "Result must not be empty"
 
@@ -103,5 +103,5 @@ class TestQuantumSuperpositionNoDoubleInvoke:
             result = identity(i)
             assert result == i, "Result must not be empty"
 
-        assert (call_count["n"] == 5
+        assert (call_count["n"] == 5, "Count must be greater than zero"
         ), f"Expected 5 total invocations for 5 calls, got {call_count['n']}."

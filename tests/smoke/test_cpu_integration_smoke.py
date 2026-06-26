@@ -283,5 +283,5 @@ def test_s94_cpu_readiness_checkpoint():
         except ImportError as exc:
             failed.append(f"{mod}: {exc}")
 
-    assert (not failed
+    assert (not failed, "Condition must be true"
     ), "S94 CPU readiness gate FAILED — critical modules not importable:\n" + "\n".join(failed)

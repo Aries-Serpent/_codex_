@@ -18,7 +18,7 @@ def test_yaml_is_library_or_skip():
         return
 
     yaml_file = getattr(yaml, "__file__", "")
-    assert ("site-packages" in yaml_file or "dist-packages" in yaml_file
+    assert ("site-packages" in yaml_file or "dist-packages" in yaml_file, "Condition must be true"
     ), f"CRITICAL: Local 'yaml/' or 'yaml_legacy/' dir may be shadowing PyYAML! Found at: {yaml_file}"
 
 
