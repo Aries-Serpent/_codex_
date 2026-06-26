@@ -415,6 +415,14 @@ class ApprovalWorkflowEngine:
                 f"Request '{request_id}' is already resolved "
                 f"(status={req.status.value}); cannot perform '{operation}'."
             )
+
+        # Validate actor permission for reject operations
+        if operation == "reject" and req.approvers and actor not in req.approvers:
+            raise PermissionError(
+                f"Actor '{actor}' is not authorized to reject this request. "
+                f"Required approvers: {', '.join(req.approvers)}"
+            )
+
         return req
 
     def _maybe_expire(self, req: ApprovalRequest) -> None:
