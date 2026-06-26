@@ -25,7 +25,7 @@ from . import (
 
 try:  # pragma: no cover - optional torch dependency
     from . import modeling
-except (IOError, OSError):  # pragma: no cover - allow utilities without torch
+except (IOError, OSError, ImportError, AttributeError, TypeError, RuntimeError):  # pragma: no cover - allow utilities without torch
     modeling = None
 from . import provenance
 from .atomic_io import safe_write_bytes, safe_write_text
