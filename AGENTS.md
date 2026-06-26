@@ -9,14 +9,15 @@ It provides essential orientation, operational guidelines, and navigation to all
 DO NOT MOVE this file - it is intentionally placed here as the first point of contact.
 -->
 
-> **Status:** ✅ UP-TO-DATE (2026-06-11 - Phase 6 Consolidation)
+> **Status:** ✅ UP-TO-DATE (2026-06-26 - Phase 9 Audit Campaign)
 > **repository:** Aries-Serpent/_codex_ (ID: 1040037790)
 > **Genesis Status:** Phase 1 Complete - Pre-Token Setup
 > **Root Organization:** Phase 2 Complete
 > **Workflows:** 126 active (S174: 3 archived, Art_ prefix removed from 34 workflows)
-> **Agents:** 145 active (source of truth: [`.github/agents/AGENT_REGISTRY.yaml`](.github/agents/AGENT_REGISTRY.yaml); 14 archived prompt files remain for backward compatibility. Key unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`.)
+> **Agents:** 147 active (source of truth: [`.github/agents/AGENT_REGISTRY.yaml`](.github/agents/AGENT_REGISTRY.yaml); 14 archived prompt files remain for backward compatibility. Key unified entry points: `unified-coverage-agent`, `unified-doc-agent`, `unified-security-scanner`, `unified-governance-gate`, `cache-management-agent`, `self-healing-orchestrator-agent`, `branch-divergence-resolution-agent`.)
 > **Security:** ✅ 26 vulnerabilities fixed (IP-005 Complete)
 > **Automation:** ✅ CI Auto-Fix System Active (37.5% auto-fix coverage)
+> **Phase 9:** Multi-Agent Validation Campaign (2026-06-26 - Active)
 >
 > **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,
 > security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)
@@ -102,6 +103,7 @@ are available for testing and development purposes.
 5. **[README.md](README.md)** - repository overview (5 min)
 6. **[.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md](.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md)** - 🆕 Cognitive Brain System (20 min)
 7. **[.codex/docs/CI_AUTO_FIX_SYSTEM.md](.codex/docs/CI_AUTO_FIX_SYSTEM.md)** - 🆕 CI/CD Automation (10 min)
+8. **[docs/phase-9/PHASE_9_COORDINATION_DASHBOARD.md](docs/phase-9/PHASE_9_COORDINATION_DASHBOARD.md)** - 🆕 Phase 9: Real-Time Execution Coordination Dashboard (active campaign)
 
 ### 🔑 GitHub API & MCP Knowledge — MUST LOAD before any API call
 
