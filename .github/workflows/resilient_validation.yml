@@ -274,7 +274,7 @@ jobs:
         run: pip install pytest-split>=0.8 --quiet
 
       - name: Restore test durations cache
-        uses: actions/cache@v5  # v5
+        uses: actions/cache@v6  # v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
@@ -311,7 +311,7 @@ jobs:
 
       - name: Save test durations cache
         if: always()
-        uses: actions/cache/save@v5  # v5
+        uses: actions/cache/save@v6  # v5
         with:
           path: .test_durations
           key: test-durations-${{ hashFiles('tests/**/*.py') }}
