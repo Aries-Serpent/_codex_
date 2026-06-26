@@ -1,32 +1,42 @@
-# Session Context — 2026-06-26T22:50:48Z
+# Session Context — 2026-06-26T23:18:51Z
 **Branch:** `copilot/fix-governance-compliance-gate`  **PR:** #5106  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4953` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4628` (✅)
+- GraphQL remaining: `4979` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5106 — Plan: Harden workflow execution & WEC template integration for main-branch merges
-State: `open`  Draft: `True`  Branch: `copilot/fix-governance-compliance-gate` → `main`
+## 📋 PR #5106 — Phase 6-7: Implement WEC health monitoring and success criteria validation
+State: `open`  Draft: `False`  Branch: `copilot/fix-governance-compliance-gate` → `main`
+
+### ❌ 9 Failing CI Check(s)
+- `🚦 Comment review gate` (failure)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `Activate token delegation` (cancelled)
+- `Activate token delegation` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
-- **Unified Governance Check** — `failure` on `copilot/fix-governance-compliance-gate` (2026-06-26)
-- **Workflow Compliance Gate** — `failure` on `copilot/fix-governance-compliance-gate` (2026-06-26)
-- **Validation Pipeline** — `failure` on `copilot/fix-governance-compliance-gate` (2026-06-26)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-26)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
 
 ## 📝 Recent Commits
+- `11e6e94d` Add Phase 6-7 implementation documentation — copilot-swe-agent[bot] (2026-06-26)
+- `a6a041d7` Phase 6-7: Add WEC health monitoring and success criteria validation scripts — copilot-swe-agent[bot] (2026-06-26)
+- `75a12cf0` Phase 4: Add WEC compliance awareness to auto-approve-workflows.yml — copilot-swe-agent[bot] (2026-06-26)
+- `90ad9891` Phase 3.3: Add WEC compliance checks to pre-merge-validation.yml workflow — copilot-swe-agent[bot] (2026-06-26)
+- `e49018d0` Phase 3.1: Add WEC compliance validation function to session_wrapup_autofix.py — copilot-swe-agent[bot] (2026-06-26)
+- `c10b219b` Phase 6-7 Implementation Plan: Multi-Agent Campaign Orchestration — copilot-swe-agent[bot] (2026-06-26)
 - `36ae33e0` Documentation clarity updates: Note Phase 6 TBD items and clarify placeholder re — copilot-swe-agent[bot] (2026-06-26)
 - `10883eb2` Complete WEC hardening documentation suite (Phases 1-5): Add comprehensive index — copilot-swe-agent[bot] (2026-06-26)
-- `6e40f965` Add Phase 5 documentation references to copilot-instructions.md — copilot-swe-agent[bot] (2026-06-26)
-- `c07a85fe` Phase 3-5 hardening documentation: Workflow failure matrix, auto-approval guide, — copilot-swe-agent[bot] (2026-06-26)
-- `50fdbe4c` Phase 2 complete: WEC Template hardening documentation — copilot-swe-agent[bot] (2026-06-26)
-- `3c47b369` Begin WEC hardening implementation plan — copilot-swe-agent[bot] (2026-06-26)
-- `fb3a495f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-26)
-- `c56f5b16` Implement Phase 12.2 Compliance Gate Fix - merge commit handling and script impr — copilot-swe-agent[bot] (2026-06-26)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
