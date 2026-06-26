@@ -1,32 +1,32 @@
-# Session Context — 2026-06-26T18:48:23Z
-**Branch:** `copilot/ci-failure-triage-report`  **PR:** #5092  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-06-26T19:55:10Z
+**Branch:** `copilot/consolidate-dependabot-prs`  **PR:** #5102  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `4967` (✅)
+- REST remaining: `1949` (✅)
+- GraphQL remaining: `4859` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5092 — CI Triage #5090: Resolve workflow/code-quality/CodeQL issues, close review feedback, and import custom-agent docs
-State: `open`  Draft: `False`  Branch: `copilot/ci-failure-triage-report` → `main`
+## 📋 PR #5102 — ci(deps): bump actions/cache from 5 to 6
+State: `open`  Draft: `False`  Branch: `dependabot/github_actions/actions/cache-6` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-26)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
 
 ## 📝 Recent Commits
+- `35acf119` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-26)
+- `2c67170f` Merge pull request #5092 from Aries-Serpent/copilot/ci-failure-triage-report — Statix (2026-06-26)
+- `3b0f87d4` WIP: Initial assessment of PR #5092 unresolved comments — copilot-swe-agent[bot] (2026-06-26)
 - `89318de2` docs(ci): import PR5093 docs and harden action version gate — copilot-swe-agent[bot] (2026-06-26)
 - `befa838d` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-26)
 - `2c084856` docs(agents): add documentation index and navigation hub — copilot-swe-agent[bot] (2026-06-26)
 - `4ba10a1e` docs(agents): add comprehensive custom agent documentation suite — copilot-swe-agent[bot] (2026-06-26)
 - `5fd66159` fix(review): resolve bot feedback and syntax regressions — copilot-swe-agent[bot] (2026-06-26)
-- `e4ffee89` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-26)
-- `30f7474c` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-26)
-- `019c4514` fix(codeql): resolve all remaining security alerts and syntax errors - pin actio — copilot-swe-agent[bot] (2026-06-26)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
