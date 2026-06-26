@@ -180,9 +180,8 @@ class ComplianceDashboard:
         """
         REQ-1: Session summary exists in .codex/sessions/.
 
-        Pass condition: at least one .md file in the sessions directory exists
-        (any file — sessions accumulate over time; we just need the directory
-        to exist and be non-empty to confirm the workflow is active).
+        Pass condition: at least one .md file in the sessions directory
+        was modified within the lookback window.
         """
         if not SESSIONS_DIR.exists():
             return ComplianceResult(
@@ -208,9 +207,27 @@ class ComplianceDashboard:
                 ),
             )
 
+        # Check modification time within lookback window
+        lookback_window_seconds = self.sessions_lookback_days * 86400
+        now = datetime.now(timezone.utc).timestamp()
+        recent_files = [
+            f for f in active_files
+            if (now - f.stat().st_mtime) <= lookback_window_seconds
+        ]
+
+        if not recent_files:
+            return ComplianceResult(
+                passed=False,
+                details=f"No session files modified within {self.sessions_lookback_days} days",
+                remediation=(
+                    "Create or update a .codex/sessions/<session-id>.md file "
+                    "to confirm active session tracking."
+                ),
+            )
+
         return ComplianceResult(
             passed=True,
-            details=f"Found {len(active_files)} session summary file(s) in .codex/sessions/",
+            details=f"Found {len(recent_files)} session file(s) modified within {self.sessions_lookback_days} days",
         )
 
     def check_req2(self) -> ComplianceResult:
@@ -308,7 +325,7 @@ class ComplianceDashboard:
         # Fallback: attempt local pytest with strict time-limit
         try:
             pytest_result = subprocess.run(
-                [sys.executable, "-m", "pytest", "--tb=no", "-q", "--no-header", "--co", "-q"],
+                [sys.executable, "-m", "pytest", "tests/", "--tb=short"],
                 capture_output=True,
                 text=True,
                 timeout=60,
@@ -317,14 +334,14 @@ class ComplianceDashboard:
             if pytest_result.returncode == 0:
                 return ComplianceResult(
                     passed=True,
-                    details="Local pytest collection succeeded (no CI run data available)",
+                    details="Local pytest tests passed",
                 )
             else:
                 stderr_excerpt = pytest_result.stderr[-300:] if pytest_result.stderr else ""
                 return ComplianceResult(
                     passed=False,
-                    details=f"Local pytest check failed (exit {pytest_result.returncode}): {stderr_excerpt}",
-                    remediation="Run 'pytest' locally and fix any collection or test errors.",
+                    details=f"Local pytest tests failed (exit {pytest_result.returncode}): {stderr_excerpt}",
+                    remediation="Run 'pytest' locally and fix any test errors.",
                 )
         except (FileNotFoundError, subprocess.TimeoutExpired):
             pass
@@ -519,7 +536,7 @@ class ComplianceDashboard:
         return {
             "governance_status": status,
             "compliance_score": round(score, 4),
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "requirements": {req: res.to_dict() for req, res in self._results.items()},
             "violations": violations,
             "warnings": warnings,

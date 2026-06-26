@@ -375,7 +375,7 @@ class RBACEnforcer:
                 f"Role '{role_value}' not found in RoleManager. "
                 "This is a bootstrap inconsistency — please report."
             )
-        self._audit_logger._data[f"assign:{user_id}:{role_value}"] = time.time()
+        self._audit_logger._data[f"assign:{user_id}:{role_value}:{int(time.time() * 1000)}"] = time.time()
 
     def revoke_role(self, user_id: str, role: CodexRole | str) -> None:
         """Revoke *role* from *user_id*.
@@ -393,7 +393,7 @@ class RBACEnforcer:
             raise ValueError(
                 f"Role '{role_value}' was not assigned to user '{user_id}'."
             )
-        self._audit_logger._data[f"revoke:{user_id}:{role_value}"] = time.time()
+        self._audit_logger._data[f"revoke:{user_id}:{role_value}:{int(time.time() * 1000)}"] = time.time()
 
     def get_user_roles(self, user_id: str) -> list[str]:
         """Return the list of role names currently assigned to *user_id*.

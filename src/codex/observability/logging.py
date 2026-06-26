@@ -65,8 +65,8 @@ _log = logging.getLogger(__name__)
 
 def _utcnow_iso() -> str:
     """Return the current UTC time as an ISO-8601 string with 'Z' suffix."""
-    return datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.") + \
-           f"{datetime.now(tz=timezone.utc).microsecond // 1000:03d}Z"
+    utc_now = datetime.now(tz=timezone.utc)
+    return utc_now.strftime("%Y-%m-%dT%H:%M:%S.") + f"{utc_now.microsecond // 1000:03d}Z"
 
 
 def _build_record(
@@ -203,8 +203,11 @@ class ObservabilityLogger:
                 metadata={"task_type": "generate_code"},
             )
         """
+        DEBUG_THRESHOLD = "debug"
         level = logging.ERROR if status == "error" else (
-            logging.WARNING if status == "failure" else logging.INFO
+            logging.WARNING if status == "failure" else (
+                logging.DEBUG if status == DEBUG_THRESHOLD else logging.INFO
+            )
         )
         record = _build_record(
             session_id=self.session_id,
@@ -292,7 +295,8 @@ class ObservabilityLogger:
                 **(metadata or {}),
             },
         )
-        self._emit(record, level=logging.DEBUG if confidence >= 0.8 else logging.WARNING)
+        conf_normalized = confidence / 100.0 if confidence > 1.0 else confidence
+        self._emit(record, level=logging.DEBUG if conf_normalized >= 0.8 else logging.WARNING)
 
     def debug(self, agent_id: str, action: str, **kwargs: Any) -> None:
         """Convenience: log at DEBUG level."""

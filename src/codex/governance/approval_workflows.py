@@ -309,7 +309,7 @@ class ApprovalWorkflowEngine:
         self,
         request_id: str,
         approver: str,
-        reason: str = "",
+        reason: str,
     ) -> ApprovalRequest:
         """Record a rejection decision on the specified request.
 
@@ -319,15 +319,18 @@ class ApprovalWorkflowEngine:
         Args:
             request_id: UUID of the ``ApprovalRequest``.
             approver:   Identity of the rejecting user.
-            reason:     Mandatory-by-convention rationale for audit trail.
+            reason:     Mandatory rationale for audit trail.
 
         Returns:
             The updated ``ApprovalRequest``.
 
         Raises:
             KeyError:   If *request_id* does not exist.
-            ValueError: If the request is already resolved.
+            ValueError: If the request is already resolved or reason is empty.
         """
+        if not reason or not reason.strip():
+            raise ValueError("Rejection reason cannot be empty.")
+
         req = self._get_and_validate(request_id, approver, operation="reject")
 
         req.decisions.append(
@@ -415,18 +418,27 @@ class ApprovalWorkflowEngine:
                 f"Request '{request_id}' is already resolved "
                 f"(status={req.status.value}); cannot perform '{operation}'."
             )
+
+        # Validate actor permission for reject operations
+        if operation == "reject" and req.approvers and actor not in req.approvers:
+            raise PermissionError(
+                f"Actor '{actor}' is not authorized to reject this request. "
+                f"Required approvers: {', '.join(req.approvers)}"
+            )
+
         return req
 
     def _maybe_expire(self, req: ApprovalRequest) -> None:
         """Transition *req* to EXPIRED if the deadline has passed."""
         if req.status == ApprovalStatus.PENDING and req.is_expired:
             req.status = ApprovalStatus.EXPIRED
+            actual_timeout = req.expires_at - req.created_at
             req.decisions.append(
                 ApprovalDecision(
                     approver="__system__",
                     decision=ApprovalStatus.EXPIRED,
                     reason=(
-                        f"Request expired after {self._timeout:.0f}s "
+                        f"Request expired after {actual_timeout:.0f}s "
                         f"without resolution."
                     ),
                 )
