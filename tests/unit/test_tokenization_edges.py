@@ -229,9 +229,7 @@ class TestTokenizationLengthBoundaries:
         # Assert
         assert "input_ids" in result, "Should handle highly repetitive input"
         # Repetitive input should compress well (fewer tokens than length)
-        assert len(result["input_ids"]) < len(, "Collection must not be empty"
-            repetitive_text
-        ), "Repetitive input should compress to fewer tokens"
+        assert len(result["input_ids"]) < len(repetitive_text), "Repetitive input should compress to fewer tokens"
 
     def test_tokenize_max_length_truncation(self):
         """Verify truncation when max_length is specified."""
