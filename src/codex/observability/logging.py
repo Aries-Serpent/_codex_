@@ -50,8 +50,8 @@ try:
     _SESSION_LOGGER_AVAILABLE = True
 except Exception:  # pragma: no cover – optional integration
     _SESSION_LOGGER_AVAILABLE = False
-    _get_session_id = None  # type: ignore[assignment]
-    _session_log_event = None  # type: ignore[assignment]
+    _get_session_id = None
+    _session_log_event = None
 
 
 # ── Internal Python logger (standard library) ─────────────────────────────────
@@ -60,6 +60,7 @@ _log = logging.getLogger(__name__)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
 
 def _utcnow_iso() -> str:
     """Return the current UTC time as an ISO-8601 string with 'Z' suffix."""
@@ -91,6 +92,7 @@ def _build_record(
 
 
 # ── ObservabilityLogger ───────────────────────────────────────────────────────
+
 
 class ObservabilityLogger:
     """Structured observability logger for Codex agents.
@@ -147,7 +149,9 @@ class ObservabilityLogger:
                 self._python_logger.log(level, json.dumps(record, default=str))
             if self._output_format in ("text", "both"):
                 latency_str = (
-                    f" [{record['latency_ms']:.1f}ms]" if record.get("latency_ms") is not None else ""
+                    f" [{record['latency_ms']:.1f}ms]"
+                    if record.get("latency_ms") is not None
+                    else ""
                 )
                 error_str = f" error={record['error']!r}" if record.get("error") else ""
                 msg = (
@@ -202,9 +206,13 @@ class ObservabilityLogger:
             )
         """
         DEBUG_THRESHOLD = "debug"
-        level = logging.ERROR if status == "error" else (
-            logging.WARNING if status == "failure" else (
-                logging.DEBUG if status == DEBUG_THRESHOLD else logging.INFO
+        level = (
+            logging.ERROR
+            if status == "error"
+            else (
+                logging.WARNING
+                if status == "failure"
+                else (logging.DEBUG if status == DEBUG_THRESHOLD else logging.INFO)
             )
         )
         record = _build_record(

@@ -310,7 +310,7 @@ class TestIntegrateCoreAgents:
             assert "coverage_tracking" in agent_map["coverage-roadmap-agent"].capabilities, "Condition must be true"
 
             # Security agents should have vulnerability_analysis
-            assert ("vulnerability_analysis"
+            assert ("vulnerability_analysis", "Condition must be true"
                 in agent_map["security-alert-verification-agent"].capabilities
             )
 
@@ -477,7 +477,7 @@ class TestAllIntegratedAgents:
 
     def test_all_agents_combined(self) -> None:
         """Test that all agents are combined correctly."""
-        assert len(ALL_INTEGRATED_AGENTS) == len(CORE_AGENTS) + len(EXTENDED_AGENTS
+        assert len(ALL_INTEGRATED_AGENTS) == len(CORE_AGENTS) + len(EXTENDED_AGENTS, "All_integrated_agents must not be empty"
             ), "All_integrated_agents must not be empty"
 
     def test_core_agents_in_all(self) -> None:

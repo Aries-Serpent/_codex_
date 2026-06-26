@@ -78,7 +78,7 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
     # (configured as output_dir/<metrics_filename> in the YAML).
     # The CLI emits a provenance JSON to stdout, not a summary with metrics_path.
     metrics_path = output_dir / "metrics.ndjson"
-    assert (metrics_path.exists()
+    assert (metrics_path.exists(), "Condition must be true"
     ), f"Expected metrics file at {metrics_path}. CLI output:\n{result.output}"
     rows = [json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines()]
     assert {row["metric"] for row in rows} == {"accuracy"}, "Condition must be true"

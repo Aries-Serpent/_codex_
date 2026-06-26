@@ -69,7 +69,7 @@ def test_workflow_top_level_permissions_not_read_all(filename: str) -> None:
         f"{filename}: top-level 'permissions: read-all' is too broad. "
         "Use 'permissions: {}' instead and set explicit per-job permissions."
     )
-    assert (top_perms != "write-all"
+    assert (top_perms != "write-all", "top_perms is not valid"
     ), f"{filename}: top-level 'permissions: write-all' is dangerously broad."
 
 

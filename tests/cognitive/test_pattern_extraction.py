@@ -81,7 +81,7 @@ class TestPatternWave:
 
         # Partial interference: should be sqrt(a1² + a2²)
         expected = math.hypot(wave1.amplitude, wave2.amplitude)
-        assert (abs(interference - expected) < 0.01
+        assert (abs(interference - expected) < 0.01, "Condition must be true"
         ), f"Partial interference failed: got {interference}, expected ~{expected}"
 
 

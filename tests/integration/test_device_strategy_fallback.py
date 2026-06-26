@@ -171,7 +171,7 @@ class TestDeviceStrategyValidation:
         expected_cuda = torch.cuda.is_available()
 
         # Assert
-        assert (cuda_available == expected_cuda
+        assert (cuda_available == expected_cuda, "cuda_available is not valid"
         ), "CUDA availability should match torch.cuda.is_available()"
 
 

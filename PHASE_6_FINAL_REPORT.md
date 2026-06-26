@@ -303,7 +303,7 @@ permissions:
 
 **YAML Syntax Validation**: ✅ PASS
 ```
-✅ .github/workflows/validate-token-health.yml - Valid YAML
+✅ .github/workflows/validate-token-health.yml - Valid YAML  # pragma: allowlist secret
 ✅ .github/workflows/rag-quality-nightly.yml - Valid YAML
 ✅ .github/workflows/pages-mkdocs.yml - Valid YAML
 ✅ .github/dependabot.yml - Valid YAML

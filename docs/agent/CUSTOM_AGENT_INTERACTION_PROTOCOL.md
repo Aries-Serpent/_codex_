@@ -61,13 +61,13 @@ Target Agent(s) (Specialist)
 ┌─────────────────────────────────────────────────┐
 │ IDLE                                            │
 │ Agent ready, no work assigned                   │
-│ (memory state: task_queue = empty)              │
+│ (memory state: task_queue = empty)              │  # pragma: allowlist secret
 └─────────────────────────────────────────────────┘
         ↓
 ┌─────────────────────────────────────────────────┐
 │ RECEIVING                                       │
 │ Accepting task delegation                       │
-│ (memory state: task_context being captured)     │
+│ (memory state: task_context being captured)     │  # pragma: allowlist secret
 └─────────────────────────────────────────────────┘
         ↓
 ┌─────────────────────────────────────────────────┐

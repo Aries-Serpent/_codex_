@@ -332,7 +332,7 @@ Procedure: Start-Lane
 Input:
   - lane_id: 1-4
   - agent_id: e.g., "ci-auto-healer-agent"
-  - task_context: detailed task specification
+  - task_context: detailed task specification  # pragma: allowlist secret
 
 Steps:
 

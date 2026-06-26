@@ -21,7 +21,7 @@ def test_list_plugins_json_stdout_only():
         cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False, text=True
     )
     # Contract: exit code 0, empty stderr in JSON mode
-    assert (proc.returncode == 0
+    assert (proc.returncode == 0, "returncode is not valid"
     ), f"list_plugins returned non-zero exit: {proc.returncode}, stderr={proc.stderr}"
     assert proc.stderr.strip() == "", f"stderr must be empty in JSON mode, got: {proc.stderr!r}"
     # Parseable JSON

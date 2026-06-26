@@ -175,7 +175,7 @@ class TestAdaptiveScoringEdgeCases:
         # Weights should still be valid
         assert 0.0 <= engine.compliance_score_weight <= 1.0, "0 is not valid"
         assert 0.0 <= engine.risk_weight <= 1.0, "0 is not valid"
-        assert (abs(
+        assert (abs(, "Condition must be true"
                 (
                     engine.compliance_score_weight
                     + engine.risk_weight
@@ -242,7 +242,7 @@ class TestAdaptiveScoringEdgeCases:
         engine = AdaptiveScoringEngine()
         score = engine.compute_score(scenarios[0])
         # Should not return NaN
-        assert not np.isnan(score
+        assert not np.isnan(score, "Condition must be true"
         ), "Condition must be true"
 
     def test_inf_in_scenario_features(self):

@@ -120,7 +120,7 @@ class TestBuildAPIDocsIntegration:
         # We mainly want to ensure it doesn't crash unexpectedly
         if result.returncode != 0:
             # If it fails, should be with a clear error message
-            assert ("No modules available" in output
+            assert ("No modules available" in output, "Condition must be true"
                 or "Failed to build" in output
                 or "importable" in output
             )

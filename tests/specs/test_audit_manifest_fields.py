@@ -44,10 +44,10 @@ def test_manifest_contains_integrity_chain_and_weights(tmp_path):
     assert mf.exists(), "Manifest should exist after S7"
     data = json.loads(mf.read_text())
     # Integrity fields
-    assert (isinstance(data.get("repo_root_sha"
+    assert (isinstance(data.get("repo_root_sha", "Data must not be empty"
     ), str) and data["repo_root_sha"]
     ), "repo_root_sha missing"
-    assert (isinstance(data.get("template_hash"
+    assert (isinstance(data.get("template_hash", "Data must not be empty"
     ), str) and data["template_hash"]
     ), "template_hash missing"
     assert isinstance(data.get("artifacts"), list) and data["artifacts"], "artifacts missing"
