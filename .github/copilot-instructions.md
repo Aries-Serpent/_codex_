@@ -259,6 +259,27 @@ python scripts/ci/session_wrapup_autofix.py --check --pr N
 - **WEC Enforcer Tool:** `scripts/ci/wec_enforcer.py`
 - **Session Wrapup Tool:** `scripts/ci/session_wrapup_autofix.py`
 
+### Failure Diagnosis & Prevention
+
+When workflows fail or governance checks block merge, reference these guides:
+
+- **Workflow Failure Root-Cause Matrix:** `.codex/WORKFLOW_FAILURE_MATRIX.md`
+  - 8 documented failure patterns (WF-001 through WF-008)
+  - Detection methods, remediation steps, prevention strategies
+  - Use when: REQ-4 failures, REQ-5 failures, WEC corruption, approval failures, rate limiting
+  
+- **Auto-Approve Prerequisite Guide:** `.codex/AUTO_APPROVE_PREREQUISITE_GUIDE.md`
+  - Token hierarchy and scope requirements (why github.token fails)
+  - Auto-approval selection logic and WEC mapping
+  - 4 failure scenarios with recovery procedures
+  - Use when: Workflows won't auto-approve, approval tokens failing, 403 errors
+  
+- **Main Branch Workflow Health Baseline:** `.codex/MAIN_BRANCH_WORKFLOW_HEALTH.md`
+  - Health metrics for "healthy PR" state
+  - Reference profiles and alert thresholds
+  - Trend analysis and escalation procedures
+  - Use when: Tracking health score, investigating patterns, identifying regressions
+
 ---
 
 ## Prohibited Actions
