@@ -232,7 +232,7 @@ Task 1: ci-failure-resolution-agent
   - Generate fix patterns
   
 Task 2: security-alert-verification-agent
-  - Validate secrets handling
+  - Validate secrets handling  # pragma: allowlist secret
   - Fix authentication issues
 ```
 
