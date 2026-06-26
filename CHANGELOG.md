@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5103)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5103 (SHA `f31f7719`) at 2026-06-26T20:13Z [auto-generated]
+
 ### Review Remediation + PR #5093 Documentation Import — 2026-06-26T18:30Z
 
 **Campaign:** PR #5092 review closure + PR #5093 documentation import  
