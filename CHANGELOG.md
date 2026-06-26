@@ -1,5 +1,36 @@
 # Changelog
 
+## [Phase 12: Enterprise Features & Operations — All Tracks] — 2026-06-26T15:30:00Z
+
+### 🏢 Phase 12: Enterprise Features & Operations
+
+**Status:** ✅ ALL 3 TRACKS COMPLETE
+**Authority:** @mbaetiong (D-mode, fully autonomous)
+**Trigger:** Phase 11 all 3 tracks confirmed COMPLETE; Phase 12 unblocked
+
+#### Track 12.1: Role-Based Access Control (RBAC)
+- **NEW** `src/codex/governance/__init__.py` — Package init exporting RBACEnforcer, ApprovalWorkflowEngine, PermissionDeniedError
+- **NEW** `src/codex/governance/rbac.py` — Full RBAC engine: 7 roles (`system_admin`, `agent_operator`, `ci_operator`, `security_reviewer`, `doc_maintainer`, `agent_reader`, `guest`), 8 resource types, deny-by-default, `@require_permission` decorator, delegates to `src/codex/authz/`
+- **NEW** `src/codex/governance/approval_workflows.py` — ApprovalWorkflowEngine with PENDING/APPROVED/REJECTED/EXPIRED states, <5 min SLA enforcement, RBAC auto-approval, full AuditLogger integration
+- **NEW** `.codex/PHASE_12_1_RBAC_MODEL.md` — RBAC design: role-permission matrix, resource taxonomy, threat mitigations, Mermaid flow diagram
+- **NEW** `.codex/PHASE_12_1_AUDIT_FRAMEWORK.md` — Audit schema, event taxonomy, retention policy, SQL query patterns for compliance
+
+#### Track 12.2: Governance & Compliance
+- **NEW** `.codex/PHASE_12_2_GOVERNANCE_RULES.md` — Comprehensive governance policy (600+ words) with REQ-1..REQ-6 definitions, agent operation policies, violation handling, Mermaid enforcement diagram
+- **NEW** `scripts/ci/phase_12_2_compliance_dashboard.py` — ComplianceDashboard class: `check_req1()` through `check_req6()`, `get_compliance_score()`, `--check`/`--report`/`--json` CLI modes
+- **NEW** `.codex/PHASE_12_2_COMPLIANCE_REPORT.md` — Live compliance report: 6/6 PASS, score=1.0, APPROVED
+- **NEW** `.github/workflows/phase-12-2-compliance-check.yml` — Weekly (Mon 09:00 UTC) + push-triggered compliance enforcement; artifact upload + PR comment
+
+#### Track 12.3: Agent Observability & Telemetry
+- **NEW** `src/codex/observability/__init__.py` — Package init exporting ObservabilityLogger, MetricsCollector, AgentMetrics
+- **NEW** `src/codex/observability/logging.py` — ObservabilityLogger: structured JSON schema, `log_agent_action()`, `log_workflow_event()`, `log_routing_decision()`, thread-safe, integrates with `codex.logging.session_logger`
+- **NEW** `src/codex/observability/metrics.py` — MetricsCollector: per-agent P50/P95/P99 latency, success/error rates, throughput; ecosystem summary; Prometheus text format export; OTEL Histogram integration
+- **NEW** `.codex/PHASE_12_3_OBSERVABILITY_STACK.md` — Architecture, metrics catalog, trace strategy, dashboard guide, Phase 11.2/11.3 integration, Mermaid data-flow diagram
+- **NEW** `.codex/PHASE_12_3_SLO_DEFINITIONS.md` — 5 SLOs: Availability (99.95%), Latency P99 (<30s), Routing P99 (<800ms), Error Rate (<2%), MTTR (<5min); error budgets, fast-burn alerts
+
+#### Master Plan Update
+- **UPDATED** `docs/phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN.md` — All Phase 11 + Phase 12 tracks marked ✅ COMPLETE; dashboard table updated
+
 ## [Phase 12.2 Governance & Compliance] — 2026-06-26T15:00:00Z
 
 ### 🏛️ Phase 12.2: Governance & Compliance Track
