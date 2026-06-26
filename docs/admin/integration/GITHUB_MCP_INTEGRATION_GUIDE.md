@@ -171,9 +171,9 @@ _codex_/
 │   │   ├── mcp_schema_validation.py
 │   │   ├── mcp_multi_tenant.py
 │   │   └── mcp_tools_integration.py
-│   ├── security/                   # Token encryption/decryption
+│   ├── security/                   # Token encryption/verification
 │   │   ├── token_encryption_tool.py
-│   │   └── copilot_token_decoder.py
+│   │   └── verify_token_scope.py
 │   └── validate_mcp.py
 └── .github/
     ├── workflows/
@@ -202,10 +202,10 @@ _codex_/
 ```python
 # Copilot Agent script example
 import requests
-from scripts.security.copilot_token_decoder import copilot_get_github_token
+from scripts.security.token_encryption_tool import copilot_get_github_token_safe
 
 # Authenticate with MCP service
-token = copilot_get_github_token()
+token = copilot_get_github_token_safe()
 headers = {"Authorization": f"Bearer {token}"}
 
 # Request focused context
@@ -561,7 +561,7 @@ warm_response = requests.post(
 
 | Issue | Symptoms | Solution |
 |-------|----------|----------|
-| **Authentication failures** | 401 Unauthorized responses | Verify token: `python3 scripts/security/copilot_token_decoder.py` |
+| **Authentication failures** | 401 Unauthorized responses | Verify token: `python3 scripts/security/verify_token_scope.py` |
 | **Slow cache warming** | Jobs take >10 Pre-commits | Check PyPI/npm mirrors, increase parallel downloads |
 | **Context too large** | Token limit errors | Adjust filtering, enable summarization |
 | **Playwright browsers missing** | Browser launch fails | Run `playwright install chromium` in container |

@@ -249,7 +249,7 @@ def secure_process(input):
     sanitized = sanitize(input)
     try:
         result = process(sanitized, timeout=30)
-    except Exception:  # noqa: BLE001
+    except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
         rollback()
     return result
 """,

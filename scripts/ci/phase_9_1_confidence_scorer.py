@@ -67,15 +67,15 @@ class ConfidenceScorer:
 
     # Agent-specific calibration (baseline historical accuracy, 0-100)
     AGENT_BASELINES = {
-        "ci-health-alert-agent": 92.0,
-        "ci-testing-agent": 82.0,
-        "copilot-session-chain": 78.0,
-        "energy-conversion-agent": 80.0,
-        "packaging-validation-agent": 88.0,
-        "rust-error-validator": 86.0,
-        "test-assertion-updater": 79.0,
-        "test-pattern-guardian": 90.0,
-        "workflow-ci-fixer": 87.0,
+        "ci-auto-healer-agent": 85.0,
+        "autonomous-test-healer-agent": 88.0,
+        "test-alignment-fixer": 82.0,
+        "code-analysis-agent": 80.0,
+        "unified-coverage-agent": 81.0,
+        "doc-freshness-checker": 84.0,
+        "link-validator-agent": 89.0,
+        "dependency-conflict-agent": 83.0,
+        "test-failure-analyzer-agent": 82.0,
     }
 
     # Weights for confidence factors
@@ -88,15 +88,15 @@ class ConfidenceScorer:
 
     # Escalation thresholds by agent
     ESCALATION_THRESHOLDS = {
-        "ci-health-alert-agent": 65.0,
-        "ci-testing-agent": 60.0,
-        "copilot-session-chain": 60.0,
-        "energy-conversion-agent": 65.0,
-        "packaging-validation-agent": 65.0,
-        "rust-error-validator": 70.0,
-        "test-assertion-updater": 60.0,
-        "test-pattern-guardian": 65.0,
-        "workflow-ci-fixer": 70.0,
+        "ci-auto-healer-agent": 80.0,
+        "autonomous-test-healer-agent": 80.0,
+        "test-alignment-fixer": 75.0,
+        "code-analysis-agent": 70.0,
+        "unified-coverage-agent": 75.0,
+        "doc-freshness-checker": 80.0,
+        "link-validator-agent": 85.0,
+        "dependency-conflict-agent": 80.0,
+        "test-failure-analyzer-agent": 75.0,
     }
 
     def __init__(self, db_path: str = ".codex/phase_9_1_decisions.db"):

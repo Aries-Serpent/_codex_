@@ -134,7 +134,7 @@ def update_database(conn, data):
     try:
         conn.execute(data)
         conn.commit()
-    except Exception:  # noqa: BLE001
+    except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
         conn.rollback()
         raise
 """)
@@ -196,7 +196,7 @@ def secure_operation(data, confirm=False, dry_run=False):
 
     try:
         execute(data)
-    except Exception:  # noqa: BLE001
+    except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
         rollback()
 """)
 

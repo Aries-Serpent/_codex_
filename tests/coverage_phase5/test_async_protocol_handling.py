@@ -21,7 +21,7 @@ class AsyncMessageQueue:
 
     async def process_all(self):
         while not self.queue.empty():
-            await self.dequeue()
+            await asyncio.wait_for(self.dequeue(), timeout=10)
             self.processed += 1
 
 
@@ -31,10 +31,10 @@ async def test_message_queue_enqueue():
     queue = AsyncMessageQueue()
 
     message = {"id": 1, "method": "test"}
-    await queue.enqueue(message)
+    await asyncio.wait_for(queue.enqueue(message), timeout=10)
 
-    retrieved = await queue.dequeue()
-    assert retrieved == message
+    retrieved = await asyncio.wait_for(queue.dequeue(), timeout=10)
+    assert retrieved == message, "Assertion must pass"
 
 
 @pytest.mark.asyncio
@@ -43,11 +43,11 @@ async def test_message_queue_fifo():
     queue = AsyncMessageQueue()
 
     for i in range(5):
-        await queue.enqueue({"id": i})
+        await asyncio.wait_for(queue.enqueue({"id": i}), timeout=10)
 
     for i in range(5):
-        msg = await queue.dequeue()
-        assert msg["id"] == i
+        msg = await asyncio.wait_for(queue.dequeue(), timeout=10)
+        assert msg["id"] == i, "Assertion must pass"
 
 
 @pytest.mark.asyncio
@@ -57,12 +57,12 @@ async def test_message_queue_concurrent_processing():
 
     # Enqueue messages
     for i in range(10):
-        await queue.enqueue({"id": i})
+        await asyncio.wait_for(queue.enqueue({"id": i}), timeout=10)
 
     # Process all
-    await queue.process_all()
+    await asyncio.wait_for(queue.process_all(), timeout=30)
 
-    assert queue.processed == 10
+    assert queue.processed == 10, "Assertion must pass"
 
 
 @pytest.mark.asyncio
@@ -81,13 +81,13 @@ async def test_concurrent_enqueue_dequeue():
 
     async def producer():
         for i in range(5):
-            await queue.enqueue({"id": i})
-            await asyncio.sleep(0.01)
+            await asyncio.wait_for(queue.enqueue({"id": i}), timeout=10)
+            await asyncio.wait_for(asyncio.sleep(0.01), timeout=1.5)
 
     async def consumer():
         count = 0
         while count < 5:
-            await queue.dequeue()
+            await asyncio.wait_for(queue.dequeue(), timeout=10)
             count += 1
         return count
 
@@ -97,4 +97,4 @@ async def test_concurrent_enqueue_dequeue():
     await prod_task
     consumed = await cons_task
 
-    assert consumed == 5
+    assert consumed == 5, "Assertion must pass"

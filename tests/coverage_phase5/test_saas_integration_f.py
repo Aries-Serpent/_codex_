@@ -1,3 +1,4 @@
+import asyncio
 """Test SaaS integration module 5."""
 
 from __future__ import annotations
@@ -39,7 +40,7 @@ async def test_saas_client_5_init():
 async def test_saas_client_5_health():
     """Test SaaS health check."""
     client = SaaSClient("test_key")
-    status = await client.health_check()
+    status = await asyncio.wait_for(client.health_check(), timeout=30)
 
     assert status == SaaSEndpointStatus.HEALTHY
 
@@ -48,6 +49,6 @@ async def test_saas_client_5_health():
 async def test_saas_client_5_call():
     """Test SaaS endpoint call."""
     client = SaaSClient("test_key")
-    result = await client.call_endpoint("v1/models", id="test")
+    result = await asyncio.wait_for(client.call_endpoint("v1/models", id="test"), timeout=30)
 
     assert result["status"] == "ok"

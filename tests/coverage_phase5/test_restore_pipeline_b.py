@@ -1,3 +1,4 @@
+import asyncio
 """Test restore pipeline module 1."""
 
 from __future__ import annotations
@@ -48,7 +49,7 @@ async def test_restore_pipeline_1_init():
 async def test_restore_pipeline_1_discover():
     """Test artifact discovery."""
     pipeline = RestorePipeline("dr")
-    artifacts = await pipeline.discover_artifacts()
+    artifacts = await asyncio.wait_for(pipeline.discover_artifacts(), timeout=30)
 
     assert len(artifacts) > 0
     assert pipeline.phase == RestorePhase.DISCOVERING
@@ -58,8 +59,8 @@ async def test_restore_pipeline_1_discover():
 async def test_restore_pipeline_1_validate():
     """Test artifact validation."""
     pipeline = RestorePipeline("dr")
-    await pipeline.discover_artifacts()
-    result = await pipeline.validate_artifacts()
+    await asyncio.wait_for(pipeline.discover_artifacts(), timeout=30)
+    result = await asyncio.wait_for(pipeline.validate_artifacts(), timeout=30)
 
     assert result is True
     assert pipeline.phase == RestorePhase.VALIDATING
@@ -69,9 +70,9 @@ async def test_restore_pipeline_1_validate():
 async def test_restore_pipeline_1_restore():
     """Test pipeline restore."""
     pipeline = RestorePipeline("dr")
-    await pipeline.discover_artifacts()
-    await pipeline.validate_artifacts()
-    result = await pipeline.restore()
+    await asyncio.wait_for(pipeline.discover_artifacts(), timeout=30)
+    await asyncio.wait_for(pipeline.validate_artifacts(), timeout=30)
+    result = await asyncio.wait_for(pipeline.restore(), timeout=30)
 
     assert result is True
     assert pipeline.phase == RestorePhase.VERIFIED

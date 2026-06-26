@@ -6,6 +6,14 @@ Ensures dependency compatibility checker works correctly.
 
 from __future__ import annotations
 
+
+@pytest.fixture(autouse=True)
+def cleanup_mocks():
+    """Automatically reset all mocks after each test."""
+    yield
+    mock.patch.stopall()
+
+
 import importlib.util
 
 # Import the script module

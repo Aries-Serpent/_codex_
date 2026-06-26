@@ -120,7 +120,7 @@ class my_class:
         code = """
 try:
     risky()
-except Exception:  # noqa: BLE001
+except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
     _ = None
 """
         detector = CodeSmellDetector()
@@ -134,7 +134,7 @@ except Exception:  # noqa: BLE001
         code = """
 try:
     risky()
-except Exception:  # noqa: BLE001
+except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
     _ = None
 """
         detector = CodeSmellDetector()
