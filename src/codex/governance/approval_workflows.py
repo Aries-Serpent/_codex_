@@ -432,12 +432,13 @@ class ApprovalWorkflowEngine:
         """Transition *req* to EXPIRED if the deadline has passed."""
         if req.status == ApprovalStatus.PENDING and req.is_expired:
             req.status = ApprovalStatus.EXPIRED
+            actual_timeout = req.expires_at - req.created_at
             req.decisions.append(
                 ApprovalDecision(
                     approver="__system__",
                     decision=ApprovalStatus.EXPIRED,
                     reason=(
-                        f"Request expired after {self._timeout:.0f}s "
+                        f"Request expired after {actual_timeout:.0f}s "
                         f"without resolution."
                     ),
                 )
