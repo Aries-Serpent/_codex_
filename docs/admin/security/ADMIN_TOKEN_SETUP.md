@@ -156,13 +156,13 @@ gh secret set CODEX_GHP_TOKEN_AES_KEY --body "YOUR_AES_KEY" --repo Aries-Serpent
 ```bash
 # Method 1: Direct test
 python3 -c "
-from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
+from scripts.security.token_encryption_tool import copilot_get_github_token_safe
 token = copilot_get_github_token_safe()
 print('✅ Token retrieved successfully' if token else '❌ Token retrieval failed')
 "
 
 # Method 2: Full integration test
-python3 scripts/security/copilot_token_decoder.py
+python3 scripts/security/token_encryption_tool.py
 ```
 
 ## Test in Workflow
@@ -212,7 +212,7 @@ Create calendar reminder or use GitHub Actions scheduled workflow to alert when 
 ```bash
 # Test locally
 export CODEX_GHP_TOKEN_BASE64="your_base64_value"
-python3 scripts/security/copilot_token_decoder.py
+python3 scripts/security/token_encryption_tool.py
 ```
 
 ## Issue: "Token verification failed: invalid format or hash mismatch"
@@ -273,7 +273,7 @@ python3 scripts/security/copilot_token_decoder.py
 
 **Documentation**:
 - Encryption Tool: `scripts/security/token_encryption_tool.py`
-- Decoder Module: `scripts/security/copilot_token_decoder.py`
+- Token Scope Verification: `scripts/security/verify_token_scope.py`
 - Copilot Usage Guide: `docs/admin/security/COPILOT_TOKEN_USAGE.md`
 
 **GitHub Resources**:

@@ -7,6 +7,8 @@
 **Tool**: `notebooklm-skill` for Claude Code  
 **Integration Level**: Deep (AI Architect queries)
 
+> **📌 NOTE:** The `scripts/run.py` references in this guide are for the **external** `notebooklm-skill` repository cloned to `~/.claude/skills/notebooklm/`. These scripts are NOT part of the `_codex_` repository. After cloning the external skill, all commands reference its local copy, not the `_codex_` codebase scripts directory.
+
 ---
 
 ## Prerequisites
