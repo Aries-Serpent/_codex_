@@ -15,7 +15,7 @@ def cleanup_mocks():
 
 
 import json
-import unittest.mock as mock
+import unittest.mock as mock # pragma: allowlist secret
 
 import pytest
 

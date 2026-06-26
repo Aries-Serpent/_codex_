@@ -15,7 +15,7 @@ import gzip
 import json
 import logging
 import tempfile
-import time
+import time # pragma: allowlist secret
 from pathlib import Path
 from typing import Dict, Any
 
