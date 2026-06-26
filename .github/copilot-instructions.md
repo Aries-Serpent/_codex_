@@ -201,12 +201,73 @@ GH_TOKEN=$CODEX_MASTER_KEY python scripts/ci/test_variables_api.py
 gh workflow run test-variables-api.yml --repo Aries-Serpent/_codex_ --ref 0D_base_
 ```
 
+## ⚙️ WEC Template Maintenance (MANDATORY)
+
+**Effective:** 2026-06-26 onwards (applies to ALL Copilot Agent sessions)
+
+### Before Making Any Code Changes
+
+1. **Verify WEC Presence:**
+   - PR must have `## 🔄 Workflow Execution Checklist` section
+   - All REQUIRED workflows must be listed
+   - If WEC is missing or malformed, post diagnostic and fix BEFORE proceeding
+
+2. **Read Current WEC State:**
+   - Extract WEC state from PR body at session START
+   - Log state to session context comment (visible in actions)
+   - Preserve this state throughout the session
+
+3. **Understand Merge Target:**
+   - For merges to `main`: All 5 REQUIRED workflows must be **[x] checked**
+   - For merges to `0D_base_`: Same 5 REQUIRED workflows must be **[x] checked**
+   - See: `.codex/WEC_CANONICAL_ITEMS.md` for full list
+
+### During Session Work
+
+- **Do NOT let `report_progress` calls strip the WEC**
+- **Read current WEC state BEFORE every `report_progress` call**
+- **Pass WEC block in `prDescription` parameter** (append to end)
+- **If maintainer edits WEC mid-session, read it again** and preserve their selections
+- **Post acknowledgment comment** if WEC was manually changed
+
+### Pre-Commit Validation
+
+```bash
+# Before final commit, ALWAYS run:
+python scripts/ci/session_wrapup_autofix.py --check --pr N
+
+# Expected output: REQ-4 ✅, REQ-5 ✅, WEC valid ✅
+```
+
+**STOP if any check fails:**
+- ❌ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md not updated): Run `--auto-update`
+- ❌ REQ-5 (CHANGELOG.md not updated): Run `--auto-update`
+- ❌ WEC invalid: Use `wec_enforcer.py --validate-body --pr N` to diagnose
+
+### At Session End
+
+1. Validate WEC is in final PR body
+2. Ensure all selections are preserved
+3. Document which workflows you selected/deselected and why
+4. Post final session comment with WEC state + compliance status
+
+### Key References
+
+- **Full WEC Contract:** `.codex/WEC_SESSION_INVARIANT.md`
+- **Workflow Definitions:** `.codex/WEC_CANONICAL_ITEMS.md`
+- **PR Body Conflicts:** `docs/workflows/WEC_PR_BODY_CONFLICTS.md`
+- **WEC Enforcer Tool:** `scripts/ci/wec_enforcer.py`
+- **Session Wrapup Tool:** `scripts/ci/session_wrapup_autofix.py`
+
+---
+
 ## Prohibited Actions
 
 - Do **not** create or activate any GitHub Actions workflow files.
 - Do **not** modify `.github/workflows/copilot-setup-steps.yml` or try to re-enable/fix commented-out steps within it unless explicitly instructed by a human.
 - Keep automation artefacts confined to `.codex/`.
 - Do **not** upgrade CCA version without explicit session review (violates `COPILOT_AGENT_CCA_VERSION_LOCK`).
+- Do **not** strip the WEC section from PR body during `report_progress` calls.
 
 ## Documentation & Architecture Conventions
 
