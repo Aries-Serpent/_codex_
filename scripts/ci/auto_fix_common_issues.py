@@ -4130,9 +4130,9 @@ def main():
     parser.add_argument(
         "--pattern",
         type=int,
-        choices=range(1, 36),
+        choices=range(1, 39),
         metavar="N",
-        help="Run only pattern N (1–35); see pattern list above"
+        help="Run only pattern N (1–38); see pattern list above"
     )
     parser.add_argument(
         "--pattern-name",

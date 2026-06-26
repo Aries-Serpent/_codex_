@@ -1,5 +1,5 @@
 # Phase 9 Track 9.1: Dead Link Detection & Remediation Report
-**Generated:** 2026-06-23T23:13:35Z
+**Generated:** 2026-06-26T00:11:05Z
 
 ## Executive Summary
 
@@ -7,7 +7,7 @@
 | Metric | Count |
 |--------|-------|
 | Total documentation files scanned | 6,157 |
-| External URLs identified | 898 |
+| External URLs identified | 919 |
 | Files with broken links | 153 |
 | Total broken links found | 478 |
 | Template/Placeholder links | 54 |
