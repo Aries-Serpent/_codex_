@@ -2,6 +2,28 @@
 
 
 
+## SESSION SUMMARY — 2026-06-26T21:44Z [ACTIONLINT CI REMEDIATION ✅]
+
+**Session:** copilot-pr5103-actionlint-remediation | **Campaign:** Clear the PR #5103 workflow compliance audit failure while preserving Phase 12.2 freshness | **Date:** 2026-06-26T21:44Z
+
+Investigated the blocking PR #5103 actionlint audit failure reported against commit `8e905c6b` and traced it to `.github/workflows/auto-approve-workflows.yml` declaring 11 `workflow_dispatch` inputs, which exceeds GitHub's hard maximum of 10.
+
+### Actions Completed
+
+- ✅ **CI Triage** — Queried the failing workflow run and read the failed job logs for run `28266625630` to confirm the exact actionlint error before editing files.
+- ✅ **Workflow Compliance Fix** — Removed the redundant legacy `pr_number` dispatch input and standardized the workflow's manual-dispatch references on `target_pr`.
+- ✅ **REQ-4 Compliance Refresh** — Added this accountability entry in the same commit as the workflow fix.
+- ✅ **REQ-5 Compliance Refresh** — Updated `CHANGELOG.md` in the same commit so the new push remains Phase 12.2 compliant.
+
+### Validation
+
+- ✅ `github-mcp-server-actions_list(method="list_workflow_runs", workflow_runs_filter={branch:"copilot/consolidate-dependabot-prs"})`
+- ✅ `github-mcp-server-get_job_logs(run_id=28266625630, failed_only=true, return_content=true)` showed `maximum number of inputs for "workflow_dispatch" event is 10 but 11 inputs are provided`
+- ✅ Local YAML parse check confirmed `.github/workflows/auto-approve-workflows.yml` now exposes exactly 10 manual-dispatch inputs
+- ✅ `./actionlint .github/workflows/auto-approve-workflows.yml`
+
+---
+
 ## SESSION SUMMARY — 2026-06-26T21:41Z [PHASE 12.2 COMPLIANCE REFRESH ✅]
 
 **Session:** copilot-pr5103-compliance-refresh | **Campaign:** Restore REQ-4/REQ-5 freshness after PR #5103 follow-up check-in commit | **Date:** 2026-06-26T21:41Z

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (Actionlint Compliance Refresh — PR #5103)
+- Removed the redundant legacy `pr_number` manual-dispatch input from `.github/workflows/auto-approve-workflows.yml`, keeping the workflow within GitHub's 10-input `workflow_dispatch` limit while preserving the active `target_pr` dispatch path.
+- Updated the workflow's internal manual-dispatch references to use `target_pr` consistently so the actionlint failure on PR #5103 is resolved without changing approval behavior.
+
 ### Fixed (CI Rescue Follow-up Compliance Refresh — PR #5103)
 - Refreshed `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in the latest commit after the PR #5103 follow-up check-in commit (`2e57fa23`) re-triggered REQ-4/REQ-5 freshness enforcement.
 - Preserved the functional PR #5103 CI rescue fix set from `8e905c6b`; this follow-up only restores commit-level Phase 12.2 compliance for the latest push.
