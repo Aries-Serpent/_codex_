@@ -1,10 +1,10 @@
-# Session Context — 2026-06-26T22:40:34Z
+# Session Context — 2026-06-26T22:50:48Z
 **Branch:** `copilot/fix-governance-compliance-gate`  **PR:** #5106  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4551` (✅)
-- GraphQL remaining: `4971` (✅)
+- REST remaining: `4953` (✅)
+- GraphQL remaining: `4993` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `True`  Branch: `copilot/fix-governance-compliance-gate` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
+- **Unified Governance Check** — `failure` on `copilot/fix-governance-compliance-gate` (2026-06-26)
+- **Workflow Compliance Gate** — `failure` on `copilot/fix-governance-compliance-gate` (2026-06-26)
+- **Validation Pipeline** — `failure` on `copilot/fix-governance-compliance-gate` (2026-06-26)
 - **Phase 8.2 Issue Triage** — `failure` on `main` (2026-06-26)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-26)
 
 ## 📝 Recent Commits
+- `36ae33e0` Documentation clarity updates: Note Phase 6 TBD items and clarify placeholder re — copilot-swe-agent[bot] (2026-06-26)
+- `10883eb2` Complete WEC hardening documentation suite (Phases 1-5): Add comprehensive index — copilot-swe-agent[bot] (2026-06-26)
+- `6e40f965` Add Phase 5 documentation references to copilot-instructions.md — copilot-swe-agent[bot] (2026-06-26)
+- `c07a85fe` Phase 3-5 hardening documentation: Workflow failure matrix, auto-approval guide, — copilot-swe-agent[bot] (2026-06-26)
+- `50fdbe4c` Phase 2 complete: WEC Template hardening documentation — copilot-swe-agent[bot] (2026-06-26)
+- `3c47b369` Begin WEC hardening implementation plan — copilot-swe-agent[bot] (2026-06-26)
 - `fb3a495f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-26)
 - `c56f5b16` Implement Phase 12.2 Compliance Gate Fix - merge commit handling and script impr — copilot-swe-agent[bot] (2026-06-26)
-- `ce2e634e` WIP: Begin Phase 12.2 Compliance Gate Fix - outline implementation plan — copilot-swe-agent[bot] (2026-06-26)
-- `c94b62d1` Apply remaining changes — copilot-swe-agent[bot] (2026-06-26)
-- `c5cd5cd2` Create Phase 12.2 investigation report — Statix (2026-06-26)
-- `fbde8f9d` Merge pull request #5103 from Aries-Serpent/copilot/consolidate-dependabot-prs — Statix (2026-06-26)
-- `ef5e7564` fix(ci): resolve PR5103 actionlint dispatch limit — copilot-swe-agent[bot] (2026-06-26)
-- `2eb85453` fix(ci): refresh PR5103 compliance docs — copilot-swe-agent[bot] (2026-06-26)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
