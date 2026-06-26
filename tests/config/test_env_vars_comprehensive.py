@@ -329,7 +329,7 @@ class TestRequiredVariables:
             name="VAR",
             description="This is a test variable",
         )
-        assert "test" in config.description.lower(
+        assert "test" in config.description.lower(, "Condition must be true"
         ), "Condition must be true"
 
 

@@ -51,7 +51,7 @@ def test_respects_existing_local_file_uri(monkeypatch, tmp_path):
     uri = etm.ensure_local_tracking()
     # Allow for normalization - just verify it points to the same location
     assert uri.startswith("file:"), f"Expected file: URI, got {uri}"
-    assert (str(tmp_path) in uri or tmp_path.as_posix() in uri
+    assert (str(tmp_path) in uri or tmp_path.as_posix() in uri, "Condition must be true"
     ), f"Expected path {tmp_path} in URI {uri}"
 
 

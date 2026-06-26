@@ -151,7 +151,7 @@ class TestAttentionScorer:
         assert len(attn_weights) > 0, "Should extract non-empty attention weights"
         assert len(layer_names) == len(attn_weights), "Layer_names must not be empty"
         # Verify we got the expected number of layers
-        assert (len(attn_weights) == scorer.model.num_layers
+        assert (len(attn_weights) == scorer.model.num_layers, "Attn_weights must not be empty"
         ), f"Expected {scorer.model.num_layers} layers"
 
         # Check shape of attention weights

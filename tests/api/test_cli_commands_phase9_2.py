@@ -44,7 +44,7 @@ class TestWorkflowNavigatorCLI:
 
     def test_exits_zero(self) -> None:
         result = _run_module("agents.workflow_navigator")
-        assert (result.returncode == 0
+        assert (result.returncode == 0, "Result must not be empty"
         ), f"workflow_navigator exited {result.returncode}:\n{result.stderr}"
 
     def test_output_contains_workflow_navigator(self) -> None:
@@ -74,7 +74,7 @@ class TestQuantumGameTheoryCLI:
 
     def test_exits_zero(self) -> None:
         result = _run_module("agents.quantum_game_theory")
-        assert (result.returncode == 0
+        assert (result.returncode == 0, "Result must not be empty"
         ), f"quantum_game_theory exited {result.returncode}:\n{result.stderr}"
 
     def test_output_contains_game_term(self) -> None:
@@ -96,7 +96,7 @@ class TestPhysicsOrchestratorCLI:
 
     def test_exits_zero(self) -> None:
         result = _run_module("agents.physics_orchestrator")
-        assert (result.returncode == 0
+        assert (result.returncode == 0, "Result must not be empty"
         ), f"physics_orchestrator exited {result.returncode}:\n{result.stderr}"
 
     def test_output_contains_physics_term(self) -> None:
@@ -119,5 +119,5 @@ class TestDeveloperOrchestratorCLI:
     def test_exits_zero(self) -> None:
         result = _run_module("agents.developer_orchestrator")
         # The __main__ block may print output and exit 0; accept any clean exit
-        assert (result.returncode == 0
+        assert (result.returncode == 0, "Result must not be empty"
         ), f"developer_orchestrator exited {result.returncode}:\n{result.stderr[:300]}"

@@ -217,7 +217,7 @@ def test_optimize_test_schedule_unlimited_budget(optimizer):
 
     # All tests should be selected with large budget
     assert len(selected) == 3, "Selected must not be empty"
-    assert set(selected) == set(tests
+    assert set(selected) == set(tests, "Condition must be true"
             ), "Condition must be true"
 
 

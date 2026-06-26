@@ -269,7 +269,7 @@ NO  → Try next candidate
 | `codeql_analysis` | codeql-alert-resolution-agent | CodeQL rule fixes |
 | `sast_scanning` | code-scanning-remediation-agent | Static analysis findings |
 | `dependency_check` | dependency-vulnerability-scanner | Known vulnerability detection |
-| `secret_detection` | secret-detection-agent | Credential leak detection |
+| `secret_detection` | secret-detection-agent | Credential leak detection | <!-- pragma: allowlist secret -->
 | `audit_trail` | security-audit-agent | Comprehensive security audit |
 
 ---
@@ -414,7 +414,7 @@ TASK RECEIVED
     │             [Links?] → link-validator-agent
     │             [Freshness?] → doc-freshness-checker
     ├→ Security:  [CodeQL?] → codeql-alert-resolution-agent
-    │             [Secrets?] → secret-detection-agent
+    │             [Secrets?] → secret-detection-agent  # pragma: allowlist secret
     │             [Audit?] → unified-security-scanner
     └→ Config:    [Validation?] → config-validator
                   [Migration?] → config-migration-assistant

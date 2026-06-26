@@ -154,5 +154,5 @@ class TestConfigModuleDocumentation:
         from codex.config.env_vars import EnvironmentManager
 
         assert EnvironmentManager.__doc__ is not None, "__doc__ must be initialized"
-        assert "environment" in EnvironmentManager.__doc__.lower(
+        assert "environment" in EnvironmentManager.__doc__.lower(, "Condition must be true"
         ), "Condition must be true"

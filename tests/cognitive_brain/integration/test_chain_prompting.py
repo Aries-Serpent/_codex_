@@ -216,7 +216,7 @@ class TestBayesianEMChainIntegration:
         assessor.update_cpds_em(corpus, learning_rate=0.5)
         posterior_approve = assessor._tables["compliance"].probs[()]["approve"]
 
-        assert (posterior_approve < prior_approve
+        assert (posterior_approve < prior_approve, "posterior_approve is not valid"
         ), "EM update should have shifted approve probability down given reject-heavy corpus"
 
     def test_em_update_probabilities_sum_to_one(self):

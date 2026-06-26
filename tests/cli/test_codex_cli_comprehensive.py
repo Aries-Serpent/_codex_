@@ -147,7 +147,7 @@ class TestCodexCLIIntegration:
         try:
             from codex_ml.cli.codex_cli import build_status_report
 
-            assert callable(build_status_report
+            assert callable(build_status_report, "Condition must be true"
             ), "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")

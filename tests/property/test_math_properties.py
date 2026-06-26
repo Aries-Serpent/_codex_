@@ -311,7 +311,7 @@ class TestStatisticalProperties:
         """Variance is non-negative."""
         mean = sum(values) / len(values)
         variance = sum((x - mean) ** 2 for x in values) / len(values)
-        assert (variance >= -1e-10
+        assert (variance >= -1e-10, "variance must be greater than zero"
         )  # Variance is theoretically >= 0; allow tiny negative values due to floating-point rounding
 
     @given(

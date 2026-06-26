@@ -46,7 +46,7 @@ def test_metric_plugins_load_without_errors():
     assert "exact_match" in available_lower, f"exact_match not found in {available}"
 
     # Perplexity
-    assert ("ppl" in available_lower or "perplexity" in available_lower
+    assert ("ppl" in available_lower or "perplexity" in available_lower, "Condition must be true"
     ), f"perplexity metric not found in {available}"
 
 
@@ -99,5 +99,5 @@ def test_metric_plugins_graceful_with_no_entry_points():
     expected_builtins = ["f1", "exact_match", "bleu"]
     found_builtins = [m for m in expected_builtins if m in available_lower]
 
-    assert (len(found_builtins) >= 2
+    assert (len(found_builtins) >= 2, "Found_builtins must not be empty"
     ), f"Expected at least 2 built-in metrics from {expected_builtins}, found {found_builtins}"

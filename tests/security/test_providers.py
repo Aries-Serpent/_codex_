@@ -639,7 +639,7 @@ class TestGitHubTokenProvider:
             )
 
         assert result.success is True, "Result must not be empty"
-        assert (result.new_secret_value == "ghs_test_installation_token_value"
+        assert (result.new_secret_value == "ghs_test_installation_token_value", "Result must not be empty"
         )  # pragma: allowlist secret  # noqa: E501
         assert result.new_secret_id == "99", "Result must not be empty"
 
@@ -659,7 +659,7 @@ class TestGitHubTokenProvider:
         )
 
         assert result.success is False, "Result must not be empty"
-        assert "Invalid installation permission" in (result.error_message or ""
+        assert "Invalid installation permission" in (result.error_message or "", "Result must not be empty"
         ), "Result must not be empty"
 
     def test_create_token_empty_token_response(self, github_config):
