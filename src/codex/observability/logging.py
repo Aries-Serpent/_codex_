@@ -295,7 +295,8 @@ class ObservabilityLogger:
                 **(metadata or {}),
             },
         )
-        self._emit(record, level=logging.DEBUG if confidence >= 0.8 else logging.WARNING)
+        conf_normalized = confidence / 100.0 if confidence > 1.0 else confidence
+        self._emit(record, level=logging.DEBUG if conf_normalized >= 0.8 else logging.WARNING)
 
     def debug(self, agent_id: str, action: str, **kwargs: Any) -> None:
         """Convenience: log at DEBUG level."""
