@@ -258,6 +258,28 @@ jobs:
           SAFE_REASON=$(echo "$APPROVAL_REASON" | sed 's/[^a-zA-Z0-9:_.-]/ /g' | head -c 256)
 
           # ─────────────────────────────────────────────────────────────────────────
+          # Prerequisite Check (Phase 4): WEC Compliance Validation
+          # Ensures PR has required workflows checked in WEC block before auto-approval
+          # ─────────────────────────────────────────────────────────────────────────
+          echo "🔍 Phase 4: Checking WEC compliance as approval prerequisite..."
+          if command -v python3 &> /dev/null; then
+            WEC_CHECK=$(python3 scripts/ci/session_wrapup_autofix.py \
+              --pr-number "$TARGET_PR" \
+              --check-wec-compliance \
+              --merge-target "main" 2>&1 || echo "WEC_CHECK_FAILED")
+            if echo "$WEC_CHECK" | grep -q "WEC COMPLIANCE: PASSED"; then
+              echo "✅ WEC compliance check passed — prerequisite satisfied"
+            elif [ "$WEC_CHECK" = "WEC_CHECK_FAILED" ]; then
+              echo "⚠️ WEC check skipped (script not available) — proceeding with approval evaluation"
+            else
+              echo "⚠️ WEC compliance check did not pass — approval will proceed with caution"
+              echo "   Run: python3 scripts/ci/session_wrapup_autofix.py --check-wec-compliance --pr-number $TARGET_PR"
+            fi
+          else
+            echo "⚠️ Python3 not available — skipping WEC compliance check"
+          fi
+
+          # ─────────────────────────────────────────────────────────────────────────
           # Priority 1: Force Deny Intent (instant deny, no processing)
           # ─────────────────────────────────────────────────────────────────────────
           if [ "$APPROVAL_INTENT" = "force_deny" ]; then
