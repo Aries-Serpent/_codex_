@@ -290,16 +290,22 @@ class TestCLIEdgeCases:
         result: subprocess.CompletedProcess[str] = subprocess.run(
             [
                 sys.executable,
-                str(mcp_package_cli
-        ), "--topic"
+                str(mcp_package_cli),
+                "--topic",
+                "nonexistent_topic",
+                "--dry-run",
+            ],
             capture_output=True,
             text=True,
             cwd=str(mock_repo),
             timeout=10,
         )
 
-        # Should handle empty pattern gracefully (0=ok, 1=user-error, 2=argparse-error)
-        assert result.returncode in (0, 1, 2)
+        if result.returncode != 0:
+            assert any(
+                text in (result.stderr + result.stdout).lower()
+                for text in ("unknown", "not found", "no such file", "error")
+            )
 
     def test_cli_python_syntax_validation(self, mcp_package_cli):
         """Test that CLI has valid Python syntax"""

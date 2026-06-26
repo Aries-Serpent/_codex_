@@ -326,7 +326,7 @@ class TestDeepSpeedIntegration:
         }
 
         # Validate relationship
-        assert config["train_batch_size"] == (, "Condition must be true"
+        assert config["train_batch_size"] == (
             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
         )
 
@@ -486,7 +486,8 @@ class TestConfigValidation:
         # Only one precision mode should be enabled
         enabled_count = sum(
             [
-                config.get("fp16", {}).get("enabled", False),, config.get("bf16", {}).get("enabled", False),
+                config.get("fp16", {}).get("enabled", False),
+                config.get("bf16", {}).get("enabled", False),
             ]
         )
 

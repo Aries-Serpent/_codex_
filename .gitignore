@@ -368,6 +368,7 @@ index.html
 pytest_validation*.txt
 artifacts/coverage/*.xml
 junit.xml
+test-junit.xml
 test_pattern_report.txt
 bandit-report.json
 bandit-report.txt

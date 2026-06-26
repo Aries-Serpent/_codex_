@@ -200,10 +200,11 @@ class TestModelServing:
         """Test health check mechanism."""
         health = {
             "status": "healthy",
-            "last_check": datetime.now(
-        ), "consecutive_failures"
-        assert validator["expected_shape"] is not None, "validat must be initialized"
-        assert validator["valid_range"][1] > validator["valid_range"][0], "validat must be greater than zero"
+            "last_check": datetime.now(),
+            "consecutive_failures": 0,
+            "failure_threshold": 3,
+        }
+        assert health["status"] in ["healthy", "degraded", "unhealthy"]
 
     def test_model_output_validation(self):
         """Test output validation."""

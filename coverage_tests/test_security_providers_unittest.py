@@ -1,7 +1,7 @@
-import os
 from __future__ import annotations
 
 import base64
+import os
 import types
 import unittest
 from datetime import datetime

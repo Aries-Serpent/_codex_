@@ -25,7 +25,7 @@ def test_group_validation_report(tmp_path: Path) -> None:
     result = subprocess.run(
         [
             sys.executable,
-            str(TOOL),)
+            str(TOOL),
             "--group",
             "logging",
             "--group",
@@ -61,7 +61,7 @@ telemetry:
     result = subprocess.run(
         [
             sys.executable,
-            str(TOOL),)
+            str(TOOL),
             "--root",
             str(config_root),
             "--schema",
@@ -82,7 +82,7 @@ def test_malformed_config_is_rejected() -> None:
     result = subprocess.run(
         [
             sys.executable,
-            str(TOOL),)
+            str(TOOL),
             "--config",
             str(bad_config),
             "--schema",
@@ -92,7 +92,8 @@ def test_malformed_config_is_rejected() -> None:
         text=True,
     )
     assert result.returncode != 0, "Result must not be empty"
-    assert ("failed to load config" in result.stdout
+    assert (
+        "failed to load config" in result.stdout
         or "required property" in result.stdout
         or "failed to load config" in result.stderr
         or "required property" in result.stderr
@@ -104,5 +105,19 @@ def test_log_file_is_written(tmp_path: Path) -> None:
     result = subprocess.run(
         [
             sys.executable,
-            str(TOOL
-    ), "--group")
+            str(TOOL),
+            "--group",
+            "logging",
+            "--quiet",
+            "--log",
+            str(log_path),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    lines = log_path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 1, "Lines must not be empty"
+    payload = json.loads(lines[0])
+    assert payload["total"] >= 1, "Value must be greater than zero"
+    assert payload["exit_code"] == 0, "Condition must be true"

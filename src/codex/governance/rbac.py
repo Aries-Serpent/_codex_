@@ -22,7 +22,7 @@ import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any  # pragma: allowlist secret
+from typing import Any
 
 from ..authz import AuditLogger, PermissionValidator, RoleManager
 

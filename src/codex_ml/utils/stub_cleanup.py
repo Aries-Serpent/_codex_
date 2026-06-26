@@ -153,7 +153,7 @@ class StubAnalyzer:
                                 ):
                                     return True
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, SyntaxError) as e:
             error_type = type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug(f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>")
