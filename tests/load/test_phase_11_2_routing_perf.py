@@ -94,9 +94,9 @@ class TestRoutingAccuracy:
         assert 0.0 <= decision.confidence <= 100.0, "confidence must be 0–100"
         assert decision.approval_gate in ("auto-approve", "human-review", "escalate")
         assert isinstance(decision.fallback_chain, list)
-        assert len(decision.fallback_chain) <= 3
-        assert decision.routing_latency_ms >= 0
-        assert decision.timestamp
+        assert len(decision.fallback_chain) <= 3, "Collection must not be empty"
+        assert decision.routing_latency_ms >= 0, "routing_latency_ms must be greater than zero"
+        assert decision.timestamp, "Condition must be true"
         assert isinstance(decision.top_candidates, list)
 
     def test_fallback_chain_excludes_primary(self, router: AdvancedAgentRouter) -> None:
@@ -121,24 +121,24 @@ class TestApprovalGates:
         # Highly specific task that should score ≥ 90
         decision = router.route("pytest coverage gap fill fail_under branch")
         if decision.confidence >= 90.0:
-            assert decision.approval_gate == "auto-approve"
+            assert decision.approval_gate == "auto-approve", "approval_gate is not valid"
 
     def test_low_confidence_escalate(self, router: AdvancedAgentRouter) -> None:
         """Gibberish tasks must get escalate gate (low confidence)."""
         decision = router.route("xyzzy frobnicate quux")
         if decision.confidence < 75.0:
-            assert decision.approval_gate == "escalate"
+            assert decision.approval_gate == "escalate", "approval_gate is not valid"
 
     def test_gate_thresholds_consistent(self, router: AdvancedAgentRouter) -> None:
         """Gate must be consistent with confidence score."""
         for task, _ in TestRoutingAccuracy.CANONICAL_CASES:
             d = router.route(task)
             if d.confidence >= 90.0:
-                assert d.approval_gate == "auto-approve"
+                assert d.approval_gate == "auto-approve", "approval_gate is not valid"
             elif d.confidence >= 75.0:
-                assert d.approval_gate == "human-review"
+                assert d.approval_gate == "human-review", "approval_gate is not valid"
             else:
-                assert d.approval_gate == "escalate"
+                assert d.approval_gate == "escalate", "approval_gate is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -185,8 +185,8 @@ class TestRoutingLatency:
         """decision.routing_latency_ms must be a positive float."""
         for task, _ in TestRoutingAccuracy.CANONICAL_CASES[:5]:
             decision = router.route(task)
-            assert decision.routing_latency_ms > 0.0
-            assert decision.routing_latency_ms < 5000.0  # sanity: < 5 seconds
+            assert decision.routing_latency_ms > 0.0, "routing_latency_ms must be greater than zero"
+            assert decision.routing_latency_ms < 5000.0, "routing_latency_ms is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -200,19 +200,19 @@ class TestBatchRouting:
     def test_batch_returns_same_count(self, router: AdvancedAgentRouter) -> None:
         tasks = ["coverage tests", "security scan", "docs", "ci failure"]
         decisions = router.batch_route(tasks)
-        assert len(decisions) == len(tasks)
+        assert len(decisions) == len(tasks), "Decisions must not be empty"
 
     def test_batch_all_decisions_valid(self, router: AdvancedAgentRouter) -> None:
         tasks = ["coverage", "security", "documentation", "ci"]
         decisions = router.batch_route(tasks)
         for d in decisions:
             assert isinstance(d, RoutingDecision)
-            assert d.primary_agent
-            assert 0 <= d.confidence <= 100
+            assert d.primary_agent, "Condition must be true"
+            assert 0 <= d.confidence <= 100, "0 is not valid"
 
     def test_empty_batch(self, router: AdvancedAgentRouter) -> None:
         decisions = router.batch_route([])
-        assert decisions == []
+        assert decisions == [], "decisions is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -225,12 +225,12 @@ class TestHelpers:
         assert _tokenise("CI/CD failure") == ["ci", "cd", "failure"]
 
     def test_tokenise_empty(self) -> None:
-        assert _tokenise("") == []
+        assert _tokenise("") == [], "Condition must be true"
 
     def test_tokenise_punctuation(self) -> None:
         tokens = _tokenise("ModuleNotFoundError: No module named 'foo'")
-        assert "modulenotfounderror" in tokens
-        assert "foo" in tokens
+        assert "modulenotfounderror" in tokens, "Error should be raised or set"
+        assert "foo" in tokens, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -245,8 +245,8 @@ class TestAgentProfiles:
 
     def test_all_profiles_have_id_and_name(self, router: AdvancedAgentRouter) -> None:
         for profile in router._profiles:
-            assert profile.agent_id
-            assert profile.name
+            assert profile.agent_id, "Condition must be true"
+            assert profile.name, "Condition must be true"
 
     def test_no_duplicate_agent_ids(self, router: AdvancedAgentRouter) -> None:
         ids = [p.agent_id for p in router._profiles]
@@ -256,7 +256,7 @@ class TestAgentProfiles:
         from phase_11_2_advanced_router import main
 
         rc = main(["--list-agents"])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_self_test_cli(self) -> None:
         from phase_11_2_advanced_router import main
