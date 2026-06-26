@@ -309,7 +309,7 @@ class ApprovalWorkflowEngine:
         self,
         request_id: str,
         approver: str,
-        reason: str = "",
+        reason: str,
     ) -> ApprovalRequest:
         """Record a rejection decision on the specified request.
 
@@ -319,15 +319,18 @@ class ApprovalWorkflowEngine:
         Args:
             request_id: UUID of the ``ApprovalRequest``.
             approver:   Identity of the rejecting user.
-            reason:     Mandatory-by-convention rationale for audit trail.
+            reason:     Mandatory rationale for audit trail.
 
         Returns:
             The updated ``ApprovalRequest``.
 
         Raises:
             KeyError:   If *request_id* does not exist.
-            ValueError: If the request is already resolved.
+            ValueError: If the request is already resolved or reason is empty.
         """
+        if not reason or not reason.strip():
+            raise ValueError("Rejection reason cannot be empty.")
+
         req = self._get_and_validate(request_id, approver, operation="reject")
 
         req.decisions.append(
