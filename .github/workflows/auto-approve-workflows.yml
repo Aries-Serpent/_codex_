@@ -95,7 +95,7 @@ on:
         required: false
         type: string
       target_pr:
-        description: 'PR number for approval context (can override pr_number if both provided)'
+        description: 'PR number for approval context'
         required: false
         type: string
       approval_reason:
@@ -112,10 +112,6 @@ on:
         required: false
         type: string
       # ── Backward-compatible legacy inputs (preserved for existing workflows) ──
-      pr_number:
-        description: "PR number to apply auto-approve to (required for legacy mode)"
-        required: false
-        type: string
       enable_persistent:
         description: >
           Enable persistent auto-approve — approves after every Copilot session
@@ -239,7 +235,7 @@ jobs:
         env:
           APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}
           APPROVAL_INTENT: ${{ github.event.inputs.approval_intent }}
-          TARGET_PR: ${{ github.event.inputs.target_pr || github.event.inputs.pr_number }}
+          TARGET_PR: ${{ github.event.inputs.target_pr }}
           OVERRIDE_LABEL: ${{ github.event.inputs.override_label }}
           APPROVAL_REASON: ${{ github.event.inputs.approval_reason }}
           APPROVAL_TTL_HOURS: ${{ github.event.inputs.approval_ttl_hours || '1' }}
@@ -254,7 +250,7 @@ jobs:
             echo "rule=no_target_pr" >> $GITHUB_OUTPUT
             echo "confidence=0.0" >> $GITHUB_OUTPUT
             echo "should_proceed=false" >> $GITHUB_OUTPUT
-            echo "::warning::No target PR provided (target_pr or pr_number required)"
+            echo "::warning::No target PR provided"
             exit 0
           fi
 
@@ -618,7 +614,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.inputs.pr_number }}
+          PR_NUMBER: ${{ github.event.inputs.target_pr }}
           ENABLE_PERSISTENT: ${{ github.event.inputs.enable_persistent }}
           ENABLE_ONE_SESSION: ${{ github.event.inputs.enable_one_session }}
         run: |
@@ -671,7 +667,7 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_REVIEW_NUMBER: ${{ github.event.pull_request.number }}
           PR_REVIEW_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          INPUT_PR: ${{ github.event.inputs.pr_number }}
+          INPUT_PR: ${{ github.event.inputs.target_pr }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           REPO: ${{ github.repository }}
           EVENT_NAME: ${{ github.event_name }}

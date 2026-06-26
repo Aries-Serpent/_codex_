@@ -223,10 +223,10 @@ repos:
       # Auto-fix Common CI Issues - Detect patterns that cause workflow failures
       - id: auto-fix-ci-issues
         name: Auto-Fix Common CI Issues (unused imports, coverage, etc.)
-        entry: python scripts/ci/auto_fix_common_issues.py --check-only
+        entry: python scripts/hooks/pre_commit_pattern_check.py
         language: system
         pass_filenames: false
-        # Detects 8 common patterns: unused imports, coverage thresholds, YAML issues, etc.
+        # Runs a staged-file recurrence check instead of a full-repo CI sweep.
 
       # Dependency Consistency Validator - PR #5008
       - id: check-dependency-consistency

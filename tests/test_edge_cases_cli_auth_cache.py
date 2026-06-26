@@ -131,7 +131,6 @@ class TestCLICommandParsing:
         if args and args != [None, "arg", None]:
             # Filter out None values
             clean_args = [a for a in args if a is not None]
-            assert len(clean_args) >= 0, "Clean_args must not be empty"
 
     @pytest.mark.parametrize(
         "arg_string",

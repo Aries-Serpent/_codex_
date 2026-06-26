@@ -279,7 +279,6 @@ class TestStringBoundaries:
         ]
 
         for s in test_strings:
-            assert len(s) >= 0, "S must not be empty"
             stripped = s.strip()
             assert isinstance(stripped, str)
 

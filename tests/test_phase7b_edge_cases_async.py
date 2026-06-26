@@ -214,7 +214,6 @@ class TestResourceExhaustion:
                 errors.append(str(e))
 
             # Should either succeed or fail gracefully
-            assert len(errors) >= 0, "Errors must not be empty"
         except (NotImplementedError, AttributeError):
             pass
 
