@@ -1,0 +1,482 @@
+{
+  "$schema": "https://codex.dev/schemas/regression-detection-v1.0.json",
+  "version": "1.0.0",
+  "generated_at": "2026-06-26T12:00:00Z",
+  "phase": "8.3",
+  "title": "Performance Regression Detection Configuration",
+  
+  "detection_rules": {
+    "global_settings": {
+      "enabled": true,
+      "check_frequency_minutes": 60,
+      "lookback_window_hours": 24,
+      "statistical_significance_alpha": 0.05,
+      "block_on_critical": true,
+      "auto_create_issues": true,
+      "notify_channels": ["slack", "github", "email"]
+    },
+
+    "variance_thresholds": {
+      "normal": {
+        "percentage": 10,
+        "classification": "acceptable",
+        "action": "monitor",
+        "alert": false,
+        "description": "Normal operational variance, no action needed"
+      },
+      "warning": {
+        "percentage": 15,
+        "classification": "investigate",
+        "action": "investigate",
+        "alert": true,
+        "alert_level": "warning",
+        "description": "Investigate cause, may indicate optimization opportunity"
+      },
+      "investigation": {
+        "percentage": 20,
+        "classification": "root_cause_analysis",
+        "action": "escalate",
+        "alert": true,
+        "alert_level": "critical",
+        "description": "Root cause analysis required, track optimization"
+      },
+      "critical": {
+        "percentage": 25,
+        "classification": "regression",
+        "action": "block_and_escalate",
+        "alert": true,
+        "alert_level": "critical",
+        "block_pr": true,
+        "description": "Critical regression, block PR, immediate escalation"
+      }
+    },
+
+    "metric_groups": {
+      "ci_cd_pipeline": {
+        "enabled": true,
+        "description": "CI/CD pipeline execution metrics",
+        "metrics": [
+          {
+            "name": "workflow_execution_time",
+            "unit": "seconds",
+            "baseline": 450,
+            "thresholds": {
+              "normal": 472,
+              "warning": 518,
+              "investigation": 562,
+              "critical": 562
+            },
+            "percentile": "p95",
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "job_execution_time",
+            "unit": "seconds",
+            "baseline": 120,
+            "thresholds": {
+              "normal": 128,
+              "warning": 138,
+              "investigation": 150,
+              "critical": 150
+            },
+            "percentile": "p95",
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "full_pipeline_parallel_time",
+            "unit": "seconds",
+            "baseline": 1944,
+            "thresholds": {
+              "normal": 2138,
+              "warning": 2237,
+              "investigation": 2430,
+              "critical": 2430
+            },
+            "percentile": "p95",
+            "alert_condition": "greater_than"
+          }
+        ]
+      },
+
+      "test_execution": {
+        "enabled": true,
+        "description": "Test suite execution metrics",
+        "metrics": [
+          {
+            "name": "test_suite_full_cold",
+            "unit": "minutes",
+            "baseline": 30,
+            "thresholds": {
+              "normal": 33,
+              "warning": 34.5,
+              "investigation": 37.5,
+              "critical": 37.5
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "test_suite_full_warm",
+            "unit": "minutes",
+            "baseline": 20,
+            "thresholds": {
+              "normal": 22,
+              "warning": 23,
+              "investigation": 25,
+              "critical": 25
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "unit_tests_duration",
+            "unit": "minutes",
+            "baseline": 5,
+            "thresholds": {
+              "normal": 5.5,
+              "warning": 5.75,
+              "investigation": 6.5,
+              "critical": 6.5
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "test_success_rate",
+            "unit": "percentage",
+            "baseline": 99.5,
+            "thresholds": {
+              "normal": 99,
+              "warning": 98,
+              "investigation": 95,
+              "critical": 95
+            },
+            "alert_condition": "less_than"
+          }
+        ]
+      },
+
+      "api_performance": {
+        "enabled": true,
+        "description": "API service performance metrics",
+        "metrics": [
+          {
+            "name": "api_health_p50",
+            "unit": "milliseconds",
+            "baseline": 45,
+            "thresholds": {
+              "normal": 50,
+              "warning": 52,
+              "investigation": 56,
+              "critical": 56
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "api_health_p95",
+            "unit": "milliseconds",
+            "baseline": 180,
+            "thresholds": {
+              "normal": 207,
+              "warning": 207,
+              "investigation": 225,
+              "critical": 225
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "api_health_p99",
+            "unit": "milliseconds",
+            "baseline": 350,
+            "thresholds": {
+              "normal": 403,
+              "warning": 403,
+              "investigation": 438,
+              "critical": 438
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "api_predict_p95",
+            "unit": "milliseconds",
+            "baseline": 750,
+            "thresholds": {
+              "normal": 863,
+              "warning": 863,
+              "investigation": 938,
+              "critical": 938
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "api_error_rate",
+            "unit": "percentage",
+            "baseline": 0,
+            "thresholds": {
+              "normal": 0.1,
+              "warning": 0.5,
+              "investigation": 1,
+              "critical": 1
+            },
+            "alert_condition": "greater_than"
+          }
+        ]
+      },
+
+      "model_performance": {
+        "enabled": true,
+        "description": "Model training and inference metrics",
+        "metrics": [
+          {
+            "name": "training_throughput",
+            "unit": "steps_per_second",
+            "baseline": 1781,
+            "thresholds": {
+              "normal": 1513,
+              "warning": 1513,
+              "investigation": 1247,
+              "critical": 1247
+            },
+            "alert_condition": "less_than"
+          },
+          {
+            "name": "inference_latency_p50",
+            "unit": "milliseconds",
+            "baseline": 0.629,
+            "thresholds": {
+              "normal": 0.724,
+              "warning": 0.724,
+              "investigation": 0.786,
+              "critical": 0.786
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "memory_peak",
+            "unit": "megabytes",
+            "baseline": 7.93,
+            "thresholds": {
+              "normal": 9.12,
+              "warning": 9.12,
+              "investigation": 9.91,
+              "critical": 9.91
+            },
+            "alert_condition": "greater_than"
+          }
+        ]
+      },
+
+      "build_artifacts": {
+        "enabled": true,
+        "description": "Build and artifact pipeline metrics",
+        "metrics": [
+          {
+            "name": "wheel_build_time",
+            "unit": "seconds",
+            "baseline": 45,
+            "thresholds": {
+              "normal": 52,
+              "warning": 52,
+              "investigation": 56,
+              "critical": 56
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "artifact_upload_time",
+            "unit": "seconds",
+            "baseline": 12,
+            "thresholds": {
+              "normal": 14,
+              "warning": 14,
+              "investigation": 15,
+              "critical": 15
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "coverage_shard_upload",
+            "unit": "seconds",
+            "baseline": 24,
+            "thresholds": {
+              "normal": 28,
+              "warning": 28,
+              "investigation": 30,
+              "critical": 30
+            },
+            "alert_condition": "greater_than"
+          }
+        ]
+      },
+
+      "code_quality": {
+        "enabled": true,
+        "description": "Code quality checks and scanning",
+        "metrics": [
+          {
+            "name": "ruff_linting_time",
+            "unit": "seconds",
+            "baseline": 18,
+            "thresholds": {
+              "normal": 21,
+              "warning": 21,
+              "investigation": 23,
+              "critical": 23
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "mypy_type_check_time",
+            "unit": "seconds",
+            "baseline": 42,
+            "thresholds": {
+              "normal": 48,
+              "warning": 48,
+              "investigation": 53,
+              "critical": 53
+            },
+            "alert_condition": "greater_than"
+          },
+          {
+            "name": "codeql_scan_time",
+            "unit": "seconds",
+            "baseline": 240,
+            "thresholds": {
+              "normal": 276,
+              "warning": 276,
+              "investigation": 300,
+              "critical": 300
+            },
+            "alert_condition": "greater_than"
+          }
+        ]
+      },
+
+      "caching": {
+        "enabled": true,
+        "description": "Cache performance metrics",
+        "metrics": [
+          {
+            "name": "cache_hit_rate",
+            "unit": "percentage",
+            "baseline": 75,
+            "thresholds": {
+              "normal": 68,
+              "warning": 60,
+              "investigation": 50,
+              "critical": 50
+            },
+            "alert_condition": "less_than"
+          },
+          {
+            "name": "docker_cache_hit_rate",
+            "unit": "percentage",
+            "baseline": 85,
+            "thresholds": {
+              "normal": 77,
+              "warning": 70,
+              "investigation": 60,
+              "critical": 60
+            },
+            "alert_condition": "less_than"
+          }
+        ]
+      }
+    }
+  },
+
+  "alert_actions": {
+    "normal": {
+      "create_pr_comment": false,
+      "create_github_issue": false,
+      "slack_notification": false,
+      "email_notification": false,
+      "block_pr": false,
+      "escalate": false
+    },
+    "warning": {
+      "create_pr_comment": true,
+      "create_github_issue": false,
+      "slack_notification": true,
+      "email_notification": false,
+      "block_pr": false,
+      "escalate": false,
+      "message_template": "warning_investigation_needed"
+    },
+    "investigation": {
+      "create_pr_comment": true,
+      "create_github_issue": true,
+      "slack_notification": true,
+      "email_notification": true,
+      "block_pr": false,
+      "escalate": true,
+      "message_template": "investigation_required"
+    },
+    "critical": {
+      "create_pr_comment": true,
+      "create_github_issue": true,
+      "slack_notification": true,
+      "email_notification": true,
+      "block_pr": true,
+      "escalate": true,
+      "escalate_to": "@mbaetiong",
+      "message_template": "critical_regression_blocking"
+    }
+  },
+
+  "statistical_tests": {
+    "enabled": true,
+    "method": "welch_ttest",
+    "alpha": 0.05,
+    "min_samples": 5,
+    "effect_size_threshold": 0.20
+  },
+
+  "trending_detection": {
+    "enabled": true,
+    "window_days": 7,
+    "alert_on_gradual_degradation": true,
+    "degradation_threshold_pct": 5,
+    "consecutive_weeks": 4
+  },
+
+  "exclusions": {
+    "exclude_scheduled_maintenance": true,
+    "exclude_infrastructure_issues": true,
+    "exclude_experimental_runs": true,
+    "exclude_failed_runs": true
+  },
+
+  "reporting": {
+    "weekly_report": {
+      "enabled": true,
+      "day": "thursday",
+      "time_utc": "18:00",
+      "recipients": ["@performance-team", "@mbaetiong"],
+      "format": "markdown"
+    },
+    "daily_summary": {
+      "enabled": true,
+      "time_utc": "09:00",
+      "recipients": ["@perf-oncall"]
+    }
+  },
+
+  "escalation_matrix": {
+    "level_1": {
+      "condition": "single_critical_regression",
+      "owner": "@perf-oncall",
+      "deadline_minutes": 60,
+      "action": "investigate_and_mitigate"
+    },
+    "level_2": {
+      "condition": "multiple_regressions_or_sustained_warning",
+      "owner": "@engineering-manager",
+      "deadline_hours": 4,
+      "action": "root_cause_analysis"
+    },
+    "level_3": {
+      "condition": "sla_violation_exceeds_5_percent",
+      "owner": "@engineering-director",
+      "deadline_hours": 24,
+      "action": "process_improvement"
+    }
+  }
+}
