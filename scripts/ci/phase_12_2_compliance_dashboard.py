@@ -325,7 +325,7 @@ class ComplianceDashboard:
         # Fallback: attempt local pytest with strict time-limit
         try:
             pytest_result = subprocess.run(
-                [sys.executable, "-m", "pytest", "--tb=no", "-q", "--no-header", "--co", "-q"],
+                [sys.executable, "-m", "pytest", "tests/", "--tb=short"],
                 capture_output=True,
                 text=True,
                 timeout=60,
@@ -334,14 +334,14 @@ class ComplianceDashboard:
             if pytest_result.returncode == 0:
                 return ComplianceResult(
                     passed=True,
-                    details="Local pytest collection succeeded (no CI run data available)",
+                    details="Local pytest tests passed",
                 )
             else:
                 stderr_excerpt = pytest_result.stderr[-300:] if pytest_result.stderr else ""
                 return ComplianceResult(
                     passed=False,
-                    details=f"Local pytest check failed (exit {pytest_result.returncode}): {stderr_excerpt}",
-                    remediation="Run 'pytest' locally and fix any collection or test errors.",
+                    details=f"Local pytest tests failed (exit {pytest_result.returncode}): {stderr_excerpt}",
+                    remediation="Run 'pytest' locally and fix any test errors.",
                 )
         except (FileNotFoundError, subprocess.TimeoutExpired):
             pass
