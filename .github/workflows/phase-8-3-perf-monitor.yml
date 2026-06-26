@@ -13,6 +13,12 @@ on:
       - "scripts/ci/phase_8_3_*"
       - ".github/workflows/phase-8-3-perf-monitor.yml"
 
+permissions:
+  contents: read
+  actions: read
+  issues: write
+  pull-requests: read
+
 concurrency:
   group: perf-monitoring
   cancel-in-progress: false

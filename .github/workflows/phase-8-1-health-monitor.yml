@@ -11,6 +11,13 @@ on:
         required: false
         default: 'false'
 
+permissions:
+  contents: read
+  actions: read
+  checks: read
+  issues: write
+  pull-requests: read
+
 concurrency:
   group: phase-8-1-health-monitor-${{ github.ref }}
   cancel-in-progress: false
