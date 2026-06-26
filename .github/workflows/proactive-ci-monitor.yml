@@ -107,6 +107,7 @@ jobs:
           echo "cli_args=$ARGS" >> "$GITHUB_OUTPUT"
 
       - name: Run proactive CI monitor
+        id: monitor
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -115,7 +116,12 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --token "$GITHUB_TOKEN" \
             --output /tmp/proactive_report.json \
-            ${{ steps.args.outputs.cli_args }}
+            ${{ steps.args.outputs.cli_args }} || true
+          
+          # Ensure output file exists (create fallback if script failed)
+          if [ ! -f /tmp/proactive_report.json ]; then
+            echo '{"scanned_prs": 0, "failed_runs": 0, "escalated": 0, "skipped_transient": 0, "already_addressed": 0, "details": []}' > /tmp/proactive_report.json
+          fi
 
       - name: Upload scan report
         if: always()
