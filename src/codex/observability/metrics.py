@@ -224,8 +224,8 @@ class MetricsCollector:
         with self._lock:
             window: deque[_ExecutionRecord] = self._windows[agent_id]
             total = self._total_counts[agent_id]
+            records = list(window)  # snapshot inside lock to prevent RuntimeError
 
-        records = list(window)  # snapshot outside lock for computation
         n = len(records)
         if n == 0:
             return AgentMetrics(agent_id=agent_id, total_executions=total)
