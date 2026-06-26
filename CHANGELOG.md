@@ -318,6 +318,9 @@ python -m codex --version  # Should output: 0.1.0-final
 ---
 
 ## [Unreleased] 
+### Fixed (auto-update — PR #5091)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5091 (SHA `cc759f1d`) at 2026-06-26T15:18Z [auto-generated]
+
 
 ### Documentation & Compliance (PR #5084 — Phase 4: Documentation Alignment & Freshness Audit) — 2026-06-25T23:45Z
 - **Link Validation Audit**: Scanned 4,592 documentation files across `docs/` and `.codex/`
