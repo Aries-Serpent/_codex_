@@ -101,6 +101,22 @@ jobs:
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --check
 
+      - name: WEC compliance check (Phase 3.3)
+        id: wec_compliance
+        run: |
+          # (Phase 3.3) Validate WEC compliance against merge target requirements.
+          # Ensures all required workflows are present and checked, REQ-4 and REQ-5
+          # are satisfied.  This is the CI gate for Phase 3.1 enhanced function.
+          MERGE_TARGET="${{ github.base_ref }}"
+          if [ "$MERGE_TARGET" != "main" ] && [ "$MERGE_TARGET" != "0D_base_" ]; then
+            MERGE_TARGET="main"
+          fi
+          python scripts/ci/session_wrapup_autofix.py \
+            --pr-number "${{ github.event.pull_request.number }}" \
+            --check-wec-compliance \
+            --merge-target "$MERGE_TARGET"
+        continue-on-error: true
+
       - name: Upload validation reports
         if: always()
         continue-on-error: true
@@ -127,10 +143,11 @@ jobs:
               tests: '${{ steps.tests.outcome }}',
               quality: '${{ steps.quality.outcome }}',
               session_wrapup: '${{ steps.session_wrapup.outcome }}',
+              wec_compliance: '${{ steps.wec_compliance.outcome }}',
             };
 
             // Only these three block the merge; the rest are informational warnings.
-            const critical = ['autofix', 'pattern_pipeline', 'batch_scan_protocol', 'session_wrapup'];
+            const critical = ['autofix', 'pattern_pipeline', 'batch_scan_protocol', 'session_wrapup', 'wec_compliance'];
             const passed = critical.every(k => checks[k] === 'success');
             const emoji = passed ? '✅' : '❌';
 
@@ -146,6 +163,7 @@ jobs:
             | Quick Tests | ${checks.tests === 'success' ? '✅ Pass' : '⚠️ Warning'} |
             | Code Quality | ${checks.quality === 'success' ? '✅ Pass' : '⚠️ Warning'} |
             | Session Wrapup (REQ-4/5) | ${checks.session_wrapup === 'success' ? '✅ Pass' : '❌ Fail'} |
+            | WEC Compliance (Phase 3.3) | ${checks.wec_compliance === 'success' ? '✅ Pass' : '❌ Fail'} |
 
             ${passed ? '✅ **All required checks passed! Ready to merge.**' : '❌ **Some checks failed. Please review and fix.**'}
 
@@ -178,7 +196,7 @@ jobs:
             }
 
       - name: Fail if critical checks failed
-        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success' || steps.batch_scan_protocol.outcome != 'success' || steps.session_wrapup.outcome != 'success'
+        if: steps.autofix.outcome != 'success' || steps.pattern_pipeline.outcome != 'success' || steps.batch_scan_protocol.outcome != 'success' || steps.session_wrapup.outcome != 'success' || steps.wec_compliance.outcome != 'success'
         run: |
           echo "::error::Pre-merge validation failed"
           if [ "${{ steps.autofix.outcome }}" != "success" ]; then
@@ -202,6 +220,10 @@ jobs:
           if [ "${{ steps.session_wrapup.outcome }}" != "success" ]; then
             echo "::error::Session wrapup check failed — REQ-4/REQ-5 files are not fresh for latest commit"
             echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check --pr-number ${{ github.event.pull_request.number }}"
+          fi
+          if [ "${{ steps.wec_compliance.outcome }}" != "success" ]; then
+            echo "::error::WEC compliance check failed — required workflows not properly configured in WEC block"
+            echo "Fix with: python3 scripts/ci/session_wrapup_autofix.py --check-wec-compliance --pr-number ${{ github.event.pull_request.number }}"
           fi
           exit 1
 
