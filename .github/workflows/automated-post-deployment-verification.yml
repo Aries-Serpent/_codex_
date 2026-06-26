@@ -21,6 +21,11 @@ on:
         type: boolean
         default: true
 
+permissions:
+  contents: read
+  actions: write
+  pull-requests: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true

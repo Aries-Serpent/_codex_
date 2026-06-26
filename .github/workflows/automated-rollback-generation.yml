@@ -18,6 +18,11 @@ on:
   repository_dispatch:
     types: [deployment-failed]
 
+permissions:
+  contents: write
+  actions: read
+  pull-requests: write
+
 # Environment variables
 env:
   MANIFESTS_DIR: manifests/k8s
